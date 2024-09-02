@@ -17,35 +17,14 @@ import yaml
 from dotenv import load_dotenv
 from transformers import AutoTokenizer, AutoModelForCausalLM, BitsAndBytesConfig
 from huggingface_hub import login
+from typing import List, Dict
 
 # local imports
 from Services.base import ServiceBase
 from utils.output_message_format.output_colour import print_info, print_warning, print_error
 
 class LLM(ServiceBase):
-    """
-    Creat an LLM agent
-    Args:
-        repo_name (str): The name of the HF repository, Default : mistral 7B v0.1
 
-        quantization (str): The quantization method to use, 4bit or 8bit, Default : 4bit
-
-        use_cache (bool): use the cached model when loading the model
-
-        device_map (str): The device map to use for loading the model
-
-        max_new_tokens (int): The maximum number of new tokens to generate
-
-        do_sample (bool): Whether to use sampling when generating new tokens, Default : False to make it deterministic
-        
-        top_p (float): The top-p value to use when sampling
-
-        temperature (float): The temperature value to use when sampling
-
-        config_file (str): The path to a YAML file containing configuration values
-
-        system_prompt (str): will change according to operation
-    """
     def __init__(self, 
                  repo_name:str = "mistralai/Mistral-7B-v0.1",
                  quantization:str = "4bit",
@@ -58,6 +37,20 @@ class LLM(ServiceBase):
                  llm_config_file:str = None, # config file to easily set parameters
                  system_prompt:str = "You are a helpful assistant, always answer the question even if the provided context is not helpful",
                  **kwargs):
+        """
+        Creat an LLM agent
+        Args:
+            repo_name (str): The name of the HF repository, Default : mistral 7B v0.1
+            quantization (str): The quantization method to use, 4bit or 8bit, Default : 4bit
+            use_cache (bool): use the cached model when loading the model
+            device_map (str): The device map to use for loading the model
+            max_new_tokens (int): The maximum number of new tokens to generate
+            do_sample (bool): Whether to use sampling when generating new tokens, Default : False to make it deterministic
+            top_p (float): The top-p value to use when sampling
+            temperature (float): The temperature value to use when sampling
+            config_file (str): The path to a YAML file containing configuration values
+            system_prompt (str): will change according to operation
+        """
         
         # base class
         super().__init__()
@@ -73,6 +66,7 @@ class LLM(ServiceBase):
         self.temperature = temperature
         self.system_prompt = system_prompt
         self.hf_token = self.load_hf_token()
+        self.seed = 42
 
         # login
         self.login_hf()
@@ -89,12 +83,12 @@ class LLM(ServiceBase):
         self.tokenizer = None
         
         self._initialize_model()
-        self.set_seed()
+        self._set_seed()
 
 
-    def set_seed():
-        torch.manual_seed(42)
-        torch.cuda.manual_seed_all(42)
+    def _set_seed(self):
+        torch.manual_seed(self.seed)
+        torch.cuda.manual_seed_all(self.seed)
 
 
     def _get_quant_config(self) -> BitsAndBytesConfig:
@@ -118,7 +112,7 @@ class LLM(ServiceBase):
         quant_config = self._get_quant_config()
 
         # tokenizer
-        self.tokenizer = self.get_tokenizer() # don't add eos token for inference
+        self.tokenizer = self.set_tokenizer() # don't add eos token for inference
 
         # model
         self.model = AutoModelForCausalLM.from_pretrained(
@@ -128,6 +122,8 @@ class LLM(ServiceBase):
             device_map=self.device_map,
             torch_dtype=torch.bfloat16
         )
+        print_info("Model initialized")
+        print_info(f"Model name: {self.repo_name}")
 
     def set_system_prompt(self, prompt:str, read_from_file:bool = False):
         """
@@ -140,8 +136,8 @@ class LLM(ServiceBase):
         """
         if read_from_file:
             # TODO: root file variable
-            config_file_path = f"{os.path.abspath(__file__)}/../../config_files/system_prompt.txt"
-            with open(config_file_path, "r") as file:
+            prompt_file_path = f"{os.path.abspath(__file__)}/../../config_files/system_prompt.txt"
+            with open(prompt_file_path, "r") as file:
                 prompt = file.read()
         else:
             self.system_prompt = prompt
@@ -152,14 +148,17 @@ class LLM(ServiceBase):
             print_error("Model or tokenizer not initialized")
             sys.exit(1) # exit the program with an error code
 
-        inputs = self.prepare_prompt(user_prompt).to(self.model.device)
+        inputs = self._prepare_prompt(user_prompt)
+        input_ids = inputs["input_ids"].to(self.model.device)
+        attention_mask = inputs["attention_mask"].to(self.model.device)
         
         # inference
+        # TODO: add pipeline for inference
         with torch.no_grad():
             output = self.model.generate(
-                inputs,
+                input_ids = input_ids,
                 pad_token_id=self.tokenizer.eos_token_id,
-                attention_mask = self.tokenizer,
+                attention_mask = attention_mask,
                 max_new_tokens=self.max_new_tokens,
                 do_sample=self.do_sample,
                 top_p = self.top_p if self.do_sample else None,
@@ -172,11 +171,12 @@ class LLM(ServiceBase):
     
 
     def load_hf_token(self) -> str:
+        print(f"{os.path.abspath(__file__).replace('llm_service.py', '')}../..")
         """
         Load the Hugging Face token from the .env file
         """
         # load hf token
-        if load_dotenv(f"{os.path.abspath(__file__)}/../.."):
+        if load_dotenv(f"{os.path.abspath(__file__).replace('llm_service.py', '')}../../.env"):
             hf_token = os.getenv('HUGGING_FACE_TOKEN')
             if not hf_token:
                 raise Exception("HUGGING_FACE_TOKEN not found in .env file")
@@ -191,27 +191,47 @@ class LLM(ServiceBase):
         Login to the Hugging Face Hub
         """
         login(self.hf_token, add_to_git_credential=True)
+        print_info("Logged in to Hugging Face Hub")
 
 
-    def get_tokenizer(self, add_eos_token:bool = False) -> AutoTokenizer:
+    def set_tokenizer(self, add_eos_token:bool = False) -> AutoTokenizer:
         """
-        Get the tokenizer from the model repo
+        Get the tokenizer from the model repo, can only chage the eos token argument
         Args:
             add_eos_token (bool): Whether to add the eos token to the tokenizer
             this is useful for finetuning to add eos token to the training data
         """
         tokenizer = AutoTokenizer.from_pretrained(
-        self.repo_name,
-        add_bos_token = True,
-        add_eos_token = add_eos_token,
-        padding_side = "left"
-        )
-        tokenizer.pad_token = self.tokenizer.eos_token
-
+                self.repo_name,
+                add_bos_token = True,
+                add_eos_token = add_eos_token,
+                padding_side = "left"
+                )
+        tokenizer.pad_token = tokenizer.eos_token
+        
+        print_info("Tokenizer initialized")
         return tokenizer
     
 
-    def prepare_prompt(self, user_prompt:str) -> str:
+    def _prepare_chat_template(self, messages:List[Dict[str, str]]):
+        """
+        This will apply a default chat template if the tokenizer does not support it.
+        If chat template is not supported and no default template is provided, will retun a value error
+        """
+        print()
+        if self.tokenizer.chat_template is None:
+            print_warning("Chat template not supported by the tokenizer, applying default template")
+            default_prompt_path = os.path.abspath(__file__).replace("llm_service.py", "../../config_files/default_chat_template.txt")
+            with open(default_prompt_path, "r") as file:
+                default_prompt = file.read()
+                self.tokenizer.chat_template = default_prompt # always has generation prompt
+
+        return self.tokenizer.apply_chat_template(messages, 
+                                                tokenize=False, 
+                                                add_generation_prompt=True) # wont work for all models
+    
+
+    def _prepare_prompt(self, user_prompt:str) -> str:
         """
         Prepare the prompt for the model, self.tokenizer should be initialized
         Args:
@@ -232,10 +252,12 @@ class LLM(ServiceBase):
                 "role": "user", 
                 "content": user_prompt},
         ]
-        return self.tokenizer.apply_chat_template(messages, 
-                                                            tokenize=True, 
-                                                            add_generation_prompt=True, # must for inference
-                                                            return_tensors="pt")
+
+        # I'm encoding separately to get the attention mask all in one go
+        prompt = self._prepare_chat_template(messages)
+        return self.tokenizer(prompt, return_tensors="pt", padding=True)
+    
+        
 
 # -------------------------------------------------------------------------------------------------------------
 

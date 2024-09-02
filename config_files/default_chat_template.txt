@@ -1,0 +1,8 @@
+{%- for message in messages %}
+    {%- if message['role'] == 'user' %}
+        {{- 'User: ' + message['content'] + "\n"}}
+    {%- elif message['role'] == 'system' %}
+        {{- bos_token + 'System: ' + message['content'] + '\n\n' }}
+    {%- endif %}
+    {{- 'Assistant: ' if loop.last else '' }}
+{%- endfor %}
