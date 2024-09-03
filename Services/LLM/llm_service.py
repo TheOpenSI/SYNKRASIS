@@ -235,7 +235,7 @@ class LLM(ServiceBase):
         print()
         if self.tokenizer.chat_template is None:
             print_warning("Chat template not supported by the tokenizer, applying default template")
-            default_prompt_path = os.path.abspath(__file__).replace("llm_service.py", "../../config_files/default_chat_template.txt")
+            default_prompt_path = os.path.abspath(__file__).replace("llm_service.py", "../../config_files/default_chat_template.jinja")
             with open(default_prompt_path, "r") as file:
                 default_prompt = file.read()
                 self.tokenizer.chat_template = default_prompt # always has generation prompt
@@ -267,7 +267,7 @@ class LLM(ServiceBase):
                 "content": user_prompt},
         ]
 
-        # I'm encoding separately to get the attention mask all in one go
+        # Encoding separately to get the attention mask all in one go
         prompt = self._prepare_chat_template(messages)
 
         # return self.tokenizer(prompt, return_tensors="pt", padding=True)
