@@ -15,7 +15,7 @@ import os
 import torch
 import yaml
 from dotenv import load_dotenv
-from transformers import AutoTokenizer, AutoModelForCausalLM, BitsAndBytesConfig
+from transformers import AutoTokenizer, AutoModelForCausalLM, BitsAndBytesConfig, pipeline
 from huggingface_hub import login
 from typing import List, Dict
 
@@ -36,7 +36,8 @@ class LLM(ServiceBase):
                  temperature:float = 0.7, # will be ignored if do_sample is False
                  llm_config_file:str = None, # config file to easily set parameters
                  system_prompt:str = "You are a helpful assistant, always answer the question even if the provided context is not helpful",
-                 **kwargs):
+                 stop_strings:List[str] = ["User:"], # stop strings to stop the generation, default is User: to supoort default chat template
+                 ):
         """
         Creat an LLM agent
         Args:
@@ -50,6 +51,7 @@ class LLM(ServiceBase):
             temperature (float): The temperature value to use when sampling
             config_file (str): The path to a YAML file containing configuration values
             system_prompt (str): will change according to operation
+            stop_strings (List[str]): Default : ["User:"] which supports the default chat template at /config_files/default_chat_template.txt
         """
         
         # base class
@@ -66,7 +68,8 @@ class LLM(ServiceBase):
         self.temperature = temperature
         self.system_prompt = system_prompt
         self.hf_token = self.load_hf_token()
-        self.seed = 42
+        self.seed = 42,
+        self.stop_strings = stop_strings
 
         # login
         self.login_hf()
@@ -81,14 +84,15 @@ class LLM(ServiceBase):
         # llm model
         self.model = None
         self.tokenizer = None
+        self.pipeline = None
         
         self._initialize_model()
         self._set_seed()
 
 
     def _set_seed(self):
-        torch.manual_seed(self.seed)
-        torch.cuda.manual_seed_all(self.seed)
+        torch.manual_seed(42)
+        torch.cuda.manual_seed_all(42)
 
 
     def _get_quant_config(self) -> BitsAndBytesConfig:
@@ -122,8 +126,21 @@ class LLM(ServiceBase):
             device_map=self.device_map,
             torch_dtype=torch.bfloat16
         )
+
+        # pipeline
+        self.pipeline = pipeline(
+        model = self.model,
+        tokenizer = self.tokenizer,
+        task = "text-generation",
+        do_sample = False,
+        repetition_penalty = 1.1,
+        return_full_text = False,
+        max_new_tokens = 1024
+        )
+
         print_info("Model initialized")
-        print_info(f"Model name: {self.repo_name}")
+        print_info(f"Model name: {self.repo_name.strip()}")
+
 
     def set_system_prompt(self, prompt:str, read_from_file:bool = False):
         """
@@ -144,33 +161,30 @@ class LLM(ServiceBase):
 
 
     def generate_response(self, user_prompt:str) -> str:
+        """
+        Generate a response to the user prompt
+        Args:
+            user_prompt (str): The user prompt to generate a response to
+        """
         if not self.model or not self.tokenizer:
             print_error("Model or tokenizer not initialized")
             sys.exit(1) # exit the program with an error code
 
-        inputs = self._prepare_prompt(user_prompt)
-        input_ids = inputs["input_ids"].to(self.model.device)
-        attention_mask = inputs["attention_mask"].to(self.model.device)
+        prompt = self._prepare_prompt(user_prompt)
         
         # inference
-        # TODO: add pipeline for inference
-        with torch.no_grad():
-            output = self.model.generate(
-                input_ids = input_ids,
-                pad_token_id=self.tokenizer.eos_token_id,
-                attention_mask = attention_mask,
-                max_new_tokens=self.max_new_tokens,
-                do_sample=self.do_sample,
-                top_p = self.top_p if self.do_sample else None,
-                temperature=self.temperature if self.do_sample else None,
-                # eos_token_id=self.tokenizer.eos_token_id
-            )
-
-        response = self.tokenizer.decode(output[0], skip_special_tokens=True)
-        return response.split("Assistant:")[-1].strip()
+        response = self.pipeline(prompt, 
+                                 tokenizer = self.tokenizer,
+                                 eos_token_id = self.tokenizer.eos_token_id,
+                                 stop_strings = self.stop_strings)
+        
+        return response[0]["generated_text"].split("User:")[0].strip()
     
 
     def load_hf_token(self) -> str:
+        """
+        Load the Hugging Face token from the .env file
+        """
         print(f"{os.path.abspath(__file__).replace('llm_service.py', '')}../..")
         """
         Load the Hugging Face token from the .env file
@@ -245,17 +259,19 @@ class LLM(ServiceBase):
 
         messages = [
             {
-                "role": "system",
+                "role": "System",
                 "content": self.system_prompt,
             },
             {
-                "role": "user", 
+                "role": "User", 
                 "content": user_prompt},
         ]
 
         # I'm encoding separately to get the attention mask all in one go
         prompt = self._prepare_chat_template(messages)
-        return self.tokenizer(prompt, return_tensors="pt", padding=True)
+
+        # return self.tokenizer(prompt, return_tensors="pt", padding=True)
+        return prompt # resturn string to use with pipeline
     
         
 

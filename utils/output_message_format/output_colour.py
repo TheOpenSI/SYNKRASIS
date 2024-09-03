@@ -22,3 +22,6 @@ def print_warning(to_print:str):
 
 def print_error(to_print:str):
     print(f"{Colour.RED.value}[ERROR]{Colour.RESET.value} {to_print}")
+
+def print_model_output(to_print:str, model_name:str):
+    print(f"{Colour.BLUE.value}[{model_name}]{Colour.RESET.value} {to_print}")
