@@ -1,0 +1,9 @@
+repo_name: "mistralai/Mistral-7B-v0.1"
+quantization: "4bit"
+use_cache: true
+device_map: "auto"
+max_new_tokens: 1024
+do_sample: false
+top_p: 0.95
+temperature: 0.7
+system_prompt: "You are a helpful assistant, always answer the question even if the provided context is not helpful"

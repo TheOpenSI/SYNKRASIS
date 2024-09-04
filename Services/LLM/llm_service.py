@@ -36,7 +36,7 @@ class LLM(ServiceBase):
                  temperature:float = 0.7, # will be ignored if do_sample is False
                  llm_config_file:str = None, # config file to easily set parameters
                  system_prompt:str = "You are a helpful assistant, always answer the question even if the provided context is not helpful",
-                 stop_strings:List[str] = ["User:"], # stop strings to stop the generation, default is User: to supoort default chat template
+                 stop_strings:List[str] = ["\n\nUser:"], # stop strings to stop the generation, default is User: to supoort default chat template
                  ):
         """
         Creat an LLM agent
@@ -67,12 +67,12 @@ class LLM(ServiceBase):
         self.top_p = top_p
         self.temperature = temperature
         self.system_prompt = system_prompt
-        self.hf_token = self.load_hf_token()
+        self.hf_token = self._load_hf_token()
         self.seed = 42,
         self.stop_strings = stop_strings
 
         # login
-        self.login_hf()
+        self._login_hf()
 
         
         # config from file if provided
@@ -142,6 +142,75 @@ class LLM(ServiceBase):
         print_info(f"Model name: {self.repo_name.strip()}")
 
 
+    def _prepare_chat_template(self, messages:List[Dict[str, str]]):
+        """
+        This will apply a default chat template if the tokenizer does not support it.
+        If chat template is not supported and no default template is provided, will retun a value error
+        """
+        # if self.tokenizer.chat_template is None: # TODO: setting default chat template for all models
+        print_warning("Chat template not supported by the tokenizer, applying default template")
+        default_prompt_path = os.path.abspath(__file__).replace("llm_service.py", "../../config_files/default_chat_template.jinja")
+        with open(default_prompt_path, "r") as file:
+            default_prompt = file.read()
+            self.tokenizer.chat_template = default_prompt # always has generation prompt
+
+        return self.tokenizer.apply_chat_template(messages, 
+                                                tokenize=False, 
+                                                add_generation_prompt=True) # wont work for all models
+    
+
+    def _prepare_prompt(self, user_prompt:str) -> str:
+        """
+        Prepare the prompt for the model, self.tokenizer should be initialized
+        Args:
+            user_prompt (str): The user prompt to prepare
+        """
+        # apply chat template - https://huggingface.co/docs/transformers/main/en/chat_templating
+        # generation prompt - https://huggingface.co/docs/transformers/main/en/chat_templating
+        if self.tokenizer is None:
+            print_error("Tokenizer not initialized")
+            sys.exit(1)
+
+        messages = [
+            {
+                "role": "System",
+                "content": self.system_prompt,
+            },
+            {
+                "role": "User", 
+                "content": user_prompt},
+        ]
+
+        # Encoding separately to get the attention mask all in one go
+        prompt = self._prepare_chat_template(messages)
+
+        # return self.tokenizer(prompt, return_tensors="pt", padding=True)
+        return prompt # resturn string to use with pipeline
+    
+
+    def _load_hf_token(self) -> str:
+        """
+        Load the Hugging Face token from the .env file
+        """
+        # load hf token
+        if load_dotenv(f"{os.path.abspath(__file__).replace('llm_service.py', '')}../../.env"):
+            hf_token = os.getenv('HUGGING_FACE_TOKEN')
+            if not hf_token:
+                raise Exception("HUGGING_FACE_TOKEN not found in .env file")
+            
+            return hf_token
+        else:
+            raise Exception("No .env file found")
+    
+
+    def _login_hf(self):
+        """
+        Login to the Hugging Face Hub
+        """
+        login(self.hf_token, add_to_git_credential=True)
+        print_info("Logged in to Hugging Face Hub")
+
+
     def set_system_prompt(self, prompt:str, read_from_file:bool = False):
         """
         This is to set a custom system prompt duing inference
@@ -181,29 +250,6 @@ class LLM(ServiceBase):
         return response[0]["generated_text"].split("User:")[0].strip()
     
 
-    def load_hf_token(self) -> str:
-        """
-        Load the Hugging Face token from the .env file
-        """
-        # load hf token
-        if load_dotenv(f"{os.path.abspath(__file__).replace('llm_service.py', '')}../../.env"):
-            hf_token = os.getenv('HUGGING_FACE_TOKEN')
-            if not hf_token:
-                raise Exception("HUGGING_FACE_TOKEN not found in .env file")
-            
-            return hf_token
-        else:
-            raise Exception("No .env file found")
-    
-
-    def login_hf(self):
-        """
-        Login to the Hugging Face Hub
-        """
-        login(self.hf_token, add_to_git_credential=True)
-        print_info("Logged in to Hugging Face Hub")
-
-
     def set_tokenizer(self, add_eos_token:bool = False) -> AutoTokenizer:
         """
         Get the tokenizer from the model repo, can only chage the eos token argument
@@ -221,53 +267,6 @@ class LLM(ServiceBase):
         
         print_info("Tokenizer initialized")
         return tokenizer
-    
-
-    def _prepare_chat_template(self, messages:List[Dict[str, str]]):
-        """
-        This will apply a default chat template if the tokenizer does not support it.
-        If chat template is not supported and no default template is provided, will retun a value error
-        """
-        print()
-        if self.tokenizer.chat_template is None:
-            print_warning("Chat template not supported by the tokenizer, applying default template")
-            default_prompt_path = os.path.abspath(__file__).replace("llm_service.py", "../../config_files/default_chat_template.jinja")
-            with open(default_prompt_path, "r") as file:
-                default_prompt = file.read()
-                self.tokenizer.chat_template = default_prompt # always has generation prompt
-
-        return self.tokenizer.apply_chat_template(messages, 
-                                                tokenize=False, 
-                                                add_generation_prompt=True) # wont work for all models
-    
-
-    def _prepare_prompt(self, user_prompt:str) -> str:
-        """
-        Prepare the prompt for the model, self.tokenizer should be initialized
-        Args:
-            user_prompt (str): The user prompt to prepare
-        """
-        # apply chat template - https://huggingface.co/docs/transformers/main/en/chat_templating
-        # generation prompt - https://huggingface.co/docs/transformers/main/en/chat_templating
-        if self.tokenizer is None:
-            print_error("Tokenizer not initialized")
-            sys.exit(1)
-
-        messages = [
-            {
-                "role": "System",
-                "content": self.system_prompt,
-            },
-            {
-                "role": "User", 
-                "content": user_prompt},
-        ]
-
-        # Encoding separately to get the attention mask all in one go
-        prompt = self._prepare_chat_template(messages)
-
-        # return self.tokenizer(prompt, return_tensors="pt", padding=True)
-        return prompt # resturn string to use with pipeline
     
         
 
