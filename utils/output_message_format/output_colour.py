@@ -3,6 +3,7 @@
 # - print_info -- green
 # - print_warning --yellow
 # - print_error --red 
+# - print_model_output --blue
 # are used to print the output messages in differrnt colours.
 # refer to the Enums in the colour.py file to see the different colours available.
 # ---------------------------------------------------------------------------------------
@@ -24,4 +25,7 @@ def print_error(to_print:str):
     print(f"{Colour.RED.value}[ERROR]{Colour.RESET.value} {to_print}")
 
 def print_model_output(to_print:str, model_name:str):
-    print(f"{Colour.BLUE.value}[{model_name}]{Colour.RESET.value} {to_print}")
+    """
+    model_name: str, repo of the model # TODO: more specific
+    """
+    print(f"{Colour.BLUE.value}[{model_name.split('/')[0].upper()}]{Colour.RESET.value} {to_print}")

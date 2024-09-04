@@ -185,10 +185,6 @@ class LLM(ServiceBase):
         """
         Load the Hugging Face token from the .env file
         """
-        print(f"{os.path.abspath(__file__).replace('llm_service.py', '')}../..")
-        """
-        Load the Hugging Face token from the .env file
-        """
         # load hf token
         if load_dotenv(f"{os.path.abspath(__file__).replace('llm_service.py', '')}../../.env"):
             hf_token = os.getenv('HUGGING_FACE_TOKEN')
