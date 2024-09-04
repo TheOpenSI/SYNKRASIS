@@ -20,8 +20,8 @@ from huggingface_hub import login
 from typing import List, Dict
 
 # local imports
-from Services.base import ServiceBase
-from utils.output_message_format.output_colour import print_info, print_warning, print_error
+from Services.Base import ServiceBase
+from utils.output_message_format.output_colour import print_info, print_warning, print_error, print_success
 
 class LLM(ServiceBase):
 
@@ -149,7 +149,7 @@ class LLM(ServiceBase):
         """
         # if self.tokenizer.chat_template is None: # TODO: setting default chat template for all models
         print_warning("Chat template not supported by the tokenizer, applying default template")
-        default_prompt_path = os.path.abspath(__file__).replace("llm_service.py", "../../config_files/default_chat_template.jinja")
+        default_prompt_path = os.path.abspath(__file__).replace("LLM.py", "../../config_files/default_chat_template.jinja")
         with open(default_prompt_path, "r") as file:
             default_prompt = file.read()
             self.tokenizer.chat_template = default_prompt # always has generation prompt
@@ -193,7 +193,7 @@ class LLM(ServiceBase):
         Load the Hugging Face token from the .env file
         """
         # load hf token
-        if load_dotenv(f"{os.path.abspath(__file__).replace('llm_service.py', '')}../../.env"):
+        if load_dotenv(f"{os.path.abspath(__file__).replace('LLM.py', '')}../../.env"):
             hf_token = os.getenv('HUGGING_FACE_TOKEN')
             if not hf_token:
                 raise Exception("HUGGING_FACE_TOKEN not found in .env file")
@@ -268,7 +268,21 @@ class LLM(ServiceBase):
         print_info("Tokenizer initialized")
         return tokenizer
     
-        
+
+    def cleanup(self):
+        """
+        Clean up resources and release memory
+        """
+        print_info("Cleaning up LLM resources...")
+        if self.model is not None:
+            # self.model = self.model.to("cpu")
+            del self.model 
+            self.model = None
+        if self.tokenizer is not None:
+            del self.tokenizer
+            self.tokenizer = None
+        torch.cuda.empty_cache()
+        print_success("LLM resources cleaned up.") 
 
 # -------------------------------------------------------------------------------------------------------------
 

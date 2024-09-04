@@ -17,6 +17,10 @@ def print_info(to_print:str):
     print(f"{Colour.GREEN.value}[INFO]{Colour.RESET.value} {to_print}")
 
 
+def print_success(to_print:str):
+    print(f"{Colour.GREEN.value}[SUCCESS]{Colour.RESET.value} {to_print}")
+
+
 def print_warning(to_print:str):
     print(f"{Colour.YELLOW.value}[WARNING]{Colour.RESET.value} {to_print}")
 
