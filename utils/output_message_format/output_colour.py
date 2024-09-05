@@ -14,7 +14,7 @@ sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 from utils.output_message_format.colour import Colour
 
 def print_info(to_print:str):
-    print(f"{Colour.GREEN.value}[INFO]{Colour.RESET.value} {to_print}")
+    print(f"{Colour.CYAN.value}[INFO]{Colour.RESET.value} {to_print}")
 
 
 def print_warning(to_print:str):
