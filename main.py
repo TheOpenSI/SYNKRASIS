@@ -8,7 +8,8 @@ os.environ["TOKENIZERS_PARALLELISM"] = "false"
 from Services.LLM.LLM import LLM
 from Services.Embedding.Embedding import EmbeddingModel
 from Services.VectorDatabase.VectorDatabase import VectorDatabase
-from utils.output_message_format.output_colour import print_model_output, print_info
+from Services.RAG.RAG import RAG
+from utils.output_message_format.output_colour import print_model_output, print_info, print_error, print_success, print_warning
 
 # Default config file
 LLM_CONFIG_FILE = os.path.abspath(os.path.join(os.path.dirname(__file__), 'config_files/llm_config.yaml'))
@@ -21,14 +22,14 @@ def main():
     try:
   
         # llm = LLM(llm_config_file=LLM_CONFIG_FILE)
-        embedding_model = EmbeddingModel() # can reuse
-        vector_db = VectorDatabase(embedding_model = embedding_model, chunk_size=200)
-        
-        # llm_response = llm.generate_response("Write a python function that can multiply 2 matrices.")
-        # print_model_output(llm_response, llm.repo_name)
-
-        result = vector_db.query("Who is the author of the book Disqualified?")
-        print_info(f"[FETCHED] {result}")
+        llm = LLM()
+        print_model_output(llm.generate_response(user_prompt="Who is Albert Einstein?"), llm.repo_name)
+        # embedding_model = EmbeddingModel() # can reuse
+        # vector_db = VectorDatabase(embedding_model = embedding_model, chunk_size=200)
+        # # RAG
+        # rag_pipeline = RAG(vector_db=vector_db, llm=llm) # using default system prompt
+        # response = rag_pipeline.query("Who is Tardo?")
+        # print_info(response)
         
     finally:
       # warning resource_tracker: There appear to be .* leaked semaphore objects"
@@ -41,10 +42,6 @@ def main():
         if llm is not None:
             llm.cleanup()
             del llm
-
-        import gc
-        gc.collect()
-
 
 if __name__ == '__main__':
     main()

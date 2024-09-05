@@ -35,7 +35,8 @@ class LLM(ServiceBase):
                  top_p:float = 0.95, # will be ignored if do_sample is False
                  temperature:float = 0.7, # will be ignored if do_sample is False
                  llm_config_file:str = None, # config file to easily set parameters
-                 system_prompt:str = "You are a helpful assistant, always answer the question even if the provided context is not helpful",
+                 system_prompt:str = ("You are a helpful assistant.\n"
+                                      "- Always response in a single paragraph,\n"),
                  stop_strings:List[str] = ["\n\nUser:"], # stop strings to stop the generation, default is User: to supoort default chat template
                  ):
         """
@@ -159,11 +160,12 @@ class LLM(ServiceBase):
                                                 add_generation_prompt=True) # wont work for all models
     
 
-    def _prepare_prompt(self, user_prompt:str) -> str:
+    def _prepare_prompt(self, user_prompt:str, context:List[str] = None) -> str:
         """
         Prepare the prompt for the model, self.tokenizer should be initialized
         Args:
             user_prompt (str): The user prompt to prepare
+            context (str): The context to provide to the model, used in RAG service
         """
         # apply chat template - https://huggingface.co/docs/transformers/main/en/chat_templating
         # generation prompt - https://huggingface.co/docs/transformers/main/en/chat_templating
@@ -171,15 +173,13 @@ class LLM(ServiceBase):
             print_error("Tokenizer not initialized")
             sys.exit(1)
 
-        messages = [
-            {
-                "role": "System",
-                "content": self.system_prompt,
-            },
-            {
-                "role": "User", 
-                "content": user_prompt},
-        ]
+        if context is None:
+            messages = [{"role": "System","content": self.system_prompt,},
+                        {"role": "User", "content": user_prompt}]
+        else:
+            messages = [{"role": "System", "content": self.system_prompt},
+                        {"role": "Context", "content": " ".join(context)},
+                        {"role": "User", "content": user_prompt}]
 
         # Encoding separately to get the attention mask all in one go
         prompt = self._prepare_chat_template(messages)
@@ -229,7 +229,7 @@ class LLM(ServiceBase):
             self.system_prompt = prompt
 
 
-    def generate_response(self, user_prompt:str) -> str:
+    def generate_response(self, user_prompt:str, context:List[str] = None) -> str:
         """
         Generate a response to the user prompt
         Args:
@@ -239,7 +239,7 @@ class LLM(ServiceBase):
             print_error("Model or tokenizer not initialized")
             sys.exit(1) # exit the program with an error code
 
-        prompt = self._prepare_prompt(user_prompt)
+        prompt = self._prepare_prompt(user_prompt, context)
         
         # inference
         response = self.pipeline(prompt, 
