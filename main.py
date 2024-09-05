@@ -2,12 +2,8 @@ import os
 import sys
 import time
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+os.environ["TOKENIZERS_PARALLELISM"] = "false"
 
-import warnings
-warnings.filterwarnings("ignore", message="resource_tracker: There appear to be .* leaked semaphore objects", category=UserWarning)
-
-import faulthandler
-faulthandler.enable()
 
 from Services.LLM.LLM import LLM
 from Services.Embedding.Embedding import EmbeddingModel
@@ -24,24 +20,30 @@ def main():
     
     try:
   
-        llm = LLM(llm_config_file=LLM_CONFIG_FILE)
-      #   embedding_model = EmbeddingModel() # can reuse
-      #   vector_db = VectorDatabase(embedding_model = embedding_model, chunk_size=200)
+        # llm = LLM(llm_config_file=LLM_CONFIG_FILE)
+        embedding_model = EmbeddingModel() # can reuse
+        vector_db = VectorDatabase(embedding_model = embedding_model, chunk_size=200)
         
-        llm_response = llm.generate_response("Write a python function that can multiply 2 matrices.")
-        print_model_output(llm_response, llm.repo_name)
+        # llm_response = llm.generate_response("Write a python function that can multiply 2 matrices.")
+        # print_model_output(llm_response, llm.repo_name)
 
-      #   result = vector_db.query("Who is the author of the book Disqualified?")
-      #   print_info(f"[FETCHED] {result}")
+        result = vector_db.query("Who is the author of the book Disqualified?")
+        print_info(f"[FETCHED] {result}")
         
     finally:
-      # cleanup because of the warning resource_tracker: There appear to be .* leaked semaphore objects"
-      #   if vector_db:
-      #       vector_db.cleanup()
-      #   if embedding_model:
-      #       embedding_model.cleanup()
+      # warning resource_tracker: There appear to be .* leaked semaphore objects"
+        if vector_db:
+            vector_db.cleanup()
+            del vector_db
+        if embedding_model:
+            embedding_model.cleanup()
+            del embedding_model
         if llm is not None:
             llm.cleanup()
+            del llm
+
+        import gc
+        gc.collect()
 
 
 if __name__ == '__main__':

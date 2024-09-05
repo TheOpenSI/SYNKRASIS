@@ -106,6 +106,4 @@ class VectorDatabase(ServiceBase):
         if self.vector_store is not None:
             del self.vector_store
             self.vector_store = None
-        if self.embedding_model is not None:
-            self.embedding_model.cleanup()
         print_success("VectorDatabase resources cleaned up.")
