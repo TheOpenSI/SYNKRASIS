@@ -5,44 +5,23 @@ os.environ["TOKENIZERS_PARALLELISM"] = "false"
 from Services.LLM.LLM import LLM
 from Services.Embedding.Embedding import EmbeddingModel
 from Services.VectorDatabase.VectorDatabase import VectorDatabase
+from Services.Ollama.Ollama import Ollama
 from utils.output_message_format.output_colour import print_model_output, print_info
+from utils.resource.resource_mg_util import call_cleanup
 
 # Default config file
 LLM_CONFIG_FILE = os.path.abspath(os.path.join(os.path.dirname(__file__), 'config_files/llm_config.yaml'))
 
 def main():
-    llm: LLM = None
-    embedding_model: EmbeddingModel = None
-    vector_db: VectorDatabase = None
+    ollama_agent = Ollama()
     
     try:
-  
-        # llm = LLM(llm_config_file=LLM_CONFIG_FILE)
-        embedding_model = EmbeddingModel() # can reuse
-        vector_db = VectorDatabase(embedding_model = embedding_model, chunk_size=200)
-        
-        # llm_response = llm.generate_response("Write a python function that can multiply 2 matrices.")
-        # print_model_output(llm_response, llm.repo_name)
-
-        result = vector_db.query("Who is the author of the book Disqualified?")
-        print_info(f"[FETCHED] {result}")
+        print_model_output(ollama_agent.generate_response("Write a python function that can multiply 2 matrices."),
+                           ollama_agent.model)
         
     finally:
       # warning resource_tracker: There appear to be .* leaked semaphore objects"
-        if vector_db:
-            vector_db.cleanup()
-            del vector_db
-        if embedding_model:
-            embedding_model.cleanup()
-            del embedding_model
-        if llm is not None:
-            llm.cleanup()
-            del llm
-
-        import gc
-        gc.collect()
-
+        call_cleanup()
 
 if __name__ == '__main__':
-      llm = LLM(llm_config_file =  LLM_CONFIG_FILE)
-      print_model_output(llm.generate_response("Write a python function that can multiply 2 matrices."), llm.repo_name)
+    main()
