@@ -20,8 +20,8 @@ from huggingface_hub import login
 from typing import List, Dict
 
 # local imports
-from Services.base import ServiceBase
-from utils.output_message_format.output_colour import print_info, print_warning, print_error
+from Services.Base import ServiceBase
+from utils.output_message_format.output_colour import print_info, print_warning, print_error, print_success
 
 class LLM(ServiceBase):
 
@@ -268,7 +268,21 @@ class LLM(ServiceBase):
         print_info("Tokenizer initialized")
         return tokenizer
     
-        
+
+    def cleanup(self):
+        """
+        Clean up resources and release memory
+        """
+        print_info("Cleaning up LLM resources...")
+        if self.model is not None:
+            # self.model = self.model.to("cpu") # won't work for quantized models
+            del self.model 
+            self.model = None
+        if self.tokenizer is not None:
+            del self.tokenizer
+            self.tokenizer = None
+        torch.cuda.empty_cache()
+        print_success("LLM resources cleaned up.") 
 
 # -------------------------------------------------------------------------------------------------------------
 
