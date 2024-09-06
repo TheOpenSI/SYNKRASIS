@@ -9,7 +9,7 @@ from utils.output_message_format.output_colour import print_info, print_warning
 
 class ChatHistory:
     def __init__(self, original_question: str, max_history: int = 3):
-        if not isinstance(original_question, str) or not original_question.strip():
+        if not isinstance(original_question, str) or "" == original_question.strip():
             raise ValueError("Original question must be a non-empty string")
         if not isinstance(max_history, int) or max_history < 1:
             raise ValueError("max_history must be a positive integer")
@@ -20,7 +20,8 @@ class ChatHistory:
 
     @property
     def original_question(self) -> Optional[str]:
-        if self._original_question is None:
+        # This just returns the original question
+        if self._original_question is None or "" == self._original_question.strip():
             print_warning("Original question has not been set")
         return self._original_question
 
@@ -39,9 +40,9 @@ class ChatHistory:
         return self._original_question
 
     def add_interaction(self, question: str, answer: str) -> None:
-        if not isinstance(question, str) or not question.strip():
+        if not isinstance(question, str) or "" == question.strip():
             raise ValueError("Question must be a non-empty string")
-        if not isinstance(answer, str) or not answer.strip():
+        if not isinstance(answer, str) or "" == answer.strip():
             raise ValueError("Answer must be a non-empty string")
 
         self._conversation_history.append((question, answer))
