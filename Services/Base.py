@@ -5,7 +5,7 @@ from abc import ABC, abstractmethod
 
 from utils.output_message_format.output_colour import print_info
 
-class ServiceBase:
+class ServiceBase(ABC):
     """
     Base class for all services
     """

@@ -74,3 +74,10 @@ class Ollama(ServiceBase):
         """
         self.system_prompt = prompt
         self.chat_history = None  # reset chat history when system prompt changes
+        
+        
+    def cleanup(self):
+        """
+        Nothing to cleanup for Ollama
+        """
+        pass
