@@ -1,4 +1,4 @@
-import os, sys
+import os, sys, readline
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 os.environ["TOKENIZERS_PARALLELISM"] = "false"
 
@@ -16,8 +16,13 @@ def main():
     ollama_agent = Ollama()
     
     try:
-        print_model_output(ollama_agent.generate_response("Write a python function that can multiply 2 matrices."),
-                           ollama_agent.model)
+      while True:
+        user_input = input("[INPUT] Enter a question: ")
+        
+        if user_input == "exit":
+            break
+          
+        print_model_output(ollama_agent.generate_response(user_input), ollama_agent.model)
         
     finally:
       # warning resource_tracker: There appear to be .* leaked semaphore objects"
