@@ -19,6 +19,6 @@ class ServiceBase(ABC):
     @abstractmethod
     def cleanup(self):
         """
-        Cleanup the service
+        Cleanup the service, every child class will have to implement this method
         """
         pass

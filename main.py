@@ -13,7 +13,7 @@ from utils.resource.resource_mg_util import call_cleanup
 LLM_CONFIG_FILE = os.path.abspath(os.path.join(os.path.dirname(__file__), 'config_files/llm_config.yaml'))
 
 def main():
-    ollama_agent = Ollama()
+    ollama_agent = Ollama(enable_chat_history=True)
     
     try:
       while True:
