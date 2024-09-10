@@ -1,3 +1,6 @@
+# see https://python.langchain.com/v0.1/docs/modules/data_connection/document_transformers/recursive_text_splitter/
+# see https://github.com/FullStackRetrieval-com/RetrievalTutorials/blob/main/tutorials/LevelsOfTextSplitting/5_Levels_Of_Text_Splitting.ipynb
+
 import os, sys
 sys.path.append(f"{os.path.dirname(os.path.abspath(__file__))}/../..")
 
@@ -17,10 +20,9 @@ class VectorDatabase(ServiceBase):
                  embedding_model: EmbeddingModel, # can set this to default but then for every DB service it will crete a new model 
                  chunk_size: int = 1000, 
                  chunk_overlap: int = 100,
-                 MARKDOWN_SEPARATORS: List[str] = ["\n\n", "\n", ""] # hierarchy of the splitter strings, 
-                 # see https://python.langchain.com/v0.1/docs/modules/data_connection/document_transformers/recursive_text_splitter/
-                 # see https://github.com/FullStackRetrieval-com/RetrievalTutorials/blob/main/tutorials/LevelsOfTextSplitting/5_Levels_Of_Text_Splitting.ipynb
-                 ):
+                 markdown_separators: List[str] = ["\n\n", "\n", ""], # hierarchy of the splitter strings
+                 file_path: str = os.path.join(os.path.dirname(__file__), "documents/disqualified.txt") # for testing
+                ):
         """
         Initialize the Vector Database
         Args:
@@ -33,8 +35,8 @@ class VectorDatabase(ServiceBase):
         self.chunk_size = chunk_size
         self.chunk_overlap = chunk_overlap
         self.vector_store = None # Will be FAISS object
-        self.doc_path:str = os.path.join(os.path.dirname(__file__), "documents/disqualified.txt") # for testing
-        self.MARKDOWN_SEPARATORS: List[str] = MARKDOWN_SEPARATORS
+        self.doc_path = file_path
+        self.markdown_separators = markdown_separators
         self.text_splitter: RecursiveCharacterTextSplitter = self._initialize_text_splitter()
 
         # Loading and preparing the documents, ready to be queried
@@ -45,7 +47,7 @@ class VectorDatabase(ServiceBase):
         return RecursiveCharacterTextSplitter(
             chunk_size=self.chunk_size,
             chunk_overlap=self.chunk_overlap,
-            separators=self.MARKDOWN_SEPARATORS
+            separators=self.markdown_separators
         )
 
 
@@ -54,7 +56,7 @@ class VectorDatabase(ServiceBase):
         Currently supports .pdf, .txt, and .csv files
         """
         file_extension = os.path.splitext(file_path)[1].lower()
-        
+    
         if file_extension == ".pdf":
             loader = PyPDFLoader(file_path)
         elif file_extension == ".txt":
@@ -63,7 +65,7 @@ class VectorDatabase(ServiceBase):
             loader = CSVLoader(file_path)
         else:
             raise ValueError(f"Unsupported file format: {file_extension}")
-        
+    
         docs = loader.load()
         return self.text_splitter.split_documents(docs)
 
