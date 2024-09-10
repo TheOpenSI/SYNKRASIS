@@ -149,7 +149,7 @@ class LLM(ServiceBase):
         """
         # if self.tokenizer.chat_template is None: # TODO: setting default chat template for all models
         print_warning("Chat template not supported by the tokenizer, applying default template")
-        default_prompt_path = os.path.abspath(__file__).replace("llm_service.py", "../../config_files/default_chat_template.jinja")
+        default_prompt_path = os.path.abspath(__file__).replace("LLM.py", "../../config_files/default_chat_template.jinja")
         with open(default_prompt_path, "r") as file:
             default_prompt = file.read()
             self.tokenizer.chat_template = default_prompt # always has generation prompt
@@ -159,11 +159,13 @@ class LLM(ServiceBase):
                                                 add_generation_prompt=True) # wont work for all models
     
 
-    def _prepare_prompt(self, user_prompt:str) -> str:
+    def _prepare_prompt(self, user_prompt:str, context:List[str] = None) -> str:
+
         """
         Prepare the prompt for the model, self.tokenizer should be initialized
         Args:
             user_prompt (str): The user prompt to prepare
+            context (str): The context to provide to the model, used in RAG service
         """
         # apply chat template - https://huggingface.co/docs/transformers/main/en/chat_templating
         # generation prompt - https://huggingface.co/docs/transformers/main/en/chat_templating
@@ -171,15 +173,14 @@ class LLM(ServiceBase):
             print_error("Tokenizer not initialized")
             sys.exit(1)
 
-        messages = [
-            {
-                "role": "System",
-                "content": self.system_prompt,
-            },
-            {
-                "role": "User", 
-                "content": user_prompt},
-        ]
+        if context is None:
+            messages = [{"role": "System","content": self.system_prompt,},
+                        {"role": "User", "content": user_prompt}]
+        else:
+            messages = [{"role": "System", "content": self.system_prompt},
+                        {"role": "Context", "content": " ".join(context)},
+                        {"role": "User", "content": user_prompt}]
+
 
         # Encoding separately to get the attention mask all in one go
         prompt = self._prepare_chat_template(messages)
@@ -193,7 +194,7 @@ class LLM(ServiceBase):
         Load the Hugging Face token from the .env file
         """
         # load hf token
-        if load_dotenv(f"{os.path.abspath(__file__).replace('llm_service.py', '')}../../.env"):
+        if load_dotenv(f"{os.path.abspath(__file__).replace('LLM.py', '')}../../.env"):
             hf_token = os.getenv('HUGGING_FACE_TOKEN')
             if not hf_token:
                 raise Exception("HUGGING_FACE_TOKEN not found in .env file")
@@ -229,7 +230,7 @@ class LLM(ServiceBase):
             self.system_prompt = prompt
 
 
-    def generate_response(self, user_prompt:str) -> str:
+    def generate_response(self, user_prompt:str, context:List[str] = None) -> str:
         """
         Generate a response to the user prompt
         Args:
@@ -239,7 +240,7 @@ class LLM(ServiceBase):
             print_error("Model or tokenizer not initialized")
             sys.exit(1) # exit the program with an error code
 
-        prompt = self._prepare_prompt(user_prompt)
+        prompt = self._prepare_prompt(user_prompt, context)
         
         # inference
         response = self.pipeline(prompt, 
@@ -273,7 +274,6 @@ class LLM(ServiceBase):
         """
         Clean up resources and release memory
         """
-        print_info("Cleaning up LLM resources...")
         if self.model is not None:
             # self.model = self.model.to("cpu") # won't work for quantized models
             del self.model 
@@ -282,7 +282,8 @@ class LLM(ServiceBase):
             del self.tokenizer
             self.tokenizer = None
         torch.cuda.empty_cache()
-        print_success("LLM resources cleaned up.") 
+        print_success("LLM resources cleaned up.**") 
+
 
 # -------------------------------------------------------------------------------------------------------------
 
