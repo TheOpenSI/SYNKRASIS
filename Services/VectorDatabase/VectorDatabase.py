@@ -48,7 +48,6 @@ class VectorDatabase(ServiceBase):
             chunk_size=self.chunk_size,
             chunk_overlap=self.chunk_overlap,
             separators=self.markdown_separators
-        )
 
 
     def _load_documents(self, file_path: str) -> List:
@@ -56,7 +55,6 @@ class VectorDatabase(ServiceBase):
         Currently supports .pdf, .txt, and .csv files
         """
         file_extension = os.path.splitext(file_path)[1].lower()
-    
         if file_extension == ".pdf":
             loader = PyPDFLoader(file_path)
         elif file_extension == ".txt":
@@ -65,7 +63,7 @@ class VectorDatabase(ServiceBase):
             loader = CSVLoader(file_path)
         else:
             raise ValueError(f"Unsupported file format: {file_extension}")
-    
+            
         docs = loader.load()
         return self.text_splitter.split_documents(docs)
 

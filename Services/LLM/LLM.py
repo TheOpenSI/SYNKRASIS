@@ -35,8 +35,7 @@ class LLM(ServiceBase):
                  top_p:float = 0.95, # will be ignored if do_sample is False
                  temperature:float = 0.7, # will be ignored if do_sample is False
                  llm_config_file:str = None, # config file to easily set parameters
-                 system_prompt:str = ("You are a helpful assistant.\n"
-                                      "- Always response in a single paragraph,\n"),
+                 system_prompt:str = "You are a helpful assistant, always answer the question even if the provided context is not helpful",
                  stop_strings:List[str] = ["\n\nUser:"], # stop strings to stop the generation, default is User: to supoort default chat template
                  ):
         """
@@ -161,6 +160,7 @@ class LLM(ServiceBase):
     
 
     def _prepare_prompt(self, user_prompt:str, context:List[str] = None) -> str:
+
         """
         Prepare the prompt for the model, self.tokenizer should be initialized
         Args:
@@ -180,6 +180,7 @@ class LLM(ServiceBase):
             messages = [{"role": "System", "content": self.system_prompt},
                         {"role": "Context", "content": " ".join(context)},
                         {"role": "User", "content": user_prompt}]
+
 
         # Encoding separately to get the attention mask all in one go
         prompt = self._prepare_chat_template(messages)
@@ -282,6 +283,7 @@ class LLM(ServiceBase):
             self.tokenizer = None
         torch.cuda.empty_cache()
         print_success("LLM resources cleaned up.**") 
+
 
 # -------------------------------------------------------------------------------------------------------------
 
