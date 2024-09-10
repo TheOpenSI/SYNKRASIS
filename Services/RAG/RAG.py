@@ -7,10 +7,7 @@ from Services.LLM.LLM import LLM
 
 
 class RAG(ServiceBase):
-    def __init__(self, 
-                 vector_db: VectorDatabase, # will have an embedding model
-                 llm: LLM
-                 ):
+    def __init__(self, vector_db: VectorDatabase, llm: LLM):
         """
         Initialize the RAG service, Requires LLM and VectorDatabase to be initialized
         Args:
@@ -19,8 +16,8 @@ class RAG(ServiceBase):
             llm (LLM): The LLM model to use
         """
         super().__init__()
-        self.vector_db = vector_db
-        self.llm = llm
+        self.vector_db = vector_db # vector db has the embedding model
+        self.llm = llm 
 
         self.system_prompt = self.set_system_prompt()
         # Changing the system prompt for RAG
