@@ -90,7 +90,7 @@ class VectorDatabase(ServiceBase):
         self._initialize_vector_store(documents)
 
 
-    def query(self, query: str, top_k: int = 1) -> List[str]:
+    def query(self, query: str, top_k: int = 3) -> List[str]:
         query_vector = self.embedding_model.embed_query(query)
         results = self.vector_store.similarity_search_by_vector(query_vector, top_k=top_k)
         return [result.page_content for result in results]
@@ -100,7 +100,11 @@ class VectorDatabase(ServiceBase):
         """
         Clean up resources and release memory
         """
-        print_info("Cleaning up VectorDatabase resources...")
+        if self.embedding_model is not None:
+            self.embedding_model.cleanup()
+            del self.embedding_model
+            self.embedding_model = None
+            
         if self.vector_store is not None:
             del self.vector_store
             self.vector_store = None

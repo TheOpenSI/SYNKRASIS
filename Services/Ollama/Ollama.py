@@ -6,7 +6,7 @@ from typing import Optional, Dict, List
 from jinja2 import Template
 
 from Services.Base import ServiceBase
-from utils.output_message_format.output_colour import print_error, print_info
+from utils.output_message_format.output_colour import print_error, print_info, print_success
 from modules.ChatHistory import ChatHistory
 
 class Ollama(ServiceBase):
@@ -55,33 +55,65 @@ class Ollama(ServiceBase):
         rendered_prompt = template.render(messages = filtered_messages, bos_token = bos_token)
 
         return rendered_prompt
+    
+    
+    def _prepare_conversation_history(self, user_query: str) -> str:
+        """
+        Prepare conversation histoy context from chat history if enable_chat_history is activated.
+
+        Args:
+            user_query (str): user query
+
+        Returns:
+            str: conversation history context
+        """
+        conversation_history = ""
+        if self.enable_chat_history:
+            if self.chat_history is None:
+                self._init_chat_history(user_query) # user_query is the original question and max_history is 3 by default
+
+            # Prepare the conversation history context from chat history
+            conversation_history = "\n" + "\n".join([(f"\tPrevious Qestion {index + 1}: {q}\n"
+                                        f"\tPrevious Answer {index + 1}: {a}\n") 
+                                        for index, (q, a) in enumerate(self.chat_history.conversation_history)])
+        
+        return conversation_history
+    
+    
+    def _prepare_context(self, context: List[str]) -> str:
+        """
+        Prepare context for the prompt
+        Args:
+            context (List[str]): List of context strings
+        """
+        context_str = ""
+        if context:
+            context_str = "\n".join([f"\t{ctx}" for ctx in context])
+        
+        return context_str
 
 
-    def generate_response(self, user_query: str, context:str = "") -> Optional[str]:
+    def generate_response(self, user_query: str, context:List[str] = None) -> Optional[str]:
         """
         Generate a response from the user query using the model, including chat history.
         Args:
             user_query (str): The user query
         """
+        # Conversation history
+        conversation_history = self._prepare_conversation_history(user_query)
+        
+        # Context
+        context = self._prepare_context(context)
+                
+        # Generate the prompt from message list 
+        # Keep the sequece of messages as follows: System, Context, Conversation, User
+        messages = [{"role": "System", "content": self.system_prompt},
+                    {"role": "Context", "content": context},
+                    {"role": "Conversation", "content": conversation_history},
+                    {"role": "User", "content": user_query}]
+        full_query = self._generate_prompt(messages) # bos_token is empty by default, applies default template
+        
         try:
-            conversation_history = "" # no conversation history by default
-            if self.enable_chat_history:
-                if self.chat_history is None:
-                    self._init_chat_history(user_query) # user_query is the original question and max_history is 3 by default
-
-                    # Prepare the context from chat history
-                conversation_history = "\n" + "\n".join([(f"\tPrevious Qestion {index + 1}: {q}\n"
-                                            f"\tPrevious Answer {index + 1}: {a}\n") 
-                                            for index, (q, a) in enumerate(self.chat_history.conversation_history)])
-            
-            # Prepare the messages to generate the prompt
-            # Keep the sequece of messages as follows: System, Context, Conversation, User
-            messages = [{"role": "System", "content": self.system_prompt},
-                        {"role": "Context", "content": context},
-                        {"role": "Conversation", "content": conversation_history},
-                        {"role": "User", "content": user_query}]
-            full_query = self._generate_prompt(messages) # bos_token is empty by default
-
             # Generate response from the model
             response = ollama.generate(model = self.model, prompt = full_query)
 
@@ -94,7 +126,7 @@ class Ollama(ServiceBase):
         except ollama.ResponseError as e:
             print_error(e.error)
             if e.status_code == 404:
-                print_info("Attempting to pull the model")
+                print_info("Attempting to pull the model, please restart the service once pull is complete.")
                 self._pull_model()
 
 
@@ -113,4 +145,4 @@ class Ollama(ServiceBase):
         """
         Nothing to cleanup for Ollama
         """
-        pass
+        print_success("Ollama resources cleaned up.")

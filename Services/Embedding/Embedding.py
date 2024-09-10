@@ -41,7 +41,6 @@ class EmbeddingModel(ServiceBase):
         """
         Clean up resources and release memory
         """
-        print_info("Cleaning up EmbeddingModel resources...")
         if self.model is not None:
             del self.model
             self.model = None
