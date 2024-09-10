@@ -45,9 +45,7 @@ class VectorDatabase(ServiceBase):
         return RecursiveCharacterTextSplitter(
             chunk_size=self.chunk_size,
             chunk_overlap=self.chunk_overlap,
-            add_start_index=True,
-            strip_whitespace=True,
-            separators=self.MARKDOWN_SEPARATORS,
+            separators=self.MARKDOWN_SEPARATORS
         )
 
 

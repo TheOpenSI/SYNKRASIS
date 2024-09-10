@@ -20,17 +20,9 @@ def main():
     vector_db: VectorDatabase = None
     
     try:
-  
-        # llm = LLM(llm_config_file=LLM_CONFIG_FILE)
-        llm = LLM()
-        print_model_output(llm.generate_response(user_prompt="Who is Albert Einstein?"), llm.repo_name)
-        # embedding_model = EmbeddingModel() # can reuse
-        # vector_db = VectorDatabase(embedding_model = embedding_model, chunk_size=200)
-        # # RAG
-        # rag_pipeline = RAG(vector_db=vector_db, llm=llm) # using default system prompt
-        # response = rag_pipeline.query("Who is Tardo?")
-        # print_info(response)
-        
+        embedding_model = EmbeddingModel() # can reuse
+        vector_db = VectorDatabase(embedding_model = embedding_model, chunk_size=200)
+
     finally:
       # warning resource_tracker: There appear to be .* leaked semaphore objects"
         if vector_db:
