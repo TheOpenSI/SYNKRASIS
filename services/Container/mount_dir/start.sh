@@ -1,13 +1,16 @@
-#!/bin/sh
+#!/bin/bash
 
-# requirements
-if [-f /usr/src/app/requirements.txt]; then
+# List files in the /usr/src/app directory
+# ls /usr/src/app
+
+# Check for requirements.txt
+if [ -f /usr/src/app/requirements.txt ]; then
     echo "[PIP] Installing requirements"
     pip3 install -r /usr/src/app/requirements.txt
 fi
 
-# main
-if [-f /usr/src/app/main.py]; then
+# Check for main.py
+if [ -f /usr/src/app/main.py ]; then
     echo "[PYTHON] Running main.py"
     python3 /usr/src/app/main.py
 else

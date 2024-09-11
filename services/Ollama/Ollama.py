@@ -91,16 +91,29 @@ class Ollama(ServiceBase):
             context_str = "\n".join([f"\t{ctx}" for ctx in context])
         
         return context_str
+    
+    
+    def clear_chat_history(self):
+        """
+        Clear the chat history, happens automatically when system prompt changes.
+        """
+        if self.enable_chat_history:
+            self.chat_history = None
+            print_success("Chat history cleared.")
+        else:
+            print_error("Chat history is not enabled.")
 
 
-    def generate_response(self, user_query: str, context:List[str] = None) -> Optional[str]:
+    def generate_response(self, user_query: str, 
+                          context:List[str] = None, 
+                          suppress_conversation_history:bool = True) -> Optional[str]:
         """
         Generate a response from the user query using the model, including chat history.
         Args:
             user_query (str): The user query
         """
         # Conversation history
-        conversation_history = self._prepare_conversation_history(user_query)
+        conversation_history = "" if suppress_conversation_history else self._prepare_conversation_history(user_query)
         
         # Context
         context = self._prepare_context(context)

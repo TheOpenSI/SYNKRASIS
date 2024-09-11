@@ -4,12 +4,14 @@ import time
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 os.environ["TOKENIZERS_PARALLELISM"] = "false"
 
-
+from services.Base import ServiceBase
 from services.LLM.LLM import LLM
 from services.Embedding.Embedding import EmbeddingModel
 from services.VectorDatabase.VectorDatabase import VectorDatabase
 from services.RAG.RAG import RAG
 from services.Ollama.Ollama import Ollama
+from services.Container.Container import Container
+from services.PyCapsule.PyCapsule import PyCapsule
 from utils.output_message_format.output_colour import print_model_output, print_info, print_error, print_success, print_warning
 from utils.resource.resource_mg_util import call_cleanup
 
@@ -23,19 +25,19 @@ def main():
     vector_db: VectorDatabase = None
     ollama: Ollama = None
     rag: RAG = None
-    
+    container: Container = None
+    pycapsule: PyCapsule = None
+
     try:
-        embedding_model = EmbeddingModel()
-        vector_db = VectorDatabase(embedding_model = embedding_model, chunk_size=200)
-        ollama = Ollama()
-        rag = RAG(vector_db = vector_db, llm = ollama)
+        ollama = Ollama(enable_chat_history=True) # default: mistral, enable_chat_history=False
+        container = Container() # default: synkrasis, synkrasis_alpha
+        pycapsule = PyCapsule(container, ollama)
         
-        rag_response = rag.query("Who is the author of Disqualified?")
-        print_model_output(rag_response, ollama.model)
+        pycapsule.validate_code("Write a python to compute the multiplication of two matrices")
 
     finally:
       # warning resource_tracker: There appear to be .* leaked semaphore objects"
-      call_cleanup([llm, embedding_model, vector_db, ollama, rag])
+      call_cleanup([llm, embedding_model, vector_db, ollama, rag, container, pycapsule])
 
 if __name__ == '__main__':
     main()

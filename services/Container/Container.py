@@ -1,3 +1,6 @@
+# For the time being, the container will run the main.py file in the mount_dir when started.
+# Will release a more general version soon to bypass the current entrypoint.
+
 import os, sys
 sys.path.append(f"{os.path.dirname(os.path.abspath(__file__))}/../..")
 
@@ -16,6 +19,7 @@ class Container(ServiceBase):
             IMAGE_NAME (str, optional): Default image name. Defaults to "synkrasis".
             container_name (str, optional): Default container name. Defaults to "synkrasis_alpha".
         """
+        super().__init__()
         self.IMAGE_NAME = IMAGE_NAME
         self.CONTAINER_NAME = container_name
         self.MOUNT_DIR_PATH = os.path.abspath(__file__).replace("Container.py", "mount_dir")
@@ -30,11 +34,11 @@ class Container(ServiceBase):
         if images.stdout.strip() == "":
             print_warning("Image does not exist")
             print_info("Building image...")
-            docker_file_path = os.path.abspath(__file__).replace("Container.py", "Dockerfile")
+            docker_file_path = os.path.abspath(__file__).replace("Container.py", "")
             subprocess.run(f"docker build -t {self.IMAGE_NAME} {docker_file_path}", shell=True)
             print_success("Image built")
         else:
-            print_info("Image found")
+            print_success("Image found")
     
 
     def _check_if_container_exists(self) -> bool:
@@ -43,7 +47,7 @@ class Container(ServiceBase):
         Returns:
             bool: True if container exists, False otherwise
         """
-        containers = subprocess.run(f"docker ps -a | grep {self.container_name}", shell=True, capture_output=True, text=True)
+        containers = subprocess.run(f"docker ps -a | grep {self.CONTAINER_NAME}", shell=True, capture_output=True, text=True)
         if containers.stdout.strip() == "":
              print_warning("Container does not exist")
         else:
@@ -57,7 +61,7 @@ class Container(ServiceBase):
             print_success("Container created")
             # Debug
             # response = subprocess.run(("docker run -it "
-            #                            f"--name {self.container_name} "
+            #                            f"--name {self.CONTAINER_NAME} "
             #                            f"--entrypoint /bin/bash "
             #                            f"-v {self.MOUNT_DIR_PATH}:/usr/src/app "
             #                            f"{self.IMAGE_NAME}"),
@@ -65,7 +69,7 @@ class Container(ServiceBase):
             
             # Create the container
             response = subprocess.run((f"docker run "
-                                       f"--name {self.container_name} "
+                                       f"--name {self.CONTAINER_NAME} "
                                        f"-v {self.MOUNT_DIR_PATH}:/usr/src/app "
                                        f"{self.IMAGE_NAME}"), 
                                       shell=True, capture_output=True, text=True)
@@ -76,7 +80,7 @@ class Container(ServiceBase):
     def start_container(self): # TODO: add return type
         if self._check_if_container_exists():
             print_info("Starting container...")
-            response = subprocess.run(f"docker start -i {self.container_name}", shell=True, capture_output=True, text=True)
+            response = subprocess.run(f"docker start -i {self.CONTAINER_NAME}", shell=True, capture_output=True, text=True)
         else:
             response = self._create_container()
         
@@ -97,5 +101,3 @@ class Container(ServiceBase):
             subprocess.run(f"docker stop {self.CONTAINER_NAME}", shell=True, capture_output=True, text=True)
             
         print_success("Container resources cleaned up.")
-        
-       
