@@ -4,10 +4,10 @@ from typing import Union, Optional
 
 sys.path.append(f"{os.path.dirname(os.path.abspath(__file__))}/../..")
 
-from Services.Base import ServiceBase
-from Services.VectorDatabase.VectorDatabase import VectorDatabase
-from Services.LLM.LLM import LLM
-from Services.Ollama.Ollama import Ollama
+from services.Base import ServiceBase
+from services.VectorDatabase.VectorDatabase import VectorDatabase
+from services.LLM.LLM import LLM
+from services.Ollama.Ollama import Ollama
 from utils.output_message_format.output_colour import print_error, print_info, print_success
 
 class RAG(ServiceBase):

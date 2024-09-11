@@ -20,7 +20,7 @@ from huggingface_hub import login
 from typing import List, Dict
 
 # local imports
-from Services.Base import ServiceBase
+from services.Base import ServiceBase
 from utils.output_message_format.output_colour import print_info, print_warning, print_error, print_success
 
 class LLM(ServiceBase):

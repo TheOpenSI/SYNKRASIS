@@ -9,7 +9,7 @@ from langchain_huggingface import HuggingFaceEmbeddings
 from typing import List
 
 from utils.output_message_format.output_colour import print_info, print_success
-from Services.Base import ServiceBase
+from services.Base import ServiceBase
 
 
 class EmbeddingModel(ServiceBase):

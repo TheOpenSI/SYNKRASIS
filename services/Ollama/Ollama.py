@@ -5,7 +5,7 @@ import ollama
 from typing import Optional, Dict, List
 from jinja2 import Template
 
-from Services.Base import ServiceBase
+from services.Base import ServiceBase
 from utils.output_message_format.output_colour import print_error, print_info, print_success
 from modules.ChatHistory import ChatHistory
 

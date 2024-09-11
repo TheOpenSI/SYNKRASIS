@@ -11,8 +11,8 @@ from langchain_community.vectorstores import FAISS
 from langchain_community.vectorstores.utils import DistanceStrategy
 from tqdm.auto import tqdm
 
-from Services.Embedding.Embedding import EmbeddingModel
-from Services.Base import ServiceBase
+from services.Embedding.Embedding import EmbeddingModel
+from services.Base import ServiceBase
 from utils.output_message_format.output_colour import print_info, print_success
 
 class VectorDatabase(ServiceBase):
@@ -48,6 +48,7 @@ class VectorDatabase(ServiceBase):
             chunk_size=self.chunk_size,
             chunk_overlap=self.chunk_overlap,
             separators=self.markdown_separators
+        )
 
 
     def _load_documents(self, file_path: str) -> List:
