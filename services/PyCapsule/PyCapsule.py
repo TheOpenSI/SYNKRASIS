@@ -98,26 +98,31 @@ class PyCapsule(ServiceBase):
             attempt_count += 1
         self._change_system_prompt() # Resetting the system prompt
         
+    
+    def _debug_insert_error():
+        """
+        For TESTING only.
+        Inserts syntax error in the generated code.
+        """
+        mount_dir = os.path.abspath(__file__).replace("PyCapsule.py", "../Container/mount_dir")
+        with open(os.path.join(mount_dir, "main.py"), "r") as file:
+            data = file.readlines()
+        file.close()
+        new_data = []
+        for v in data:
+            if v.find("def ") > -1:
+                # v = v + "\t'my_str'.append(a)\n"
+                v = v.replace("(", "((")
+            new_data.append(v)
+        # write
+        with open(os.path.join(mount_dir, "main.py"), "w") as file:
+            file.writelines(new_data)
+        file.close()
+        
     def __call__(self, user_query: str):
         # This will generate response from LLM and parse the response to get the code
         self.llm._set_seed()
         self._generate_code(user_query)
-        # # TODO : for testing only
-        # mount_dir = os.path.abspath(__file__).replace("PyCapsule.py", "../Container/mount_dir")
-        # with open(os.path.join(mount_dir, "main.py"), "r") as file:
-        #     data = file.readlines()
-        # file.close()
-        # new_data = []
-        # for v in data:
-        #     if v.find("def ") > -1:
-        #         # v = v + "\t'my_str'.append(a)\n"
-        #         v = v.replace("(", "((")
-        #     new_data.append(v)
-        # print(data)
-        # # write
-        # with open(os.path.join(mount_dir, "main.py"), "w") as file:
-        #     file.writelines(new_data)
-        # file.close()
         
         # Start the container
         response: CompletedProcess = self.container.start_container()
