@@ -39,8 +39,12 @@ def print_model_output(to_print:str, model_name:str):
     """
     model_name: str, repo of the model # TODO: more specific
     """
-    print(f"{Colour.BLUE.value}[{model_name.split('/')[0].upper()}]{Colour.RESET.value} {to_print}")
+    print(f"{Colour.RED.value}[{model_name.split('/')[0].upper()}]{Colour.RESET.value} {to_print}")
 
 
 def print_service(to_print:str):
     print(f"{Colour.MAGENTA.value}[SERVICE]{Colour.RESET.value} {to_print}")
+    
+    
+def print_pycapsule(to_print:str, option:str = "response"):
+    print(f"{Colour.BRIGHT_RED.value}[PYCAPSULE {option.upper()}]{Colour.RESET.value} {to_print}")
