@@ -1,7 +1,10 @@
+# To add conversation history, set enable_chat_history=True in the Ollama object.
+# In self.generate_response(), change suppress_conversation_history to False to include conversation history.
+
 import os, sys
 sys.path.append(f"{os.path.dirname(os.path.abspath(__file__))}/../..")
 
-import ollama
+import ollama, torch
 from typing import Optional, Dict, List
 from jinja2 import Template
 
@@ -18,6 +21,10 @@ class Ollama(ServiceBase):
         self.system_prompt = "Always answer the question to the best of your ability even if the context is not useful."
         self.enable_chat_history = enable_chat_history
         self.chat_history: ChatHistory = None
+        
+    def _set_seed(self):
+        torch.manual_seed(42)
+        torch.cuda.manual_seed_all(42)
 
 
     def _pull_model(self):
@@ -73,7 +80,8 @@ class Ollama(ServiceBase):
                 self._init_chat_history(user_query) # user_query is the original question and max_history is 3 by default
 
             # Prepare the conversation history context from chat history
-            conversation_history = "\n" + "\n".join([(f"\tPrevious Qestion {index + 1}: {q}\n"
+            conversation_history = "\n" + "Original Question: " + self.chat_history.original_question + "\n"
+            conversation_history += "\n".join([(f"\tPrevious Qestion {index + 1}: {q}\n"
                                         f"\tPrevious Answer {index + 1}: {a}\n") 
                                         for index, (q, a) in enumerate(self.chat_history.conversation_history)])
         
@@ -113,6 +121,10 @@ class Ollama(ServiceBase):
             user_query (str): The user query
         """
         # Conversation history
+        if self.enable_chat_history:
+            if self.chat_history == None:
+                self._init_chat_history(user_query)
+
         conversation_history = "" if suppress_conversation_history else self._prepare_conversation_history(user_query)
         
         # Context
@@ -150,8 +162,8 @@ class Ollama(ServiceBase):
             prompt (str): The system prompt
         """
         self.system_prompt = prompt
-        if self.enable_chat_history:
-            self.chat_history = None  # reset chat history when system prompt changes
+        # if self.enable_chat_history:
+        #     self.chat_history = None  # reset chat history when system prompt changes
         
         
     def cleanup(self):

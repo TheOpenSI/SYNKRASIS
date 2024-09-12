@@ -33,7 +33,7 @@ def main():
         container = Container() # default: synkrasis, synkrasis_alpha
         pycapsule = PyCapsule(container, ollama)
         
-        pycapsule.validate_code("Write a python to compute the multiplication of two matrices")
+        pycapsule("Write a python function to compute the multiplication of two matrices")
 
     finally:
       # warning resource_tracker: There appear to be .* leaked semaphore objects"

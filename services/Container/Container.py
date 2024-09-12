@@ -56,7 +56,7 @@ class Container(ServiceBase):
         return not containers.stdout.strip() == ""
 
 
-    def _create_container(self): # TODO: add return type
+    def _create_container(self) -> subprocess.CompletedProcess:
             print_info("Creating container...")
             print_success("Container created")
             # Debug
@@ -77,7 +77,7 @@ class Container(ServiceBase):
             return response
      
             
-    def start_container(self): # TODO: add return type
+    def start_container(self) -> subprocess.CompletedProcess:
         if self._check_if_container_exists():
             print_info("Starting container...")
             response = subprocess.run(f"docker start -i {self.CONTAINER_NAME}", shell=True, capture_output=True, text=True)
