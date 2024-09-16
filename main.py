@@ -29,11 +29,22 @@ def main():
     pycapsule: PyCapsule = None
 
     try:
-        ollama = Ollama(enable_chat_history=True) # default: mistral, enable_chat_history=False
+        ollama = Ollama(model = "codellama", enable_chat_history=True) # default: mistral, enable_chat_history=False
         container = Container() # default: synkrasis, synkrasis_alpha
         pycapsule = PyCapsule(container, ollama)
         
-        pycapsule("Write a python function to compute the multiplication of two matrices")
+        h_eval_prompt = '''from typing import List
+def has_close_elements(numbers: List[float], threshold: float) -> bool:
+    """ Check if in given list of numbers, are any two numbers closer to each other than
+    given threshold.
+    >>> has_close_elements([1.0, 2.0, 3.0], 0.5)
+    False
+    >>> has_close_elements([1.0, 2.8, 3.0, 4.0, 5.0, 2.0], 0.3)
+    True
+    """
+'''
+        
+        pycapsule(h_eval_prompt)
 
     finally:
       # warning resource_tracker: There appear to be .* leaked semaphore objects"

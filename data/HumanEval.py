@@ -22,6 +22,7 @@ class HumanEvalDataset:
         self.current_index = 0
         self._load_data()
 
+
     def _load_data(self) -> None:
         """
         Load the JSON data from the file.
@@ -33,6 +34,7 @@ class HumanEvalDataset:
             print_warning(f"File not found: {self.file_path}")
         except json.JSONDecodeError:
             print_warning(f"Invalid JSON in file: {self.file_path}")
+
 
     def next(self) -> Optional[Dict[str, str]]:
         """
@@ -60,11 +62,13 @@ class HumanEvalDataset:
             print_warning("No more datapoints available")
             return None
 
+
     def reset(self) -> None:
         """
         Reset the index to 0.
         """
         self.current_index = 0
+
 
     def __len__(self) -> int:
         """

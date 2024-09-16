@@ -8,7 +8,7 @@ from subprocess import CompletedProcess
 from services.Base import ServiceBase
 from services.Container.Container import Container
 from services.Ollama.Ollama import Ollama
-from utils.code_parsing.code_parser import parse_input_improved, parse_input_original
+from utils.code_parsing.code_parser import parse_codellama
 from utils.output_message_format.output_colour import print_error, print_info, print_success, print_pycapsule, print_model_output
 
 class PyCapsule(ServiceBase):
@@ -61,9 +61,16 @@ class PyCapsule(ServiceBase):
         response = self.llm.generate_response(user_query, 
                                               suppress_conversation_history = suppress_conversation_history)
         print_model_output(response, self.llm.model)
-        requirements, code, example = parse_input_original(response)
+        requirements, code, example = parse_codellama(response)
         
         mount_dir = os.path.abspath(__file__).replace("PyCapsule.py", "../Container/mount_dir")
+        
+        # Time complexity
+        example = ("import time\n"
+                   "start_time = time.time()\n"
+                   f"{example}\n"
+                   "end_time = time.time()\n"
+                   "print(f'Execution time: {end_time - start_time} seconds')")
         
         # Create main.py
         with open(os.path.join(mount_dir, "main.py"), "w") as file:
