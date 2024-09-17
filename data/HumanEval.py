@@ -1,9 +1,10 @@
 import os
 import sys
-import json
-from typing import Dict, Optional
-
 sys.path.append(f"{os.path.dirname(os.path.abspath(__file__))}/..")
+
+import json
+import re
+from typing import Dict, Optional
 
 from utils.output_message_format.output_colour import print_warning
 
@@ -49,13 +50,15 @@ class HumanEvalDataset:
             
             # Create the test_code by combining the test and the check() call
             test_code = f"{datapoint['test']}\n\ncheck({datapoint['entry_point']})"
-            
+            time_complexity_test_code = re.search(r"(assert[\s\S]*?)(?=assert\s|$)", 
+                                                test_code).group(0).strip().replace("candidate", datapoint["entry_point"])            
             return {
                 "task_id": datapoint["task_id"],
                 "prompt": datapoint["prompt"],
                 "entry_point": datapoint["entry_point"],
-                "canonical_solution": datapoint["canonical_solution"],
+                # "canonical_solution": datapoint["canonical_solution"], # not returning the solution
                 "test": datapoint["test"],
+                "time_complexity_test_code": time_complexity_test_code, # adding the first test case for time complexity
                 "test_code": test_code
             }
         else:

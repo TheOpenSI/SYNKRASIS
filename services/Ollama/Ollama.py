@@ -9,7 +9,7 @@ from typing import Optional, Dict, List
 from jinja2 import Template
 
 from services.Base import ServiceBase
-from utils.output_message_format.output_colour import print_error, print_info, print_success
+from utils.output_message_format.output_colour import print_error, print_info, print_success, print_model_output
 from modules.ChatHistory import ChatHistory
 
 class Ollama(ServiceBase):
@@ -34,7 +34,7 @@ class Ollama(ServiceBase):
         ollama.pull_model(self.model)
 
 
-    def _init_chat_history(self, original_question: str, max_history: int = 3):
+    def _init_chat_history(self, original_question: str, max_history: int = 1):
         """
         Initialize the chat history with the original question.
         Args:
@@ -77,7 +77,7 @@ class Ollama(ServiceBase):
         conversation_history = ""
         if self.enable_chat_history:
             if self.chat_history is None:
-                self._init_chat_history(user_query) # user_query is the original question and max_history is 3 by default
+                self._init_chat_history(user_query) # user_query is the original question and max_history is 1 by default
 
             # Prepare the conversation history context from chat history
             conversation_history = "\n" + "Original Question: " + self.chat_history.original_question + "\n"
@@ -121,10 +121,6 @@ class Ollama(ServiceBase):
             user_query (str): The user query
         """
         # Conversation history
-        if self.enable_chat_history:
-            if self.chat_history == None:
-                self._init_chat_history(user_query)
-
         conversation_history = "" if suppress_conversation_history else self._prepare_conversation_history(user_query)
         
         # Context
@@ -136,7 +132,7 @@ class Ollama(ServiceBase):
                     {"role": "Context", "content": context},
                     {"role": "Conversation", "content": conversation_history},
                     {"role": "User", "content": user_query}]
-        full_query = self._generate_prompt(messages) # bos_token is empty by default, applies default template
+        full_query = self._generate_prompt(messages) # bos_token is empty by default, applies default jinja template
         
         try:
             # Generate response from the model
@@ -146,6 +142,7 @@ class Ollama(ServiceBase):
             if self.enable_chat_history and self.chat_history and response:
                 self.chat_history.add_interaction(user_query, response["response"]) # for chat it's response["message"]["content"]
 
+            print_model_output(response["response"], self.model)
             return response["response"]
 
         except ollama.ResponseError as e:

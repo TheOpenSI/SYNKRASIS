@@ -4,6 +4,9 @@ import time
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 os.environ["TOKENIZERS_PARALLELISM"] = "false"
 
+import matplotlib.pyplot as plt
+from matplotlib.animation import FuncAnimation
+
 from services.Base import ServiceBase
 from services.LLM.LLM import LLM
 from services.Embedding.Embedding import EmbeddingModel
@@ -14,6 +17,7 @@ from services.Container.Container import Container
 from services.PyCapsule.PyCapsule import PyCapsule
 from utils.output_message_format.output_colour import print_model_output, print_info, print_error, print_success, print_warning
 from utils.resource.resource_mg_util import call_cleanup
+from data.HumanEval import HumanEvalDataset
 
 # Default config file
 LLM_CONFIG_FILE = os.path.abspath(os.path.join(os.path.dirname(__file__), 'config_files/llm_config.yaml'))
@@ -29,22 +33,31 @@ def main():
     pycapsule: PyCapsule = None
 
     try:
-        ollama = Ollama(model = "codellama", enable_chat_history=True) # default: mistral, enable_chat_history=False
+        ollama = Ollama(model = "codellama:instruct", enable_chat_history=True) # default: mistral, enable_chat_history=False
         container = Container() # default: synkrasis, synkrasis_alpha
         pycapsule = PyCapsule(container, ollama)
+        df = HumanEvalDataset()
         
-        h_eval_prompt = '''from typing import List
-def has_close_elements(numbers: List[float], threshold: float) -> bool:
-    """ Check if in given list of numbers, are any two numbers closer to each other than
-    given threshold.
-    >>> has_close_elements([1.0, 2.0, 3.0], 0.5)
-    False
-    >>> has_close_elements([1.0, 2.8, 3.0, 4.0, 5.0, 2.0], 0.3)
-    True
-    """
-'''
+        response = ollama.generate_response('''def truncate_number(number: float) -> float:
+        """ Given a positive floating point number, it can be decomposed into integer part (largest integer smaller than given number) and decimals (leftover part always smaller than 1).
+        Return the decimal part of the number.
+        >>> truncate_number(3.5) -> 0.5    
+        """
+        ''')
         
-        pycapsule(h_eval_prompt)
+        solve_count = 0
+        while True:
+            data_point = df.next()
+            if data_point is None:
+                break
+            solve_flag = pycapsule(data_point)
+            if solve_flag == 0:
+                solve_count += 1
+                print("#"*50)
+                print(f"Solved {solve_count} problems")
+                print("#"*50)
+        
+    
 
     finally:
       # warning resource_tracker: There appear to be .* leaked semaphore objects"
