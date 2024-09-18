@@ -1,7 +1,7 @@
 import re
 from typing import List, Tuple
 
-def parse_codellama(response: str) -> Tuple[List[str], str, str]:
+def parse_codellama_original(response: str) -> Tuple[List[str], str, str]:
     """
     Parse the CodeLlama response to extract requirements, code, and example.
     
@@ -53,4 +53,16 @@ def parse_codellama(response: str) -> Tuple[List[str], str, str]:
                 if len(code_matches) >= 2:
                     example = code_matches[1].strip()  # Second block is considered example
 
-    return requirements, code, example
+    # return requirements, code, example
+    return [], code, "" # TODO: Empty requirements, code and empty empty example.
+
+
+def parse_codellama(response: str) -> Tuple[List[str], str, str]:
+    # [PYTHON] keyword
+    py_pattern = re.compile(r'\[PYTHON\](.*)\[\\PYTHON\]', re.DOTALL)
+    
+    matches = py_pattern.findall(response)
+    if matches:
+        return [], matches[0], "" # TODO: Empty requirements, code and empty empty example.
+    else:
+        return parse_codellama_original(response)

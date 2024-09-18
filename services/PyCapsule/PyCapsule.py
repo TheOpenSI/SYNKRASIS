@@ -38,6 +38,7 @@ class PyCapsule(ServiceBase):
         self._change_system_prompt()
         self.maximum_attempts = maximum_attempts
         self.MOUNT_DIR = os.path.abspath(__file__).replace("PyCapsule.py", "../Container/mount_dir")
+        self.VANILLA_PROMPT = "Generate a python code with the following requirements. Always import the required library.\n"
 
 
     def _change_system_prompt(self, is_fix_mode: bool = False):
@@ -54,7 +55,12 @@ class PyCapsule(ServiceBase):
             
         with open(prompt_file_path, "r") as file:
             code_gen_prompt = file.read().strip()
-        self.llm.set_system_prompt(code_gen_prompt)
+        self.llm.set_system_prompt(code_gen_prompt) # TODO: Will not reset the chat history 
+        
+        
+    def _create_py_file(self, path: str, content:str) -> None:
+        with open(path, "w") as task_file:
+            task_file.write(content)
         
         
     def _create_requirements_txt(self, requirements: list) -> None:
@@ -64,10 +70,11 @@ class PyCapsule(ServiceBase):
         Args:
             requirements (list): List of requirements.
         """
-        if not(len(requirements) == 1 and ("none" in requirements or "None" in requirements)):
-            with open(os.path.join(self.MOUNT_DIR, "requirements.txt"), "w") as file:
-                file.write('\n'.join(requirements))
-                
+        # if not(len(requirements) == 1 and ("none" in requirements or "None" in requirements)):
+        #     with open(os.path.join(self.MOUNT_DIR, "requirements.txt"), "w") as file:
+        #         file.write('\n'.join(requirements))
+        
+        pass # TODO: Add better requirement parsing code.
                 
     def _create_main_py(self, code: str, example: str, user_query: dict, ) -> None:
         """
@@ -78,19 +85,20 @@ class PyCapsule(ServiceBase):
             example (str): Example code, generated from test case.
             user_query (dict): User query dictionary
         """ 
-        main_py_path = os.path.join(self.MOUNT_DIR, "main.py")
         # Suppress warning
         suppress_warning = ("import warnings\n"
                             "warnings.filterwarnings('ignore')\n")
-        with open(main_py_path, "w") as file:
-            file.write(suppress_warning + "\n\n" + code + "\n\n" + example + "\n\n" + user_query["test_code"])
+        
+        # Main
+        main_py_path = os.path.join(self.MOUNT_DIR, "main.py")
+        self._create_py_file(main_py_path, suppress_warning + "\n\n" + code + "\n\n" + user_query["test_code"]) # TODO: Add time complexity code
 
-        # Generate the task-specific py file
+        # Task file
         task_file_name = user_query["task_id"].replace("/", "_") + ".py"
         task_file_path = os.path.join(self.MOUNT_DIR, task_file_name)
+        self._create_py_file(task_file_path, suppress_warning + "\n\n" + code + "\n\n" + user_query["test_code"])
 
-        with open(task_file_path, "w") as task_file:
-            task_file.write(suppress_warning + "\n\n" + code + "\n\n" + example + "\n\n" + user_query["test_code"])
+        
         
     
     def _generate_code_str(self, user_query: str, suppress_conversation_history: bool) -> None:
@@ -122,30 +130,31 @@ class PyCapsule(ServiceBase):
             user_query (dict): Dictionary query to generate code, for structure refer to data/HumanEval.py.
             suppress_conversation_history (bool): Suppress the conversation history, get activated when pycapsule is in fix mode.
         """
-        response = self.llm.generate_response(user_query["prompt"], 
+        response = self.llm.generate_response(self.VANILLA_PROMPT + user_query["prompt"], 
                                               suppress_conversation_history = suppress_conversation_history)
         
         # Parsing
         requirements, code, example = parse_codellama(response)
         
-        # Time complexity
-        example = ("import time\n"
-                   "start_time = time.time()\n"
-                   f"{user_query['time_complexity_test_code']}\n"
-                   "end_time = time.time()\n"
-                   "print(f'Execution time: {end_time - start_time} seconds')")
+        # TODO: Time complexity
+        # example = ("import time\n"
+        #            "start_time = time.time()\n"
+        #            f"{user_query['time_complexity_test_code']}\n"
+        #            "end_time = time.time()\n"
+        #            "print(f'Execution time: {end_time - start_time} seconds')")
         
         # Create main.py with funtion defintion, time complexity code and test cases.
         self._create_main_py(code, example, user_query)
         
         # Create requirements.txt
-        self._create_requirements_txt(requirements)
+        self._create_requirements_txt(requirements) # TODO: deactivated for now.
         
         
-    def _fix_code(self, response: CompletedProcess, data_point: dict) -> int:
+    def _fix_code(self, response: CompletedProcess, data_point: dict = None) -> tuple[int, int]:
         """
         Gets activated only when response.returncode != 0.
         Will change sytem prompt and attempt to fix the code.
+        Returns response code and number of attempts made.
 
         Args:
             response (CompletedProcess): Response from the container with error code, stdout and stderr.
@@ -154,9 +163,9 @@ class PyCapsule(ServiceBase):
         attempt_count = 0
         response_code = -1
         while response.returncode != 0 and attempt_count < self.maximum_attempts:
-            self._change_system_prompt(is_fix_mode=True) # Will chnage the system prompt and reset the chat history
+            self._change_system_prompt(is_fix_mode=True) # TODO: Will chnage the system prompt and reset the chat history
             fix_mode_query = ("Your generated code had the following error -\n"
-                              f"{response.stderr}\n") # TODO: Consider adding the code and example here
+                              f"{response.stderr}\n")
             
             # Updating response, main.py and requirements.txt
             if data_point:
@@ -173,7 +182,7 @@ class PyCapsule(ServiceBase):
             attempt_count += 1
             response_code = response.returncode
         self._change_system_prompt() # Resetting the system prompt
-        return response_code # TODO
+        return response_code, attempt_count
         
     
     def _debug_insert_error():
@@ -220,7 +229,9 @@ class PyCapsule(ServiceBase):
             user_query (Union[str, dict]): Either a datapoint as dict or string query.
         """
         # This will generate response from LLM and parse the response to get the code
-        self.llm._set_seed()
+        original_question = user_query if type(user_query) == str else user_query["prompt"]
+        # Initialize the chat history
+        self.llm._init_chat_history(original_question)
         self._generate_code(user_query) # this creates the main.py and requirements.txt
         
         # Start the container
@@ -229,10 +240,9 @@ class PyCapsule(ServiceBase):
         if response.returncode != 0:
             print_error("Generated code returned a non-zero exit code. Starting pycapsule in fix mode.")
             data_point_ref = None if type(user_query) == str else user_query # Will send the whole data_point as reference
-            self.llm._set_seed()
-            flag = self._fix_code(response, data_point_ref)
+            flag, _ = self._fix_code(response, data_point_ref) # TODO: Not using the attempt count
             
-            
+        self.llm.clear_chat_history()    
         return flag
             
 
@@ -249,9 +259,9 @@ class PyCapsule(ServiceBase):
         self.llm.clear_chat_history()
         
         mount_dir = os.path.abspath(__file__).replace("PyCapsule.py", "../Container/mount_dir")
-        # for file in ['main.py', 'requirements.txt']:
-        #     file_path = os.path.join(mount_dir, file)
-        #     if os.path.exists(file_path):
-        #         os.remove(file_path)
+        for file in ['main.py', 'requirements.txt']:
+            file_path = os.path.join(mount_dir, file)
+            if os.path.exists(file_path):
+                os.remove(file_path)
         
         print_success("PyCapsule resources cleaned up.")
