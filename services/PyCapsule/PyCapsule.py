@@ -10,7 +10,7 @@ from typing import Union
 
 from services.Base import ServiceBase
 from services.Container.Container import Container
-from services.Ollama.Ollama import Ollama
+from services.LLM.Ollama.Ollama import Ollama
 from utils.code_parsing.parse_codellama import parse_codellama
 from utils.output_message_format.output_colour import print_error, print_info, print_success, print_pycapsule, print_model_output
 
