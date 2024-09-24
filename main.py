@@ -11,7 +11,8 @@ from services.VectorDatabase.VectorDatabase import VectorDatabase
 from services.RAG.RAG import RAG
 from services.Ollama.Ollama import Ollama
 from services.Container.Container import Container
-from services.PyCapsule.PyCapsule import PyCapsule
+# from services.PyCapsule.PyCapsule import PyCapsule
+from services.PyCapsule.PyCapsule_HumanEval import PyCapsule_HumanEval
 from utils.output_message_format.output_colour import print_model_output, print_info, print_error, print_success, print_warning
 from utils.resource.resource_mg_util import call_cleanup
 from data.HumanEval import HumanEvalDataset
@@ -27,12 +28,12 @@ def main():
     ollama: Ollama = None
     rag: RAG = None
     container: Container = None
-    pycapsule: PyCapsule = None
+    pycapsule: PyCapsule_HumanEval = None
 
     try:
         ollama = Ollama(model = "codellama", enable_chat_history=True) # default: mistral, enable_chat_history=False
         container = Container() # default: synkrasis, synkrasis_alpha
-        pycapsule = PyCapsule(container, ollama)
+        pycapsule = PyCapsule_HumanEval(container, ollama)
         df = HumanEvalDataset()
         
         solve_count = 0
