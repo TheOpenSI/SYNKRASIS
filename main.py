@@ -11,7 +11,7 @@ from services.Embedding.Embedding import EmbeddingModel
 from services.VectorDatabase.VectorDatabase import VectorDatabase
 from services.RAG.RAG import RAG
 from services.Container.Container import Container
-# from services.PyCapsule.PyCapsule import PyCapsule
+from services.PyCapsule.PyCapsule import PyCapsule
 from services.PyCapsule.PyCapsule_HumanEval import PyCapsule_HumanEval
 from utils.output_message_format.output_colour import print_model_output, print_info, print_error, print_success, print_warning
 from utils.resource.resource_mg_util import call_cleanup
@@ -32,8 +32,25 @@ def main():
     pycapsule: PyCapsule_HumanEval = None
 
     try:
-        openai = OpenAI_GPT()
-        print_model_output(openai.generate_response("Who won the most UCL titles?"), openai.model)
+        openai = OpenAI_GPT(model="gpt-4o", enable_chat_history=True)
+        df = HumanEvalDataset()
+        container = Container()
+        pycapsule = PyCapsule(container, openai, maximum_attempts=0)
+        
+        solve_count = 0
+        while True:
+            data_point = df.next()
+            
+            if data_point is None or df.current_index == 2:
+                break
+            
+            solve_flag = pycapsule(data_point)
+            
+            if solve_flag == 0:
+                solve_count += 1
+                print("#"*50)
+                print(f"Solved {solve_count} problems")
+                print("#"*50)
         
     finally:
       # warning resource_tracker: There appear to be .* leaked semaphore objects"

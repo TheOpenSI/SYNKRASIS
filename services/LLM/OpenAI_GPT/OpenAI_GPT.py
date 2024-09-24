@@ -97,6 +97,7 @@ class OpenAI_GPT(ServiceBase, LLMBase):
             Optional[str]: Response from the model
         """
         # TODO: No context or conversation history support for the time being.
+        # TODO: Use the jinja template to generate the prompt.
         messages = [
             {"role": "system", "content": self.system_prompt},
             {"role": "user", "content": user_prompt}
@@ -108,8 +109,20 @@ class OpenAI_GPT(ServiceBase, LLMBase):
             seed = self.seed
         )
         
+        print_model_output(response.choices[0].message.content, self.model)
         return response.choices[0].message.content
-    
+
+
+    def clear_chat_history(self):
+        """
+        Clear the chat history, happens automatically when system prompt changes.
+        """
+        if self.enable_chat_history:
+            self.chat_history = None
+            print_success("Chat history cleared.")
+        else:
+            print_error("Chat history is not enabled.") 
+             
     
     def cleanup(self):
         """

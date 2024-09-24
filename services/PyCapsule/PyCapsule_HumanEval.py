@@ -8,10 +8,10 @@ from services.PyCapsule.PyCapsule import PyCapsule
 from utils.code_parsing.parse_codellama import parse_codellama
 
 class PyCapsule_HumanEval(PyCapsule):
-    def _create_main_py(self, code: str, user_query: dict, ) -> None:
+    def _create_main_py(self, code: str, user_query: dict) -> None:
         """
         Only used for HumanEval or when user_query is a dictionary.
-        Creates main.py file in the mount_dir.
+        Creates main.py, task_id.py files in the mount_dir.
         Args:
             code (str): Function definition.
             example (str): Example code, generated from test case.

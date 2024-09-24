@@ -10,20 +10,20 @@ from typing import Union
 
 from services.Base import ServiceBase
 from services.Container.Container import Container
-from services.LLM.Ollama.Ollama import Ollama
+from services.LLM.LLMBase import LLMBase
 from utils.code_parsing.parse_codellama import parse_codellama
 from utils.output_message_format.output_colour import print_error, print_info, print_success, print_pycapsule, print_model_output
 
 class PyCapsule(ServiceBase):
     def __init__(self, 
                  pycapsule_container: Container,
-                 llm: Ollama,
+                 llm: LLMBase,
                  maximum_attempts: int = 5):
         """
         PyCapsule service class for generating and validating code.
         Args:
             pycapsule_container (Container): Default container for PyCapsule service.
-            llm (Ollama): Ollama Object for LLM, not supporting the LLM.
+            llm (LLMBase): LLM
             maximum_attempts (int, optional): Maximum tries to fix generated code. Defaults to 3.
 
         Raises:
@@ -75,9 +75,33 @@ class PyCapsule(ServiceBase):
         #         file.write('\n'.join(requirements))
         
         pass # TODO: Add better requirement parsing code.
+                
+    def _create_main_py(self, code: str, example: str, user_query: dict, ) -> None:
+        """
+        Only used for HumanEval or when user_query is a dictionary.
+        Creates main.py file in the mount_dir.
+        Args:
+            code (str): Function definition.
+            example (str): Example code, generated from test case.
+            user_query (dict): User query dictionary
+        """ 
+        # Suppress warning
+        suppress_warning = ("import warnings\n"
+                            "warnings.filterwarnings('ignore')\n")
+        
+        # Main
+        main_py_path = os.path.join(self.MOUNT_DIR, "main.py")
+        self._create_py_file(main_py_path, suppress_warning + "\n\n" + code + "\n\n" + user_query["test_code"]) # TODO: Add time complexity code
+
+        # Task file
+        task_file_name = user_query["task_id"].replace("/", "_") + ".py"
+        task_file_path = os.path.join(self.MOUNT_DIR, task_file_name)
+        self._create_py_file(task_file_path, suppress_warning + "\n\n" + code + "\n\n" + user_query["test_code"])
 
         
-    def _generate_code(self, user_query: str, suppress_conversation_history: bool = True) -> None:
+        
+    
+    def _generate_code_str(self, user_query: str, suppress_conversation_history: bool) -> None:
         """
         Generate response when user query is a string.
 
@@ -85,12 +109,6 @@ class PyCapsule(ServiceBase):
             user_query (str): String query to generate code.
             suppress_conversation_history (bool): Suppress the conversation history, get activated when pycapsule is in fix mode.
         """
-        if type(user_query) != str:
-            if type(user_query) == dict:
-                raise ValueError("user_query must be a string, for dict consider using PyCapsule_HumanEval.")
-            else:
-                raise ValueError("user_query must be a string.")
-            
         response = self.llm.generate_response(user_query, 
                                               suppress_conversation_history = suppress_conversation_history)
         requirements, code, example = parse_codellama(response)
@@ -101,6 +119,35 @@ class PyCapsule(ServiceBase):
         
         # Create requirements.txt
         self._create_requirements_txt(requirements)
+        
+        
+    def _generate_code_dict(self, user_query: dict, suppress_conversation_history: bool) -> None:
+        """
+        FOR HUMANEVAL.
+        Generate response when user query is a dictionary.
+
+        Args:
+            user_query (dict): Dictionary query to generate code, for structure refer to data/HumanEval.py.
+            suppress_conversation_history (bool): Suppress the conversation history, get activated when pycapsule is in fix mode.
+        """
+        response = self.llm.generate_response(self.VANILLA_PROMPT + user_query["prompt"], 
+                                              suppress_conversation_history = suppress_conversation_history)
+        
+        # Parsing
+        requirements, code, example = parse_codellama(response)
+        
+        # TODO: Time complexity
+        # example = ("import time\n"
+        #            "start_time = time.time()\n"
+        #            f"{user_query['time_complexity_test_code']}\n"
+        #            "end_time = time.time()\n"
+        #            "print(f'Execution time: {end_time - start_time} seconds')")
+        
+        # Create main.py with funtion defintion, time complexity code and test cases.
+        self._create_main_py(code, example, user_query)
+        
+        # Create requirements.txt
+        self._create_requirements_txt(requirements) # TODO: deactivated for now.
         
         
     def _fix_code(self, response: CompletedProcess, data_point: dict = None) -> tuple[int, int]:
@@ -157,7 +204,22 @@ class PyCapsule(ServiceBase):
         with open(os.path.join(mount_dir, "main.py"), "w") as file:
             file.writelines(new_data)
         file.close()
-           
+        
+        
+    def _generate_code(self, user_query: Union[str, dict], suppress_conversation_history: bool = True):
+        """
+        Uses the Ollama object to generate code.
+        Create main.py and requirements.txt files in the mount_dir.
+        Args:
+            user_query (str): User query to generate code.
+        """
+        if type(user_query) == str:
+            self._generate_code_str(user_query, suppress_conversation_history)
+        elif type(user_query) == dict:
+            self._generate_code_dict(user_query, suppress_conversation_history)
+        else:
+            raise ValueError("user_query must be a dict or string.")
+        
         
     def __call__(self, user_query: Union[str, dict]) -> int:
         """
