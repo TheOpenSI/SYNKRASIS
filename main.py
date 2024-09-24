@@ -5,11 +5,11 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 os.environ["TOKENIZERS_PARALLELISM"] = "false"
 
 from services.Base import ServiceBase
-from services.LLM.LLM import LLM
+from services.LLM.HF_LLM.HF_LLM import HF_LLM
 from services.Embedding.Embedding import EmbeddingModel
 from services.VectorDatabase.VectorDatabase import VectorDatabase
 from services.RAG.RAG import RAG
-from services.Ollama.Ollama import Ollama
+from services.LLM.Ollama.Ollama import Ollama
 from services.Container.Container import Container
 # from services.PyCapsule.PyCapsule import PyCapsule
 from services.PyCapsule.PyCapsule_HumanEval import PyCapsule_HumanEval
@@ -22,7 +22,7 @@ LLM_CONFIG_FILE = os.path.abspath(os.path.join(os.path.dirname(__file__), 'confi
 
 def main():
     # All services
-    llm: LLM = None
+    llm: HF_LLM = None
     embedding_model: EmbeddingModel = None
     vector_db: VectorDatabase = None
     ollama: Ollama = None
