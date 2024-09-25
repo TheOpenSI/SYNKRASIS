@@ -1,39 +1,50 @@
+'''
+Structure of the code parser utility function
+### Step-by-step reasoning
+$reasoning
+
+### Requirements
+$external_libraries
+
+### Code
+'''
+
 import re
 from typing import List, Tuple
 
-def parse_input_original(response: str) -> Tuple[List[str], str, str]:
+def parse_response(response: str) -> Tuple[List[str], str]:
     """
-    Original parse function.
-    Parse the input response to extract requirements, code, and example.
-    
+    Parse a structured response to extract requirements and code.
+
     Args:
-        response (str): Raw response from the model.
-    
+        response (str): The structured response string to parse.
+
     Returns:
-        Tuple[List[str], str, str]: A tuple containing requirements, code, and example.
+        - "requirements": List of required libraries (empty list if none)
+        - "code": Extracted code as a string (empty string if not found)
+
+    Raises:
+        ValueError: If the response string is empty or not in the expected format.
     """
-    requirements = []
-    code = ""
-    example = ""
-    
-    if "### Answer" in response or "### Corrected Code" in response:
-        return ["none"], response, ""
-    
-    lines = response.strip().splitlines()
-    current_section = None
-    
-    for line in lines:
-        if line.startswith("### "):
-            current_section = line[4:].lower()
-        elif current_section == "requirements":
-            if line.strip() and line.strip() not in ["bash", "```"]:
-                requirement = line.strip("`").strip().lower()
-                requirements.append(requirement)
-        elif current_section in ["code", "example"]:
-            if line.strip() not in ["```", "```python"]:
-                if current_section == "code":
-                    code += line + "\n"
-                elif current_section == "example" and "import" not in line.strip():
-                    example += line + "\n"
-    
-    return requirements, code.strip(), example.strip()
+    if not response:
+        raise ValueError("Empty response string provided")
+
+    # Extract requirements
+    requirements_match = re.search(r"### Requirements\s*(.*?)\s*###", response, re.DOTALL)
+    if requirements_match:
+        requirements_text = requirements_match.group(1).strip()
+        if requirements_text.lower() == "none":
+            requirements = []
+        else:
+            requirements = [req.strip() for req in requirements_text.split(",") if req.strip()]
+    else:
+        requirements = []
+
+    # Extract code
+    code_match = re.search(r"### Code\s*```(?:python)?(.*?)```", response, re.DOTALL)
+    if code_match:
+        code = code_match.group(1).strip()
+    else:
+        code = ""
+
+    return requirements, code

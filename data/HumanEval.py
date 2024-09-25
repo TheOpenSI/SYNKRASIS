@@ -4,9 +4,10 @@ sys.path.append(f"{os.path.dirname(os.path.abspath(__file__))}/..")
 
 import json
 import re
-from typing import Dict, Optional
+from typing import Dict, Optional, List
+import pandas as pd
 
-from utils.output_message_format.output_colour import print_warning
+from utils.output_message_format.output_colour import print_warning, print_success
 
 class HumanEvalDataset:
     def __init__(self, 
@@ -21,6 +22,9 @@ class HumanEvalDataset:
         self.file_path = file_path
         self.data = []
         self.current_index = 0
+        self.solved_count: int = 0
+        self.unsolved_count: int = 0
+        self.results: List = []
         self._load_data()
 
 
@@ -71,6 +75,9 @@ class HumanEvalDataset:
         Reset the index to 0.
         """
         self.current_index = 0
+        self.solved_count = 0
+        self.unsolved_count = 0
+        self.results = []
 
 
     def __len__(self) -> int:
@@ -81,3 +88,16 @@ class HumanEvalDataset:
             int: The number of datapoints.
         """
         return len(self.data)
+    
+
+    def log_to_csv(self, model_name: str) -> None:
+        """
+        Write result data to CSV file using Pandas.
+        For HumanEval task results.
+        Args:
+            data (list): List of dictionaries containing task results.
+            file_path (str): Path to the output CSV file.
+        """
+        df = pd.DataFrame(self.results, columns=["task_id", "fix_mode_attempt_count", "status"])
+        df.to_csv(f"{os.path.dirname(os.path.abspath(__file__))}/{model_name}_results.csv", index = False)
+        print_success(f"Results saved to {model_name}_results.csv")

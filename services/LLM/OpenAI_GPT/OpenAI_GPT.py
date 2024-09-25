@@ -41,7 +41,7 @@ class OpenAI_GPT(ServiceBase, LLMBase):
     def generate_response(self, 
                           user_prompt: str,
                           context: List[str] = None,
-                          suppress_conversation_history: bool = False) -> Optional[str]:
+                          suppress_conversation_history: bool = True) -> Optional[str]:
         context_str = self._prepare_context(context)
         conversation_history = "" if suppress_conversation_history else self._prepare_conversation_history(user_prompt)
 

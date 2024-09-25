@@ -2,6 +2,7 @@
 
 import os
 import sys
+import re
 sys.path.append(f"{os.path.dirname(os.path.abspath(__file__))}/../..")
 
 import subprocess
@@ -11,7 +12,7 @@ from typing import Union
 from services.Base import ServiceBase
 from services.Container.Container import Container
 from services.LLM.LLMBase import LLMBase
-from utils.code_parsing.parse_codellama import parse_codellama
+from utils.code_parsing.code_parser import parse_response
 from utils.output_message_format.output_colour import print_error, print_info, print_success, print_pycapsule, print_model_output
 
 class PyCapsule(ServiceBase):
@@ -37,8 +38,8 @@ class PyCapsule(ServiceBase):
         self.llm = llm
         self._change_system_prompt()
         self.maximum_attempts = maximum_attempts
+        self.TRACEBACK_PATTERN = r"Traceback.*$" # Pattern to extract traceback from stderr
         self.MOUNT_DIR = os.path.abspath(__file__).replace("PyCapsule.py", "../Container/mount_dir")
-        self.VANILLA_PROMPT = "Generate a python code with the following requirements. Always import the required library.\n"
 
 
     def _change_system_prompt(self, is_fix_mode: bool = False):
@@ -55,7 +56,7 @@ class PyCapsule(ServiceBase):
             
         with open(prompt_file_path, "r") as file:
             code_gen_prompt = file.read().strip()
-        self.llm.set_system_prompt(code_gen_prompt) # TODO: Will not reset the chat history 
+        self.llm.set_system_prompt(code_gen_prompt)
         
         
     def _create_py_file(self, path: str, content:str) -> None:
@@ -70,13 +71,12 @@ class PyCapsule(ServiceBase):
         Args:
             requirements (list): List of requirements.
         """
-        # if not(len(requirements) == 1 and ("none" in requirements or "None" in requirements)):
-        #     with open(os.path.join(self.MOUNT_DIR, "requirements.txt"), "w") as file:
-        #         file.write('\n'.join(requirements))
-        
-        pass # TODO: Add better requirement parsing code.
+        if requirements != []:
+            with open(os.path.join(self.MOUNT_DIR, "requirements.txt"), "w") as file:
+                file.write('\n'.join(requirements))
+ 
                 
-    def _create_main_py(self, code: str, example: str, user_query: dict, ) -> None:
+    def _create_main_py(self, code: str, user_query: dict, ) -> None:
         """
         Only used for HumanEval or when user_query is a dictionary.
         Creates main.py file in the mount_dir.
@@ -111,11 +111,11 @@ class PyCapsule(ServiceBase):
         """
         response = self.llm.generate_response(user_query, 
                                               suppress_conversation_history = suppress_conversation_history)
-        requirements, code, example = parse_codellama(response)
+        requirements, code = parse_response(response) # if example is required, add it to the code section.
         
         # Create main.py
         with open(os.path.join(self.MOUNT_DIR, "main.py"), "w") as file:
-            file.write(code + '\n\n' + example)
+            file.write(code)
         
         # Create requirements.txt
         self._create_requirements_txt(requirements)
@@ -130,11 +130,11 @@ class PyCapsule(ServiceBase):
             user_query (dict): Dictionary query to generate code, for structure refer to data/HumanEval.py.
             suppress_conversation_history (bool): Suppress the conversation history, get activated when pycapsule is in fix mode.
         """
-        response = self.llm.generate_response(self.VANILLA_PROMPT + user_query["prompt"], 
+        response = self.llm.generate_response(user_query["prompt"], 
                                               suppress_conversation_history = suppress_conversation_history)
         
         # Parsing
-        requirements, code, example = parse_codellama(response)
+        requirements, code = parse_response(response)
         
         # TODO: Time complexity
         # example = ("import time\n"
@@ -144,10 +144,10 @@ class PyCapsule(ServiceBase):
         #            "print(f'Execution time: {end_time - start_time} seconds')")
         
         # Create main.py with funtion defintion, time complexity code and test cases.
-        self._create_main_py(code, example, user_query)
+        self._create_main_py(code, user_query)
         
         # Create requirements.txt
-        self._create_requirements_txt(requirements) # TODO: deactivated for now.
+        self._create_requirements_txt(requirements)
         
         
     def _fix_code(self, response: CompletedProcess, data_point: dict = None) -> tuple[int, int]:
@@ -163,19 +163,24 @@ class PyCapsule(ServiceBase):
         attempt_count = 0
         response_code = -1
         while response.returncode != 0 and attempt_count < self.maximum_attempts:
-            self._change_system_prompt(is_fix_mode=True) # TODO: Will chnage the system prompt and reset the chat history
+            self._change_system_prompt(is_fix_mode=True)
+            filtered_error_message = re.search(r"Traceback.*$", response.stderr, re.DOTALL)
+            if filtered_error_message:
+                error_response = filtered_error_message.group()
+            else:
+                error_response = response.stderr
             fix_mode_query = ("Your generated code had the following error -\n"
-                              f"{response.stderr}\n")
+                              f"{error_response}\n")
             
             # Updating response, main.py and requirements.txt
             if data_point:
-                fix_mode_query = {
+                fix_mode_query_dict = {
                     "prompt": fix_mode_query,
                     "task_id": data_point["task_id"],
                     "test_code": data_point["test_code"],
                     "time_complexity_test_code": data_point["time_complexity_test_code"]
                 }
-            self._generate_code(fix_mode_query, suppress_conversation_history = False)
+            self._generate_code(fix_mode_query_dict, suppress_conversation_history = False)
             
             # Running the code
             response = self.container.start_container()
@@ -235,18 +240,18 @@ class PyCapsule(ServiceBase):
         self._generate_code(user_query) # this creates the main.py and requirements.txt
         
         # Start the container
+        fix_mode_attempts = 0 # Number of attempts made in fix mode
         response: CompletedProcess = self.container.start_container()
         flag = response.returncode
         if response.returncode != 0:
             print_error("Generated code returned a non-zero exit code. Starting pycapsule in fix mode.")
             data_point_ref = None if type(user_query) == str else user_query # Will send the whole data_point as reference
-            flag, _ = self._fix_code(response, data_point_ref) # TODO: Not using the attempt count
+            flag, fix_mode_attempts = self._fix_code(response, data_point_ref)
             
         self.llm.clear_chat_history()    
-        return flag
+        return flag, fix_mode_attempts
             
 
-        
     # For testing only
     @staticmethod
     def run_command(command: str = "whoami") -> str:

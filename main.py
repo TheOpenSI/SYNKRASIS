@@ -1,6 +1,6 @@
 import os
 import sys
-import time
+import pandas as pd
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 os.environ["TOKENIZERS_PARALLELISM"] = "false"
 
@@ -33,30 +33,46 @@ def main():
 
     try:
         openai = OpenAI_GPT(enable_chat_history=True)
-        openai.generate_response("What is the capital of France?", suppress_conversation_history=False)
-        openai.generate_response("What is the capital of Germany?", suppress_conversation_history=False)
-        # df = HumanEvalDataset()
-        # container = Container()
-        # pycapsule = PyCapsule(container, openai, maximum_attempts=0)
+        df = HumanEvalDataset()
+        container = Container()
+        pycapsule = PyCapsule(container, openai)
         
-        # solve_count = 0
-        # while True:
-        #     data_point = df.next()
+        while True:
+            data_point = df.next()
             
-        #     if data_point is None or df.current_index == 2:
-        #         break
+            if data_point is None:
+                break
             
-        #     solve_flag = pycapsule(data_point)
+            solve_flag, fix_mode_attempt_count = pycapsule(data_point)
             
-        #     if solve_flag == 0:
-        #         solve_count += 1
-        #         print("#"*50)
-        #         print(f"Solved {solve_count} problems")
-        #         print("#"*50)
+            # Determine status based on solve_flag
+            status = "fail"
+            
+            # Update solved and unsolved counts
+            if solve_flag == 0:
+                df.solved_count += 1
+                status = "pass"
+            else:
+                df.unsolved_count += 1
+                
+            # Store the result in a list
+            df.results.append({
+                "task_id": data_point['task_id'],
+                "fix_mode_attempt_count": fix_mode_attempt_count,
+                "status": status
+            })
+            
+            # Print solved/unsolved progress
+            print("#" * 50)
+            print(f"Solved {df.solved_count} problems, Unsolved {df.unsolved_count} problems")
+            print("#" * 50)
+        
+        # Write all results to CSV at the end
+        df.log_to_csv(openai.model)
         
     finally:
-      # warning resource_tracker: There appear to be .* leaked semaphore objects"
-      call_cleanup([llm, embedding_model, vector_db, ollama, rag, container, pycapsule, openai])
+        # Warning resource_tracker: There appear to be .* leaked semaphore objects"
+        call_cleanup([llm, embedding_model, vector_db, ollama, rag, container, pycapsule, openai])
 
 if __name__ == '__main__':
     main()
