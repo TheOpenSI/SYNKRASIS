@@ -4,21 +4,14 @@ import os
 import sys
 sys.path.append(f"{os.path.dirname(os.path.abspath(__file__))}/../..")
 
-import subprocess
-from subprocess import CompletedProcess
-from typing import Union
-
 from services.PyCapsule.PyCapsule import PyCapsule
-from services.Container.Container import Container
-from services.Ollama.Ollama import Ollama
 from utils.code_parsing.parse_codellama import parse_codellama
-from utils.output_message_format.output_colour import print_error, print_info, print_success, print_pycapsule, print_model_output
 
 class PyCapsule_HumanEval(PyCapsule):
-    def _create_main_py(self, code: str, user_query: dict, ) -> None:
+    def _create_main_py(self, code: str, user_query: dict) -> None:
         """
         Only used for HumanEval or when user_query is a dictionary.
-        Creates main.py file in the mount_dir.
+        Creates main.py, task_id.py files in the mount_dir.
         Args:
             code (str): Function definition.
             example (str): Example code, generated from test case.
