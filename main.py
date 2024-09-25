@@ -32,25 +32,27 @@ def main():
     pycapsule: PyCapsule_HumanEval = None
 
     try:
-        openai = OpenAI_GPT(model="gpt-4o", enable_chat_history=True)
-        df = HumanEvalDataset()
-        container = Container()
-        pycapsule = PyCapsule(container, openai, maximum_attempts=0)
+        openai = OpenAI_GPT(enable_chat_history=True)
+        openai.generate_response("What is the capital of France?", suppress_conversation_history=False)
+        openai.generate_response("What is the capital of Germany?", suppress_conversation_history=False)
+        # df = HumanEvalDataset()
+        # container = Container()
+        # pycapsule = PyCapsule(container, openai, maximum_attempts=0)
         
-        solve_count = 0
-        while True:
-            data_point = df.next()
+        # solve_count = 0
+        # while True:
+        #     data_point = df.next()
             
-            if data_point is None or df.current_index == 2:
-                break
+        #     if data_point is None or df.current_index == 2:
+        #         break
             
-            solve_flag = pycapsule(data_point)
+        #     solve_flag = pycapsule(data_point)
             
-            if solve_flag == 0:
-                solve_count += 1
-                print("#"*50)
-                print(f"Solved {solve_count} problems")
-                print("#"*50)
+        #     if solve_flag == 0:
+        #         solve_count += 1
+        #         print("#"*50)
+        #         print(f"Solved {solve_count} problems")
+        #         print("#"*50)
         
     finally:
       # warning resource_tracker: There appear to be .* leaked semaphore objects"
