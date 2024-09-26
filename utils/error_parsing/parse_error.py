@@ -24,11 +24,12 @@ def parse_error(response: CompletedProcess, data_point: dict) -> str:
     # Check for AssertionError
     if "AssertionError" in error_response:
         # Extract assertion error message
-        assertion_error_match = re.search(r'assert (.*)\nAssertionError: (.*)', error_response)
+        assertion_error_match = re.search(r'assert (.*)\nAssertionError(.*)', error_response)
         if assertion_error_match:
             assertion_error_message = assertion_error_match.group(1)
             test_name = assertion_error_match.group(2)
-            error_response = f"The following test case '{test_name}' failed and resulted in AssertionError.\nError message: {assertion_error_message}"
+            test_case = " " if test_name == "" else f" '{test_name}' "
+            error_response = f"The following test case{test_case}failed and resulted in AssertionError.\nError message: {assertion_error_message}"
         else:
             error_response = f"An AssertionError occurred. Error message - \n{error_response}"
 

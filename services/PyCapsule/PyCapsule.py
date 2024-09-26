@@ -188,7 +188,7 @@ class PyCapsule(ServiceBase):
             user_query (Union[str, dict]): Either a datapoint as dict or string query.
         """
         # This will generate response from LLM and parse the response to get the code
-        original_question = user_query
+        original_question = user_query if isinstance(user_query, str) else user_query["prompt"]
         
         # Initialize the chat history
         self.llm._init_chat_history(original_question)

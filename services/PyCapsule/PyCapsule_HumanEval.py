@@ -61,13 +61,13 @@ class PyCapsule_HumanEval(PyCapsule):
         # Main
         main_py_path = os.path.join(self.MOUNT_DIR, "main.py")
         self._create_py_file(main_py_path, 
-                             suppress_warning + "\n" + code + "\n" + time_complexity + "\n" + user_query["test_code"])
+                             suppress_warning + "\n" + code + "\n" + "\n" + user_query["test_code"])
 
         # Task file
         task_file_name = user_query["task_id"].replace("/", "_") + ".py"
         task_file_path = os.path.join(self.MOUNT_DIR, task_file_name)
         self._create_py_file(task_file_path, 
-                             suppress_warning + "\n" + code + "\n" + time_complexity + "\n" + user_query["test_code"])
+                             suppress_warning + "\n" + code + "\n" + "\n" + user_query["test_code"])
         
            
     def _generate_code(self, user_query: dict, suppress_conversation_history: bool = True) -> None:

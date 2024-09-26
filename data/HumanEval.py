@@ -54,8 +54,9 @@ class HumanEvalDataset:
             
             # Create the test_code by combining the test and the check() call
             test_code = f"{datapoint['test']}\n\ncheck({datapoint['entry_point']})"
-            time_complexity_test_code = re.search(r"(assert[\s\S]*?)(?=assert\s|$)", 
-                                                test_code).group(0).strip().replace("candidate", datapoint["entry_point"])            
+            time_complexity_test_code = re.search(r"assert.*$", 
+                                                  test_code,
+                                                  re.MULTILINE).group().strip().replace("candidate", datapoint["entry_point"])            
             return {
                 "task_id": datapoint["task_id"],
                 "prompt": datapoint["prompt"],
