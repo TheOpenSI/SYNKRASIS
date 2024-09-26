@@ -1,0 +1,42 @@
+from subprocess import CompletedProcess
+import re
+
+def parse_error(response: CompletedProcess, data_point: dict) -> str:
+    """
+    Extracts error message from subprocess response and identifies specific error types.
+
+    Args:
+    - response (subprocess.CompletedProcess): The subprocess response.
+    - data_point (dict): Contains information about the entry point.
+
+    Returns:
+    - str: Formatted error message.
+    """
+
+    # Filter error message and remove warnings
+    filtered_error_message = re.search(r"Traceback.*$", response.stderr, re.DOTALL)
+    
+    if filtered_error_message:
+        error_response = filtered_error_message.group()
+    else:
+        error_response = response.stderr
+
+    # Check for AssertionError
+    if "AssertionError" in error_response:
+        # Extract assertion error message
+        assertion_error_match = re.search(r'assert (.*)\nAssertionError: (.*)', error_response)
+        if assertion_error_match:
+            assertion_error_message = assertion_error_match.group(1)
+            test_name = assertion_error_match.group(2)
+            error_response = f"The following test case '{test_name}' failed and resulted in AssertionError.\nError message: {assertion_error_message}"
+        else:
+            error_response = f"An AssertionError occurred. Error message - \n{error_response}"
+
+    # Check for SyntaxError
+    elif "SyntaxError" in error_response:
+        error_response = f"A SyntaxError occurred.\nError message: \n{error_response}"
+
+    # Replace candidate with data_point["entry_point"]
+    error_response = re.sub(r'candidate', data_point["entry_point"], error_response)
+    
+    return error_response

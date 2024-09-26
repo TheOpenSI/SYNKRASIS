@@ -35,7 +35,7 @@ def main():
         openai = OpenAI_GPT(enable_chat_history=True)
         df = HumanEvalDataset()
         container = Container()
-        pycapsule = PyCapsule(container, openai)
+        pycapsule = PyCapsule_HumanEval(container, openai)
         
         while True:
             data_point = df.next()
