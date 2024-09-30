@@ -15,7 +15,7 @@ from services.PyCapsule.PyCapsule import PyCapsule
 from services.PyCapsule.PyCapsule_HumanEval import PyCapsule_HumanEval
 from utils.output_message_format.output_colour import print_model_output, print_info, print_error, print_success, print_warning
 from utils.resource.resource_mg_util import call_cleanup
-from data.HumanEval import HumanEvalDataset
+from data.HumanEval.HumanEval import HumanEvalDataset
 
 # Default config file
 LLM_CONFIG_FILE = os.path.abspath(os.path.join(os.path.dirname(__file__), 'config_files/llm_config.yaml'))
