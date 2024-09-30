@@ -1,5 +1,3 @@
-# TODO: Create separate prompt txt file.
-
 import os
 import sys
 sys.path.append(f"{os.path.dirname(os.path.abspath(__file__))}/../..")
@@ -11,16 +9,16 @@ from services.PyCapsule.PyCapsule import PyCapsule
 from services.Container.Container import Container
 from services.Base import ServiceBase
 from services.LLM.LLMBase import LLMBase
-from utils.code_parsing.code_parser import parse_response
+from utils.code_parsing.code_parser_ds1000_gpt import parse_solution_ds1000_gpt
 from utils.error_parsing.parse_error import parse_error
 from utils.output_message_format.output_colour import print_pycapsule
 
-class PyCapsule_HumanEval(PyCapsule):
+class PyCapsule_DS1000(PyCapsule):
     def __init__(self,
                  pycapsule_container: Container,
                  llm: LLMBase):
         """
-        PyCapsule_HumanEval constructor.
+        PyCapsule_DS1000 constructor.
 
         Args:
             model_name (str): Model name.
@@ -30,72 +28,69 @@ class PyCapsule_HumanEval(PyCapsule):
         """
         super().__init__(pycapsule_container, llm)
         
+    
+    def _set_prompt_paths(self):
+        """
+        Override the prompt paths for DS1000.
+        """
+        self.CODE_FIX_PROMPT_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "prompts/code_fix_prompt_ds1000.txt")
+        self.CODE_GEN_PROMPT_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "prompts/code_gen_prompt_ds1000.txt")
+        
         
     def _create_main_py(self, code: str, user_query: dict) -> None:
         """
-        HumanEval implementation when user_query is a dictionary.
         Creates main.py, task_id.py files in the mount_dir.
         Args:
-            code (str): Function definition.
+            code (str): solution, LLM generated Function definition.
             user_query (dict): User query dictionary
-        Metadata: FOR HUMANEVAL
+        Metadata: FOR DS1000
             user_query = {
-                    "task_id": datapoint["task_id"],
-                    "prompt": datapoint["prompt"],
-                    "entry_point": datapoint["entry_point"],
-                    "test": datapoint["test"],
-                    "time_complexity_test_code": time_complexity_test_code,
-                    "test_code": test_code
+                    prompt: problem definition with snippet,
+                    reference_code: reference solution,
+                    metadata: {problem_id, library_problem_id, library, test_case_cnt, perturbation_type, perturbation_origin_id}
+                    code_context = main.py file content, add solution = function definition\n result = funtion call, test function call
                 }
         """ 
         # Suppress warning
         suppress_warning = ("import warnings\n"
                             "warnings.filterwarnings('ignore')\n")
         
-        # Time complexity
-        # TODO: Save time complexity code in a separate file in the container.
-        # TODO: Time complexity does not work, assert keyword found in example.
-        # time_complexity = ("import time\n"
-        #                    "start_time = time.time()\n"
-        #                    f"{user_query['time_complexity_test_code']}\n"
-        #                    "end_time = time.time()\n"
-        #                    "print(f'[TIME-COMPLEXITY] Execution time: {end_time - start_time} seconds')")
+        # Solution and test execution
+        solution = f"solution = '''\n{code}'''" + "\n" + "test_execution(solution)"
         
         # Main
         main_py_path = os.path.join(self.MOUNT_DIR, "main.py")
         self._create_py_file(main_py_path, 
-                             suppress_warning + "\n" + code + "\n" + "\n" + user_query["test_code"])
+                             suppress_warning + "\n" + user_query["code_context"] + "\n" + solution)
 
         # Task file
-        task_file_name = user_query["task_id"].replace("/", "_") + ".py"
+        metadata = user_query["metadata"]
+        task_file_name = str(metadata["problem_id"]) + "_" + str(metadata["library_problem_id"]) + ".py"
         task_file_path = os.path.join(self.MOUNT_DIR, task_file_name)
         self._create_py_file(task_file_path, 
-                             suppress_warning + "\n" + code + "\n" + "\n" + user_query["test_code"])
+                             suppress_warning + "\n" + user_query["code_context"] + "\n" + solution)
         
            
     def _generate_code(self, user_query: dict, suppress_conversation_history: bool = True) -> None:
         """
-        FOR HUMANEVAL.
+        FOR DS1000.
         User query is a dictionary.
 
         Args:
-            user_query (dict): Dictionary query to generate code, for structure refer to data/HumanEval.py.
+            user_query (dict): Dictionary query to generate code, for structure refer to data/DS1000.py.
             suppress_conversation_history (bool): Suppress the conversation history, get activated when pycapsule is in fix mode.
         """
         if type(user_query) != dict:
-            raise ValueError("user_query must be a dict for HumanEval.")
+            raise ValueError("user_query must be a dict for DS1000.")
         
         response = self.llm.generate_response(user_query["prompt"], 
                                               suppress_conversation_history = suppress_conversation_history)
         
         # Parsing
-        requirements, code = parse_response(response)
+        code = parse_solution_ds1000_gpt(response)
         
         # Create main.py and task_id.py
         self._create_main_py(code, user_query)
-        
-        # Create requirements.txt
-        self._create_requirements_txt(requirements)
     
     
     def _fix_code(self, response: CompletedProcess, data_point: dict = None) -> tuple[int, int]:
@@ -107,7 +102,7 @@ class PyCapsule_HumanEval(PyCapsule):
 
         Args:
             response (CompletedProcess): Response from the container with error code, stdout and stderr.
-            data_point (dict): HumanEval data point reference.
+            data_point (dict): DS1000 data point reference.
             
         """
         print_pycapsule("Starting PyCapsule in fix mode.")
@@ -134,3 +129,6 @@ class PyCapsule_HumanEval(PyCapsule):
             return_code = response.returncode
         self._change_system_prompt() # Resetting the system prompt
         return return_code, attempt_count
+    
+    def cleanup(self):
+        pass

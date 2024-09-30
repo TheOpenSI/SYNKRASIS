@@ -4,6 +4,7 @@ import pandas as pd
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 os.environ["TOKENIZERS_PARALLELISM"] = "false"
 
+# Services
 from services.LLM.HF_LLM.HF_LLM import HF_LLM
 from services.LLM.Ollama.Ollama import Ollama
 from services.LLM.OpenAI_GPT.OpenAI_GPT import OpenAI_GPT
@@ -13,9 +14,13 @@ from services.RAG.RAG import RAG
 from services.Container.Container import Container
 from services.PyCapsule.PyCapsule import PyCapsule
 from services.PyCapsule.PyCapsule_HumanEval import PyCapsule_HumanEval
+from services.PyCapsule.PyCapsule_DS1000 import PyCapsule_DS1000
+# Utils
 from utils.output_message_format.output_colour import print_model_output, print_info, print_error, print_success, print_warning
 from utils.resource.resource_mg_util import call_cleanup
+# Data
 from data.HumanEval.HumanEval import HumanEvalDataset
+from data.DS1000.DS1000 import DS1000
 
 # Default config file
 LLM_CONFIG_FILE = os.path.abspath(os.path.join(os.path.dirname(__file__), 'config_files/llm_config.yaml'))
@@ -29,19 +34,21 @@ def main():
     vector_db: VectorDatabase = None
     rag: RAG = None
     container: Container = None
-    pycapsule: PyCapsule_HumanEval = None
+    pycapsule: PyCapsule_DS1000 = None
 
     try:
-        openai = OpenAI_GPT(enable_chat_history=True)
-        df = HumanEvalDataset()
+        openai = OpenAI_GPT(model = "gpt-4o", enable_chat_history=True)
+        df = DS1000()
         container = Container()
-        pycapsule = PyCapsule_HumanEval(container, openai)
+        pycapsule = PyCapsule_DS1000(container, openai)
         
         while True:
             data_point = df.next()
             
-            if data_point is None:
+            if data_point is None or df.current_index == 2:
                 break
+            
+            data_point = df.data[1] # TODO: test
             
             solve_flag, fix_mode_attempt_count = pycapsule(data_point)
             
@@ -57,7 +64,7 @@ def main():
                 
             # Store the result in a list
             df.results.append({
-                "task_id": data_point['task_id'],
+                "task_id": data_point['metadata']['problem_id'],
                 "fix_mode_attempt_count": fix_mode_attempt_count,
                 "status": status
             })

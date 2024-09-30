@@ -36,10 +36,19 @@ class PyCapsule(ServiceBase):
             raise ValueError("Chat history must be enabled in the LLM object for PyCapsule service")
         self.container = pycapsule_container
         self.llm = llm
-        self._change_system_prompt()
         self.maximum_attempts = maximum_attempts
         self.TRACEBACK_PATTERN = r"Traceback.*$" # Pattern to extract traceback from stderr
         self.MOUNT_DIR = os.path.abspath(__file__).replace("PyCapsule.py", "../Container/mount_dir")
+        self._set_prompt_paths()
+        self._change_system_prompt()
+        
+        
+    def _set_prompt_paths(self):
+        """
+        Set the prompt paths for code generation and code fix.
+        """
+        self.CODE_GEN_PROMPT_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "prompts/code_gen_prompt.txt")
+        self.CODE_FIX_PROMPT_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "prompts/code_fix_prompt.txt")
 
 
     def _change_system_prompt(self, is_fix_mode: bool = False):
@@ -49,10 +58,7 @@ class PyCapsule(ServiceBase):
         Args:
             is_fix_mode (bool, optional): If True, will change the prompt for fix mode. Defaults to False.
         """
-        if not is_fix_mode:
-            prompt_file_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "code_gen_prompt.txt")
-        else:
-            prompt_file_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "code_fix_prompt.txt")
+        prompt_file_path = self.CODE_FIX_PROMPT_PATH if is_fix_mode else self.CODE_GEN_PROMPT_PATH
             
         with open(prompt_file_path, "r") as file:
             code_gen_prompt = file.read().strip()

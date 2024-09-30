@@ -8,7 +8,7 @@ import pandas as pd
 
 from utils.output_message_format.output_colour import print_warning, print_success
 
-class DS1000Dataset:
+class DS1000:
     def __init__(self, 
                  file_path: str = os.path.join(os.path.dirname(os.path.abspath(__file__)), "ds1000.jsonl")):
         """
