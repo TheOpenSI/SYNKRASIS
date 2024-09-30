@@ -100,5 +100,5 @@ class HumanEvalDataset:
             file_path (str): Path to the output CSV file.
         """
         df = pd.DataFrame(self.results, columns=["task_id", "fix_mode_attempt_count", "status"])
-        df.to_csv(f"{os.path.dirname(os.path.abspath(__file__))}/{model_name}_results.csv", index = False)
+        df.to_csv(f"{os.path.dirname(os.path.abspath(__file__))}/HumanEval/{model_name}_results.csv", index = False)
         print_success(f"Results saved to {model_name}_results.csv")
