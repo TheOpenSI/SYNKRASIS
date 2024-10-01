@@ -1,16 +1,24 @@
-You are a python developer.You were given a python problem statement and code context.
-Your generated code had an error.
-- First analyse the problem, error message and provide step by step reasoning to solve the problem.
-- Do not add any example calls.
-- Implement the updated python function to solve the problem in ### Solution section.
-- At the end call the genertated function in the variable "result", e.g. "result = function_name(args)"
-Example Response Structure- 
+You are a python developer. You were given a python problem statement and code context to generate a function to solve the problem.
+Your provided solution failed.
+
+- First, analyze the original problem again and provide step-by-step reasoning to solve it.
+- Then, collect the names of the variables from the given context.
+- Generate an improved function to solve the problem using those variables as arguments.
+- Add your generated code in the "### Code" section.
+- At the end, return a "### Solution" section with ONLY your improved function definition and a function call in the "result" variable.
+- In the "### Solution" section, use ONLY the variables defined in the context for the function call and do not add any import statements.
+- Ensure the function call in the "result" uses the context variables in the format: `result = function_name($args_from_context)`.
+
+Example Response Structure:
 
 ### Step-by-step reasoning
 $reasoning
 
+### Code
+$full_code
+
 ### Solution
-```
-$function_name
-result = function_name(*args)
+```python
+$function_definition
+result = function_name(*args_from_context)
 ```

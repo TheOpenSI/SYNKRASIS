@@ -76,7 +76,7 @@ class DS1000:
         Args:
             model_name (str): Name of the model used for the results.
         """
-        df = pd.DataFrame(self.results, columns=["problem_id", "library", "attempt_count", "status"])
+        df = pd.DataFrame(self.results, columns=["problem_id", "library", "fix_mode_attempt_count", "status"])
         file_path = f"{os.path.dirname(os.path.abspath(__file__))}/{model_name}_ds1000_results.csv"
         df.to_csv(file_path, index=False)
         print_success(f"Results saved to {file_path}")

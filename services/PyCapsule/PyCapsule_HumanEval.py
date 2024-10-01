@@ -12,7 +12,7 @@ from services.Container.Container import Container
 from services.Base import ServiceBase
 from services.LLM.LLMBase import LLMBase
 from utils.code_parsing.code_parser import parse_response
-from utils.error_parsing.parse_error import parse_error
+from utils.error_parsing.parse_error import parse_error_human_eval
 from utils.output_message_format.output_colour import print_pycapsule
 
 class PyCapsule_HumanEval(PyCapsule):
@@ -118,7 +118,7 @@ class PyCapsule_HumanEval(PyCapsule):
         while response.returncode != 0 and attempt_count < self.maximum_attempts:
             self._change_system_prompt(is_fix_mode=True)
             
-            error_response = parse_error(response, data_point)
+            error_response = parse_error_human_eval(response, data_point)
             
             fix_mode_query = ("Your generated code had the following error -\n"
                               f"{error_response}\n")

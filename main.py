@@ -37,7 +37,7 @@ def main():
     pycapsule: PyCapsule_DS1000 = None
 
     try:
-        openai = OpenAI_GPT(model = "gpt-4o", enable_chat_history=True)
+        openai = OpenAI_GPT(enable_chat_history=True)
         df = DS1000()
         container = Container()
         pycapsule = PyCapsule_DS1000(container, openai)
@@ -45,10 +45,8 @@ def main():
         while True:
             data_point = df.next()
             
-            if data_point is None or df.current_index == 2:
+            if data_point is None:
                 break
-            
-            data_point = df.data[1] # TODO: test
             
             solve_flag, fix_mode_attempt_count = pycapsule(data_point)
             
@@ -64,7 +62,8 @@ def main():
                 
             # Store the result in a list
             df.results.append({
-                "task_id": data_point['metadata']['problem_id'],
+                "problem_id": data_point['metadata']['problem_id'],
+                "library": data_point['metadata']['library'],
                 "fix_mode_attempt_count": fix_mode_attempt_count,
                 "status": status
             })

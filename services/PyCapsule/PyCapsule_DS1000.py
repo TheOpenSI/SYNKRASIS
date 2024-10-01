@@ -10,7 +10,7 @@ from services.Container.Container import Container
 from services.Base import ServiceBase
 from services.LLM.LLMBase import LLMBase
 from utils.code_parsing.code_parser_ds1000_gpt import parse_solution_ds1000_gpt
-from utils.error_parsing.parse_error import parse_error
+from utils.error_parsing.parse_error import parse_error_ds1000
 from utils.output_message_format.output_colour import print_pycapsule
 
 class PyCapsule_DS1000(PyCapsule):
@@ -113,7 +113,7 @@ class PyCapsule_DS1000(PyCapsule):
         while response.returncode != 0 and attempt_count < self.maximum_attempts:
             self._change_system_prompt(is_fix_mode=True)
             
-            error_response = parse_error(response, data_point)
+            error_response = parse_error_ds1000(response)
             
             fix_mode_query = ("Your generated code had the following error -\n"
                               f"{error_response}\n")
