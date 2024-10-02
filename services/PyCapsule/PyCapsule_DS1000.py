@@ -1,3 +1,5 @@
+# Container requirements taken from https://github.com/open-compass/code-evaluator/blob/master/requirements/ds1000.txt
+
 import os
 import sys
 sys.path.append(f"{os.path.dirname(os.path.abspath(__file__))}/../..")
@@ -55,20 +57,36 @@ class PyCapsule_DS1000(PyCapsule):
         suppress_warning = ("import warnings\n"
                             "warnings.filterwarnings('ignore')\n")
         
+        # Solution: generated function definition and result
+        solution = ("solution = '''\n"
+                    f"{code}\n'''\n")
+        
+        # Timeouts
+        timeout = ("from multiprocessing import Process\n"
+                   "p: Process = Process(target = test_execution, args = (solution, ))\n"
+                   "p.start()\n"
+                   "p.join(timeout = 10)\n"
+                   "if p.is_alive():\n"
+                   "    p.terminate()\n"
+                   "    raise Exception('Generated code is running infinite loop.')\n"
+                   "if p.exitcode != 0:\n"
+                   "    raise Exception('An error occurred. This is a generic error message. See previous error message')\n")
+        
         # Solution and test execution
-        solution = f"solution = '''\n{code}'''" + "\n" + "test_execution(solution)"
+        py_file_content = (f"{suppress_warning}\n"
+                           f"{user_query['code_context']}\n" # test code
+                           f"{solution}\n" # generated code
+                           f"{timeout}") # timeout code
         
         # Main
         main_py_path = os.path.join(self.MOUNT_DIR, "main.py")
-        self._create_py_file(main_py_path, 
-                             suppress_warning + "\n" + user_query["code_context"] + "\n" + solution)
+        self._create_py_file(main_py_path, py_file_content)
 
         # Task file
         metadata = user_query["metadata"]
         task_file_name = str(metadata["problem_id"]) + "_" + str(metadata["library_problem_id"]) + ".py"
         task_file_path = os.path.join(self.MOUNT_DIR, task_file_name)
-        self._create_py_file(task_file_path, 
-                             suppress_warning + "\n" + user_query["code_context"] + "\n" + solution)
+        self._create_py_file(task_file_path, py_file_content)
         
            
     def _generate_code(self, user_query: dict, suppress_conversation_history: bool = True) -> None:
