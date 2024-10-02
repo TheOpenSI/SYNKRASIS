@@ -13,14 +13,9 @@ from services.VectorDatabase.VectorDatabase import VectorDatabase
 from services.RAG.RAG import RAG
 from services.Container.Container import Container
 from services.PyCapsule.PyCapsule import PyCapsule
-from services.PyCapsule.PyCapsule_HumanEval import PyCapsule_HumanEval
-from services.PyCapsule.PyCapsule_DS1000 import PyCapsule_DS1000
 # Utils
 from utils.output_message_format.output_colour import print_model_output, print_info, print_error, print_success, print_warning
 from utils.resource.resource_mg_util import call_cleanup
-# Data
-from data.HumanEval.HumanEval import HumanEvalDataset
-from data.DS1000.DS1000 import DS1000
 
 # Default config file
 LLM_CONFIG_FILE = os.path.abspath(os.path.join(os.path.dirname(__file__), 'config_files/llm_config.yaml'))
@@ -34,47 +29,12 @@ def main():
     vector_db: VectorDatabase = None
     rag: RAG = None
     container: Container = None
-    pycapsule: PyCapsule_DS1000 = None
+    pycapsule: PyCapsule = None
 
     try:
         openai = OpenAI_GPT(enable_chat_history=True)
-        df = DS1000()
         container = Container()
-        pycapsule = PyCapsule_DS1000(container, openai)
-        
-        while True:
-            data_point = df.next()
-            
-            if data_point is None:
-                break
-            
-            solve_flag, fix_mode_attempt_count = pycapsule(data_point)
-            
-            # Determine status based on solve_flag
-            status = "fail"
-            
-            # Update solved and unsolved counts
-            if solve_flag == 0:
-                df.solved_count += 1
-                status = "pass"
-            else:
-                df.unsolved_count += 1
-                
-            # Store the result in a list
-            df.results.append({
-                "problem_id": data_point['metadata']['problem_id'],
-                "library": data_point['metadata']['library'],
-                "fix_mode_attempt_count": fix_mode_attempt_count,
-                "status": status
-            })
-            
-            # Print solved/unsolved progress
-            print("#" * 50)
-            print(f"Solved {df.solved_count} problems, Unsolved {df.unsolved_count} problems")
-            print("#" * 50)
-        
-        # Write all results to CSV at the end
-        df.log_to_csv(openai.model)
+        pycapsule = PyCapsule(container, openai)
         
     finally:
         # Warning resource_tracker: There appear to be .* leaked semaphore objects"
