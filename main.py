@@ -32,9 +32,8 @@ def main():
     pycapsule: PyCapsule = None
 
     try:
-        openai = OpenAI_GPT(enable_chat_history=True)
-        container = Container()
-        pycapsule = PyCapsule(container, openai)
+        openai = OpenAI_GPT()
+        openai.generate_response("What is the capital of France?")
         
     finally:
         # Warning resource_tracker: There appear to be .* leaked semaphore objects"

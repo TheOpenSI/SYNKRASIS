@@ -102,6 +102,19 @@ class LLMBase(ABC):
             print_success("Chat history cleared.")
         else:
             print_error("Chat history is not enabled.")
+            
+            
+    def set_system_prompt_from_file(self, prompt_file: str = None):
+        """
+        Set the system prompt from a file and reset the chat history.
+        Args:
+            prompt_file (str): The file containing the system prompt.
+        """
+        if prompt_file is None:
+            prompt_file = os.path.join(os.path.dirname(os.path.abspath(__file__)), 
+                                       "../../config_files/system_prompt.txt")
+        with open(prompt_file, "r") as prompt_file:
+            self.system_prompt = prompt_file.read()
     
     
     @abstractmethod
