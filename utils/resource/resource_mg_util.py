@@ -1,5 +1,5 @@
 import sys, os, gc
-sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
+sys.path.append(os.path.join(os.path.dirname(__file__), '../..'))
 
 from typing import List
 
@@ -13,7 +13,7 @@ def call_cleanup(services: List[ServiceBase] = None):
     for service in services:
         if service is None:
             continue
-        if service.__class__.__base__ != ServiceBase:
+        if not issubclass(service.__class__, ServiceBase):
             print_warning(f"{service.__class__.__name__} is not a subclass of ServiceBase")
             continue
         service.cleanup()

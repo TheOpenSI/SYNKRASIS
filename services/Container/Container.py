@@ -5,6 +5,7 @@ import os, sys
 sys.path.append(f"{os.path.dirname(os.path.abspath(__file__))}/../..")
 
 import subprocess
+import re
 
 from services.Base import ServiceBase
 from utils.output_message_format.output_colour import print_error, print_info, print_success, print_warning, print_pycapsule
@@ -86,7 +87,14 @@ class Container(ServiceBase):
         
         print_pycapsule(response.stdout)
         print_pycapsule(response.returncode, "exit-code")
-        error_response = "No error" if response.stderr == "" else response.stderr
+        
+        error_response = "No error" 
+        if response.stderr != "":
+            filtered_error_message = re.search(r"Traceback.*$", response.stderr, re.DOTALL)
+            if filtered_error_message:
+                error_response = filtered_error_message.group()
+            else:
+                error_response = response.stderr
         print_pycapsule(error_response, "error-response")
         
         return response

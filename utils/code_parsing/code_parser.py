@@ -1,80 +1,50 @@
+'''
+Structure of the code parser utility function
+### Step-by-step reasoning
+$reasoning
+
+### Requirements
+$external_libraries
+
+### Code
+'''
+
 import re
+from typing import List, Tuple
 
-def parse_input_original(response: str):
+def parse_response(response: str) -> Tuple[List[str], str]:
     """
-    Original parse function.
-    Parse the input response to extract requirements, code, and example.
+    Parse a structured response to extract requirements and code.
+
     Args:
-        response (str): raw response from the model.
+        response (str): The structured response string to parse.
+
+    Returns:
+        - "requirements": List of required libraries (empty list if none)
+        - "code": Extracted code as a string (empty string if not found)
+
+    Raises:
+        ValueError: If the response string is empty or not in the expected format.
     """
-    requirements = []
-    code = ""
-    example = ""
-    if "### Answer" in response or "### Corrected Code" in response:
-        return ["none"], response, ""
-    
-    lines = response.strip().splitlines()
-    current_section = None
-    for line in lines:
-        if "### Requirements" in line:
-            current_section = "requirements"
-        elif "### Code" in line:
-            current_section = "code"
-        elif "### Example" in line:
-            current_section = "example"
+    if not response:
+        raise ValueError("Empty response string provided")
+
+    # Extract requirements
+    requirements_match = re.search(r"### Requirements\s*(.*?)\s*###", response, re.DOTALL)
+    if requirements_match:
+        requirements_text = requirements_match.group(1).strip()
+        if requirements_text.lower() == "none":
+            requirements = []
         else:
-            if current_section == "requirements":
-                if line.strip() not in ["bash", "```", ""]:
-                    requirement = line.strip("`").strip().lower()
-                    requirements.append(requirement)
-            elif current_section == "code" or current_section == "example":
-                if line.strip() not in ["```", "```python"]:
-                    if current_section == "code":
-                        code += line + "\n"
-                    elif current_section == "example":
-                        if "import" not in line.strip():
-                            example += line + "\n"
-    
-    code = code.strip()
-    example = example.strip()
-    
-    return requirements, code, example
+            requirements = [req.strip() for req in requirements_text.split(",") if req.strip()]
+    else:
+        requirements = []
 
-def parse_input_improved(response: str):
-    """
-    Improved parse function.
-    Parse the input response to extract requirements, code, and example.
-    This function captures text between triple backticks for each section.
-    Args:
-        response (str): raw response from the model.
-    """
-    sections = {
-        "Requirements": [],
-        "Code": "",
-        "Example": ""
-    }
-    
-    # Use regex to find content between ### Section and the next ### or end of string
-    section_pattern = r'### (\w+)(.*?)(?=### |\Z)'
-    matches = re.finditer(section_pattern, response, re.DOTALL)
-    
-    for match in matches:
-        section_name = match.group(1)
-        content = match.group(2).strip()
-        
-        if section_name in sections:
-            # Use regex to find content between triple backticks
-            code_pattern = r'```(?:python)?\s*(.*?)\s*```'
-            code_match = re.search(code_pattern, content, re.DOTALL)
-            
-            if code_match:
-                if section_name == "Requirements":
-                    # Split requirements into a list
-                    sections[section_name] = [req.strip().lower() for req in code_match.group(1).split('\n') if req.strip()]
-                else:
-                    sections[section_name] = code_match.group(1).strip()
-            elif section_name == "Requirements":
-                # If no triple backticks, treat each line as a requirement
-                sections[section_name] = [req.strip().lower() for req in content.split('\n') if req.strip()]
-    
-    return sections["Requirements"], sections["Code"], sections["Example"]
+    # Extract code
+    code_match = re.search(r"### Code\s*```(?:python)?(.*?)```", response, re.DOTALL)
+    if code_match:
+        code = code_match.group(1).strip()
+    else:
+        code = ""
+
+    return requirements, code

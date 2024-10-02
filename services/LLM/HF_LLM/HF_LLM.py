@@ -7,9 +7,11 @@
 # response = llm.generate_response("What is the capital of France?")
 # -------------------------------------------------------------------------------
 
+# TODO: Add conversation history support
+
 import os, sys
 
-sys.path.append(f"{os.path.dirname(os.path.abspath(__file__))}/../..")
+sys.path.append(f"{os.path.dirname(os.path.abspath(__file__))}/../../..")
 
 import os
 import torch
@@ -17,13 +19,14 @@ import yaml
 from dotenv import load_dotenv
 from transformers import AutoTokenizer, AutoModelForCausalLM, BitsAndBytesConfig, pipeline
 from huggingface_hub import login
-from typing import List, Dict
+from typing import List, Dict, Optional
 
 # local imports
 from services.Base import ServiceBase
+from services.LLM.LLMBase import LLMBase
 from utils.output_message_format.output_colour import print_info, print_warning, print_error, print_success
 
-class LLM(ServiceBase):
+class HF_LLM(ServiceBase, LLMBase):
 
     def __init__(self, 
                  repo_name:str = "mistralai/Mistral-7B-v0.1",
@@ -230,7 +233,10 @@ class LLM(ServiceBase):
             self.system_prompt = prompt
 
 
-    def generate_response(self, user_prompt:str, context:List[str] = None) -> str:
+    def generate_response(self, 
+                          user_prompt:str, 
+                          context:List[str] = None,
+                          suppress_conversation_history: bool = True) -> Optional[str]:
         """
         Generate a response to the user prompt
         Args:

@@ -6,12 +6,12 @@ sys.path.append(f"{os.path.dirname(os.path.abspath(__file__))}/../..")
 
 from services.Base import ServiceBase
 from services.VectorDatabase.VectorDatabase import VectorDatabase
-from services.LLM.LLM import LLM
-from services.Ollama.Ollama import Ollama
+from services.LLM.HF_LLM.HF_LLM import HF_LLM
+from services.LLM.Ollama.Ollama import Ollama
 from utils.output_message_format.output_colour import print_error, print_info, print_success
 
 class RAG(ServiceBase):
-    def __init__(self, vector_db: VectorDatabase, llm: Union[LLM, Ollama]):
+    def __init__(self, vector_db: VectorDatabase, llm: Union[HF_LLM, Ollama]): # TODO: LLMBase
         """
         Initialize the RAG service, Requires LLM or Ollama and VectorDatabase to be initialized
         Args:
