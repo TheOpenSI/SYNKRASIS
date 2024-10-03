@@ -69,7 +69,7 @@ class PyCapsule_MBPP(PyCapsule):
         if type(user_query) != dict:
             raise ValueError("user_query must be a dictionary for MBPP.")
         
-        llm_response = self.llm.generate_response(user_query["prompt"] + "\n" + user_query["function_signature"],
+        llm_response = self.llm.generate_response(user_query["prompt"],
                                               suppress_conversation_history = suppress_conversation_history)
         
         requirements, code = parse_response(llm_response)

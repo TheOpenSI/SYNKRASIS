@@ -51,12 +51,11 @@ class MBPP(DatasetBase):
             self.current_index += 1
             
             function_signature = re.search(r"(?<=assert\s)(.*?)(?=\s==)", datapoint["test_list"][0])
+            function_signature_prompt = "A typical function call will have the following function signature - \n" + function_signature.group()
            
             return {
                 "task_id": datapoint["task_id"],
-                "prompt": datapoint["text"],
-                "function_signature": "A typical function call will have the following function signature - \n" + 
-                                      function_signature.group(),
+                "prompt": datapoint["text"] + "\n" + function_signature_prompt,
                 "test_list": datapoint["test_list"]
             }
         else:
@@ -79,9 +78,8 @@ class MBPP(DatasetBase):
         Write result data to CSV file using Pandas.
         For MBPP task results.
         Args:
-            data (list): List of dictionaries containing task results.
-            file_path (str): Path to the output CSV file.
+            model_name (str): Name of the model used to generate the results.
         """
         df = pd.DataFrame(self.results, columns=["task_id", "fix_mode_attempt_count", "status"])
-        df.to_csv(f"{os.path.dirname(os.path.abspath(__file__))}/HumanEval/{model_name}_results.csv", index = False)
+        df.to_csv(f"{os.path.dirname(os.path.abspath(__file__))}/{model_name}_results.csv", index = False)
         print_success(f"Results saved to {model_name}_results.csv")
