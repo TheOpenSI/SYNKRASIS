@@ -17,6 +17,9 @@ from services.PyCapsule.PyCapsule import PyCapsule
 from utils.output_message_format.output_colour import print_model_output, print_info, print_error, print_success, print_warning
 from utils.resource.resource_mg_util import call_cleanup
 
+# Data
+from data.MBPP.MBPP import MBPP
+
 # Default config file
 LLM_CONFIG_FILE = os.path.abspath(os.path.join(os.path.dirname(__file__), 'config_files/llm_config.yaml'))
 
@@ -32,8 +35,11 @@ def main():
     pycapsule: PyCapsule = None
 
     try:
-        openai = OpenAI_GPT()
-        openai.generate_response("What is the capital of France?")
+        df = MBPP()
+        point = df.next()
+        for key, value in point.items():
+            print(f"{key}: {value}")
+        
         
     finally:
         # Warning resource_tracker: There appear to be .* leaked semaphore objects"
