@@ -1,0 +1,73 @@
+import os
+import sys
+sys.path.append(f"{os.path.dirname(os.path.abspath(__file__))}/../..")
+
+from typing import Optional, Any
+from abc import ABC, abstractmethod
+
+from utils.output_message_format.output_colour import print_error
+
+class DatasetBase(ABC):
+    def __init__(self, file_path: str):
+        """
+        Initialize the dataset loader.
+
+        Args:
+            file_path (str): Path to the dataset file.
+        """
+        self.file_path = file_path
+        self.data = [] # Holds the dataset
+        self.current_index = 0 # Current index in the dataset
+        self._load_data()
+        
+    
+    @abstractmethod    
+    def _load_data(self) -> None:
+        """
+        Load data from data_file to self.data
+        """
+        pass
+    
+    
+    @abstractmethod
+    def next() -> Optional[Any]:
+        """
+        Get the next/self.current_index point from the dataset
+
+        Returns:
+            Optional[Dict[str, str]]: Data point.
+        """
+        pass
+    
+    
+    def reset(self) -> None:
+        """
+        Reset the current_index to 0
+        """
+        self.current_index = 0
+        
+        
+    def get_data_point_by_index(self, index: int) -> Optional[Any]:
+        """
+        Get a data point by index
+
+        Args:
+            index (int): Index of the data point to get.
+
+        Returns:
+            Optional[Any]: Data point, can be any file type.
+        """
+        try:
+            return self.data[index]
+        except IndexError:
+            print_error(f"Index {index} out of range.")
+            
+            
+    def __len__(self) -> int:
+        """
+        Return the number of datapoints in the dataset.
+
+        Returns:
+            int: The number of datapoints.
+        """
+        return len(self.data)
