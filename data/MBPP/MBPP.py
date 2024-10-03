@@ -50,7 +50,7 @@ class MBPP(DatasetBase):
             datapoint = self.data[self.current_index]
             self.current_index += 1
             
-            function_signature = re.search(r"(?<=assert\s)(.*?)(?=\s==)", datapoint["test_list"][0])
+            function_signature = re.search(r"(?<=assert\s)(.*?)(?===)", datapoint["test_list"][0])
             function_signature_prompt = "A typical function call will have the following function signature - \n" + function_signature.group()
            
             return {

@@ -46,7 +46,7 @@ def main():
         while True:
             data_point = df.next()
             
-            if data_point is None or df.current_index == 2:
+            if data_point is None:
                 break
             
             solve_flag, fix_mode_attempt_count = pycapsule(data_point)
