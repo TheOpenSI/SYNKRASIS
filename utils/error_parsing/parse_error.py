@@ -1,7 +1,7 @@
 from subprocess import CompletedProcess
 import re
 
-def parse_error_human_eval(response: CompletedProcess, data_point: dict) -> str:
+def parse_error_human_eval(response: CompletedProcess, data_point: dict, modify_assertion_error: bool = True) -> str:
     """
     FOR HUMANEVAL.
     Extracts error message from subprocess response and identifies specific error types.
@@ -39,7 +39,8 @@ def parse_error_human_eval(response: CompletedProcess, data_point: dict) -> str:
         error_response = f"A SyntaxError occurred.\nError message: \n{error_response}"
 
     # Replace candidate with data_point["entry_point"]
-    error_response = re.sub(r'candidate', data_point["entry_point"], error_response)
+    if modify_assertion_error:
+        error_response = re.sub(r'candidate', data_point["entry_point"], error_response)
     
     return error_response
 

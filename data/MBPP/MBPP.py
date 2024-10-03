@@ -54,7 +54,7 @@ class MBPP(DatasetBase):
            
             return {
                 "task_id": datapoint["task_id"],
-                "text": datapoint["text"],
+                "prompt": datapoint["text"],
                 "function_signature": "A typical function call will have the following function signature - \n" + 
                                       function_signature.group(),
                 "test_list": datapoint["test_list"]

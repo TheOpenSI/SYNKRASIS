@@ -13,6 +13,8 @@ from services.VectorDatabase.VectorDatabase import VectorDatabase
 from services.RAG.RAG import RAG
 from services.Container.Container import Container
 from services.PyCapsule.PyCapsule import PyCapsule
+from services.PyCapsule.PyCapsule_MBPP import PyCapsule_MBPP
+
 # Utils
 from utils.output_message_format.output_colour import print_model_output, print_info, print_error, print_success, print_warning
 from utils.resource.resource_mg_util import call_cleanup
@@ -36,9 +38,12 @@ def main():
 
     try:
         df = MBPP()
+        openai = OpenAI_GPT(enable_chat_history = True)
+        container = Container()
+        pycapsule = PyCapsule_MBPP(container, openai)
+        
         point = df.next()
-        for key, value in point.items():
-            print(f"{key}: {value}")
+        pycapsule(point)
         
         
     finally:

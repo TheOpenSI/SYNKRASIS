@@ -7,7 +7,7 @@ sys.path.append(f"{os.path.dirname(os.path.abspath(__file__))}/../..")
 
 import subprocess
 from subprocess import CompletedProcess
-from typing import Union
+from typing import Union, Tuple
 
 from services.Base import ServiceBase
 from services.Container.Container import Container
@@ -41,14 +41,51 @@ class PyCapsule(ServiceBase):
         self.MOUNT_DIR = os.path.abspath(__file__).replace("PyCapsule.py", "../Container/mount_dir")
         self._set_prompt_paths()
         self._change_system_prompt()
+            
+    def _suppress_warning_code(self) -> str:
+        """
+        Suppress warnings in the generated code.
+        """
+        return ("import warnings\n"
+                "warnings.filterwarnings('ignore')\n")
+        
+        
+    def _timeout_code(self, function_name: str, args: Tuple, timeout: int) -> str:
+        """
+        Runs the example call or the test cases in a different thread with a timeout period.
+        In case of an infinite loop, the code will terminate the process and raise an exception.
+        Infinite loop will raise Exception("Generated code is running infinite loop.")
+        Rest of the errors will raise Exception("An error occurred. This is a generic error message. See previous error message")
+
+        Args:
+            function_name (str): function to run/test cases
+            args (Tuple): arguments to pass to the function
+
+        Raises:
+            Exception: Infinite loop
+            Exception: Other exceptions (Generic error message)
+
+        Returns:
+            str: Code snippet to run the function with timeout.
+        """
+        return ("from multiprocessing import Process\n"
+                f"p: Process = Process(target = {function_name}, args = {args})\n"
+                "p.start()\n"
+                f"p.join(timeout = {timeout})\n"
+                "if p.is_alive():\n"
+                "    p.terminate()\n"
+                "    raise Exception('Generated code is running infinite loop.')\n"
+                "if p.exitcode != 0:\n"
+                "    raise Exception('An error occurred. This is a generic error message. See previous error message')\n")
         
         
     def _set_prompt_paths(self):
         """
-        Set the prompt paths for code generation and code fix.
+        Set the prompt paths for code generation and code fix.\n
+        ** Override for dataset specific implementation.
         """
-        self.CODE_GEN_PROMPT_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "prompts/code_gen_prompt.txt")
-        self.CODE_FIX_PROMPT_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "prompts/code_fix_prompt.txt")
+        self.CODE_GEN_PROMPT_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "code_gen_prompt.txt")
+        self.CODE_FIX_PROMPT_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "code_fix_prompt.txt")
 
 
     def _change_system_prompt(self, is_fix_mode: bool = False):
@@ -66,6 +103,12 @@ class PyCapsule(ServiceBase):
         
         
     def _create_py_file(self, path: str, content:str) -> None:
+        """
+        Create a python file at specified path.
+        Args:
+            path (str): Path to create the file.
+            content (str): Content to write in the file.
+        """
         with open(path, "w") as task_file:
             task_file.write(content)
         
@@ -84,14 +127,18 @@ class PyCapsule(ServiceBase):
                 
     def _create_main_py(self, code: str, test_cases:str = "") -> None:
         """
-        Creates main.py file in the mount_dir
+        Creates main.py file in the mount_dir. 
+        This  just adds the LLM generated test cases (if any) to the py file.
+        For dataset specific implementation, override this method so instead of test case: str, it can accept a user_query: dict.
+        The user_query will contain the test cases and other metadata.\n
+        ** Override for dataset specific implementation.
+        
         Args:
             code (str): Function definition IDEALLY WITH AN EXAMPLE.
             test_cases (str): Test cases either generated using llm or custom. Defaults to "".
         """ 
         # Suppress warning
-        suppress_warning = ("import warnings\n"
-                            "warnings.filterwarnings('ignore')\n")
+        suppress_warning = self._suppress_warning_code()
         
         # Main
         main_py_path = os.path.join(self.MOUNT_DIR, "main.py")
@@ -102,7 +149,8 @@ class PyCapsule(ServiceBase):
         """
         Gets activated only when response.returncode != 0.
         Will change sytem prompt and attempt to fix the code.
-        Returns response code and number of attempts made.
+        Returns response code and number of attempts made.\n
+        ** Override for dataset specific implementation.
 
         Args:
             response (CompletedProcess): Response from the container with error code, stdout and stderr.
@@ -142,33 +190,13 @@ class PyCapsule(ServiceBase):
         self._change_system_prompt() # Resetting the system prompt to normal mode
         
         return return_code, attempt_count
-        
-    
-    def _debug_insert_error():
-        """
-        For TESTING only.
-        Inserts syntax error in the generated code.
-        """
-        mount_dir = os.path.abspath(__file__).replace("PyCapsule.py", "../Container/mount_dir")
-        with open(os.path.join(mount_dir, "main.py"), "r") as file:
-            data = file.readlines()
-        file.close()
-        new_data = []
-        for v in data:
-            if v.find("def ") > -1:
-                # v = v + "\t'my_str'.append(a)\n"
-                v = v.replace("(", "((")
-            new_data.append(v)
-        # write
-        with open(os.path.join(mount_dir, "main.py"), "w") as file:
-            file.writelines(new_data)
-        file.close()
  
         
     def _generate_code(self, user_query: str, suppress_conversation_history: bool = True) -> None:
         """
         Create the main.py and requirements from the LLM response.
-        USE APPROPRIATE PARSER.
+        USE APPROPRIATE PARSER.\n
+        ** Override for dataset specific implementation.
 
         Args:
             user_query (str): String query to generate code.
@@ -227,7 +255,7 @@ class PyCapsule(ServiceBase):
     @staticmethod
     def run_command(command: str = "whoami") -> str:
         """
-        For testing only.
+        For TESTING only.
         Runs whoami command in the local shell.
 
         Args:
@@ -238,6 +266,28 @@ class PyCapsule(ServiceBase):
         """
         result = subprocess.run(command, shell=True, capture_output=True, text=True)
         return result.stdout.strip()
+    
+    
+    @staticmethod
+    def _debug_insert_error():
+        """
+        For TESTING only.
+        Inserts syntax error in the generated code.
+        """
+        mount_dir = os.path.abspath(__file__).replace("PyCapsule.py", "../Container/mount_dir")
+        with open(os.path.join(mount_dir, "main.py"), "r") as file:
+            data = file.readlines()
+        file.close()
+        new_data = []
+        for v in data:
+            if v.find("def ") > -1:
+                # v = v + "\t'my_str'.append(a)\n"
+                v = v.replace("(", "((")
+            new_data.append(v)
+        # write
+        with open(os.path.join(mount_dir, "main.py"), "w") as file:
+            file.writelines(new_data)
+        file.close()
 
 
     def cleanup(self):
