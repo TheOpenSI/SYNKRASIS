@@ -42,7 +42,6 @@ def main():
         container = Container()
         pycapsule = PyCapsule_MBPP(container, openai)
         
-        
         while True:
             data_point = df.next()
             

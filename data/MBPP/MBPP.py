@@ -14,11 +14,11 @@ class MBPP(DatasetBase):
     def __init__(self, 
                  file_path: str = os.path.join(os.path.dirname(os.path.abspath(__file__)), "mbpp.jsonl")):
         """
-        Initialize the HumanEval dataset loader.
+        Initialize the MBPP dataset loader.
 
         Args:
             file_path (str): Path to the JSONL file containing the dataset.
-                             Defaults to 'human-eval-v2-20210705.jsonl' in the current directory.
+                             Defaults to 'mbpp.jsonl' in the current directory.
         """
         super().__init__(file_path)
         self.solved_count: int = 0

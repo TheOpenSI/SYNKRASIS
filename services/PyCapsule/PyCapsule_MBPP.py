@@ -32,24 +32,46 @@ class PyCapsule_MBPP(PyCapsule):
         super()._set_prompt_paths()
         
         
+    def _create_test_function(self, test_list: list) -> str:
+        """
+        Create the test function from the test list.
+        Uses the default test function for MBPP.
+
+        Args:
+            test_list (list): list of test cases.
+
+        Returns:
+            str: test function with all test cases + call to the function.
+        """
+        all_tests =  "\t" + "\n\t".join(test_list)
+        test_function = ("def test_function():\n"
+                         f"{all_tests}\n"
+                         "\n")
+        
+        return test_function
+        
+        
     def _create_main_py(self, code: str, user_query: dict) -> None:
         """
         Create the main.py file.
-        Uses suppress warning code but not the timeout code.
+        Uses suppress warning code and the timeout code.
 
         Args:
             code (str): code to be written to the main.py file.
             user_query (dict): data point with task_id, prompt, function_signature, test_list.
         """
+        test_function = self._create_test_function(user_query["test_list"])
+        timeout_code = self._timeout_code("test_function", (), timeout = 10)
         py_file_content = (self._suppress_warning_code() + "\n" +
-                           code + "\n" +
-                           "\n".join(user_query["test_list"]))
+                           code + "\n\n" +
+                           test_function + "\n" +
+                           timeout_code)
         
         main_py_path = os.path.join(self.MOUNT_DIR, "main.py")
         task_file_path = os.path.join(self.MOUNT_DIR, f"task_{user_query['task_id']}.py")
         
         self._create_py_file(main_py_path, py_file_content)
-        self._create_py_file(task_file_path, code)
+        self._create_py_file(task_file_path, py_file_content)
         
         
     def _generate_code(self, user_query: dict, suppress_conversation_history: bool = True) -> None:
