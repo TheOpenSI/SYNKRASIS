@@ -40,8 +40,6 @@ def main():
         llm = HF_LLM(llm_config_file = LLM_CONFIG_FILE, enable_chat_history = True)
         llm.generate_response("What is the capital of France?", suppress_conversation_history=False)
         
-
-        
         
     finally:
         # Warning resource_tracker: There appear to be .* leaked semaphore objects"
