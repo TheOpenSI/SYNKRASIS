@@ -1,3 +1,24 @@
+#===============================================================================================================================
+# Common traits - 
+# Fields:
+#   - model_name: str
+#   - prompt_template_path: str
+#   - enable_chat_history: bool
+#   - chat_history: ChatHistory
+#   - system_prompt: str
+#
+# Methods:
+#   - _init_chat_history(original_question: str, max_history: int = 1)
+#   - _prepare_prompt(messages: List[Dict], bos_token: str) -> str
+#   - _prepare_context(context: List[str]) -> Optional[str]
+#   - _prepare_conversation_history(user_query: str) -> str
+#   - set_system_prompt(prompt: str)
+#   - set_system_prompt_from_file(prompt_file: str = None)
+#   - clear_chat_history()
+#
+# Abstract Methods:
+#   - generate_response(user_prompt: str, context:List[str] = None, suppress_conversation_history:bool = True) -> Optional[str]
+#===============================================================================================================================
 import os, sys
 sys.path.append(f"{os.path.dirname(os.path.abspath(__file__))}/../..")
 
@@ -9,14 +30,15 @@ from modules.ChatHistory import ChatHistory
 from utils.output_message_format.output_colour import print_error, print_success
 
 class LLMBase(ABC):
-    def __init__(self, enable_chat_history: bool = False):
+    def __init__(self, model_name: str, enable_chat_history: bool = False):
+        self.model_name = model_name
         self.prompt_template_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "../../config_files/default_chat_template.jinja")
         self.enable_chat_history = enable_chat_history
         self.chat_history: ChatHistory = None
-        self.system_prompt = "Always answer the question to the best of your ability even if the context is not useful."
+        self.system_prompt = "You are a helpful assistant, always answer the question to the best of your ability even if the context is not useful."
     
   
-    def _generate_prompt(self, messages: List[Dict], bos_token="") -> str:
+    def _prepare_prompt(self, messages: List[Dict], bos_token="") -> str:
         """
         Generate a prompt from the provided messages using the default jinja template.
         Args:
@@ -24,6 +46,7 @@ class LLMBase(ABC):
             bos_token (str): The BOS token to use in the prompt.
         """
         filtered_messages = [msg for msg in messages if msg.get("content").strip()] # Filter out empty messages.
+        
         with open(self.prompt_template_path, "r") as jinja_file:
             template_str = jinja_file.read()
 
@@ -106,7 +129,7 @@ class LLMBase(ABC):
             
     def set_system_prompt_from_file(self, prompt_file: str = None):
         """
-        Set the system prompt from a file and reset the chat history.
+        Set the system prompt from a file.
         Args:
             prompt_file (str): The file containing the system prompt.
         """
@@ -115,6 +138,7 @@ class LLMBase(ABC):
                                        "../../config_files/system_prompt.txt")
         with open(prompt_file, "r") as prompt_file:
             self.system_prompt = prompt_file.read()
+        # TODO: Consider clearing the chat history here.
     
     
     @abstractmethod

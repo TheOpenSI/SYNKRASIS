@@ -13,11 +13,10 @@ class OpenAI_GPT(ServiceBase, LLMBase):
     def __init__(self,
                  temperature: float = 0.7,
                  seed: int = 42, 
-                 model: str = "gpt-3.5-turbo",
+                 model_name: str = "gpt-3.5-turbo",
                  enable_chat_history: bool = False):
         ServiceBase.__init__(self)
-        LLMBase.__init__(self, enable_chat_history=enable_chat_history)
-        self.model = model
+        LLMBase.__init__(self, model_name, enable_chat_history)
         self.temperature = temperature
         self.seed = seed
         self.client: OpenAI = OpenAI(api_key=self._load_openai_api_key())
@@ -52,27 +51,24 @@ class OpenAI_GPT(ServiceBase, LLMBase):
             {"role": "Conversation", "content": conversation_history}
         ]
 
-        prompt = self._generate_prompt(messages)
+        prompt = self._prepare_prompt(messages)
 
         response = self.client.chat.completions.create(
             model=self.model,
             messages=[
                 {"role": "system", "content": self.system_prompt},
-                {"role": "user", "content": prompt}
-                ],
+                {"role": "user", "content": prompt}],
             temperature=self.temperature,
             seed=self.seed
         )
-        
-        # TODO: For finetune data
-        print("#"*10)
-        print(f"[FINAL PROMPT] {prompt}")
-        print("#"*10)
 
         answer = response.choices[0].message.content
         print_model_output(answer, self.model)
 
-        if self.enable_chat_history and self.chat_history:
+        if self.enable_chat_history:
+            if not self.chat_history:
+                self._init_chat_history(user_prompt)
+                
             self.chat_history.add_interaction(user_prompt, answer)
 
         return answer
