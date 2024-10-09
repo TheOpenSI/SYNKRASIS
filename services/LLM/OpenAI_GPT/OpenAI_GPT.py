@@ -63,6 +63,11 @@ class OpenAI_GPT(ServiceBase, LLMBase):
             temperature=self.temperature,
             seed=self.seed
         )
+        
+        # TODO: For finetune data
+        print("#"*10)
+        print(f"[FINAL PROMPT] {prompt}")
+        print("#"*10)
 
         answer = response.choices[0].message.content
         print_model_output(answer, self.model)

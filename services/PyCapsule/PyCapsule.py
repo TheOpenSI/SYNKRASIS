@@ -60,6 +60,7 @@ class PyCapsule(ServiceBase):
         Args:
             function_name (str): function to run/test cases
             args (Tuple): arguments to pass to the function
+            timeout (int): timeout period in seconds
 
         Raises:
             Exception: Infinite loop

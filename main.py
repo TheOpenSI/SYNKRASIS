@@ -42,8 +42,33 @@ def main():
         container = Container()
         pycapsule = PyCapsule_MBPP(container, openai)
         
-        point = df.next()
-        pycapsule(point)
+        while True:
+            data_point = df.next()
+            
+            if data_point is None:
+                break
+            
+            solve_flag, fix_mode_attempt_count = pycapsule(data_point)
+            status = "fail"
+            
+            if solve_flag == 0:
+                df.solved_count += 1
+                status = "pass"
+            else:
+                df.unsolved_count += 1
+                
+                
+            df.results.append({
+                "task_id": data_point["task_id"],
+                "fix_mode_attempt_count": fix_mode_attempt_count,
+                "status": status
+            })
+            
+            print("#" * 50)
+            print(f"Solved {df.solved_count} problems, Unsolved {df.unsolved_count} problems")
+            print("#" * 50)
+            
+            df.log_to_csv(openai.model)
         
         
     finally:
