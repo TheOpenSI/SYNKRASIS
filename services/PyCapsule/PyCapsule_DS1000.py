@@ -111,7 +111,7 @@ class PyCapsule_DS1000(PyCapsule):
         self._create_main_py(code, user_query)
     
     
-    def _fix_code(self, response: CompletedProcess, data_point: dict = None) -> tuple[int, int]:
+    def _fix_code(self, response: CompletedProcess, data_point: dict = None):
         """
         Gets activated only when response.returncode != 0.
         Will change sytem prompt and attempt to fix the code.

@@ -37,7 +37,7 @@ def main():
     pycapsule: PyCapsule_DS1000 = None
 
     try:
-        openai = OpenAI_GPT(enable_chat_history=True)
+        openai = OpenAI_GPT(enable_chat_history=True, model="gpt-3.5-turbo")
         df = DS1000()
         container = Container()
         pycapsule = PyCapsule_DS1000(container, openai)

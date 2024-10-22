@@ -98,7 +98,7 @@ class PyCapsule_HumanEval(PyCapsule):
         self._create_requirements_txt(requirements)
     
     
-    def _fix_code(self, response: CompletedProcess, data_point: dict = None) -> tuple[int, int]:
+    def _fix_code(self, response: CompletedProcess, data_point: dict = None):
         """
         Gets activated only when response.returncode != 0.
         Will change sytem prompt and attempt to fix the code.

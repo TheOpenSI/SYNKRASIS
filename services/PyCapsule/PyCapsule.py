@@ -98,7 +98,7 @@ class PyCapsule(ServiceBase):
         self._create_py_file(main_py_path, suppress_warning + "\n\n" + code + "\n\n" + test_cases)
         
         
-    def _fix_code(self, *args) -> tuple[int, int]:
+    def _fix_code(self, *args):
         """
         Gets activated only when response.returncode != 0.
         Will change sytem prompt and attempt to fix the code.
@@ -186,7 +186,7 @@ class PyCapsule(ServiceBase):
         self._create_requirements_txt(requirements)
         
         
-    def __call__(self, user_query: Union[str, dict]) -> tuple[int, int]:
+    def __call__(self, user_query: Union[str, dict]):
         """
         Generate code using ollama and run the code in the container.
 
