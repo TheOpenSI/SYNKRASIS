@@ -2,19 +2,18 @@ import os
 import sys
 sys.path.append(f"{os.path.dirname(os.path.abspath(__file__))}/../..")
 
-import yaml
+import yaml, torch
 from datasets import load_dataset
 from peft.peft_model import PeftModel
 from peft import (LoraConfig,
                   prepare_model_for_kbit_training,
                   get_peft_model)
-from transformers import TrainingArguments
 from typing import List, Union
 from trl import SFTTrainer, SFTConfig
 
 from services.Base import ServiceBase
 from services.LLM.HF_LLM.HF_LLM import HF_LLM
-from utils.output_message_format.output_colour import print_error, print_warning
+from utils.output_message_format.output_colour import print_error, print_warning, print_model_output, print_success
 
 class Finetune(ServiceBase):
     def __init__(self,
@@ -27,7 +26,6 @@ class Finetune(ServiceBase):
                  use_peft: bool = True,
                  peft_config: LoraConfig = None,
                  format_func: callable = None,
-                 dataset_text_field: str = "text",
                  training_args_path = "config_files/finetune_config.yaml"):
         """
         Initialise the Finetune service with base model.
@@ -43,7 +41,7 @@ class Finetune(ServiceBase):
             use_peft (bool, optional): Use LoRA adapters. Defaults to True.
             peft_config (LoraConfig, optional): LoRA Config. Defaults to None.
             format_func (callable, optional): Dataset formatting function to prepare the dataset and text field. Defaults to None.
-            dataset_text_field (str, optional): Dataset text field for training. Defaults to "text".
+            training_args_path (str, optional): SFTConfig arguments.
         """
         super().__init__()
         if model is None:
@@ -58,9 +56,9 @@ class Finetune(ServiceBase):
         self.use_peft = use_peft
         self.peft_config = peft_config
         self.target_modules = target_modules
-        self.dataset_text_field = dataset_text_field
         self.training_args_path = training_args_path
         self._apply_dataset_formatting_function(format_func)
+        self.finetuned_model = None
         
         
     def _apply_dataset_formatting_function(self, format_func: callable) -> None:
@@ -120,23 +118,75 @@ class Finetune(ServiceBase):
             return self.model
         
     
-    def _load_finetune_training_args(self) -> dict:
+    def _load_finetune_sft_config_args(self) -> dict:
         """
-        Load the training arguments from the config file and returns as a dictionary
+        Load the sftconfig arguments from the config file and returns as a dictionary
         """
         with open(self.training_args_path, "r") as file:
-            training_args = yaml.safe_load(file)
+            sft_config_args = yaml.safe_load(file)
         
-        return training_args
+        return sft_config_args
         
         
-    def _get_training_args(self) -> TrainingArguments:
+    def _get_training_args(self) -> SFTConfig:
         """
-        Get the TrainingArguments for SFTTrainer
+        Get the SFTConfig for SFTTrainer
 
         Returns:
-            TrainingArguments: SFTTrainer args, reads from a yaml config file.
+            SFTConfig: SFTTrainer args, reads from a yaml config file.
         """
-        trainer = SFTTrainer()
-        sfttrainer_args = self._load_finetune_training_args()
-        return TrainingArguments(**sfttrainer_args)
+        sft_config_args = self._load_finetune_training_args()
+        return SFTConfig(**sft_config_args)
+    
+    
+    def train(self, push_to_hub: bool = False, hub_repo_name: str = None) -> None:
+        """
+        Train the model with the fine-tuning dataset
+        Args:
+            push_to_hub (bool, optional): Push the model to the hub. Defaults to False.
+            hub_repo_name (str, optional): Hub repo name. Defaults to None.
+        """
+        self._prepare_kbit_quantized_training()
+        model = self._create_peft_model() # does not chnage the self.model object
+        sft_config = self._get_training_args()
+        trainer = SFTTrainer(model = model,
+                             tokenizer = model.tokenizer, 
+                             train_dataset = self.dataset["train"], 
+                             peft_config = self._get_peft_config,
+                             args = sft_config)
+        trainer.train()
+        self.finetuned_model = model
+        trainer.save_model()
+        if push_to_hub:
+            if hub_repo_name is None:
+                raise Exception("Please provide the hub_repo_name to push the model to the hub.")   
+            self.finetuned_model.push_to_hub(hub_repo_name)
+            
+    
+    def generate_response(self, user_prompt: str) -> str:
+        """
+        Generate a response from the fine-tuned model
+        """
+        if self.finetuned_model is None:
+            raise Exception("Model is not fine-tuned yet. Please train the model first.")
+        self.finetuned_model.eval()
+        
+        # Tokenizer
+        inputs = self.model.tokenizer(user_prompt, add_special_tokens = False, return_tensors = "pt", padding = True)
+        with torch.inference_mode():
+            outputs = self.finetuned_model.generate(
+                input_ids = inputs["input_ids"],
+                attention_mask = inputs["attention_mask"],
+                max_new_tokens = 1024,
+                do_sample = True,
+                top_p = 0.9,
+                temperature = 0.5
+            )
+        response = self.model.tokenizer.decode(outputs[0], skip_special_tokens=True)
+        print_model_output(response, f"FINE-TUNED {self.model.model_name}")
+        return response
+    
+    
+    def cleanup(self):
+        self.model.cleanup()
+        print_success("Finetune resources cleaned up.")

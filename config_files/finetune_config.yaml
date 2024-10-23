@@ -1,11 +1,17 @@
 output_dir: "./finetuned_model_training_output",
+dataset_text_field: "text",
+
+packing: True, # Controls whether the [`ConstantLengthDataset`] packs the sequences of the dataset.
+max_seq_length: 1024,
+
+neftune_noise_alpha = 10,
 
 num_train_epochs: 3,
 max_steps: -1, # Number of training steps (overrides num_train_epochs)
 
 per_device_train_batch_size: 4,
 gradient_accumulation_steps: 2,
-gradient_checkpointing: True,
+gradient_checkpointing: False, # Enable gradient checkpointing to save memory
 max_grad_norm: 0.3, # Maximum gradient normal (gradient clipping)
 
 optim: "paged_adamw_32bit", # efficient for 32 bit GPUs
