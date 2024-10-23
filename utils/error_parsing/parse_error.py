@@ -9,6 +9,8 @@ def parse_error_human_eval(response: CompletedProcess, data_point: dict, modify_
     Args:
     - response (subprocess.CompletedProcess): The subprocess response.
     - data_point (dict): Contains information about the entry point.
+    - modify_assertion_error (bool): HumanEval executes the test cases in "candidate" function. \n
+    If modify_assertion_error == True, replaces "candidate" with the entry point function name.
 
     Returns:
     - str: Formatted error message.
