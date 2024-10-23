@@ -1,0 +1,25 @@
+output_dir: "./finetuned_model_training_output",
+
+num_train_epochs: 3,
+max_steps: -1, # Number of training steps (overrides num_train_epochs)
+
+per_device_train_batch_size: 4,
+gradient_accumulation_steps: 2,
+gradient_checkpointing: True,
+max_grad_norm: 0.3, # Maximum gradient normal (gradient clipping)
+
+optim: "paged_adamw_32bit", # efficient for 32 bit GPUs
+warmup_ratio: 0.03,
+lr_scheduler_type: "constant",
+learning_rate: 2e-4, # Initial learning rate (AdamW optimizer)
+weight_decay: 0.001, # Weight decay to apply to all layers except bias/LayerNorm weights
+
+bf16: True,
+tf32: True,
+
+group_by_length: True, # Group sequences into batches with same length, saves memory and speeds up training considerably
+
+logging_steps: 20,
+save_strategy: "epoch",
+
+disable_tqdm: False
