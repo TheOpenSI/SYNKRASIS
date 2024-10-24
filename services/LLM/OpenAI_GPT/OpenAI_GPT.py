@@ -47,9 +47,9 @@ class OpenAI_GPT(ServiceBase, LLMBase):
 
         # For openai, we send the system prompt separately
         messages = [
+            {"role": "Conversation", "content": conversation_history},
             {"role": "User", "content": user_prompt},
-            {"role": "Context", "content": context_str},
-            {"role": "Conversation", "content": conversation_history}
+            {"role": "Context", "content": context_str} # changing the order
         ]
 
         prompt = self._generate_prompt(messages)
@@ -65,9 +65,9 @@ class OpenAI_GPT(ServiceBase, LLMBase):
         )
         
         # TODO: For finetune data
-        print("#"*10)
+        print("="*50)
         print(f"[FINAL PROMPT] {prompt}")
-        print("#"*10)
+        print("="*50)
 
         answer = response.choices[0].message.content
         print_model_output(answer, self.model)

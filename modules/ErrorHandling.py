@@ -46,8 +46,9 @@ class ErrorHandling():
         """
         multi_thread_pattern = r"Traceback(.*)(?=Traceback)"
         removed_generic_error_message = re.search(multi_thread_pattern, error_message, re.DOTALL)
-        if removed_generic_error_message:
-            return removed_generic_error_message.group()
+        if removed_generic_error_message is not None:
+            error_message = removed_generic_error_message.group()
+            return error_message.strip()
         else:
             print_warning("Regex pattern did not match for removing generic error message.")
             return error_message.strip()
@@ -86,11 +87,11 @@ class ErrorHandling():
         - str: Error Type
         - str: Error Message removed of generic and external file error message.
         """
-        error_message = self.remove_multithred_generic_error(error_message)
-        error_message = self.remove_external_file_error(error_message, self.target_file_name)
+        e_m = self.remove_multithred_generic_error(error_message)
+        e_m = self.remove_external_file_error(e_m, self.target_file_name)
         error_type = self.get_error_type(error_message)
         
-        return error_type, error_message
+        return error_type, e_m
     
     
     def _get_test_case(self, error_message: str, 
@@ -124,10 +125,10 @@ class ErrorHandling():
     
     
     def assertion_error_prompt(self, error_message: str,  
-                               extract_test_case: bool = False, 
-                               change_test_case_entry: bool = False,
-                               to_replace: str = "candidate",
-                               entry_point: str = None,) -> str:
+                               extract_test_case: bool, 
+                               change_test_case_entry: bool,
+                               to_replace: str,
+                               entry_point: str) -> str:
         """
         Example: Your code failed a test case. Please update the function logic. Error message added for your reference.
         {error_message}
@@ -196,7 +197,7 @@ class ErrorHandling():
                 f"Error message added for your reference - {error_message}")
     
     
-    def generic_error_prompt(self, error_message: str, send_original: bool = False) -> str:
+    def generic_error_prompt(self, error_message: str, send_original: bool) -> str:
         """
         Example: Your generated code had a/an {error_type}. Please check the error message for more details.
         {error_message}
@@ -222,7 +223,14 @@ class ErrorHandling():
                 f"{error_message_relevant}")
         
         
-    def __call__(self, error_message: str) -> str:
+    def __call__(self, 
+                 error_message: str, 
+                 send_original: bool = False, # for generic error prompt
+                 extract_test_case: bool = False, # for assertion error prompt 
+                 change_test_case_entry: bool = False, # for assertion error prompt
+                 to_replace: str = "candidate", # for assertion error prompt
+                 entry_point: str = None # for assertion error prompt, collect from data_point
+                 ) -> str:
         """
         Call the respective error prompt based on the error type.
         
@@ -234,8 +242,8 @@ class ErrorHandling():
         """
         error_type = self.get_error_type(error_message)
         if error_type == "AssertionError":
-            return self.assertion_error_prompt(error_message)
+            return self.assertion_error_prompt(error_message, extract_test_case, change_test_case_entry, to_replace, entry_point)
         elif error_type == "NameError":
             return self.name_error_prompt(error_message)
         else:
-            return self.generic_error_prompt(error_message)
+            return self.generic_error_prompt(error_message, send_original)

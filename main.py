@@ -68,7 +68,7 @@ def main():
             print(f"Solved {df.solved_count} problems, Unsolved {df.unsolved_count} problems")
             print("#" * 50)
             
-            df.log_to_csv(openai.model)
+            df.log_to_csv(f"with_error_handling_{openai.model}")
         
         
     finally:

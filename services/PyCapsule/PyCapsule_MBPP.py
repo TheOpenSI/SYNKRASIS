@@ -9,7 +9,7 @@ from services.Container.Container import Container
 from services.LLM.LLMBase import LLMBase
 from utils.code_parsing.code_parser import parse_response
 from utils.output_message_format.output_colour import print_pycapsule
-from utils.error_parsing.parse_error import parse_error_human_eval
+from modules.ErrorHandling import ErrorHandling
 
 class PyCapsule_MBPP(PyCapsule):
     def __init__(self, 
@@ -99,6 +99,27 @@ class PyCapsule_MBPP(PyCapsule):
         self._create_requirements_txt(requirements)
         
         
+    def _set_original_question(self, user_query: dict) -> str:
+        """
+        Overriden to handle dict user_query.
+
+        Args:
+            user_query (dict): user_query["prompt"] for MBPP.
+
+        Returns:
+            str: Original question extracted from user_query dict.
+        """
+        return user_query["prompt"]
+    
+    
+    def _fix_code_with_data_point(self, response: CompletedProcess, data_point: dict) -> tuple[int, int]:
+        """
+        MBPP specific.\n
+        Calls the fix code function to handle dict data_point.
+        """
+        return self._fix_code(response, data_point)
+        
+        
     def _fix_code(self, response: CompletedProcess, data_point: dict = None) -> tuple[int, int]:
         """
         Gets activated only when response.returncode != 0.
@@ -111,6 +132,9 @@ class PyCapsule_MBPP(PyCapsule):
             response (CompletedProcess): Response from the container with error code, stdout and stderr.
             data_point (dict): MBPP data point reference.
             
+        Returns:
+            tuple[int, int]: return code, number of attempts made.
+            
         """
         print_pycapsule("Starting PyCapsule in fix mode.")
         
@@ -120,10 +144,10 @@ class PyCapsule_MBPP(PyCapsule):
         while response.returncode != 0 and attempt_count < self.maximum_attempts:
             self._change_system_prompt(is_fix_mode=True)
             
-            error_response = parse_error_human_eval(response, data_point, modify_assertion_error = False) # using the human eval error parser
-            
-            fix_mode_query = ("Your generated code had the following error -\n"
-                              f"{error_response}\n")
+            fix_mode_query = self.error_handling(error_message=response.stderr,
+                                                 send_original=False,
+                                                 extract_test_case=True,
+                                                 change_test_case_entry=False)
             
             # Updating response, main.py and requirements.txt
             fix_mode_data_point = data_point.copy()
