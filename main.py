@@ -33,7 +33,8 @@ def main():
     pycapsule: PyCapsule = None
 
     try:
-        openi_ai = OpenAI_GPT()
+        llm = HF_LLM(llm_config_file = LLM_CONFIG_FILE, enable_chat_history = True)
+        llm.generate_response("What is the capital of France?", suppress_conversation_history=False)
         
         
     finally:
