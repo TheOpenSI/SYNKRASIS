@@ -75,10 +75,16 @@ class LLMBase(ABC):
                 self._init_chat_history(user_query) # user_query is the original question and max_history is 1 by default
 
             # Prepare the conversation history context from chat history
-            conversation_history = "\n" + "Original Question: " + self.chat_history.original_question + "\n"
-            conversation_history += "\n".join([(f"\tPrevious Question {index + 1}: {q}\n"
-                                        f"\tPrevious Answer {index + 1}: {a}\n") 
-                                        for index, (q, a) in enumerate(self.chat_history.conversation_history)])
+            conversation_history = "\n" + ">> Original Question: " + self.chat_history.original_question + "\n\n"
+            
+            # Uncomment this to add q/a pair
+            # conversation_history += "\n".join([(f"\tPrevious Question {index + 1}: {q}\n"
+            #                             f"\tPrevious Answer {index + 1}: {a}\n") 
+            #                             for index, (q, a) in enumerate(self.chat_history.conversation_history)])
+            
+            # Only passing original question and last answer
+            conversation_history += "\n".join([(f">> Your previous answer:\n{answer}\n") for _, answer in self.chat_history.conversation_history])
+            
         
         return conversation_history
             
