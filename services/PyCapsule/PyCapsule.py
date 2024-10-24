@@ -14,6 +14,7 @@ from services.Container.Container import Container
 from services.LLM.LLMBase import LLMBase
 from utils.code_parsing.code_parser import parse_response
 from utils.output_message_format.output_colour import print_error, print_warning, print_success, print_pycapsule, print_model_output
+from modules.ErrorHandling import ErrorHandling
 
 class PyCapsule(ServiceBase):
     def __init__(self, 
@@ -41,6 +42,7 @@ class PyCapsule(ServiceBase):
         self.MOUNT_DIR = os.path.abspath(__file__).replace("PyCapsule.py", "../Container/mount_dir")
         self._set_prompt_paths()
         self._change_system_prompt()
+        self.error_handling = ErrorHandling(target_file_name= "/usr/src/app/main.py")
             
     def _suppress_warning_code(self) -> str:
         """
@@ -146,7 +148,7 @@ class PyCapsule(ServiceBase):
         self._create_py_file(main_py_path, suppress_warning + "\n\n" + code + "\n\n" + test_cases)
         
         
-    def _fix_code(self, *args) -> tuple[int, int]:
+    def _fix_code(self, response: CompletedProcess) -> tuple[int, int]:
         """
         Gets activated only when response.returncode != 0.
         Will change sytem prompt and attempt to fix the code.
@@ -156,13 +158,8 @@ class PyCapsule(ServiceBase):
         Args:
             response (CompletedProcess): Response from the container with error code, stdout and stderr.
         Returns:
-            tuple[int, int]: Response code and number of attempts made.
-        """
-        if len(args) != 1:
-            print_warning("Parent implementation of _fix_code() only accepts 1 arg: subprocess.CompletedProcess."
-                          "Please override this method in the child class.")
-            raise NotImplementedError("_fix_code() method must be overridden in the child class for len(args) > 1.")
-            
+            tuple[int, int]: return code and number of attempts made.
+        """ 
         print_pycapsule("Starting PyCapsule in fix mode.")
         
         attempt_count = 0
@@ -215,15 +212,42 @@ class PyCapsule(ServiceBase):
         self._create_requirements_txt(requirements)
         
         
+    def _set_original_question(self, user_query: str) -> str:
+        """
+        Set the original question for the chat history.\n
+        ** OVERRIDE for dataset specific implementation.
+        
+        Args:
+            user_query (Union[str, dict]): Either a datapoint as dict or string query.
+        Returns:
+            str: Original question.
+        """
+        if isinstance(user_query, str):
+            return user_query
+        else:
+            raise NotImplementedError("Override this method in the child class for dict type user_query.")
+        
+        
+    def _fix_code_with_data_point(self, response: CompletedProcess, data_point: Union[str, dict]) -> tuple[int, int]:
+        """
+        Calls the fix code method\n
+        ** OVERRIDE for dataset specific implementation.
+        """
+        if isinstance(data_point, dict):
+            raise NotImplementedError("Override this method in the child class for dict type data_point.")
+        
+        return self._fix_code(response)
+        
+        
     def __call__(self, user_query: Union[str, dict]) -> tuple[int, int]:
         """
-        Generate code using ollama and run the code in the container.
+        Generate code using LLM and run the code in the container.
 
         Args:
             user_query (Union[str, dict]): Either a datapoint as dict or string query.
         """
-        # This will generate response from LLM and parse the response to get the code
-        original_question = user_query if isinstance(user_query, str) else user_query["prompt"]
+        # Override for dataset specific implementation.
+        original_question = self._set_original_question(user_query)
         
         # Initialize the chat history
         self.llm._init_chat_history(original_question)
@@ -241,11 +265,10 @@ class PyCapsule(ServiceBase):
         
         if response.returncode != 0:
             print_error("Generated code returned a non-zero exit code. Starting pycapsule in fix mode.")
-            # If user_query is string, then we can use parent implementation of _fix_code()
-            if isinstance(user_query, str):
-                flag, fix_mode_attempts = self._fix_code(response)
-            else:
-                flag, fix_mode_attempts = self._fix_code(response, user_query)
+            # Use parent implementation of _fix_code()
+            # For str user query, this will work as expected.
+            # For dict user query, override _call_fix_code() in the child class, otherwise it will raise NotImplementedError.
+            flag, fix_mode_attempts = self._fix_code_with_data_point(response, user_query)
             
         self.llm.clear_chat_history()
             
