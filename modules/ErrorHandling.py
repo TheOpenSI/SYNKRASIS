@@ -220,3 +220,22 @@ class ErrorHandling():
         return (f"Your generated code had a/an {error_type}.\n"
                 "Please check the following error message for more details - \n"
                 f"{error_message_relevant}")
+        
+        
+    def __call__(self, error_message: str) -> str:
+        """
+        Call the respective error prompt based on the error type.
+        
+        Args:
+        - error_message (str): The error message.
+        
+        Returns:
+        - str: The error prompt.
+        """
+        error_type = self.get_error_type(error_message)
+        if error_type == "AssertionError":
+            return self.assertion_error_prompt(error_message)
+        elif error_type == "NameError":
+            return self.name_error_prompt(error_message)
+        else:
+            return self.generic_error_prompt(error_message)
