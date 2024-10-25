@@ -37,10 +37,18 @@ def main():
     pycapsule: PyCapsule_DS1000 = None
 
     try:
-        openai = OpenAI_GPT(enable_chat_history=True, model="gpt-3.5-turbo")
+        # Options: gpt-4, gpt-4o, gpt-3.5-turbo, and gpt-3.5-turbo-1106
+        model = "gpt-4"
+        openai = OpenAI_GPT(enable_chat_history=True, model=model)
         df = DS1000()
-        container = Container()
-        pycapsule = PyCapsule_DS1000(container, openai)
+
+        # Use model-specific image name and container name, which will be used for in Container's mount_dir.
+        container = Container(
+            image_name=f"synkrasis_image_{model}",
+            container_name=f"synkrasis_container_{model}"
+        )
+
+        pycapsule = PyCapsule_DS1000(container, openai, maximum_attempts=5)
         
         while True:
             data_point = df.next()

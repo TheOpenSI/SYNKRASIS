@@ -12,7 +12,7 @@ from utils.output_message_format.output_colour import print_error, print_info, p
 
 class Container(ServiceBase):
     def __init__(self, 
-                 IMAGE_NAME: str = "synkrasis", 
+                 image_name: str = "synkrasis",
                  container_name: str = "synkrasis_alpha"):
         """Container class for managing docker containers
 
@@ -21,10 +21,13 @@ class Container(ServiceBase):
             container_name (str, optional): Default container name. Defaults to "synkrasis_alpha".
         """
         super().__init__()
-        self.IMAGE_NAME = IMAGE_NAME
+        self.IMAGE_NAME = image_name
         self.CONTAINER_NAME = container_name
-        self.MOUNT_DIR_PATH = os.path.abspath(__file__).replace("Container.py", "mount_dir")
+        self.MOUNT_DIR_PATH = os.path.abspath(__file__).replace("Container.py", f"mount_dir/{container_name}")
         self._check_if_image_exists() # check if image exists
+
+        # Create mount directory.
+        os.makedirs(self.MOUNT_DIR_PATH, exist_ok=True)
 
 
     def _check_if_image_exists(self):

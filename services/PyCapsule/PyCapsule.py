@@ -38,7 +38,10 @@ class PyCapsule(ServiceBase):
         self.llm = llm
         self.maximum_attempts = maximum_attempts
         self.TRACEBACK_PATTERN = r"Traceback.*$" # Pattern to extract traceback from stderr
-        self.MOUNT_DIR = os.path.abspath(__file__).replace("PyCapsule.py", "../Container/mount_dir")
+
+        # Directly get mount directory from the container, instead of manually setting the same one.
+        self.MOUNT_DIR = pycapsule_container.MOUNT_DIR_PATH
+
         self._set_prompt_paths()
         self._change_system_prompt()
         
@@ -119,6 +122,7 @@ class PyCapsule(ServiceBase):
         attempt_count = 0
         return_code = -1
         
+        # Comment: Danny, how is response assigned before the following loop?
         while response.returncode != 0 and attempt_count < self.maximum_attempts:
             self._change_system_prompt(is_fix_mode=True) # Changing the system prompt for fix mode
             
@@ -144,13 +148,12 @@ class PyCapsule(ServiceBase):
         return return_code, attempt_count
         
     
-    def _debug_insert_error():
+    def _debug_insert_error(self):
         """
         For TESTING only.
         Inserts syntax error in the generated code.
         """
-        mount_dir = os.path.abspath(__file__).replace("PyCapsule.py", "../Container/mount_dir")
-        with open(os.path.join(mount_dir, "main.py"), "r") as file:
+        with open(os.path.join(self.MOUNT_DIR, "main.py"), "r") as file:
             data = file.readlines()
         file.close()
         new_data = []
@@ -160,7 +163,7 @@ class PyCapsule(ServiceBase):
                 v = v.replace("(", "((")
             new_data.append(v)
         # write
-        with open(os.path.join(mount_dir, "main.py"), "w") as file:
+        with open(os.path.join(self.MOUNT_DIR, "main.py"), "w") as file:
             file.writelines(new_data)
         file.close()
  

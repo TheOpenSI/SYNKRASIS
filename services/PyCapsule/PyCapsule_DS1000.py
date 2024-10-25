@@ -18,17 +18,19 @@ from utils.output_message_format.output_colour import print_pycapsule
 class PyCapsule_DS1000(PyCapsule):
     def __init__(self,
                  pycapsule_container: Container,
-                 llm: LLMBase):
+                 llm: LLMBase,
+                 **kwargs):
         """
         PyCapsule_DS1000 constructor.
 
         Args:
+            # Comments they are not the same as the actual ones.
             model_name (str): Model name.
             model_path (str): Model path.
             mount_dir (str): Mount directory.
             verbose (bool): Verbose mode.
         """
-        super().__init__(pycapsule_container, llm)
+        super().__init__(pycapsule_container, llm, **kwargs)
         
     
     def _set_prompt_paths(self):
