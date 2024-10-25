@@ -250,9 +250,8 @@ class PyCapsule(ServiceBase):
         self.container.cleanup()
         self.llm.clear_chat_history()
         
-        mount_dir = os.path.abspath(__file__).replace("PyCapsule.py", "../Container/mount_dir")
         for file in ['main.py', 'requirements.txt']:
-            file_path = os.path.join(mount_dir, file)
+            file_path = os.path.join(self.MOUNT_DIR, file)
             if os.path.exists(file_path):
                 os.remove(file_path)
         

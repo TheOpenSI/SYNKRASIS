@@ -49,7 +49,7 @@ class LLMBase(ABC):
         return context_str
 
 
-    def _init_chat_history(self, original_question: str, max_history: int = 1):
+    def _init_chat_history(self, original_question: str, max_history: int = 5):
         """
         Initialize the chat history with the original question, only call if enable_chat_history is set to True.
         Args:
@@ -59,7 +59,7 @@ class LLMBase(ABC):
         self.chat_history = ChatHistory(original_question, max_history)
 
     
-    def _prepare_conversation_history(self, user_query: str) -> str:
+    def _prepare_conversation_history(self, user_query: str, num_retrieved_history: int=1) -> str:
         """
         Prepare conversation histoy context from chat history if enable_chat_history is activated.
 
@@ -78,7 +78,7 @@ class LLMBase(ABC):
             conversation_history = "\n" + "Original Question: " + self.chat_history.original_question + "\n"
             conversation_history += "\n".join([(f"\tPrevious Question {index + 1}: {q}\n"
                                         f"\tPrevious Answer {index + 1}: {a}\n") 
-                                        for index, (q, a) in enumerate(self.chat_history.conversation_history)])
+                                        for index, (q, a) in enumerate(self.chat_history.conversation_history[-num_retrieved_history:])])
         
         return conversation_history
             

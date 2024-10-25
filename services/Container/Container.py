@@ -1,7 +1,7 @@
 # For the time being, the container will run the main.py file in the mount_dir when started.
 # Will release a more general version soon to bypass the current entrypoint.
 
-import os, sys
+import os, sys, shutil
 sys.path.append(f"{os.path.dirname(os.path.abspath(__file__))}/../..")
 
 import subprocess
@@ -21,14 +21,24 @@ class Container(ServiceBase):
             container_name (str, optional): Default container name. Defaults to "synkrasis_alpha".
         """
         super().__init__()
+        current_dir = os.path.dirname(__file__)
         self.IMAGE_NAME = image_name
         self.CONTAINER_NAME = container_name
-        self.MOUNT_DIR_PATH = os.path.abspath(__file__).replace("Container.py", f"mount_dir/{container_name}")
+        self.MOUNT_DIR_PATH = os.path.join(current_dir, "mount_dir", container_name)
         self._check_if_image_exists() # check if image exists
 
-        # Create mount directory.
+        # Create mount and container directory.
         os.makedirs(self.MOUNT_DIR_PATH, exist_ok=True)
 
+        # Copy start.sh to self.MOUNT_DIR_PATH.
+        start_path = os.path.join(current_dir, "mount_dir/start.sh")
+        shutil.copyfile(start_path, os.path.join(self.MOUNT_DIR_PATH, "start.sh"))
+
+        # Copy requirements.txt to self.MOUNT_DIR_PATH.
+        requirement_path = os.path.join(current_dir, "mount_dir/requirements.txt")
+
+        if os.path.exists(requirement_path):
+            shutil.copyfile(requirement_path, os.path.join(self.MOUNT_DIR_PATH, "requirements.txt"))
 
     def _check_if_image_exists(self):
         """
@@ -38,7 +48,7 @@ class Container(ServiceBase):
         if images.stdout.strip() == "":
             print_warning("Image does not exist")
             print_info("Building image...")
-            docker_file_path = os.path.abspath(__file__).replace("Container.py", "")
+            docker_file_path = os.path.dirname(__file__)
             subprocess.run(f"docker build -t {self.IMAGE_NAME} {docker_file_path}", shell=True)
             print_success("Image built")
         else:
@@ -75,7 +85,7 @@ class Container(ServiceBase):
             response = subprocess.run((f"docker run "
                                        f"--name {self.CONTAINER_NAME} "
                                        f"-v {self.MOUNT_DIR_PATH}:/usr/src/app "
-                                       f"{self.IMAGE_NAME}"), 
+                                       f"{self.IMAGE_NAME}"),
                                       shell=True, capture_output=True, text=True)
             
             return response
