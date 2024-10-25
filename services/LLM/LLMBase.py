@@ -49,7 +49,7 @@ class LLMBase(ABC):
         return context_str
 
 
-    def _init_chat_history(self, original_question: str, max_history: int = 5):
+    def _init_chat_history(self, original_question: str, max_history: int = 1):
         """
         Initialize the chat history with the original question, only call if enable_chat_history is set to True.
         Args:
