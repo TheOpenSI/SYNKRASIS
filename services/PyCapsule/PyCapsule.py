@@ -1,5 +1,3 @@
-# CodeLlama based
-
 import os
 import sys
 import re
@@ -38,7 +36,6 @@ class PyCapsule(ServiceBase):
         self.container = pycapsule_container
         self.llm = llm
         self.maximum_attempts = maximum_attempts
-        self.TRACEBACK_PATTERN = r"Traceback.*$" # Pattern to extract traceback from stderr
         self.MOUNT_DIR = os.path.abspath(__file__).replace("PyCapsule.py", "../Container/mount_dir")
         self._set_prompt_paths()
         self._change_system_prompt()
@@ -61,7 +58,7 @@ class PyCapsule(ServiceBase):
 
         Args:
             function_name (str): function to run/test cases
-            args (Tuple): arguments to pass to the function
+            args (Tuple): arguments to pass to the function, has to be a tuple
             timeout (int): timeout period in seconds
 
         Raises:
@@ -168,13 +165,11 @@ class PyCapsule(ServiceBase):
         while response.returncode != 0 and attempt_count < self.maximum_attempts:
             self._change_system_prompt(is_fix_mode=True) # Changing the system prompt for fix mode
             
-            filtered_error_message = re.search(r"Traceback.*$", response.stderr, re.DOTALL) # Extracting traceback to omit any warnings
-            if filtered_error_message:
-                error_response = filtered_error_message.group()
-            else:
-                error_response = response.stderr
-            fix_mode_query = ("Your generated code had the following error -\n"
-                              f"{error_response}\n")
+            # Error message after removing generic and external file error
+            fix_mode_query = self.error_handling(error_message = response.stderr,
+                                                 send_original = False,
+                                                 extract_test_case = False,
+                                                 change_test_case_entry = False)
             
             # Updating code
             self._generate_code(fix_mode_query, suppress_conversation_history = False)
