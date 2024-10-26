@@ -35,6 +35,7 @@ def main():
     rag: RAG = None
     container: Container = None
     pycapsule: PyCapsule = None
+    df = None
 
     try:
         df = MBPP()
@@ -57,7 +58,6 @@ def main():
             else:
                 df.unsolved_count += 1
                 
-                
             df.results.append({
                 "task_id": data_point["task_id"],
                 "fix_mode_attempt_count": fix_mode_attempt_count,
@@ -67,13 +67,22 @@ def main():
             print("#" * 50)
             print(f"Solved {df.solved_count} problems, Unsolved {df.unsolved_count} problems")
             print("#" * 50)
-            
-            df.log_to_csv(f"with_error_handling_{openai.model}")
-        
-        
+
+    except Exception as e:
+        print_error(f"An error occurred during execution: {str(e)}") # optionally log the error or handle it specifically
+    
     finally:
-        # Warning resource_tracker: There appear to be .* leaked semaphore objects"
+        try:
+            # Only log if df was initialized and has results
+            if df is not None and hasattr(df, 'results') and df.results:
+                print_info("Saving results to CSV...")
+                df.log_to_csv(f"with_error_handling_{openai.model if openai else 'unknown_model'}")
+        except Exception as log_error:
+            print_error(f"Failed to save results to CSV: {str(log_error)}")
+        
+        # Cleanup resources
         call_cleanup([llm, embedding_model, vector_db, ollama, rag, container, pycapsule, openai])
 
 if __name__ == '__main__':
     main()
+    

@@ -1,5 +1,12 @@
-# CodeLlama based
-
+#===================================================================================================================================
+# For child class to override:
+# - _set_prompt_paths
+# - _create_main_py
+# - _fix_code
+# - _generate_code
+# - _set_original_question
+# - _fix_code_with_data_point
+#===================================================================================================================================
 import os
 import sys
 import re
@@ -168,13 +175,11 @@ class PyCapsule(ServiceBase):
         while response.returncode != 0 and attempt_count < self.maximum_attempts:
             self._change_system_prompt(is_fix_mode=True) # Changing the system prompt for fix mode
             
-            filtered_error_message = re.search(r"Traceback.*$", response.stderr, re.DOTALL) # Extracting traceback to omit any warnings
-            if filtered_error_message:
-                error_response = filtered_error_message.group()
-            else:
-                error_response = response.stderr
-            fix_mode_query = ("Your generated code had the following error -\n"
-                              f"{error_response}\n")
+            # Error message after removing generic and external file error
+            fix_mode_query = self.error_handling(error_message = response.stderr,
+                                                 send_original = False,
+                                                 extract_test_case = False,
+                                                 change_test_case_entry = False)
             
             # Updating code
             self._generate_code(fix_mode_query, suppress_conversation_history = False)
