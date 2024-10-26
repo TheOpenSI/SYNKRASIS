@@ -40,6 +40,17 @@ class DatasetBase(ABC):
         pass
     
     
+    @abstractmethod
+    def log_to_csv(self, model_name: str) -> None:
+        """
+        Log the dataset to a csv file.
+
+        Args:
+            model_name (str): Name of the model to be used as the title of the csv file.
+        """
+        pass
+    
+    
     def reset(self) -> None:
         """
         Reset the current_index to 0
