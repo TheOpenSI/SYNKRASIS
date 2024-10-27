@@ -46,8 +46,8 @@ class Ollama(ServiceBase, LLMBase):
         # Generate the prompt from message list 
         # Keep the sequece of messages as follows: System, Context, Conversation, User
         messages = [{"role": "System", "content": self.system_prompt},
-                    {"role": "Context", "content": context},
                     {"role": "Conversation", "content": conversation_history},
+                    {"role": "Context", "content": context},
                     {"role": "User", "content": user_prompt}]
         full_query = self._prepare_prompt(messages) # bos_token is empty by default, applies default jinja template
         

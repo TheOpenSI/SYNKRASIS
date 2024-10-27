@@ -198,8 +198,8 @@ class HF_LLM(ServiceBase, LLMBase):
         context = self._prepare_context(context)
         conversation_history = "" if suppress_conversation_history else self._prepare_conversation_history(user_prompt)
         messages = [{"role": "System", "content": self.system_prompt},
-                    {"role": "Context", "content": context},
                     {"role": "Conversation", "content": conversation_history},
+                    {"role": "Context", "content": context},
                     {"role": "User", "content": user_prompt}]
         
         prompt = self._prepare_prompt(messages)
