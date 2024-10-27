@@ -1,13 +1,8 @@
-# root folder must have a .env file with HUGGING_FACE_TOKEN
-# ensure you have access to gated models if you intend to use them
-#
-# Use - 
-# llm = LLM()
-# llm.set_system_prompt("", read_from_file=True)
-# response = llm.generate_response("What is the capital of France?")
+# Root folder must have a .env file with HUGGING_FACE_TOKEN
+# Ensure you have access to gated models if you intend to use them
+# apply chat template - https://huggingface.co/docs/transformers/main/en/chat_templating
+# generation prompt - https://huggingface.co/docs/transformers/main/en/chat_templating
 # -------------------------------------------------------------------------------
-
-# TODO: Add conversation history support
 
 import os, sys
 
@@ -24,12 +19,12 @@ from typing import List, Dict, Optional
 # local imports
 from services.Base import ServiceBase
 from services.LLM.LLMBase import LLMBase
-from utils.output_message_format.output_colour import print_info, print_warning, print_error, print_success
+from utils.output_message_format.output_colour import print_info, print_warning, print_error, print_success, print_model_output
 
 class HF_LLM(ServiceBase, LLMBase):
 
     def __init__(self, 
-                 repo_name:str = "mistralai/Mistral-7B-v0.1",
+                 model_name:str = "mistralai/Mistral-7B-v0.1",
                  quantization:str = "4bit",
                  use_cache:bool = True,
                  device_map:str = "auto",
@@ -38,11 +33,11 @@ class HF_LLM(ServiceBase, LLMBase):
                  top_p:float = 0.95, # will be ignored if do_sample is False
                  temperature:float = 0.7, # will be ignored if do_sample is False
                  llm_config_file:str = None, # config file to easily set parameters
-                 system_prompt:str = "You are a helpful assistant, always answer the question even if the provided context is not helpful",
                  stop_strings:List[str] = ["\n\nUser:"], # stop strings to stop the generation, default is User: to supoort default chat template
+                 enable_chat_history:bool = False # enable chat history
                  ):
         """
-        Creat an LLM agent
+        Creates a Huggingface LLM agent
         Args:
             repo_name (str): The name of the HF repository, Default : mistral 7B v0.1
             quantization (str): The quantization method to use, 4bit or 8bit, Default : 4bit
@@ -55,13 +50,14 @@ class HF_LLM(ServiceBase, LLMBase):
             config_file (str): The path to a YAML file containing configuration values
             system_prompt (str): will change according to operation
             stop_strings (List[str]): Default : ["User:"] which supports the default chat template at /config_files/default_chat_template.txt
+            enable_chat_history (bool): Whether to add chat history
         """
         
         # base class
-        super().__init__()
-
+        ServiceBase.__init__(self)
+        LLMBase.__init__(self, model_name, enable_chat_history)
+        
         # Set attributes (config file values will override these)
-        self.repo_name = repo_name
         self.quantization = quantization
         self.use_cache = use_cache
         self.device_map = device_map
@@ -69,7 +65,6 @@ class HF_LLM(ServiceBase, LLMBase):
         self.do_sample = do_sample
         self.top_p = top_p
         self.temperature = temperature
-        self.system_prompt = system_prompt
         self.hf_token = self._load_hf_token()
         self.seed = 42,
         self.stop_strings = stop_strings
@@ -78,13 +73,13 @@ class HF_LLM(ServiceBase, LLMBase):
         self._login_hf()
 
         
-        # config from file if provided
+        # PRIORITY 
+        # Config from file if provided
         if llm_config_file:
             with open(llm_config_file, "r") as file:
                 config = yaml.safe_load(file)
                 self.__dict__.update(config)
         
-        # llm model
         self.model = None
         self.tokenizer = None
         self.pipeline = None
@@ -113,6 +108,25 @@ class HF_LLM(ServiceBase, LLMBase):
 
         return quant_config
     
+    
+    def set_tokenizer(self, add_eos_token:bool = False) -> AutoTokenizer:
+        """
+        Get the tokenizer from the model repo, can only chage the eos token argument
+        Args:
+            add_eos_token (bool): Whether to add the eos token to the tokenizer.
+            This is useful for finetuning to add eos token to the training data
+        """
+        tokenizer = AutoTokenizer.from_pretrained(
+                self.model_name,
+                add_bos_token = True,
+                add_eos_token = add_eos_token,
+                padding_side = "left"
+                )
+        tokenizer.pad_token = tokenizer.eos_token
+        
+        print_success("Tokenizer initialized") # DEBUG
+        return tokenizer
+    
 
     def _initialize_model(self):
         # quantization config
@@ -123,7 +137,7 @@ class HF_LLM(ServiceBase, LLMBase):
 
         # model
         self.model = AutoModelForCausalLM.from_pretrained(
-            self.repo_name,
+            self.model_name,
             quantization_config=quant_config,
             use_cache=self.use_cache,
             device_map=self.device_map,
@@ -141,63 +155,16 @@ class HF_LLM(ServiceBase, LLMBase):
         max_new_tokens = 1024
         )
 
-        print_info("Model initialized")
-        print_info(f"Model name: {self.repo_name.strip()}")
+        print_success("Model initialized") # DEBUG
+        print_info(f"Model name: {self.model.name_or_path.strip().split('/')[-1]}") # DEBUG
 
-
-    def _prepare_chat_template(self, messages:List[Dict[str, str]]):
-        """
-        This will apply a default chat template if the tokenizer does not support it.
-        If chat template is not supported and no default template is provided, will retun a value error
-        """
-        # if self.tokenizer.chat_template is None: # TODO: setting default chat template for all models
-        print_warning("Chat template not supported by the tokenizer, applying default template")
-        default_prompt_path = os.path.abspath(__file__).replace("LLM.py", "../../config_files/default_chat_template.jinja")
-        with open(default_prompt_path, "r") as file:
-            default_prompt = file.read()
-            self.tokenizer.chat_template = default_prompt # always has generation prompt
-
-        return self.tokenizer.apply_chat_template(messages, 
-                                                tokenize=False, 
-                                                add_generation_prompt=True) # wont work for all models
     
-
-    def _prepare_prompt(self, user_prompt:str, context:List[str] = None) -> str:
-
-        """
-        Prepare the prompt for the model, self.tokenizer should be initialized
-        Args:
-            user_prompt (str): The user prompt to prepare
-            context (str): The context to provide to the model, used in RAG service
-        """
-        # apply chat template - https://huggingface.co/docs/transformers/main/en/chat_templating
-        # generation prompt - https://huggingface.co/docs/transformers/main/en/chat_templating
-        if self.tokenizer is None:
-            print_error("Tokenizer not initialized")
-            sys.exit(1)
-
-        if context is None:
-            messages = [{"role": "System","content": self.system_prompt,},
-                        {"role": "User", "content": user_prompt}]
-        else:
-            messages = [{"role": "System", "content": self.system_prompt},
-                        {"role": "Context", "content": " ".join(context)},
-                        {"role": "User", "content": user_prompt}]
-
-
-        # Encoding separately to get the attention mask all in one go
-        prompt = self._prepare_chat_template(messages)
-
-        # return self.tokenizer(prompt, return_tensors="pt", padding=True)
-        return prompt # resturn string to use with pipeline
-    
-
     def _load_hf_token(self) -> str:
         """
         Load the Hugging Face token from the .env file
         """
         # load hf token
-        if load_dotenv(f"{os.path.abspath(__file__).replace('LLM.py', '')}../../.env"):
+        if load_dotenv(os.path.dirname(__file__) + "/../../../.env"):
             hf_token = os.getenv('HUGGING_FACE_TOKEN')
             if not hf_token:
                 raise Exception("HUGGING_FACE_TOKEN not found in .env file")
@@ -212,25 +179,7 @@ class HF_LLM(ServiceBase, LLMBase):
         Login to the Hugging Face Hub
         """
         login(self.hf_token, add_to_git_credential=True)
-        print_info("Logged in to Hugging Face Hub")
-
-
-    def set_system_prompt(self, prompt:str, read_from_file:bool = False):
-        """
-        This is to set a custom system prompt duing inference
-        Args:
-            prompt (str): The system prompt to set
-
-            read_from_file (bool): will read from a file, useful for long prompts
-
-        """
-        if read_from_file:
-            # TODO: root file variable
-            prompt_file_path = f"{os.path.abspath(__file__)}/../../config_files/system_prompt.txt"
-            with open(prompt_file_path, "r") as file:
-                prompt = file.read()
-        else:
-            self.system_prompt = prompt
+        print_info("Logged in to Hugging Face Hub") # DEBUG
 
 
     def generate_response(self, 
@@ -244,9 +193,16 @@ class HF_LLM(ServiceBase, LLMBase):
         """
         if not self.model or not self.tokenizer:
             print_error("Model or tokenizer not initialized")
-            sys.exit(1) # exit the program with an error code
+            raise ValueError("Model or tokenizer not initialized")
 
-        prompt = self._prepare_prompt(user_prompt, context)
+        context = self._prepare_context(context)
+        conversation_history = "" if suppress_conversation_history else self._prepare_conversation_history(user_prompt)
+        messages = [{"role": "System", "content": self.system_prompt},
+                    {"role": "Conversation", "content": conversation_history},
+                    {"role": "Context", "content": context},
+                    {"role": "User", "content": user_prompt}]
+        
+        prompt = self._prepare_prompt(messages)
         
         # inference
         response = self.pipeline(prompt, 
@@ -254,26 +210,16 @@ class HF_LLM(ServiceBase, LLMBase):
                                  eos_token_id = self.tokenizer.eos_token_id,
                                  stop_strings = self.stop_strings)
         
-        return response[0]["generated_text"].split("User:")[0].strip()
-    
-
-    def set_tokenizer(self, add_eos_token:bool = False) -> AutoTokenizer:
-        """
-        Get the tokenizer from the model repo, can only chage the eos token argument
-        Args:
-            add_eos_token (bool): Whether to add the eos token to the tokenizer
-            this is useful for finetuning to add eos token to the training data
-        """
-        tokenizer = AutoTokenizer.from_pretrained(
-                self.repo_name,
-                add_bos_token = True,
-                add_eos_token = add_eos_token,
-                padding_side = "left"
-                )
-        tokenizer.pad_token = tokenizer.eos_token
+        answer = response[0]["generated_text"].split("User:")[0].strip()
         
-        print_info("Tokenizer initialized")
-        return tokenizer
+        if self.enable_chat_history:
+            if not self.chat_history:
+                self._init_chat_history(user_prompt)
+                
+            self.chat_history.add_interaction(user_prompt, answer)
+            
+        print_model_output(answer, self.model.name_or_path.strip().split("/")[-1])
+        return answer
     
 
     def cleanup(self):

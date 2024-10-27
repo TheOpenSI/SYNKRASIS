@@ -76,7 +76,7 @@ def main():
             # Only log if df was initialized and has results
             if df is not None and hasattr(df, 'results') and df.results:
                 print_info("Saving results to CSV...")
-                df.log_to_csv(f"with_error_handling_{openai.model if openai else 'unknown_model'}")
+                df.log_to_csv(f"with_error_handling_{openai.model_name if openai else 'unknown_model'}")
         except Exception as log_error:
             print_error(f"Failed to save results to CSV: {str(log_error)}")
         
