@@ -12,11 +12,9 @@ from services.LLM.LLMBase import LLMBase
 from utils.output_message_format.output_colour import print_error, print_info, print_success, print_model_output
 
 class Ollama(ServiceBase, LLMBase):
-    def __init__(self, model: str = "mistral", enable_chat_history:bool = False):  # uses mistral as default model
+    def __init__(self, model_name: str = "mistral", enable_chat_history:bool = False):  # uses mistral as default model
         ServiceBase.__init__(self)
-        LLMBase.__init__(self, enable_chat_history=enable_chat_history)
-        self.model = model
-        self.system_prompt = "Always answer the question to the best of your ability even if the context is not useful."
+        LLMBase.__init__(self, model_name, enable_chat_history)
         
     def _set_seed(self):
         torch.manual_seed(42)
@@ -27,7 +25,7 @@ class Ollama(ServiceBase, LLMBase):
         """
         Pull the model from the server
         """
-        ollama.pull_model(self.model)
+        ollama.pull_model(self.model_name)
 
 
     def generate_response(self, 
@@ -48,20 +46,23 @@ class Ollama(ServiceBase, LLMBase):
         # Generate the prompt from message list 
         # Keep the sequece of messages as follows: System, Context, Conversation, User
         messages = [{"role": "System", "content": self.system_prompt},
-                    {"role": "Context", "content": context},
                     {"role": "Conversation", "content": conversation_history},
+                    {"role": "Context", "content": context},
                     {"role": "User", "content": user_prompt}]
-        full_query = self._generate_prompt(messages) # bos_token is empty by default, applies default jinja template
+        full_query = self._prepare_prompt(messages) # bos_token is empty by default, applies default jinja template
         
         try:
             # Generate response from the model
-            response = ollama.generate(model = self.model, prompt = full_query)
+            response = ollama.generate(model = self.model_name, prompt = full_query)
 
             # Add the interaction to chat history
-            if self.enable_chat_history and self.chat_history and response:
+            if self.enable_chat_history and response:
+                if not self.chat_history:
+                    self._init_chat_history(user_prompt)
+                    
                 self.chat_history.add_interaction(user_prompt, response["response"]) # for chat it's response["message"]["content"]
 
-            print_model_output(response["response"], self.model)
+            print_model_output(response["response"], self.model_name)
             return response["response"]
 
         except ollama.ResponseError as e:

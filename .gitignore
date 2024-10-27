@@ -164,10 +164,5 @@ cython_debug/
 
 # test.py file
 test.py
-services/Container/mount_dir/myenv
-services/Container/mount_dir/Human*
-services/Container/mount_dir/main.py
-services/Container/mount_dir/requirements.txt
-services/Container/mount_dir/my_env
-services/Container/mount_dir/my-venv
-services/Container/mount_dir/tmp
+services/Container/mount_dir/*
+!services/Container/mount_dir/start.sh

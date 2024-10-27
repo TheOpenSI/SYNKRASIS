@@ -15,7 +15,7 @@ from services.PyCapsule.PyCapsule import PyCapsule
 from services.PyCapsule.PyCapsule_HumanEval import PyCapsule_HumanEval
 from utils.output_message_format.output_colour import print_model_output, print_info, print_error, print_success, print_warning
 from utils.resource.resource_mg_util import call_cleanup
-from data.HumanEval import HumanEvalDataset
+from data.HumanEval.HumanEval import HumanEvalDataset
 
 # Default config file
 LLM_CONFIG_FILE = os.path.abspath(os.path.join(os.path.dirname(__file__), 'config_files/llm_config.yaml'))
@@ -66,11 +66,17 @@ def main():
             print("#" * 50)
             print(f"Solved {df.solved_count} problems, Unsolved {df.unsolved_count} problems")
             print("#" * 50)
-        
-        # Write all results to CSV at the end
-        df.log_to_csv(openai.model)
+
+    except Exception as e:
+        print_error(f"An error occurred during execution: {str(e)}")
         
     finally:
+        try:
+            if df is not None and hasattr(df, 'results') and df.results:
+                print_info("Saving results to CSV...")
+                df.log_to_csv(f"with_error_handling_{openai.model_name if openai else 'unknown_model'}")
+        except Exception as log_error:
+            print_error(f"Failed to save results to CSV: {str(log_error)}")
         # Warning resource_tracker: There appear to be .* leaked semaphore objects"
         call_cleanup([llm, embedding_model, vector_db, ollama, rag, container, pycapsule, openai])
 
