@@ -17,7 +17,8 @@ from utils.output_message_format.output_colour import print_pycapsule
 class PyCapsule_DS1000(PyCapsule):
     def __init__(self,
                  pycapsule_container: Container,
-                 llm: LLMBase):
+                 llm: LLMBase,
+                 **kwargs):
         """
         PyCapsule_DS1000 constructor.
 
@@ -25,7 +26,7 @@ class PyCapsule_DS1000(PyCapsule):
             pycasule_container (Container): Container object.
             llm (LLMBase): LLM object.
         """
-        super().__init__(pycapsule_container, llm)
+        super().__init__(pycapsule_container, llm, **kwargs)
         
     
     def _set_prompt_paths(self):
@@ -119,7 +120,7 @@ class PyCapsule_DS1000(PyCapsule):
         return self._fix_code(response, data_point)
     
     
-    def _fix_code(self, response: CompletedProcess, data_point: dict = None) -> tuple[int, int]:
+    def _fix_code(self, response: CompletedProcess, data_point: dict = None):
         """
         Gets activated only when response.returncode != 0.
         Will change sytem prompt and attempt to fix the code.

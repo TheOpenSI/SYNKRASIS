@@ -69,7 +69,7 @@ def parse_error_ds1000(response: CompletedProcess) -> str:
     # Check for AssertionError
     elif "AssertionError" in error_response:
         error_message = (f"Your provided function logic failed a test case."
-                         "Please re-evaluate the function and improve the function logic.\n{error_response}")
+                         f"Please re-evaluate the function and improve the function logic.\n{error_response}")
     
     # For other types of errors
     else:

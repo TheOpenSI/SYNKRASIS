@@ -35,19 +35,23 @@ def main():
     pycapsule: PyCapsule_DS1000 = None
 
     try:
-        openai = OpenAI_GPT(enable_chat_history=True)
+        # Options: gpt-4, gpt-4o, gpt-3.5-turbo, and gpt-3.5-turbo-1106
+        model = "gpt-3.5-turbo-1106"
+        openai = OpenAI_GPT(enable_chat_history=True, model=model)
         df = DS1000()
-        container = Container()
-        pycapsule = PyCapsule_DS1000(container, openai)
+
+        # Use model-specific image name and container name, which will be used for in Container's mount_dir.
+        container = Container(
+            image_name=f"synkrasis_image_{model}",
+            container_name=f"synkrasis_container_{model}"
+        )
+
+        pycapsule = PyCapsule_DS1000(container, openai, maximum_attempts=5)
         
-        while True:
-            data_point = df.next()
-            
-            if data_point is None:
-                break
-            
+        # Instead of using while True and break, use the loop.
+        for idx, data_point in enumerate(df.data):
             solve_flag, fix_mode_attempt_count = pycapsule(data_point)
-            
+
             # Determine status based on solve_flag
             status = "fail"
             
