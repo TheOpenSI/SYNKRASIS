@@ -7,8 +7,9 @@ from typing import Dict, Optional, List
 import pandas as pd
 
 from utils.output_message_format.output_colour import print_warning, print_success
+from data.DatasetBase import DatasetBase
 
-class DS1000:
+class DS1000(DatasetBase):
     def __init__(self, 
                  file_path: str = os.path.join(os.path.dirname(os.path.abspath(__file__)), "ds1000.jsonl")):
         """
@@ -18,13 +19,10 @@ class DS1000:
             file_path (str): Path to the JSONL file containing the dataset.
                              Defaults to 'ds1000_data.jsonl' in the current directory.
         """
-        self.file_path = file_path
-        self.data = []
-        self.current_index = 0
+        super().__init__(file_path)
         self.solved_count: int = 0
         self.unsolved_count: int = 0
-        self.results: List = []
-        self._load_data()
+        self.results: List = [] #TODO: Be more specific with the type
 
 
     def _load_data(self) -> None:
@@ -51,6 +49,7 @@ class DS1000:
             print_warning("No more datapoints available")
             return None
 
+
     def reset(self) -> None:
         """
         Reset the index to 0.
@@ -60,14 +59,6 @@ class DS1000:
         self.unsolved_count = 0
         self.results = []
 
-    def __len__(self) -> int:
-        """
-        Return the number of datapoints in the dataset.
-
-        Returns:
-            int: The number of datapoints.
-        """
-        return len(self.data)
 
     def log_to_csv(self, model_name: str) -> None:
         """

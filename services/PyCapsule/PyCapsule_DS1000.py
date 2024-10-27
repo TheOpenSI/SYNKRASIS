@@ -12,7 +12,6 @@ from services.Container.Container import Container
 from services.Base import ServiceBase
 from services.LLM.LLMBase import LLMBase
 from utils.code_parsing.code_parser_ds1000_gpt import parse_solution_ds1000_gpt
-from utils.error_parsing.parse_error import parse_error_ds1000
 from utils.output_message_format.output_colour import print_pycapsule
 
 class PyCapsule_DS1000(PyCapsule):
@@ -23,10 +22,8 @@ class PyCapsule_DS1000(PyCapsule):
         PyCapsule_DS1000 constructor.
 
         Args:
-            model_name (str): Model name.
-            model_path (str): Model path.
-            mount_dir (str): Mount directory.
-            verbose (bool): Verbose mode.
+            pycasule_container (Container): Container object.
+            llm (LLMBase): LLM object.
         """
         super().__init__(pycapsule_container, llm)
         
@@ -54,23 +51,14 @@ class PyCapsule_DS1000(PyCapsule):
                 }
         """ 
         # Suppress warning
-        suppress_warning = ("import warnings\n"
-                            "warnings.filterwarnings('ignore')\n")
+        suppress_warning = self._suppress_warning_code()
         
         # Solution: generated function definition and result
         solution = ("solution = '''\n"
                     f"{code}\n'''\n")
         
         # Timeouts
-        timeout = ("from multiprocessing import Process\n"
-                   "p: Process = Process(target = test_execution, args = (solution, ))\n"
-                   "p.start()\n"
-                   "p.join(timeout = 10)\n"
-                   "if p.is_alive():\n"
-                   "    p.terminate()\n"
-                   "    raise Exception('Generated code is running infinite loop.')\n"
-                   "if p.exitcode != 0:\n"
-                   "    raise Exception('An error occurred. This is a generic error message. See previous error message')\n")
+        timeout = self._timeout_code(function_name = "test_execution", args = "(solution, )", timeout = 10) # passing args as string
         
         # Solution and test execution
         py_file_content = (f"{suppress_warning}\n"
@@ -109,6 +97,26 @@ class PyCapsule_DS1000(PyCapsule):
         
         # Create main.py and task_id.py
         self._create_main_py(code, user_query)
+        
+        
+    def _set_original_question(self, user_query: dict):
+        """
+        Overriden to handle dict user_query.
+
+        Args:
+            user_query (dict): user_query["prompt"] for DS1000.
+
+        Returns:
+            str: Original question extracted from user_query dict.
+        """
+        return user_query["prompt"]
+    
+    
+    def _fix_code_with_data_point(self, response: CompletedProcess, data_point: dict) -> tuple[int, int]:
+        """
+        DS1000 specific fix code method.
+        """
+        return self._fix_code(response, data_point)
     
     
     def _fix_code(self, response: CompletedProcess, data_point: dict = None) -> tuple[int, int]:
@@ -131,10 +139,7 @@ class PyCapsule_DS1000(PyCapsule):
         while response.returncode != 0 and attempt_count < self.maximum_attempts:
             self._change_system_prompt(is_fix_mode=True)
             
-            error_response = parse_error_ds1000(response)
-            
-            fix_mode_query = ("Your generated code had the following error -\n"
-                              f"{error_response}\n")
+            fix_mode_query = self.error_handling(error_message = response.stderr)
             
             # Updating response, main.py and requirements.txt
             fix_mode_data_point = data_point.copy()

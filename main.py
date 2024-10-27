@@ -13,13 +13,11 @@ from services.VectorDatabase.VectorDatabase import VectorDatabase
 from services.RAG.RAG import RAG
 from services.Container.Container import Container
 from services.PyCapsule.PyCapsule import PyCapsule
-from services.PyCapsule.PyCapsule_HumanEval import PyCapsule_HumanEval
 from services.PyCapsule.PyCapsule_DS1000 import PyCapsule_DS1000
 # Utils
 from utils.output_message_format.output_colour import print_model_output, print_info, print_error, print_success, print_warning
 from utils.resource.resource_mg_util import call_cleanup
 # Data
-from data.HumanEval.HumanEval import HumanEvalDataset
 from data.DS1000.DS1000 import DS1000
 
 # Default config file
@@ -72,13 +70,18 @@ def main():
             print("#" * 50)
             print(f"Solved {df.solved_count} problems, Unsolved {df.unsolved_count} problems")
             print("#" * 50)
-        
-        # Write all results to CSV at the end
-        df.log_to_csv(openai.model)
+    
+    except Exception as e:
+        print_error(f"An error occurred during execution: {str(e)}")
         
     finally:
-        # Warning resource_tracker: There appear to be .* leaked semaphore objects"
-        call_cleanup([llm, embedding_model, vector_db, ollama, rag, container, pycapsule, openai])
+        try:
+            if df is not None and hasattr(df, 'results') and df.results:
+                print_info("Saving results to CSV...")
+                df.log_to_csv(openai.model_name)
+        except Exception as log_error:
+            print_error(f"Failed to save results to CSV: {str(log_error)}")
+        
 
 if __name__ == '__main__':
     main()
