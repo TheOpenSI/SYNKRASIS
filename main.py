@@ -33,8 +33,8 @@ def main():
     pycapsule: PyCapsule = None
 
     try:
-        llm = HF_LLM(llm_config_file = LLM_CONFIG_FILE, enable_chat_history = True)
-        llm.generate_response("What is the capital of France?", suppress_conversation_history=False)
+        llm = HF_LLM(llm_config_file = LLM_CONFIG_FILE, enable_chat_history = False)
+        llm.generate_response("What is the capital of Bangladesh?", suppress_conversation_history=True)
         
         
     finally:

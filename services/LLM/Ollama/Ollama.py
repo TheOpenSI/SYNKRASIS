@@ -25,7 +25,7 @@ class Ollama(ServiceBase, LLMBase):
         """
         Pull the model from the server
         """
-        ollama.pull_model(self.model)
+        ollama.pull_model(self.model_name)
 
 
     def generate_response(self, 
@@ -53,7 +53,7 @@ class Ollama(ServiceBase, LLMBase):
         
         try:
             # Generate response from the model
-            response = ollama.generate(model = self.model, prompt = full_query)
+            response = ollama.generate(model = self.model_name, prompt = full_query)
 
             # Add the interaction to chat history
             if self.enable_chat_history and response:
@@ -62,7 +62,7 @@ class Ollama(ServiceBase, LLMBase):
                     
                 self.chat_history.add_interaction(user_prompt, response["response"]) # for chat it's response["message"]["content"]
 
-            print_model_output(response["response"], self.model)
+            print_model_output(response["response"], self.model_name)
             return response["response"]
 
         except ollama.ResponseError as e:
