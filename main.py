@@ -14,6 +14,7 @@ from services.RAG.RAG import RAG
 from services.Container.Container import Container
 from services.PyCapsule.PyCapsule import PyCapsule
 from services.PyCapsule.PyCapsule_MBPP import PyCapsule_MBPP
+from services.PyCapsule.PyCapsule_HumanEval import PyCapsule_HumanEval
 
 # Utils
 from utils.output_message_format.output_colour import print_model_output, print_info, print_error, print_success, print_warning
