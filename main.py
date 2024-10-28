@@ -21,6 +21,7 @@ from utils.resource.resource_mg_util import call_cleanup
 
 # Data
 from data.MBPP.MBPP import MBPP
+from data.HumanEval.HumanEval import HumanEvalDataset
 
 # Default config file
 LLM_CONFIG_FILE = os.path.abspath(os.path.join(os.path.dirname(__file__), 'config_files/llm_config.yaml'))
@@ -69,11 +70,10 @@ def main():
             print("#" * 50)
 
     except Exception as e:
-        print_error(f"An error occurred during execution: {str(e)}") # optionally log the error or handle it specifically
-    
+        print_error(f"An error occurred during execution: {str(e)}")
+        
     finally:
         try:
-            # Only log if df was initialized and has results
             if df is not None and hasattr(df, 'results') and df.results:
                 print_info("Saving results to CSV...")
                 df.log_to_csv(f"with_error_handling_{openai.model_name if openai else 'unknown_model'}")
@@ -81,6 +81,7 @@ def main():
             print_error(f"Failed to save results to CSV: {str(log_error)}")
         
         # Cleanup resources
+        # Warning resource_tracker: There appear to be .* leaked semaphore objects"
         call_cleanup([llm, embedding_model, vector_db, ollama, rag, container, pycapsule, openai])
 
 if __name__ == '__main__':
