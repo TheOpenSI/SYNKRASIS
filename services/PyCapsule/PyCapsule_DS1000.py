@@ -40,14 +40,16 @@ class PyCapsule_DS1000(PyCapsule):
         """
         Creates main.py, task_id.py files in the mount_dir.
         Args:
-            code (str): solution, LLM generated Function definition.
-            user_query (dict): User query dictionary
+            code (str): solution, LLM generated solution.
+            user_query (dict): DS1000 data point reference.
+        
         DS1000 Structure:
             user_query = {
-                    prompt: problem definition with snippet,
-                    reference_code: reference solution,
+                    prompt: problem definition with snippet, this is a conversation like prompt.
+                    reference_code: reference solution, not used in PyCapsule
                     metadata: {problem_id, library_problem_id, library, test_case_cnt, perturbation_type, perturbation_origin_id}
-                    
+            
+            Modified content:
                     code_context = main.py file content(from dataset and warning), 
                     solution = function definition, result = funtion call, 
                     test function call
@@ -56,16 +58,16 @@ class PyCapsule_DS1000(PyCapsule):
         # Suppress warning
         suppress_warning = self._suppress_warning_code()
         
-        # Solution: generated function definition and result
+        # Solution: generated function definition in a string
         solution = ("solution = '''\n"
                     f"{code}\n'''\n")
         
-        # Timeouts
+        # Timeout
         timeout = self._timeout_code(function_name = "test_execution", args = "(solution, )", timeout = 10)
         
         # Solution and test execution
         py_file_content = (f"{suppress_warning}\n"
-                           f"{user_query['code_context']}\n" # test code
+                           f"{user_query['code_context']}\n" # setup and test code
                            f"{solution}\n" # generated code
                            f"{timeout}") # timeout code
         

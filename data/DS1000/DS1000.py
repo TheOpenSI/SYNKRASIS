@@ -36,7 +36,8 @@ class DS1000(DatasetBase):
     def next(self) -> Optional[Dict[str, str]]:
         """
         Return the next datapoint.
-
+        **Deprecated: Use process() instead.
+        
         Returns:
             Optional[Dict[str, str]]: The next datapoint if available, else None.
         """
@@ -52,7 +53,7 @@ class DS1000(DatasetBase):
 
     def reset(self) -> None:
         """
-        Reset the index to 0.
+        Reset all fields.
         """
         self.current_index = 0
         self.solved_count = 0
@@ -65,9 +66,16 @@ class DS1000(DatasetBase):
         Write result data to CSV file using Pandas.
         For DS1000 task results.
         Args:
-            model_name (str): Name of the model used for the results.
+            model_name (str): Name of the LLM model to be used for the csv file.
         """
         df = pd.DataFrame(self.results, columns=["problem_id", "library", "fix_mode_attempt_count", "status"])
         file_path = f"{os.path.dirname(os.path.abspath(__file__))}/{model_name}_ds1000_results.csv"
         df.to_csv(file_path, index=False)
         print_success(f"Results saved to {file_path}")
+        
+        
+    def process(self, data_point: dict) -> dict:
+        """
+        Returns the same data point for DS1000.
+        """
+        return data_point

@@ -42,6 +42,7 @@ class MBPP(DatasetBase):
     def next(self) -> Optional[Dict[str, str]]:
         """
         Return the next datapoint.
+        **Deprecated: Use process() instead.
 
         Returns:
             Optional[Dict[str, str]]: The next datapoint if available, else None.
@@ -65,7 +66,7 @@ class MBPP(DatasetBase):
 
     def reset(self) -> None:
         """
-        Reset all the variables.
+        Reset all the fields.
         """
         super().reset()
         self.solved_count = 0
@@ -78,8 +79,24 @@ class MBPP(DatasetBase):
         Write result data to CSV file using Pandas.
         For MBPP task results.
         Args:
-            model_name (str): Name of the model used to generate the results.
+            model_name (str): Name of the LLM model used to generate the CSV file.
         """
         df = pd.DataFrame(self.results, columns=["task_id", "fix_mode_attempt_count", "status"])
-        df.to_csv(f"{os.path.dirname(os.path.abspath(__file__))}/{model_name}_results.csv", index = False)
+        df.to_csv(f"{os.path.dirname(os.path.abspath(__file__))}/{model_name}_mbpp_results.csv", index = False)
         print_success(f"Results saved to {model_name}_results.csv")
+        
+        
+    def process(self, data_point: dict) -> dict:
+        """
+        Process the data point to omit unnecessary fields.
+
+        Returns:
+            dict : Processed data point.
+        """
+        function_signature = re.search(r"(?<=assert\s)(.*?)(?===)", data_point["test_list"][0])
+        function_signature_prompt = "A typical function call will have the following function signature - \n" + function_signature.group()
+        
+        return {
+            "task_id": data_point["task_id"],
+            "prompt": data_point["text"] + "\n" + function_signature_prompt,
+            "test_list": data_point["test_list"]}

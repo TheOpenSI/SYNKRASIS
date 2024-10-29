@@ -19,10 +19,8 @@ class PyCapsule_HumanEval(PyCapsule):
         PyCapsule_HumanEval constructor.
 
         Args:
-            model_name (str): Model name.
-            model_path (str): Model path.
-            mount_dir (str): Mount directory.
-            verbose (bool): Verbose mode.
+            pycasule_container (Container): Container object.
+            llm (LLMBase): LLM object.
         """
         super().__init__(pycapsule_container, llm)
         
@@ -41,36 +39,42 @@ class PyCapsule_HumanEval(PyCapsule):
         Creates main.py, task_id.py files in the mount_dir.
         Args:
             code (str): Function definition.
-            user_query (dict): User query dictionary
-        Metadata: FOR HUMANEVAL
+            user_query (dict): HumanEval data point reference.
+        
+        Metadata: HUMANEVAL data structure (from the data loader)
             user_query = {
                     "task_id": datapoint["task_id"],
                     "prompt": datapoint["prompt"],
                     "entry_point": datapoint["entry_point"],
-                    "test": datapoint["test"],
-                    "time_complexity_test_code": time_complexity_test_code,
-                    "test_code": test_code
+                    "test": datapoint["test"]
                 }
         """ 
         # Suppress warning
         suppress_warning = self._suppress_warning_code()
         
+        # Timeout code
+        timeout_code = self._timeout_code(function_name = "check", 
+                                          args_for_function = "test", 
+                                          timeout = 10)
+        
+        # Content
+        code_to_write = suppress_warning + "\n" + code + "\n\n" + user_query["test_code"] + "\n" + timeout_code
+        
         # Main
         main_py_path = os.path.join(self.MOUNT_DIR, "main.py")
-        self._create_py_file(main_py_path, 
-                             suppress_warning + "\n" + code + "\n" + "\n" + user_query["test_code"])
+        self._create_py_file(main_py_path, code_to_write)
 
         # Task file
         task_file_name = user_query["task_id"].replace("/", "_") + ".py"
         task_file_path = os.path.join(self.MOUNT_DIR, task_file_name)
-        self._create_py_file(task_file_path, 
-                             suppress_warning + "\n" + code + "\n" + "\n" + user_query["test_code"])
+        self._create_py_file(task_file_path, code_to_write)
         
            
     def _generate_code(self, user_query: dict, suppress_conversation_history: bool = True) -> None:
         """
-        FOR HUMANEVAL.
+        HUMANEVAL implementation.
         User query is a dictionary.
+        Calls the LLM to generate the code and requirements.
 
         Args:
             user_query (dict): Dictionary query to generate code, for structure refer to data/HumanEval.py.
@@ -93,10 +97,30 @@ class PyCapsule_HumanEval(PyCapsule):
         
         
     def _set_original_question(self, user_query: dict) -> str:
+        """
+        For HumanEval, LLM query is stored in user_query["prompt"].
+
+        Args:
+            user_query (dict): HumanEval data point reference.
+
+        Returns:
+            str: Query prompt for the LLM.
+        """
         return user_query["prompt"]
     
     
     def _fix_code_with_data_point(self, response: CompletedProcess, data_point: dict) -> tuple[int, int]:
+        """
+        HumanEval implementation.
+        Calls the fix code function to handle dict data_point.
+
+        Args:
+            response (CompletedProcess): Container response with stdout, stderr and return code.
+            data_point (dict): HumanEval data point reference.
+
+        Returns:
+            tuple[int, int]: Return code and number of attempts made.
+        """
         return self._fix_code(response, data_point)
     
     
@@ -104,12 +128,13 @@ class PyCapsule_HumanEval(PyCapsule):
         """
         Gets activated only when response.returncode != 0.
         Will change sytem prompt and attempt to fix the code.
-        From error response filters the traceback, assertion error and sends it to the LLM.
-        Returns response code and number of attempts made.
 
         Args:
             response (CompletedProcess): Response from the container with error code, stdout and stderr.
             data_point (dict): HumanEval data point reference.
+        
+        Returns:
+            tuple[int, int]: Return code and number of attempts made.
             
         """
         print_pycapsule("Starting PyCapsule in fix mode.")
@@ -120,6 +145,7 @@ class PyCapsule_HumanEval(PyCapsule):
         while response.returncode != 0 and attempt_count < self.maximum_attempts:
             self._change_system_prompt(is_fix_mode=True)
             
+            # HumanEval  runs the test cases using check(candidate) so we need to replace candidate with the entry_point
             fix_mode_query = self.error_handling(error_message = response.stderr,
                                                  extract_test_case=True,
                                                  change_test_case_entry=True,

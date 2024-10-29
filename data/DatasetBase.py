@@ -43,10 +43,25 @@ class DatasetBase(ABC):
     @abstractmethod
     def log_to_csv(self, model_name: str) -> None:
         """
-        Log the dataset to a csv file.
+        Log the results to a csv file.
 
         Args:
             model_name (str): Name of the model to be used as the title of the csv file.
+        """
+        pass
+    
+    
+    @abstractmethod
+    def process(self, data_point: dict) -> dict:
+        """
+        Process the data point so we don't need to use while True.
+        Same as next().
+
+        Args:
+            data_point (dict): data point to process.
+
+        Returns:
+            dict: processed data point.
         """
         pass
     

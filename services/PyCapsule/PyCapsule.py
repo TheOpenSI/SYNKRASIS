@@ -36,7 +36,7 @@ class PyCapsule(ServiceBase):
             maximum_attempts (int, optional): Maximum tries to fix generated code. Defaults to 3.
 
         Raises:
-            ValueError: If chat history is not enabled in Ollama.
+            ValueError: If chat history is not enabled in LLM.
         """
         super().__init__()
         if not llm.enable_chat_history:
@@ -58,7 +58,7 @@ class PyCapsule(ServiceBase):
                 "warnings.filterwarnings('ignore')\n")
         
         
-    def _timeout_code(self, function_name: str, args: str, timeout: int) -> str:
+    def _timeout_code(self, function_name: str, args_for_function: str, timeout: int) -> str:
         """
         Runs the example call or the test cases in a different thread with a timeout period.
         In case of an infinite loop, the code will terminate the process and raise an exception.
@@ -67,7 +67,7 @@ class PyCapsule(ServiceBase):
 
         Args:
             function_name (str): function to run/test cases
-            args (Tuple): arguments to pass to the function
+            args (str): arguments to pass to the function, format as a tuple
             timeout (int): timeout period in seconds
 
         Raises:
@@ -78,7 +78,7 @@ class PyCapsule(ServiceBase):
             str: Code snippet to run the function with timeout.
         """
         return ("from multiprocessing import Process\n"
-                f"p: Process = Process(target = {function_name}, args = {args})\n"
+                f"p: Process = Process(target = {function_name}, args = {args_for_function})\n"
                 "p.start()\n"
                 f"p.join(timeout = {timeout})\n"
                 "if p.is_alive():\n"
@@ -136,8 +136,8 @@ class PyCapsule(ServiceBase):
                 
     def _create_main_py(self, code: str, test_cases:str = "") -> None:
         """
-        Creates main.py file in the mount_dir. 
-        This  just adds the LLM generated test cases (if any) to the py file.
+        Creates main.py file in the mount_dir, does not create any task specific py file. 
+        Adds the provided test cases (if any) to the py file.
         For dataset specific implementation, override this method so instead of test case: str, it can accept a user_query: dict.
         The user_query will contain the test cases and other metadata.\n
         ** Override for dataset specific implementation.
@@ -176,6 +176,7 @@ class PyCapsule(ServiceBase):
             self._change_system_prompt(is_fix_mode=True) # Changing the system prompt for fix mode
             
             # Error message after removing generic and external file error
+            # This will have warnings since we dont have any generic error message
             fix_mode_query = self.error_handling(error_message = response.stderr,
                                                  send_original = False,
                                                  extract_test_case = False,
@@ -197,7 +198,7 @@ class PyCapsule(ServiceBase):
         
     def _generate_code(self, user_query: str, suppress_conversation_history: bool = True) -> None:
         """
-        Create the main.py and requirements from the LLM response.
+        Creates the main.py and requirements from the LLM response.
         USE APPROPRIATE PARSER.\n
         ** Override for dataset specific implementation.
 

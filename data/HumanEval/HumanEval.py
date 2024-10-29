@@ -44,7 +44,8 @@ class HumanEval(DatasetBase):
     def next(self) -> Optional[Dict[str, str]]:
         """
         Return the next datapoint.
-
+        **Deprecated: Use process() instead.
+        
         Returns:
             Optional[Dict[str, str]]: The next datapoint if available, else None.
         """
@@ -73,7 +74,7 @@ class HumanEval(DatasetBase):
 
     def reset(self) -> None:
         """
-        Reset the index to 0.
+        Reset all the fields.
         """
         self.current_index = 0
         self.solved_count = 0
@@ -86,9 +87,24 @@ class HumanEval(DatasetBase):
         Write result data to CSV file using Pandas.
         For HumanEval task results.
         Args:
-            data (list): List of dictionaries containing task results.
-            file_path (str): Path to the output CSV file.
+            model_name (str): Name of the LLM model to be used for the csv file.
         """
         df = pd.DataFrame(self.results, columns=["task_id", "fix_mode_attempt_count", "status"])
-        df.to_csv(f"{os.path.dirname(os.path.abspath(__file__))}/{model_name}_results.csv", index = False)
+        df.to_csv(f"{os.path.dirname(os.path.abspath(__file__))}/{model_name}_humaneval_results.csv", index = False)
         print_success(f"Results saved to {model_name}_results.csv")
+        
+        
+    def process(self, data_point: dict) -> dict :
+        """
+        Process the data point to omit unnecessary fields.
+
+        Returns:
+            dict : Processed data point.
+        """
+          
+        return {
+            "task_id": data_point["task_id"],
+            "prompt": data_point["prompt"],
+            "entry_point": data_point["entry_point"],
+            "test": data_point["test"]
+        }

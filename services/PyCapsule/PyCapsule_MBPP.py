@@ -34,8 +34,8 @@ class PyCapsule_MBPP(PyCapsule):
         
     def _create_test_function(self, test_list: list) -> str:
         """
-        Create the test function from the test list.
-        Uses the default test function for MBPP.
+        Create the test function using the test list.
+        Function signature is test_function().
 
         Args:
             test_list (list): list of test cases.
@@ -64,7 +64,7 @@ class PyCapsule_MBPP(PyCapsule):
         timeout_code = self._timeout_code("test_function", "()", timeout = 10)
         py_file_content = (self._suppress_warning_code() + "\n" +
                            code + "\n\n" +
-                           test_function + "\n" +
+                           test_function + "\n\n" +
                            timeout_code)
         
         main_py_path = os.path.join(self.MOUNT_DIR, "main.py")
@@ -78,11 +78,8 @@ class PyCapsule_MBPP(PyCapsule):
         """
         FOR MBPP.
         User query is a dictionary.
-        Generates the raw LLM response using the LLM object.
-        Parses the response to get the code. 
-        Parser being used - parse_response for requirements, code
-        Use APPROPRIATE code parsing function.
-        Creates the main.py file in the mountdir
+        Generates the raw LLM response and parses the response to get the code. 
+        Parser being used - utils.code_parsing.code_parser.parse_response for requirements, code
 
         Args:
             user_query (dict): user query with task_id, prompt, function_signature, test_list.
@@ -101,6 +98,7 @@ class PyCapsule_MBPP(PyCapsule):
         
     def _set_original_question(self, user_query: dict) -> str:
         """
+        For MBPP, LLM query is stored in user_query["prompt"].
         Overriden to handle dict user_query.
 
         Args:
@@ -114,7 +112,6 @@ class PyCapsule_MBPP(PyCapsule):
     
     def _fix_code_with_data_point(self, response: CompletedProcess, data_point: dict) -> tuple[int, int]:
         """
-        MBPP specific.\n
         Calls the fix code function to handle dict data_point.
         """
         return self._fix_code(response, data_point)
@@ -124,8 +121,6 @@ class PyCapsule_MBPP(PyCapsule):
         """
         Gets activated only when response.returncode != 0.
         Will change sytem prompt and attempt to fix the code.
-        From error response filters the traceback, assertion error and sends it to the LLM.
-        Using HumanEval error parser.
         Returns response code and number of attempts made.
 
         Args:
