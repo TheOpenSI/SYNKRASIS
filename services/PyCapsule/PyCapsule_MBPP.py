@@ -61,7 +61,7 @@ class PyCapsule_MBPP(PyCapsule):
             user_query (dict): data point with task_id, prompt, function_signature, test_list.
         """
         test_function = self._create_test_function(user_query["test_list"])
-        timeout_code = self._timeout_code("test_function", (), timeout = 10)
+        timeout_code = self._timeout_code("test_function", "()", timeout = 10)
         py_file_content = (self._suppress_warning_code() + "\n" +
                            code + "\n\n" +
                            test_function + "\n" +

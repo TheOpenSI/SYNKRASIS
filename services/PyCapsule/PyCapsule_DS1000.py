@@ -59,7 +59,7 @@ class PyCapsule_DS1000(PyCapsule):
                     f"{code}\n'''\n")
         
         # Timeouts
-        timeout = self._timeout_code(function_name = "test_execution", args = "(solution, )", timeout = 10) # passing args as string
+        timeout = self._timeout_code(function_name = "test_execution", args = "(solution, )", timeout = 10)
         
         # Solution and test execution
         py_file_content = (f"{suppress_warning}\n"
