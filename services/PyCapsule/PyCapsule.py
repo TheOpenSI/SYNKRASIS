@@ -58,7 +58,7 @@ class PyCapsule(ServiceBase):
                 "warnings.filterwarnings('ignore')\n")
         
         
-    def _timeout_code(self, function_name: str, args: Tuple, timeout: int) -> str:
+    def _timeout_code(self, function_name: str, args: str, timeout: int) -> str:
         """
         Runs the example call or the test cases in a different thread with a timeout period.
         In case of an infinite loop, the code will terminate the process and raise an exception.
@@ -67,7 +67,7 @@ class PyCapsule(ServiceBase):
 
         Args:
             function_name (str): function to run/test cases
-            args (Tuple): arguments to pass to the function, has to be a tuple
+            args (str): arguments to pass to the function, written as a tuple
             timeout (int): timeout period in seconds
 
         Raises:
@@ -93,8 +93,8 @@ class PyCapsule(ServiceBase):
         Set the prompt paths for code generation and code fix.\n
         ** Override for dataset specific implementation.
         """
-        self.CODE_GEN_PROMPT_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "code_gen_prompt.txt")
-        self.CODE_FIX_PROMPT_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "code_fix_prompt.txt")
+        self.CODE_GEN_PROMPT_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "prompts/code_gen_prompt.txt")
+        self.CODE_FIX_PROMPT_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "prompts/code_fix_prompt.txt")
 
 
     def _change_system_prompt(self, is_fix_mode: bool = False):
