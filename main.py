@@ -15,6 +15,7 @@ from services.Container.Container import Container
 from services.PyCapsule.PyCapsule import PyCapsule
 from services.PyCapsule.PyCapsule_MBPP import PyCapsule_MBPP
 from services.PyCapsule.PyCapsule_HumanEval import PyCapsule_HumanEval
+from services.PyCapsule.PyCapsule_DS1000 import PyCapsule_DS1000
 
 # Utils
 from utils.output_message_format.output_colour import print_model_output, print_info, print_error, print_success, print_warning
@@ -45,12 +46,8 @@ def main():
         container = Container()
         pycapsule = PyCapsule_MBPP(container, openai)
         
-        while True:
-            data_point = df.next()
-            
-            if data_point is None:
-                break
-            
+        # Instead of using while True and break, use the loop.
+        for idx, data_point in enumerate(df.data):
             solve_flag, fix_mode_attempt_count = pycapsule(data_point)
             status = "fail"
             
@@ -69,7 +66,6 @@ def main():
             print("#" * 50)
             print(f"Solved {df.solved_count} problems, Unsolved {df.unsolved_count} problems")
             print("#" * 50)
-
     except Exception as e:
         print_error(f"An error occurred during execution: {str(e)}")
         

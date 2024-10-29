@@ -171,6 +171,7 @@ class PyCapsule(ServiceBase):
         attempt_count = 0
         return_code = -1
         
+        # Comment: Danny, how is response assigned before the following loop?
         while response.returncode != 0 and attempt_count < self.maximum_attempts:
             self._change_system_prompt(is_fix_mode=True) # Changing the system prompt for fix mode
             
@@ -325,9 +326,8 @@ class PyCapsule(ServiceBase):
         self.container.cleanup()
         self.llm.clear_chat_history()
         
-        mount_dir = os.path.abspath(__file__).replace("PyCapsule.py", "../Container/mount_dir")
         for file in ['main.py', 'requirements.txt']:
-            file_path = os.path.join(mount_dir, file)
+            file_path = os.path.join(self.MOUNT_DIR, file)
             if os.path.exists(file_path):
                 os.remove(file_path)
         
