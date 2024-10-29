@@ -17,8 +17,7 @@ from utils.output_message_format.output_colour import print_pycapsule
 class PyCapsule_DS1000(PyCapsule):
     def __init__(self,
                  pycapsule_container: Container,
-                 llm: LLMBase,
-                 **kwargs):
+                 llm: LLMBase):
         """
         PyCapsule_DS1000 constructor.
 
@@ -26,7 +25,7 @@ class PyCapsule_DS1000(PyCapsule):
             pycasule_container (Container): Container object.
             llm (LLMBase): LLM object.
         """
-        super().__init__(pycapsule_container, llm, **kwargs)
+        super().__init__(pycapsule_container, llm)
         
     
     def _set_prompt_paths(self):
@@ -43,12 +42,15 @@ class PyCapsule_DS1000(PyCapsule):
         Args:
             code (str): solution, LLM generated Function definition.
             user_query (dict): User query dictionary
-        Metadata: FOR DS1000
+        DS1000 Structure:
             user_query = {
                     prompt: problem definition with snippet,
                     reference_code: reference solution,
                     metadata: {problem_id, library_problem_id, library, test_case_cnt, perturbation_type, perturbation_origin_id}
-                    code_context = main.py file content, add solution = function definition\n result = funtion call, test function call
+                    
+                    code_context = main.py file content(from dataset and warning), 
+                    solution = function definition, result = funtion call, 
+                    test function call
                 }
         """ 
         # Suppress warning
@@ -85,7 +87,7 @@ class PyCapsule_DS1000(PyCapsule):
 
         Args:
             user_query (dict): Dictionary query to generate code, for structure refer to data/DS1000.py.
-            suppress_conversation_history (bool): Suppress the conversation history, get activated when pycapsule is in fix mode.
+            suppress_conversation_history (bool): Suppress the conversation history, gets activated when pycapsule is in fix mode.
         """
         if type(user_query) != dict:
             raise ValueError("user_query must be a dict for DS1000.")

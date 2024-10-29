@@ -8,8 +8,8 @@ from typing import Dict, Optional, List
 import pandas as pd
 
 from utils.output_message_format.output_colour import print_warning, print_success
-
-class HumanEvalDataset:
+from data.DatasetBase import DatasetBase
+class HumanEval(DatasetBase):
     def __init__(self, 
                  file_path: str = os.path.join(os.path.dirname(os.path.abspath(__file__)), "human-eval-v2-20210705.jsonl")):
         """
@@ -79,16 +79,6 @@ class HumanEvalDataset:
         self.solved_count = 0
         self.unsolved_count = 0
         self.results = []
-
-
-    def __len__(self) -> int:
-        """
-        Return the number of datapoints in the dataset.
-
-        Returns:
-            int: The number of datapoints.
-        """
-        return len(self.data)
     
 
     def log_to_csv(self, model_name: str) -> None:
