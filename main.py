@@ -58,8 +58,7 @@ def parse_arguments() -> argparse.Namespace:
     parser.add_argument("--datasets", 
                         nargs="+", # multiple arguments 
                         choices=["ds1000", "humaneval", "mbpp"], 
-                        # default=["ds1000", "humaneval", "mbpp"],
-                        default = ["humaneval"],
+                        default=["ds1000", "humaneval", "mbpp"], 
                         help="Specify which datasets to run. Options: ds1000, humaneval, mbpp")
     return parser.parse_args()
 
@@ -143,6 +142,7 @@ def main():
                         if solve_flag == 0:
                             target_dataloader.solved_count += 1
                             status = "pass"
+                            
                         else:
                             target_dataloader.unsolved_count += 1
                             
@@ -152,18 +152,17 @@ def main():
                         print(f"Solved {target_dataloader.solved_count} problems, Unsolved {target_dataloader.unsolved_count} problems")
                         print("#" * 50)
                         
-                    except Exception as data_point_error:
-                        print_error(f"Error processing data point - {raw_data_point}: {str(data_point_error)}")
+                    except (Exception, KeyboardInterrupt) as data_point_error:
+                        print_error(f"Error processing data point - {raw_data_point[0]}: {str(data_point_error)}")
                         target_dataloader.unsolved_count += 1
-                        append_result_to_dataloader(target_dataloader, data_point, fix_mode_attempt_count, "fail-error")
+                    
+                    safe_save_data(target_dataloader, experiment_name, model_name)
                 
-                safe_save_data(target_dataloader, experiment_name, model_name)
-                
-            except Exception as exp_error:
+            except (Exception, KeyboardInterrupt) as exp_error:
                 print_error(f"Error in experiment {experiment_name}: {str(exp_error)}")
                 safe_save_data(target_dataloader, experiment_name, model_name)
     
-    except Exception as e:
+    except (Exception, KeyboardInterrupt) as e:
         print_error(f"Critical error in main execution: {str(e)}")
         for dataloader in all_dataloaders:
             safe_save_data(dataloader, dataloader.__class__.__name__, model_name)

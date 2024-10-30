@@ -82,7 +82,7 @@ class HumanEval(DatasetBase):
             model_name (str): Name of the LLM model to be used for the csv file.
         """
         df = pd.DataFrame(self.results, columns=["task_id", "fix_mode_attempt_count", "status"])
-        df.to_csv(f"{os.path.dirname(os.path.abspath(__file__))}/{model_name}_humaneval_results.csv", index = False)
+        df.to_csv(f"experiment_results/{model_name}_humaneval_results.csv", index = False)
         print_success(f"Results saved to {model_name}_results.csv")
         
         

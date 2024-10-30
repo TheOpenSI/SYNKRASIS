@@ -69,7 +69,7 @@ class DS1000(DatasetBase):
             model_name (str): Name of the LLM model to be used for the csv file.
         """
         df = pd.DataFrame(self.results, columns=["problem_id", "library", "fix_mode_attempt_count", "status"])
-        file_path = f"{os.path.dirname(os.path.abspath(__file__))}/{model_name}_ds1000_results.csv"
+        file_path = f"experiment_results/{model_name}_ds1000_results.csv" # save to a separate folder in the root directory
         df.to_csv(file_path, index=False)
         print_success(f"Results saved to {file_path}")
         
