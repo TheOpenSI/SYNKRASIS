@@ -54,7 +54,7 @@ class PyCapsule_HumanEval(PyCapsule):
         
         # Timeout code
         timeout_code = self._timeout_code(function_name = "check", 
-                                          args_for_function = "test", 
+                                          args_for_function = f"({user_query['entry_point']}, )", 
                                           timeout = 10)
         
         # Content
