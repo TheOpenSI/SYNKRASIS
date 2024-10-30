@@ -12,7 +12,8 @@ from data.DatasetBase import DatasetBase
 
 class MBPP(DatasetBase):
     def __init__(self, 
-                 file_path: str = os.path.join(os.path.dirname(os.path.abspath(__file__)), "mbpp.jsonl")):
+                 file_path: str = os.path.join(os.path.dirname(os.path.abspath(__file__)), "mbpp.jsonl"),
+                 subset_size: Optional[int] = None):
         """
         Initialize the MBPP dataset loader.
 
@@ -20,7 +21,7 @@ class MBPP(DatasetBase):
             file_path (str): Path to the JSONL file containing the dataset.
                              Defaults to 'mbpp.jsonl' in the current directory.
         """
-        super().__init__(file_path)
+        super().__init__(file_path, subset_size)
         self.solved_count: int = 0
         self.unsolved_count: int = 0
         self.results: List[Dict[int, int, str]] = [] # task_id, fix_mode_attempt_count, status 
@@ -30,13 +31,7 @@ class MBPP(DatasetBase):
         """
         Load the JSON data from the file.
         """
-        try:
-            with open(self.file_path, "r") as file:
-                self.data = [json.loads(line.strip()) for line in file]
-        except FileNotFoundError:
-            print_warning(f"File not found: {self.file_path}")
-        except json.JSONDecodeError:
-            print_warning(f"Invalid JSON in file: {self.file_path}")
+        self._load_json_data()
 
 
     def next(self) -> Optional[Dict[str, str]]:

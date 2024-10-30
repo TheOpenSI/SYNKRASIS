@@ -11,7 +11,8 @@ from utils.output_message_format.output_colour import print_warning, print_succe
 from data.DatasetBase import DatasetBase
 class HumanEval(DatasetBase):
     def __init__(self, 
-                 file_path: str = os.path.join(os.path.dirname(os.path.abspath(__file__)), "human-eval-v2-20210705.jsonl")):
+                 file_path: str = os.path.join(os.path.dirname(os.path.abspath(__file__)), "human-eval-v2-20210705.jsonl"),
+                 subset_size: Optional[int] = None):
         """
         Initialize the HumanEval dataset loader.
 
@@ -19,26 +20,17 @@ class HumanEval(DatasetBase):
             file_path (str): Path to the JSONL file containing the dataset.
                              Defaults to 'human-eval-v2-20210705.jsonl' in the current directory.
         """
-        self.file_path = file_path
-        self.data = []
-        self.current_index = 0
+        super().__init__(file_path, subset_size)
         self.solved_count: int = 0
         self.unsolved_count: int = 0
         self.results: List = []
-        self._load_data()
 
 
     def _load_data(self) -> None:
         """
         Load the JSON data from the file.
         """
-        try:
-            with open(self.file_path, "r") as file:
-                self.data = [json.loads(line.strip()) for line in file]
-        except FileNotFoundError:
-            print_warning(f"File not found: {self.file_path}")
-        except json.JSONDecodeError:
-            print_warning(f"Invalid JSON in file: {self.file_path}")
+        self._load_json_data()
 
 
     def next(self) -> Optional[Dict[str, str]]:

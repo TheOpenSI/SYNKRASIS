@@ -1,8 +1,10 @@
 import os
 import sys
-import pandas as pd
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 os.environ["TOKENIZERS_PARALLELISM"] = "false"
+
+import argparse
+from typing import Optional, List
 
 # Services
 from services.LLM.HF_LLM.HF_LLM import HF_LLM
@@ -28,7 +30,7 @@ from data.HumanEval.HumanEval import HumanEval
 from data.DS1000.DS1000 import DS1000
 
 # Default config file
-LLM_CONFIG_FILE = os.path.abspath(os.path.join(os.path.dirname(__file__), 'config_files/llm_config.yaml'))
+LLM_CONFIG_FILE = os.path.abspath(os.path.join(os.path.dirname(__file__), "config_files/llm_config.yaml"))
 
 
 def safe_save_data(dataloader: DatasetBase, experiment_name: str, model_name: str) -> None:
@@ -45,7 +47,27 @@ def safe_save_data(dataloader: DatasetBase, experiment_name: str, model_name: st
     except Exception as e:
         print_error(f"Error saving data for {experiment_name}: {str(e)}")
 
+
+def parse_arguments() -> argparse.Namespace:
+    parser = argparse.ArgumentParser(description="Run PyCapsule experiments")
+    parser.add_argument("--subset-size", type=int, default=None,
+                       help="Number of samples to run from each dataset. If not specified, runs full datasets.")
+    parser.add_argument("--datasets", nargs="+", choices=["ds1000", "mbpp", "humaneval"], default=["ds1000", "mbpp", "humaneval"],
+                       help="Specify which datasets to run. Options: ds1000, mbpp, humaneval")
+    return parser.parse_args()
+
+
+def get_selected_dataloaders(args: argparse.Namespace) -> List[DatasetBase]:
+    dataset_map: dict[str, DatasetBase] = {
+        "ds1000": DS1000(),
+        "mbpp": MBPP(),
+        "humaneval": HumanEval()
+    }
+    return [dataset_map[dataset] for dataset in args.datasets]
+
 def main():
+    args = parse_arguments()
+    
     # All base services
     llm: HF_LLM = None
     ollama: Ollama = None
@@ -56,24 +78,24 @@ def main():
     container: Container = None
     pycapsule: PyCapsule = None
 
-    # Data
-    mbpp = MBPP()
-    ds1000 = DS1000()
-    human_eval = HumanEval()
-    all_dataloaders: list[DatasetBase] = [ds1000, mbpp, human_eval]
+    # Get selected dataloaders based on arguments
+    all_dataloaders = get_selected_dataloaders(args)
     
     # LLM
     openai = OpenAI_GPT(enable_chat_history=True)
-    model_name = openai.model_name  # Get the model name for logging
+    model_name = openai.model_name
     
     # Container
     container = Container()
     
-    # PyCapsule
-    pycapsule_mbpp = PyCapsule_MBPP(container, openai)
-    pycapsule_humaneval = PyCapsule_HumanEval(container, openai)
-    pycapsule_ds1000 = PyCapsule_DS1000(container, openai)
-    all_pycapsules: list[PyCapsule] = [pycapsule_mbpp, pycapsule_humaneval, pycapsule_ds1000]
+    # Create corresponding PyCapsules for selected dataloaders
+    pycapsule_map: dict[DatasetBase, PyCapsule] = {
+        DS1000: PyCapsule_DS1000,
+        MBPP: PyCapsule_MBPP,
+        HumanEval: PyCapsule_HumanEval
+    }
+    
+    all_pycapsules = [pycapsule_map[type(loader)](container, openai) for loader in all_dataloaders]
        
     try:
         for target_dataloader, target_pycapsule in zip(all_dataloaders, all_pycapsules):
@@ -105,24 +127,26 @@ def main():
                         
                     except Exception as data_point_error:
                         print_error(f"Error processing data point - {raw_data_point}: {str(data_point_error)}")
+                        target_dataloader.unsolved_count += 1
+                        target_dataloader.results.append({
+                            "task_id": data_point["task_id"],
+                            "fix_mode_attempt_count": fix_mode_attempt_count,
+                            "status": "fail-error" # exception occurred
+                        })
                 
-                # Save data after completing each experiment
                 safe_save_data(target_dataloader, experiment_name, model_name)
                 
             except Exception as exp_error:
                 print_error(f"Error in experiment {experiment_name}: {str(exp_error)}")
-                # Try to save whatever data we have so far
                 safe_save_data(target_dataloader, experiment_name, model_name)
     
     except Exception as e:
         print_error(f"Critical error in main execution: {str(e)}")
-        # Try to save data from all experiments
         for dataloader in all_dataloaders:
             safe_save_data(dataloader, dataloader.__class__.__name__, model_name)
         
     finally:
-        # Cleanup resources
         call_cleanup([llm, embedding_model, vector_db, ollama, rag, container, pycapsule, openai])
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

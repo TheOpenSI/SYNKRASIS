@@ -11,7 +11,8 @@ from data.DatasetBase import DatasetBase
 
 class DS1000(DatasetBase):
     def __init__(self, 
-                 file_path: str = os.path.join(os.path.dirname(os.path.abspath(__file__)), "ds1000.jsonl")):
+                 file_path: str = os.path.join(os.path.dirname(os.path.abspath(__file__)), "ds1000.jsonl"),
+                 subset_size: Optional[int] = None):
         """
         Initialize the DS1000 dataset loader.
 
@@ -19,18 +20,17 @@ class DS1000(DatasetBase):
             file_path (str): Path to the JSONL file containing the dataset.
                              Defaults to 'ds1000_data.jsonl' in the current directory.
         """
-        super().__init__(file_path)
+        super().__init__(file_path, subset_size)
         self.solved_count: int = 0
         self.unsolved_count: int = 0
-        self.results: List = [] #TODO: Be more specific with the type
+        self.results: List = []
 
 
     def _load_data(self) -> None:
         """
         Load the JSON data from the file.
         """
-        with open(self.file_path, "r") as file:
-                self.data = [json.loads(line.strip()) for line in file]
+        self._load_json_data()          
 
 
     def next(self) -> Optional[Dict[str, str]]:
