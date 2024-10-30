@@ -157,6 +157,3 @@ class PyCapsule_DS1000(PyCapsule):
             return_code = response.returncode
         self._change_system_prompt() # Resetting the system prompt
         return return_code, attempt_count
-    
-    def cleanup(self):
-        pass

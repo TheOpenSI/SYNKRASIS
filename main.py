@@ -50,18 +50,25 @@ def safe_save_data(dataloader: DatasetBase, experiment_name: str, model_name: st
 
 def parse_arguments() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Run PyCapsule experiments")
-    parser.add_argument("--subset-size", type=int, default=None,
-                       help="Number of samples to run from each dataset. If not specified, runs full datasets.")
-    parser.add_argument("--datasets", nargs="+", choices=["ds1000", "mbpp", "humaneval"], default=["ds1000", "mbpp", "humaneval"],
-                       help="Specify which datasets to run. Options: ds1000, mbpp, humaneval")
+    parser.add_argument("--subset-size", 
+                        type = int, 
+                        default = 5,
+                        help="Number of samples to run from each dataset. If not specified, runs full datasets.")
+    
+    parser.add_argument("--datasets", 
+                        nargs="+", # multiple arguments 
+                        choices=["ds1000", "humaneval", "mbpp"], 
+                        # default=["ds1000", "mbpp", "humaneval"],
+                        default=["mbpp"],
+                        help="Specify which datasets to run. Options: ds1000, humaneval, mbpp")
     return parser.parse_args()
 
 
 def get_selected_dataloaders(args: argparse.Namespace) -> List[DatasetBase]:
     dataset_map: dict[str, DatasetBase] = {
         "ds1000": DS1000(),
-        "mbpp": MBPP(),
-        "humaneval": HumanEval()
+        "humaneval": HumanEval(),
+        "mbpp": MBPP()
     }
     return [dataset_map[dataset] for dataset in args.datasets]
 
@@ -85,17 +92,24 @@ def main():
     openai = OpenAI_GPT(enable_chat_history=True)
     model_name = openai.model_name
     
-    # Container
-    container = Container()
+    # Create corresponding containers
+    container_map: dict[DatasetBase, Container] = {
+        DS1000: Container(container_name="synk_ds1000", mount_dir_name = "synk_ds1000_mount", shell_script_name = "start_rm_req.sh"),
+        HumanEval: Container(container_name="synk_humaneval", mount_dir_name = "synk_humaneval_mount", shell_script_name = "start.sh"),
+        MBPP: Container(container_name="synk_mbpp", mount_dir_name = "synk_mbpp_mount", shell_script_name = "start.sh")
+    }
     
-    # Create corresponding PyCapsules for selected dataloaders
+    all_containers = [container_map[type(loader)] for loader in all_dataloaders]
+    
+    # Create corresponding PyCapsules
     pycapsule_map: dict[DatasetBase, PyCapsule] = {
         DS1000: PyCapsule_DS1000,
         MBPP: PyCapsule_MBPP,
         HumanEval: PyCapsule_HumanEval
     }
     
-    all_pycapsules = [pycapsule_map[type(loader)](container, openai) for loader in all_dataloaders]
+    # By now, all containers will have the correct sequence.
+    all_pycapsules = [pycapsule_map[type(loader)](container, openai) for loader, container in zip(all_dataloaders, all_containers)]
        
     try:
         for target_dataloader, target_pycapsule in zip(all_dataloaders, all_pycapsules):
@@ -147,6 +161,8 @@ def main():
         
     finally:
         call_cleanup([llm, embedding_model, vector_db, ollama, rag, container, pycapsule, openai])
+        for p in all_pycapsules:
+            p.cleanup()
 
 if __name__ == "__main__":
     main()

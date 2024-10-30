@@ -45,7 +45,7 @@ class PyCapsule(ServiceBase):
         self.container = pycapsule_container
         self.llm = llm
         self.maximum_attempts = maximum_attempts
-        self.MOUNT_DIR = os.path.abspath(__file__).replace("PyCapsule.py", "../Container/mount_dir")
+        self.MOUNT_DIR = self.container.MOUNT_DIR_PATH
         self._set_prompt_paths()
         self._change_system_prompt()
         self.error_handling = ErrorHandling(target_file_name= "/usr/src/app/main.py")
@@ -152,6 +152,8 @@ class PyCapsule(ServiceBase):
         # Main
         main_py_path = os.path.join(self.MOUNT_DIR, "main.py")
         self._create_py_file(main_py_path, suppress_warning + "\n\n" + code + "\n\n" + test_cases)
+        
+        # For child classes, create task specific py file here.
         
         
     def _fix_code(self, response: CompletedProcess) -> tuple[int, int]:

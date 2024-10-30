@@ -13,32 +13,32 @@ from utils.output_message_format.output_colour import print_error, print_info, p
 class Container(ServiceBase):
     def __init__(self, 
                  image_name: str = "synkrasis",
-                 container_name: str = "synkrasis_alpha"):
+                 container_name: str = "synkrasis_alpha",
+                 mount_dir_name: str = "synk_mount",
+                 shell_script_name: str = "start.sh"):
         """Container class for managing docker containers
 
         Args:
             IMAGE_NAME (str, optional): Default image name. Defaults to "synkrasis".
             container_name (str, optional): Default container name. Defaults to "synkrasis_alpha".
+            mount_dir_name (str, optional): Mount directory name. Defaults to synk_mount.
+            shell_script_name (str, optional): Shell script name. Defaults to "start.sh".
+            
         """
         super().__init__()
         current_dir = os.path.dirname(__file__)
         self.IMAGE_NAME = image_name
         self.CONTAINER_NAME = container_name
-        self.MOUNT_DIR_PATH = os.path.join(current_dir, "mount_dir", container_name)
+        self.MOUNT_DIR_PATH = os.path.join(current_dir, "mount_dir", mount_dir_name)
+        self.SHELL_SCRIPT_PATH = os.path.join(os.path.dirname(__file__), f"mount_dir/{shell_script_name}")
         self._check_if_image_exists() # check if image exists
 
         # Create mount and container directory.
         os.makedirs(self.MOUNT_DIR_PATH, exist_ok=True)
 
         # Copy start.sh to self.MOUNT_DIR_PATH.
-        start_path = os.path.join(current_dir, "mount_dir/start.sh")
-        shutil.copyfile(start_path, os.path.join(self.MOUNT_DIR_PATH, "start.sh"))
+        shutil.copyfile(self.SHELL_SCRIPT_PATH, os.path.join(self.MOUNT_DIR_PATH, "start.sh"))
 
-        # Copy requirements.txt to self.MOUNT_DIR_PATH.
-        requirement_path = os.path.join(current_dir, "mount_dir/requirements.txt")
-
-        if os.path.exists(requirement_path):
-            shutil.copyfile(requirement_path, os.path.join(self.MOUNT_DIR_PATH, "requirements.txt"))
 
     def _check_if_image_exists(self):
         """
