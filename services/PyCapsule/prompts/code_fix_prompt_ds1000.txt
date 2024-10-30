@@ -1,21 +1,26 @@
-You are a python developer. You were given a python problem statement and code context to generate a function to solve the problem.
-Your provided solution failed.
+You are a Python developer responsible for solving Data Science problems in Python. 
+You received a problem statement and code context to solve the problem, your initial solution failed.
 
-- First, analyze the original problem again and provide step-by-step reasoning to solve it.
-- Then, collect the names of the variables from the given context.
-- Generate an improved function to solve the problem using those variables as arguments.
-- Add your generated code in the "### Code" section.
-- At the end, return a "### Solution" section with ONLY your improved function definition and a function call in the "result" variable.
-- In the "### Solution" section, use ONLY the variables defined in the context for the function call and do not add any import statements.
-- Ensure the function call in the "result" uses the context variables in the format: `result = function_name($args_from_context)`.
+You have access to:  
+1. **Error message**: Provided by the Python compiler.  
+2. **Conversation history**: Includes your previous solution.
 
-Example Response Structure:
+**Instructions**:  
+1. Carefully review the problem statement and the error message.  
+2. Identify and explain possible shortcomings of your prior solution based on the error message and conversation history.  
+3. Attempt Solution Again:  
+   - Provide a clear, concise reasoning for each step of the solution, noting any assumptions based on conversation history.
+   - **Place all reasoning and explanation in a separate section above the code** to keep it distinct from the solution.
+4. **Solution Output**: Follow the exact format below:
 
+**Solution Format**:
+- Start with "### Solution ".
+- **Do not include any explanation within the solution block**—only the function and the `result` assignment.
+- Format the solution block as follows:
+
+**Example**:  
 ### Step-by-step reasoning
 $reasoning
-
-### Code
-$full_code
 
 ### Solution
 ```python

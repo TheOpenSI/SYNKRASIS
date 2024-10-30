@@ -104,10 +104,6 @@ def main():
     # Get selected dataloaders based on arguments
     all_dataloaders = get_selected_dataloaders(args)
     
-    # LLM
-    openai = OpenAI_GPT(enable_chat_history=True)
-    model_name = openai.model_name
-    
     # Create corresponding containers
     container_map: dict[DatasetBase, Container] = {
         DS1000: Container(container_name="synk_ds1000", mount_dir_name = "synk_ds1000_mount", shell_script_name = "start_rm_req.sh"),
@@ -125,7 +121,9 @@ def main():
     }
     
     # By now, all containers will have the correct sequence.
-    all_pycapsules = [pycapsule_map[type(loader)](container, openai) for loader, container in zip(all_dataloaders, all_containers)]
+    # If we use the same openai instance, the system prompt gets changed.
+    all_pycapsules = [pycapsule_map[type(loader)](container, OpenAI_GPT(enable_chat_history=True)) 
+                      for loader, container in zip(all_dataloaders, all_containers)]
        
     try:
         for target_dataloader, target_pycapsule in zip(all_dataloaders, all_pycapsules):
@@ -156,16 +154,16 @@ def main():
                         print_error(f"Error processing data point - {raw_data_point[0]}: {str(data_point_error)}")
                         target_dataloader.unsolved_count += 1
                     
-                    safe_save_data(target_dataloader, experiment_name, model_name)
+                    safe_save_data(target_dataloader, experiment_name, target_pycapsule.llm.model_name)
                 
             except (Exception, KeyboardInterrupt) as exp_error:
                 print_error(f"Error in experiment {experiment_name}: {str(exp_error)}")
-                safe_save_data(target_dataloader, experiment_name, model_name)
+                safe_save_data(target_dataloader, experiment_name, target_pycapsule.llm.model_name)
     
     except (Exception, KeyboardInterrupt) as e:
         print_error(f"Critical error in main execution: {str(e)}")
         for dataloader in all_dataloaders:
-            safe_save_data(dataloader, dataloader.__class__.__name__, model_name)
+            safe_save_data(dataloader, dataloader.__class__.__name__, target_pycapsule.llm.model_name)
         
     finally:
         call_cleanup([llm, embedding_model, vector_db, ollama, rag, container, pycapsule, openai])
