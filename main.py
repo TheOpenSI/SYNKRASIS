@@ -52,25 +52,42 @@ def parse_arguments() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Run PyCapsule experiments")
     parser.add_argument("--subset-size", 
                         type = int, 
-                        default = 5,
+                        default = 3,
                         help="Number of samples to run from each dataset. If not specified, runs full datasets.")
     
     parser.add_argument("--datasets", 
                         nargs="+", # multiple arguments 
                         choices=["ds1000", "humaneval", "mbpp"], 
-                        # default=["ds1000", "mbpp", "humaneval"],
-                        default=["mbpp"],
+                        # default=["ds1000", "humaneval", "mbpp"],
+                        default = ["humaneval"],
                         help="Specify which datasets to run. Options: ds1000, humaneval, mbpp")
     return parser.parse_args()
 
 
 def get_selected_dataloaders(args: argparse.Namespace) -> List[DatasetBase]:
     dataset_map: dict[str, DatasetBase] = {
-        "ds1000": DS1000(),
-        "humaneval": HumanEval(),
-        "mbpp": MBPP()
+        "ds1000": DS1000(subset_size = args.subset_size),
+        "humaneval": HumanEval(subset_size = args.subset_size),
+        "mbpp": MBPP(subset_size = args.subset_size)
     }
     return [dataset_map[dataset] for dataset in args.datasets]
+
+
+def append_result_to_dataloader(target_dataloader: DatasetBase, data_point: dict, fix_mode_attempt_count: int, status: str) -> None:
+    if target_dataloader.__class__.__name__ == "DS1000":
+        target_dataloader.results.append({
+            "problem_id": data_point['metadata']['problem_id'],
+            "library": data_point['metadata']['library'],
+            "fix_mode_attempt_count": fix_mode_attempt_count,
+            "status": status
+        })
+    else:
+        target_dataloader.results.append({
+            "task_id": data_point["task_id"],
+            "fix_mode_attempt_count": fix_mode_attempt_count,
+            "status": status
+        }) 
+
 
 def main():
     args = parse_arguments()
@@ -129,11 +146,7 @@ def main():
                         else:
                             target_dataloader.unsolved_count += 1
                             
-                        target_dataloader.results.append({
-                            "task_id": data_point["task_id"],
-                            "fix_mode_attempt_count": fix_mode_attempt_count,
-                            "status": status
-                        })
+                        append_result_to_dataloader(target_dataloader, data_point, fix_mode_attempt_count, status)
                         
                         print("#" * 50)
                         print(f"Solved {target_dataloader.solved_count} problems, Unsolved {target_dataloader.unsolved_count} problems")
@@ -142,11 +155,7 @@ def main():
                     except Exception as data_point_error:
                         print_error(f"Error processing data point - {raw_data_point}: {str(data_point_error)}")
                         target_dataloader.unsolved_count += 1
-                        target_dataloader.results.append({
-                            "task_id": data_point["task_id"],
-                            "fix_mode_attempt_count": fix_mode_attempt_count,
-                            "status": "fail-error" # exception occurred
-                        })
+                        append_result_to_dataloader(target_dataloader, data_point, fix_mode_attempt_count, "fail-error")
                 
                 safe_save_data(target_dataloader, experiment_name, model_name)
                 

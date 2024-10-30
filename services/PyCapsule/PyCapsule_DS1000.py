@@ -1,6 +1,6 @@
 # Container requirements taken from https://github.com/open-compass/code-evaluator/blob/master/requirements/ds1000.txt
 
-import os
+import os, shutil
 import sys
 sys.path.append(f"{os.path.dirname(os.path.abspath(__file__))}/../..")
 
@@ -26,7 +26,8 @@ class PyCapsule_DS1000(PyCapsule):
             llm (LLMBase): LLM object.
         """
         super().__init__(pycapsule_container, llm)
-        
+        # Copy requirements.txt
+        self._create_requirements_txt()
     
     def _set_prompt_paths(self):
         """
@@ -80,6 +81,15 @@ class PyCapsule_DS1000(PyCapsule):
         task_file_name = str(metadata["problem_id"]) + "_" + str(metadata["library_problem_id"]) + ".py"
         task_file_path = os.path.join(self.MOUNT_DIR, task_file_name)
         self._create_py_file(task_file_path, py_file_content)
+        
+        
+    def _create_requirements_txt(self) -> None:
+        """
+        For ds1000, requirements are taken from https://github.com/open-compass/code-evaluator/blob/master/requirements/ds1000.txt
+        A requirements_ds1000.txt file is added to the mount_dir which can just be copied to self.MOUNT_DIR.
+        """
+        shutil.copyfile(os.path.join(os.path.dirname(self.container.SHELL_SCRIPT_PATH), "requirements_ds1000.txt"),
+                        self.MOUNT_DIR + "/requirements.txt")
         
            
     def _generate_code(self, user_query: dict, suppress_conversation_history: bool = True) -> None:

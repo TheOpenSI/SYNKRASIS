@@ -58,7 +58,7 @@ class PyCapsule_HumanEval(PyCapsule):
                                           timeout = 10)
         
         # Content
-        code_to_write = suppress_warning + "\n" + code + "\n\n" + user_query["test_code"] + "\n" + timeout_code
+        code_to_write = suppress_warning + "\n" + code + "\n\n" + user_query["test"] + "\n" + timeout_code
         
         # Main
         main_py_path = os.path.join(self.MOUNT_DIR, "main.py")
