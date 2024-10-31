@@ -152,11 +152,27 @@ class PyCapsule_DS1000(PyCapsule):
         while response.returncode != 0 and attempt_count < self.maximum_attempts:
             self._change_system_prompt(is_fix_mode=True)
             
+            additional_user_prompt = """
+### Instructions for Solution Correction:
+1. **Analyze the Error:** Review the provided problem statement, error message, and your previous solution to identify the specific issues causing the error.
+2. **Review Section A:** Identify all variables specified in section "A" of the original problem statement. These variables already exist, so do not redefine them in the solution code.
+3. **Rewrite the Corrected Function:** Using only the variables from Section "A", provide a complete, corrected function with all necessary imports.
+4. **Call the function with Section A variables:** At the end of the function code, assign the result of the function call to a new variable `result`. Format it like this:
+
+    ```python
+    ### Solution
+    def generated_function(*args_from_section_A):
+        # Function implementation here
+
+    result = generated_function(*args_from_section_A)
+    ```
+
+"""
             fix_mode_query = self.error_handling(error_message = response.stderr)
             
             # Updating response, main.py and requirements.txt
             fix_mode_data_point = data_point.copy()
-            fix_mode_data_point["prompt"] = fix_mode_query
+            fix_mode_data_point["prompt"] = fix_mode_query + "\n" + additional_user_prompt
             self._generate_code(fix_mode_data_point, suppress_conversation_history = False)
             
             # Running the code

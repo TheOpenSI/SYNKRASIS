@@ -27,7 +27,7 @@ class PyCapsule(ServiceBase):
     def __init__(self, 
                  pycapsule_container: Container,
                  llm: LLMBase,
-                 maximum_attempts: int = 0):
+                 maximum_attempts: int = 5):
         """
         PyCapsule service class for generating and validating code.
         Args:
