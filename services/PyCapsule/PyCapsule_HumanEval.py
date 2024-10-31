@@ -24,14 +24,6 @@ class PyCapsule_HumanEval(PyCapsule):
         """
         super().__init__(pycapsule_container, llm)
         
-    
-    def _set_prompt_paths(self) -> None:
-        """
-        Override the prompt paths for HumanEval.
-        """
-        self.CODE_FIX_PROMPT_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "prompts/code_fix_prompt_humaneval.txt")
-        self.CODE_GEN_PROMPT_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "prompts/code_gen_prompt_humaneval.txt")
-        
         
     def _create_main_py(self, code: str, user_query: dict) -> None:
         """

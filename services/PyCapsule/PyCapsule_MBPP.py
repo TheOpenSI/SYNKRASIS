@@ -25,13 +25,6 @@ class PyCapsule_MBPP(PyCapsule):
         super().__init__(pycapsule_container, llm)
         
         
-    def _set_prompt_paths(self) -> None:
-        """
-        Using the default prompts for MBPP.
-        """
-        super()._set_prompt_paths()
-        
-        
     def _create_test_function(self, test_list: list) -> str:
         """
         Create the test function using the test list.
