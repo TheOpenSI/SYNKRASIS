@@ -52,15 +52,15 @@ def parse_arguments() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Run PyCapsule experiments")
     parser.add_argument("--subset-size", 
                         type = int, 
-                        # default = None,
-                        default = 5,
+                        default = None,
+                        # default = 5,
                         help="Number of samples to run from each dataset. If not specified, runs full datasets.")
     
     parser.add_argument("--datasets", 
                         nargs="+", # multiple arguments 
                         choices=["ds1000", "humaneval", "mbpp"], 
-                        # default=["ds1000", "humaneval", "mbpp"], 
-                        default = ["ds1000"],
+                        default=["ds1000", "humaneval", "mbpp"], 
+                        # default = ["ds1000"],
                         help="Specify which datasets to run. Options: ds1000, humaneval, mbpp")
     return parser.parse_args()
 

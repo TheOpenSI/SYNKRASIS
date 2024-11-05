@@ -28,3 +28,30 @@ optional arguments:
   --datasets {ds1000,humaneval,mbpp} [{ds1000,humaneval,mbpp} ...]
                         Choose one or more datasets for the experiment. Available options: ds1000, humaneval, mbpp.
 ```
+
+# HumanEval
+
+### Success Rates
+The overall success rates are:
+
+|Status|Success Rate|
+| --- | --- |
+|Pass  |85.97561%| 
+|Fail|14.02439%|
+
+
+### Pass Distribution
+
+| Attempt | Count | Notes |
+| --- | --- | --- |
+| 0 | 112 | No Feedback |
+| 1 | 15 | Feedback Loop Activated |
+| 2 | 8 |  |
+| 3 | 1 |  |
+| 4 | 2 |  |
+| 5 | 3 |  |
+
+
+## Log
+
+A detailed log of the experiment is available at: `logs/humaneval_gpt_3_5_e1.txt`
