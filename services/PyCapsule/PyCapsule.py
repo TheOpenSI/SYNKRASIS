@@ -124,12 +124,13 @@ class PyCapsule(ServiceBase):
         
     def _create_requirements_txt(self, requirements: list) -> None:
         """
-        Create requirements.txt file in the mount_dir.
+        Create requirements.txt file in the mount_dir.\n
+        **If len(requirements) is greater than 1 and it has "None" in it, it will create requirements.txt file.
 
         Args:
             requirements (list): List of requirements.
         """
-        if requirements != []:
+        if not(len(requirements) == 1 and requirements[0].lower() == "none"):
             with open(os.path.join(self.MOUNT_DIR, "requirements.txt"), "w") as file:
                 file.write('\n'.join(requirements))
  
