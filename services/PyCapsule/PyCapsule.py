@@ -129,7 +129,7 @@ class PyCapsule(ServiceBase):
         Args:
             requirements (list): List of requirements.
         """
-        if not(len(requirements) == 1 and requirements[0].lower() == "none"):
+        if not(len(requirements) == 1 and "none" in requirements[0].lower()):
             with open(os.path.join(self.MOUNT_DIR, "requirements.txt"), "w") as file:
                 file.write('\n'.join(requirements))
  

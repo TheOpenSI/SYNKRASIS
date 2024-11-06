@@ -55,3 +55,29 @@ The overall success rates are:
 ## Log
 
 A detailed log of the experiment is available at: `logs/humaneval_gpt_3_5_e1.txt`
+
+# MBPP
+
+### Success Rates
+The overall success rates are -
+|Status|Success Rate|
+| --- | --- |
+|Pass |78.850103%|
+|Fail |21.149897|
+
+
+### Pass Distribution
+
+| Attempt | Count | Notes |
+| --- | --- | --- |
+| 0 | 563 | No Feedback |
+| 1 | 114 | Feedback Loop Activated |
+| 2 | 46 |  |
+| 3 | 21 |  |
+| 4 | 7 |  |
+| 5 | 17 |  |
+
+
+## Log
+
+A detailed log of the experiment is available at: `logs/mbpp_gpt_3_5_e_1.txt`
