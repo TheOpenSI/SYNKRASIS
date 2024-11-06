@@ -12,6 +12,7 @@ from services.Container.Container import Container
 from services.Base import ServiceBase
 from services.LLM.LLMBase import LLMBase
 from utils.code_parsing.code_parser import parse_response
+from utils.code_parsing.code_parser_ds1000_gpt import parse_solution_ds1000_gpt
 from utils.output_message_format.output_colour import print_pycapsule
 
 class PyCapsule_DS1000(PyCapsule):
@@ -28,7 +29,7 @@ class PyCapsule_DS1000(PyCapsule):
         super().__init__(pycapsule_container, llm)
         
         # Copy requirements.txt
-        # self._create_requirements_txt()
+        self._create_requirements_txt()
         
         
     def _create_main_py(self, code: str, user_query: dict) -> None:
@@ -76,15 +77,25 @@ class PyCapsule_DS1000(PyCapsule):
         task_file_path = os.path.join(self.MOUNT_DIR, task_file_name)
         self._create_py_file(task_file_path, py_file_content)
         
+
+    # TODO: To use same prompt, comment out this function
+    def _set_prompt_paths(self):
+        """
+        Set the prompt paths for code generation and code fix for DS1000.
+        """
+        self.CODE_GEN_PROMPT_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "prompts/code_gen_prompt_ds1000.txt")
+        self.CODE_FIX_PROMPT_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "prompts/code_fix_prompt_ds1000.txt")
         
-    # Use this to copy requirements.txt if requirements generation is disabled.        
-    # def _create_requirements_txt(self) -> None:
-    #     """
-    #     For ds1000, requirements are taken from https://github.com/open-compass/code-evaluator/blob/master/requirements/ds1000.txt
-    #     A requirements_ds1000.txt file is added to the mount_dir which can just be copied to self.MOUNT_DIR.
-    #     """
-    #     shutil.copyfile(os.path.join(os.path.dirname(self.container.SHELL_SCRIPT_PATH), "requirements_ds1000.txt"),
-    #                     self.MOUNT_DIR + "/requirements.txt")
+                
+    # TODO: Disable this
+    # Use this to copy requirements.txt if requirements generation is disabled.
+    def _create_requirements_txt(self) -> None:
+        """
+        For ds1000, requirements are taken from https://github.com/open-compass/code-evaluator/blob/master/requirements/ds1000.txt
+        A requirements_ds1000.txt file is added to the mount_dir which can just be copied to self.MOUNT_DIR.
+        """
+        shutil.copyfile(os.path.join(os.path.dirname(self.container.SHELL_SCRIPT_PATH), "requirements_ds1000.txt"),
+                        self.MOUNT_DIR + "/requirements.txt")
         
            
     def _generate_code(self, user_query: dict, suppress_conversation_history: bool = True) -> None:
@@ -103,13 +114,14 @@ class PyCapsule_DS1000(PyCapsule):
                                               suppress_conversation_history = suppress_conversation_history)
         
         # Parsing
-        requirements, code = parse_response(response)
+        # requirements, code = parse_response(response)
+        code = parse_solution_ds1000_gpt(response) # TODO: Change parser
         
         # Create main.py and task_id.py
         self._create_main_py(code, user_query)
         
         # Create requirements.txt
-        self._create_requirements_txt(requirements)
+        # self._create_requirements_txt(requirements) # TODO: Enable requirements generation
         
         
     def _set_original_question(self, user_query: dict):
@@ -152,6 +164,7 @@ class PyCapsule_DS1000(PyCapsule):
         while response.returncode != 0 and attempt_count < self.maximum_attempts:
             self._change_system_prompt(is_fix_mode=True)
             
+            # TODO: Add code fix user prompt here
             additional_user_prompt = """
 ### Instructions for Solution Correction:
 1. **Analyze the Error:** Review the provided problem statement, error message, and your previous solution to identify the specific issues causing the error.
@@ -172,7 +185,7 @@ class PyCapsule_DS1000(PyCapsule):
             
             # Updating response, main.py and requirements.txt
             fix_mode_data_point = data_point.copy()
-            fix_mode_data_point["prompt"] = fix_mode_query + "\n" + additional_user_prompt
+            fix_mode_data_point["prompt"] = fix_mode_query # TODO: Add the additional_user_prompt here
             self._generate_code(fix_mode_data_point, suppress_conversation_history = False)
             
             # Running the code

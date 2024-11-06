@@ -78,21 +78,22 @@ class DS1000(DatasetBase):
         """
         Returns the same data point for DS1000.
         """
-        data_point["prompt"] = f"""
-Following is a problem statement for a data science problem.
+        # TODO: Add user prompt here if necessary
+#         data_point["prompt"] = f"""
+# Following is a problem statement for a data science problem.
 
-### Instructions for Solution:
-1. **Review Section A:** Identify all variables specified in section "A" of the problem statement. These variables already exist, so do not redefine them in the solution code.
-2. **Write a Python function:** Using only the variables from Section "A", write a function that solves the problem as described in the statement.
-3. **Call the function with Section A variables:** At the end of the function code, assign the result of the function call to a new variable `result`. Format it like this:
+# ### Instructions for Solution:
+# 1. **Review Section A:** Identify all variables specified in section "A" of the problem statement. These variables already exist, so do not redefine them in the solution code.
+# 2. **Write a Python function:** Using only the variables from Section "A", write a function that solves the problem as described in the statement.
+# 3. **Call the function with Section A variables:** At the end of the function code, assign the result of the function call to a new variable `result`. Format it like this:
 
-    ```python
-    ### Solution
-    def generated_function(*args_from_section_A):
-        # Function implementation here
+#     ```python
+#     ### Solution
+#     def generated_function(*args_from_section_A):
+#         # Function implementation here
 
-    result = generated_function(*args_from_section_A)
-    ```
-{data_point["prompt"]}"""
+#     result = generated_function(*args_from_section_A)
+#     ```
+# {data_point["prompt"]}"""
         
         return data_point

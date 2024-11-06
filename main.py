@@ -108,7 +108,8 @@ def main():
     
     # Create corresponding containers
     container_map: dict[DatasetBase, Container] = {
-        DS1000: Container(container_name="synk_ds1000", mount_dir_name = "synk_ds1000_mount", shell_script_name = "start.sh"),
+        # DS1000: Container(container_name="synk_ds1000", mount_dir_name = "synk_ds1000_mount", shell_script_name = "start.sh"),
+        DS1000: Container(container_name="synk_ds1000", mount_dir_name = "synk_ds1000_mount", shell_script_name = "start_rm_req.sh"), # TODO: Chnage shell script.
         HumanEval: Container(container_name="synk_humaneval", mount_dir_name = "synk_humaneval_mount", shell_script_name = "start.sh"),
         MBPP: Container(container_name="synk_mbpp", mount_dir_name = "synk_mbpp_mount", shell_script_name = "start.sh")
     }
