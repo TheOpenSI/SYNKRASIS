@@ -11,7 +11,7 @@ from utils.output_message_format.output_colour import print_error, print_info, p
 
 class OpenAI_GPT(ServiceBase, LLMBase):
     def __init__(self,
-                 temperature: float = 0.7,
+                 temperature: float = 0,
                  seed: int = 42, 
                  model_name: str = "gpt-3.5-turbo",
                  enable_chat_history: bool = False):

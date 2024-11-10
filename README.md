@@ -28,56 +28,72 @@ optional arguments:
   --datasets {ds1000,humaneval,mbpp} [{ds1000,humaneval,mbpp} ...]
                         Choose one or more datasets for the experiment. Available options: ds1000, humaneval, mbpp.
 ```
+<br></br>
+
+# Final Report
+|Dataset| Experiment 1 | Experiment 2 | Experiment 3 | Mean Success Rate| Standard Deviation |
+| --- | --- | --- | --- | --- | --- |
+| HumanEval | 85.97561 | 82.317073 | 84.14634 | 84.15% | 1.829% |
+| MBPP | 78.850103 | 77.5154 | 77.823409 | 78.06% | 0.699% |
+  
+<br></br>
+
+# Comparison
+| Agent                                      | HumanEval | MBPP  | DS1000 |
+|--------------------------------------------|-----------|-------|--------|
+| Mapcoder                                   | 80.5      | 78.3  | -      |
+| Agencoder                                  | 79.9      | 89.9  | -      |
+| Language Agent Tree Search (no feedback)   | 83.8      | -     | -      |
+| An Empirical Study...                      | -         | -     | 35.5   |
+| PyCapsule                                  | 84.15     | 78.06 | -      |
+
+<br></br>
 
 # HumanEval
 
-### Success Rates
-The overall success rates are:
-
-|Status|Success Rate|
-| --- | --- |
-|Pass  |85.97561%| 
-|Fail|14.02439%|
-
-
 ### Pass Distribution
 
-| Attempt | Count | Notes |
-| --- | --- | --- |
-| 0 | 112 | No Feedback |
-| 1 | 15 | Feedback Loop Activated |
-| 2 | 8 |  |
-| 3 | 1 |  |
-| 4 | 2 |  |
-| 5 | 3 |  |
+| Attempt | Experiment 1 | Experiment 2| Experiment 3 | Notes |
+| --- | --- | --- | --- | --- |
+| 0 | 112 | 121 | 114 | No Feedback |
+| 1 | 15 | 8 | 9 | Feedback Loop Activated |
+| 2 | 8 | 2 | 5 |  |
+| 3 | 1 | 1 | 6 |  |
+| 4 | 2 | 0 | 1 |  |
+| 5 | 3 | 3 | 3 |  |
 
 
-## Log
+### Log
 
-A detailed log of the experiment is available at: `logs/humaneval_gpt_3_5_e1.txt`
+A detailed log of the experiment is available at: `logs/humaneval_gpt_3_5_e{exp_no}.txt`
+
+<br></br>
 
 # MBPP
 
-### Success Rates
-The overall success rates are -
-|Status|Success Rate|
-| --- | --- |
-|Pass |78.850103%|
-|Fail |21.149897|
-
-
 ### Pass Distribution
 
-| Attempt | Count | Notes |
-| --- | --- | --- |
-| 0 | 563 | No Feedback |
-| 1 | 114 | Feedback Loop Activated |
-| 2 | 46 |  |
-| 3 | 21 |  |
-| 4 | 7 |  |
-| 5 | 17 |  |
+| Attempt | Experiment 1 | Experiment 2| Experiment 3 | Notes |
+| --- | --- | --- | --- | --- |
+| 0 | 563 | 560 | 560 | No Feedback |
+| 1 | 114 | 126 | 122 | Feedback Loop Activated |
+| 2 | 46 | 39 | 37 | |
+| 3 | 21 | 15 | 23 |  |
+| 4 | 7  | 10 | 9 |  |
+| 5 | 17 | 5 | 7 |  |
 
 
-## Log
+### Log
 
-A detailed log of the experiment is available at: `logs/mbpp_gpt_3_5_e_1.txt`
+A detailed log of the experiment is available at: `logs/mbpp_gpt_3_5_e_{exp_no}.txt`
+
+<br></br>
+
+# Reference
+[AgentCoder](https://arxiv.org/pdf/2312.13010v3)  
+[An Empirical Study on Self-correcting Large Language Models for Data Science Code Generation](https://arxiv.org/pdf/2408.15658)  
+[InverseCoder](https://arxiv.org/pdf/2407.05700)  
+[Language Agent Tree Search Unifies Reasoning, Acting, and Planning in Language Models](https://arxiv.org/pdf/2310.04406v3)  
+[MapCoder](https://arxiv.org/pdf/2405.11403)
+
+
