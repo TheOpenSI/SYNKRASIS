@@ -89,9 +89,14 @@ class MBPP(DatasetBase):
             dict : Processed data point.
         """
         function_signature = re.search(r"(?<=assert\s)(.*?)(?===)", data_point["test_list"][0])
-        function_signature_prompt = "A typical function call will have the following function signature - \n" + function_signature.group()
+        function_name = re.search(r".*\(", function_signature.group()).group() + ")"
+        function_signature_prompt = f"A typical function call will be same as the following - '{function_signature.group()}'"
+        # function_signature_prompt = f"For unit test, the function will be called like the following - '{function_signature.group()}'. "
+        # Enforce function signature prompt
+        enforce = (f"Please write a function **'{function_name}'** to solve the following problem. "
+                   "An example function call will be provided at the end of the prompt. \n")
         
         return {
             "task_id": data_point["task_id"],
-            "prompt": data_point["text"] + "\n" + function_signature_prompt,
+            "prompt": enforce + data_point["text"] + "\n" + function_signature_prompt,
             "test_list": data_point["test_list"]}
