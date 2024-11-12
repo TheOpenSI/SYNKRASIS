@@ -83,7 +83,7 @@ def main():
             
             try:
                 for raw_data_point in target_dataloader.data:
-                    raw_data_point = target_dataloader.get_data_point_by_index(30) # TODO: MBPP function signature test.
+                    # raw_data_point = target_dataloader.get_data_point_by_index(30) # TODO: MBPP function signature test.
                     data_point = target_dataloader.process(raw_data_point)
                     solve_flag, fix_mode_attempt_count = target_pycapsule(data_point)
                     status = "fail"

@@ -90,11 +90,11 @@ class MBPP(DatasetBase):
         """
         function_signature = re.search(r"(?<=assert\s)(.*?)(?===)", data_point["test_list"][0])
         function_name = re.search(r".*\(", function_signature.group()).group() + ")"
-        function_signature_prompt = f"A typical function call will be same as the following - '{function_signature.group()}'"
-        # function_signature_prompt = f"For unit test, the function will be called like the following - '{function_signature.group()}'. "
+        function_signature_prompt = f"An example function call will be same as the following - '{function_signature.group()}'"
         # Enforce function signature prompt
-        enforce = (f"Please write a function **'{function_name}'** to solve the following problem. "
-                   "An example function call will be provided at the end of the prompt. \n")
+        enforce = (f"Please write a function **'{function_name}'** to solve the following problem.\n"
+                    "### Always remember, you must keep the function name exactly as provided even if there's spelling error.\n"
+                    "An example function call will be provided at the end of the prompt.\n") 
         
         return {
             "task_id": data_point["task_id"],
