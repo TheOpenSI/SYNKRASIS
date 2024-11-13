@@ -8,13 +8,16 @@ import os, sys
 
 sys.path.append(f"{os.path.dirname(os.path.abspath(__file__))}/../../..")
 
-import os
-import torch
+import os, warnings
 import yaml
+import torch
 from dotenv import load_dotenv
 from transformers import AutoTokenizer, AutoModelForCausalLM, BitsAndBytesConfig, pipeline
 from huggingface_hub import login
 from typing import List, Dict, Optional
+
+# Warning
+warnings.filterwarnings('ignore', category=UserWarning, module='torch.utils.checkpoint')
 
 # local imports
 from services.Base import ServiceBase
@@ -120,7 +123,7 @@ class HF_LLM(ServiceBase, LLMBase):
                 self.model_name,
                 add_bos_token = True,
                 add_eos_token = add_eos_token,
-                padding_side = "left"
+                padding_side = "right"
                 )
         tokenizer.pad_token = tokenizer.eos_token
         
@@ -234,8 +237,7 @@ class HF_LLM(ServiceBase, LLMBase):
             del self.tokenizer
             self.tokenizer = None
         torch.cuda.empty_cache()
-        print_success("LLM resources cleaned up.**") 
-
+        print_success("LLM resources cleaned up.**")
 
 # -------------------------------------------------------------------------------------------------------------
 
