@@ -1,9 +1,10 @@
-model_name: "mistralai/Mistral-7B-v0.1"
+model_name: "Qwen/Qwen2.5-Coder-7B-Instruct"
 quantization: "4bit"
 use_cache: False
 device_map: "auto"
 max_new_tokens: 1024
 do_sample: False
-top_p: 0.95
-temperature: 0.7
+top_p: null
+top_k: null
+temperature: null
 stop_strings: ["\n\n**User**:"]
