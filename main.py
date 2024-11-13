@@ -13,33 +13,33 @@ from services.VectorDatabase.VectorDatabase import VectorDatabase
 from services.RAG.RAG import RAG
 from services.Container.Container import Container
 from services.PyCapsule.PyCapsule import PyCapsule
+from services.Finetune.Finetune import Finetune
 
 # Utils
 from utils.output_message_format.output_colour import print_model_output, print_info, print_error, print_success, print_warning
 from utils.resource.resource_mg_util import call_cleanup
+from services.Finetune.sample_dataset_formatting_func import formatting_func
 
 # Default config file
 LLM_CONFIG_FILE = os.path.abspath(os.path.join(os.path.dirname(__file__), 'config_files/llm_config.yaml'))
 
 def main():
-    # All services
-    llm: HF_LLM = None
-    ollama: Ollama = None
-    openai: OpenAI_GPT = None
-    embedding_model: EmbeddingModel = None
-    vector_db: VectorDatabase = None
-    rag: RAG = None
-    container: Container = None
-    pycapsule: PyCapsule = None
-
     try:
-        llm = HF_LLM(llm_config_file = LLM_CONFIG_FILE, enable_chat_history = True)
-        llm.generate_response("What is the capital of France?", suppress_conversation_history=False)
-        
+        mistral = HF_LLM(llm_config_file = LLM_CONFIG_FILE)
+        # llm.generate_response("What is the capital of France?", suppress_conversation_history=False)
+        finetune = Finetune(dataset_path = "/home/s448780/workspace/synkrasis/services/Finetune/mbpp_finetune_data.csv",
+                            format_func = formatting_func,
+                            model = mistral,
+                            target_modules = ["q_proj","k_proj", "v_proj", "o_proj",
+                                              "gate_proj","up_proj","down_proj"],
+                            quantization = "4bit",
+                            use_peft = True)
+        finetune.train()
+        finetune.generate_response("What is the capital of France?")
         
     finally:
         # Warning resource_tracker: There appear to be .* leaked semaphore objects"
-        call_cleanup([llm, embedding_model, vector_db, ollama, rag, container, pycapsule, openai])
+        call_cleanup([mistral])
 
 if __name__ == '__main__':
     main()
