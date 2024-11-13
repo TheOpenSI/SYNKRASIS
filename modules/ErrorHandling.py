@@ -44,6 +44,9 @@ class ErrorHandling():
         Returns:
         - str: The error message with the generic error message removed.
         """
+        if "This is a generic error message." not in error_message:
+            return error_message.strip()
+        
         multi_thread_pattern = r"Traceback(.*)(?=Traceback)"
         removed_generic_error_message = re.search(multi_thread_pattern, error_message, re.DOTALL)
         if removed_generic_error_message is not None:

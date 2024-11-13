@@ -25,7 +25,7 @@ class Ollama(ServiceBase, LLMBase):
         """
         Pull the model from the server
         """
-        ollama.pull_model(self.model_name)
+        ollama.pull(self.model_name)
 
 
     def generate_response(self, 
@@ -67,9 +67,9 @@ class Ollama(ServiceBase, LLMBase):
 
         except ollama.ResponseError as e:
             print_error(e.error)
-            if e.status_code == 404:
-                print_info("Attempting to pull the model, please restart the service once pull is complete.")
-                self._pull_model()
+            # if e.status_code == 404:
+            # print_info("Attempting to pull the model, please restart the service once pull is complete.")
+            # self._pull_model()
         
         
     def cleanup(self):

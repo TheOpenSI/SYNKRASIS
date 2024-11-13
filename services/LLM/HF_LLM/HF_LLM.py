@@ -37,9 +37,8 @@ class HF_LLM(ServiceBase, LLMBase):
                  top_k: int = 20, # will be ignored if do_sample is False 
                  temperature:float = 0.7, # will be ignored if do_sample is False
                  llm_config_file:str = None, # config file to easily set parameters
-                 system_prompt:str = "You are a helpful assistant, always answer the question even if the provided context is not helpful",
                  stop_strings:List[str] = ["\n\nUser:"], # stop strings to stop the generation, default is User: to supoort default chat template
-                 ):
+                 enable_chat_history:bool = False):
         """
         Creates a Huggingface LLM agent
         Args:
@@ -113,6 +112,25 @@ class HF_LLM(ServiceBase, LLMBase):
             quant_config = None
 
         return quant_config
+    
+    
+    def set_tokenizer(self, add_eos_token:bool = False) -> AutoTokenizer:
+        """
+        Get the tokenizer from the model repo, can only chage the eos token argument
+        Args:
+            add_eos_token (bool): Whether to add the eos token to the tokenizer.
+            This is useful for finetuning to add eos token to the training data
+        """
+        tokenizer = AutoTokenizer.from_pretrained(
+                self.model_name,
+                add_bos_token = True,
+                add_eos_token = add_eos_token,
+                padding_side = "right"
+                )
+        tokenizer.pad_token = tokenizer.eos_token
+        
+        print_success("Tokenizer initialized") # DEBUG
+        return tokenizer
     
 
     def _initialize_model(self):

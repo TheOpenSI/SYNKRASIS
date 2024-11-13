@@ -35,88 +35,44 @@ LLM_CONFIG_FILE = os.path.abspath(os.path.join(os.path.dirname(__file__), "confi
 
 
 def main():
-    args = parse_arguments()
+    # Initialize necessary services
+    # qwen = HF_LLM(llm_config_file=LLM_CONFIG_FILE, enable_chat_history = True)
+    qwen = Ollama(model_name = "qwen2.5-coder", enable_chat_history = True)
+    container = Container(container_name = "synk_mbpp", mount_dir_name = "synk_mbpp", shell_script_name = "start.sh")
+    pycapsule = PyCapsule_MBPP(container, qwen)
     
-    # All base services
-    llm: HF_LLM = None
-    ollama: Ollama = None
-    openai: OpenAI_GPT = None
-    embedding_model: EmbeddingModel = None
-    vector_db: VectorDatabase = None
-    rag: RAG = None
-    container: Container = None
-    pycapsule: PyCapsule = None
-
-    # Get selected dataloaders based on arguments
-    all_dataloaders = get_selected_dataloaders(args)
+    # Initialize dataset
+    dataloader = MBPP()
     
-    # Create corresponding Containers
-    container_map: dict[DatasetBase, Container] = {
-        # TODO: Chnage shell script for ds1000 to start.sh.
-        # DS1000: Container(container_name="synk_ds1000", mount_dir_name = "synk_ds1000_mount", shell_script_name = "start.sh"),
-        DS1000: Container(container_name="synk_ds1000", mount_dir_name = "synk_ds1000_mount", shell_script_name = "start_rm_req.sh"), 
-        HumanEval: Container(container_name="synk_humaneval", mount_dir_name = "synk_humaneval_mount", shell_script_name = "start.sh"),
-        MBPP: Container(container_name="synk_mbpp", mount_dir_name = "synk_mbpp_mount", shell_script_name = "start.sh")
-    }
-    
-    all_containers = [container_map[type(loader)] for loader in all_dataloaders]
-    
-    # Create corresponding PyCapsules
-    pycapsule_map: dict[DatasetBase, PyCapsule] = {
-        DS1000: PyCapsule_DS1000,
-        MBPP: PyCapsule_MBPP,
-        HumanEval: PyCapsule_HumanEval
-    }
-
-    #LLM
-    # Same OpenAI instance will have system promopt issue if each dataset has different system prompts.
-    openai = OpenAI_GPT(model_name = "gpt-3.5-turbo-1106", 
-                        enable_chat_history=True)
-    
-    # Create all pycapsules
-    all_pycapsules = [pycapsule_map[type(loader)](container, openai) # Using same openai instance for all pycapsules.
-                      for loader, container in zip(all_dataloaders, all_containers)]
-       
     try:
-        for target_dataloader, target_pycapsule in zip(all_dataloaders, all_pycapsules):
-            experiment_name = target_dataloader.__class__.__name__
-            print_info(f"Starting experiment: {experiment_name}")
+        print_info("Starting mbpp-Qwen2.5 Instruct experiment")
+        
+        for raw_data_point in dataloader.data:
+            data_point = dataloader.process(raw_data_point)
+            solve_flag, fix_mode_attempt_count = pycapsule(data_point)
+            status = "fail"
             
-            try:
-                for raw_data_point in target_dataloader.data:
-                    # raw_data_point = target_dataloader.get_data_point_by_index(30) # TODO: MBPP function signature test.
-                    data_point = target_dataloader.process(raw_data_point)
-                    solve_flag, fix_mode_attempt_count = target_pycapsule(data_point)
-                    status = "fail"
+            if solve_flag == 0:
+                dataloader.solved_count += 1
+                status = "pass"
+            else:
+                dataloader.unsolved_count += 1
                 
-                    if solve_flag == 0:
-                        target_dataloader.solved_count += 1
-                        status = "pass"
-                        
-                    else:
-                        target_dataloader.unsolved_count += 1
-                        
-                    append_result_to_dataloader(target_dataloader, data_point, fix_mode_attempt_count, status)
-                    
-                    print("#" * 50)
-                    print(f"Solved {target_dataloader.solved_count} problems, Unsolved {target_dataloader.unsolved_count} problems")
-                    print("#" * 50)
-                
-                safe_save_data(target_dataloader, experiment_name, target_pycapsule.llm.model_name)
-                
-            except (Exception, KeyboardInterrupt) as exp_error:
-                print_error(f"Error in experiment {experiment_name}: {str(exp_error)}")
-                safe_save_data(target_dataloader, experiment_name, target_pycapsule.llm.model_name)
-    
+            append_result_to_dataloader(dataloader, data_point, fix_mode_attempt_count, status)
+            
+            print("#" * 50)
+            print(f"Solved {dataloader.solved_count} problems, Unsolved {dataloader.unsolved_count} problems")
+            print("#" * 50)
+        
+        safe_save_data(dataloader, pycapsule.llm.model_name)
+            
     except (Exception, KeyboardInterrupt) as e:
-        print_error(f"Critical error in main execution: {str(e)}")
-        for dataloader in all_dataloaders:
-            safe_save_data(dataloader, dataloader.__class__.__name__, target_pycapsule.llm.model_name)
+        print_error(f"Error in execution: {str(e)}")
+        safe_save_data(dataloader, "mbpp_qwen", pycapsule.llm.model_name)
         
     finally:
-        call_cleanup([llm, embedding_model, vector_db, ollama, rag, container, pycapsule, openai])
-        for p in all_pycapsules:
-            p.cleanup()
+        call_cleanup([qwen, container, pycapsule])
+        pycapsule.cleanup()
 
 if __name__ == "__main__":
     main()

@@ -79,12 +79,12 @@ class PyCapsule_DS1000(PyCapsule):
         
 
     # TODO: To use same prompt, comment out this function
-    def _set_prompt_paths(self):
-        """
-        Set the prompt paths for code generation and code fix for DS1000.
-        """
-        self.CODE_GEN_PROMPT_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "prompts/code_gen_prompt_ds1000.txt")
-        self.CODE_FIX_PROMPT_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "prompts/code_fix_prompt_ds1000.txt")
+    # def _set_prompt_paths(self):
+    #     """
+    #     Set the prompt paths for code generation and code fix for DS1000.
+    #     """
+    #     self.CODE_GEN_PROMPT_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "prompts/code_gen_prompt_ds1000.txt")
+    #     self.CODE_FIX_PROMPT_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "prompts/code_fix_prompt_ds1000.txt")
         
                 
     # TODO: Disable this

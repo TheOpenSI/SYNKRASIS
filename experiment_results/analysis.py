@@ -1,6 +1,6 @@
 import pandas as pd
 
-df = pd.read_csv("experiment_results/gpt-3.5-turbo_mbpp_results_e1.csv")
+df = pd.read_csv("experiment_results/qwen2.5-coder_humaneval_results.csv")
 
 # Success rate
 success_rate = df["status"].value_counts(normalize = True) * 100
