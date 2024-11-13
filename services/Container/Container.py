@@ -1,7 +1,7 @@
 # For the time being, the container will run the main.py file in the mount_dir when started.
 # Will release a more general version soon to bypass the current entrypoint.
 
-import os, sys
+import os, sys, shutil
 sys.path.append(f"{os.path.dirname(os.path.abspath(__file__))}/../..")
 
 import subprocess
@@ -12,19 +12,32 @@ from utils.output_message_format.output_colour import print_error, print_info, p
 
 class Container(ServiceBase):
     def __init__(self, 
-                 IMAGE_NAME: str = "synkrasis", 
-                 container_name: str = "synkrasis_alpha"):
+                 image_name: str = "synkrasis",
+                 container_name: str = "synkrasis_alpha",
+                 mount_dir_name: str = "synk_mount",
+                 shell_script_name: str = "start.sh"):
         """Container class for managing docker containers
 
         Args:
             IMAGE_NAME (str, optional): Default image name. Defaults to "synkrasis".
             container_name (str, optional): Default container name. Defaults to "synkrasis_alpha".
+            mount_dir_name (str, optional): Mount directory name. Defaults to synk_mount.
+            shell_script_name (str, optional): Shell script name. Defaults to "start.sh".
+            
         """
         super().__init__()
-        self.IMAGE_NAME = IMAGE_NAME
+        current_dir = os.path.dirname(__file__)
+        self.IMAGE_NAME = image_name
         self.CONTAINER_NAME = container_name
-        self.MOUNT_DIR_PATH = os.path.abspath(__file__).replace("Container.py", "mount_dir")
+        self.MOUNT_DIR_PATH = os.path.join(current_dir, "mount_dir", mount_dir_name)
+        self.SHELL_SCRIPT_PATH = os.path.join(os.path.dirname(__file__), f"mount_dir/{shell_script_name}")
         self._check_if_image_exists() # check if image exists
+
+        # Create mount and container directory.
+        os.makedirs(self.MOUNT_DIR_PATH, exist_ok=True)
+
+        # Copy start.sh to self.MOUNT_DIR_PATH.
+        shutil.copyfile(self.SHELL_SCRIPT_PATH, os.path.join(self.MOUNT_DIR_PATH, "start.sh"))
 
 
     def _check_if_image_exists(self):
@@ -35,7 +48,7 @@ class Container(ServiceBase):
         if images.stdout.strip() == "":
             print_warning("Image does not exist")
             print_info("Building image...")
-            docker_file_path = os.path.abspath(__file__).replace("Container.py", "")
+            docker_file_path = os.path.dirname(__file__)
             subprocess.run(f"docker build -t {self.IMAGE_NAME} {docker_file_path}", shell=True)
             print_success("Image built")
         else:
@@ -72,7 +85,7 @@ class Container(ServiceBase):
             response = subprocess.run((f"docker run "
                                        f"--name {self.CONTAINER_NAME} "
                                        f"-v {self.MOUNT_DIR_PATH}:/usr/src/app "
-                                       f"{self.IMAGE_NAME}"), 
+                                       f"{self.IMAGE_NAME}"),
                                       shell=True, capture_output=True, text=True)
             
             return response
