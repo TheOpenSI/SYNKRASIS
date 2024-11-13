@@ -1,5 +1,12 @@
-# CodeLlama based
-
+#===================================================================================================================================
+# For chlid class override:
+# - _set_prompt_paths
+# - _create_main_py
+# - _fix_code
+# - _generate_code
+# - _set_original_question
+# - _fix_code_with_data_point
+#===================================================================================================================================
 import os
 import sys
 import re
@@ -38,7 +45,6 @@ class PyCapsule(ServiceBase):
         self.container = pycapsule_container
         self.llm = llm
         self.maximum_attempts = maximum_attempts
-        self.TRACEBACK_PATTERN = r"Traceback.*$" # Pattern to extract traceback from stderr
         self.MOUNT_DIR = os.path.abspath(__file__).replace("PyCapsule.py", "../Container/mount_dir")
         self._set_prompt_paths()
         self._change_system_prompt()
@@ -52,7 +58,7 @@ class PyCapsule(ServiceBase):
                 "warnings.filterwarnings('ignore')\n")
         
         
-    def _timeout_code(self, function_name: str, args: Tuple, timeout: int) -> str:
+    def _timeout_code(self, function_name: str, args: str, timeout: int) -> str:
         """
         Runs the example call or the test cases in a different thread with a timeout period.
         In case of an infinite loop, the code will terminate the process and raise an exception.
@@ -61,7 +67,7 @@ class PyCapsule(ServiceBase):
 
         Args:
             function_name (str): function to run/test cases
-            args (Tuple): arguments to pass to the function
+            args (str): arguments to pass to the function, written as a tuple
             timeout (int): timeout period in seconds
 
         Raises:
@@ -87,8 +93,8 @@ class PyCapsule(ServiceBase):
         Set the prompt paths for code generation and code fix.\n
         ** Override for dataset specific implementation.
         """
-        self.CODE_GEN_PROMPT_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "code_gen_prompt.txt")
-        self.CODE_FIX_PROMPT_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "code_fix_prompt.txt")
+        self.CODE_GEN_PROMPT_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "prompts/code_gen_prompt.txt")
+        self.CODE_FIX_PROMPT_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "prompts/code_fix_prompt.txt")
 
 
     def _change_system_prompt(self, is_fix_mode: bool = False):
@@ -118,12 +124,13 @@ class PyCapsule(ServiceBase):
         
     def _create_requirements_txt(self, requirements: list) -> None:
         """
-        Create requirements.txt file in the mount_dir.
+        Create requirements.txt file in the mount_dir.\n
+        **If len(requirements) is greater than 1 and it has "None" in it, it will create requirements.txt file.
 
         Args:
             requirements (list): List of requirements.
         """
-        if requirements != []:
+        if not(len(requirements) == 1 and requirements[0].lower() == "none"):
             with open(os.path.join(self.MOUNT_DIR, "requirements.txt"), "w") as file:
                 file.write('\n'.join(requirements))
  
@@ -168,13 +175,11 @@ class PyCapsule(ServiceBase):
         while response.returncode != 0 and attempt_count < self.maximum_attempts:
             self._change_system_prompt(is_fix_mode=True) # Changing the system prompt for fix mode
             
-            filtered_error_message = re.search(r"Traceback.*$", response.stderr, re.DOTALL) # Extracting traceback to omit any warnings
-            if filtered_error_message:
-                error_response = filtered_error_message.group()
-            else:
-                error_response = response.stderr
-            fix_mode_query = ("Your generated code had the following error -\n"
-                              f"{error_response}\n")
+            # Error message after removing generic and external file error
+            fix_mode_query = self.error_handling(error_message = response.stderr,
+                                                 send_original = False,
+                                                 extract_test_case = False,
+                                                 change_test_case_entry = False)
             
             # Updating code
             self._generate_code(fix_mode_query, suppress_conversation_history = False)

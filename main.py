@@ -24,12 +24,22 @@ from services.Finetune.sample_dataset_formatting_func import formatting_func
 LLM_CONFIG_FILE = os.path.abspath(os.path.join(os.path.dirname(__file__), 'config_files/llm_config.yaml'))
 
 def main():
+    # All services
+    llm: HF_LLM = None
+    ollama: Ollama = None
+    openai: OpenAI_GPT = None
+    embedding_model: EmbeddingModel = None
+    vector_db: VectorDatabase = None
+    rag: RAG = None
+    container: Container = None
+    pycapsule: PyCapsule = None
+    
     try:
-        mistral = HF_LLM(llm_config_file = LLM_CONFIG_FILE)
+        llm = HF_LLM(llm_config_file = LLM_CONFIG_FILE)
         # llm.generate_response("What is the capital of France?", suppress_conversation_history=False)
         finetune = Finetune(dataset_path = "/home/s448780/workspace/synkrasis/services/Finetune/mbpp_finetune_data.csv",
                             format_func = formatting_func,
-                            model = mistral,
+                            model = llm,
                             target_modules = ["q_proj","k_proj", "v_proj", "o_proj",
                                               "gate_proj","up_proj","down_proj"],
                             quantization = "4bit",
@@ -39,7 +49,7 @@ def main():
         
     finally:
         # Warning resource_tracker: There appear to be .* leaked semaphore objects"
-        call_cleanup([mistral])
+        call_cleanup([llm])
 
 if __name__ == '__main__':
     main()

@@ -47,14 +47,14 @@ class OpenAI_GPT(ServiceBase, LLMBase):
         # For openai, we send the system prompt separately
         messages = [
             {"role": "Conversation", "content": conversation_history},
-            {"role": "User", "content": user_prompt},
-            {"role": "Context", "content": context_str} # changing the order
+            {"role": "Context", "content": context_str}, # changing the order
+            {"role": "User", "content": user_prompt}
         ]
 
         prompt = self._prepare_prompt(messages)
 
         response = self.client.chat.completions.create(
-            model=self.model,
+            model=self.model_name,
             messages=[
                 {"role": "system", "content": self.system_prompt},
                 {"role": "user", "content": prompt}],
@@ -63,7 +63,7 @@ class OpenAI_GPT(ServiceBase, LLMBase):
         )
 
         answer = response.choices[0].message.content
-        print_model_output(answer, self.model)
+        print_model_output(answer, self.model_name)
 
         if self.enable_chat_history:
             if not self.chat_history:
