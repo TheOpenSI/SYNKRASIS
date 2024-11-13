@@ -42,10 +42,10 @@ optional arguments:
 | Agent                                      | HumanEval | MBPP  | DS1000 |
 |--------------------------------------------|-----------|-------|--------|
 | Mapcoder                                   | 80.5      | 78.3  | -      |
-| Agencoder                                  | 79.9      | 89.9  | -      |
+| Agentcoder                                  | 79.9      | <b>89.9</b>  | -      |
 | Language Agent Tree Search (no feedback)   | 83.8      | -     | -      |
 | An Empirical Study...                      | -         | -     | 35.5   |
-| PyCapsule                                  | 84.15     | 78.06 | -      |
+| CoSmic                                     | <b>84.15</b>     | 78.06 | -      |
 
 <br></br>
 
@@ -86,6 +86,15 @@ A detailed log of the experiment is available at: `logs/humaneval_gpt_3_5_e{exp_
 ### Log
 
 A detailed log of the experiment is available at: `logs/mbpp_gpt_3_5_e_{exp_no}.txt`
+
+<br></br>
+
+# Key Settings
+- OpenAI model temperature is set to 1 (default) to be able to compare with other works. [OpenAI API Reference.](https://platform.openai.com/docs/api-reference/chat/create)  
+- AgenCoder used OpenAI model gpt-3.5-1160 in their experiments.
+- Mapcoder used OpenAI model gpt-3.5-1160 in their experiments.
+- An emperical study paper used OpenAI model gpt-3.5-1160 in their experiments.
+- gpt-3.5-1106's seed seems to work. [OpenAI Community](https://community.openai.com/t/seed-param-and-reproducible-output-do-not-work/487245/5).
 
 <br></br>
 

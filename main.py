@@ -70,7 +70,8 @@ def main():
 
     #LLM
     # Same OpenAI instance will have system promopt issue if each dataset has different system prompts.
-    openai = OpenAI_GPT(enable_chat_history=True)
+    openai = OpenAI_GPT(model_name = "gpt-3.5-turbo-1106", 
+                        enable_chat_history=True)
     
     # Create all pycapsules
     all_pycapsules = [pycapsule_map[type(loader)](container, openai) # Using same openai instance for all pycapsules.
