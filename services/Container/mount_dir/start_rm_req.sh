@@ -7,6 +7,7 @@
 if [ -f /usr/src/app/requirements.txt ]; then
     echo "[PIP] Installing requirements"
     pip3 install -r /usr/src/app/requirements.txt
+    rm /usr/src/app/requirements.txt # FOR DS1000, install requirements only once
 fi
 
 # Check for main.py

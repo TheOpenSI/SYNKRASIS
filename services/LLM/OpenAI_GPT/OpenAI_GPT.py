@@ -11,7 +11,7 @@ from utils.output_message_format.output_colour import print_error, print_info, p
 
 class OpenAI_GPT(ServiceBase, LLMBase):
     def __init__(self,
-                 temperature: float = 0.7,
+                 temperature: float = 1, # Defaults to 1, replicating Agent Coder.
                  seed: int = 42, 
                  model_name: str = "gpt-3.5-turbo",
                  enable_chat_history: bool = False):
@@ -42,7 +42,7 @@ class OpenAI_GPT(ServiceBase, LLMBase):
                           context: List[str] = None,
                           suppress_conversation_history: bool = True) -> Optional[str]:
         context_str = self._prepare_context(context)
-        conversation_history = "" if suppress_conversation_history else self._prepare_conversation_history(user_prompt)
+        conversation_history = "" if suppress_conversation_history else self._prepare_conversation_history(user_prompt, num_retrieved_history=1)
 
         # For openai, we send the system prompt separately
         messages = [

@@ -82,7 +82,7 @@ class LLMBase(ABC):
         self.chat_history = ChatHistory(original_question, max_history)
 
     
-    def _prepare_conversation_history(self, user_query: str) -> str:
+    def _prepare_conversation_history(self, user_query: str, num_retrieved_history: int=1) -> str:
         """
         Prepare conversation histoy context from chat history if enable_chat_history is activated.
 

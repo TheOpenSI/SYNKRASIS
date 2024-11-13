@@ -173,6 +173,7 @@ class PyCapsule(ServiceBase):
         attempt_count = 0
         return_code = -1
         
+        # Comment: Danny, how is response assigned before the following loop?
         while response.returncode != 0 and attempt_count < self.maximum_attempts:
             self._change_system_prompt(is_fix_mode=True) # Changing the system prompt for fix mode
             

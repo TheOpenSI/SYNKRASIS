@@ -116,4 +116,4 @@ class DatasetBase(ABC):
                 else:
                     self.data = all_data[:self.subset_size]
         else:
-            self.data = all_data 
+            self.data = all_data  
