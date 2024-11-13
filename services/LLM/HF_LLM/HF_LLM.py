@@ -34,9 +34,10 @@ class HF_LLM(ServiceBase, LLMBase):
                  max_new_tokens:int = 1024,
                  do_sample:bool = False,
                  top_p:float = 0.95, # will be ignored if do_sample is False
+                 top_k: int = 20, # will be ignored if do_sample is False 
                  temperature:float = 0.7, # will be ignored if do_sample is False
                  llm_config_file:str = None, # config file to easily set parameters
-                 stop_strings:List[str] = ["\n\nUser:"], # stop strings to stop the generation, default is User: to supoort default chat template
+                 stop_strings:List[str] = ["\n\nUser:"], # stop strings to stop the generation, see chat template
                  enable_chat_history:bool = False # enable chat history
                  ):
         """
@@ -49,6 +50,7 @@ class HF_LLM(ServiceBase, LLMBase):
             max_new_tokens (int): The maximum number of new tokens to generate
             do_sample (bool): Whether to use sampling when generating new tokens, Default : False to make it deterministic
             top_p (float): The top-p value to use when sampling
+            top_k (int): The top-k value to use when sampling, the number of highest probability vocabulary tokens to keep for top-k-filtering.
             temperature (float): The temperature value to use when sampling
             config_file (str): The path to a YAML file containing configuration values
             system_prompt (str): will change according to operation
@@ -67,6 +69,7 @@ class HF_LLM(ServiceBase, LLMBase):
         self.max_new_tokens = max_new_tokens
         self.do_sample = do_sample
         self.top_p = top_p
+        self.top_k = top_k
         self.temperature = temperature
         self.hf_token = self._load_hf_token()
         self.seed = 42,
@@ -152,7 +155,10 @@ class HF_LLM(ServiceBase, LLMBase):
         model = self.model,
         tokenizer = self.tokenizer,
         task = "text-generation",
-        do_sample = False,
+        do_sample = self.do_sample,
+        temperature = self.temperature,
+        top_p = self.top_p,
+        top_k = None, 
         repetition_penalty = 1.1,
         return_full_text = False,
         max_new_tokens = 1024
