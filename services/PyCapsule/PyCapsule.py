@@ -22,6 +22,7 @@ from services.LLM.LLMBase import LLMBase
 from utils.code_parsing.code_parser import parse_response
 from utils.output_message_format.output_colour import print_error, print_warning, print_success, print_pycapsule, print_model_output
 from modules.ErrorHandling import ErrorHandling
+from modules.Example_call_detection import Example_call_detection
 
 class PyCapsule(ServiceBase):
     def __init__(self, 
@@ -111,13 +112,15 @@ class PyCapsule(ServiceBase):
         self.llm.set_system_prompt(code_gen_prompt)
         
         
-    def _create_py_file(self, path: str, content:str) -> None:
+    def _create_py_file(self, path: str, content:str, key_word: str) -> None:
         """
         Create a python file at specified path.
         Args:
             path (str): Path to create the file.
             content (str): Content to write in the file.
         """
+        content = Example_call_detection(content).comment_out_example_calls(is_full_file = True, key_word = key_word)
+         
         with open(path, "w") as task_file:
             task_file.write(content)
         

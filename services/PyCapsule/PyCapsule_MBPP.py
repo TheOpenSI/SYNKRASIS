@@ -57,14 +57,16 @@ class PyCapsule_MBPP(PyCapsule):
         timeout_code = self._timeout_code("test_function", "()", 10)
         py_file_content = (self._suppress_warning_code() + "\n" +
                            code + "\n\n" +
+                           "# =================== Test Function ===================" + "\n" +
                            test_function + "\n\n" +
                            timeout_code)
         
         main_py_path = os.path.join(self.MOUNT_DIR, "main.py")
         task_file_path = os.path.join(self.MOUNT_DIR, f"task_{user_query['task_id']}.py")
         
-        self._create_py_file(main_py_path, py_file_content)
-        self._create_py_file(task_file_path, py_file_content)
+        key_word = "# =================== Test Function ==================="
+        self._create_py_file(main_py_path, py_file_content, key_word)
+        self._create_py_file(task_file_path, py_file_content, key_word)
         
         
     def _generate_code(self, user_query: dict, suppress_conversation_history: bool = True) -> None:

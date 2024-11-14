@@ -38,7 +38,7 @@ def main():
     # Initialize necessary services
     # qwen = HF_LLM(llm_config_file=LLM_CONFIG_FILE, enable_chat_history = True)
     qwen = Ollama(model_name = "qwen2.5-coder", enable_chat_history = True)
-    container = Container(container_name = "synk_mbpp", mount_dir_name = "synk_mbpp", shell_script_name = "start.sh")
+    container = Container(container_name = "synk_mbpp", mount_dir_name = "synk_mbpp_mount", shell_script_name = "start.sh")
     pycapsule = PyCapsule_MBPP(container, qwen)
     
     # Initialize dataset
