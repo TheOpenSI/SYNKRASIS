@@ -37,18 +37,52 @@ class Example_call_detection():
         return (lines, function_name, def_line_num) if function_name else (None, None, None)
     
     
-    def detect_example_calls(self) -> List[int]:
+    def _detect_given_function_details(self, function_name: str) -> Union[Tuple[List[str], str, int], 
+                                                                          Tuple[None, str, None]]:
         """
-        Detect if a function is called after its definition in a Python file.
+        Detects where function_name is defined in the file_content.\n
+        Use as alternative to detect_function_name() if you already know the function name.
+        
+        Args:
+            function_name (str): Function name to search for.
 
         Returns:
-            tuple: (function_name, bool indicating if example call exists, line number of call if found)
+            Union[Tuple[str, int], None]: Tuple with function name and line no if found, or (None, function_name, None)
+        """
+        lines = [line.strip() for line in self.file_content.split("\n")]
+        
+        def_line_num = None
+
+        for i, line in enumerate(lines):
+            # Look for function definition
+            if line.startswith("def "): # Strip will remove all leading tabs
+                if function_name.strip()[:-1] in line:
+                    def_line_num = i
+                    break
+                    
+        return (lines, function_name, def_line_num) if def_line_num is not None else (None, function_name, None)
+    
+    
+    def detect_example_calls(self, given_function_name: str = None) -> List[int]:
+        """
+        Detect if a function is called after its definition in a Python file.
+        If given_function_name is None, the first function definition will be used using detect_function_name().
+        
+        Args:
+            given_function_name (str): Function name to search for. If None, the first function definition will be used.
+
+        Returns:
+            List[int]: List of line numbers where the function is called
         """
         example_calls: List[int] = []
         # Find the first function definition
-        lines, function_name, def_line_num = self.detect_function_name()
+        if given_function_name:
+            lines, function_name, def_line_num = self._detect_given_function_details(given_function_name)
+            function_name = function_name.replace("()", "").strip() # Patch to support the original logic
+        else:
+            lines, function_name, def_line_num = self.detect_function_name()
 
-        if not function_name:
+        if not def_line_num:
             print_warning("No function definition found in solution.")
             return example_calls
                
@@ -69,19 +103,32 @@ class Example_call_detection():
         return example_calls
     
     
-    def comment_out_example_calls(self, is_full_file: bool = False, key_word: str = "") -> str:
+    def comment_out_example_calls(self, 
+                                  is_full_file: bool = False, 
+                                  key_word: str = None, 
+                                  given_function_name: str = None) -> str:
         """
         Comment out example calls in the Python file content.
+        
+        Args:
+            is_full_file (bool): If True, will split by keyword first to separate the solution from the setup.
+            key_word (str): Keyword to separate the solution from the setup. Default is None.
+            given_function_name (str): Function name to search for. If None, the first function definition will be used.
 
         Returns:
             str: Python file content with example calls commented out
         """
         if is_full_file:
+            # File content has solution and test cases
+            # Separate solution from test cases
+            # Solution is before the key_word
             llm_solution = self.file_content.split(key_word)[0].strip()
+            # Test cases
             setup = self.file_content.split(key_word)[1].strip()
+            # Content to comment out
             self.file_content = llm_solution
         
-        example_calls = self.detect_example_calls()
+        example_calls = self.detect_example_calls(given_function_name=given_function_name)
 
         if len(example_calls) == 0:
             print_info("No example calls found in the solution. Solution safe to use.")
@@ -93,58 +140,4 @@ class Example_call_detection():
 
         target = "\n".join(lines) + "\n\n\n" + setup if is_full_file else "\n".join(lines)
         return target
-    
-    
-# if __name__ == "__main__":
-#     example_solution = """
-# import heapq
-
-# def find_minimum_range(arrays):
-#     def find_minimum_range(arrays):
-#         pass
-    
-#     min_heap = []
-#     max_value = float('-inf')
-    
-#     # Initialize the heap with the first element of each array and track the maximum value
-#     for i, arr in enumerate(arrays):
-#         heapq.heappush(min_heap, (arr[0], i))
-#         max_value = max(max_value, arr[0])
-    
-#     min_range = float('inf')
-#     range_start = 0
-    
-#     while True:
-#         # Extract the smallest element from the heap
-#         current_min, array_index = heapq.heappop(min_heap)
-        
-#         # Calculate the current range
-#         if max_value - current_min < min_range:
-#             min_range = max_value - current_min
-#             range_start = current_min
-        
-#         # If any array is exhausted, break the loop
-#         if len(arrays[array_index]) == 1:
-#             break
-        
-#         # Otherwise, insert the next element from the same array
-#         next_element = arrays[array_index][1]
-#         heapq.heappush(min_heap, (next_element, array_index))
-        
-#         # Update the maximum value if necessary
-#         max_value = max(max_value, next_element)
-    
-#     return (range_start, range_start + min_range) + find_minimum_range([[3, 6, 8, 10, 15], [1, 5, 12], [4, 8, 15, 16], [2, 6]])
-
-# # Example function call
-# find_minimum_range([[3, 6, 8, 10, 15], [1, 5, 12], [4, 8, 15, 16], [2, 6]])
-# result = 2
-
-# # =================== Test Function ===================
-# def test_function():
-#     pass
-# """
-#     keyword = "# =================== Test Function ==================="
-#     call_detector = Example_call_detection(example_solution)
-#     print(call_detector.comment_out_example_calls(is_full_file=True, key_word = keyword))
     

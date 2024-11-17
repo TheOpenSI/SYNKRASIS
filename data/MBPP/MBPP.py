@@ -5,9 +5,11 @@ sys.path.append(f"{os.path.dirname(os.path.abspath(__file__))}/../..")
 import json
 import re
 from typing import Dict, Optional, List
+from deprecated import deprecated
 import pandas as pd
 
 from utils.output_message_format.output_colour import print_warning, print_success
+from modules.SignatureConverter import SignatureConverter
 from data.DatasetBase import DatasetBase
 
 class MBPP(DatasetBase):
@@ -34,11 +36,11 @@ class MBPP(DatasetBase):
         self._load_json_data()
 
 
+    @deprecated("Use process() instead for release.")
     def next(self) -> Optional[Dict[str, str]]:
         """
         Return the next datapoint.
-        **Deprecated: Use process() instead.
-
+        
         Returns:
             Optional[Dict[str, str]]: The next datapoint if available, else None.
         """
@@ -88,15 +90,24 @@ class MBPP(DatasetBase):
         Returns:
             dict : Processed data point.
         """
-        function_signature = re.search(r"(?<=assert\s)(.*?)(?===)", data_point["test_list"][0])
-        function_name = re.search(r".*\(", function_signature.group()).group() + ")"
-        function_signature_prompt = f"An example function call will be same as the following - '{function_signature.group()}'"
+        # Example function call from test case
+        function_call = re.search(r"(?<=assert\s)(.*?)(?===)", data_point["test_list"][0]).group()
+        # Extracting the actual function name from test_case
+        function_name = re.search(r".*\(", function_call).group() + ")"
+        # Function signature
+        function_signature = SignatureConverter.convert(call_string=function_call)
+        
+        # Example function call prompt
+        example_function_call_prompt = f"An example function call will be same as the following - '{function_call}'"
         # Enforce function signature prompt
-        enforce = (f"Please write a function **'{function_name}'** to solve the following problem.\n"
-                    "### Always remember, you must keep the function name exactly as provided even if there's spelling error.\n"
-                    "An example function call will be provided at the end of the prompt.\n") 
+        function_signature_prompt = (f"### Required function name for your refernce **'{function_name}'**.\n"
+                                     f"### Function Signature for your reference - {function_signature}\n"
+                                     f"### An example function call from private test cases - {function_call}\n") 
         
         return {
             "task_id": data_point["task_id"],
-            "prompt": enforce + data_point["text"] + "\n" + function_signature_prompt,
-            "test_list": data_point["test_list"]}
+            "prompt": data_point["text"] + "\n" + function_signature_prompt,
+            "test_list": data_point["test_list"],
+            "function_name": function_name,
+            "function_signature": function_signature,
+            "function_call": function_call}

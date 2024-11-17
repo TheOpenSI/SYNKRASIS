@@ -22,7 +22,7 @@ from services.LLM.LLMBase import LLMBase
 from utils.code_parsing.code_parser import parse_response
 from utils.output_message_format.output_colour import print_error, print_warning, print_success, print_pycapsule, print_model_output
 from modules.ErrorHandling import ErrorHandling
-from modules.Example_call_detection import Example_call_detection
+from modules.ExampleCallDetection import Example_call_detection
 
 class PyCapsule(ServiceBase):
     def __init__(self, 
@@ -112,14 +112,23 @@ class PyCapsule(ServiceBase):
         self.llm.set_system_prompt(code_gen_prompt)
         
         
-    def _create_py_file(self, path: str, content:str, key_word: str) -> None:
+    def _create_py_file(self, 
+                        path: str, 
+                        content:str, 
+                        key_word: str,
+                        given_function_name: str) -> None:
         """
         Create a python file at specified path.
+        
         Args:
             path (str): Path to create the file.
             content (str): Content to write in the file.
+            key_word (str): Key word to separate test code from solution, used to comment out the example call.
+            given_function_name (str): Function name to comment out the example call.
         """
-        content = Example_call_detection(content).comment_out_example_calls(is_full_file = True, key_word = key_word)
+        content = Example_call_detection(content).comment_out_example_calls(is_full_file = True, 
+                                                                            key_word = key_word,
+                                                                            given_function_name = given_function_name)
          
         with open(path, "w") as task_file:
             task_file.write(content)
@@ -176,7 +185,6 @@ class PyCapsule(ServiceBase):
         attempt_count = 0
         return_code = -1
         
-        # Comment: Danny, how is response assigned before the following loop?
         while response.returncode != 0 and attempt_count < self.maximum_attempts:
             self._change_system_prompt(is_fix_mode=True) # Changing the system prompt for fix mode
             
