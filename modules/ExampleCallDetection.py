@@ -2,11 +2,6 @@ import os, sys
 sys.path.append(f"{os.path.dirname(os.path.abspath(__file__))}/..")
 
 import re
-from typing import Union, Tuple, List
-
-from utils.output_message_format.output_colour import print_warning, print_info, print_success
-
-import re
 from typing import List, Tuple
 
 class ExampleCallDetection:

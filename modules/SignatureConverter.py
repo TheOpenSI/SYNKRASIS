@@ -1,6 +1,7 @@
 import re
 import keyword
-from typing import List, Any, Tuple, DefaultDict
+from collections import defaultdict
+from typing import Any, List, Tuple
 
 
 class SignatureConverter:
@@ -137,7 +138,7 @@ class SignatureConverter:
         func_name, args = SignatureConverter.parse_function_call(call_string)
         
         # Track argument counts by type to ensure unique parameter names
-        type_counts = DefaultDict(int)
+        type_counts = defaultdict(int)  # Using defaultdict directly
         
         params = []
         for arg in args:

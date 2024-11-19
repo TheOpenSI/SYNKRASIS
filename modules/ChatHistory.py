@@ -8,6 +8,11 @@ from utils.output_message_format.output_colour import print_info, print_warning
 
 
 class ChatHistory:
+    """
+    Chat History Module.
+    Keeps tract of the original question and the conversation history as deque.
+    Max history length is set to 3 by default.
+    """
     def __init__(self, original_question: str, max_history: int = 3):
         if not isinstance(original_question, str) or "" == original_question.strip():
             raise ValueError("Original question must be a non-empty string")
@@ -84,3 +89,4 @@ class ChatHistory:
             f"history_length={len(self._conversation_history)}"
             f")"
         )
+        
