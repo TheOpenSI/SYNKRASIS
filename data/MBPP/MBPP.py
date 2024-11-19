@@ -4,9 +4,10 @@ sys.path.append(f"{os.path.dirname(os.path.abspath(__file__))}/../..")
 
 import json
 import re
+import pandas as pd
+import ast
 from typing import Dict, Optional, List
 from deprecated import deprecated
-import pandas as pd
 
 from utils.output_message_format.output_colour import print_warning, print_success
 from modules.SignatureConverter import SignatureConverter
@@ -47,15 +48,8 @@ class MBPP(DatasetBase):
         if self.current_index < len(self.data):
             datapoint = self.data[self.current_index]
             self.current_index += 1
-            
-            function_signature = re.search(r"(?<=assert\s)(.*?)(?===)", datapoint["test_list"][0])
-            function_signature_prompt = "A typical function call will have the following function signature - \n" + function_signature.group()
-           
-            return {
-                "task_id": datapoint["task_id"],
-                "prompt": datapoint["text"] + "\n" + function_signature_prompt,
-                "test_list": datapoint["test_list"]
-            }
+            return self.process(datapoint)
+        
         else:
             print_warning("No more datapoints available")
             return None
@@ -91,14 +85,20 @@ class MBPP(DatasetBase):
             dict : Processed data point.
         """
         # Example function call from test case
-        function_call = re.search(r"(?<=assert\s)(.*?)(?===)", data_point["test_list"][0]).group()
+        function_call = self.regex_extractor.extract_function_call_from_test_case(data_point["test_list"][0])
+        
+        # Patch: Data point 768 and 926 have function calls starting with "("
+        function_call = self.extractor.remove_leading_bracket(function_call)
+        
+        # Remove the type casting from function call if present, e.g. int(foo(1, 2))
+        function_call = self.regex_extractor.extract_function_call_from_type_cast(function_call)
+        
         # Extracting the actual function name from test_case
-        function_name = re.search(r".*\(", function_call).group() + ")"
+        function_name = self.extractor.get_function_name_from_call(function_call) + "()"
+        
         # Function signature
         function_signature = SignatureConverter.convert(call_string=function_call)
         
-        # Example function call prompt
-        example_function_call_prompt = f"An example function call will be same as the following - '{function_call}'"
         # Enforce function signature prompt
         function_signature_prompt = (f"### Required function name for your refernce **'{function_name}'**.\n"
                                      f"### Function Signature for your reference - {function_signature}\n"

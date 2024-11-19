@@ -6,138 +6,152 @@ from typing import Union, Tuple, List
 
 from utils.output_message_format.output_colour import print_warning, print_info, print_success
 
-class Example_call_detection():
-    def __init__(self, file_content:str) -> None:
-        self.file_content = file_content
-    
-    
-    def detect_function_name(self) -> Union[Tuple[List[str], str, int], Tuple[None, None, None]]:
-        """
-        Find the first function definition in py content.
-        This will detect inner functions as well, so it's necessary that we break after the first function definition.
+import re
+from typing import List, Tuple
 
-        Returns:
-            Union[Tuple[str, int], None]: Tuple containing function name and line number if found, else None
+class ExampleCallDetection:
+    @staticmethod
+    def _get_function_bounds(lines: List[str], function_name: str, start_idx: int) -> Tuple[int, int]:
         """
-        lines = [line.strip() for line in self.file_content.split("\n")]
+        Determine the start and end indices of the function in the code.
+        Returns (start_line, end_line).
+        """
+        function_start = -1
+        function_end = -1
+        base_indent = -1
         
-        function_name = None
-        def_line_num = None
-
-        for i, line in enumerate(lines):
-            # Look for function definition
-            if line.startswith("def "): # Strip will remove all leading tabs
-                # Extract function name using regex
-                match = re.match(r"def\s+([a-zA-Z_][a-zA-Z0-9_]+)\s*\(", line)
-                if match:
-                    function_name = match.group(1)
-                    def_line_num = i
-                    break
-                    
-        return (lines, function_name, def_line_num) if function_name else (None, None, None)
-    
-    
-    def _detect_given_function_details(self, function_name: str) -> Union[Tuple[List[str], str, int], 
-                                                                          Tuple[None, str, None]]:
-        """
-        Detects where function_name is defined in the file_content.\n
-        Use as alternative to detect_function_name() if you already know the function name.
+        # Find function start
+        function_def_pattern = rf"def\s+{re.escape(function_name.replace('()', ''))}\s*\(.*\):"
         
-        Args:
-            function_name (str): Function name to search for.
-
-        Returns:
-            Union[Tuple[str, int], None]: Tuple with function name and line no if found, or (None, function_name, None)
-        """
-        lines = [line.strip() for line in self.file_content.split("\n")]
-        
-        def_line_num = None
-
-        for i, line in enumerate(lines):
-            # Look for function definition
-            if line.startswith("def "): # Strip will remove all leading tabs
-                if function_name.strip()[:-1] in line:
-                    def_line_num = i
-                    break
-                    
-        return (lines, function_name, def_line_num) if def_line_num is not None else (None, function_name, None)
-    
-    
-    def detect_example_calls(self, given_function_name: str = None) -> List[int]:
-        """
-        Detect if a function is called after its definition in a Python file.
-        If given_function_name is None, the first function definition will be used using detect_function_name().
-        
-        Args:
-            given_function_name (str): Function name to search for. If None, the first function definition will be used.
-
-        Returns:
-            List[int]: List of line numbers where the function is called
-        """
-        example_calls: List[int] = []
-        # Find the first function definition
-        if given_function_name:
-            lines, function_name, def_line_num = self._detect_given_function_details(given_function_name)
-            function_name = function_name.replace("()", "").strip() # Patch to support the original logic
-        else:
-            lines, function_name, def_line_num = self.detect_function_name()
-
-        if not def_line_num:
-            print_warning("No function definition found in solution.")
-            return example_calls
-               
-        example_call_pattern = rf"\b{re.escape(function_name)}\s*\("
-        for i, line in enumerate(lines[def_line_num + 1:]):
-            # Skip comments
-            if not line or line.strip().startswith("#"):
+        # Find the function definition
+        for i in range(start_idx, len(lines)):
+            if re.match(function_def_pattern, lines[i].strip()):
+                function_start = i
+                base_indent = len(lines[i]) - len(lines[i].lstrip())
+                break
+                
+        if function_start == -1:
+            return -1, -1
+            
+        # Find function end
+        for i in range(function_start + 1, len(lines)):
+            line = lines[i]
+            stripped = line.strip()
+            
+            # Skip empty lines and comments
+            if not stripped or stripped.startswith('#'):
                 continue
+                
+            current_indent = len(line) - len(line.lstrip())
+            if current_indent <= base_indent:
+                function_end = i - 1
+                break
+        
+        if function_end == -1:
+            function_end = len(lines) - 1
+            
+        return function_start, function_end
 
-            # Function Definition or Return Statement for recursive functions
-            if line.startswith("def ") or ("return" in line):
+    @staticmethod
+    def _find_multiline_return_end(lines: List[str], start_idx: int, base_indent: int) -> int:
+        """
+        Find the end of a multi-line return statement.
+        Returns the index of the last line of the return statement.
+        """
+        parentheses_count = 0
+        current_idx = start_idx
+        
+        # Count initial parentheses in the return line
+        first_line = lines[start_idx]
+        parentheses_count += first_line.count('(') - first_line.count(')')
+        
+        # If no parentheses or balanced in first line, return same line
+        if parentheses_count == 0:
+            return start_idx
+            
+        # Look for the closing parenthesis
+        while current_idx < len(lines) - 1 and parentheses_count > 0:
+            current_idx += 1
+            line = lines[current_idx]
+            
+            # Skip empty lines
+            if not line.strip():
                 continue
+                
+            # Check if we've gone too far (less indentation than base)
+            current_indent = len(line) - len(line.lstrip())
+            if current_indent <= base_indent:
+                break
+                
+            parentheses_count += line.count('(') - line.count(')')
+            
+        return current_idx
 
-            # Check if function is called
-            if re.search(example_call_pattern, line):
-                example_calls.append(i + def_line_num)
-
-        return example_calls
-    
-    
-    def comment_out_example_calls(self, 
-                                  is_full_file: bool = False, 
-                                  key_word: str = None, 
-                                  given_function_name: str = None) -> str:
+    @staticmethod
+    def _find_last_return(lines: List[str], start_idx: int, end_idx: int) -> Tuple[int, int]:
         """
-        Comment out example calls in the Python file content.
+        Find the last return statement and its end line.
+        Returns (start_line, end_line) of the return statement.
+        """
+        last_return_start = -1
+        last_return_end = -1
+        current_idx = start_idx
         
+        while current_idx <= end_idx:
+            line = lines[current_idx].strip()
+            if line.startswith('return'):
+                base_indent = len(lines[current_idx]) - len(lines[current_idx].lstrip())
+                last_return_start = current_idx
+                last_return_end = ExampleCallDetection._find_multiline_return_end(
+                    lines, current_idx, base_indent
+                )
+                current_idx = last_return_end + 1
+            else:
+                current_idx += 1
+                
+        return last_return_start, last_return_end
+
+    @staticmethod
+    def comment_after_return(content: str, function_name: str) -> str:
+        """
+        Comments out all lines after the last 'return' statement in the specified function.
+        Properly handles multi-line return statements.
+
         Args:
-            is_full_file (bool): If True, will split by keyword first to separate the solution from the setup.
-            key_word (str): Keyword to separate the solution from the setup. Default is None.
-            given_function_name (str): Function name to search for. If None, the first function definition will be used.
-
+            content: The content of the Python file as a string.
+            function_name: The name of the function to process.
         Returns:
-            str: Python file content with example calls commented out
+            The modified content with lines after the last return statement commented out.
         """
-        if is_full_file:
-            # File content has solution and test cases
-            # Separate solution from test cases
-            # Solution is before the key_word
-            llm_solution = self.file_content.split(key_word)[0].strip()
-            # Test cases
-            setup = self.file_content.split(key_word)[1].strip()
-            # Content to comment out
-            self.file_content = llm_solution
+        lines = content.splitlines()
+        modified_lines = []
         
-        example_calls = self.detect_example_calls(given_function_name=given_function_name)
-
-        if len(example_calls) == 0:
-            print_info("No example calls found in the solution. Solution safe to use.")
-            return self.file_content + "\n\n\n" + setup if is_full_file else self.file_content
+        # Get function boundaries
+        func_start, func_end = ExampleCallDetection._get_function_bounds(lines, function_name, 0)
+        if func_start == -1:
+            return content
+            
+        # Find the last return statement and its end
+        last_return_start, last_return_end = ExampleCallDetection._find_last_return(
+            lines, func_start, func_end
+        )
         
-        lines = self.file_content.split("\n")
-        for i in range(example_calls[0], len(lines)-1):
-            lines[i+1] = "# " + lines[i+1]
+        # Process lines
+        for i, line in enumerate(lines):
+            if i <= last_return_end:
+                # Lines before or part of the return statement remain unchanged
+                modified_lines.append(line)
+            elif i <= func_end:
+                # Lines after the return statement but within function get commented
+                if line.strip():  # Only comment non-empty lines
+                    modified_lines.append(f"# {line}")
+                else:
+                    modified_lines.append(line)
+            else:
+                # Lines after the function get commented
+                if line.strip():
+                    modified_lines.append(f"# {line}")
+                else:
+                    modified_lines.append(line)
 
-        target = "\n".join(lines) + "\n\n\n" + setup if is_full_file else "\n".join(lines)
-        return target
-    
+        return '\n'.join(modified_lines)

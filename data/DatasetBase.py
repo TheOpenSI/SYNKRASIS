@@ -7,6 +7,8 @@ from typing import Optional, Any
 from abc import ABC, abstractmethod
 
 from utils.output_message_format.output_colour import print_error, print_warning
+from utils.extractor.Extractor import Extractor
+from utils.extractor.RegexExtractor import RegexExtractor
 
 class DatasetBase(ABC):
     def __init__(self, file_path: str, subset_size: Optional[int] = None):
@@ -20,6 +22,8 @@ class DatasetBase(ABC):
         self.subset_size = subset_size
         self.data = [] # Holds the dataset
         self.current_index = 0 # Current index in the dataset
+        self.extractor = Extractor()
+        self.regex_extractor = RegexExtractor()
         self._load_data()
         
     
@@ -77,7 +81,7 @@ class DatasetBase(ABC):
         
     def get_data_point_by_index(self, index: int) -> Optional[Any]:
         """
-        Get a data point by index
+        Get a data point by index, returns the exact data point without processing.
 
         Args:
             index (int): Index of the data point to get.

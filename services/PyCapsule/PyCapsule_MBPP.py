@@ -9,7 +9,7 @@ from services.Container.Container import Container
 from services.LLM.LLMBase import LLMBase
 from utils.code_parsing.code_parser import parse_response
 from utils.output_message_format.output_colour import print_pycapsule
-from modules.ErrorHandling import ErrorHandling
+from modules.ExampleCallDetection import ExampleCallDetection
 
 class PyCapsule_MBPP(PyCapsule):
     def __init__(self, 
@@ -56,21 +56,16 @@ class PyCapsule_MBPP(PyCapsule):
         test_function = self._create_test_function(user_query["test_list"])
         timeout_code = self._timeout_code("test_function", "()", 10)
         py_file_content = (self._suppress_warning_code() + "\n" +
-                           code + "\n\n" +
-                           "# =================== Test Function ===================" + "\n\n" +
+                           ExampleCallDetection.comment_after_return(code, user_query["function_name"]) + "\n\n" +
                            test_function + "\n\n" +
                            timeout_code)
         
         main_py_path = os.path.join(self.MOUNT_DIR, "main.py")
         task_file_path = os.path.join(self.MOUNT_DIR, f"task_{user_query['task_id']}.py")
         
-        key_word = "# =================== Test Function ==================="
-        
         for each_path in [main_py_path, task_file_path]:
             self._create_py_file(path = each_path, 
-                                content = py_file_content, 
-                                key_word = key_word,
-                                given_function_name = user_query["function_name"])
+                                content = py_file_content)
         
         
     def _generate_code(self, user_query: dict, suppress_conversation_history: bool = True) -> None:
