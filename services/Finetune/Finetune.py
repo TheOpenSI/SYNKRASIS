@@ -117,7 +117,7 @@ class Finetune(ServiceBase):
         # https://huggingface.co/docs/peft/v0.13.0/en/package_reference/peft_model#peft.PeftModel
         if self.use_peft:
             self.peft_config = self._get_peft_config()
-            return get_peft_model(self.model.model, self.peft_config)
+            return get_peft_model(self.model, self.peft_config)
         else:
             print_warning("PEFT is disabled. Using the base model.")
             return self.model
