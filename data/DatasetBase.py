@@ -1,5 +1,6 @@
 import os
 import sys
+
 sys.path.append(f"{os.path.dirname(os.path.abspath(__file__))}/../..")
 
 import json
@@ -7,6 +8,9 @@ from typing import Optional, Any
 from abc import ABC, abstractmethod
 
 from utils.output_message_format.output_colour import print_error, print_warning
+from utils.extractor.Extractor import Extractor
+from utils.extractor.RegexExtractor import RegexExtractor
+
 
 class DatasetBase(ABC):
     def __init__(self, file_path: str, subset_size: Optional[int] = None):
@@ -18,30 +22,33 @@ class DatasetBase(ABC):
         """
         self.file_path = file_path
         self.subset_size = subset_size
-        self.data = [] # Holds the dataset
-        self.current_index = 0 # Current index in the dataset
+        self.data = []  # Holds the dataset
+        self.current_index = 0  # Current index in the dataset
+        self.extractor = Extractor()
+        self.regex_extractor = RegexExtractor()
         self._load_data()
-        
-    
-    @abstractmethod    
+
+
+    @abstractmethod
     def _load_data(self) -> None:
         """
         Load data from data_file to self.data
         """
         pass
-    
-    
+
+
     @abstractmethod
-    def next() -> Optional[Any]:
+    def next(self) -> Optional[Any]:
         """
-        Get the next/self.current_index point from the dataset
+        Get the next/self.current_index point from the dataset.
+        Collect the data point, process and return
 
         Returns:
             Optional[Dict[str, str]]: Data point.
         """
         pass
-    
-    
+
+
     @abstractmethod
     def log_to_csv(self, model_name: str) -> None:
         """
@@ -51,12 +58,12 @@ class DatasetBase(ABC):
             model_name (str): Name of the model to be used as the title of the csv file.
         """
         pass
-    
-    
+
+
     @abstractmethod
     def process(self, data_point: dict) -> dict:
         """
-        Process the data point so we don't need to use while True.
+        Process the data point with other metadata as required, e.g. function signature.
         Same as next().
 
         Args:
@@ -66,18 +73,18 @@ class DatasetBase(ABC):
             dict: processed data point.
         """
         pass
-    
-    
+
+
     def reset(self) -> None:
         """
         Reset the current_index to 0
         """
         self.current_index = 0
-        
-        
+
+
     def get_data_point_by_index(self, index: int) -> Optional[Any]:
         """
-        Get a data point by index
+        Get a data point by index, returns the exact data point without processing.
 
         Args:
             index (int): Index of the data point to get.
@@ -89,8 +96,8 @@ class DatasetBase(ABC):
             return self.data[index]
         except IndexError:
             print_error(f"Index {index} out of range.")
-            
-            
+
+
     def __len__(self) -> int:
         """
         Return the number of datapoints in the dataset.
@@ -99,8 +106,8 @@ class DatasetBase(ABC):
             int: The number of datapoints.
         """
         return len(self.data)
-    
-    
+
+
     def _load_json_data(self) -> None:
         """
         _load_data helper.\n
@@ -108,12 +115,13 @@ class DatasetBase(ABC):
         """
         with open(self.file_path, "r") as file:
             all_data = [json.loads(line.strip()) for line in file]
-            
+
         if self.subset_size is not None:
-                if self.subset_size > len(all_data):
-                    print_warning(f"Requested subset size {self.subset_size} is larger than dataset size {len(all_data)}. Using full dataset.")
-                    self.data = all_data
-                else:
-                    self.data = all_data[:self.subset_size]
+            if self.subset_size > len(all_data):
+                print_warning((f"Requested subset size {self.subset_size} is larger than dataset size {len(all_data)}. "
+                              f"Using full dataset."))
+                self.data = all_data
+            else:
+                self.data = all_data[:self.subset_size]
         else:
-            self.data = all_data 
+            self.data = all_data

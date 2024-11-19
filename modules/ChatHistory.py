@@ -1,4 +1,5 @@
 import os, sys
+
 sys.path.append(f"{os.path.dirname(os.path.abspath(__file__))}/..")
 
 from typing import List, Dict, Tuple, Optional
@@ -9,6 +10,11 @@ from utils.output_message_format.output_colour import print_info, print_warning
 
 class ChatHistory:
     def __init__(self, original_question: str, max_history: int = 3):
+        """
+        Chat History Module.
+        Keeps tract of the original question and the conversation history as deque.
+        Max history length is set to 3 by default.
+        """
         if not isinstance(original_question, str) or "" == original_question.strip():
             raise ValueError("Original question must be a non-empty string")
         if not isinstance(max_history, int) or max_history < 1:
@@ -22,7 +28,7 @@ class ChatHistory:
     @property
     def original_question(self) -> Optional[str]:
         # This just returns the original question
-        if self._original_question is None or "" == self._original_question.strip():
+        if self._original_question is None or self._original_question.strip() == "":
             print_warning("Original question has not been set")
         return self._original_question
 
@@ -72,7 +78,8 @@ class ChatHistory:
         Returns:
             str: _description_
         """
-        return f"ChatHistory(original_question='{self._original_question}', history_length={len(self._conversation_history)})"
+        return (f"ChatHistory(original_question='{self._original_question}', "
+                f"history_length={len(self._conversation_history)})")
 
 
     def __repr__(self) -> str:

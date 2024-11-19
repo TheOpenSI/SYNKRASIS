@@ -20,17 +20,19 @@ def generate_finetune_data(file_path:str) -> None:
     question = re.findall(question_pattern, data, re.DOTALL)
     answer = re.findall(answer_pattern, data, re.DOTALL)
     answer = [a[:-5] for a in answer]
+    print(len(question))
+    print(len(answer))
     
     # Keeping 50 samples for finetuning
     question = question[:50]
     answer = answer[:50]
 
-    pd.DataFrame({"Question": question, "Answer": answer}).to_csv("services/Finetune/mbpp_finetune_data.csv", index=False)
+    pd.DataFrame({"Question": question, "Answer": answer}).to_csv("/home/s448780/workspace/synkrasis_master/services/Finetune/mbpp_finetune_data.csv", index=False)
     print_success("Finetune data generated.")
     
     
 def main():
-    generate_finetune_data("logs/mbpp_gpt_3_5.txt")
+    generate_finetune_data("/home/s448780/workspace/synkrasis_master/logs/mbpp_gpt_3_5.txt")
     
     
 if __name__ == "__main__":
