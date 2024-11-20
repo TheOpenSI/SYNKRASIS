@@ -52,9 +52,9 @@ class OpenAI_GPT(ServiceBase, LLMBase):
         ]
 
         prompt = self._prepare_prompt(messages)
-        print("="*100)
+        print("="*50, "start", "="*50)
         print_model_output(prompt, "USER")
-        print("="*100)
+        print("="*50, "end", "="*50)
         
         response = self.client.chat.completions.create(
             model=self.model_name,

@@ -28,6 +28,7 @@ from jinja2 import Template
 
 from modules.ChatHistory import ChatHistory
 from utils.output_message_format.output_colour import print_error, print_success
+from utils.code_parsing.code_parser import parse_response
 
 class LLMBase(ABC):
     def __init__(self, model_name: str, enable_chat_history: bool = False):
@@ -82,7 +83,7 @@ class LLMBase(ABC):
         self.chat_history = ChatHistory(original_question, max_history)
 
     
-    def _prepare_conversation_history(self, user_query: str, num_retrieved_history: int=1) -> str:
+    def _prepare_conversation_history(self, user_query: str) -> str:
         """
         Prepare conversation histoy context from chat history if enable_chat_history is activated.
 
@@ -110,9 +111,10 @@ class LLMBase(ABC):
             
             # Passing both question and answer
             for i, (question, answer) in enumerate(self.chat_history.conversation_history):
+                _, code = parse_response(answer)
                 if question != self.chat_history.original_question:
                     conversation_history += f">> Previous question {i+1}:\n{question}\n"
-                conversation_history += f">> Your previous answer {i+1}:\n{answer}\n\n"
+                conversation_history += f">> Your previous solution {i+1}:\n{code}\n\n"
             
         
         return conversation_history

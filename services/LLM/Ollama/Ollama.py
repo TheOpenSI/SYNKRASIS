@@ -51,9 +51,9 @@ class Ollama(ServiceBase, LLMBase):
                     {"role": "User", "content": user_prompt}]
         full_query = self._prepare_prompt(messages) # bos_token is empty by default, applies default jinja template
         
-        print("="*100)
+        print("="*50, "start", "="*50)
         print_model_output(full_query, "USER")
-        print("="*100)
+        print("="*50, "end", "="*50)
         
         try:
             # Generate response from the model
