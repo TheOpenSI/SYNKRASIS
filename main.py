@@ -67,11 +67,11 @@ def main():
             print(f"Solved {dataloader.solved_count} problems, Unsolved {dataloader.unsolved_count} problems")
             print("#" * 50)
         
-        safe_save_data(dataloader, pycapsule.llm.model_name)
+        safe_save_data(dataloader, "mbpp_gpt_1106_mod", pycapsule.llm.model_name)
             
-    except (Exception, KeyboardInterrupt) as e:
-        print_error(f"Error in execution: {str(e)}")
-        safe_save_data(dataloader, "mbpp_gpt_1106", pycapsule.llm.model_name)
+    # except (Exception, KeyboardInterrupt) as e:
+    #     print_error(f"Error in execution: {str(e)}")
+    #     safe_save_data(dataloader, "mbpp_gpt_1106", pycapsule.llm.model_name)
         
     finally:
         call_cleanup([openai, container, pycapsule])

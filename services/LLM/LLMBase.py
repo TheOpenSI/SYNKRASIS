@@ -106,7 +106,13 @@ class LLMBase(ABC):
             #                             for index, (q, a) in enumerate(self.chat_history.conversation_history)])
             
             # Only passing original question and last answer
-            conversation_history += "\n".join([(f">> Your previous answer:\n{answer}\n") for _, answer in self.chat_history.conversation_history])
+            # conversation_history += "\n".join([(f">> Your previous answer:\n{answer}\n") for _, answer in self.chat_history.conversation_history])
+            
+            # Passing both question and answer
+            for i, (question, answer) in enumerate(self.chat_history.conversation_history):
+                if question != self.chat_history.original_question:
+                    conversation_history += f">> Previous question {i+1}:\n{question}\n"
+                conversation_history += f">> Your previous answer {i+1}:\n{answer}\n\n"
             
         
         return conversation_history

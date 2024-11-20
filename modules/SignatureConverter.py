@@ -9,19 +9,27 @@ class SignatureConverter:
     def sanitise_variable_name(name):
         """
         Fixes a string to make it a valid Python variable name.
+        Removes trailing underscores while preserving internal ones.
         
         Parameters:
         - name (str): The input string to sanitize.
 
         Returns:
-        - str: A valid Python variable name.
+        - str: A valid Python variable name without trailing underscores.
         """
         # Replace invalid characters with underscores
         name = re.sub(r"[^a-zA-Z0-9_]", "_", name)
         
+        # Remove trailing underscores
+        name = name.rstrip('_')
+        
         # Ensure the name doesn't start with a digit
         if name and name[0].isdigit():
             name = f"_{name}"
+        
+        # Ensure the name isn't empty after processing
+        if not name:
+            name = "_"
         
         # Ensure the name isn't a Python reserved keyword
         if keyword.iskeyword(name):
