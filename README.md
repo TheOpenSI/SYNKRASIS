@@ -89,6 +89,22 @@ A detailed log of the experiment is available at: `logs/mbpp_gpt_3_5_e_{exp_no}.
 
 <br></br>
 
+# Individual Results
+## HumanEval
+### GPT-4(gpt-1106-preview)
+|Status| Experiment 1 | Experiment 2 | Experiment 3 | Mean Success Rate| Sample Standard Deviation |
+| --- | --- | --- | --- | --- | --- |
+| Pass | 96.95122 | 96.95122 | - | - | - |
+| Fail | 3.04878 | 3.04878 | - | - | - |
+
+Pass Distributions-
+| | 0 | 1 | 2 | 3 | 4 | 5 |
+| --- | --- | --- | --- | --- | --- | --- |
+| Experiment 1 | 148 | 5 | 2 | 1 | - | 3 |
+| Experiment 2 | 147 | 6 | 2 | 2 | 1 | 1 |
+| Experiment 3 | - | - | - | - | - | - |
+
+
 # Key Settings
 - OpenAI model temperature is set to 1 (default) to be able to compare with other works. [OpenAI API Reference.](https://platform.openai.com/docs/api-reference/chat/create)  
 - AgenCoder used OpenAI model gpt-3.5-1160 in their experiments.
