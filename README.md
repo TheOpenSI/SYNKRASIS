@@ -31,79 +31,155 @@ optional arguments:
 <br></br>
 
 # Final Report
-|Dataset| Experiment 1 | Experiment 2 | Experiment 3 | Mean Success Rate| Standard Deviation |
-| --- | --- | --- | --- | --- | --- |
-| HumanEval | 85.97561 | 82.317073 | 84.14634 | 84.15% | 1.829% |
-| MBPP | 78.850103 | 77.5154 | 77.823409 | 78.06% | 0.699% |
-  
-<br></br>
-
-# Comparison
-| Agent                                      | HumanEval | MBPP  | DS1000 |
-|--------------------------------------------|-----------|-------|--------|
-| Mapcoder                                   | 80.5      | 78.3  | -      |
-| Agentcoder                                  | 79.9      | <b>89.9</b>  | -      |
-| Language Agent Tree Search (no feedback)   | 83.8      | -     | -      |
-| An Empirical Study...                      | -         | -     | 35.5   |
-| CoSmic                                     | <b>84.15</b>     | 78.06 | -      |
-
-<br></br>
-
-# HumanEval
-
-### Pass Distribution
-
-| Attempt | Experiment 1 | Experiment 2| Experiment 3 | Notes |
-| --- | --- | --- | --- | --- |
-| 0 | 112 | 121 | 114 | No Feedback |
-| 1 | 15 | 8 | 9 | Feedback Loop Activated |
-| 2 | 8 | 2 | 5 |  |
-| 3 | 1 | 1 | 6 |  |
-| 4 | 2 | 0 | 1 |  |
-| 5 | 3 | 3 | 3 |  |
+| Agent     | HumanEval gpt-4o | HumanEval gpt-4-1106-preview | HumanEval gpt-3.5-turbo-0125 | HumanEval gpt-3.5-turbo-1106 | HumanEval Qwen 2.5 7B Instruct | MBPP gpt-4o | MBPP gpt-4-1106-preview | MBPP gpt-3.5-turbo-0125 | MBPP gpt-3.5-turbo-1106 | MBPP Qwen 2.5 7B Instruct |
+|---|---|---|---|---|---|---|---|---|---|---|
+| MapCoder               | - | 93.9 | - | 80.5 | - | - | 83.1 | - | 78.3 | - |
+| AgentCoder<sup>1</sup> | - | 96.3<sup>1</sup> | - | 79.9<sup>1</sup> | - | - | 91.8<sup>1</sup> | - | 89.1<sup>1</sup> | - |
+| LATS<sup>2</sup>       | 92.7 | - | 83.8 | - | - | - | - | 81.1 | - | - |
+| Qwen 2.5 Report        | - | - | - | - | 88.4 | - | - | - | - | 83.5 |
+| CoSMIC(PyCapsule)      | <b>97.56</b> | <b>96.54±0.7</b> | <b>84.14±1.83</b> | <b>85.16±0.70</b> | <b>92.68</b> | <b>87.89</b> | <b>88.1</b> | 79.00±1.09 | <b>78.13±0.62</b> | 79.67 |
 
 
-### Log
-
-A detailed log of the experiment is available at: `logs/humaneval_gpt_3_5_e{exp_no}.txt`
-
-<br></br>
-
-# MBPP
-
-### Pass Distribution
-
-| Attempt | Experiment 1 | Experiment 2| Experiment 3 | Notes |
-| --- | --- | --- | --- | --- |
-| 0 | 563 | 560 | 560 | No Feedback |
-| 1 | 114 | 126 | 122 | Feedback Loop Activated |
-| 2 | 46 | 39 | 37 | |
-| 3 | 21 | 15 | 23 |  |
-| 4 | 7  | 10 | 9 |  |
-| 5 | 17 | 5 | 7 |  |
-
-
-### Log
-
-A detailed log of the experiment is available at: `logs/mbpp_gpt_3_5_e_{exp_no}.txt`
-
-<br></br>
-
-# Individual Results
+# Individual results
 ## HumanEval
-### GPT-4(gpt-1106-preview)
+### GPT-4(gpt-4o)
 |Status| Experiment 1 | Experiment 2 | Experiment 3 | Mean Success Rate| Sample Standard Deviation |
 | --- | --- | --- | --- | --- | --- |
-| Pass | 96.95122 | 96.95122 | - | - | - |
-| Fail | 3.04878 | 3.04878 | - | - | - |
+| Pass | 97.560976 | - | - | - | - |
+| Fail | 2.439024  | - | - | - | - |
+
+Pass Distributions-
+| | 0 | 1 | 2 | 3 | 4 | 5 |
+| --- | --- | --- | --- | --- | --- | --- |
+| Experiment 1 | 134 | 21 | 2 | 2 | - | 1 |
+| Experiment 2 | - | - | - | - | - | - |
+| Experiment 3 | - | - | - | - | - | - |
+
+
+### GPT-4(gpt-4-1106-preview)
+|Status| Experiment 1 | Experiment 2 | Experiment 3 | Mean Success Rate| Sample Standard Deviation |
+| --- | --- | --- | --- | --- | --- |
+| Pass | 96.95122 | 96.95122 | 95.731707 | 96.544716 | 0.70408616 |
+| Fail | 3.04878 | 3.04878 | 4.268893 | - | - |
 
 Pass Distributions-
 | | 0 | 1 | 2 | 3 | 4 | 5 |
 | --- | --- | --- | --- | --- | --- | --- |
 | Experiment 1 | 148 | 5 | 2 | 1 | - | 3 |
 | Experiment 2 | 147 | 6 | 2 | 2 | 1 | 1 |
+| Experiment 3 | 142 | 7 | 5 | 2 | 1 | - |
+
+
+### GPT-3.5(gpt-3.5-turbo-0125)
+|Status| Experiment 1 | Experiment 2 | Experiment 3 | Mean Success Rate| Sample Standard Deviation |
+| --- | --- | --- | --- | --- | --- |
+| Pass | 85.97561 | 82.317073 | 84.146341 | 84.146341 | 1.8292685 |
+| Fail | 14.02439 | 17.682927 | 15.853659 | - | - |
+
+Pass Distributions-
+| | 0 | 1 | 2 | 3 | 4 | 5 |
+| --- | --- | --- | --- | --- | --- | --- |
+| Experiment 1 | 112 | 15 | 8 | 1 | 2 | 3 |
+| Experiment 2 | 121 | 8 | 2 | 1 | - | 3 |
+| Experiment 3 | 114 | 9 | 5 | 6 | 1 | 3 |
+
+
+### GPT-3.5(gpt-3.5-turbo-1106)
+|Status| Experiment 1 | Experiment 2 | Experiment 3 | Mean Success Rate| Sample Standard Deviation |
+| --- | --- | --- | --- | --- | --- |
+| Pass | 84.756098 | 84.756098 | 85.97561 | 85.162602 | 0.70408558 |
+| Fail | 15.243902 | 15.243902 | 14.02439 | - | - |
+
+Pass Distributions-
+| | 0 | 1 | 2 | 3 | 4 | 5 |
+| --- | --- | --- | --- | --- | --- | --- |
+| Experiment 1 | 113 | 13 | 5 | 3 | 3 | 2 |
+| Experiment 2 | 113 | 13 | 5 | 3 | 3 | 2 |
+| Experiment 3 | 116 | 14 | 6 | 1 | 3 | 1 |
+
+
+### Qwen2.5 Coder Instruct
+|Status| Experiment 1 | Experiment 2 | Experiment 3 | Mean Success Rate| Sample Standard Deviation |
+| --- | --- | --- | --- | --- | --- |
+| Pass | 92.682927 | - | - | - | - |
+| Fail | 7.317073  | - | - | - | - |
+
+Pass Distributions-
+| | 0 | 1 | 2 | 3 | 4 | 5 |
+| --- | --- | --- | --- | --- | --- | --- |
+| Experiment 1 | 118 | 27 | 5 | 2 | - | - |
+| Experiment 2 | - | - | - | - | - | - |
 | Experiment 3 | - | - | - | - | - | - |
 
+## MBPP
+### GPT-4(gpt-4o)
+|Status| Experiment 1 | Experiment 2 | Experiment 3 | Mean Success Rate| Sample Standard Deviation |
+| --- | --- | --- | --- | --- | --- |
+| Pass | 87.88501 | - | - | - | - |
+| Fail | 12.11499 | - | - | - | - |
+
+Pass Distributions-
+| | 0 | 1 | 2 | 3 | 4 | 5 |
+| --- | --- | --- | --- | --- | --- | --- |
+| Experiment 1 | 612 | 165 | 36 | 23 | 8 | 12 |
+| Experiment 2 | - | - | - | - | - | - |
+| Experiment 3 | - | - | - | - | - | - |
+
+
+### GPT-4(gpt-4-1106-preview)
+|Status| Experiment 1 | Experiment 2 | Experiment 3 | Mean Success Rate| Sample Standard Deviation |
+| --- | --- | --- | --- | --- | --- |
+| Pass | 88.090349 | - | - | - | - |
+| Fail | 11.909651 | - | - | - | - |
+
+Pass Distributions-
+| | 0 | 1 | 2 | 3 | 4 | 5 |
+| --- | --- | --- | --- | --- | --- | --- |
+| Experiment 1 | 597 | 150 | 54 | 28 | 17 | 12 |
+| Experiment 2 | - | - | - | - | - | - |
+| Experiment 3 | - | - | - | - | - | - |
+
+
+### GPT-3.5(gpt-3.5-turbo-0125)
+|Status| Experiment 1 | Experiment 2 | Experiment 3 | Mean Success Rate| Sample Standard Deviation |
+| --- | --- | --- | --- | --- | --- |
+| Pass | 79.774127 | 78.234086 | - | - | - |
+| Fail | 20.225873 | 21.765914 | - | - | - |
+
+Pass Distributions-
+| | 0 | 1 | 2 | 3 | 4 | 5 |
+| --- | --- | --- | --- | --- | --- | --- |
+| Experiment 1 | 580 | 115 | 44 | 17 | 12 | 9 |
+| Experiment 2 | 560 | 117 | 47 | 18 | 13 | 7 |
+| Experiment 3 | - | - | - | - | - | - |
+
+
+### GPT-3.5(gpt-3.5-turbo-1106)
+|Status| Experiment 1 | Experiment 2 | Experiment 3 | Mean Success Rate| Sample Standard Deviation |
+| --- | --- | --- | --- | --- | --- |
+| Pass | 77.720739 | 77.823409 | 78.850103 | 78.131417 | 0.62451378 |
+| Fail | 22.279261 | 22.176591 | 21.14987 | - | - |
+
+Pass Distributions-
+| | 0 | 1 | 2 | 3 | 4 | 5 |
+| --- | --- | --- | --- | --- | --- | --- |
+| Experiment 1 | 560 | 106 | 41 | 31 | 12 | 7 |
+| Experiment 2 | - | - | - | - | - | - |
+| Experiment 3 | - | - | - | - | - | - |
+
+
+### Qwen2.5 Coder Instruct
+|Status| Experiment 1 | Experiment 2 | Experiment 3 | Mean Success Rate| Sample Standard Deviation |
+| --- | --- | --- | --- | --- | --- |
+| Pass | 79.671458 | - | - | - | - |
+| Fail | 20.328542 | - | - | - | - |
+
+Pass Distributions-
+| | 0 | 1 | 2 | 3 | 4 | 5 |
+| --- | --- | --- | --- | --- | --- | --- |
+| Experiment 1 | 479 | 170 | 58 | 32 | 24 | 13 |
+| Experiment 2 | - | - | - | - | - | - |
+| Experiment 3 | - | - | - | - | - | - |
 
 # Key Settings
 - OpenAI model temperature is set to 1 (default) to be able to compare with other works. [OpenAI API Reference.](https://platform.openai.com/docs/api-reference/chat/create)  
