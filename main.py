@@ -37,17 +37,17 @@ LLM_CONFIG_FILE = os.path.abspath(os.path.join(os.path.dirname(__file__), "confi
 def main():
     # qwen = HF_LLM(llm_config_file=LLM_CONFIG_FILE, enable_chat_history = True)
     # :7b-instruct-fp16
-    qwen = Ollama(model_name = "qwen2.5-coder", enable_chat_history = True)
-    # openai = OpenAI_GPT(model_name = "gpt-3.5-turbo-1106", enable_chat_history = True)
-    container = Container(container_name = "synk_mbpp", mount_dir_name = "synk_mbpp_mount", shell_script_name = "start.sh")
-    pycapsule = PyCapsule_MBPP(container, qwen)
+    # qwen = Ollama(model_name = "qwen2.5-coder:7b-base", enable_chat_history = True)
+    openai = OpenAI_GPT(model_name = "gpt-3.5-turbo", enable_chat_history = True)
+    container = Container(container_name = "synk_mbpp_base", mount_dir_name = "synk_mbpp_mount", shell_script_name = "start.sh")
+    pycapsule = PyCapsule_MBPP(container, openai)
     
     # Initialize dataset
     dataloader = MBPP()
     
     try:
         # print_info("Starting mbpp-Qwen2.5 Instruct experiment")
-        print_info("Starting mbpp experiment")
+        print_info("Starting gpt_0125_c1_sig_fix_latest mbpp experiment")
         
         for raw_data_point in dataloader.data:
             data_point = dataloader.process(raw_data_point)
@@ -66,14 +66,14 @@ def main():
             print(f"Solved {dataloader.solved_count} problems, Unsolved {dataloader.unsolved_count} problems")
             print("#" * 50)
         
-        safe_save_data(dataloader, "qwen_mbpp_c2_sig_fix", pycapsule.llm.model_name)
+        safe_save_data(dataloader, "gpt_0125_c1_sig_fix_latest", pycapsule.llm.model_name)
             
     # except (Exception, KeyboardInterrupt) as e:
     #     print_error(f"Error in execution: {str(e)}")
     #     safe_save_data(dataloader, "mbpp_gpt_1106", pycapsule.llm.model_name)
         
     finally:
-        call_cleanup([qwen, container, pycapsule])
+        call_cleanup([openai, container, pycapsule])
         pycapsule.cleanup()
 
 if __name__ == "__main__":

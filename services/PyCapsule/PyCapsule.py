@@ -261,7 +261,7 @@ class PyCapsule(ServiceBase):
         original_question = self._set_original_question(user_query)
         
         # Initialize the chat history
-        self.llm._init_chat_history(original_question, max_history = 2) # TODO: Make this configurable
+        self.llm._init_chat_history(original_question, max_history = 1) # TODO: Make this configurable
         
         # Creates the main.py and requirements.txt
         self._generate_code(user_query)

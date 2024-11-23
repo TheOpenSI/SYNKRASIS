@@ -42,7 +42,7 @@ class OpenAI_GPT(ServiceBase, LLMBase):
                           context: List[str] = None,
                           suppress_conversation_history: bool = True) -> Optional[str]:
         context_str = self._prepare_context(context)
-        conversation_history = "" if suppress_conversation_history else self._prepare_conversation_history(user_prompt, num_retrieved_history=1)
+        conversation_history = "" if suppress_conversation_history else self._prepare_conversation_history(user_prompt)
 
         # For openai, we send the system prompt separately
         messages = [
