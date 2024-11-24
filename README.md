@@ -37,7 +37,7 @@ optional arguments:
 | AgentCoder<sup>1</sup> | - | 96.3<sup>1</sup> | - | 79.9<sup>1</sup> | - | - | 91.8<sup>1</sup> | - | 89.1<sup>1</sup> | - |
 | LATS<sup>2</sup>       | 92.7 | - | 83.8 | - | - | - | - | 81.1 | - | - |
 | Qwen 2.5 Report        | - | - | - | - | 88.4 | - | - | - | - | 83.5 |
-| CoSMIC(PyCapsule)      | <b>97.56</b> | <b>96.54±0.7</b> | <b>84.14±1.83</b> | <b>85.16±0.70</b> | <b>92.68</b> | <b>87.89</b> | <b>88.1</b> | 79.00±1.09 | <b>78.13±0.62</b> | 79.67 |
+| CoSMIC(PyCapsule)      | <b>97.56</b> | <b>96.54±0.7</b> | <b>84.14±1.83</b> | <b>85.16±0.70</b> | <b>92.68</b> | <b>87.89</b> | <b>88.1</b> | 78.48±1.2 | <b>78.13±0.62</b> | 79.67 |
 
 
 # Individual results
@@ -143,15 +143,15 @@ Pass Distributions-
 ### GPT-3.5(gpt-3.5-turbo-0125)
 |Status| Experiment 1 | Experiment 2 | Experiment 3 | Mean Success Rate| Sample Standard Deviation |
 | --- | --- | --- | --- | --- | --- |
-| Pass | 79.774127 | 78.234086 | - | - | - |
-| Fail | 20.225873 | 21.765914 | - | - | - |
+| Pass | 79.774127 | 78.234086 | 77.412731 | 78.473648 | 1.198787 |
+| Fail | 20.225873 | 21.765914 | 22.587269 | - | - |
 
 Pass Distributions-
 | | 0 | 1 | 2 | 3 | 4 | 5 |
 | --- | --- | --- | --- | --- | --- | --- |
 | Experiment 1 | 580 | 115 | 44 | 17 | 12 | 9 |
 | Experiment 2 | 560 | 117 | 47 | 18 | 13 | 7 |
-| Experiment 3 | - | - | - | - | - | - |
+| Experiment 3 | 535 | 231 | 116 | 51 | 26 | 15 |
 
 
 ### GPT-3.5(gpt-3.5-turbo-1106)
