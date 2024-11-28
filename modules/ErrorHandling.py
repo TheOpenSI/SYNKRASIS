@@ -44,6 +44,9 @@ class ErrorHandling():
         Returns:
         - str: The error message with the generic error message removed.
         """
+        if "This is a generic error message." not in error_message:
+            return error_message.strip()
+        
         multi_thread_pattern = r"Traceback(.*)(?=Traceback)"
         removed_generic_error_message = re.search(multi_thread_pattern, error_message, re.DOTALL)
         if removed_generic_error_message is not None:
@@ -195,6 +198,24 @@ class ErrorHandling():
         return (f"Your generated code had a NameError.\n"
                 "Please check the function, variable names in your generated code and make sure they are same as instruction.\n"
                 f"Error message added for your reference - {error_message}")
+        
+        
+    def recursion_error_prompt(self) -> str:
+        """
+        Example: Your generated code had a RecursionError. 
+        Please chnage the function logic to avoid infinite recursion.
+        Error message added for your reference - {error_message}
+        
+        Args:
+        - error_message (str): The error message.
+        
+        Returns:
+        - str: The RecursionError message.
+        """
+        # NOTE: May be ideal to pass the actual trimmed error message.
+        return ("Your generated code had a RecursionError.\n"
+                "Please chnage the function logic to avoid infinite recursion.\n"
+                "Error message added for your reference - RecursionError: maximum recursion depth exceeded in comparison")
     
     
     def generic_error_prompt(self, error_message: str, send_original: bool) -> str:
@@ -245,5 +266,7 @@ class ErrorHandling():
             return self.assertion_error_prompt(error_message, extract_test_case, change_test_case_entry, to_replace, entry_point)
         elif error_type == "NameError":
             return self.name_error_prompt(error_message)
+        elif error_type == "RecursionError":
+            return self.recursion_error_prompt()
         else:
             return self.generic_error_prompt(error_message, send_original)

@@ -6,9 +6,11 @@ sys.path.append(f"{os.path.dirname(os.path.abspath(__file__))}/../..")
 
 import subprocess
 import re
+import shlex
 
 from services.Base import ServiceBase
 from utils.output_message_format.output_colour import print_error, print_info, print_success, print_warning, print_pycapsule
+from utils.sanitise_input.sanitise_input import sanitise_input
 
 class Container(ServiceBase):
     def __init__(self, 
@@ -31,15 +33,34 @@ class Container(ServiceBase):
         self.CONTAINER_NAME = container_name
         self.MOUNT_DIR_PATH = os.path.join(current_dir, "mount_dir", mount_dir_name)
         self.SHELL_SCRIPT_PATH = os.path.join(os.path.dirname(__file__), f"mount_dir/{shell_script_name}")
-        self._check_if_image_exists() # check if image exists
+        # Security patch for the container inputs
+        self._security_patch()
+        
+        # Check if image exists, if not, will build from Dockerfile
+        self._check_if_image_exists()
 
         # Create mount and container directory.
         os.makedirs(self.MOUNT_DIR_PATH, exist_ok=True)
 
-        # Copy start.sh to self.MOUNT_DIR_PATH.
+        # Copy bash script to self.MOUNT_DIR_PATH.
         shutil.copyfile(self.SHELL_SCRIPT_PATH, os.path.join(self.MOUNT_DIR_PATH, "start.sh"))
 
 
+    def _security_patch(self):
+        """
+        Security patch for the container inputs
+        """
+        # Shell script name should be either start.sh or start_rm_req.sh
+        if self.SHELL_SCRIPT_PATH not in ["start.sh", "start_rm_req.sh"]:
+            print_error("Invalid shell script name")
+            raise ValueError("Invalid shell script name")
+        
+        # Sanitise the input
+        self.IMAGE_NAME = sanitise_input(self.IMAGE_NAME)
+        self.CONTAINER_NAME = sanitise_input(self.CONTAINER_NAME)
+        self.MOUNT_DIR_PATH = shlex.quote(self.MOUNT_DIR_PATH)
+    
+    
     def _check_if_image_exists(self):
         """
         Check if docker imahe exists, if not build from Dockerfile

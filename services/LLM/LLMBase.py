@@ -8,7 +8,7 @@
 #   - system_prompt: str
 #
 # Methods:
-#   - _init_chat_history(original_question: str, max_history: int = 1)
+#   - init_chat_history(original_question: str, max_history: int = 1)
 #   - _prepare_prompt(messages: List[Dict], bos_token: str) -> str
 #   - _prepare_context(context: List[str]) -> Optional[str]
 #   - _prepare_conversation_history(user_query: str) -> str
@@ -29,18 +29,32 @@ from jinja2 import Template
 from modules.ChatHistory import ChatHistory
 from utils.output_message_format.output_colour import print_error, print_success
 
+# Uncomment the next line for pycapsule
+# from utils.code_parsing.code_parser import parse_response
+
 class LLMBase(ABC):
-    def __init__(self, model_name: str, enable_chat_history: bool = False):
+    def __init__(self, 
+                 model_name: str, 
+                 enable_chat_history: bool = False,
+                 max_history: int = 3):
+        """
+        Base class for all LLM services
+        Args:
+            model_name (str): Model name as string, use for printing and logging
+            enable_chat_history (bool, optional): Use chat history. Defaults to False.
+            max_history (int, optional): Maximum number of interactions to store in history. Defaults to 3.
+        """
         self.model_name = model_name
         self.prompt_template_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "../../config_files/default_chat_template.jinja")
         self.enable_chat_history = enable_chat_history
         self.chat_history: ChatHistory = None
+        self.max_history = max_history
         self.system_prompt = "You are a helpful assistant, always answer the question to the best of your ability even if the context is not useful."
     
   
     def _prepare_prompt(self, messages: List[Dict], bos_token="") -> str:
         """
-        Generate a prompt from the provided messages using the default jinja template.
+        Using the default jinja template, generate a prompt from the provided message list and role.
         Args:
             messages (List[str]): List of messages to include in the prompt.
             bos_token (str): The BOS token to use in the prompt.
@@ -71,16 +85,6 @@ class LLMBase(ABC):
         
         return context_str
 
-
-    def _init_chat_history(self, original_question: str, max_history: int = 1):
-        """
-        Initialize the chat history with the original question, only call if enable_chat_history is set to True.
-        Args:
-            original_question (str): The initial question to start the chat.
-            max_history (int): Maximum number of interactions to store in history.
-        """
-        self.chat_history = ChatHistory(original_question, max_history)
-
     
     def _prepare_conversation_history(self, user_query: str) -> str:
         """
@@ -94,22 +98,35 @@ class LLMBase(ABC):
         """
         conversation_history = ""
         if self.enable_chat_history:
+            
+            # Initialise chat history if not already initialized
             if self.chat_history is None:
-                self._init_chat_history(user_query) # user_query is the original question and max_history is 1 by default
+                self._init_chat_history(user_query) # user_query is the original question and max_history is 3 by default
 
-            # Prepare the conversation history context from chat history
+            # Original question
             conversation_history = "\n" + ">> Original Question: " + self.chat_history.original_question + "\n\n"
             
-            # Uncomment this to add q/a pair
-            # conversation_history += "\n".join([(f"\tPrevious Question {index + 1}: {q}\n"
-            #                             f"\tPrevious Answer {index + 1}: {a}\n") 
-            #                             for index, (q, a) in enumerate(self.chat_history.conversation_history)])
+            # Uncomment to pass only the original question and last answer
+            # conversation_history += "\n".join([(f">> Your previous answer:\n{answer}\n") for _, answer in self.chat_history.conversation_history])
             
-            # Only passing original question and last answer
-            conversation_history += "\n".join([(f">> Your previous answer:\n{answer}\n") for _, answer in self.chat_history.conversation_history])
-            
-        
-        return conversation_history
+            # Passing both question and answer
+            for i, (question, answer) in enumerate(self.chat_history.conversation_history):
+                # Uncomment the next line for pycapsule to extract code from LLM response
+                # _, code = parse_response(answer)
+                if question != self.chat_history.original_question: # Skip question if it is the original question
+                    conversation_history += f">> Previous question {i+1}:\n{question}\n"
+                # conversation_history += f">> Your previous solution {i+1}:\n{code}\n\n" # Uncomment for pycapsule
+                conversation_history += f">> Your previous solution {i+1}:\n{answer}\n\n"
+    
+    
+    def init_chat_history(self, original_question: str, max_history: int = 3):
+        """
+        Initialize the chat history with the original question, only call if enable_chat_history is set to True.
+        Args:
+            original_question (str): The initial question to start the chat.
+            max_history (int): Maximum number of interactions to store in history.
+        """
+        self.chat_history = ChatHistory(original_question, max_history)
             
             
     def set_system_prompt(self, prompt: str):
@@ -119,7 +136,7 @@ class LLMBase(ABC):
             prompt (str): The system prompt
         """
         self.system_prompt = prompt
-        # TODO: Consider clearing the chat history here.
+        # NOTE: Consider clearing the chat history here.
         
         
     def clear_chat_history(self):
@@ -144,7 +161,7 @@ class LLMBase(ABC):
                                        "../../config_files/system_prompt.txt")
         with open(prompt_file, "r") as prompt_file:
             self.system_prompt = prompt_file.read()
-        # TODO: Consider clearing the chat history here.
+        # NOTE: Consider clearing the chat history here.
     
     
     @abstractmethod

@@ -28,6 +28,7 @@ def main():
     llm: HF_LLM = None
     ollama: Ollama = None
     openai: OpenAI_GPT = None
+    finetune_agent: Finetune = None
     embedding_model: EmbeddingModel = None
     vector_db: VectorDatabase = None
     rag: RAG = None
@@ -35,8 +36,8 @@ def main():
     pycapsule: PyCapsule = None
     
     try:
-        llm = HF_LLM(llm_config_file = LLM_CONFIG_FILE)
-        llm.generate_response("Write a python factorial function with tail recursion?")
+        ollama = Ollama(model_name="$(ls)", enable_chat_history=False)
+        ollama.generate_response("Hello, how are you?")
         
     finally:
         # Warning resource_tracker: There appear to be .* leaked semaphore objects"

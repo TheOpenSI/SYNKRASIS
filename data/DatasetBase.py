@@ -20,6 +20,8 @@ class DatasetBase(ABC):
         self.subset_size = subset_size
         self.data = [] # Holds the dataset
         self.current_index = 0 # Current index in the dataset
+        self.extractor = Extractor() # Extracts function name
+        self.regex_extractor = RegexExtractor() # Regex based extractors
         self._load_data()
         
     
@@ -56,7 +58,7 @@ class DatasetBase(ABC):
     @abstractmethod
     def process(self, data_point: dict) -> dict:
         """
-        Process the data point so we don't need to use while True.
+        Process the data point and add metadata like function signature.
         Same as next().
 
         Args:
@@ -77,7 +79,7 @@ class DatasetBase(ABC):
         
     def get_data_point_by_index(self, index: int) -> Optional[Any]:
         """
-        Get a data point by index
+        Get a data point by index, returns the EXACT data point without processing.
 
         Args:
             index (int): Index of the data point to get.
@@ -108,12 +110,13 @@ class DatasetBase(ABC):
         """
         with open(self.file_path, "r") as file:
             all_data = [json.loads(line.strip()) for line in file]
-            
+
         if self.subset_size is not None:
-                if self.subset_size > len(all_data):
-                    print_warning(f"Requested subset size {self.subset_size} is larger than dataset size {len(all_data)}. Using full dataset.")
-                    self.data = all_data
-                else:
-                    self.data = all_data[:self.subset_size]
+            if self.subset_size > len(all_data):
+                print_warning((f"Requested subset size {self.subset_size} is larger than dataset size {len(all_data)}. "
+                              f"Using full dataset."))
+                self.data = all_data
+            else:
+                self.data = all_data[:self.subset_size]
         else:
-            self.data = all_data 
+            self.data = all_data
