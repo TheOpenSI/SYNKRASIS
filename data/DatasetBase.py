@@ -20,8 +20,6 @@ class DatasetBase(ABC):
         self.subset_size = subset_size
         self.data = [] # Holds the dataset
         self.current_index = 0 # Current index in the dataset
-        self.extractor = Extractor() # Extracts function name
-        self.regex_extractor = RegexExtractor() # Regex based extractors
         self._load_data()
         
     
