@@ -13,7 +13,7 @@ from utils.output_message_format.output_colour import print_error, print_info, p
 
 class Ollama(ServiceBase, LLMBase):
     def __init__(self, model_name: str = "mistral", enable_chat_history:bool = False):  # uses mistral as default model
-        # This will not load the model in GPU
+        # Init will not load the model in GPU, model gets loaded only when generate_response is called
         ServiceBase.__init__(self)
         LLMBase.__init__(self, model_name, enable_chat_history)
         

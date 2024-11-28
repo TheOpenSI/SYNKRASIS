@@ -91,8 +91,8 @@ class LLMBase(ABC):
         Prepare conversation histoy context from chat history if enable_chat_history is activated.
 
         Args:
-            user_query (str): user query
-
+            user_query (str): user query, only used if chat history is not initialised
+            
         Returns:
             str: conversation history context
         """
