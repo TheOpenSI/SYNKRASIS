@@ -1,5 +1,5 @@
-#===============================================================================================================================
-# Common traits - 
+# ===============================================================================================================================
+# Common traits -
 # Fields:
 #   - model_name: str
 #   - prompt_template_path: str
@@ -18,8 +18,9 @@
 #
 # Abstract Methods:
 #   - generate_response(user_prompt: str, context:List[str] = None, suppress_conversation_history:bool = True) -> Optional[str]
-#===============================================================================================================================
+# ===============================================================================================================================
 import os, sys
+
 sys.path.append(f"{os.path.dirname(os.path.abspath(__file__))}/../..")
 
 from abc import ABC, abstractmethod
@@ -45,13 +46,13 @@ class LLMBase(ABC):
             max_history (int, optional): Maximum number of interactions to store in history. Defaults to 3.
         """
         self.model_name = model_name
-        self.prompt_template_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "../../config_files/default_chat_template.jinja")
+        self.prompt_template_path = os.path.join(os.path.dirname(os.path.abspath(__file__)),
+                                                 "../../config_files/default_chat_template.jinja")
         self.enable_chat_history = enable_chat_history
         self.chat_history: ChatHistory = None
         self.max_history = max_history
         self.system_prompt = "You are a helpful assistant, always answer the question to the best of your ability even if the context is not useful."
-    
-  
+
     def _prepare_prompt(self, messages: List[Dict], bos_token="") -> str:
         """
         Using the default jinja template, generate a prompt from the provided message list and role.
@@ -59,8 +60,8 @@ class LLMBase(ABC):
             messages (List[str]): List of messages to include in the prompt.
             bos_token (str): The BOS token to use in the prompt.
         """
-        filtered_messages = [msg for msg in messages if msg.get("content").strip()] # Filter out empty messages.
-        
+        filtered_messages = [msg for msg in messages if msg.get("content").strip()]  # Filter out empty messages.
+
         with open(self.prompt_template_path, "r") as jinja_file:
             template_str = jinja_file.read()
 
@@ -68,11 +69,10 @@ class LLMBase(ABC):
         template = Template(template_str)
 
         # Render the template with the provided messages and bos_token
-        rendered_prompt = template.render(messages = filtered_messages, bos_token = bos_token)
+        rendered_prompt = template.render(messages=filtered_messages, bos_token=bos_token)
 
         return rendered_prompt
-    
-    
+
     def _prepare_context(self, context: List[str]) -> Optional[str]:
         """
         Prepare context for the prompt if context is provided.
@@ -82,13 +82,13 @@ class LLMBase(ABC):
         context_str = ""
         if context:
             context_str = "\n".join([f"\t{ctx}" for ctx in context])
-        
+
         return context_str
 
-    
+        
     def _prepare_conversation_history(self, user_query: str) -> str:
         """
-        Prepare conversation histoy context from chat history if enable_chat_history is activated.
+        Prepare conversation history context from chat history if enable_chat_history is activated.
 
         Args:
             user_query (str): user query, only used if chat history is not initialised
@@ -101,7 +101,7 @@ class LLMBase(ABC):
             
             # Initialise chat history if not already initialized
             if self.chat_history is None:
-                self._init_chat_history(user_query) # user_query is the original question and max_history is 3 by default
+                self.init_chat_history(user_query) # user_query is the original question and max_history is 3 by default
 
             # Original question
             conversation_history = "\n" + ">> Original Question: " + self.chat_history.original_question + "\n\n"
@@ -117,6 +117,8 @@ class LLMBase(ABC):
                     conversation_history += f">> Previous question {i+1}:\n{question}\n"
                 # conversation_history += f">> Your previous solution {i+1}:\n{code}\n\n" # Uncomment for pycapsule
                 conversation_history += f">> Your previous solution {i+1}:\n{answer}\n\n"
+            
+            return conversation_history
     
     
     def init_chat_history(self, original_question: str, max_history: int = 3):
@@ -127,8 +129,8 @@ class LLMBase(ABC):
             max_history (int): Maximum number of interactions to store in history.
         """
         self.chat_history = ChatHistory(original_question, max_history)
-            
-            
+        
+
     def set_system_prompt(self, prompt: str):
         """
         Set the system prompt and reset the chat history.
@@ -137,7 +139,7 @@ class LLMBase(ABC):
         """
         self.system_prompt = prompt
         # NOTE: Consider clearing the chat history here.
-        
+
         
     def clear_chat_history(self):
         """
@@ -148,7 +150,7 @@ class LLMBase(ABC):
             print_success("Chat history cleared.")
         else:
             print_error("Chat history is not enabled.")
-            
+
             
     def set_system_prompt_from_file(self, prompt_file: str = None):
         """
@@ -157,21 +159,21 @@ class LLMBase(ABC):
             prompt_file (str): The file containing the system prompt.
         """
         if prompt_file is None:
-            prompt_file = os.path.join(os.path.dirname(os.path.abspath(__file__)), 
+            prompt_file = os.path.join(os.path.dirname(os.path.abspath(__file__)),
                                        "../../config_files/system_prompt.txt")
         with open(prompt_file, "r") as prompt_file:
             self.system_prompt = prompt_file.read()
         # NOTE: Consider clearing the chat history here.
     
-    
+   
     @abstractmethod
-    def generate_response(self, 
+    def generate_response(self,
                           user_prompt: str,
-                          context:List[str] = None,
-                          suppress_conversation_history:bool = True) -> Optional[str]:
+                          context: List[str] = None,
+                          suppress_conversation_history: bool = True) -> Optional[str]:
         """
         Generate a response using the LLM
-        
+
         Args:
             user_prompt (str): User query
             context (List[str], optional): RAG context. Defaults to None.
