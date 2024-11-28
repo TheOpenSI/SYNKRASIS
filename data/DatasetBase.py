@@ -63,8 +63,7 @@ class DatasetBase(ABC):
     @abstractmethod
     def process(self, data_point: dict) -> dict:
         """
-        Process the data point with other metadata as required, e.g. function signature.
-        Same as next().
+        Process the data point and add metadata. e.g. function signature.
 
         Args:
             data_point (dict): data point to process.
@@ -84,7 +83,7 @@ class DatasetBase(ABC):
 
     def get_data_point_by_index(self, index: int) -> Optional[Any]:
         """
-        Get a data point by index, returns the exact data point without processing.
+        Get a data point by index, returns the EXACT data point without processing.
 
         Args:
             index (int): Index of the data point to get.
@@ -125,3 +124,4 @@ class DatasetBase(ABC):
                 self.data = all_data[:self.subset_size]
         else:
             self.data = all_data
+

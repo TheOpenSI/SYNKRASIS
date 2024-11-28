@@ -15,10 +15,12 @@ from utils.output_message_format.output_colour import print_error, print_info, p
 
 
 class Ollama(ServiceBase, LLMBase):
-    def __init__(self, model_name: str = "mistral", enable_chat_history: bool = False):  # uses mistral as default model
+    def __init__(self, model_name: str = "mistral", enable_chat_history:bool = False):  # uses mistral as default model
+        # Init will not load the model in GPU, model gets loaded only when generate_response is called
         ServiceBase.__init__(self)
         LLMBase.__init__(self, model_name, enable_chat_history)
-
+        
+        
     def _set_seed(self):
         torch.manual_seed(42)
         torch.cuda.manual_seed_all(42)
@@ -72,12 +74,14 @@ class Ollama(ServiceBase, LLMBase):
             return response["response"]
 
         except ollama.ResponseError as e:
-            print_error(e.error)
-            # if e.status_code == 404:
-            # print_info("Attempting to pull the model, please restart the service once pull is complete.")
-            # self._pull_model()
-
-
+            print_error(f"Caught ollama._types.ResponseError: {e}")
+            print_info("Attempting to pull the model, please restart the service once pull is complete.")
+            print_info("This may take a few minutes.")
+            print_info("No output will be visible at stdout until the model is pulled.")
+            self._pull_model()
+            print_success("Model pull complete. Please restart the service.")
+        
+        
     def cleanup(self):
         """
         Nothing to clean up for Ollama

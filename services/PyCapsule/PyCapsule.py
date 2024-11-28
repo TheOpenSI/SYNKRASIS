@@ -253,7 +253,7 @@ class PyCapsule(ServiceBase):
 
         # Initialize the chat history
         self.llm.init_chat_history(original_question)
-
+        
         # Creates the main.py and requirements.txt
         self._generate_code(user_query)
 

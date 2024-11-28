@@ -39,7 +39,9 @@ def print_model_output(to_print:str, model_name:str):
     """
     model_name: str, repo of the model # TODO: more specific
     """
+    print("="*50, "START", "="*50)
     print(f"{Colour.RED.value}[{model_name.split('/')[0].upper()}]{Colour.RESET.value} {to_print}")
+    print("="*50, "END", "="*50)
 
 
 def print_service(to_print:str):
