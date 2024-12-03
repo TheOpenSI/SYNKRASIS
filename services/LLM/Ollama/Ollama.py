@@ -56,11 +56,11 @@ class Ollama(ServiceBase, LLMBase):
                     {"role": "Conversation", "content": conversation_history},
                     {"role": "Context", "content": context},
                     {"role": "User", "content": user_prompt}]
-        full_query = self._prepare_prompt(messages)  # bos_token is empty by default, applies default jinja template
-
+        full_query = self._prepare_prompt(messages) # bos_token is empty by default, applies default jinja template
+        
         try:
             # Generate response from the model
-            response = ollama.generate(model=self.model_name, prompt=full_query)
+            response = ollama.generate(model = self.model_name, prompt = full_query)
 
             # Add the interaction to chat history
             if self.enable_chat_history and response:

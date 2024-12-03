@@ -47,7 +47,7 @@ class OpenAI_GPT(ServiceBase, LLMBase):
         # For openai, we send the system prompt separately
         messages = [
             {"role": "Conversation", "content": conversation_history},
-            {"role": "Context", "content": context_str},  # changing the order
+            {"role": "Context", "content": context_str}, # changing the order
             {"role": "User", "content": user_prompt}
         ]
 

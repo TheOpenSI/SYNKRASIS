@@ -58,7 +58,6 @@ class PyCapsule(ServiceBase):
         """
         return ("import warnings\n"
                 "warnings.filterwarnings('ignore')\n")
-
     def _timeout_code(self, function_name: str, args_for_function: str, timeout: int) -> str:
         """
         Runs the example call or the test cases in a different thread with a timeout period.
@@ -153,7 +152,7 @@ class PyCapsule(ServiceBase):
         main_py_path = os.path.join(self.MOUNT_DIR, "main.py")
         self._create_py_file(main_py_path, suppress_warning + "\n\n" + code + "\n\n" + test_cases)
 
-        # For child classes, create task specific py file here.
+        # NOTE: For child classes, create task specific py file here.
 
     def _fix_code(self, response: CompletedProcess) -> tuple[int, int]:
         """
@@ -319,7 +318,6 @@ class PyCapsule(ServiceBase):
         """
         self.container.cleanup()
         self.llm.clear_chat_history()
-
         for file in ['main.py', 'requirements.txt']:
             file_path = os.path.join(self.MOUNT_DIR, file)
             if os.path.exists(file_path):

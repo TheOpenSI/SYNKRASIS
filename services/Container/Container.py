@@ -22,7 +22,6 @@ class Container(ServiceBase):
             container_name (str, optional): Default container name. Defaults to "synkrasis_alpha".
             mount_dir_name (str, optional): Mount directory name. Defaults to synk_mount.
             shell_script_name (str, optional): Shell script name. Defaults to "start.sh".
-
         """
         super().__init__()
         current_dir = os.path.dirname(__file__)

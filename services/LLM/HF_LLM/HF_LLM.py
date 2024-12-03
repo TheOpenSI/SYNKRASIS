@@ -60,7 +60,6 @@ class HF_LLM(ServiceBase, LLMBase):
         # base class
         ServiceBase.__init__(self)
         LLMBase.__init__(self, model_name, enable_chat_history)
-
         # Set attributes (config file values will override these)
         self.quantization = quantization
         self.use_cache = use_cache
@@ -83,7 +82,6 @@ class HF_LLM(ServiceBase, LLMBase):
             with open(llm_config_file, "r") as file:
                 config = yaml.safe_load(file)
                 self.__dict__.update(config)
-
         self.model = None
         self.tokenizer = None
         self.pipeline = None
