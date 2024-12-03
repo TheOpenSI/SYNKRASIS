@@ -221,7 +221,7 @@ class HF_LLM(ServiceBase, LLMBase):
 
         if self.enable_chat_history:
             if not self.chat_history:
-                self._init_chat_history(user_prompt)
+                self.init_chat_history(user_prompt)
 
             self.chat_history.add_interaction(user_prompt, answer)
 
