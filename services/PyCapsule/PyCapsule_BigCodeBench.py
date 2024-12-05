@@ -5,18 +5,18 @@ sys.path.append(f"{os.path.dirname(os.path.abspath(__file__))}/../..")
 from subprocess import CompletedProcess
 import re
 
-from services.PyCapsule.PyCapsule import PyCapsule
+from services.PyCapsule.PyCapsuleBase import PyCapsuleBase
 from services.Container.Container import Container
 from services.LLM.LLMBase import LLMBase
 from utils.code_parsing.code_parser import parse_response
 from utils.output_message_format.output_colour import print_pycapsule
 
-class PyCapsule_HumanEval(PyCapsule):
+class PyCapsule_BigCodeBench(PyCapsuleBase):
     def __init__(self,
                  pycapsule_container: Container,
                  llm: LLMBase):
         """
-        PyCapsule_HumanEval constructor.
+        PyCapsule_BigCodeBench constructor.
 
         Args:
             pycasule_container (Container): Container object.
@@ -27,19 +27,10 @@ class PyCapsule_HumanEval(PyCapsule):
         
     def _create_main_py(self, code: str, user_query: dict) -> None:
         """
-        HumanEval implementation when user_query is a dictionary.
         Creates main.py, task_id.py files in the mount_dir.
         Args:
             code (str): Function definition.
-            user_query (dict): HumanEval data point reference.
-        
-        Metadata: HUMANEVAL data structure (from the data loader)
-            user_query = {
-                    "task_id": datapoint["task_id"],
-                    "prompt": datapoint["prompt"],
-                    "entry_point": datapoint["entry_point"],
-                    "test": datapoint["test"]
-                }
+            user_query (dict): BigCodeBench data point reference which contains test cases.
         """ 
         # Suppress warning
         suppress_warning = self._suppress_warning_code()

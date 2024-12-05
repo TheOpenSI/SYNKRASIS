@@ -16,9 +16,10 @@ class OpenAI_GPT(ServiceBase, LLMBase):
                  temperature: float = 1,  # Defaults to 1, replicating Agent Coder.
                  seed: int = 42,
                  model_name: str = "gpt-3.5-turbo",
-                 enable_chat_history: bool = False):
+                 enable_chat_history: bool = False,
+                 max_history: int = 3):
         ServiceBase.__init__(self)
-        LLMBase.__init__(self, model_name, enable_chat_history)
+        LLMBase.__init__(self, model_name, enable_chat_history, max_history)
         self.temperature = temperature
         self.seed = seed
         self.client: OpenAI = OpenAI(api_key=self._load_openai_api_key())

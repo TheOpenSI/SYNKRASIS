@@ -1,13 +1,31 @@
+# ===================================================================================================================================
+# Base class for Dataset Management and Processing
+# 
+# Child classes must implement the following methods:
+#   - _load_data
+#   - get_next
+#   - log_to_csv
+#   - process
+#
+# Functions:
+#   - reset (base class only resets the current_index)
+#   - get_data_point_by_index (returns the EXACT data point without processing)
+#   - load_data_helper_json (loads JSON data from self.file_path with specified subset size if provided)
+#   - log_to_csv_helper (log_to_csv helper to log the results to a csv file)
+#   - __len__
+# ===================================================================================================================================
+
 import os
 import sys
 
 sys.path.append(f"{os.path.dirname(os.path.abspath(__file__))}/../..")
 
 import json
-from typing import Optional, Any
+import pandas as pd
+from typing import Optional, Any, List
 from abc import ABC, abstractmethod
 
-from utils.output_message_format.output_colour import print_error, print_warning
+from utils.output_message_format.output_colour import print_error, print_warning, print_success
 from utils.extractor.Extractor import Extractor
 from utils.extractor.RegexExtractor import RegexExtractor
 
@@ -32,19 +50,19 @@ class DatasetBase(ABC):
     @abstractmethod
     def _load_data(self) -> None:
         """
-        Load data from data_file to self.data
+        Load data from self.file_path to self.data
         """
         pass
 
 
     @abstractmethod
-    def next(self) -> Optional[Any]:
+    def get_next(self) -> Optional[Any]:
         """
-        Get the next/self.current_index point from the dataset.
+        Get the next(self.current_index) point from the dataset.\n
         Collect the data point, process and return
 
         Returns:
-            Optional[Dict[str, str]]: Data point.
+            data_point (Optional[Dict[str, str]]): Processed next data point.
         """
         pass
 
@@ -69,7 +87,7 @@ class DatasetBase(ABC):
             data_point (dict): data point to process.
 
         Returns:
-            dict: processed data point.
+            data_point (dict): Processed data point.
         """
         pass
 
@@ -92,22 +110,12 @@ class DatasetBase(ABC):
             Optional[Any]: Data point, can be any file type.
         """
         try:
-            return self.data[index]
+            return self.data.iloc[index]
         except IndexError:
             print_error(f"Index {index} out of range.")
 
 
-    def __len__(self) -> int:
-        """
-        Return the number of datapoints in the dataset.
-
-        Returns:
-            int: The number of datapoints.
-        """
-        return len(self.data)
-
-
-    def _load_json_data(self) -> None:
+    def load_data_helper_json(self) -> None:
         """
         _load_data helper.\n
         Loads JSON data from self.file_path with specified subset size.
@@ -124,4 +132,33 @@ class DatasetBase(ABC):
                 self.data = all_data[:self.subset_size]
         else:
             self.data = all_data
+            
+            
+    def log_to_csv_helper(self, model_name:str, 
+                          dataset_name:str, 
+                          results: List[dict],
+                          column_names: List[str]) -> None:
+        """
+        log_to_csv helper.\n
+        Logs the results to a csv file.
+
+        Args:
+            model_name (str): Name of the model to be used as the title of the csv file.
+            dataset_name (str): Name of the dataset to be used as the title of the csv file.
+            results (List): List of results to log.
+            column_names (List): List of column names for the csv file.
+        """
+        df = pd.DataFrame(results, columns = column_names)
+        df.to_csv(f"experiment_results/{model_name}_{dataset_name}_results.csv", index = False)
+        print_success(f"Results saved to {model_name}_results.csv")    
+            
+            
+    def __len__(self) -> int:
+        """
+        Return the number of datapoints in the dataset.
+
+        Returns:
+            int: The number of datapoints.
+        """
+        return len(self.data)
 

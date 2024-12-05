@@ -39,7 +39,8 @@ class HF_LLM(ServiceBase, LLMBase):
                  llm_config_file: str = None,  # config file to easily set parameters
                  stop_strings: List[str] = ["\n\nUser:"],
                  # stop strings to stop the generation, default is User: to support default chat template
-                 enable_chat_history: bool = False):
+                 enable_chat_history: bool = False,
+                 max_history: int = 3):
         """
         Creates a Huggingface LLM agent
         Args:
@@ -55,11 +56,12 @@ class HF_LLM(ServiceBase, LLMBase):
             llm_config_file (str): The path to a YAML file containing configuration values
             stop_strings (List[str]): Default : ["User:"] which supports the default chat template at /config_files/default_chat_template.txt
             enable_chat_history (bool): Whether to add chat history
+            max_history (int): The maximum number of interactions to store in the chat
         """
 
         # base class
         ServiceBase.__init__(self)
-        LLMBase.__init__(self, model_name, enable_chat_history)
+        LLMBase.__init__(self, model_name, enable_chat_history, max_history)
         # Set attributes (config file values will override these)
         self.quantization = quantization
         self.use_cache = use_cache

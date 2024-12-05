@@ -48,7 +48,7 @@ class Container(ServiceBase):
         Security patch for the container inputs
         """
         # Shell script name should be either start.sh or start_rm_req.sh
-        if self.SHELL_SCRIPT_PATH not in ["start.sh", "start_rm_req.sh"]:
+        if self.SHELL_SCRIPT_PATH.split("/")[-1] not in ["start.sh", "start_rm_req.sh"]:
             print_error("Invalid shell script name")
             raise ValueError("Invalid shell script name")
         

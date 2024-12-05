@@ -121,14 +121,16 @@ class LLMBase(ABC):
             return conversation_history
     
     
-    def init_chat_history(self, original_question: str, max_history: int = 3):
+    def init_chat_history(self, original_question: str):
         """
         Initialize the chat history with the original question, only call if enable_chat_history is set to True.
         Args:
             original_question (str): The initial question to start the chat.
-            max_history (int): Maximum number of interactions to store in history.
         """
-        self.chat_history = ChatHistory(original_question, max_history)
+        if not self.enable_chat_history:
+            print_error("Chat history is not enabled.")
+            return
+        self.chat_history = ChatHistory(original_question, self.max_history)
         
 
     def set_system_prompt(self, prompt: str):
