@@ -1,5 +1,5 @@
 # ===================================================================================================================================
-# For child class to override:
+# For child class to implement:
 # - _set_prompt_paths
 # - _create_main_py
 # - _generate_code

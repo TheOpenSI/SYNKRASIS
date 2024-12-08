@@ -33,24 +33,24 @@ class PyCapsule_BigCodeBench(PyCapsuleBase):
     
     def _create_main_py(self, code: str, user_query: dict) -> None: 
         # Suppress warning
-        suppress_warning = self._suppress_warning_code()
+        suppress_warning = self.suppress_warning_code()
         
         # Timeout code
-        timeout_code = self._timeout_code(function_name = "unittest.main", 
+        timeout_code = self.timeout_code(function_name = "unittest.main", 
                                           args_for_function = "()", 
-                                          timeout = 10)
+                                          timeout = 300)
         
         # Content
         code_to_write = suppress_warning + "\n\n" + code + "\n\n" + user_query["test"] + "\n\n" + timeout_code
         
         # Main
         main_py_path = os.path.join(self.MOUNT_DIR, "main.py")
-        self._create_py_file(main_py_path, code_to_write)
+        self.create_py_file(main_py_path, code_to_write)
 
         # Task file
         task_file_name = user_query["task_id"].replace("/", "_") + ".py"
         task_file_path = os.path.join(self.MOUNT_DIR, task_file_name)
-        self._create_py_file(task_file_path, code_to_write)
+        self.create_py_file(task_file_path, code_to_write)
         
            
     def _generate_code(self, user_query: dict, suppress_conversation_history: bool = True) -> None: 
@@ -65,12 +65,11 @@ class PyCapsule_BigCodeBench(PyCapsuleBase):
         
         # Create requirements.txt
         # BigCodeBench has list of libraries in user_query["libs"]
-        self._create_requirements_txt(user_query["libs"])
+        self.create_requirements_txt(user_query["libs"])
         
         
     def _get_fix_mode_query(self, response: CompletedProcess, meta_data: dict) -> str:
-        pass
-        # TODO: Fix error handling
+        return self.error_handling(response.stderr, is_unittest = True)
 
 
     def _update_code(self, fix_mode_query: str, suppress_conversation_history: bool, meta_data: dict) -> None:

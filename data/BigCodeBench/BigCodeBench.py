@@ -49,9 +49,9 @@ class BigCodeBench(DatasetBase):
     def process(self, data_point: dict) -> dict :
         return {
             "task_id": data_point["task_id"].replace("/", "_"),
-            "prompt": (data_point["instruct_prompt"] + "\n",
-                       "The function signature and import statements are given below - \n",
-                       data_point["complete_prompt"]),
+            "prompt": data_point["instruct_prompt"] + "\n" +
+                      "The function signature and import statements are given below - \n" +
+                      data_point["complete_prompt"],
             "entry_point": data_point["entry_point"],
             "test": data_point["test"],
             "libs": data_point["libs"],
