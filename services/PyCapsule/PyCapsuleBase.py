@@ -109,7 +109,7 @@ class PyCapsuleBase(ServiceBase):
     @abstractmethod
     def _update_code(self, fix_mode_query: str, 
                      suppress_conversation_history: bool, 
-                     meta_data: dict = None) -> None:
+                     meta_data: dict) -> None:
         """
         Updates the py files using fix mode response, in the container.\n
         If self._generated_code() expects a dict, update metadata's prompt.\n
@@ -150,6 +150,17 @@ class PyCapsuleBase(ServiceBase):
         """
         pass
     
+    
+    def helper_set_prompt_paths(self):
+        """
+        Helper for self._set_prompt_paths.
+        Sets the default prompt paths for code generation and code fix system prompts.
+        """
+        self.CODE_GEN_PROMPT_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)),
+                                                 "prompts/code_gen_prompt.txt")
+        self.CODE_FIX_PROMPT_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)),
+                                                 "prompts/code_fix_prompt.txt")
+    
 
     def suppress_warning_code(self) -> str:
         """
@@ -159,7 +170,7 @@ class PyCapsuleBase(ServiceBase):
                 "warnings.filterwarnings('ignore')\n")
         
         
-    def timeout_code(self, function_name: str, args_for_function: str, timeout: int) -> str:
+    def timeout_code(self, function_name: str, args_for_function: str, timeout: int = 10) -> str:
         """
         Runs the example call or the test cases in a different thread with a timeout period.\n
         In case of an infinite loop, the code will terminate the process and raise an exception.\n

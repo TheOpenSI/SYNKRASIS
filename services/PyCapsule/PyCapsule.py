@@ -34,10 +34,7 @@ class PyCapsule(PyCapsuleBase):
 
 
     def _set_prompt_paths(self):
-        self.CODE_GEN_PROMPT_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)),
-                                                 "prompts/code_gen_prompt.txt")
-        self.CODE_FIX_PROMPT_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)),
-                                                 "prompts/code_fix_prompt.txt")
+        super().helper_set_prompt_paths()
 
 
     def _create_main_py(self, code: str, test_cases: str = "") -> None:
