@@ -121,13 +121,13 @@ class Container(ServiceBase):
         print_pycapsule(response.stdout)
         print_pycapsule(str(response.returncode), "exit-code")
 
-        error_response = "No error"
-        if response.stderr != "":
-            filtered_error_message = re.search(r"Traceback.*$", response.stderr, re.DOTALL)
-            if filtered_error_message:
-                error_response = filtered_error_message.group()
-            else:
-                error_response = response.stderr
+        error_response = "No error" if response.stderr == "" else response.stderr
+        # if response.stderr != "":
+        #     filtered_error_message = re.search(r"Traceback.*$", response.stderr, re.DOTALL)
+        #     if filtered_error_message:
+        #         error_response = filtered_error_message.group()
+        #     else:
+        #         error_response = response.stderr
         print_pycapsule(error_response, "error-response")
 
         return response

@@ -227,6 +227,8 @@ class HF_LLM(ServiceBase, LLMBase):
 
             self.chat_history.add_interaction(user_prompt, answer)
 
+        print_model_output(prompt, "USER") # Printing user query
+        print()
         print_model_output(answer, self.model.name_or_path.strip().split("/")[-1])
         return answer
 

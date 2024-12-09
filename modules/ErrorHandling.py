@@ -33,7 +33,7 @@ class ErrorHandling():
         
         if total_failed_count != len(all_error_messages):
             print_warning("Error occurred while extracting individual test case error messages, check ErrorHandling module.")
-            raise ValueError("Failed test count does not match the extracted error messages.")
+            # raise ValueError("Failed test count does not match the extracted error messages.")
         
         return all_error_messages
     

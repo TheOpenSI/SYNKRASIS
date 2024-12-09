@@ -30,20 +30,20 @@ LLM_CONFIG_FILE = os.path.abspath(os.path.join(os.path.dirname(__file__), "confi
 def main():
     # qwen = HF_LLM(llm_config_file=LLM_CONFIG_FILE, enable_chat_history = True)
     # :7b-instruct-fp16
-    # qwen = Ollama(model_name = "qwen2.5-coder:7b-base", enable_chat_history = True)
-    openai = OpenAI_GPT(model_name = "gpt-3.5-turbo", enable_chat_history = True)
+    qwen = Ollama(model_name = "qwen2.5-coder", enable_chat_history = True)
+    # openai = OpenAI_GPT(model_name = "gpt-3.5-turbo", enable_chat_history = True)
     container = Container(container_name = "synk_bigcode", mount_dir_name = "synk_bigcode_mount", shell_script_name = "start.sh")
-    pycapsule = PyCapsule_BigCodeBench(container, openai)
+    pycapsule = PyCapsule_BigCodeBench(container, qwen)
     
     # Initialize dataset
     dataloader = BigCodeBench()
     
     try:
-        print_info("Starting gpt_3_5_turbo bigcodebench experiment")
+        print_info("Starting qwen 2.5 coder instruct bigcodebench experiment")
         
         while True:
             data_point = dataloader.get_next()
-            if data_point is None or dataloader.current_index == 3:
+            if data_point is None or dataloader.current_index == 20:
                 break
             solve_flag, fix_mode_attempt_count = pycapsule(data_point)
             status = "fail"
@@ -71,7 +71,7 @@ def main():
     #     safe_save_data(dataloader, "mbpp_gpt_1106", pycapsule.llm.model_name)
         
     finally:
-        call_cleanup([openai, container, pycapsule])
+        call_cleanup([qwen, container, pycapsule])
         pycapsule.cleanup()
 
 if __name__ == '__main__':

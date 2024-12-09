@@ -63,6 +63,9 @@ class OpenAI_GPT(ServiceBase, LLMBase):
         )
 
         answer = response.choices[0].message.content
+        
+        print_model_output(prompt, "USER") # Printing user query
+        print()
         print_model_output(answer, self.model_name)
 
         if self.enable_chat_history:

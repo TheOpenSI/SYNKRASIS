@@ -73,6 +73,8 @@ class Ollama(ServiceBase, LLMBase):
                 self.chat_history.add_interaction(user_prompt,
                                                   response["response"])  # for chat it's response["message"]["content"]
 
+            print_model_output(full_query, "USER") # Printing user query
+            print()
             print_model_output(response["response"], self.model_name)
             return response["response"]
 

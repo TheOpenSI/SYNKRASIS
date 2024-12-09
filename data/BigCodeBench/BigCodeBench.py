@@ -2,8 +2,9 @@ import os
 import sys
 sys.path.append(f"{os.path.dirname(os.path.abspath(__file__))}/../..")
 
-from typing import Dict, Optional, List
 import pandas as pd
+import ast
+from typing import Dict, Optional, List
 
 from utils.output_message_format.output_colour import print_warning, print_success
 from data.DatasetBase import DatasetBase
@@ -54,7 +55,7 @@ class BigCodeBench(DatasetBase):
                       data_point["complete_prompt"],
             "entry_point": data_point["entry_point"],
             "test": data_point["test"],
-            "libs": data_point["libs"],
+            "libs": ast.literal_eval(data_point["libs"]),
             "metadata": data_point["doc_struct"],
         }
         
