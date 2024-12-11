@@ -359,16 +359,21 @@ class ErrorHandling():
         
         # First line for summary
         first_line = target.split("\n")[0]
+        
         # Summary prompt
         count_dict, summary_result = self._unittest_generate_test_summary(first_line)
+        
         # Number of expected error messages
         # NOTE: This is not the actual error count, but the number of failed test cases
         # NOTE: Need to check how expected fail x and unexpected success u are handled
         error_count = sum(value for key, value in count_dict.items() if key != ".")
+        
         # Extract individual error messages
         error_messages = self._unittest_extract_errors(target, error_count)
+        
         # Keeping the uniqe error messages only
         error_messages = list(set(error_messages))
+        
         # Process all individual error messages
         processed_error_messages = []
         for i, error_message in enumerate(error_messages):
@@ -378,13 +383,18 @@ class ErrorHandling():
             processed_error_messages.append(error_message) # NOTE: Can be processed further with e_h(error_message)
             
         # Individual error messages
-        individual_error_messages = "\n".join(processed_error_messages)
+        # individual_error_messages = "\n".join(processed_error_messages)
+        individual_error_messages = "\n".join(processed_error_messages[:4]) + "-"*50
         
+        # unittest_error_prompt = (
+        #     f"Your generated code had issues in {error_count} test cases.\n"
+        #     "### SUMMARY:\n"
+        #     f"{summary_result}\n"
+        #     "Please check the following error messages for more details - \n"
+        #     f"{individual_error_messages}"
+        # )
         unittest_error_prompt = (
-            f"Your generated code had issues in {error_count} test cases.\n"
-            "### SUMMAERY:\n"
-            f"{summary_result}\n"
-            "Please check the following error messages for more details - \n"
+            "Please check the following error messages from the python compiler for your generated solution - \n"
             f"{individual_error_messages}"
         )
         return unittest_error_prompt.strip()

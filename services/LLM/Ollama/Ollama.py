@@ -12,6 +12,7 @@ from typing import Optional, Dict, List
 from services.Base import ServiceBase
 from services.LLM.LLMBase import LLMBase
 from utils.output_message_format.output_colour import print_error, print_info, print_success, print_model_output
+from utils.code_parsing.code_parser import parse_response
 
 
 class Ollama(ServiceBase, LLMBase):
@@ -70,9 +71,12 @@ class Ollama(ServiceBase, LLMBase):
                 if not self.chat_history:
                     self.init_chat_history(user_prompt)
 
-                self.chat_history.add_interaction(user_prompt,
-                                                  response["response"])  # for chat it's response["message"]["content"]
-
+                # self.chat_history.add_interaction(user_prompt,
+                #                                   response["response"])  # for chat it's response["message"]["content"]
+                # TODO: Make this accessible from other servcices, e.g. pycapsule
+                _, code = parse_response(response["response"])
+                self.chat_history.add_interaction(user_prompt, code)
+                
             print_model_output(full_query, "USER") # Printing user query
             print()
             print_model_output(response["response"], self.model_name)

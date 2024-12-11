@@ -5,7 +5,7 @@ sys.path.append(f"{os.path.dirname(os.path.abspath(__file__))}/..")
 from typing import List, Dict, Tuple, Optional
 from collections import deque
 
-from utils.output_message_format.output_colour import print_info, print_warning
+from utils.output_message_format.output_colour import print_info, print_warning, print_error
 
 
 class ChatHistory:
@@ -52,9 +52,9 @@ class ChatHistory:
 
     def add_interaction(self, question: str, answer: str) -> None:
         if not isinstance(question, str) or "" == question.strip():
-            raise ValueError("Question must be a non-empty string")
+            print_error("Question must be a non-empty string")
         if not isinstance(answer, str) or "" == answer.strip():
-            raise ValueError("Answer must be a non-empty string")
+            print_error("Answer must be a non-empty string")
 
         self._conversation_history.append((question, answer))
         # No need to manually manage the deque size, as it's handled by maxlen

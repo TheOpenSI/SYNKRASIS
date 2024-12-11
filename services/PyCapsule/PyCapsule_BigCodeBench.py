@@ -3,7 +3,7 @@ import sys
 sys.path.append(f"{os.path.dirname(os.path.abspath(__file__))}/../..")
 
 from subprocess import CompletedProcess
-import re
+import re, shutil
 
 from services.PyCapsule.PyCapsuleBase import PyCapsuleBase
 from services.Container.Container import Container
@@ -25,6 +25,7 @@ class PyCapsule_BigCodeBench(PyCapsuleBase):
             maximum_attempts (int, optional): Maximum attempts to fix the code. Defaults to 5.
         """
         super().__init__(pycapsule_container, llm, maximum_attempts)
+        self.create_requirements_txt()
         
     
     def _set_prompt_paths(self):
@@ -65,7 +66,7 @@ class PyCapsule_BigCodeBench(PyCapsuleBase):
         
         # Create requirements.txt
         # BigCodeBench has list of libraries in user_query["libs"]
-        self.create_requirements_txt(user_query["libs"])
+        # self.create_requirements_txt(user_query["libs"])
         
         
     def _get_fix_mode_query(self, response: CompletedProcess, meta_data: dict) -> str:
@@ -84,3 +85,11 @@ class PyCapsule_BigCodeBench(PyCapsuleBase):
     
     def _call_fix_code(self, response: CompletedProcess, data_point: dict) -> tuple[int, int]:
         return self.fix_code(response, data_point)
+    
+
+    def create_requirements_txt(self):
+        """
+        For BigCodeBench, we have a fixed requirements file generated using data_point[libs].
+        """
+        shutil.copyfile(os.path.join(os.path.dirname(self.container.SHELL_SCRIPT_PATH), "requirements_bigcodebench.txt"),
+                        self.MOUNT_DIR + "/requirements.txt")

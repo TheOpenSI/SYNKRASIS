@@ -30,9 +30,9 @@ LLM_CONFIG_FILE = os.path.abspath(os.path.join(os.path.dirname(__file__), "confi
 def main():
     # qwen = HF_LLM(llm_config_file=LLM_CONFIG_FILE, enable_chat_history = True)
     # :7b-instruct-fp16
-    qwen = Ollama(model_name = "qwen2.5-coder", enable_chat_history = True)
+    qwen = Ollama(model_name = "qwen2.5-coder", enable_chat_history = True, max_history = 1)
     # openai = OpenAI_GPT(model_name = "gpt-3.5-turbo", enable_chat_history = True)
-    container = Container(container_name = "synk_bigcode", mount_dir_name = "synk_bigcode_mount", shell_script_name = "start.sh")
+    container = Container(container_name = "synk_bigcode", mount_dir_name = "synk_bigcode_mount", shell_script_name = "start_rm_req.sh")
     pycapsule = PyCapsule_BigCodeBench(container, qwen)
     
     # Initialize dataset
@@ -43,7 +43,8 @@ def main():
         
         while True:
             data_point = dataloader.get_next()
-            if data_point is None or dataloader.current_index == 20:
+            
+            if data_point is None:
                 break
             solve_flag, fix_mode_attempt_count = pycapsule(data_point)
             status = "fail"
