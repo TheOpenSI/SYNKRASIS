@@ -6,6 +6,13 @@ os.environ["TOKENIZERS_PARALLELISM"] = "false"
 import argparse
 from typing import Optional, List
 
+# Services
+from services.LLM.LLMBase import LLMBase
+from services.PyCapsule.PyCapsule import PyCapsule
+from services.PyCapsule.PyCapsule_HumanEval import PyCapsule_HumanEval
+from services.PyCapsule.PyCapsule_MBPP import PyCapsule_MBPP
+from services.Container.Container import Container
+
 # Utils
 from utils.output_message_format.output_colour import print_model_output, print_info, print_error, print_success, print_warning
 
@@ -13,7 +20,30 @@ from utils.output_message_format.output_colour import print_model_output, print_
 from data.DatasetBase import DatasetBase
 from data.MBPP.MBPP import MBPP
 from data.HumanEval.HumanEval import HumanEval
-from data.DS1000.DS1000 import DS1000
+
+def setup(main_args: argparse.Namespace, llm: LLMBase):
+    """
+    Use only for MBPP and HumanEval datasets.
+
+    Args:
+        main_args (argparse.Namespace): Parsed arguments.
+        
+    Returns:
+        Tuple[DatasetBase, Container, PyCapsule]: Tuple of dataloader, container, and pycapsule.
+    """
+    # Parse arguments
+    if main_args.dataset == "humaneval":
+        dataloader = HumanEval()
+        container = Container("synkrasis", "synkrasis_humaneval", "synkrasis_humaneval_mount", "start.sh")
+        pycapsule = PyCapsule_HumanEval(container, llm)
+    
+    elif main_args.dataset == "mbpp":
+        dataloader = MBPP()
+        container = Container("synkrasis", "synkrasis_mbpp", "synkrasis_mbpp_mount", "start.sh")
+        pycapsule = PyCapsule_MBPP(container, llm)
+    
+    return dataloader, container, pycapsule
+    
 
 def safe_save_data(dataloader: DatasetBase, experiment_name: str, model_name: str) -> None:
     """
@@ -38,12 +68,10 @@ def parse_arguments() -> argparse.Namespace:
                         # default = 5,
                         help="Number of samples to run from each dataset. If not specified, runs full datasets.")
     
-    parser.add_argument("--datasets", 
-                        nargs="+", # multiple arguments 
-                        choices=["ds1000", "humaneval", "mbpp"], 
-                        # default=["ds1000", "humaneval", "mbpp"],
-                        default = ["mbpp"], # TODO: Change default.
-                        help="Specify which datasets to run. Options: ds1000, humaneval, mbpp")
+    parser.add_argument("--dataset", 
+                        choices=["humaneval", "mbpp"], 
+                        required=True,
+                        help="Specify which datasets to run. Options: humaneval, mbpp")
     return parser.parse_args()
 
 
@@ -69,6 +97,6 @@ def append_result_to_dataloader(target_dataloader: DatasetBase, data_point: dict
             "task_id": data_point["task_id"],
             "fix_mode_attempt_count": fix_mode_attempt_count,
             "status": status
-        }) 
+        })
 
 

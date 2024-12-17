@@ -17,37 +17,29 @@ from services.Container.Container import Container
 from services.PyCapsule.PyCapsule import PyCapsule
 from services.PyCapsule.PyCapsule_MBPP import PyCapsule_MBPP
 from services.PyCapsule.PyCapsule_HumanEval import PyCapsule_HumanEval
-from services.PyCapsule.PyCapsule_DS1000 import PyCapsule_DS1000
 
 # Utils
 from utils.output_message_format.output_colour import print_model_output, print_info, print_error, print_success, print_warning
 from utils.resource.resource_mg_util import call_cleanup
-from utils.main.main_experiment_helper import parse_arguments, get_selected_dataloaders, append_result_to_dataloader, safe_save_data
+from utils.main.main_experiment_helper import parse_arguments, append_result_to_dataloader, safe_save_data, setup
 
 # Data
 from data.DatasetBase import DatasetBase
 from data.MBPP.MBPP import MBPP
 from data.HumanEval.HumanEval import HumanEval
-from data.DS1000.DS1000 import DS1000
 
 # Default config file
-LLM_CONFIG_FILE = os.path.abspath(os.path.join(os.path.dirname(__file__), "config_files/llm_config.yaml"))
-
+LLM_CONFIG_FILE = os.path.abspath(os.path.join(os.path.dirname(__file__), "config_files/llm_config.yaml"))   
 
 def main():
-    # qwen = HF_LLM(llm_config_file=LLM_CONFIG_FILE, enable_chat_history = True)
-    # :7b-instruct-fp16
-    # qwen = Ollama(model_name = "qwen2.5-coder:7b-base", enable_chat_history = True)
-    openai = OpenAI_GPT(model_name = "gpt-3.5-turbo", enable_chat_history = True)
-    container = Container(container_name = "synk_mbpp_base", mount_dir_name = "synk_mbpp_mount", shell_script_name = "start.sh")
-    pycapsule = PyCapsule_MBPP(container, openai)
-    
-    # Initialize dataset
-    dataloader = MBPP()
+    # Arguments
+    main_args = parse_arguments()
+    qwen = Ollama(model_name = "qwen2.5-coder", enable_chat_history = True)
+    # Setup
+    dataloader, container, pycapsule = setup(main_args, qwen)
     
     try:
-        # print_info("Starting mbpp-Qwen2.5 Instruct experiment")
-        print_info("Starting gpt_0125_c1_sig_fix_latest mbpp experiment")
+        print_info(f"Starting qwen {main_args.dataset} experiment")
         
         for raw_data_point in dataloader.data:
             data_point = dataloader.process(raw_data_point)
@@ -67,14 +59,9 @@ def main():
             print("#" * 50)
         
         safe_save_data(dataloader, "gpt_0125_c1_sig_fix_latest", pycapsule.llm.model_name)
-            
-    # except (Exception, KeyboardInterrupt) as e:
-    #     print_error(f"Error in execution: {str(e)}")
-    #     safe_save_data(dataloader, "mbpp_gpt_1106", pycapsule.llm.model_name)
         
     finally:
-        call_cleanup([openai, container, pycapsule])
-        pycapsule.cleanup()
+        call_cleanup([qwen, container, pycapsule])
 
 if __name__ == "__main__":
     main()

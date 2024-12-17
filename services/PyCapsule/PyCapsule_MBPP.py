@@ -7,9 +7,9 @@ from subprocess import CompletedProcess
 from services.PyCapsule.PyCapsule import PyCapsule
 from services.Container.Container import Container
 from services.LLM.LLMBase import LLMBase
+from modules.ExampleCallDetection import ExampleCallDetection
 from utils.code_parsing.code_parser import parse_response
 from utils.output_message_format.output_colour import print_pycapsule
-from modules.ExampleCallDetection import ExampleCallDetection
 
 class PyCapsule_MBPP(PyCapsule):
     def __init__(self, 
@@ -23,6 +23,7 @@ class PyCapsule_MBPP(PyCapsule):
             llm (LLMBase): LLM object.
         """
         super().__init__(pycapsule_container, llm)
+        self.example_call_detection = ExampleCallDetection()
         
         
     def _create_test_function(self, test_list: list) -> str:
@@ -56,7 +57,7 @@ class PyCapsule_MBPP(PyCapsule):
         test_function = self._create_test_function(user_query["test_list"])
         timeout_code = self._timeout_code("test_function", "()", 10)
         py_file_content = (self._suppress_warning_code() + "\n" +
-                           ExampleCallDetection.comment_after_return(code, user_query["function_name"]) + "\n\n" +
+                           self.example_call_detection.extract_code_blocks(code) + "\n\n" +
                            test_function + "\n\n" +
                            timeout_code)
         
@@ -134,9 +135,7 @@ class PyCapsule_MBPP(PyCapsule):
             self._change_system_prompt(is_fix_mode=True)
             
             fix_mode_query = self.error_handling(error_message=response.stderr,
-                                                 send_original=False,
-                                                 extract_test_case=True,
-                                                 change_test_case_entry=False)
+                                                 extract_test_case=True)
             
             # Updating response, main.py and requirements.txt
             fix_mode_data_point = data_point.copy()

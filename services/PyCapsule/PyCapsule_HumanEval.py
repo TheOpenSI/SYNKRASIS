@@ -8,6 +8,7 @@ import re
 from services.PyCapsule.PyCapsule import PyCapsule
 from services.Container.Container import Container
 from services.LLM.LLMBase import LLMBase
+from modules.ExampleCallDetection import ExampleCallDetection
 from utils.code_parsing.code_parser import parse_response
 from utils.output_message_format.output_colour import print_pycapsule
 
@@ -23,6 +24,7 @@ class PyCapsule_HumanEval(PyCapsule):
             llm (LLMBase): LLM object.
         """
         super().__init__(pycapsule_container, llm)
+        self.example_call_detection = ExampleCallDetection()
         
         
     def _create_main_py(self, code: str, user_query: dict) -> None:
@@ -48,9 +50,11 @@ class PyCapsule_HumanEval(PyCapsule):
         timeout_code = self._timeout_code(function_name = "check", 
                                           args_for_function = f"({user_query['entry_point']}, )", 
                                           timeout = 10)
-        
+        # Generated code
+        sanitised_code = self.example_call_detection.extract_code_blocks(code)         
+
         # Content
-        code_to_write = suppress_warning + "\n" + code + "\n\n" + user_query["test"] + "\n" + timeout_code
+        code_to_write = suppress_warning + "\n" + sanitised_code + "\n\n" + user_query["test"] + "\n" + timeout_code
         
         # Main
         main_py_path = os.path.join(self.MOUNT_DIR, "main.py")
@@ -70,7 +74,8 @@ class PyCapsule_HumanEval(PyCapsule):
 
         Args:
             user_query (dict): Dictionary query to generate code, for structure refer to data/HumanEval.py.
-            suppress_conversation_history (bool): Suppress the conversation history, get activated when pycapsule is in fix mode.
+            suppress_conversation_history (bool): Suppress the conversation history, 
+                                                  get activated when pycapsule is in fix mode.
         """
         if type(user_query) != dict:
             raise ValueError("user_query must be a dict for HumanEval.")
