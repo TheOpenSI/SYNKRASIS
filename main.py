@@ -59,7 +59,7 @@ def main():
             print(f"Solved {dataloader.solved_count} problems, Unsolved {dataloader.unsolved_count} problems")
             print("#" * 50)
         
-        safe_save_data(dataloader, "humaneval_et", pycapsule.llm.model_name)
+        safe_save_data(dataloader, "mbpp_et", pycapsule.llm.model_name)
         
     finally:
         call_cleanup([gpt, container, pycapsule])
