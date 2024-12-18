@@ -34,12 +34,13 @@ LLM_CONFIG_FILE = os.path.abspath(os.path.join(os.path.dirname(__file__), "confi
 def main():
     # Arguments
     main_args = parse_arguments()
-    qwen = Ollama(model_name = "qwen2.5-coder", enable_chat_history = True)
+    # qwen = Ollama(model_name = "qwen2.5-coder", enable_chat_history = True)
+    gpt = OpenAI_GPT(model_name = "gpt-3.5-turbo-1106", enable_chat_history = True)
     # Setup
-    dataloader, container, pycapsule = setup(main_args, qwen)
+    dataloader, container, pycapsule = setup(main_args, gpt)
     
     try:
-        print_info(f"Starting qwen {main_args.dataset} experiment")
+        print_info(f"Starting gpt {main_args.dataset} experiment")
         
         for raw_data_point in dataloader.data:
             data_point = dataloader.process(raw_data_point)
@@ -58,10 +59,10 @@ def main():
             print(f"Solved {dataloader.solved_count} problems, Unsolved {dataloader.unsolved_count} problems")
             print("#" * 50)
         
-        safe_save_data(dataloader, "gpt_0125_c1_sig_fix_latest", pycapsule.llm.model_name)
+        safe_save_data(dataloader, "humaneval_et", pycapsule.llm.model_name)
         
     finally:
-        call_cleanup([qwen, container, pycapsule])
+        call_cleanup([gpt, container, pycapsule])
 
 if __name__ == "__main__":
     main()
