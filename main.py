@@ -35,7 +35,7 @@ def main():
     # Arguments
     main_args = parse_arguments()
     # qwen = Ollama(model_name = "qwen2.5-coder", enable_chat_history = True)
-    gpt = OpenAI_GPT(model_name = "gpt-3.5-turbo-1106", enable_chat_history = True)
+    gpt = OpenAI_GPT(model_name = "gpt-4-1106-preview", enable_chat_history = True)
     # Setup
     dataloader, container, pycapsule = setup(main_args, gpt)
     
