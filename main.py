@@ -61,6 +61,9 @@ def main():
         
         safe_save_data(dataloader, "mbpp_et", pycapsule.llm.model_name)
         
+    except Exception as e:
+        safe_save_data(dataloader, "mbpp_et", pycapsule.llm.model_name)
+        
     finally:
         call_cleanup([gpt, container, pycapsule])
 
