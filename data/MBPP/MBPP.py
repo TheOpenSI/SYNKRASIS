@@ -15,7 +15,7 @@ from data.DatasetBase import DatasetBase
 
 class MBPP(DatasetBase):
     def __init__(self, 
-                 file_path: str = os.path.join(os.path.dirname(os.path.abspath(__file__)), "mbpp_main.jsonl"),
+                 file_path: str = os.path.join(os.path.dirname(os.path.abspath(__file__)), "mbpp.jsonl"),
                  subset_size: Optional[int] = None):
         """
         Initialize the MBPP dataset loader.
