@@ -25,6 +25,7 @@ from services.LLM.LLMBase import LLMBase
 from utils.code_parsing.code_parser import parse_response
 from utils.output_message_format.output_colour import print_error, print_warning, print_success, print_pycapsule, print_model_output
 from modules.ErrorHandling import ErrorHandling
+from modules.ExampleCallDetection import ExampleCallDetection
 
 
 class PyCapsuleBase(ServiceBase):
@@ -54,6 +55,7 @@ class PyCapsuleBase(ServiceBase):
         self._set_prompt_paths()
         self._change_system_prompt(is_fix_mode = False)
         self.error_handling = ErrorHandling(target_file_name = target_file_name)
+        self.example_call_detection = ExampleCallDetection()
         
         
     @abstractmethod    

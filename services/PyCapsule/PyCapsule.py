@@ -1,3 +1,8 @@
+# ==================================================================================================
+# PyCapsule general usage implementation.
+# See PyCapsuleBase for more details.
+# ==================================================================================================
+
 import os
 import sys
 import re
@@ -43,7 +48,9 @@ class PyCapsule(PyCapsuleBase):
 
         # Main
         main_py_path = os.path.join(self.MOUNT_DIR, "main.py")
-        py_content = suppress_warning + "\n\n" + code + "\n\n" + test_cases
+        # Remove any example calls
+        clean_code = self.example_call_detection.extract_code_blocks(code)
+        py_content = suppress_warning + "\n\n" + clean_code + "\n\n" + test_cases
         self.create_py_file(main_py_path, py_content)
 
 
@@ -66,7 +73,10 @@ class PyCapsule(PyCapsuleBase):
         return self.error_handling(error_message = response.stderr)
     
     
-    def _update_code(self, fix_mode_query: str, suppress_conversation_history: bool, meta_data: dict) -> None:
+    def _update_code(self, 
+                     fix_mode_query: str, 
+                     suppress_conversation_history: bool, 
+                     meta_data: dict) -> None:
         # General query won't use the meta_data.
         self._generate_code(fix_mode_query, suppress_conversation_history)
     
