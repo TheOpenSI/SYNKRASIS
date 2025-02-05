@@ -1,4 +1,8 @@
 # ===================================================================================================================================
+# Uses Llama3.2-vision model for OCR.
+# Tested with .png and .jpg images.
+# Methods:
+#   - generate_response(image_path: str) -> Optional[str]: Generate OCR response.
 # ===================================================================================================================================
 import os
 import sys
@@ -38,6 +42,7 @@ class OCR(ServiceBase):
         Returns:
             str: OCR response.
         """
+        # NOTE: https://www.geeksforgeeks.org/python-pil-image-open-method/
         image = Image.open(image_path)
         image_binary = BytesIO()
         image.save(image_binary, format = image.format)
