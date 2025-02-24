@@ -1,5 +1,5 @@
-# ===============================================================================================================================
-# Common traits -
+# ====================================================================================================================
+# Usage -
 # Fields:
 #   - model_name: str
 #   - prompt_template_path: str
@@ -17,8 +17,10 @@
 #   - clear_chat_history()
 #
 # Abstract Methods:
-#   - generate_response(user_prompt: str, context:List[str] = None, suppress_conversation_history:bool = True) -> Optional[str]
-# ===============================================================================================================================
+#   - generate_response(user_prompt: str, context:List[str] = None, suppress_conversation_history:bool = True) 
+#                                                                                               -> Optional[str]
+# ====================================================================================================================
+
 import os, sys
 
 sys.path.append(f"{os.path.dirname(os.path.abspath(__file__))}/../..")

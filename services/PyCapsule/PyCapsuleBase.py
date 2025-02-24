@@ -1,5 +1,23 @@
-# ===================================================================================================================================
-# For child class to implement:
+# =============================================================================================
+# Usage:
+# - helper_set_prompt_paths()
+#       Helper function to set the default prompt paths for code generation and 
+#       code fix system prompts.
+# - suppress_warning_code()
+#       Code block to suppress warnings in the generated code.
+# - timeout_code(function_name: str, args_for_function: str, timeout: int = 10)
+#       Runs the example call or the test cases in a different thread with a timeout period.
+# - create_py_file(path: str, content: str)
+#       HELPER FUNCTION FOR create_main_py.
+#       Creates a python file at specified path using the provided content.
+# - create_requirements_txt(requirements: list)
+#       Create requirements.txt file in the mount_dir.
+# - fix_code(response: CompletedProcess, meta_data_dict: dict)
+#       Gets activated only when response.returncode != 0.
+#       Will change system prompt, user query and attempt to fix the code.
+# - cleanup()
+#
+# Abstract mehtods:
 # - _set_prompt_paths
 # - _create_main_py
 # - _generate_code
@@ -7,7 +25,8 @@
 # - _update_code
 # - _set_original_question
 # - _call_fix_code
-# ===================================================================================================================================
+# =============================================================================================
+
 import os
 import sys
 import re

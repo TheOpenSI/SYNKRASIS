@@ -1,13 +1,18 @@
-'''
-Structure of the code parser utility function
-### Step-by-step reasoning
-$reasoning
+# =============================================================================
+# Used in all PyCapsule implementations to parse the response from the LLM model.
+# The response is expected to be structured as follows:
 
-### Requirements
-$external_libraries
+# ### Step-by-step reasoning
+# $reasoning
 
-### Code
-'''
+# ### Requirements
+# $external_libraries
+
+# ### Code
+# ```python
+# $code
+# ```
+# =============================================================================
 
 import re
 from typing import List, Tuple

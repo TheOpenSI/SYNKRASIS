@@ -1,3 +1,13 @@
+# ====================================================================================
+# OpenAI GPT LLM
+# Usage:
+#    - generate_response(user_prompt: str,
+#                        context: List[str] = None,
+#                        suppress_conversation_history: bool = True) -> Optional[str]
+#    - set_temperature(temperature: float)
+#    - cleanup():
+# ====================================================================================
+
 import os, sys
 
 sys.path.append(f"{os.path.dirname(os.path.abspath(__file__))}/../../..")

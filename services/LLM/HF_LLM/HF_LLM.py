@@ -1,8 +1,15 @@
+# =========================================================================================
 # Root folder must have a .env file with HUGGING_FACE_TOKEN
 # Ensure you have access to gated models if you intend to use them
 # apply chat template - https://huggingface.co/docs/transformers/main/en/chat_templating
 # generation prompt - https://huggingface.co/docs/transformers/main/en/chat_templating
-# -------------------------------------------------------------------------------
+# Usage:
+#     - set_tokenizer(add_eos_token: bool = False) -> AutoTokenizer
+#     - generate_response(user_prompt: str, 
+#                         context: List[str] = None, 
+#                         suppress_conversation_history: bool = True) -> Optional[str]
+#     - cleanup():
+# =========================================================================================
 
 import os, sys
 

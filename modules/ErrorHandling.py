@@ -1,3 +1,33 @@
+# =============================================================================
+# Error Handling Module.
+# Usage - 
+#  - get_error_type(error_message: str) -> str
+#  - remove_multithread_generic_error(error_message: str) -> str
+#  - remove_external_file_error(error_message: str, 
+#                               target_file_name: str = "/usr/src/app/main.py") -> str
+
+#  - remove_generic_and_external_file_error(error_message: str) -> Tuple[str, str]
+#  - assertion_error_prompt(error_message: str,
+#                           extract_test_case: bool,
+#                           change_test_case_entry: bool,
+#                           to_replace: str,
+#                           entry_point: str) -> str
+
+#  - name_error_prompt(error_message: str) -> str
+#  - recursion_error_prompt() -> str
+#  - all_other_error_prompt(error_message: str, send_original: bool) -> str
+#  - unittest_error_prompt(error_message: str) -> str
+#  - is_unittest_error(error_message: str) -> bool
+#  - __call__(self,
+#             error_message: str,
+#             send_original: bool = False,
+#             extract_test_case: bool = False,
+#             change_test_case_entry: bool = False,
+#             to_replace: str = "candidate",
+#             entry_point: str = None,
+#             is_unittest = False) -> str
+# =============================================================================
+
 import os, sys
 
 sys.path.append(f"{os.path.dirname(os.path.abspath(__file__))}/..")
@@ -18,27 +48,32 @@ class ErrorHandling():
         self.target_file_name = target_file_name
     
     
-    def _unittest_extract_errors(self, error_message: str, total_failed_count: int) -> list[str]:
+    def _unittest_extract_errors(self, 
+                                 error_message: str, 
+                                 total_failed_count: int) -> list[str]:
         """
-        Extract all individual test case error message blocks from a unittest-style error output.
+        Extract all individual test case error message blocks from a 
+        unittest-style error output.
         
         Args:
         - error_message (str): The full error message from the unittest run.
-        - total_failed_count (int): The number of failed test cases extracted using the first line.
+        - total_failed_count (int): The number of extracted failed test cases.
         
         Returns:
-        - error_messages (list): A list of specific error tracebacks for each failed test case.
+        - error_messages (list): A list of specific error tracebacks for each 
+        failed test case.
         """        
         all_error_messages = self._extract_all_tracebacks(error_message)
         
         if total_failed_count != len(all_error_messages):
-            print_warning("Error occurred while extracting individual test case error messages, check ErrorHandling module.")
-            # raise ValueError("Failed test count does not match the extracted error messages.")
-        
+            print_warning(("Error occurred while extracting individual test"
+                           "case error messages, check ErrorHandling module."))
+      
         return all_error_messages
     
     
-    def _unittest_generate_test_summary(self, test_result_string: str) -> Tuple[dict, str]:
+    def _unittest_generate_test_summary(self, 
+                                        test_result_string: str) -> Tuple[dict, str]:
         """
         Given the first line of unittest output, count occurrence and generate summary string.
         . represents a successful test 
@@ -89,11 +124,17 @@ class ErrorHandling():
         Returns:
         - list[str]: A list of all tracebacks.
         """
-        pattern = (r"((Traceback.*?[Ee]rror:.*?)(?:\n\s*\n|$)|"
-                   r"(Traceback.*?Exception:.*?)(?:\n\s*\n|$))") # To match multithread error message
+        # To match multithread error message
+        # pattern = (r"((Traceback.*?[Ee]rror:.*?)(?:\n\s*\n|$)|"
+        #            r"(Traceback.*?Exception:.*?)(?:\n\s*\n|$))")
+        # all_tracebacks = re.findall(pattern, error_message, re.DOTALL)
+        # all_tracebacks = [traceback[0] or traceback[1] for traceback in all_tracebacks]
         
-        all_tracebacks = re.findall(pattern, error_message, re.DOTALL)
-        all_tracebacks = [traceback[0] or traceback[1] for traceback in all_tracebacks]
+        error_message_blocks = error_message.split("Traceback")
+        all_tracebacks = [f"Traceback{block}" 
+                         for block in error_message_blocks 
+                         if ("error" in block.lower() 
+                             and block.strip())]
 
         return all_tracebacks
     
@@ -127,7 +168,8 @@ class ErrorHandling():
 
             return test_case
         else:
-            print_warning("Test case not found in the error message, SET extract_test_case TO FALSE.")
+            print_warning(("Test case not found in the error message, "
+                          "SET extract_test_case TO FALSE."))
             return ""
         
         
@@ -158,7 +200,8 @@ class ErrorHandling():
         ** Must remove the generic error message if present.
 
         Args:
-        - error_message (str): The error message, can have timeout thread generic error message in it.
+        - error_message (str): The error message, can have timeout thread 
+          generic error message in it.
 
         Returns:
         - str: The error type.
@@ -174,7 +217,8 @@ class ErrorHandling():
     def remove_multithread_generic_error(self, error_message: str) -> str:
         """
         Removes the generic error message that is added for experiments.
-        Can be used with any error message since it checks the presence of such generic error message internally.
+        Can be used with any error message since it checks the presence of such 
+        generic error message internally.
 
         Logic:
         Look for the traceback block with generic error message and remove it.
@@ -194,7 +238,7 @@ class ErrorHandling():
         if len(all_traceback_blocks) > 1:
             return error_message.replace(all_traceback_blocks[-1], "").strip()
         else:
-            print_warning("Regex pattern did not match for removing generic error message.")
+            print_warning("Could not remove generic error message.")
             return error_message.strip() # Warning: Had generic error but could not remove
 
 
@@ -205,7 +249,8 @@ class ErrorHandling():
         Default target file is /usr/src/app/main.py as in the pycapsule experiments.
 
         Logic:
-        Search the line that contains the target file name, start at that line and keep till the end.
+        Search the line that contains the target file name, start at that line and 
+        keep till the end.
 
         Args:
         - target_file_name (str): The name of the target file.
@@ -215,12 +260,19 @@ class ErrorHandling():
         """
         target_file_name = target_file_name.replace(".", "\.")
         remove_external_file_pattern = r'File\s"%s.*' % target_file_name
-        file_specific_error_message = re.search(remove_external_file_pattern, error_message, re.DOTALL)
+        file_specific_error_message = re.search(remove_external_file_pattern, 
+                                                error_message, 
+                                                re.DOTALL)
 
-        return error_message if file_specific_error_message is None else file_specific_error_message.group().strip()
+        return (
+            error_message 
+            if file_specific_error_message is None 
+            else file_specific_error_message.group().strip()
+        )
 
 
-    def remove_generic_and_external_file_error(self, error_message: str) -> Tuple[str, str]:
+    def remove_generic_and_external_file_error(self, 
+                                               error_message: str) -> Tuple[str, str]:
         """
         Removes the generic error message and the external file error message.
         This will be the usual ENTRYPOINT.
@@ -245,7 +297,8 @@ class ErrorHandling():
                                to_replace: str,
                                entry_point: str) -> str:
         """
-        Example: Your code failed a test case. Please update the function logic. Error message added for your reference.
+        Example: Your code failed a test case. Please update the function logic. 
+        Error message added for your reference.
         {error_message}
 
         or,
@@ -266,7 +319,10 @@ class ErrorHandling():
         """
         _, error_message = self.remove_generic_and_external_file_error(error_message)
         if extract_test_case:
-            test_case = self._get_test_case(error_message, change_test_case_entry, to_replace, entry_point).strip()
+            test_case = self._get_test_case(error_message, 
+                                            change_test_case_entry, 
+                                            to_replace, 
+                                            entry_point).strip()
             return (f"Your generated code failed the following test case - {test_case}.\n"
                     "Please update the function logic so all test cases will pass. "
                     "Error message added for your reference - \n"
@@ -281,7 +337,8 @@ class ErrorHandling():
     def name_error_prompt(self, error_message: str) -> str:
         """
         Example: Your generated code had a NameError.
-        Please check the function, variable names in your generated code and make sure they are same as instruction.
+        Please check the function, variable names in your generated code and 
+        make sure they are same as instruction.
         Error message added for your reference - {error_message}
 
         Args:
@@ -315,12 +372,14 @@ class ErrorHandling():
         # NOTE: May be ideal to pass the actual trimmed error message.
         return ("Your generated code had a RecursionError.\n"
                 "Please chnage the function logic to avoid infinite recursion.\n"
-                "Error message added for your reference - RecursionError: maximum recursion depth exceeded in comparison")
+                "Error message added for your reference - "
+                "RecursionError: maximum recursion depth exceeded in comparison")
 
 
     def all_other_error_prompt(self, error_message: str, send_original: bool) -> str:
         """
-        Example: Your generated code had a/an {_extract_all_tracebackserror_type}. Please check the error message for more details.
+        Example: Your generated code had a/an {_extract_all_tracebackserror_type}. 
+        Please check the error message for more details.
         {error_message}
 
         Logic:
@@ -334,8 +393,9 @@ class ErrorHandling():
         Returns:
         - str: The generic error message.
         """
-        error_type, error_message_relevant = self.remove_generic_and_external_file_error(error_message)
-
+        error_type, error_message_relevant = (
+            self.remove_generic_and_external_file_error(error_message)
+        )
         if send_original:
             error_message_relevant = error_message
 
@@ -379,7 +439,8 @@ class ErrorHandling():
             processed_error_messages.append("-"*50)
             processed_error_messages.append(f"Error {i + 1}:")
             processed_error_messages.append(f"Error type: {self.get_error_type(error_message)}")
-            processed_error_messages.append(error_message) # NOTE: Can be processed further with e_h(error_message)
+            # NOTE: Can be processed further with e_h(error_message)
+            processed_error_messages.append(error_message)
             
         # Individual error messages
         # individual_error_messages = "\n".join(processed_error_messages)
@@ -393,7 +454,8 @@ class ErrorHandling():
         #     f"{individual_error_messages}"
         # )
         unittest_error_prompt = (
-            "Please check the following error messages from the python compiler for your generated solution - \n"
+            "Please check the following error messages from the python compiler "
+            "for your generated solution - \n"
             f"{individual_error_messages}"
         )
         return unittest_error_prompt.strip()
@@ -441,11 +503,16 @@ class ErrorHandling():
 
         Args:
             error_message (str): The error message.
-            send_original (bool): Send the original error message. Default is False, used in all_other_error_prompt.
-            extract_test_case (bool): Extract the test case. Default is False, used for assertion_error_prompt only.
-            change_test_case_entry (bool): Change the test case entry. Default is False, used for assertion_error_prompt only.
-            to_replace (str): The string to replace. Default is "candidate", used for assertion_error_prompt only.
-            entry_point (str): The entry point. Default is None, used for assertion_error_prompt only.
+            send_original (bool): Send the original error message. 
+                Default is False, used in all_other_error_prompt.
+            extract_test_case (bool): Extract the test case. 
+                Default is False, used for assertion_error_prompt only.
+            change_test_case_entry (bool): Change the test case entry. 
+                Default is False, used for assertion_error_prompt only.
+            to_replace (str): The string to replace. 
+                Default is "candidate", used for assertion_error_prompt only.
+            entry_point (str): The entry point. 
+                Default is None, used for assertion_error_prompt only.
 
         Returns:
             Query_prompt (str): The error prompt.
@@ -459,7 +526,11 @@ class ErrorHandling():
         error_type = self.get_error_type(error_message)
         
         if error_type == "AssertionError":
-            return self.assertion_error_prompt(error_message, extract_test_case, change_test_case_entry, to_replace, entry_point)
+            return self.assertion_error_prompt(error_message, 
+                                               extract_test_case, 
+                                               change_test_case_entry, 
+                                               to_replace, 
+                                               entry_point)
         
         elif error_type == "NameError":
             return self.name_error_prompt(error_message)

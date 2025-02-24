@@ -1,6 +1,14 @@
+# =======================================================================================
 # To add conversation history, set enable_chat_history=True in the Ollama object.
-# In self.generate_response(), change suppress_conversation_history to False, to include conversation history.
-# Disable model pulling, have to do this manually
+# In self.generate_response(), change suppress_conversation_history to False, 
+# to include conversation history.
+# May disable model pulling, have to do this manually
+# Usage:
+#     - generate_response(user_prompt: str, 
+#                         context: List[str] = None, 
+#                         suppress_conversation_history: bool = True) -> Optional[str]
+#     - cleanup():
+# =======================================================================================
 
 import os, sys
 

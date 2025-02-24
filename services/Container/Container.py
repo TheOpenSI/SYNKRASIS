@@ -1,3 +1,15 @@
+# =============================================================================
+# Container class for managing docker containers
+# Usage:
+#     - Container(image_name: str = "synkrasis", 
+#                 container_name: str = "synkrasis_alpha",
+#                 mount_dir_name: str = "synk_mount", 
+#                 shell_script_name: str = "start.sh")
+#
+#     - start_container()
+#     - cleanup()
+# =============================================================================
+
 import os, sys, shutil
 sys.path.append(f"{os.path.dirname(os.path.abspath(__file__))}/../..")
 

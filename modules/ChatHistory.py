@@ -1,3 +1,12 @@
+# =============================================================================
+# Chat History Module
+# Used in LLMBase.
+# Usage:
+# - add_interaction(question: str, answer: str)-> None
+# - clear_history()-> None
+# - to_dict()-> Dict[str, any]
+# =============================================================================
+
 import os, sys
 
 sys.path.append(f"{os.path.dirname(os.path.abspath(__file__))}/..")

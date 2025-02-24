@@ -1,9 +1,10 @@
 # =====================================================================================================
-# Module for detecting example calls in the code.
+# Example Call Detection Module
 # Usage:
-#     - extract_code_blocks: Extracts specific code blocks from the code content.
-#       Will remove anything that is not an instance of user defined tuple comprised
-#       of types from ast, e.g. ast.Import, ast.ImportFrom, ast.FunctionDef.
+#     - extract_code_blocks(code: str) -> str:
+#           Extracts specific code blocks from the code content.
+#           Will remove anything that is not an instance of user defined tuple comprised
+#           of types from ast, e.g. ast.Import, ast.ImportFrom, ast.FunctionDef.
 # =====================================================================================================
 
 import ast
