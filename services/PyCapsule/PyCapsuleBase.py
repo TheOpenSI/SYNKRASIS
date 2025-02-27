@@ -42,7 +42,8 @@ from services.Base import ServiceBase
 from services.Container.Container import Container
 from services.LLM.LLMBase import LLMBase
 from utils.code_parsing.code_parser import parse_response
-from utils.output_message_format.output_colour import print_error, print_warning, print_success, print_pycapsule, print_model_output
+from utils.output_message_format.output_colour import print_error, print_warning
+from utils.output_message_format.output_colour import print_success, print_pycapsule, print_model_output
 from modules.ErrorHandling import ErrorHandling
 from modules.ExampleCallDetection import ExampleCallDetection
 
@@ -58,8 +59,10 @@ class PyCapsuleBase(ServiceBase):
         Args:
             pycapsule_container (Container): Default container for PyCapsule service.
             llm (LLMBase): LLM
-            maximum_attempts (int, optional): Maximum debugging attempts to fix generated code. Defaults to 3.
-            target_file_name (str, optional): Target file name for error handling clipping. Defaults to "/usr/src/app/main.py".
+            maximum_attempts (int, optional): Maximum debugging attempts to fix generated code. 
+                Defaults to 3.
+            target_file_name (str, optional): Target file name for error handling clipping. 
+                Defaults to "/usr/src/app/main.py".
 
         Raises:
             ValueError: If chat history is not enabled in LLM.
@@ -100,7 +103,9 @@ class PyCapsuleBase(ServiceBase):
     
     
     @abstractmethod
-    def _generate_code(self, user_query: Union[str, dict], suppress_conversation_history: bool = True) -> None:
+    def _generate_code(self, 
+                       user_query: Union[str, dict], 
+                       suppress_conversation_history: bool = True) -> None:
         """
         Generates LLM response.\n
         Define APPROPRIATE PARSER for code extraction from response.\n
@@ -108,7 +113,8 @@ class PyCapsuleBase(ServiceBase):
 
         Args:
             user_query (str): User query to generate code.
-            suppress_conversation_history (bool): Suppress the conversation history, get activated when pycapsule is in fix mode.
+            suppress_conversation_history (bool): Suppress the conversation history, get activated when 
+                pycapsule is in fix mode.
         """
         pass
     
@@ -159,7 +165,9 @@ class PyCapsuleBase(ServiceBase):
     
     
     @abstractmethod
-    def _call_fix_code(self, response: CompletedProcess, data_point: Union[str, dict]) -> tuple[int, int]:
+    def _call_fix_code(self, 
+                       response: CompletedProcess, 
+                       data_point: Union[str, dict]) -> tuple[int, int]:
         """
         Calls the fix code method.
         Provides the ability to add data point (meta data) for dataset specific implementation.
@@ -196,7 +204,8 @@ class PyCapsuleBase(ServiceBase):
         Runs the example call or the test cases in a different thread with a timeout period.\n
         In case of an infinite loop, the code will terminate the process and raise an exception.\n
         Infinite loop will raise Exception("Generated code is running infinite loop.")\n
-        Rest of the errors will raise Exception("An error occurred. This is a generic error message. See previous error message")
+        Rest of the errors will raise Exception("An error occurred. This is a generic error message. 
+            See previous error message")
 
         Args:
             function_name (str): function to run/test cases
@@ -218,7 +227,8 @@ class PyCapsuleBase(ServiceBase):
                 "    p.terminate()\n"
                 "    raise Exception('Generated code is running infinite loop.')\n"
                 "if p.exitcode != 0:\n"
-                "    raise Exception('An error occurred. This is a generic error message. See previous error message')\n")
+                "    raise Exception('An error occurred. This is a generic error message. "
+                "See previous error message')\n")
 
 
     def create_py_file(self, path: str, content: str) -> None:
@@ -359,7 +369,7 @@ class PyCapsuleBase(ServiceBase):
 
         print_success("PyCapsule resources cleaned up.")
        
-# ===================================================================================================================================
+# ================================================================================================================
 # For testing only
 @staticmethod
 def run_command(command: str = "whoami") -> str:

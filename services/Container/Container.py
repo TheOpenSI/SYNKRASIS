@@ -18,7 +18,8 @@ import re
 import shlex
 
 from services.Base import ServiceBase
-from utils.output_message_format.output_colour import print_error, print_info, print_success, print_warning, print_pycapsule
+from utils.output_message_format.output_colour import print_error, print_info, print_success
+from utils.output_message_format.output_colour import print_warning, print_pycapsule
 from utils.sanitise_input.sanitise_input import sanitise_input
 
 class Container(ServiceBase):
@@ -74,7 +75,10 @@ class Container(ServiceBase):
         """
         Check if docker imahe exists, if not build from Dockerfile
         """
-        images = subprocess.run(f"docker images | grep {self.IMAGE_NAME}", shell=True, capture_output=True, text=True)
+        images = subprocess.run(f"docker images | grep {self.IMAGE_NAME}", 
+                                shell=True, 
+                                capture_output=True, 
+                                text=True)
         if images.stdout.strip() == "":
             print_warning("Image does not exist")
             print_info("Building image...")
@@ -91,7 +95,9 @@ class Container(ServiceBase):
         Returns:
             bool: True if container exists, False otherwise
         """
-        containers = subprocess.run(f"docker ps -a | grep {self.CONTAINER_NAME}", shell=True, capture_output=True,
+        containers = subprocess.run(f"docker ps -a | grep {self.CONTAINER_NAME}", 
+                                    shell=True, 
+                                    capture_output=True,
                                     text=True)
         if containers.stdout.strip() == "":
             print_warning("Container does not exist")
@@ -125,7 +131,9 @@ class Container(ServiceBase):
     def start_container(self) -> subprocess.CompletedProcess:
         if self._check_if_container_exists():
             print_info("Starting container...")
-            response = subprocess.run(f"docker start -i {self.CONTAINER_NAME}", shell=True, capture_output=True,
+            response = subprocess.run(f"docker start -i {self.CONTAINER_NAME}", 
+                                      shell=True, 
+                                      capture_output=True,
                                       text=True)
         else:
             response = self._create_container()
@@ -147,11 +155,16 @@ class Container(ServiceBase):
 
     def cleanup(self):
         """Stop the container to free up resources"""
-        container_running = subprocess.run(f"docker ps | grep {self.CONTAINER_NAME}", shell=True, capture_output=True,
+        container_running = subprocess.run(f"docker ps | grep {self.CONTAINER_NAME}", 
+                                           shell=True, 
+                                           capture_output=True,
                                            text=True)
 
         if container_running.stdout.strip() != "":
             # Stop the container if it is running
-            subprocess.run(f"docker stop {self.CONTAINER_NAME}", shell=True, capture_output=True, text=True)
+            subprocess.run(f"docker stop {self.CONTAINER_NAME}", 
+                           shell=True, 
+                           capture_output=True, 
+                           text=True)
 
         print_success("Container resources cleaned up.")
