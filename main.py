@@ -24,7 +24,7 @@ def main():
         llm = Ollama(model_name="qwen2.5-coder", # qwen 2.5 coder instruct 7B 
                      enable_chat_history=True,
                      max_history=1,
-                     verbose_switch=False)
+                     verbose_switch=True)
         
         container = Container(image_name="synkrasis_pycapsule", 
                               container_name="pycapsule_debug_span",
@@ -35,7 +35,7 @@ def main():
         
         pycapsule = PyCapsuleMBPP(container=container,
                                   llm=llm,
-                                  maximum_attempts=9)
+                                  maximum_attempts=11)
         
         pycapsule.run_pycapsule_experiment(data)
         

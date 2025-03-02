@@ -48,6 +48,7 @@ from utils.output_message_format.output_colour import print_error, print_warning
 from utils.output_message_format.output_colour import print_success, print_pycapsule, print_model_output
 from modules.ErrorHandling import ErrorHandling
 from modules.ExampleCallDetection import ExampleCallDetection
+from modules.ChatHistory import ChatHistory
 
 
 class PyCapsuleBase(ServiceBase):
@@ -294,13 +295,19 @@ class PyCapsuleBase(ServiceBase):
 
         while response.returncode != 0 and attempt_count < self.maximum_attempts:
             self._change_system_prompt(is_fix_mode=True)  # Changing the system prompt for fix mode
-
+            
             # Apply error handling to get the fix mode query
-            fix_mode_query = self._get_fix_mode_query(response, meta_data_dict)
+            # fix_mode_query = self._get_fix_mode_query(response, meta_data_dict)
 
+            # Debugging span experiment
+            fix_mode_query, suppress_flag = (self._fresh_start()
+                                             if attempt_count % 3 == 0
+                                             else (self._get_fix_mode_query(response, meta_data_dict),
+                                                   False))
+            
             # Updating code in container based on fix mode response
             self._update_code(fix_mode_query = fix_mode_query, 
-                              suppress_conversation_history=False,
+                              suppress_conversation_history=suppress_flag,
                               meta_data = meta_data_dict)
 
             # Running the code
@@ -313,7 +320,20 @@ class PyCapsuleBase(ServiceBase):
         self._change_system_prompt()  # Resetting the system prompt to normal mode
 
         return return_code, attempt_count
-                
+    
+    
+    def _fresh_start(self) -> None:
+        """
+        Clear chat history but keep the original question
+
+        Args:
+            conversation_history (ChatHistory): Chat history object of the LLM.
+        """
+        self._change_system_prompt(is_fix_mode=False)
+        prompt = self.llm.chat_history.original_question
+        self.llm.clear_chat_history()
+        return prompt, True # To suppress the conversation history
+                        
                 
     def _validate_llm(self, llm: LLMBase):
         """
@@ -410,7 +430,7 @@ class PyCapsuleBase(ServiceBase):
             print("#" * 50)
         
         dataset.log_to_csv(model_name = self.llm.model_name)
-    
+
     
     def cleanup(self):
         """
