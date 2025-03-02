@@ -21,18 +21,19 @@ from services.LLM.LLMBase import LLMBase
 from utils.output_message_format.output_colour import print_error, print_info, print_success, print_model_output
 
 
-class OpenAI_GPT(ServiceBase, LLMBase):
+class OpenAI_GPT(LLMBase):
     def __init__(self,
                  temperature: float = 1,  # Defaults to 1, replicating Agent Coder.
                  seed: int = 42,
                  model_name: str = "gpt-3.5-turbo",
                  enable_chat_history: bool = False,
-                 max_history: int = 3):
-        ServiceBase.__init__(self)
-        LLMBase.__init__(self, model_name, enable_chat_history, max_history)
+                 max_history: int = 3,
+                 verbose_switch: bool = False):
+        super().__init__(model_name, enable_chat_history, max_history, verbose_switch)
         self.temperature = temperature
         self.seed = seed
         self.client: OpenAI = OpenAI(api_key=self._load_openai_api_key())
+
 
     def _load_openai_api_key(self) -> Optional[str]:
         if load_dotenv(f"{os.path.dirname(__file__)}/../../../.env"):
@@ -43,9 +44,11 @@ class OpenAI_GPT(ServiceBase, LLMBase):
         else:
             raise Exception("No .env file found")
 
+
     def set_temperature(self, temperature: float):
         self.temperature = temperature
         print_info(f"Temperature changed to {self.temperature} for {self.__class__.__name__}")
+
 
     def generate_response(self,
                           user_prompt: str,
@@ -73,9 +76,12 @@ class OpenAI_GPT(ServiceBase, LLMBase):
         )
 
         answer = response.choices[0].message.content
+    
+        if self.verbose_switch:        
+            # Print full user query
+            print_model_output(prompt, "USER")
+            print()
         
-        print_model_output(prompt, "USER") # Printing user query
-        print()
         print_model_output(answer, self.model_name)
 
         if self.enable_chat_history:

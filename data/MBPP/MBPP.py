@@ -31,14 +31,12 @@ class MBPP(DatasetBase):
 
 
     def _load_data(self) -> None:
-        """
-        Load the JSON data from the file.
-        """
-        self._load_json_data()
+        # Using the helper function to load the JSON data
+        self.load_data_helper_json()
 
 
-    @deprecated("Use process() instead for release.")
-    def next(self) -> Optional[Dict[str, str]]:
+    @deprecated("Use process() instead in release.")
+    def get_next(self) -> Optional[Dict[str, str]]:
         """
         Return the next datapoint.
         
@@ -67,8 +65,7 @@ class MBPP(DatasetBase):
 
     def log_to_csv(self, model_name: str) -> None:
         """
-        Write result data to CSV file using Pandas.
-        For MBPP task results.
+        Write result data to a CSV file using Pandas.
         Args:
             model_name (str): Name of the LLM model used to generate the CSV file.
         """
@@ -79,7 +76,8 @@ class MBPP(DatasetBase):
         
     def process(self, data_point: dict) -> dict:
         """
-        Process the data point to omit unnecessary fields.
+        Process the data point.
+        Uses signature converter to convert the function call to function signature.
 
         Returns:
             dict : Processed data point.

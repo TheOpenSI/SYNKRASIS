@@ -7,12 +7,13 @@
 #   - log_to_csv
 #   - process
 #
-# Functions:
+# Usage:
 #   - reset (base class only resets the current_index)
 #   - get_data_point_by_index (returns the EXACT data point without processing)
 #   - load_data_helper_json (loads JSON data from self.file_path with specified subset size if provided)
 #   - log_to_csv_helper (log_to_csv helper to log the results to a csv file)
 #   - __len__
+#   - append_result (override this method if more data is required in results)
 # ===================================================================================================================================
 
 import os
@@ -41,6 +42,7 @@ class DatasetBase(ABC):
         self.file_path = file_path
         self.subset_size = subset_size
         self.data = []  # Holds the dataset
+        self.results = []  # Holds the results
         self.current_index = 0  # Current index in the dataset
         self.extractor = Extractor()
         self.regex_extractor = RegexExtractor()
@@ -90,6 +92,24 @@ class DatasetBase(ABC):
             data_point (dict): Processed data point.
         """
         pass
+    
+    
+    def append_result(self, 
+                      task_id: int, 
+                      fix_mode_attempt_count: int, 
+                      status: str) -> None:
+        """
+        Append the result to the results list.
+        Override this method if more data is required in results.
+
+        Args:
+            task_id (int): Task ID
+            fix_mode_attempt_count (int): Number of fix mode attempts
+            status (str): Status of the fix mode attempt
+        """
+        self.results.append({"task_id": task_id, 
+                             "fix_mode_attempt_count": fix_mode_attempt_count, 
+                             "status": status})
 
 
     def reset(self) -> None:

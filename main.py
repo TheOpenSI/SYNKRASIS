@@ -5,32 +5,44 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 os.environ["TOKENIZERS_PARALLELISM"] = "false"
 
 # Services
-from services.LLM.HF_LLM.HF_LLM import HF_LLM
 from services.LLM.Ollama.Ollama import Ollama
 from services.LLM.OpenAI_GPT.OpenAI_GPT import OpenAI_GPT
-from services.Embedding.Embedding import EmbeddingModel
-from services.VectorDatabase.VectorDatabase import VectorDatabase
-from services.RAG.RAG import RAG
 from services.Container.Container import Container
-from services.PyCapsule.PyCapsule import PyCapsule
-from services.Finetune.Finetune import Finetune
+from services.PyCapsule.PyCapsuleMBPP import PyCapsuleMBPP
 
 # Utils
-from utils.output_message_format.output_colour import print_model_output, print_info, print_error, print_success, print_warning
+from utils.output_message_format.output_colour import print_model_output, print_info
+from utils.output_message_format.output_colour import print_error, print_success, print_warning
 from utils.resource.resource_mg_util import call_cleanup
 
-# Default config file
-LLM_CONFIG_FILE = os.path.abspath(os.path.join(os.path.dirname(__file__), 'config_files/llm_config.yaml'))
+# Data
+from data.MBPP.MBPP import MBPP
+
 
 def main():
     try:
-        llm = HF_LLM(llm_config_file = LLM_CONFIG_FILE, enable_chat_history = True)
-        llm.generate_response("What is the capital of France?", suppress_conversation_history = True)
+        llm = Ollama(model_name="qwen2.5-coder", # qwen 2.5 coder instruct 7B 
+                     enable_chat_history=True,
+                     max_history=1,
+                     verbose_switch=False)
+        
+        container = Container(image_name="synkrasis_pycapsule", 
+                              container_name="pycapsule_debug_span",
+                              mount_dir_name="pycapsule_debug_span_mount",
+                              shell_script_name="start.sh")
+        
+        data = MBPP()
+        
+        pycapsule = PyCapsuleMBPP(container=container,
+                                  llm=llm,
+                                  maximum_attempts=9)
+        
+        pycapsule.run_pycapsule_experiment(data)
         
         
     finally:
         # Warning resource_tracker: There appear to be .* leaked semaphore objects"
-        call_cleanup([llm])
+        call_cleanup([llm, container, data, pycapsule])
 
 if __name__ == '__main__':
     main()

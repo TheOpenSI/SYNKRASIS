@@ -17,20 +17,19 @@ sys.path.append(f"{os.path.dirname(os.path.abspath(__file__))}/../../..")
 import ollama, torch
 from typing import Optional, Dict, List
 
-from services.Base import ServiceBase
 from services.LLM.LLMBase import LLMBase
 from utils.output_message_format.output_colour import print_error, print_info, print_success, print_model_output
 from utils.code_parsing.code_parser import parse_response
 
 
-class Ollama(ServiceBase, LLMBase):
+class Ollama(LLMBase):
     def __init__(self, 
                  model_name: str = "mistral", # uses mistral as default model
                  enable_chat_history:bool = False, 
-                 max_history: int = 3):
+                 max_history: int = 3,
+                 verbose_switch: bool = False):
         # Init will not load the model in GPU, model gets loaded only when generate_response is called
-        ServiceBase.__init__(self)
-        LLMBase.__init__(self, model_name, enable_chat_history, max_history)
+        super().__init__(model_name, enable_chat_history, max_history, verbose_switch)
         
         
     def _set_seed(self):
@@ -85,8 +84,10 @@ class Ollama(ServiceBase, LLMBase):
                 _, code = parse_response(response["response"])
                 self.chat_history.add_interaction(user_prompt, code)
                 
-            print_model_output(full_query, "USER") # Printing user query
-            print()
+            if self.verbose_switch:
+                print_model_output(full_query, "USER")
+                print()
+                
             print_model_output(response["response"], self.model_name)
             return response["response"]
 
