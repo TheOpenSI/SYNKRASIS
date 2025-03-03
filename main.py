@@ -35,7 +35,7 @@ def main():
         
         pycapsule = PyCapsuleMBPP(container=container,
                                   llm=llm,
-                                  maximum_attempts=11)
+                                  maximum_attempts=5)
         
         pycapsule.run_pycapsule_experiment(data)
         

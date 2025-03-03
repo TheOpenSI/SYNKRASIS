@@ -21,7 +21,7 @@ from services.PyCapsule.PyCapsuleBase import PyCapsuleBase
 from services.Container.Container import Container
 from services.LLM.LLMBase import LLMBase
 from utils.code_parsing.code_parser import parse_response
-from utils.output_message_format.output_colour import print_warning
+from utils.output_message_format.output_colour import print_warning, print_error
 
 class PyCapsule(PyCapsuleBase):
     def __init__(self,
@@ -44,36 +44,51 @@ class PyCapsule(PyCapsuleBase):
 
 
     def _set_prompt_paths(self):
-        super().helper_set_prompt_paths()
+        self.CODE_GEN_PROMPT_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)),
+                                                 "prompts/general/code_gen_prompt.txt")
+        self.CODE_FIX_PROMPT_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)),
+                                                 "prompts/general/code_fix_prompt.txt")
 
 
-    def _create_main_py(self, code: str, test_cases: str = "") -> None:
+    def _create_main_py(self, 
+                        code: str, 
+                        test_cases: str = "", 
+                        meta_data = None) -> None:
         if test_cases != "":
             print_warning("General Pycapsule does not support test cases.")
+        
+        if meta_data is not None:
+            print_warning("Meta data is not required for general Pycapsule.")
             
         # Suppress warning
         suppress_warning = self.suppress_warning_code()
-
-        # Main
-        main_py_path = os.path.join(self.MOUNT_DIR, "main.py")
-        # Remove any example calls
+        
+        # Sanitise code
         clean_code = self.example_call_detection.extract_code_blocks(code)
         time_safe_thread = self.timeout_code(function_name="test_program",
                                              args_for_function="()",
                                              timeout=10)
         py_content = (suppress_warning 
                       + "\n\n" 
-                      + clean_code 
+                      + clean_code # Will have the test cases.
                       + "\n\n" 
                       + time_safe_thread)
+        
+        # Main file path.
+        main_py_path = os.path.join(self.MOUNT_DIR, "main.py")
         self.create_py_file(main_py_path, py_content)
 
 
     def _generate_code(self, 
                        user_query: str, 
                        suppress_conversation_history: bool = True) -> None:
+        if type(user_query) == dict:
+            print_error("General Pycapsule does not support dict type user query.")
+            raise ValueError("General Pycapsule does not support dict type user query.")
+        
         response = self.llm.generate_response(
-            user_query,
+            user_prompt=user_query,
+            context=None,
             suppress_conversation_history=suppress_conversation_history
             )
         
@@ -81,7 +96,7 @@ class PyCapsule(PyCapsuleBase):
         requirements, code = parse_response(response)
 
         # Create main.py
-        self._create_main_py(code)
+        self._create_main_py(code=code, test_cases="", meta_data=None)
         
         # Create requirements.txt
         self.create_requirements_txt(requirements)
@@ -104,9 +119,15 @@ class PyCapsule(PyCapsuleBase):
         if isinstance(user_query, str):
             return user_query
         else:
-            raise NotImplementedError("General Pycapsule does not support dict type user query.")
+            print_error(("Failed to set original question in the conversation history. "
+                         "User query must be a str for General Pycapsule."))
+            raise ValueError("User query must be a str for General Pycapsule.")
 
 
-    def _call_fix_code(self, response: CompletedProcess, 
-                       data_point: Union[str, dict]) -> tuple[int, int]:
-        return self.fix_code(response, data_point)
+    def _call_fix_code(self, 
+                       response: CompletedProcess, 
+                       user_query: Union[str, dict]) -> tuple[int, int]:
+        if isinstance(user_query, dict):
+            print_error("General Pycapsule does not support dict type user query.")
+            raise ValueError("General Pycapsule does not support dict type user query.")
+        return self.fix_code(response, user_query)
