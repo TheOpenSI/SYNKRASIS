@@ -83,8 +83,7 @@ class PyCapsuleMBPP(PyCapsuleBase):
     def _get_fix_mode_query(self, response, meta_data):
         # MBPP does not require any meta data for fix mode query.
         return self.error_handling(error_message=response.stderr,
-                                   extract_test_case=True,
-                                   is_unittest=False)     
+                                   extract_test_case=True)     
     
     
     def _update_code(self, fix_mode_query,
@@ -103,9 +102,15 @@ class PyCapsuleMBPP(PyCapsuleBase):
         return user_query["prompt"]
     
     
-    def _call_fix_code(self, response, data_point):
-        return self.fix_code(response=response,
-                             meta_data_dict=data_point)
+    def _call_fix_code(self, 
+                       response: CompletedProcess, 
+                       user_query: dict) -> tuple[int, int]:
+        if type(user_query) != dict:
+            print_error(("Failed to call fix code. "
+                         "User query must be a dictionary for MBPP"))
+            raise ValueError("User query must be a dictionary for MBPP")
+        
+        return self.fix_code(response, user_query)
     
     
     def _create_test_function(self, test_list: list) -> str:

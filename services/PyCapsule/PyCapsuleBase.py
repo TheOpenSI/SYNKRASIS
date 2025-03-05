@@ -186,7 +186,7 @@ class PyCapsuleBase(ServiceBase):
     @abstractmethod
     def _call_fix_code(self, 
                        response: CompletedProcess, 
-                       data_point: Union[str, dict]) -> tuple[int, int]:
+                       user_query: Union[str, dict]) -> tuple[int, int]:
         """
         Calls the fix_code method with or without "meta_data_dict".
         Provides the ability to add (meta data: dict) for dataset specific implementation.
@@ -300,10 +300,10 @@ class PyCapsuleBase(ServiceBase):
             # fix_mode_query = self._get_fix_mode_query(response, meta_data_dict)
 
             # Debugging span experiment
-            fix_mode_query, suppress_flag = (self._fresh_start()
-                                             if attempt_count % 3 == 0
-                                             else (self._get_fix_mode_query(response, meta_data_dict),
-                                                   False))
+            fix_mode_query, suppress_flag = (self._fresh_start() 
+                                            #  if attempt_count != 0 and attempt_count % 3 == 0
+                                             if attempt_count == 2
+                                             else (self._get_fix_mode_query(response, meta_data_dict), False))
             
             # Updating code in container based on fix mode response
             self._update_code(fix_mode_query = fix_mode_query, 
