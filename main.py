@@ -5,32 +5,35 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 os.environ["TOKENIZERS_PARALLELISM"] = "false"
 
 # Services
-from services.LLM.HF_LLM.HF_LLM import HF_LLM
 from services.LLM.Ollama.Ollama import Ollama
-from services.LLM.OpenAI_GPT.OpenAI_GPT import OpenAI_GPT
-from services.Embedding.Embedding import EmbeddingModel
-from services.VectorDatabase.VectorDatabase import VectorDatabase
-from services.RAG.RAG import RAG
 from services.Container.Container import Container
 from services.PyCapsule.PyCapsule import PyCapsule
-from services.Finetune.Finetune import Finetune
+from services.LLM.HF_LLM.HF_LLM import HF_LLM
 
 # Utils
-from utils.output_message_format.output_colour import print_model_output, print_info, print_error, print_success, print_warning
+from utils.output_message_format.output_colour import print_model_output, print_info, print_error 
+from utils.output_message_format.output_colour import print_success, print_warning
 from utils.resource.resource_mg_util import call_cleanup
-
-# Default config file
-LLM_CONFIG_FILE = os.path.abspath(os.path.join(os.path.dirname(__file__), 'config_files/llm_config.yaml'))
 
 def main():
     try:
-        llm = HF_LLM(llm_config_file = LLM_CONFIG_FILE, enable_chat_history = True)
-        llm.generate_response("What is the capital of France?", suppress_conversation_history = True)
+        # Pycapsule
+        container = Container()
+        llm = Ollama(model_name="qwen2.5-coder",
+                     enable_chat_history=True,
+                     max_history=1,
+                     verbose_switch=True)
+        pycapsule = PyCapsule(container, llm, maximum_attempts=5)
+        pycapsule("Write a tail recursive fibonacci function in python.")
+        
+        # Huggingface transformers
+        llm = HF_LLM(llm_config_file="config_files/llm_config.yaml")
+        llm.generate_response("Write a fibonacci function in python.")
         
         
     finally:
         # Warning resource_tracker: There appear to be .* leaked semaphore objects"
-        call_cleanup([llm])
+        call_cleanup([llm, container, pycapsule])
 
 if __name__ == '__main__':
     main()

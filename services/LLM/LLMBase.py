@@ -25,35 +25,40 @@ import os, sys
 
 sys.path.append(f"{os.path.dirname(os.path.abspath(__file__))}/../..")
 
-from abc import ABC, abstractmethod
+from abc import abstractmethod
 from typing import List, Optional, Dict
 from jinja2 import Template
 
+from services.Base import ServiceBase
 from modules.ChatHistory import ChatHistory
 from utils.output_message_format.output_colour import print_error, print_success
 
-# Uncomment the next line for pycapsule
-# from utils.code_parsing.code_parser import parse_response
-
-class LLMBase(ABC):
+class LLMBase(ServiceBase):
     def __init__(self, 
                  model_name: str, 
                  enable_chat_history: bool = False,
-                 max_history: int = 3):
+                 max_history: int = 3,
+                 verbose_switch: bool = False):
         """
         Base class for all LLM services
         Args:
             model_name (str): Model name as string, use for printing and logging
             enable_chat_history (bool, optional): Use chat history. Defaults to False.
             max_history (int, optional): Maximum number of interactions to store in history. Defaults to 3.
+            verbose_switch (bool, optional): Verbose switch. Defaults to False.
         """
+        super().__init__()
         self.model_name = model_name
         self.prompt_template_path = os.path.join(os.path.dirname(os.path.abspath(__file__)),
                                                  "../../config_files/default_chat_template.jinja")
         self.enable_chat_history = enable_chat_history
         self.chat_history: ChatHistory = None
         self.max_history = max_history
-        self.system_prompt = "You are a helpful assistant, always answer the question to the best of your ability even if the context is not useful."
+        self.verbose_switch = verbose_switch
+        self.system_prompt = ("You are a helpful assistant, "
+                              "always answer the question to the best of your ability "
+                              "even if the context is not useful.")
+
 
     def _prepare_prompt(self, messages: List[Dict], bos_token="") -> str:
         """

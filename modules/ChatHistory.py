@@ -4,6 +4,7 @@
 # Usage:
 # - add_interaction(question: str, answer: str)-> None
 # - clear_history()-> None
+# - clear_chat_history_queue()-> None
 # - to_dict()-> Dict[str, any]
 # =============================================================================
 
@@ -72,7 +73,12 @@ class ChatHistory:
     def clear_history(self) -> None:
         self._original_question = None
         self._conversation_history = deque(maxlen=self._max_history)
-
+        
+    def clear_chat_history_queue(self) -> None:
+        """
+        Clear the chat history queue only but keep the original question.
+        """
+        self._conversation_history.clear()
 
     def to_dict(self) -> Dict[str, any]:
         return {
