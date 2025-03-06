@@ -39,6 +39,7 @@ import subprocess
 from subprocess import CompletedProcess
 from typing import Union, Tuple
 from abc import abstractmethod
+from deprecated import deprecated
 
 from services.Base import ServiceBase
 from services.Container.Container import Container
@@ -297,17 +298,11 @@ class PyCapsuleBase(ServiceBase):
             self._change_system_prompt(is_fix_mode=True)  # Changing the system prompt for fix mode
             
             # Apply error handling to get the fix mode query
-            # fix_mode_query = self._get_fix_mode_query(response, meta_data_dict)
-
-            # Debugging span experiment
-            fix_mode_query, suppress_flag = (self._fresh_start() 
-                                            #  if attempt_count != 0 and attempt_count % 3 == 0
-                                             if attempt_count == 2
-                                             else (self._get_fix_mode_query(response, meta_data_dict), False))
+            fix_mode_query = self._get_fix_mode_query(response, meta_data_dict)
             
             # Updating code in container based on fix mode response
             self._update_code(fix_mode_query = fix_mode_query, 
-                              suppress_conversation_history=suppress_flag,
+                              suppress_conversation_history=False,
                               meta_data = meta_data_dict)
 
             # Running the code
@@ -322,7 +317,8 @@ class PyCapsuleBase(ServiceBase):
         return return_code, attempt_count
     
     
-    def _fresh_start(self) -> None:
+    @deprecated(version='0.1', reason="Experimental use only.")
+    def _fresh_start(self) -> Tuple[str, bool]:
         """
         Clear chat history but keep the original question
 

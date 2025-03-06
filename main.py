@@ -6,43 +6,34 @@ os.environ["TOKENIZERS_PARALLELISM"] = "false"
 
 # Services
 from services.LLM.Ollama.Ollama import Ollama
-from services.LLM.OpenAI_GPT.OpenAI_GPT import OpenAI_GPT
 from services.Container.Container import Container
-from services.PyCapsule.PyCapsuleMBPP import PyCapsuleMBPP
+from services.PyCapsule.PyCapsule import PyCapsule
+from services.LLM.HF_LLM.HF_LLM import HF_LLM
 
 # Utils
-from utils.output_message_format.output_colour import print_model_output, print_info
-from utils.output_message_format.output_colour import print_error, print_success, print_warning
+from utils.output_message_format.output_colour import print_model_output, print_info, print_error 
+from utils.output_message_format.output_colour import print_success, print_warning
 from utils.resource.resource_mg_util import call_cleanup
-
-# Data
-from data.MBPP.MBPP import MBPP
-
 
 def main():
     try:
-        llm = Ollama(model_name="qwen2.5-coder", # qwen 2.5 coder instruct 7B 
+        # Pycapsule
+        container = Container()
+        llm = Ollama(model_name="qwen2.5-coder",
                      enable_chat_history=True,
                      max_history=1,
                      verbose_switch=True)
+        pycapsule = PyCapsule(container, llm, maximum_attempts=5)
+        pycapsule("Write a tail recursive fibonacci function in python.")
         
-        container = Container(image_name="synkrasis_pycapsule", 
-                              container_name="pycapsule_debug_span",
-                              mount_dir_name="pycapsule_debug_span_mount",
-                              shell_script_name="start.sh")
-        
-        data = MBPP()
-        
-        pycapsule = PyCapsuleMBPP(container=container,
-                                  llm=llm,
-                                  maximum_attempts=5)
-        
-        pycapsule.run_pycapsule_experiment(data)
+        # Huggingface transformers
+        llm = HF_LLM(llm_config_file="config_files/llm_config.yaml")
+        llm.generate_response("Write a fibonacci function in python.")
         
         
     finally:
         # Warning resource_tracker: There appear to be .* leaked semaphore objects"
-        call_cleanup([llm, container, data, pycapsule])
+        call_cleanup([llm, container, pycapsule])
 
 if __name__ == '__main__':
     main()
