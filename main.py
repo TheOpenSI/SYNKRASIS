@@ -6,7 +6,7 @@ os.environ["TOKENIZERS_PARALLELISM"] = "false"
 
 # Services
 from services.LLM.Ollama.Ollama import Ollama
-from services.LLM.Ollama.Ollama_container import OllamaContainer
+from services.LLM.Ollama.OllamaContainer import OllamaContainer
 from services.Container.Container import Container
 from services.PyCapsule.PyCapsule import PyCapsule
 from services.LLM.HF_LLM.HF_LLM import HF_LLM
