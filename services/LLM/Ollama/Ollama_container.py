@@ -23,7 +23,6 @@ from services.LLM.LLMBase import LLMBase
 from utils.output_message_format.output_colour import print_error, print_info
 from utils.output_message_format.output_colour import print_success, print_model_output
 from utils.code_parsing.code_parser import parse_response
-from utils.spinner.Spinner import Spinner
 
 
 class OllamaContainer(LLMBase):
