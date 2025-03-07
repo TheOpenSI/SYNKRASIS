@@ -6,6 +6,7 @@ os.environ["TOKENIZERS_PARALLELISM"] = "false"
 
 # Services
 from services.LLM.Ollama.Ollama import Ollama
+from services.LLM.Ollama.Ollama_container import OllamaContainer
 from services.Container.Container import Container
 from services.PyCapsule.PyCapsule import PyCapsule
 from services.LLM.HF_LLM.HF_LLM import HF_LLM
@@ -19,10 +20,12 @@ def main():
     try:
         # Pycapsule
         container = Container()
-        llm = Ollama(model_name="qwen2.5-coder",
-                     enable_chat_history=True,
-                     max_history=1,
-                     verbose_switch=True)
+        llm = OllamaContainer(model_name="qwen2.5-coder",
+                              enable_chat_history=True,
+                              max_history=1,
+                              verbose_switch=True,
+                              container_name="ollama",
+                              local_port=11435)
         pycapsule = PyCapsule(container, llm, maximum_attempts=5)
         pycapsule("Write a tail recursive fibonacci function in python.")
         
