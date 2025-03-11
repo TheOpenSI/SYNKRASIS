@@ -1,15 +1,13 @@
-version: '3.8'
-
 services:
   pycapsule:
     image: pycapsule:latest
     container_name: pycapsule
     ports:
-      - 8780:8780
+      - "8780:8780"
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - shared_mount:/app/services/Container/mount_dir/synk_mount
-    depends_on: 
+    depends_on:
       - ollama
     networks:
       - synkrasis_pycapsule_network
@@ -17,6 +15,15 @@ services:
   ollama:
     image: ollama/ollama:latest
     container_name: ollama
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
+    volumes:
+      - ollama_data:/root/.ollama
     networks:
       - synkrasis_pycapsule_network
 
@@ -26,3 +33,4 @@ networks:
 
 volumes:
   shared_mount:
+  ollama_data:

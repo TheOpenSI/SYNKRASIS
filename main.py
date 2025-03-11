@@ -60,7 +60,7 @@ def main():
         
     finally:
         # Warning resource_tracker: There appear to be .* leaked semaphore objects"
-        call_cleanup([llm, container, pycapsule])
+        call_cleanup([llm])
 
 
 if __name__ == '__main__':

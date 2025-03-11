@@ -33,7 +33,7 @@ class OllamaContainer(LLMBase):
                  max_history: int = 3,
                  verbose_switch: bool = False,
                  container_name = "ollama",
-                 local_port: int = 11434):
+                 local_port: int = 11435):
         """
         Ollama container class for running ollama from the official Ollama container.
 
@@ -47,7 +47,7 @@ class OllamaContainer(LLMBase):
             local_port (int, optional): Local port for the ollama container. Defaults to 11434.
         """
         super().__init__(model_name, enable_chat_history, max_history, verbose_switch)
-        self.container_name = container_name
+        self.container_name = "localhost"
         self._check_model_availability()
         self.local_port = local_port
         self.api_url = f"http://{self.container_name}:{self.local_port}/api/generate"

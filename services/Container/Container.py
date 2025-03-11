@@ -1,5 +1,5 @@
 # =============================================================================
-# Shared volume name must be "shared_mount"
+# Shared volume name must be mount_share
 # Container class for managing docker containers
 # Usage:
 #     - Container(image_name: str = "synkrasis", 
@@ -111,11 +111,18 @@ class Container(ServiceBase):
     def _create_container(self) -> subprocess.CompletedProcess:
         print_info("Creating container...")
         print_success("Container created")
+        # Debug
+        # response = subprocess.run(("docker run -it "
+        #                            f"--name {self.CONTAINER_NAME} "
+        #                            f"--entrypoint /bin/bash "
+        #                            f"-v {self.MOUNT_DIR_PATH}:/usr/src/app "
+        #                            f"{self.IMAGE_NAME}"),
+        #                            shell = True)
         
         # Create the container
         response = subprocess.run((f"docker run "
                                    f"--name {self.CONTAINER_NAME} "
-                                   f"-v shared_mount:/usr/src/app "
+                                   f"-v {self.MOUNT_DIR_PATH}:/usr/src/app "
                                    f"{self.IMAGE_NAME}"),
                                   shell=True, capture_output=True, text=True)
 
