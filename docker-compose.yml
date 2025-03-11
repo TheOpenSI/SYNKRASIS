@@ -1,0 +1,28 @@
+version: '3.8'
+
+services:
+  pycapsule:
+    image: pycapsule:latest
+    container_name: pycapsule
+    ports:
+      - 8780:8780
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - shared_mount:/app/services/Container/mount_dir/synk_mount
+    depends_on: 
+      - ollama
+    networks:
+      - synkrasis_pycapsule_network
+
+  ollama:
+    image: ollama/ollama:latest
+    container_name: ollama
+    networks:
+      - synkrasis_pycapsule_network
+
+networks:
+  synkrasis_pycapsule_network:
+    driver: bridge
+
+volumes:
+  shared_mount:

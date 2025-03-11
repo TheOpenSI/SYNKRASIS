@@ -1,4 +1,5 @@
 # =============================================================================
+# Shared volume name must be "shared_mount"
 # Container class for managing docker containers
 # Usage:
 #     - Container(image_name: str = "synkrasis", 
@@ -40,7 +41,7 @@ class Container(ServiceBase):
         current_dir = os.path.dirname(__file__)
         self.IMAGE_NAME = image_name
         self.CONTAINER_NAME = container_name
-        self.MOUNT_DIR_PATH = os.path.join(current_dir, "mount_dir", mount_dir_name)
+        self.MOUNT_DIR_PATH = os.path.join(current_dir, "mount_dir", "synk_mount") # DinD issue.
         self.SHELL_SCRIPT_PATH = os.path.join(os.path.dirname(__file__), f"mount_dir/{shell_script_name}")
         
         # Security patch for the container inputs
@@ -110,18 +111,11 @@ class Container(ServiceBase):
     def _create_container(self) -> subprocess.CompletedProcess:
         print_info("Creating container...")
         print_success("Container created")
-        # Debug
-        # response = subprocess.run(("docker run -it "
-        #                            f"--name {self.CONTAINER_NAME} "
-        #                            f"--entrypoint /bin/bash "
-        #                            f"-v {self.MOUNT_DIR_PATH}:/usr/src/app "
-        #                            f"{self.IMAGE_NAME}"),
-        #                            shell = True)
         
         # Create the container
         response = subprocess.run((f"docker run "
                                    f"--name {self.CONTAINER_NAME} "
-                                   f"-v {self.MOUNT_DIR_PATH}:/usr/src/app "
+                                   f"-v shared_mount:/usr/src/app "
                                    f"{self.IMAGE_NAME}"),
                                   shell=True, capture_output=True, text=True)
 

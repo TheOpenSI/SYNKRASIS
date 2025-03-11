@@ -1,5 +1,6 @@
 # =======================================================================================
 # Ollama container class for running ollama from the official Ollama container.
+# Ollama port is hard coded to 11434 for docker networking.
 # Usage:
 #     - generate_response(user_prompt: str, 
 #                         context: List[str] = None, 
@@ -17,7 +18,7 @@ import os, sys
 sys.path.append(f"{os.path.dirname(os.path.abspath(__file__))}/../../..")
 
 import requests, subprocess
-from typing import Optional, Dict, List
+from typing import Optional, List
 
 from services.LLM.LLMBase import LLMBase
 from utils.output_message_format.output_colour import print_error, print_info
@@ -43,13 +44,13 @@ class OllamaContainer(LLMBase):
                 the model. Defaults to False.
             container_name (str, optional): Name of the ollama container. 
                 Defaults to "ollama".
-            local_port (int, optional): Port on which the ollama server is running.
+            local_port (int, optional): Local port for the ollama container. Defaults to 11434.
         """
         super().__init__(model_name, enable_chat_history, max_history, verbose_switch)
         self.container_name = container_name
         self._check_model_availability()
         self.local_port = local_port
-        self.api_url = f"http://localhost:{local_port}/api/generate"
+        self.api_url = f"http://{self.container_name}:{self.local_port}/api/generate"
     
     
     def _get_model_list(self) -> List[str]:
@@ -168,5 +169,5 @@ class OllamaContainer(LLMBase):
         """
         Nothing to clean up for Ollama
         """
-        # NOTE: We can stop the container here if needed.
+        # NOTE: We can stop the ollama container here if needed.
         print_success("Ollama resources cleaned up.")
