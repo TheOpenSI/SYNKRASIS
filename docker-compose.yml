@@ -1,16 +1,21 @@
 services:
   pycapsule:
     image: pycapsule:latest
+    privileged: true
+    build:
+      context: .
+      dockerfile: Dockerfile
     container_name: pycapsule
     ports:
       - "8780:8780"
+      - "5678:5678"
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - shared_mount:/app/services/Container/mount_dir/synk_mount
     depends_on:
       - ollama
     networks:
-      - synkrasis_pycapsule_network
+      - pycapsule_network
 
   ollama:
     image: ollama/ollama:latest
@@ -23,14 +28,15 @@ services:
               count: all
               capabilities: [gpu]
     volumes:
-      - ollama_data:/root/.ollama
+      - ollama:/root/.ollama
     networks:
-      - synkrasis_pycapsule_network
+      - pycapsule_network
 
 networks:
-  synkrasis_pycapsule_network:
+  pycapsule_network:
     driver: bridge
 
 volumes:
   shared_mount:
-  ollama_data:
+    external: true
+  ollama:

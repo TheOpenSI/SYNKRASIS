@@ -28,12 +28,12 @@ from utils.code_parsing.code_parser import parse_response
 
 class OllamaContainer(LLMBase):
     def __init__(self, 
-                 model_name: str = "mistral", # uses mistral as default model
+                 model_name: str = "mistral",
                  enable_chat_history:bool = False, 
                  max_history: int = 3,
                  verbose_switch: bool = False,
                  container_name = "ollama",
-                 local_port: int = 11435):
+                 local_port: int = 11434):
         """
         Ollama container class for running ollama from the official Ollama container.
 
@@ -42,12 +42,12 @@ class OllamaContainer(LLMBase):
             max_history (int, optional): Maximum chat history to keep. Defaults to 3.
             verbose_switch (bool, optional): Whether to print the full query being sent to 
                 the model. Defaults to False.
-            container_name (str, optional): Name of the ollama container. 
+            container_name (str, optional): Name of the Ollama container. 
                 Defaults to "ollama".
             local_port (int, optional): Local port for the ollama container. Defaults to 11434.
         """
         super().__init__(model_name, enable_chat_history, max_history, verbose_switch)
-        self.container_name = "localhost"
+        self.container_name = container_name
         self._check_model_availability()
         self.local_port = local_port
         self.api_url = f"http://{self.container_name}:{self.local_port}/api/generate"
@@ -125,7 +125,6 @@ class OllamaContainer(LLMBase):
         conversation_history = ("" 
                                 if suppress_conversation_history 
                                 else self._prepare_conversation_history(user_prompt))
-
         # Context
         context = self._prepare_context(context)
 
