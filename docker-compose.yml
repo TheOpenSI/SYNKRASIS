@@ -1,10 +1,10 @@
 services:
   pycapsule:
-    image: pycapsule:latest
-    privileged: true
     build:
       context: .
       dockerfile: Dockerfile
+    image: opensicbr/pycapsule:latest
+    privileged: true
     container_name: pycapsule
     ports:
       - "8780:8780"
