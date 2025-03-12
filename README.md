@@ -37,6 +37,46 @@ docker volume create shared_mount
 
 ![PyCapsule](figures/pycapsule.png)
 
+## API Endpoints
+
+### 1. Configuration Update (/config)
+
+Update system configuration parameters:
+
+```bash
+curl -X POST localhost:8780/config \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "model_medium": "ollama",
+    "model_name": "qwen2.5-coder"
+  }'
+```
+
+### 2. Query Handling (/query)
+
+Send queries to the system:
+
+```bash
+curl -X POST localhost:8780/query \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "query": "your query here"
+  }'
+```
+
+### 3. Environment Variables (/setenv)
+
+Set environment variables like API keys:
+
+```bash
+curl -X POST localhost:8780/setenv \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "HUGGING_FACE_TOKEN": "your-token",
+    "OPENAI_API_KEY": "your-key"
+  }'
+```
+
 ## Publication
 
 ![Table](figures/table.png)
