@@ -29,6 +29,8 @@ def main():
             pycapsule_config = yaml.safe_load(f)
         
         # Container
+        # Do not change this, use the default values only.
+        # Refer to the external volume in docker-compose.yml
         container = Container()
         
         # LLM
