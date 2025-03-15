@@ -202,7 +202,7 @@ class PyCapsuleBase(ServiceBase):
     def helper_set_prompt_paths(self) -> None:
         """
         Helper for self._set_prompt_paths.
-        Sets the default prompt paths - "prompts/code_gen_prompt.txt" and "prompts/code_fix_prompt.txt" 
+        Sets the prompt paths to - "prompts/code_gen_prompt.txt" and "prompts/code_fix_prompt.txt" 
             for code generation and code fix.
         """
         self.CODE_GEN_PROMPT_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)),
