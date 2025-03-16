@@ -19,10 +19,10 @@ class PyCapsuleHE(PyCapsuleBase):
     def __init__(self,
                  container: Container,
                  llm: LLMBase,
-                 maximun_attempts: int = 5):
+                 maximum_attempts: int = 5):
         super().__init__(pycapsule_container=container,
                          llm=llm,
-                         maximum_attempts=maximun_attempts)
+                         maximum_attempts=maximum_attempts)
         
     @staticmethod
     def _validate_metadata(function_name: str,
@@ -73,7 +73,7 @@ class PyCapsuleHE(PyCapsuleBase):
             
         # HumanEval's test function is called check
         time_safe_thread = self.timeout_code(function_name="check", 
-                                             args_for_function=f"('{meta_data['entry_point']}')", 
+                                             args_for_function=f"({meta_data['entry_point']}, )", 
                                              timeout=self.timeout)
         
         sanitised_code = self.example_call_detection.extract_code_blocks(code)
@@ -119,7 +119,7 @@ class PyCapsuleHE(PyCapsuleBase):
         return self.error_handling(error_message=response.stderr,
                                 extract_test_case=True,
                                 change_test_case_entry=True,
-                                to_replace="candidate",
+                                to_replace="candidate", # Specific to HumanEval.
                                 entry_point=meta_data["entry_point"])
         
         
@@ -134,4 +134,22 @@ class PyCapsuleHE(PyCapsuleBase):
         temp_data_point = meta_data.copy()
         temp_data_point["prompt"] = fix_mode_query
         self._generate_code(temp_data_point, suppress_conversation_history)
+        
+        
+    def _set_original_question(self, user_query: dict) -> str:
+        self._validate_metadata(function_name="_set_original_question",
+                                meta_data=user_query,
+                                check_dict_keys=["prompt"])
+        
+        return user_query["prompt"]
+    
+    
+    def _call_fix_code(self, 
+                       response: CompletedProcess, 
+                       user_query: dict) -> tuple[int, int]:
+        self._validate_metadata(function_name="_call_fix_code",
+                                meta_data=user_query,
+                                check_dict_keys=[])
+        
+        return self.fix_code(response, user_query)
         

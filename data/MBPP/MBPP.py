@@ -2,10 +2,7 @@ import os
 import sys
 sys.path.append(f"{os.path.dirname(os.path.abspath(__file__))}/../..")
 
-import json
-import re
 import pandas as pd
-import ast
 from typing import Dict, Optional, List
 from deprecated import deprecated
 
@@ -15,7 +12,8 @@ from data.DatasetBase import DatasetBase
 
 class MBPP(DatasetBase):
     def __init__(self, 
-                 file_path: str = os.path.join(os.path.dirname(os.path.abspath(__file__)), "mbpp_main.jsonl"),
+                 file_path: str = os.path.join(os.path.dirname(os.path.abspath(__file__)), 
+                                               "mbpp_main.jsonl"),
                  subset_size: Optional[int] = None):
         """
         Initialize the MBPP dataset loader.
@@ -25,9 +23,6 @@ class MBPP(DatasetBase):
                              Defaults to 'mbpp.jsonl' in the current directory.
         """
         super().__init__(file_path, subset_size)
-        self.solved_count: int = 0
-        self.unsolved_count: int = 0
-        self.results: List[Dict[int, int, str]] = [] # task_id, fix_mode_attempt_count, status 
 
 
     def _load_data(self) -> None:
@@ -37,12 +32,6 @@ class MBPP(DatasetBase):
 
     @deprecated("Use process() instead in release.")
     def get_next(self) -> Optional[Dict[str, str]]:
-        """
-        Return the next datapoint.
-        
-        Returns:
-            Optional[Dict[str, str]]: The next datapoint if available, else None.
-        """
         if self.current_index < len(self.data):
             datapoint = self.data[self.current_index]
             self.current_index += 1
@@ -55,6 +44,7 @@ class MBPP(DatasetBase):
 
     def reset(self) -> None:
         """
+        @override
         Reset all the fields.
         """
         super().reset()
@@ -64,24 +54,13 @@ class MBPP(DatasetBase):
     
 
     def log_to_csv(self, model_name: str) -> None:
-        """
-        Write result data to a CSV file using Pandas.
-        Args:
-            model_name (str): Name of the LLM model used to generate the CSV file.
-        """
-        df = pd.DataFrame(self.results, columns=["task_id", "fix_mode_attempt_count", "status"])
-        df.to_csv(f"experiment_results/{model_name}_mbpp_results.csv", index = False)
-        print_success(f"Results saved to {model_name}_results.csv")
-        
+        self.log_to_csv_helper(model_name=model_name,
+                               dataset_name="MBPP",
+                               results=self.results,
+                               column_names=["task_id", "fix_mode_attempt_count", "status"])        
+    
         
     def process(self, data_point: dict) -> dict:
-        """
-        Process the data point.
-        Uses signature converter to convert the function call to function signature.
-
-        Returns:
-            dict : Processed data point.
-        """
         # Example function call from test case
         function_call = self.regex_extractor.extract_function_call_from_test_case(data_point["test_list"][0])
         

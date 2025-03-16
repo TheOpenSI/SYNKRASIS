@@ -7,13 +7,22 @@
 #   - log_to_csv
 #   - process
 #
+# Fields:
+#   - file_path (str): Path to the dataset file.
+#   - subset_size (Optional[int]): Subset size of the dataset.
+#   - data (List): Holds the dataset.
+#   - results (List): Holds the results.
+#   - current_index (int): Current index in the dataset.
+#   - extractor (Extractor): Extractor object.
+#   - regex_extractor (RegexExtractor): RegexExtractor object.
+#
 # Usage:
 #   - reset (base class only resets the current_index)
 #   - get_data_point_by_index (returns the EXACT data point without processing)
 #   - load_data_helper_json (loads JSON data from self.file_path with specified subset size if provided)
 #   - log_to_csv_helper (log_to_csv helper to log the results to a csv file)
+#   - append_result_helper (helper function to append results to the results list)
 #   - __len__
-#   - append_result (override this method if more data is required in results)
 # ===================================================================================================================================
 
 import os
@@ -39,13 +48,17 @@ class DatasetBase(ABC):
         Args:
             file_path (str): Path to the dataset file.
         """
-        self.file_path = file_path
-        self.subset_size = subset_size
-        self.data = []  # Holds the dataset
-        self.results = []  # Holds the results
-        self.current_index = 0  # Current index in the dataset
+        self.file_path: str = file_path
+        self.subset_size: Optional[int] = subset_size
+        self.data: pd.DataFrame = []  # Holds the dataset
+        self.results: list[dict] = []  # Holds the results
+        self.current_index: int = 0  # Current index in the dataset
+        self.solved_count: int = 0 # Number of solved tasks
+        self.unsolved_count: int = 0 # Number of unsolved tasks
+        
         self.extractor = Extractor()
         self.regex_extractor = RegexExtractor()
+        
         self._load_data()
 
 
@@ -61,7 +74,7 @@ class DatasetBase(ABC):
     def get_next(self) -> Optional[Any]:
         """
         Get the next(self.current_index) point from the dataset.\n
-        Collect the data point, process and return
+        Collects the data point, processes and returns.
 
         Returns:
             data_point (Optional[Dict[str, str]]): Processed next data point.
@@ -94,22 +107,18 @@ class DatasetBase(ABC):
         pass
     
     
-    def append_result(self, 
-                      task_id: int, 
-                      fix_mode_attempt_count: int, 
-                      status: str) -> None:
+    def append_result(self, **kwargs) -> None:
         """
         Append the result to the results list.
-        Override this method if more data is required in results.
 
         Args:
-            task_id (int): Task ID
-            fix_mode_attempt_count (int): Number of fix mode attempts
-            status (str): Status of the fix mode attempt
+            **kwargs: Parameters to include in the result, typically containing:
+                - task_id (int): Task ID
+                - fix_mode_attempt_count (int): Number of fix mode attempts
+                - status (str): Status of the fix mode attempt
+                - Any additional parameters as needed
         """
-        self.results.append({"task_id": task_id, 
-                             "fix_mode_attempt_count": fix_mode_attempt_count, 
-                             "status": status})
+        self.results.append(kwargs)
 
 
     def reset(self) -> None:
@@ -170,7 +179,7 @@ class DatasetBase(ABC):
         """
         df = pd.DataFrame(results, columns = column_names)
         df.to_csv(f"experiment_results/{model_name}_{dataset_name}_results.csv", index = False)
-        print_success(f"Results saved to {model_name}_results.csv")    
+        print_success(f"Results saved to {model_name}_results.csv")
             
             
     def __len__(self) -> int:

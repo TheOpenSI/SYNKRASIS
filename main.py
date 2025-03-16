@@ -9,6 +9,7 @@ from services.LLM.Ollama.Ollama import Ollama
 from services.LLM.OpenAI_GPT.OpenAI_GPT import OpenAI_GPT
 from services.Container.Container import Container
 from services.PyCapsule.PyCapsuleMBPP import PyCapsuleMBPP
+from services.PyCapsule.PyCapsuleHE import PyCapsuleHE
 
 # Utils
 from utils.output_message_format.output_colour import print_model_output, print_info
@@ -17,6 +18,7 @@ from utils.resource.resource_mg_util import call_cleanup
 
 # Data
 from data.MBPP.MBPP import MBPP
+from data.HumanEval.HumanEval import HumanEval
 
 
 def main():
@@ -31,11 +33,11 @@ def main():
                               mount_dir_name="pycapsule_debug_span_mount",
                               shell_script_name="start.sh")
         
-        data = MBPP()
+        data = HumanEval()
         
-        pycapsule = PyCapsuleMBPP(container=container,
-                                  llm=llm,
-                                  maximum_attempts=5)
+        pycapsule = PyCapsuleHE(container=container,
+                                llm=llm,
+                                maximum_attempts=5)
         
         pycapsule.run_pycapsule_experiment(data)
         
