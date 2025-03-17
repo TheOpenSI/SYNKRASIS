@@ -152,10 +152,10 @@ class OllamaContainer(LLMBase):
                 
             if self.verbose_switch:
                 print_model_output(full_query, "USER")
-                print("\n\n")
+                print("\n")
                 
             print_model_output(response, self.model_name)
-            print("\n\n")
+            print("\n")
             return response
 
         except ConnectionError as ce:

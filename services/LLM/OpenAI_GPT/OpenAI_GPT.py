@@ -82,10 +82,10 @@ class OpenAI_GPT(LLMBase):
         if self.verbose_switch:        
             # Print full user query
             print_model_output(self.system_prompt + "\n\n" + prompt, "USER")
-            print("\n\n")
+            print("\n")
         
         print_model_output(answer, self.model_name)
-        print("\n\n")
+        print("\n")
 
         if self.enable_chat_history:
             if not self.chat_history:

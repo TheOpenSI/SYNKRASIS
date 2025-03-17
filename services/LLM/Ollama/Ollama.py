@@ -89,10 +89,10 @@ class Ollama(LLMBase):
                 
             if self.verbose_switch:
                 print_model_output(full_query, "USER")
-                print("\n\n")
+                print("\n")
                 
             print_model_output(response["response"], self.model_name)
-            print("\n\n")
+            print("\n")
             return response["response"]
 
         except ollama.ResponseError as e:

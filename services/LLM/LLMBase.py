@@ -77,8 +77,8 @@ class LLMBase(ServiceBase):
 
         # Render the template with the provided messages and bos_token
         rendered_prompt = template.render(messages=filtered_messages, bos_token=bos_token)
-
         return rendered_prompt
+
 
     def _prepare_context(self, context: List[str]) -> Optional[str]:
         """
@@ -111,7 +111,7 @@ class LLMBase(ServiceBase):
                 self.init_chat_history(user_query) 
             
             # Original question
-            conversation_history = "\n" + ">> Original Question: " + self.chat_history.original_question + "\n"
+            conversation_history = ">> Original Question: " + self.chat_history.original_question + "\n"
             
             # Uncomment to pass only the original question and last answer
             # conversation_history += "\n".join([(f">> Your previous answer:\n{answer}\n") 

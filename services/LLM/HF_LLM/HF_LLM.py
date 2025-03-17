@@ -239,10 +239,10 @@ class HF_LLM(LLMBase):
 
         if self.verbose_switch:
             print_model_output(prompt, "USER")
-            print("\n\n")
+            print("\n")
             
         print_model_output(answer, self.model.name_or_path.strip().split("/")[-1])
-        print("\n\n")
+        print("\n")
         return answer
 
 

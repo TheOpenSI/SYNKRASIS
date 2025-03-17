@@ -12,8 +12,7 @@
 import sys, os
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 
-import textwrap
-
+from utils.output_message_format.wrap_text import wrap_text
 from utils.output_message_format.colour import Colour
 
 def print_info(to_print:str):
@@ -33,10 +32,10 @@ def print_error(to_print:str):
 
 
 def print_model_output(to_print:str, model_name:str):
-    wrapped_text = get_wrapped_text(to_print)
+    wrapped_text = wrap_text(to_print, 90)
     print("="*50, "START", "="*50)
     print(f"{Colour.RED.value}[{model_name.split('/')[0].upper()}]{Colour.RESET.value} {wrapped_text}")
-    print("="*50, "END", "="*50)
+    print("="*50, " END ", "="*50)
 
 
 def print_service(to_print:str):
@@ -45,7 +44,3 @@ def print_service(to_print:str):
     
 def print_pycapsule(to_print:str, option:str = "response"):
     print(f"{Colour.BRIGHT_RED.value}[PYCAPSULE {option.upper()}]{Colour.RESET.value} {to_print}")
-    
-
-def get_wrapped_text(to_wrap:str, width:int = 100):
-    return textwrap.fill(to_wrap, width)
