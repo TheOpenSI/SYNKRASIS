@@ -12,15 +12,11 @@
 import sys, os
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 
+from utils.output_message_format.wrap_text import wrap_text
 from utils.output_message_format.colour import Colour
 
 def print_info(to_print:str):
     print(f"{Colour.CYAN.value}[INFO]{Colour.RESET.value} {to_print}")
-
-
-def print_success(to_print:str):
-    print(f"{Colour.GREEN.value}[SUCCESS]{Colour.RESET.value} {to_print}")
-
 
 
 def print_success(to_print:str):
@@ -36,12 +32,10 @@ def print_error(to_print:str):
 
 
 def print_model_output(to_print:str, model_name:str):
-    """
-    model_name: str, repo of the model # TODO: more specific
-    """
+    wrapped_text = wrap_text(to_print, 90)
     print("="*50, "START", "="*50)
-    print(f"{Colour.RED.value}[{model_name.split('/')[0].upper()}]{Colour.RESET.value} {to_print}")
-    print("="*50, "END", "="*50)
+    print(f"{Colour.RED.value}[{model_name.split('/')[0].upper()}]{Colour.RESET.value} {wrapped_text}")
+    print("="*50, " END ", "="*50)
 
 
 def print_service(to_print:str):

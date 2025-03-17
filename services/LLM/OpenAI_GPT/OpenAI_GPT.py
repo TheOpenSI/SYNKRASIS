@@ -55,7 +55,9 @@ class OpenAI_GPT(LLMBase):
                           context: List[str] = None,
                           suppress_conversation_history: bool = True) -> Optional[str]:
         context_str = self._prepare_context(context)
-        conversation_history = "" if suppress_conversation_history else self._prepare_conversation_history(user_prompt)
+        conversation_history = ("" 
+                                if suppress_conversation_history 
+                                else self._prepare_conversation_history(user_prompt))
 
         # For openai, we send the system prompt separately
         messages = [
@@ -79,10 +81,11 @@ class OpenAI_GPT(LLMBase):
     
         if self.verbose_switch:        
             # Print full user query
-            print_model_output(prompt, "USER")
-            print()
+            print_model_output(self.system_prompt + "\n\n" + prompt, "USER")
+            print("\n")
         
         print_model_output(answer, self.model_name)
+        print("\n")
 
         if self.enable_chat_history:
             if not self.chat_history:
