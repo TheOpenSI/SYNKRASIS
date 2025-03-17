@@ -212,7 +212,10 @@ class HF_LLM(LLMBase):
             raise ValueError("Model or tokenizer not initialized")
 
         context = self._prepare_context(context)
-        conversation_history = "" if suppress_conversation_history else self._prepare_conversation_history(user_prompt)
+        conversation_history = ("" 
+                                if suppress_conversation_history 
+                                else self._prepare_conversation_history(user_prompt))
+        
         messages = [{"role": "System", "content": self.system_prompt},
                     {"role": "Conversation", "content": conversation_history},
                     {"role": "Context", "content": context},
@@ -236,9 +239,10 @@ class HF_LLM(LLMBase):
 
         if self.verbose_switch:
             print_model_output(prompt, "USER")
-            print()
+            print("\n\n")
             
         print_model_output(answer, self.model.name_or_path.strip().split("/")[-1])
+        print("\n\n")
         return answer
 
 

@@ -59,7 +59,9 @@ class Ollama(LLMBase):
             suppress_conversation_history (bool): Whether to send conversation history.
         """
         # Conversation history
-        conversation_history = "" if suppress_conversation_history else self._prepare_conversation_history(user_prompt)
+        conversation_history = ("" 
+                                if suppress_conversation_history 
+                                else self._prepare_conversation_history(user_prompt))
 
         # Context
         context = self._prepare_context(context)
@@ -81,17 +83,16 @@ class Ollama(LLMBase):
                 if not self.chat_history:
                     self.init_chat_history(user_prompt)
 
-                # self.chat_history.add_interaction(user_prompt,
-                #                                   response["response"])  # for chat it's response["message"]["content"]
-                # TODO: Make this accessible from other servcices, e.g. pycapsule
-                _, code = parse_response(response["response"])
-                self.chat_history.add_interaction(user_prompt, code)
+                # For chat it's response["message"]["content"]
+                self.chat_history.add_interaction(user_prompt,
+                                                  response["response"])  
                 
             if self.verbose_switch:
                 print_model_output(full_query, "USER")
-                print()
+                print("\n\n")
                 
             print_model_output(response["response"], self.model_name)
+            print("\n\n")
             return response["response"]
 
         except ollama.ResponseError as e:
