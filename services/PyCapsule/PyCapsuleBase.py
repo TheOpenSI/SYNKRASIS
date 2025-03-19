@@ -301,9 +301,9 @@ class PyCapsuleBase(ServiceBase):
 
             # Debugging span experiment
             fix_mode_query, suppress_flag = (self._fresh_start() 
-                                             if False # PyCapsule
+                                            #  if False # PyCapsule
                                             #  if attempt_count % 1 == 0 # Pass@n
-                                            #  if attempt_count == 2 # Debug Span
+                                             if attempt_count % 2 == 1 # Debug Span
                                              else (self._get_fix_mode_query(response, meta_data_dict), False))
             
             # Updating code in container based on fix mode response

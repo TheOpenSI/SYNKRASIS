@@ -1,7 +1,8 @@
 import pandas as pd
 import matplotlib.pyplot as plt
 
-df_span = pd.read_csv("/home/s448780/workspace_hcc4/SYNKRASIS/experiment_results/qwen2.5-coder_HumanEval_results_debug_span.csv")
+df_span_3 = pd.read_csv("/home/s448780/workspace_hcc4/SYNKRASIS/experiment_results/qwen2.5-coder_HumanEval_results_debug_span.csv")
+df_span_2 = pd.read_csv("/home/s448780/workspace_hcc4/SYNKRASIS/experiment_results/qwen2.5-coder_HumanEval_results_debug_span_reset_2.csv")
 df_pass = pd.read_csv("/home/s448780/workspace_hcc4/SYNKRASIS/experiment_results/qwen2.5-coder_HumanEval_results_pass@5.csv")
 df_pc = pd.read_csv("/home/s448780/workspace_hcc4/SYNKRASIS/experiment_results/qwen2.5-coder_HumanEval_results_pycapsule.csv")
 
@@ -23,7 +24,8 @@ def effectiveness(df: pd.DataFrame) -> list[float]:
 data = {    
         "pass@n": df_pass,
         "pycapsule": df_pc,
-        "debug_span" : df_span
+        "debug_span_3" : df_span_3,
+        "debug_span_2" : df_span_2
        }
 
 result = []
