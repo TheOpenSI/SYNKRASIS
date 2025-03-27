@@ -147,15 +147,15 @@ class OllamaContainer(LLMBase):
                 if not self.chat_history:
                     self.init_chat_history(user_prompt)
                     
-                # To add the whole response to chat history, add response without parsing.
-                _, code = parse_response(response)
-                self.chat_history.add_interaction(user_prompt, code)
+                self.chat_history.add_interaction(user_prompt,
+                                                  response["response"]) 
                 
             if self.verbose_switch:
                 print_model_output(full_query, "USER")
-                print()
+                print("\n")
                 
             print_model_output(response, self.model_name)
+            print("\n")
             return response
 
         except ConnectionError as ce:

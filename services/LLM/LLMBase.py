@@ -77,8 +77,8 @@ class LLMBase(ServiceBase):
 
         # Render the template with the provided messages and bos_token
         rendered_prompt = template.render(messages=filtered_messages, bos_token=bos_token)
-
         return rendered_prompt
+
 
     def _prepare_context(self, context: List[str]) -> Optional[str]:
         """
@@ -106,24 +106,24 @@ class LLMBase(ServiceBase):
         conversation_history = ""
         if self.enable_chat_history:
             
-            # Initialise chat history if not already initialized
+            # Initialise chat history if not already initialised
             if self.chat_history is None:
-                self.init_chat_history(user_query) # user_query is the original question and max_history is 3 by default
-
+                self.init_chat_history(user_query) 
+            
             # Original question
-            conversation_history = "\n" + ">> Original Question: " + self.chat_history.original_question + "\n\n"
+            conversation_history = ">> Original Question: " + self.chat_history.original_question + "\n"
             
             # Uncomment to pass only the original question and last answer
-            # conversation_history += "\n".join([(f">> Your previous answer:\n{answer}\n") for _, answer in self.chat_history.conversation_history])
+            # conversation_history += "\n".join([(f">> Your previous answer:\n{answer}\n") 
+                                            #    for _, answer in self.chat_history.conversation_history])
             
             # Passing both question and answer
             for i, (question, answer) in enumerate(self.chat_history.conversation_history):
-                # Uncomment the next line for pycapsule to extract code from LLM response
-                # _, code = parse_response(answer)
-                if question != self.chat_history.original_question: # Skip question if it is the original question
-                    conversation_history += f">> Previous question {i+1}:\n{question}\n"
+                # Skip the first question since it's same as the original question
+                if question != self.chat_history.original_question:
+                    conversation_history += f">> Previous question {i+1}: {question}\n"
                 # conversation_history += f">> Your previous solution {i+1}:\n{code}\n\n" # Uncomment for pycapsule
-                conversation_history += f">> Your previous solution {i+1}:\n{answer}\n\n"
+                conversation_history += f">> Your previous response {i+1}: {answer}\n\n"
             
             return conversation_history
     
