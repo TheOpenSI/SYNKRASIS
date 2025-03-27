@@ -126,9 +126,9 @@ class ErrorHandling():
         
         pattern = re.compile(
             r"""(Traceback[\s\S]*?"""
-            r"""(?:[A-Z][A-Za-z]+[Ee]rror(?::\s*.*?)?|Exception(?::\s*.*?)?)"""
+            r"""(?:[A-Za-z\.]+[Ee]rror(?::\s*.*?)?|Exception(?::\s*.*?)?)"""
             r"""(?=\s*Traceback|\n\s*\n|\n\s*$|$))""", 
-            re.VERBOSE
+            re.VERBOSE | re.DOTALL
         )
         all_tracebacks = re.findall(pattern, error_message)
         
@@ -215,7 +215,7 @@ class ErrorHandling():
         error_message_list = e_m.split("\n")
         error_message_list.reverse() # In place reverse.
         for error_message_line in error_message_list:
-            if re.match(r"^[A-Z][A-Za-z]+Error.*", error_message_line):
+            if re.match(r"^[A-Za-z\.]+[Ee]rror.*", error_message_line):
                 return error_message_line.split(":")[0].strip()
         
         print_warning(f"Error type not found in error message:\n{error_message}")
@@ -323,7 +323,6 @@ class ErrorHandling():
         Returns:
         - str: The assertion error message.
         """
-        _, error_message = self.remove_generic_and_external_file_error(error_message)
         if extract_test_case:
             test_case = self._get_test_case(error_message, 
                                             change_test_case_entry, 
@@ -351,10 +350,6 @@ class ErrorHandling():
         Returns:
             bool: True if unittest output, False if function output
         """
-        # Generic error message
-        # if "This is a generic error message" in error_message:
-        #     raise ValueError("Must remove the generic error message.")
-        
         # Clean the message and handle empty input
         if not error_message or not error_message.strip():
             return False  # Empty output typically comes from simple functions
@@ -404,7 +399,6 @@ class ErrorHandling():
         Returns:
         - str: The NameError message.
         """
-        _, error_message = self.remove_generic_and_external_file_error(error_message)
         # passing only the error line, comment the next line to pass the full error message
         error_message = self._name_error_line(error_message)  
 
@@ -430,7 +424,7 @@ class ErrorHandling():
                 "RecursionError: maximum recursion depth exceeded in comparison")
 
 
-    def all_other_error_prompt(self, error_message: str, send_original: bool) -> str:
+    def all_other_error_prompt(self, error_message: str) -> str:
         """
         Example Output: 
         Your generated code had a/an {_extract_all_tracebackserror_type}. 
@@ -443,15 +437,11 @@ class ErrorHandling():
         Returns:
         - str: The generic error message.
         """
-        error_type, error_message_relevant = (
-            self.remove_generic_and_external_file_error(error_message)
-        )
-        if send_original:
-            error_message_relevant = error_message
+        error_type = self.get_error_type(error_message)
 
         return (f"Your generated code had a/an {error_type}.\n"
                 "Please check the following error message for more details - \n"
-                f"{error_message_relevant}")
+                f"{error_message}")
     
     
     def unittest_error_prompt(self, error_message: str) -> str:
@@ -543,20 +533,22 @@ class ErrorHandling():
         if self.is_unittest_error(error_message):
             return self.unittest_error_prompt(error_message)
         
-        error_type, error_message = self.remove_generic_and_external_file_error(error_message)
+        error_type, error_message_concise = self.remove_generic_and_external_file_error(error_message)
         
         if error_type == "AssertionError":
-            return self.assertion_error_prompt(error_message, 
+            return self.assertion_error_prompt(error_message_concise, 
                                                extract_test_case, 
                                                change_test_case_entry, 
                                                to_replace, 
                                                entry_point)
         
         elif error_type == "NameError":
-            return self.name_error_prompt(error_message)
+            return self.name_error_prompt(error_message_concise)
         
         elif error_type == "RecursionError":
             return self.recursion_error_prompt()
         
         else:
-            return self.all_other_error_prompt(error_message, send_original)
+            return (error_message
+                    if send_original
+                    else self.all_other_error_prompt(error_message_concise))
