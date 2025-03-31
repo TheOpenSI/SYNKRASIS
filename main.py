@@ -33,9 +33,9 @@ def main():
                               mount_dir_name="pycapsule_debug_span_mount",
                               shell_script_name="start.sh")
         
-        data = HumanEval()
+        data = MBPP()
         
-        pycapsule = PyCapsuleHE(container=container,
+        pycapsule = PyCapsuleMBPP(container=container,
                                 llm=llm,
                                 maximum_attempts=5)
         
