@@ -1,0 +1,176 @@
+[
+  {
+    "model": "qwen2.5-coder",
+    "effectiveness": [
+      {
+        "dataset": "mbpp_et",
+        "effectiveness": [
+          37.953,
+          22.115,
+          11.401,
+          7.434,
+          4.661,
+          3.717
+        ]
+      },
+      {
+        "dataset": "humaneval_et",
+        "effectiveness": [
+          75.813,
+          50.323,
+          16.977,
+          15.671,
+          16.85,
+          3.03
+        ]
+      },
+      {
+        "dataset": "humaneval",
+        "effectiveness": [
+          74.593,
+          55.035,
+          21.615,
+          15.772,
+          7.792,
+          15.0
+        ]
+      },
+      {
+        "dataset": "mbpp",
+        "effectiveness": [
+          49.127,
+          35.217,
+          17.23,
+          13.021,
+          8.744,
+          7.319
+        ]
+      }
+    ]
+  },
+  {
+    "model": "gpt-3.5-turbo-1106",
+    "effectiveness": [
+      {
+        "dataset": "mbpp_et",
+        "effectiveness": [
+          43.874,
+          18.048,
+          8.919,
+          4.984,
+          3.182,
+          2.484
+        ]
+      },
+      {
+        "dataset": "mbpp",
+        "effectiveness": [
+          57.598,
+          27.603,
+          13.824,
+          9.666,
+          4.003,
+          4.629
+        ]
+      },
+      {
+        "dataset": "humaneval_et",
+        "effectiveness": [
+          65.447,
+          32.355,
+          18.988,
+          8.305,
+          6.953,
+          4.905
+        ]
+      },
+      {
+        "dataset": "humaneval",
+        "effectiveness": [
+          69.817,
+          27.328,
+          15.402,
+          6.331,
+          10.556,
+          5.787
+        ]
+      }
+    ]
+  },
+  {
+    "model": "gpt-4-1106-preview",
+    "effectiveness": [
+      {
+        "dataset": "humaneval",
+        "effectiveness": [
+          88.821,
+          32.787,
+          23.232,
+          17.778,
+          8.929,
+          18.056
+        ]
+      },
+      {
+        "dataset": "mbpp",
+        "effectiveness": [
+          62.252,
+          42.009,
+          23.589,
+          15.568,
+          8.683,
+          7.897
+        ]
+      },
+      {
+        "dataset": "humaneval_et",
+        "effectiveness": [
+          84.756,
+          50.317,
+          28.998,
+          17.024,
+          4.762,
+          10.37
+        ]
+      },
+      {
+        "dataset": "mbpp_et",
+        "effectiveness": [
+          49.247,
+          24.743,
+          16.395,
+          7.285,
+          4.748,
+          4.117
+        ]
+      }
+    ]
+  },
+  {
+    "model": "gpt-3.5-turbo",
+    "effectiveness": [
+      {
+        "dataset": "humaneval",
+        "effectiveness": [
+          70.528,
+          21.817,
+          13.177,
+          7.715,
+          3.492,
+          10.419
+        ]
+      },
+      {
+        "dataset": "mbpp",
+        "effectiveness": [
+          57.324,
+          27.957,
+          15.795,
+          7.998,
+          5.735,
+          4.109
+        ]
+      }
+    ]
+  }
+]
