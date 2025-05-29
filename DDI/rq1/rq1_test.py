@@ -65,7 +65,7 @@ def create_test_csv_files():
     
     # Create DataFrame and save
     df1 = pd.DataFrame(test_data_1)
-    df1.to_csv('DDI/rq1_test_data/gpt-4_humaneval_results_test1.csv', index=False)
+    df1.to_csv('DDI/rq1/rq1_test_data/gpt-4_humaneval_results_test1.csv', index=False)
     
     # Test Case 2: Edge case - only first attempt works
     # 50 problems total
@@ -95,7 +95,7 @@ def create_test_csv_files():
         problem_id += 1
     
     df2 = pd.DataFrame(test_data_2)
-    df2.to_csv('DDI/rq1_test_data/gpt-3.5-turbo_mbpp_results_test2.csv', index=False)
+    df2.to_csv('DDI/rq1/rq1_test_data/gpt-3.5-turbo_mbpp_results_test2.csv', index=False)
     
     # Test Case 3: Complex dataset name
     # 60 problems total
@@ -144,7 +144,7 @@ def create_test_csv_files():
         problem_id += 1
     
     df3 = pd.DataFrame(test_data_3)
-    df3.to_csv('DDI/rq1_test_data/claude_humaneval_et_python_results_v1.csv', index=False)
+    df3.to_csv('DDI/rq1/rq1_test_data/claude_humaneval_et_python_results_v1.csv', index=False)
     
     print("Created test CSV files:")
     print("1. gpt-4_humaneval_results_test1.csv")
@@ -226,7 +226,7 @@ if __name__ == "__main__":
     print_expected_results()
     
     # Instructions for verification
-    run_test_verification()
+    # run_test_verification()
     
     print("\n" + "="*60)
     print("VERIFICATION STEPS:")

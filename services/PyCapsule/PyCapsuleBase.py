@@ -43,6 +43,7 @@ from abc import abstractmethod
 from services.Base import ServiceBase
 from services.Container.Container import Container
 from services.LLM.LLMBase import LLMBase
+from services.DDI.DDI import DDI
 from data.DatasetBase import DatasetBase
 from utils.output_message_format.output_colour import print_error, print_warning
 from utils.output_message_format.output_colour import print_success, print_pycapsule, print_model_output
@@ -430,7 +431,16 @@ class PyCapsuleBase(ServiceBase):
             print(f"Solved {dataset.solved_count} problems, Unsolved {dataset.unsolved_count} problems")
             print("#" * 50)
         
-        dataset.log_to_csv(model_name = self.llm.model_name)
+        exp_file_path = dataset.log_to_csv(model_name = self.llm.model_name)
+        
+        # DDI
+        ddi = DDI(
+            file_path= exp_file_path,
+            model_name = self.llm.model_name,
+            maximum_debugging_attempts= self.maximum_attempts,
+            dataset = dataset.__class__.__name__
+        )
+        ddi()
 
     
     def cleanup(self):

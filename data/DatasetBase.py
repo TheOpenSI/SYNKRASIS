@@ -83,12 +83,15 @@ class DatasetBase(ABC):
 
 
     @abstractmethod
-    def log_to_csv(self, model_name: str) -> None:
+    def log_to_csv(self, model_name: str) -> str:
         """
         Log the results to a csv file.
 
         Args:
             model_name (str): Name of the model to be used as the title of the csv file.
+            
+        Returns:
+            str: Path to the saved csv file.
         """
         pass
 
@@ -166,7 +169,7 @@ class DatasetBase(ABC):
     def log_to_csv_helper(self, model_name:str, 
                           dataset_name:str, 
                           results: List[dict],
-                          column_names: List[str]) -> None:
+                          column_names: List[str]) -> str:
         """
         log_to_csv helper.\n
         Logs the results to a csv file.
@@ -176,10 +179,16 @@ class DatasetBase(ABC):
             dataset_name (str): Name of the dataset to be used as the title of the csv file.
             results (List): List of results to log.
             column_names (List): List of column names for the csv file.
+        
+        Returns:
+            str: Path to the saved csv file.
         """
         df = pd.DataFrame(results, columns = column_names)
-        df.to_csv(f"experiment_results/{model_name}_{dataset_name}_results.csv", index = False)
+        result_file_path = f"experiment_results/{model_name}_{dataset_name}_results.csv"
+        df.to_csv(result_file_path, index = False)
         print_success(f"Results saved to {model_name}_results.csv")
+        
+        return result_file_path
             
             
     def __len__(self) -> int:

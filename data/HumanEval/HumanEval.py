@@ -49,8 +49,8 @@ class HumanEval(DatasetBase):
         self.results = []
     
 
-    def log_to_csv(self, model_name: str) -> None:
-        self.log_to_csv_helper(model_name=model_name,
+    def log_to_csv(self, model_name: str) -> str:
+        return self.log_to_csv_helper(model_name=model_name,
                                dataset_name="HumanEval",
                                results=self.results,
                                column_names=["task_id", "fix_mode_attempt_count", "status"])

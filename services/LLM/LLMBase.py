@@ -44,8 +44,10 @@ class LLMBase(ServiceBase):
         Args:
             model_name (str): Model name as string, use for printing and logging
             enable_chat_history (bool, optional): Use chat history. Defaults to False.
-            max_history (int, optional): Maximum number of interactions to store in history. Defaults to 3.
-            verbose_switch (bool, optional): Verbose switch. Defaults to False.
+            max_history (int, optional): Maximum number of interactions to store in history. 
+                Defaults to 3.
+            verbose_switch (bool, optional): Whether to print out full prompt and response. 
+                Defaults to False.
         """
         super().__init__()
         self.model_name = model_name
