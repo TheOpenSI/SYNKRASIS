@@ -136,7 +136,7 @@ def analyze_model_combined(data_path):
 
 def main():
     """Run the complete analysis."""
-    data_path = "DDI/data/norm_effect_data_wo_attempt_0.json"
+    data_path = "DDI/data/norm_effect_data.json"
     
     # Individual datasets
     individual_results = analyze_individual_datasets(data_path)
