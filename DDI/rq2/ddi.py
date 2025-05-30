@@ -21,7 +21,7 @@ from data.HumanEval.HumanEval import HumanEval
 
 def main():
     try:
-        llm = Ollama(model_name="phi4-reasoning:latest", # qwen 2.5 coder instruct 7B 
+        llm = Ollama(model_name="codestral:22b", # qwen 2.5 coder instruct 7B 
                      enable_chat_history=True,
                      max_history=1,
                      verbose_switch=True)
@@ -32,7 +32,7 @@ def main():
         
         container = Container(image_name="synkrasis_pycapsule", 
                               container_name="pycapsule_debug_span",
-                              mount_dir_name="he_phi4-reasoning",
+                              mount_dir_name="he_codestral",
                               shell_script_name="start.sh")
         
         data = HumanEval(file_path="data/HumanEval/humaneval.jsonl") # humaneval base

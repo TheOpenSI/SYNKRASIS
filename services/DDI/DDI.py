@@ -328,7 +328,8 @@ class DDI(ServiceBase):
             "t_theta": t_theta,
             "t_theta_ceiling": [int(np.ceil(t)) for t in t_theta],
             "fit_quality": "excellent" if r_2 > 0.9 else "good" if r_2 > 0.7 else "poor",
-            "A_phi": round(norm_effectiveness["overall_success_percent"], 4)
+            "A_phi": round(norm_effectiveness["overall_success_percent"], 4),
+            "normalised_effectiveness": norm_effectiveness["DDI"]
         }
         
 
@@ -446,9 +447,9 @@ class DDI(ServiceBase):
         # No specific cleanup needed for this service, but can be overridden if necessary.
         
 
-# if __name__ == "__main__":
-#     ddi = DDI(model_name="GPT3.5", dataset="Humaneval",
-#               file_path="experiment_results/gpt-3.5-turbo_humaneval_results_e1.csv",
-#               maximum_debugging_attempts=5,
-#               theta=[50, 80, 90, 95, 99])
-#     ddi()
+if __name__ == "__main__":
+    ddi = DDI(model_name="phi4", dataset="Humaneval",
+              file_path="experiment_results/phi4_HumanEval_results.csv",
+              maximum_debugging_attempts=5,
+              theta=[50, 80, 90, 95, 99])
+    ddi()
