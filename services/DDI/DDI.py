@@ -18,7 +18,7 @@ from scipy.optimize import curve_fit
 from typing import Dict, Tuple, Optional
 
 from services.Base import ServiceBase
-from utils.output_message_format.output_colour import print_error, print_success, print_warning
+from utils.output_message_format.output_colour import print_error, print_success, print_warning, print_info
 
 class DDI(ServiceBase):
     def __init__(self, 
@@ -241,19 +241,22 @@ class DDI(ServiceBase):
        """
        attempts, effectiveness = self._extract_data_arrays(effectiveness_data)
        
-       if len(attempts) < 2:
-           raise ValueError("Insufficient data points for exponential fitting (need at least 3)")
+       # Require at least 3 data points for fitting
+       if len(attempts) < 3:
+           print_warning("Insufficient data points for exponential fitting (need at least 3)")
+           return None, effectiveness[0], None
        
        # Filter out non-positive values for stability
        valid_mask = effectiveness > 0
-       if np.sum(valid_mask) < 2:
-           raise ValueError("Insufficient positive effectiveness values for fitting")
-       
+       if np.sum(valid_mask) < 3:
+           print_warning("Insufficient positive effectiveness values for fitting")
+           return None, effectiveness[0], None
+
        valid_attempts = attempts[valid_mask]
        valid_effectiveness = effectiveness[valid_mask]
        
        try:
-           # Initial parameter estimates
+           # Estimates
            initial_E_0 = valid_effectiveness[0]
            initial_lambda = 0.5
            
@@ -270,9 +273,9 @@ class DDI(ServiceBase):
            E_0_estimate, lambda_estimate = popt
            
            # Calculate R-squared using all original data points
-           y_predicted = self._exponential_model(attempts, E_0_estimate, lambda_estimate)
-           ss_residual = np.sum((effectiveness - y_predicted) ** 2)
-           ss_total = np.sum((effectiveness - np.mean(effectiveness)) ** 2)
+           y_predicted = self._exponential_model(valid_attempts, E_0_estimate, lambda_estimate)
+           ss_residual = np.sum((valid_effectiveness - y_predicted) ** 2)
+           ss_total = np.sum((valid_effectiveness - np.mean(valid_effectiveness)) ** 2)
            r_squared = 1 - (ss_residual / ss_total) if ss_total > 0 else 0
            
            return lambda_estimate, E_0_estimate, r_squared
@@ -297,6 +300,11 @@ class DDI(ServiceBase):
        Raises:
            ValueError: If lambda is non-positive or theta is invalid
        """
+       if lambda_val is None:
+           print_error("Lambda value is None, cannot calculate optimal attempts")
+           print_info("Ensure that the exponential fitting was successful.")
+           return None
+       
        if lambda_val <= 0:
            raise ValueError("Lambda must be positive for optimal attempts calculation")
        
@@ -316,9 +324,13 @@ class DDI(ServiceBase):
         norm_effectiveness = self.get_norm_debugging_influence(is_DDI=False)
         fitted_lambda, fitted_e_0, r_2 =  self.fit_exponential_decay(norm_effectiveness["DDI"])
         t_theta = []
-        for theta in self.theta:
-            t_theta.append(self.calculate_optimal_attempts(fitted_lambda, theta))
+        t_theta_ceiling = []
         
+        if fitted_lambda is not None:
+            for theta in self.theta:
+                t_theta.append(self.calculate_optimal_attempts(fitted_lambda, theta))
+            t_theta_ceiling = [int(np.ceil(t)) for t in t_theta]
+ 
         return {
             "E_0": norm_effectiveness["DDI"].get("E_0", None),
             "lambda": fitted_lambda,
@@ -326,14 +338,17 @@ class DDI(ServiceBase):
             "r_squared": r_2,
             "theta": self.theta,
             "t_theta": t_theta,
-            "t_theta_ceiling": [int(np.ceil(t)) for t in t_theta],
-            "fit_quality": "excellent" if r_2 > 0.9 else "good" if r_2 > 0.7 else "poor",
+            "t_theta_ceiling": t_theta_ceiling,
+            "fit_quality": "N/A" if r_2 is None else \
+                "excellent" if r_2 > 0.9 else "good" if r_2 > 0.7 else "poor",
             "A_phi": round(norm_effectiveness["overall_success_percent"], 4),
             "normalised_effectiveness": norm_effectiveness["DDI"]
         }
         
 
-    def plot_decay_curve(self, save_path: str = None, show_plot: bool = True):
+    def plot_decay_curve(self, 
+                         save_path: str = None, 
+                         show_plot: bool = True) -> None:
         """
         Plot the exponential decay curve with optimal attempt markers.
         
@@ -345,6 +360,11 @@ class DDI(ServiceBase):
             # Get DDI results
             ddi_results = self.get_DDI()
             norm_effectiveness = self.get_norm_debugging_influence(is_DDI=False)
+            
+            if ddi_results["lambda"] is None:
+                print_error("Lambda value is None, cannot plot decay curve")
+                print_info("Ensure that the exponential fitting was successful.")
+                return
             
             # Extract data for plotting
             attempts_data, effectiveness_data = self._extract_data_arrays(norm_effectiveness["DDI"])
@@ -448,8 +468,8 @@ class DDI(ServiceBase):
         
 
 if __name__ == "__main__":
-    ddi = DDI(model_name="phi4", dataset="Humaneval",
-              file_path="experiment_results/phi4_HumanEval_results.csv",
+    ddi = DDI(model_name="claude-3-7-sonnet-20250219", dataset="Humaneval",
+              file_path="experiment_results/claude-3-7-sonnet-20250219_HumanEval_results.csv",
               maximum_debugging_attempts=5,
               theta=[50, 80, 90, 95, 99])
     ddi()
