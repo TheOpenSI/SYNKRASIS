@@ -22,16 +22,18 @@ from data.HumanEval.HumanEval import HumanEval
 
 def main():
     try:
-        models = ["llama2:7b",
-                  "codellama:7b",
-                  "mistral:instruct",
-                  "deepseek-coder-v2:16b"]
-        
-        to_download = ["deepseek-coder:6.7b",
-                       "phi4:14b",
-                       "phi4-reasoning:14b"]
-        
-        all_models = models + to_download
+        all_models = [
+                      "llama3.1:8b", 
+                    #   "codegemma:7b", 
+                    # #   "qwen3:8b", # new ollama required
+                    #   "devstral:24b", 
+                    # #   "gemma3:12b", # new ollama required
+                    #   "gemma2:9b",
+                    # #   "deepseek-r1:8b", # new ollama required
+                    #   "granite-code:8b",
+                    #   "starcoder:7b",
+                    #   "granite3.3:8b"
+                      ]
         
         for a_model in all_models:
             try:
@@ -59,6 +61,10 @@ def main():
                 
                 pycapsule.run_pycapsule_experiment(data)
             except ValueError as e:
+                continue
+            except Exception as e:
+                # Caught ollama._types.ResponseError
+                print_error(f"Error running model {a_model}: {e}")
                 continue
         
         
