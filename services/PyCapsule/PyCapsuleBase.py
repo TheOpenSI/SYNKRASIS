@@ -46,7 +46,7 @@ from services.LLM.LLMBase import LLMBase
 from services.DDI.DDI import DDI
 from data.DatasetBase import DatasetBase
 from utils.output_message_format.output_colour import print_error, print_warning
-from utils.output_message_format.output_colour import print_success, print_pycapsule, print_model_output
+from utils.output_message_format.output_colour import print_success, print_pycapsule
 from modules.ErrorHandling import ErrorHandling
 from modules.ExampleCallDetection import ExampleCallDetection
 from modules.ChatHistory import ChatHistory
@@ -58,7 +58,8 @@ class PyCapsuleBase(ServiceBase):
                  llm: LLMBase,
                  maximum_attempts: int = 5,
                  timeout: int = 10,
-                 target_file_name: str = "/usr/src/app/main.py"):
+                 target_file_name: str = "/usr/src/app/main.py",
+                 fresh_start: int = None):
         """
         PyCapsule service class for generating and validating code.
         Args:
@@ -68,6 +69,7 @@ class PyCapsuleBase(ServiceBase):
             timeout (int, optional): Timeout period for time safe thread. Defaults to 10.
             target_file_name (str, optional): Target file name for error handling clipping. 
                 Defaults to "/usr/src/app/main.py".
+            fresh_start (int, optional): Will clear chat history at the given attempt.
 
         Raises:
             ValueError: If chat history is not enabled in LLM.
@@ -81,6 +83,7 @@ class PyCapsuleBase(ServiceBase):
         self.maximum_attempts = maximum_attempts
         self.timeout = timeout
         self.MOUNT_DIR = self.container.MOUNT_DIR_PATH
+        self.fresh_start = fresh_start
         
         self._set_prompt_paths()
         self._change_system_prompt(is_fix_mode = False)
@@ -129,8 +132,8 @@ class PyCapsuleBase(ServiceBase):
 
         Args:
             user_query (str): User query to generate code.
-            suppress_conversation_history (bool): Suppress the conversation history, get activated when 
-                pycapsule is in fix mode.
+            suppress_conversation_history (bool): Suppress the conversation history, 
+            gets activated when pycapsule is in fix mode.
         """
         pass
     
@@ -138,13 +141,15 @@ class PyCapsuleBase(ServiceBase):
     @abstractmethod
     def _get_fix_mode_query(self, response: CompletedProcess, meta_data: dict) -> str:
         """
-        Apply necessary error handling using the self.error_handling object to get the fix mode query.
+        Apply necessary error handling using the self.error_handling object to get 
+            the fix mode query.
         Use the self.error_handling object to extract the error message from the response.
         
         Args:
-            response (CompletedProcess): Response from the container with error code, stdout and stderr.
-            meta_data (dict): Metadata for the fix mode query, useful for dataset specific implementation.
-                e.g. HumanEval.
+            response (CompletedProcess): Response from the container with error code, 
+                stdout and stderr.
+            meta_data (dict): Metadata for the fix mode query, useful for dataset specific 
+                implementation.e.g. HumanEval.
             
         Returns:
             fix_mode_query (str): Fix mode query to debug the code.
@@ -163,9 +168,11 @@ class PyCapsuleBase(ServiceBase):
         If self._generated_code() expects a dict, update metadata's prompt.\n
 
         Args:
-            fix_mode_query (Union[str, dict]): Can be the query itself as str or a dict with metadata.
+            fix_mode_query (Union[str, dict]): Can be the query itself as str or 
+                a dict with metadata.
             suppress_conversation_history (bool): Suppress the conversation history.
-            meta_data (dict): Metadata for the fix mode query, useful for dataset specific implementation.
+            meta_data (dict): Metadata for the fix mode query, useful for dataset 
+                specific implementation.
         """
         pass
     
@@ -194,7 +201,8 @@ class PyCapsuleBase(ServiceBase):
         "meta_data_dict"  defaults to None for general usage.
         
         Args:
-            response (CompletedProcess): Response from the container with error code, stdout and stderr.
+            response (CompletedProcess): Response from the container with error code, 
+                stdout and stderr.
             data_point (Union[str, dict]): Either a datapoint as dict or string query.
         """
         pass
@@ -285,7 +293,8 @@ class PyCapsuleBase(ServiceBase):
         Will change system prompt, user query and attempt to fix the code.
 
         Args:
-            response (CompletedProcess): Response from the container with error code, stdout and stderr.
+            response (CompletedProcess): Response from the container with error code, 
+                stdout and stderr.
         Returns:
             Tuple (tuple[int, int]): return code and number of attempts made.
         """
@@ -297,15 +306,18 @@ class PyCapsuleBase(ServiceBase):
         while response.returncode != 0 and attempt_count < self.maximum_attempts:
             self._change_system_prompt(is_fix_mode=True)  # Changing the system prompt for fix mode
             
-            # Apply error handling to get the fix mode query
-            # fix_mode_query = self._get_fix_mode_query(response, meta_data_dict)
-
+            suppress_flag = False
+            
+            if self.fresh_start:
             # Debugging span experiment
-            fix_mode_query, suppress_flag = (self._fresh_start() 
-                                            #  if False # PyCapsule
-                                            #  if attempt_count % 1 == 0 # Pass@n
-                                             if attempt_count % 2 == 1 # Debug Span
-                                             else (self._get_fix_mode_query(response, meta_data_dict), False))
+                fix_mode_query, suppress_flag = (
+                    self._fresh_start() 
+                    if attempt_count % self.fresh_start == 0
+                    else (self._get_fix_mode_query(response, meta_data_dict), False)
+                    )
+            else:
+                # Apply error handling to get the fix mode query
+                fix_mode_query = self._get_fix_mode_query(response, meta_data_dict)
             
             # Updating code in container based on fix mode response
             self._update_code(fix_mode_query = fix_mode_query, 
@@ -352,7 +364,8 @@ class PyCapsuleBase(ServiceBase):
         Changes the system prompt for code generation.
         Reads the prompt from a file.
         Args:
-            is_fix_mode (bool, optional): If True, will change the prompt for fix mode. Defaults to False.
+            is_fix_mode (bool, optional): If True, will change the prompt for fix mode. 
+                Defaults to False.
         """
         prompt_file_path = self.CODE_FIX_PROMPT_PATH if is_fix_mode else self.CODE_GEN_PROMPT_PATH
 
@@ -389,7 +402,8 @@ class PyCapsuleBase(ServiceBase):
         flag = response.returncode  # 0 if code runs successfully
 
         if response.returncode != 0:
-            print_error("Generated code returned a non-zero exit code. Starting pycapsule in fix mode.")
+            print_error("Generated code returned a non-zero exit code. \
+                Starting pycapsule in fix mode.")
             # Fix mode
             flag, fix_mode_attempts = self._call_fix_code(response, user_query)
 
@@ -428,7 +442,8 @@ class PyCapsuleBase(ServiceBase):
             )
             
             print("#" * 50)
-            print(f"Solved {dataset.solved_count} problems, Unsolved {dataset.unsolved_count} problems")
+            print(f"Solved {dataset.solved_count} problems, \
+                Unsolved {dataset.unsolved_count} problems")
             print("#" * 50)
         
         exp_file_path = dataset.log_to_csv(model_name = self.llm.model_name)
@@ -438,7 +453,7 @@ class PyCapsuleBase(ServiceBase):
             file_path= exp_file_path,
             model_name = self.llm.model_name,
             maximum_debugging_attempts= self.maximum_attempts,
-            dataset = dataset.__class__.__name__
+            dataset = dataset.__class__.__name__.lower()
         )
         ddi()
 
@@ -456,7 +471,7 @@ class PyCapsuleBase(ServiceBase):
 
         print_success("PyCapsule resources cleaned up.")
        
-# ================================================================================================================
+# ==============================================================================================
 # For testing only
 @staticmethod
 def run_command(command: str = "whoami") -> str:

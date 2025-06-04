@@ -1,6 +1,7 @@
 import os
 import sys
 import pandas as pd
+import subprocess
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../..')))
 os.environ["TOKENIZERS_PARALLELISM"] = "false"
 
@@ -21,28 +22,44 @@ from data.HumanEval.HumanEval import HumanEval
 
 def main():
     try:
-        llm = Ollama(model_name="codestral:22b", # qwen 2.5 coder instruct 7B 
-                     enable_chat_history=True,
-                     max_history=1,
-                     verbose_switch=True)
+        models = ["llama2:7b",
+                  "codellama:7b",
+                  "mistral:instruct",
+                  "deepseek-coder-v2:16b"]
         
-        # llm = Claude(model_name = "claude-3-7-sonnet-20250219",
-        #              enable_chat_history=True,
-        #              max_history=1)
+        to_download = ["deepseek-coder:6.7b",
+                       "phi4:14b",
+                       "phi4-reasoning:14b"]
         
-        container = Container(image_name="synkrasis_pycapsule", 
-                              container_name="pycapsule_debug_span",
-                              mount_dir_name="he_codestral",
-                              shell_script_name="start.sh")
+        all_models = models + to_download
         
-        data = HumanEval(file_path="data/HumanEval/humaneval.jsonl") # humaneval base
-        # data = HumanEval(file_path="data/HumanEval/humaneval_et.jsonl") # humaneval et
-        
-        pycapsule = PyCapsuleHE(container=container,
-                                llm=llm,
-                                maximum_attempts=5)
-        
-        pycapsule.run_pycapsule_experiment(data)
+        for a_model in all_models:
+            try:
+                subprocess.run("docker rm pycapsule_debug_span", shell=True)
+                llm = Ollama(model_name=a_model,
+                            enable_chat_history=True,
+                            max_history=1,
+                            verbose_switch=True)
+                
+                # llm = Claude(model_name = "claude-3-7-sonnet-20250219",
+                #              enable_chat_history=True,
+                #              max_history=1)
+                
+                container = Container(image_name="synkrasis_pycapsule", 
+                                    container_name="pycapsule_debug_span",
+                                    mount_dir_name=f"he_{a_model}".replace(":", "_").replace(".", "_"),
+                                    shell_script_name="start.sh")
+                
+                data = HumanEval(file_path="data/HumanEval/humaneval.jsonl") # humaneval base
+                # data = HumanEval(file_path="data/HumanEval/humaneval_et.jsonl") # humaneval et
+                
+                pycapsule = PyCapsuleHE(container=container,
+                                        llm=llm,
+                                        maximum_attempts=5)
+                
+                pycapsule.run_pycapsule_experiment(data)
+            except ValueError as e:
+                continue
         
         
     finally:

@@ -19,10 +19,12 @@ class PyCapsuleHE(PyCapsuleBase):
     def __init__(self,
                  container: Container,
                  llm: LLMBase,
-                 maximum_attempts: int = 5):
+                 maximum_attempts: int = 5,
+                 fresh_start: int = None):
         super().__init__(pycapsule_container=container,
                          llm=llm,
-                         maximum_attempts=maximum_attempts)
+                         maximum_attempts=maximum_attempts,
+                         fresh_start=fresh_start)
         
     @staticmethod
     def _validate_metadata(function_name: str,
