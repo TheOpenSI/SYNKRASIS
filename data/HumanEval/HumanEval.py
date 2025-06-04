@@ -7,19 +7,24 @@ import pandas as pd
 
 from utils.output_message_format.output_colour import print_warning, print_error
 from data.DatasetBase import DatasetBase
+
 class HumanEval(DatasetBase):
     def __init__(self, 
                  file_path: str = os.path.join(os.path.dirname(os.path.abspath(__file__)), 
                                                "humaneval.jsonl"),
-                 subset_size: Optional[int] = None):
+                 subset_size: Optional[int] = None,
+                 **kwargs) -> None:
         """
         Initialize the HumanEval dataset loader.
 
         Args:
             file_path (str): Path to the JSONL file containing the dataset.
                              Defaults to 'human-eval-v2-20210705.jsonl' in the current directory.
+            subset_size (Optional[int]): Size of the subset to load. If None, the full dataset is used.
         """
-        super().__init__(file_path, subset_size)
+        super().__init__(file_path=file_path, 
+                         subset_size=subset_size,
+                         **kwargs)
 
 
     def _load_data(self) -> None:

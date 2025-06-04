@@ -20,11 +20,11 @@ class PyCapsuleHE(PyCapsuleBase):
                  container: Container,
                  llm: LLMBase,
                  maximum_attempts: int = 5,
-                 fresh_start: int = None):
+                 **kwargs) -> None:
         super().__init__(pycapsule_container=container,
                          llm=llm,
                          maximum_attempts=maximum_attempts,
-                         fresh_start=fresh_start)
+                         **kwargs)
         
     @staticmethod
     def _validate_metadata(function_name: str,

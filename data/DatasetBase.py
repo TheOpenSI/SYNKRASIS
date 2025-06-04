@@ -41,12 +41,22 @@ from utils.extractor.RegexExtractor import RegexExtractor
 
 
 class DatasetBase(ABC):
-    def __init__(self, file_path: str, subset_size: Optional[int] = None):
+    def __init__(self, 
+                 file_path: str, 
+                 subset_size: Optional[int] = None,
+                 output_dir: str = "experiment_results",
+                 suffix: str = "") -> None:
         """
         Initialize the dataset loader.
 
         Args:
             file_path (str): Path to the dataset file.
+            subset_size (Optional[int]): Subset size of the dataset. 
+                If None, the full dataset is used.
+            output_dir (str): Directory to save the results. Defaults to "experiment_results".
+            suffix (str): Suffix to append to the output file names, e.g. c2, fs.
+                Start with '_'.
+                Defaults to an empty string.
         """
         self.file_path: str = file_path
         self.subset_size: Optional[int] = subset_size
@@ -55,6 +65,8 @@ class DatasetBase(ABC):
         self.current_index: int = 0  # Current index in the dataset
         self.solved_count: int = 0 # Number of solved tasks
         self.unsolved_count: int = 0 # Number of unsolved tasks
+        self.output_dir: str = output_dir
+        self.suffix: str = suffix  # Suffix to append to the output file names
         
         self.extractor = Extractor()
         self.regex_extractor = RegexExtractor()
@@ -184,7 +196,7 @@ class DatasetBase(ABC):
             str: Path to the saved csv file.
         """
         df = pd.DataFrame(results, columns = column_names)
-        result_file_path = f"experiment_results/{model_name}_{dataset_name}_results.csv"
+        result_file_path = f"{self.output_dir}/{model_name}_{dataset_name}_results{self.suffix}.csv"
         df.to_csv(result_file_path, index = False)
         print_success(f"Results saved to {model_name}_results.csv")
         

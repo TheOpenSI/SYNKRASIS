@@ -23,49 +23,58 @@ from data.HumanEval.HumanEval import HumanEval
 def main():
     try:
         all_models = [
-                      "llama3.1:8b", 
+            "qwen2.5-coder:7b",
+            "phi4:14b"
+                    #   "llama3.1:8b", 
                     #   "codegemma:7b", 
                     # #   "qwen3:8b", # new ollama required
                     #   "devstral:24b", 
                     # #   "gemma3:12b", # new ollama required
                     #   "gemma2:9b",
-                    # #   "deepseek-r1:8b", # new ollama required
+                    #   "deepseek-r1:8b", # new ollama required
                     #   "granite-code:8b",
                     #   "starcoder:7b",
                     #   "granite3.3:8b"
                       ]
         
-        for a_model in all_models:
-            try:
-                subprocess.run("docker rm pycapsule_debug_span", shell=True)
-                llm = Ollama(model_name=a_model,
-                            enable_chat_history=True,
-                            max_history=1,
-                            verbose_switch=True)
-                
-                # llm = Claude(model_name = "claude-3-7-sonnet-20250219",
-                #              enable_chat_history=True,
-                #              max_history=1)
-                
-                container = Container(image_name="synkrasis_pycapsule", 
-                                    container_name="pycapsule_debug_span",
-                                    mount_dir_name=f"he_{a_model}".replace(":", "_").replace(".", "_"),
-                                    shell_script_name="start.sh")
-                
-                data = HumanEval(file_path="data/HumanEval/humaneval.jsonl") # humaneval base
-                # data = HumanEval(file_path="data/HumanEval/humaneval_et.jsonl") # humaneval et
-                
-                pycapsule = PyCapsuleHE(container=container,
-                                        llm=llm,
-                                        maximum_attempts=5)
-                
-                pycapsule.run_pycapsule_experiment(data)
-            except ValueError as e:
-                continue
-            except Exception as e:
-                # Caught ollama._types.ResponseError
-                print_error(f"Error running model {a_model}: {e}")
-                continue
+        reset_attempts = [[2, 4], [1, 3]]
+        
+        for a_model, attempts in zip(all_models, reset_attempts):
+            for attempt in attempts:
+                try:
+                    subprocess.run("docker rm pycapsule_debug_span", shell=True)
+                    llm = Ollama(model_name=a_model,
+                                enable_chat_history=True,
+                                max_history=1,
+                                verbose_switch=True)
+                    
+                    # llm = Claude(model_name = "claude-3-7-sonnet-20250219",
+                    #              enable_chat_history=True,
+                    #              max_history=1)
+                    
+                    container = Container(image_name="synkrasis_pycapsule", 
+                                        container_name="pycapsule_debug_span",
+                                        mount_dir_name=f"fs_he_{a_model}".replace(":", "_").replace(".", "_"),
+                                        shell_script_name="start.sh")
+                    
+                    data = HumanEval(file_path="data/HumanEval/humaneval.jsonl",
+                                     output_dir="experiment_results_fs",
+                                     suffix = f"_fs{attempt}") # humaneval base
+                    # data = HumanEval(file_path="data/HumanEval/humaneval_et.jsonl") # humaneval et
+                    
+                    pycapsule = PyCapsuleHE(container=container,
+                                            llm=llm,
+                                            maximum_attempts=5,
+                                            fresh_start=attempt,
+                                            ddi_output_dir="ddi_results_fs")
+                    
+                    pycapsule.run_pycapsule_experiment(data)
+                except ValueError as e:
+                    continue
+                except Exception as e:
+                    # Caught ollama._types.ResponseError
+                    print_error(f"Error running model {a_model}: {e}")
+                    continue
         
         
     finally:

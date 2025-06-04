@@ -59,7 +59,8 @@ class PyCapsuleBase(ServiceBase):
                  maximum_attempts: int = 5,
                  timeout: int = 10,
                  target_file_name: str = "/usr/src/app/main.py",
-                 fresh_start: int = None):
+                 fresh_start: int = None,
+                 ddi_output_dir: str = "ddi_results"):
         """
         PyCapsule service class for generating and validating code.
         Args:
@@ -70,6 +71,9 @@ class PyCapsuleBase(ServiceBase):
             target_file_name (str, optional): Target file name for error handling clipping. 
                 Defaults to "/usr/src/app/main.py".
             fresh_start (int, optional): Will clear chat history at the given attempt.
+                Defaults to None, which means no fresh start.
+            ddi_output_dir (str, optional): Directory to save DDI results. 
+                Defaults to "ddi_results".
 
         Raises:
             ValueError: If chat history is not enabled in LLM.
@@ -84,6 +88,7 @@ class PyCapsuleBase(ServiceBase):
         self.timeout = timeout
         self.MOUNT_DIR = self.container.MOUNT_DIR_PATH
         self.fresh_start = fresh_start
+        self.ddi_output_dir = ddi_output_dir
         
         self._set_prompt_paths()
         self._change_system_prompt(is_fix_mode = False)
@@ -453,7 +458,8 @@ class PyCapsuleBase(ServiceBase):
             file_path= exp_file_path,
             model_name = self.llm.model_name,
             maximum_debugging_attempts= self.maximum_attempts,
-            dataset = dataset.__class__.__name__.lower()
+            dataset = dataset.__class__.__name__.lower(),
+            output_dir = self.ddi_output_dir
         )
         ddi()
 
