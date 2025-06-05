@@ -25,9 +25,11 @@ class DDI(ServiceBase):
                  file_path: str,
                  model_name: str,
                  maximum_debugging_attempts: int,
+                 phi: int = 1,
                  dataset: str = "N/A",
                  theta: list[int] = [50, 80, 90, 95, 99],
-                 output_dir: str = "ddi_results") -> None:
+                 output_dir: str = "ddi_results",
+                 suffix:str = "") -> None:
         """
         Debugging Decay Index (DDI) implementation.
 
@@ -37,9 +39,13 @@ class DDI(ServiceBase):
             model_name (str): Name of the model used for debugging.
             maximum_debugging_attempts (int): Maximum number of debugging attempts to consider,
                 total attempts including the initial attempt would be maximum_attempts + 1.
+            phi (int): Number of fresh starts, default is 1.
             dataset (str): Name of the dataset used for debugging, default is "N/A".
-            theta (list[int]): List of effectiveness thresholds (0-100) for optimal attempt calculation.
-        output_dir (str): Directory to save DDI results, default is "ddi_results".
+            theta (list[int]): List of effectiveness thresholds (0-100) for optimal 
+                attempt calculation.
+            output_dir (str): Directory to save DDI results, default is "ddi_results".
+            suffix (str): Suffix to append to the output file names, default is empty.
+                Starting with "_" is recommended.
         """
         super().__init__()
         self.file_path = file_path
@@ -48,6 +54,8 @@ class DDI(ServiceBase):
         self.model_name = model_name
         self.dataset = dataset
         self.output_dir = output_dir
+        self.suffix = suffix
+        self.phi = phi
         
         
     def _extract_data_arrays(self, 
@@ -118,7 +126,7 @@ class DDI(ServiceBase):
         Args:
             result (dict): Dictionary containing DDI results to save.
         """            
-        file_path = f"{self._get_filename_prefix()}_DDI.json"
+        file_path = f"{self._get_filename_prefix()}_DDI{self.suffix}.json"
         try:
             with open(file_path, 'w') as f:
                 json.dump(result, f, indent=4)
@@ -415,7 +423,7 @@ class DDI(ServiceBase):
             plt.xlabel('Attempt', fontsize=12)
             plt.ylabel('Effectiveness (%)', fontsize=12)
             plt.title(f'Model: {self.model_name}, Dataset: {self.dataset}\n'
-                      f'DDI(θ = {self.theta}, φ = 1)\n'
+                      f'DDI(θ = {self.theta}, φ = {self.phi})\n'
                       f'E\u2080 = {ddi_results["E_0"]:.1f}%, '
                       f'λ = {fitted_lambda:.4f}, '
                       f'A\u1D60 = {ddi_results["A_phi"]}, '
@@ -452,8 +460,10 @@ class DDI(ServiceBase):
         try:
             ddi_results = self.get_DDI()
             self._save_DDI(ddi_results)
-            self.plot_decay_curve(save_path=f"{self._get_filename_prefix()}_DDI_decay_curve.png", 
-                                  show_plot=False)
+            self.plot_decay_curve(
+                save_path=f"{self._get_filename_prefix()}_DDI_decay_curve{self.suffix}.png", 
+                show_plot=False
+                )
         except Exception as e:
             print_error(f"Error during DDI analysis: {str(e)}")
             raise e        

@@ -23,21 +23,23 @@ from data.HumanEval.HumanEval import HumanEval
 def main():
     try:
         all_models = [
-            "qwen2.5-coder:7b",
-            "phi4:14b"
-                    #   "llama3.1:8b", 
-                    #   "codegemma:7b", 
-                    # #   "qwen3:8b", # new ollama required
-                    #   "devstral:24b", 
-                    # #   "gemma3:12b", # new ollama required
-                    #   "gemma2:9b",
-                    #   "deepseek-r1:8b", # new ollama required
-                    #   "granite-code:8b",
-                    #   "starcoder:7b",
-                    #   "granite3.3:8b"
-                      ]
+            "mistral:instruct",
+            "devstral:24b",
+            "deepseek-coder-v2:16b",
+            "codestral:22b"
+        #   "llama3.1:8b", 
+        #   "codegemma:7b", 
+        # #   "qwen3:8b", # new ollama required
+        #   "devstral:24b", 
+        # #   "gemma3:12b", # new ollama required
+        #   "gemma2:9b",
+        #   "deepseek-r1:8b", # new ollama required
+        #   "granite-code:8b",
+        #   "starcoder:7b",
+        #   "granite3.3:8b"
+        ]
         
-        reset_attempts = [[2, 4], [1, 3]]
+        reset_attempts = [[2, 4], [2, 3], [1, 2], [3, 5]]
         
         for a_model, attempts in zip(all_models, reset_attempts):
             for attempt in attempts:
@@ -66,7 +68,8 @@ def main():
                                             llm=llm,
                                             maximum_attempts=5,
                                             fresh_start=attempt,
-                                            ddi_output_dir="ddi_results_fs")
+                                            ddi_output_dir="ddi_results_fs",
+                                            ddi_suffix=f"_fs{attempt}")
                     
                     pycapsule.run_pycapsule_experiment(data)
                 except ValueError as e:

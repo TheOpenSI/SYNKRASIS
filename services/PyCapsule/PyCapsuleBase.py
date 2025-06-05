@@ -60,7 +60,8 @@ class PyCapsuleBase(ServiceBase):
                  timeout: int = 10,
                  target_file_name: str = "/usr/src/app/main.py",
                  fresh_start: int = None,
-                 ddi_output_dir: str = "ddi_results"):
+                 ddi_output_dir: str = "ddi_results",
+                 ddi_suffix: str = "") -> None:
         """
         PyCapsule service class for generating and validating code.
         Args:
@@ -89,6 +90,7 @@ class PyCapsuleBase(ServiceBase):
         self.MOUNT_DIR = self.container.MOUNT_DIR_PATH
         self.fresh_start = fresh_start
         self.ddi_output_dir = ddi_output_dir
+        self.ddi_suffix = ddi_suffix
         
         self._set_prompt_paths()
         self._change_system_prompt(is_fix_mode = False)
@@ -458,8 +460,10 @@ class PyCapsuleBase(ServiceBase):
             file_path= exp_file_path,
             model_name = self.llm.model_name,
             maximum_debugging_attempts= self.maximum_attempts,
+            phi= self.fresh_start if self.fresh_start else 1, # 1 is the init attempt
             dataset = dataset.__class__.__name__.lower(),
-            output_dir = self.ddi_output_dir
+            output_dir = self.ddi_output_dir,
+            suffix=self.ddi_suffix
         )
         ddi()
 
