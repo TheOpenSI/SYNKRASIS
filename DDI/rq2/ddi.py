@@ -23,10 +23,10 @@ from data.HumanEval.HumanEval import HumanEval
 def main():
     try:
         all_models = [
-            "mistral:instruct",
-            "devstral:24b",
-            "deepseek-coder-v2:16b",
-            "codestral:22b"
+            # "mistral:instruct",
+            # "devstral:24b",
+            # "deepseek-coder-v2:16b",
+            # "codestral:22b"
         #   "llama3.1:8b", 
         #   "codegemma:7b", 
         # #   "qwen3:8b", # new ollama required
@@ -34,21 +34,23 @@ def main():
         # #   "gemma3:12b", # new ollama required
         #   "gemma2:9b",
         #   "deepseek-r1:8b", # new ollama required
-        #   "granite-code:8b",
-        #   "starcoder:7b",
-        #   "granite3.3:8b"
+          "granite-code:8b",
+          "starcoder:7b",
+          "granite3.3:8b"
         ]
         
         reset_attempts = [[2, 4], [2, 3], [1, 2], [3, 5]]
         
-        for a_model, attempts in zip(all_models, reset_attempts):
-            for attempt in attempts:
+        # for a_model, attempts in zip(all_models, reset_attempts):
+        #     for attempt in attempts:
+        for a_model in all_models:
                 try:
                     subprocess.run("docker rm pycapsule_debug_span", shell=True)
                     llm = Ollama(model_name=a_model,
                                 enable_chat_history=True,
                                 max_history=1,
-                                verbose_switch=True)
+                                # verbose_switch=True
+                                )
                     
                     # llm = Claude(model_name = "claude-3-7-sonnet-20250219",
                     #              enable_chat_history=True,
@@ -56,20 +58,23 @@ def main():
                     
                     container = Container(image_name="synkrasis_pycapsule", 
                                         container_name="pycapsule_debug_span",
-                                        mount_dir_name=f"fs_he_{a_model}".replace(":", "_").replace(".", "_"),
+                                        # mount_dir_name=f"fs_he_{a_model}".replace(":", "_").replace(".", "_"),
+                                        mount_dir_name=f"he_{a_model}".replace(":", "_").replace(".", "_"),
                                         shell_script_name="start.sh")
                     
                     data = HumanEval(file_path="data/HumanEval/humaneval.jsonl",
-                                     output_dir="experiment_results_fs",
-                                     suffix = f"_fs{attempt}") # humaneval base
+                                    #  output_dir="experiment_results_fs",
+                                    #  suffix = f"_fs{attempt}"
+                                     )
                     # data = HumanEval(file_path="data/HumanEval/humaneval_et.jsonl") # humaneval et
                     
                     pycapsule = PyCapsuleHE(container=container,
                                             llm=llm,
                                             maximum_attempts=5,
-                                            fresh_start=attempt,
-                                            ddi_output_dir="ddi_results_fs",
-                                            ddi_suffix=f"_fs{attempt}")
+                                            # fresh_start=attempt,
+                                            # ddi_output_dir="ddi_results_fs",
+                                            # ddi_suffix=f"_fs{attempt}"
+                                            )
                     
                     pycapsule.run_pycapsule_experiment(data)
                 except ValueError as e:
