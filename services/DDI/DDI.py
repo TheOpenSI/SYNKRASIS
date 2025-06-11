@@ -25,7 +25,7 @@ class DDI(ServiceBase):
                  file_path: str,
                  model_name: str,
                  maximum_debugging_attempts: int,
-                 phi: int = 1,
+                 phi: int = 0,
                  dataset: str = "N/A",
                  theta: list[int] = [50, 80, 90, 95, 99],
                  output_dir: str = "ddi_results",
@@ -423,10 +423,10 @@ class DDI(ServiceBase):
             plt.xlabel('Attempt', fontsize=12)
             plt.ylabel('Effectiveness (%)', fontsize=12)
             plt.title(f'Model: {self.model_name}, Dataset: {self.dataset}\n'
-                      f'DDI(θ = {self.theta}, φ = {self.phi})\n'
+                      f'DDI(θ = data, {self.theta})\n'
                       f'E\u2080 = {ddi_results["E_0"]:.1f}%, '
                       f'λ = {fitted_lambda:.4f}, '
-                      f'A\u1D60 = {ddi_results["A_phi"]}, '
+                      f'A' + chr(0x2080 + self.phi) + f' = {ddi_results["A_phi"]}, '
                       f'R² = {r_squared:.4f}', fontsize=14)
             
             plt.legend(loc='upper right')
@@ -478,8 +478,8 @@ class DDI(ServiceBase):
         
 
 if __name__ == "__main__":
-    ddi = DDI(model_name="claude-3-7-sonnet-20250219", dataset="Humaneval",
-              file_path="experiment_results/claude-3-7-sonnet-20250219_HumanEval_results.csv",
+    ddi = DDI(model_name="devstral:24b", dataset="humaneval",
+              file_path="experiment_results/devstral:24b_HumanEval_results.csv",
               maximum_debugging_attempts=5,
               theta=[50, 80, 90, 95, 99])
     ddi()
