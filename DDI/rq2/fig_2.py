@@ -13,6 +13,9 @@ devstral = ["ddi_results/devstral:24b_humaneval_DDI.json",
 qwen = ["ddi_results/qwen2.5-coder_humaneval_DDI.json",
         "ddi_results_fs/qwen2.5-coder_humaneval_DDI_fs2.json",
         "ddi_results_fs/qwen2.5-coder_humaneval_DDI_fs4.json"]
+llama = ["ddi_results/llama3.1:8b_humaneval_DDI.json",
+         "ddi_results_fs/llama3.1:8b_humaneval_DDI_fs1.json",
+         "ddi_results_fs/llama3.1:8b_humaneval_DDI_fs2.json"]
 
 colours = ["red", "blue", "green", "purple"]
 
@@ -25,13 +28,16 @@ def get_model_name(model: str) -> str:
         return "Devstral:24b"
     elif "qwen" in model:
         return "Qwen2.5-Coder:7b"
+    elif "llama" in model:
+        return "Llama3.1:8b"
 
-vals = [0, 50, 80]
+# ₀₁₂₃₄₅₆₇₈₉
+vals = ["₀", "₅₀", "₈₀"]
 counter = 1
 
 fig, axes = plt.subplots(2, 2, figsize=(12, 8))
 
-for model, colour in zip([mistral, deepseek, devstral, qwen], colours):
+for model, colour in zip([mistral, deepseek, llama, qwen], colours):
     plt.subplot(2, 2, counter)
     for i, file in enumerate(model):
         with open(file, "r") as f:
@@ -41,14 +47,14 @@ for model, colour in zip([mistral, deepseek, devstral, qwen], colours):
                      color=colour,
                      linestyle="solid" if i == 0 else "--" if i == 1 else "dotted",
                      linewidth=1,
-                     label=f"{get_model_name(file)} - A_{vals[i]}")
+                     label=f"A{vals[i]}")
     
-    plt.legend(loc='upper right', fontsize=8, frameon=False)
-    plt.title(get_model_name(model[0]))
+    plt.legend(loc='upper right', fontsize=15, frameon=False)
+    plt.title(get_model_name(model[0]), fontdict={'fontsize': 18})
     counter += 1
 
 fig.supxlabel('Attempt', fontsize=14)
 fig.supylabel('Normalised Effectiveness', fontsize=14)
 
 plt.tight_layout()
-plt.savefig("DDI/rq2/fig_2.png", dpi=300)
+plt.savefig("DDI/rq2/fig_2_llama.png", dpi=300)

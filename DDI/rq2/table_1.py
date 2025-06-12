@@ -23,9 +23,9 @@ latex_table = """
 \\begin{table}[!h]
     \label{tab: ddi_results}
     \centering
-    \\begin{tabular}{p{4.2cm}p{1cm}p{1cm}p{2.2cm}p{1cm}}
+    \\begin{tabular}{p{4.2cm}p{1cm}p{1cm}p{0.8cm}p{2.2cm}p{1cm}}
         \hline
-        \\textbf{Model} & $E_0$ & \\textbf{$\lambda$} & \\textbf{$t_\\theta$} & $R^2$\\\\
+        \\textbf{Model} & $E_0$ & \\textbf{$\lambda$} & \\textbf{$A_\phi$} & \\textbf{$t_\\theta$} & $R^2$\\\\
         \hline
 """.strip() + "\n"
 
@@ -57,7 +57,7 @@ for model_name in sorted(model_data.keys()):
     data = model_data[model_name]
     try:
         latex_table += "\t" + f"""
-        \\textbf{{{model_name}}} & {data["E_0"]:.3f} & {data["lambda"]:.4f} & {data["t_theta_ceiling"]} & {data["fit_quality"]}\\\\
+        \\textbf{{{model_name}}} & {data["E_0"]:.3f} & {data["lambda"]:.4f} & {data["A_phi"]:.3f} & {data["t_theta_ceiling"]} & {data["fit_quality"]}\\\\
         """.strip() + "\n"
     except TypeError:
         latex_table += "\t" + f"""

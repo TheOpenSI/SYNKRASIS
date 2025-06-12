@@ -23,12 +23,13 @@ from data.HumanEval.HumanEval import HumanEval
 def main():
     try:
         all_models = [
+            "qwen2.5-coder"
             # "mistral:instruct",
             # "devstral:24b",
-            "deepseek-coder-v2:16b",
+            # "deepseek-coder-v2:16b",
             # "codestral:22b"
-          "llama3.1:8b", 
-          "codegemma:7b", 
+        #   "llama3.1:8b", 
+        #   "codegemma:7b", 
         # #   "qwen3:8b", # new ollama required
         #   "devstral:24b", 
         # #   "gemma3:12b", # new ollama required
@@ -36,10 +37,10 @@ def main():
         #   "deepseek-r1:8b", # new ollama required
         #   "granite-code:8b",
         #   "starcoder:7b",
-          "granite3.3:8b"
+        #   "granite3.3:8b"
         ]
         
-        reset_attempts = [[1, 2], [1, 2], [1, 2], [1, 2]]
+        reset_attempts = [[2, 4]]
         
         for a_model, attempts in zip(all_models, reset_attempts):
             for attempt in attempts:

@@ -427,7 +427,7 @@ class DDI(ServiceBase):
                       f'E\u2080 = {ddi_results["E_0"]:.1f}%, '
                       f'λ = {fitted_lambda:.4f}, '
                       f'A' + chr(0x2080 + self.phi) + f' = {ddi_results["A_phi"]}, '
-                      f'R² = {r_squared:.4f}', fontsize=14)
+                      f'R² = {r_squared:.4f}', fontsize=20)
             
             plt.legend(loc='upper right')
             
@@ -475,11 +475,3 @@ class DDI(ServiceBase):
         """
         print_success("DDI cleanup completed.")
         # No specific cleanup needed for this service, but can be overridden if necessary.
-        
-
-if __name__ == "__main__":
-    ddi = DDI(model_name="devstral:24b", dataset="humaneval",
-              file_path="experiment_results/devstral:24b_HumanEval_results.csv",
-              maximum_debugging_attempts=5,
-              theta=[50, 80, 90, 95, 99])
-    ddi()
