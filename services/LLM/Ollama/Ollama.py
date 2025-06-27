@@ -2,7 +2,6 @@
 # To add conversation history, set enable_chat_history=True in the Ollama object.
 # In self.generate_response(), change suppress_conversation_history to False, 
 # to include conversation history.
-# May disable model pulling, have to do this manually
 # Usage:
 #     - generate_response(user_prompt: str, 
 #                         context: List[str] = None, 
@@ -20,6 +19,7 @@ from typing import Optional, Dict, List
 from services.LLM.LLMBase import LLMBase
 from utils.output_message_format.output_colour import print_error, print_info, print_success, print_model_output
 from utils.code_parsing.code_parser import parse_response
+from utils.spinner.Spinner import Spinner
 
 
 class Ollama(LLMBase):
@@ -30,6 +30,7 @@ class Ollama(LLMBase):
                  verbose_switch: bool = False):
         # Init will not load the model in GPU, model gets loaded only when generate_response is called
         super().__init__(model_name, enable_chat_history, max_history, verbose_switch)
+        self.spinner = Spinner(message="Pulling model..")
         
         
     def _set_seed(self):
@@ -41,7 +42,9 @@ class Ollama(LLMBase):
         """
         Pull the model from the server
         """
+        self.spinner.start()
         ollama.pull(self.model_name)
+        self.spinner.stop()
 
 
     def generate_response(self,
@@ -56,7 +59,9 @@ class Ollama(LLMBase):
             suppress_conversation_history (bool): Whether to send conversation history.
         """
         # Conversation history
-        conversation_history = "" if suppress_conversation_history else self._prepare_conversation_history(user_prompt)
+        conversation_history = ("" 
+                                if suppress_conversation_history 
+                                else self._prepare_conversation_history(user_prompt))
 
         # Context
         context = self._prepare_context(context)
@@ -78,11 +83,9 @@ class Ollama(LLMBase):
                 if not self.chat_history:
                     self.init_chat_history(user_prompt)
 
-                # self.chat_history.add_interaction(user_prompt,
-                #                                   response["response"])  # for chat it's response["message"]["content"]
-                # TODO: Make this accessible from other servcices, e.g. pycapsule
-                _, code = parse_response(response["response"])
-                self.chat_history.add_interaction(user_prompt, code)
+                # For chat it's response["message"]["content"]
+                self.chat_history.add_interaction(user_prompt,
+                                                  response["response"])  
                 
             if self.verbose_switch:
                 print_model_output(full_query, "USER")
@@ -96,7 +99,6 @@ class Ollama(LLMBase):
             print_error(f"Caught ollama._types.ResponseError: {e}")
             print_info("Attempting to pull the model, please restart the service once pull is complete.")
             print_info("This may take a few minutes.")
-            print_info("No output will be visible at stdout until the model is pulled.")
             self._pull_model()
             print_success("Model pull complete. Please restart the service.")
         
