@@ -1,7 +1,6 @@
 # =======================================================================================
-# To add conversation history, set enable_chat_history=True in the Ollama object.
-# In self.generate_response(), change suppress_conversation_history to False, 
-# to include conversation history.
+# Replacement for Ollama Container.
+# Used ollama client to interact with the Ollama server.
 # Usage:
 #     - generate_response(user_prompt: str, 
 #                         context: List[str] = None, 
@@ -15,12 +14,12 @@ sys.path.append(f"{os.path.dirname(os.path.abspath(__file__))}/../../..")
 
 import ollama, torch
 from typing import Optional, Dict, List
+from ollama import Client
 
 from services.LLM.LLMBase import LLMBase
 from services.LLM.Ollama.OllamaPullManager import OllamaPullManager
 from utils.output_message_format.output_colour import print_error, print_info
 from utils.output_message_format.output_colour import print_success, print_model_output
-# from utils.code_parsing.code_parser import parse_response
 
 
 class Ollama(LLMBase):
@@ -28,7 +27,9 @@ class Ollama(LLMBase):
                  model_name: str = "llama3.1", # uses mistral as default model
                  enable_chat_history:bool = False, 
                  max_history: int = 3,
-                 verbose_switch: bool = False):
+                 verbose_switch: bool = False,
+                 container_name = "ollama",
+                 local_port: int = 11434):
         super().__init__(model_name, enable_chat_history, max_history, verbose_switch)
         self._tag_model() # tag the model to support model availability check
         self.pull_manager = OllamaPullManager(model_name=self.model_name,
@@ -37,6 +38,23 @@ class Ollama(LLMBase):
                                               max_retries= 3,
                                               fall_back_interval=60)
         self._pull_model()
+        self.ollama_client = self._set_local_client(container_name, local_port)
+        
+        
+    def _set_local_client(self,
+                          container_name: str,
+                          port: int) -> Client:
+        """
+        Set the local client for the Ollama container.
+
+        Args:
+            container_name (str): Name of the Ollama container.
+        """
+        client = ollama.Client(
+            host = f"http://{container_name}:{port}",
+            headers = {"Content-Type": "application/json"}
+        )
+        return client
         
         
     def _tag_model(self) -> None:
@@ -83,7 +101,7 @@ class Ollama(LLMBase):
         full_query = self._prepare_prompt(messages) 
         
         # Generate response from the model
-        response = ollama.generate(model = self.model_name, prompt = full_query)
+        response = self.ollama_client.generate(model = self.model_name, prompt = full_query)
 
         # Add the interaction to chat history
         if self.enable_chat_history and response:

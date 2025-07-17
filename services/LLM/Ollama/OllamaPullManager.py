@@ -1,3 +1,11 @@
+# =======================================================================================
+# OllamaPullManager.py
+# OllamaPullManager to manage the pulling of models from the Ollama server with fail-safe
+# interventions.
+# Usage:
+#     - pull_model() -> None
+#     - get_intervention_log() -> List[Dict[str, Any]]
+# =======================================================================================
 import os, sys
 sys.path.append(f"{os.path.dirname(os.path.abspath(__file__))}/../../..")
 
@@ -88,7 +96,7 @@ class OllamaPullManager:
                else False
         
         
-    def _pull_model(self) -> None:
+    def pull_model(self) -> None:
         """
         Pull the model with the specified mode
         """
@@ -137,7 +145,7 @@ class OllamaPullManager:
             print_info(f"Starting download (Intervention {intervention_idx + 1}/{len(self.interventions)}"
                        f" at {target_percentage}%)...")
             
-            self.start_download()
+            self._start_download()
             
             # Monitor progress until target percentage
             while self._is_pulling:
@@ -152,7 +160,7 @@ class OllamaPullManager:
                     
                     print(f"\nIntervention {intervention_idx + 1}/5 at {self._current_percentage:.1f}% - "
                           "Restarting...")
-                    self.stop_download()
+                    self._stop_download()
                     time.sleep(2)  # Brief pause before restart
                     break
                 
@@ -180,7 +188,7 @@ class OllamaPullManager:
     
     def _pull_basic(self):
         """Basic pull without interventions"""
-        self.start_download()
+        self._start_download()
         
         while self._is_pulling:
             time.sleep(1)
@@ -188,7 +196,7 @@ class OllamaPullManager:
         return self._download_completed
     
     
-    def start_download(self):
+    def _start_download(self):
         """
         Start download in a separate thread
         """
@@ -198,7 +206,7 @@ class OllamaPullManager:
         self._download_thread.start()
     
     
-    def stop_download(self):
+    def _stop_download(self):
         """Stop the download thread"""
         self._should_stop = True
         if self._download_thread and self._download_thread.is_alive():
@@ -258,7 +266,7 @@ class OllamaPullManager:
 
         for attempt in range(max_attempts):
             print_info(f"{self.fall_back_interval}s interval attempt {attempt + 1}/{max_attempts}")
-            self.start_download()
+            self._start_download()
             
             for _ in range(5):
                 time.sleep(self.fall_back_interval/5)
@@ -268,7 +276,7 @@ class OllamaPullManager:
                     return True
 
             print_info(f"{self.fall_back_interval}s interval reached, restarting...")
-            self.stop_download()
+            self._stop_download()
             time.sleep(2)
 
         return False
@@ -277,9 +285,3 @@ class OllamaPullManager:
     def get_intervention_log(self):
         """Get log of completed interventions"""
         return self._completed_interventions
-    
-    
-    
-if __name__ == "__main__":
-    manager = OllamaPullManager(model_name="qwen2.5-coder", mode="stochastic")
-    manager._pull_model()
