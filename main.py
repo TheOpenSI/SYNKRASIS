@@ -17,10 +17,8 @@ from utils.resource.resource_mg_util import call_cleanup
 
 def main():
     try:
-        # Huggingface transformers
-        llm = HF_LLM(llm_config_file="config_files/llm_config.yaml")
-        llm.generate_response("Write a fibonacci function in python.")
-        
+        llm = Ollama()
+        llm.generate_response("What's the capital of France?")
         
     finally:
         # Warning resource_tracker: There appear to be .* leaked semaphore objects"

@@ -17,34 +17,42 @@ import ollama, torch
 from typing import Optional, Dict, List
 
 from services.LLM.LLMBase import LLMBase
-from utils.output_message_format.output_colour import print_error, print_info, print_success, print_model_output
+from services.LLM.Ollama.OllamaPullManager import OllamaPullManager
+from utils.output_message_format.output_colour import print_error, print_info
+from utils.output_message_format.output_colour import print_success, print_model_output
 from utils.code_parsing.code_parser import parse_response
-from utils.spinner.Spinner import Spinner
 
 
 class Ollama(LLMBase):
     def __init__(self, 
-                 model_name: str = "mistral", # uses mistral as default model
+                 model_name: str = "llama3.1", # uses mistral as default model
                  enable_chat_history:bool = False, 
                  max_history: int = 3,
                  verbose_switch: bool = False):
-        # Init will not load the model in GPU, model gets loaded only when generate_response is called
+        # Init won't load the model in GPU, model gets loaded only when generate_response is called
         super().__init__(model_name, enable_chat_history, max_history, verbose_switch)
-        self.spinner = Spinner(message="Pulling model..")
+        self._tag_model() # tag the model to support model availability check
+        self.pull_manager = OllamaPullManager(model_name=self.model_name,
+                                              mode="stochastic",
+                                              interventions=[85, 95],
+                                              max_retries= 3,
+                                              fall_back_interval=60)
+        self._pull_model()
         
         
-    def _set_seed(self):
-        torch.manual_seed(42)
-        torch.cuda.manual_seed_all(42)
+    def _tag_model(self) -> None:
+        """
+        Tag the model with latest if not already tagged.
+        """
+        if ":" not in self.model_name:
+            self.model_name = f"{self.model_name}:latest"
 
 
     def _pull_model(self):
         """
-        Pull the model from the server
+        Pull the model from the server with progress tracking
         """
-        self.spinner.start()
-        ollama.pull(self.model_name)
-        self.spinner.stop()
+        self.pull_manager._pull_model()
 
 
     def generate_response(self,
@@ -72,7 +80,8 @@ class Ollama(LLMBase):
                     {"role": "Conversation", "content": conversation_history},
                     {"role": "Context", "content": context},
                     {"role": "User", "content": user_prompt}]
-        full_query = self._prepare_prompt(messages) # bos_token is empty by default, applies default jinja template
+        # bos_token is empty by default, applies default jinja template
+        full_query = self._prepare_prompt(messages) 
         
         try:
             # Generate response from the model
@@ -97,10 +106,13 @@ class Ollama(LLMBase):
 
         except ollama.ResponseError as e:
             print_error(f"Caught ollama._types.ResponseError: {e}")
-            print_info("Attempting to pull the model, please restart the service once pull is complete.")
+            print_info("Attempting to pull the model again.")
             print_info("This may take a few minutes.")
             self._pull_model()
-            print_success("Model pull complete. Please restart the service.")
+            # Retry the response generation after pulling the model
+            return self.generate_response(user_prompt, 
+                                          context, 
+                                          suppress_conversation_history)
         
         
     def cleanup(self):
