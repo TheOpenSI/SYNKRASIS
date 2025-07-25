@@ -17,7 +17,6 @@ sys.path.append(f"{os.path.dirname(os.path.abspath(__file__))}/../..")
 
 import logging
 import logging.handlers
-import os
 from threading import Lock
 
 
