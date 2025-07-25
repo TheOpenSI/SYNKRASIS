@@ -174,11 +174,11 @@ class Logger:
         Clean up logger resources - close all handlers
         """
         if self.logger:
+            self.logger.info(f"Logger cleanup completed for service: {self.service_name}")
             for handler in self.handlers:
                 handler.close()
                 self.logger.removeHandler(handler)
             self.handlers.clear()
-            self.logger.info(f"Logger cleanup completed for service: {self.service_name}")
 
 # ===============================================================================================
 
