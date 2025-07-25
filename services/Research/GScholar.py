@@ -75,7 +75,7 @@ class GScholar:
         for match in matches:
             path_type = match[0]  # 'pdf' or 'abs'
             paper_id = match[1]   # The paper ID like '2024.12345'
-            pdf_url = f"https://arxiv.org/pdf/{paper_id}.pdf"
+            pdf_url = f"https://arxiv.org/pdf/{paper_id}"
             
             # Store information about what we found
             link_info = {
@@ -223,3 +223,11 @@ class GScholar:
                 break
         
         return papers
+    
+    
+if __name__ == "__main__":
+    gscholar = GScholar(max_results=5, base_delay=2.0)
+    results = gscholar.paper_search("code vulnerability for LLM generated code")
+
+    for paper in results:
+        print(paper)
