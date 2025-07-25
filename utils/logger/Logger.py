@@ -104,7 +104,7 @@ class Logger:
         """
         Set up the logger with rotating file handler
         """
-        log_directory = 'logs'
+        log_directory = 'service_logs'
         if not os.path.exists(log_directory):
             os.makedirs(log_directory)
         
