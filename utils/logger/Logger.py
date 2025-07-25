@@ -117,7 +117,7 @@ class Logger:
         
         # Logging formatter
         formatter = logging.Formatter(
-            '%(asctime)s - %(name)s - %(levelname)s - %(funcName)s:%(lineno)d - %(message)s'
+            '%(asctime)s - %(levelname)s - %(funcName)s:%(lineno)d - %(message)s'
         )
         
         # Set up rotating file handler (10MB max, keep 5 backups)
