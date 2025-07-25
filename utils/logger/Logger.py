@@ -30,9 +30,13 @@ class Logger:
     _instances = {}  # Dictionary to store one logger per service class
     _lock = Lock()
     
-    def __new__(cls, service_name) -> Logger:
+    def __new__(cls, 
+                service_name: str, 
+                log_level: str) -> Logger:
         """
         Ensure singleton pattern per service name
+        Singleton does not care about log level, so 2 objects with same service name
+        will share the same logger instance regardless of log level.
         
         Args:
             service_name: Name of the service to create or get logger for
@@ -46,21 +50,54 @@ class Logger:
         return cls._instances[service_name]
 
 
-    def __init__(self, service_name: str) -> None:
+    def __init__(self, 
+                 service_name: str,
+                 log_level: str) -> None:
         """
         Initialise logger for the service if not already initialized
         
         Args:
             service_name: Name of the service to create logger for
+            log_level: String representation of log level (DEBUG, INFO, WARNING, ERROR, CRITICAL)
         """
         if self._initialised:
             return
             
         self.service_name = service_name
+        self.log_level = self._parse_log_level(log_level)
         self.logger = None
         self.handlers = []
         self._setup_logger()
         self._initialised = True
+        
+        
+    def _parse_log_level(self, log_level: str) -> int:
+        """
+        Convert string log level to logging module constant
+        
+        Args:
+            log_level: String representation of log level
+            
+        Returns:
+            Integer constant from logging module
+            
+        Raises:
+            ValueError: If log_level is not a valid logging level
+        """
+        level_mapping = {
+            'DEBUG': logging.DEBUG,      # 10 - Most verbose
+            'INFO': logging.INFO,        # 20 - General information
+            'WARNING': logging.WARNING,  # 30 - Something unusual happened
+            'ERROR': logging.ERROR,      # 40 - Something went wrong
+            'CRITICAL': logging.CRITICAL # 50 - Severe problems
+        }
+        target_level = log_level.upper()
+
+        if target_level not in level_mapping:
+            valid_levels = ', '.join(level_mapping.keys())
+            raise ValueError(f"Invalid log level '{log_level}'. Valid levels are: {valid_levels}")
+        
+        return level_mapping[target_level]
     
     
     def _setup_logger(self) -> None:
@@ -73,7 +110,7 @@ class Logger:
         
         
         self.logger = logging.getLogger(f'Logger.{self.service_name}')
-        self.logger.setLevel(logging.DEBUG)
+        self.logger.setLevel(self.log_level)
         
         # Prevent duplicate handlers if logger already exists
         if self.logger.handlers:
@@ -91,7 +128,7 @@ class Logger:
             maxBytes=10*1024*1024,  # 10MB
             backupCount=5
         )
-        rotating_handler.setLevel(logging.DEBUG)
+        rotating_handler.setLevel(self.log_level)
         rotating_handler.setFormatter(formatter)
         
         # Add handler to logger and track it
@@ -152,7 +189,7 @@ class DatabaseService(ServiceBase):
     """Example service class using the logger"""
     
     def __init__(self):
-        self.logger = Logger('DatabaseService')
+        self.logger = Logger('DatabaseService', 'INFO')
         self.logger.info("DatabaseService instance created")
     
     def connect(self):
@@ -172,7 +209,7 @@ class APIService(ServiceBase):
     """Another example service class using the logger"""
     
     def __init__(self):
-        self.logger = Logger('APIService')
+        self.logger = Logger('APIService', 'INFO')
         self.logger.info("APIService instance created")
     
     def handle_request(self, request_id):
