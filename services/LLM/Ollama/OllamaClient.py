@@ -1,6 +1,6 @@
 # =======================================================================================
 # Replacement for Ollama Container.
-# Used ollama client to interact with the Ollama server.
+# Uses the ollama client to interact with the Ollama server.
 # Usage:
 #     - generate_response(user_prompt: str, 
 #                         context: List[str] = None, 
