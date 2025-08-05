@@ -90,7 +90,7 @@ class OllamaPullManager:
     
     def _is_model_available(self):
         """
-        Check if the model is avaiable on the server.
+        Check if the model is available on the server.
         """
         available_models = self._get_available_models()
         return True \
