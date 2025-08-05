@@ -1,5 +1,6 @@
 # =======================================================================================
 # Ollama container class for running ollama from the official Ollama container.
+# This implementation runs shell commands directly to interact with the ollama container.
 # Usage:
 #     - generate_response(user_prompt: str, 
 #                         context: List[str] = None, 
