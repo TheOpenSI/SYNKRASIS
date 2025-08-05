@@ -26,7 +26,7 @@ class OllamaPullManager:
                  fall_back_interval: int = 60,
                  ollama_client: ollama.Client = None):
         """
-        OllamaPullManager to mange fail-safe model pulling
+        OllamaPullManager to manage fail-safe model pulling
 
         Args:
             model_name (str): Name of the model to pull
