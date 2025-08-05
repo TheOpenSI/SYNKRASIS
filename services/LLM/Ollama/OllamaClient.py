@@ -22,9 +22,9 @@ from utils.output_message_format.output_colour import print_error, print_info
 from utils.output_message_format.output_colour import print_success, print_model_output
 
 
-class Ollama(LLMBase):
+class OllamaClient(LLMBase):
     def __init__(self, 
-                 model_name: str = "llama3.1", # uses mistral as default model
+                 model_name: str = "mistral", # uses mistral as default model
                  enable_chat_history:bool = False, 
                  max_history: int = 3,
                  verbose_switch: bool = False,
@@ -32,13 +32,14 @@ class Ollama(LLMBase):
                  local_port: int = 11434):
         super().__init__(model_name, enable_chat_history, max_history, verbose_switch)
         self._tag_model() # tag the model to support model availability check
+        self.ollama_client = self._set_local_client(container_name, local_port)
         self.pull_manager = OllamaPullManager(model_name=self.model_name,
                                               mode="stochastic",
                                               interventions=[85, 95],
                                               max_retries= 3,
-                                              fall_back_interval=60)
+                                              fall_back_interval=60,
+                                              ollama_client=self.ollama_client)
         self._pull_model()
-        self.ollama_client = self._set_local_client(container_name, local_port)
         
         
     def _set_local_client(self,

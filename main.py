@@ -13,12 +13,19 @@ from services.Container.Container import Container
 from utils.output_message_format.output_colour import print_model_output, print_info, print_error 
 from utils.output_message_format.output_colour import print_success, print_warning
 from utils.resource.resource_mg_util import call_cleanup
+from utils.ascii.synkrasis import print_synkrasis_logo
 
 
 def main():
+    print_synkrasis_logo()
     try:
         llm = Ollama()
-        llm.generate_response("What's the capital of France?")
+        while True:
+            query = input("Enter your query (or 'exit' to quit): ")
+            if query.lower() == 'exit':
+                break
+            llm.generate_response(query)
+
         
     finally:
         # Warning resource_tracker: There appear to be .* leaked semaphore objects"

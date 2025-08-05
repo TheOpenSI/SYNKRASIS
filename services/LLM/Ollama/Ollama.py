@@ -25,7 +25,7 @@ from utils.output_message_format.output_colour import print_success, print_model
 
 class Ollama(LLMBase):
     def __init__(self, 
-                 model_name: str = "llama3.1", # uses mistral as default model
+                 model_name: str = "mistral", # uses mistral as default model
                  enable_chat_history:bool = False, 
                  max_history: int = 3,
                  verbose_switch: bool = False):
