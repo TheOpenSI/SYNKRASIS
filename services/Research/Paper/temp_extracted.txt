@@ -1,0 +1,687 @@
+# **The Debugging Decay Index: Rethinking Debugging** **Strategies for Code LLMs**
+
+**Muntasir Adnan** [1,*] **and Carlos C. N. Kuhn** [1]
+
+
+1 Open Source Institute, University of Canberra, Bruce, Canberra, Australia
+- Corresponding Author: Adnan.adnan@canberra.edu.au
+
+
+**ABSTRACT**
+
+
+The effectiveness of AI debugging follows a predictable exponential decay pattern; most models lose 60-80% of their debugging
+capability within just 2-3 attempts, despite iterative debugging being a critical capability for practical code generation systems.
+We introduce the Debugging Decay Index (DDI), a mathematical framework that quantifies when debugging becomes ineffective
+and predicts intervention points. Our strategic fresh start approach shifts from exploitation to exploration at strategic points in
+the debugging process, demonstrating that well-timed interventions can rescue the effectiveness of debugging. DDI reveals
+a fundamental limitation in current AI debugging and provides the first quantitative framework for optimising iterative code
+generation strategies.
+
+
+**Introduction**
+
+
+The advent of large language models (LLMs) has transformed automated code generation, enabling developers to produce
+functional code with remarkable speed and scale [1] . Recent efforts have shifted toward debugging-based code generation, where
+LLMs iteratively refine their output based on compiler feedback or error messages, mirroring traditional software development
+practices [2][–][5] . This iterative approach represents a fundamental departure from single-pass generation, yet the underlying
+dynamics of debugging-based LLM-guided code generation remain critically underexplored. Existing studies often apply an
+arbitrary number of debugging attempts without examining their optimal extent or effectiveness over continuous iterations [2][–][4] .
+This approach incurs significant computational costs and lacks methodological rigour in determining when additional iterations
+cease to yield meaningful improvements. Preliminary research and our analysis suggest that LLM-guided debugging typically
+follows an exponential decay pattern, where debugging effectiveness diminishes rapidly with successive attempts [4] . However,
+no systematic work has been conducted to characterise this decay phenomenon or explore strategies to break these patterns for
+improved performance. This pattern of diminishing returns in iterative LLM approaches extends beyond code generation, with
+recent research on reasoning models demonstrating similar complexity-dependent limitations where self-correction capabilities
+plateau and models either overthink simple problems or fail entirely on complex ones [6], suggesting a natural ceiling that warrants
+systematic investigation.
+Furthermore, as debugging-based LLM-guided code generation becomes increasingly prevalent, evaluation metrics must
+evolve beyond traditional single-pass assessments [7][,] [8] to account for the iterative nature of the process. Current evaluation
+approaches treat code as static artefacts rather than as the product of a dynamic development process, overlooking the significant
+quality enhancements that often emerge through systematic debugging and refinement [9] . This limitation becomes increasingly
+problematic as the field moves toward debugging-based approaches that more closely align with human software development
+practices [10] . Single-pass metrics such as _pass_ @ _k_ [7] measure the probability that at least one correct solution exists among _k_
+independently generated candidates. However, this approach does not guarantee diversity among the generated candidates. It
+fails to account for the iterative debugging process that is central to practical software development workflows [10], and relies
+solely on manually written test cases [11] .
+This study examines the effectiveness of repeated debugging attempts in LLM-based code generation and investigates
+strategic interventions to enhance the debugging process. To address the limitations of existing evaluation metrics, we propose
+a novel evaluation framework: the **Debugging Decay Index (DDI)** . The DDI metric provides a unified assessment of LLM
+coding proficiency by modelling the exponential effectiveness decay observed in iterative debugging processes. Our framework
+computes strategic intervention timing _t_ _θ_ based on configurable effectiveness decay thresholds _θ_, returning a comprehensive
+evaluation tuple ( _E_ 0 _,_ _λ_ _,t_ _θ_ _,_ _R_ [2] ) that captures initial performance, decay sustainability, strategic stopping points, and model
+fit quality. This multi-dimensional approach enables nuanced evaluation across different aspects of the code generation and
+debugging pipeline. Our investigation addresses the following research questions:
+
+
+   - **RQ1 (Debugging Window)** : How many debugging attempts maximise the effectiveness of LLM-generated code before
+
+
+1
+
+
+further iterations yield diminishing returns, and how do these attempt windows vary across different model architectures?
+
+
+   - **RQ2 (DDI)** : How can we develop a unified evaluation metric that comprehensively assesses LLM code generation
+and debugging capabilities, quantifying initial performance, sustained effectiveness, and iterative refinement capability
+encompassing both reasoning proficiency and instruction-following competency across diverse model architectures?
+
+
+   - **RQ3 (Strategic Fresh Starts)** : Based on the optimal debugging windows identified in RQ1 and the decay characteristics
+quantified in RQ2, to what extent can implementing fresh start strategies (reinitiating the code generation process) after
+reaching effectiveness thresholds improve overall accuracy compared to continued iterative refinement within the same
+generation context?
+
+
+**Literature Review**
+
+
+**Evaluation Metric**
+
+Code-generating LLMs are typically evaluated based on functional correctness or whether the generated code effectively solves
+the given task. In this paradigm, the _pass_ @ _k_ metric [7] has become a standard measure. Pass@k is the probability that at least
+one of _k_ independently generated solutions to a problem passes all unit tests. Pass@k can be written as 
+
+_pass_ @ _k_ = 1 _−_ P( _all incorrect_ )
+
+
+The unbiased [7][,] [8] estimation formula is 
+
+_pass_ @ _k_ = 1 _−_ [(] _[n][−]_ _k_ _[c]_ [)]
+( ~~_[n]_~~ _k_ [)]
+
+
+Where _n_ is the total number of samples generated, _n ≥_ _k_ and _c_ of them pass. One can draw _n ≥_ _k_ samples and count the number
+of solutions _c_ that pass [8] . Numerous subsequent works on LLM-guided code generation have used _pass_ @ _k_ . For example,
+CodeT [12] and Top Pass [13] evaluated various models on standard benchmarks using the _pass_ @ _k_ metric. In MBR-EXEC [14],
+authors measured pass@k for HumanEval [7], Mostly Basic Python Programming(MBPP) [15] to compare instruction tuning. Code
+generation benchmark leaderboards and evaluations of programming-focused large language models consistently report pass@k
+metrics (typically k=1, 5, 10, and occasionally up to k=100) as a standard method for model comparison [16][–][20] . The elegance of
+this metric lies in its simplicity and direct correlation with functionality; a model that can generate at least one correct solution
+within k attempts demonstrates meaningful capability in code generation tasks. Importantly, _pass_ @ _k_ is a binary, functional
+metric; it only cares whether any generated solution is entirely correct.
+Building upon this foundation, researchers have conducted thorough investigations into the pass@k metric’s characteristics,
+examining its sensitivity to both the sample size ( _k_ ) and the inherent difficulty of programming problems [16][,] [20][–][22] . A critical
+limitation identified is the metric’s sole reliance on provided test suites, which may not comprehensively verify all aspects of
+code correctness or efficiency [21] . This concern was empirically validated when researchers augmented the standard HumanEval
+benchmark with more rigorous test cases (creating HumanEval+ [20] ), resulting in a significant performance drop of approximately
+20-30% across various models. A more fundamental concern relates to how optimising for _pass_ @ _k_ can distort model behaviour
+and evaluation priorities. Top Pass [13] introduced a ranking model that directly optimises for this metric, revealing a key
+limitation: _pass_ @ _k_ rewards getting one solution correct over producing multiple near-correct solutions. This approach fails to
+reward quick convergence and may allow models to game the metric by generating variants of the same algorithm rather than
+exploring diverse approaches. Complementary findings revealed that 42% of code generations failing unit tests were still rated
+valuable by programmers and proposed a hybrid metric [23] combining functional correctness with syntactic similarity, which
+achieved a 14% stronger correlation with programmer-perceived value. These findings suggest that evaluation metrics should
+consider not only binary correctness but also how effectively code can be refined through debugging. In response to these
+limitations, several research works have proposed several variations of pass@k. The count@k metric [24] counts how many of k
+attempts are correct, while AlphaCode introduced n@k [16] that generalises pass@k to measure exactly n correct solutions out
+of k attempts. Addressing the need to recognise partially correct solutions, the pass-ratio@n metric [25] averages the squared
+test-pass ratio across n generated code samples. This approach gives partial credit to nearly-correct solutions, addressing the
+granularity that _pass_ @ _k_ lacks.
+While these functionality-based metrics dominate code generation evaluation, many researchers still report non-functional
+metrics such as BLEU [26], CodeBLEU [27], or ROUGE [28] to measure syntactic similarity. These metrics are not replacements for
+_pass_ @ _k_ but often accompany it to gauge quality aspects beyond functional correctness. While a few orthogonal approaches
+exist, they all fail to capture the iterative nature of code development and the debugging capabilities of LLMs.
+Our proposed Debugging Decay Index (DDI) addresses this gap by focusing on the iterative path to functional correctness
+rather than arbitrary sampling. Unlike traditional metrics, DDI measures how effectively models leverage debugging feedback to
+
+
+**2/10**
+
+
+improve a solution until it achieves functional correctness iteratively. This approach acknowledges that real-world programming
+rarely involves generating multiple independent attempts; instead, developers iteratively refine their code through debugging
+cycles. By quantifying the efficiency of this debugging process, DDI provides a reliable evaluation of how models would
+perform in practical software development contexts, where strategic iteration, rather than random sampling, is the path to
+successful code.
+
+
+**Debugging**
+Researchers have explored dynamic approaches to incorporate execution feedback and debugging capabilities in LLM-guided
+code generation. Recent work [29] investigated debugging in two distinct contexts: in-context debugging, which involves
+inspecting intermediate execution states, and post-context debugging, which focuses on analysing error results after complete
+execution. Building on this foundation, the SELF-DEBUGGING framework [5] demonstrated how LLMs can analyse execution
+results and explain their own generated code line by line, mirroring approaches developed initially for human developers [30] . The
+framework allowed for a maximum of 10 debugging attempts, but the researchers observed that successful debugging typically
+concluded within just three iterations. By comparison, MapCoder [3] implemented a more extensive debugging protocol, allowing
+up to 25 attempts, but limiting them to a maximum of 5 attempts per individual plan. The authors reported that while increased
+debugging iterations generally improved performance, this relationship was not strictly linear across all datasets. Notably, their
+results for HumanEval-ET did not follow the expected proportional improvement trend, indicating potential dataset-specific
+considerations in debugging efficacy. Similarly, the Large Language Model Debugger (LDB) [2] employed 10 debugging
+attempts in their standard configuration, with additional experiments using up to 20 attempts on the HumanEval dataset. Their
+findings revealed a continuous but diminishing improvement trend, with gains becoming increasingly marginal after the fifth
+attempt. The subsequent 15 attempts collectively yielded only 2.4% additional improvement. PyCapsule [4] implemented a
+more streamlined approach compared to MapCoder while still achieving state-of-the-art (SOTA) performance across several
+benchmark datasets. The framework employed just five debugging attempts beyond the initial solution and fitted the normalised
+debugging effectiveness to an exponential decay function, revealing that effectiveness usually diminishes dramatically after
+the third attempt and follows an exponential decay pattern. Their analysis further demonstrated that debugging effectiveness
+varies significantly across model architectures: OpenAI’s GPT-4 [17] exhibited complete loss of debugging effectiveness (relative
+to the first attempt) by the third iteration, while GPT-3.5 [17] showed similar exhaustion by the fourth attempt. In contrast,
+Qwen2.5-coder-instruct [18] maintained some debugging capability until the fifth attempt, suggesting model-specific patterns in
+debugging performance decay. These findings highlight a critical research gap: the need for a standardised approach to quantify
+and optimise debugging iterations for LLM code generation.
+Empirical evidence across debugging frameworks reveals consistent diminishing returns, though the specific decay characteristics vary systematically across model architectures, suggesting model-specific debugging signatures that remain unexplored as
+evaluation criteria. Existing approaches treat these decay patterns as inevitable limitations rather than quantifiable characteristics
+of the model. This systematic variation in debugging persistence presents an opportunity to develop methodologies that both
+measure debugging capability through decay modelling (RQ2) and identify possible optimal intervention strategies when
+effectiveness diminishes (RQ3).
+
+
+**Methodology**
+
+
+**RQ1: Debugging Window**
+We introduce the concept of a “debugging window" in the context of LLMs for code generation, which refers to the threshold
+for debugging attempts. While diminishing effectiveness will always occur with continued debugging efforts, establishing this
+window allows us to determine a practical cutoff point that balances debugging effectiveness with computational efficiency. To
+model the effectiveness of each debugging attempt over time, this study employs the exponential decay function (Equation 1).
+The exponential decay function is defined as follows:
+
+
+_E_ ( _t_ ) = _E_ 0 _e_ _[−][λ][t]_ (1)
+
+
+In this study, _E_ ( _t_ ) represents the effectiveness of debugging at attempt _t_, while _E_ 0 denotes the initial effectiveness corresponding
+to the very first attempt. The decay constant _λ_ represents the rate of effectiveness loss over successive attempts and serves as
+our primary metric for benchmarking model performance. Models with lower _λ_ values maintain their effectiveness longer
+across debugging iterations, and _t_ represents the discrete number of debugging attempts, allowing us to model the temporal
+progression of debugging effectiveness. To further analyse the decay process, we examine the half-life _t_ 1 _/_ 2, which represents
+the number of debugging attempts after which the effectiveness reduces to half its initial value _E_ 0 . By definition and from
+Equation 1, we get:
+
+
+
+
+[1]
+
+2 _[E]_ [0] [ =] _[⇒]_ _[t]_ [1] _[/]_ [2] [ =][ ln] _λ_ [(][2][)]
+
+
+
+_E_ ( _t_ 1 _/_ 2 ) = [1]
+
+
+
+(2)
+_λ_
+
+
+
+**3/10**
+
+
+We can generalise Equation 2 to determine the number of debugging attempts required for any given decay percentage. For a
+decay threshold where effectiveness can lose up to _θ_ % of its initial value (meaning (100 _−_ _θ_ )% effectiveness remains), the
+number of debugging attempts _t_ _θ_ is given by:
+
+
+100
+� 100 _−θ_ �
+_t_ _θ_ = [ln] (3)
+
+_λ_
+
+
+This generalised formula enables us to calculate the debugging window for any threshold _θ_, providing the flexibility to determine
+when diminishing effectiveness justifies terminating the debugging process based on specific computational constraints.
+
+
+**RQ2: The Debugging Decay Index (DDI)**
+Our proposed DDI integrates our exponential decay analysis from RQ1 to create a comprehensive evaluation framework for
+LLM debugging capabilities. Unlike traditional metrics that focus solely on final outcomes, DDI captures the efficiency and
+capability of the debugging process and the final accuracy.
+
+
+_**Mathematical Formulation**_
+
+The DDI is formulated as a function
+
+
+_DDI_ ( _data,_ _θ_ ) _→_ ( _E_ 0 _,_ _λ_ _,t_ _θ_ _,_ _R_ [2] )
+
+
+that accepts _data_, the normalised debugging effectiveness measurements across multiple iterative attempts; and _θ_, the
+effectiveness decay threshold(s) representing the maximum acceptable performance degradation. Following the PyCapsule [4]
+
+framework, the normalised debugging effectiveness data represents the independent influence of each debugging attempt.
+The DDI framework identifies strategic intervention points _t_ _θ_ where debugging effectiveness would degrade by _θ_ % from
+the initial value. In RQ3, we leverage these DDI-calculated intervention points to evaluate whether implementing fresh start
+strategies at the predicted timing can improve overall accuracy compared to continued iterative refinement within the same
+generation context. Fresh starts involve reinitiating the debugging process with the original problem statement only. DDI
+returns a four-element tuple:
+
+
+   - _E_ 0 **(Initial Effectiveness)** : _E_ 0 represents the initial effectiveness, calculated as _E_ 0 = _N_ _solved_ _ _at_ _ _attempt_ _0 _/N_ _total_ . This
+metric is directly comparable to _pass_ @1 and represents the model’s inherent code generation capability before any
+debugging.
+
+
+   - _λ_ **(Decay Rate)** : The decay constant extracted from fitting the exponential decay function (Equation 1) to normalised
+debugging effectiveness data. A lower _λ_ indicates slower decay in effectiveness and more persistent debugging behaviour,
+reflecting sustained instruction following and reasoning consistency across iterations.
+
+
+   - _t_ _θ_ **(Optimal Intervention Points)** : _t_ _θ_ represents the maximum number of debugging attempts before effectiveness drops
+by _θ_ % from the initial value. This represents the strategic intervention threshold corresponding to the _θ_ value, calculated
+using Equation 3. Since debugging attempts must be discrete integers, we apply the ceiling function to convert the
+continuous mathematical solutions into practical stopping points. This ensures that the debugging window provides
+sufficient attempts to reach at least the specified effectiveness threshold.
+
+
+   - _R_ [2] **(Fit Quality)** : The coefficient of determination measuring how well the exponential decay model explains the
+observed debugging effectiveness patterns. We interpret the results using the following categories: Excellent ( _R_ [2] _≥_ 0 _._ 9 ),
+Good ( 0 _._ 7 _≤_ _R_ [2] _<_ 0 _._ 9 ), or Poor ( _R_ [2] _<_ 0 _._ 7 ). High _R_ [2] values indicate predictable exponential decay behaviour, while low
+values suggest erratic or non-exponential debugging patterns that may require alternative evaluation approaches.
+
+
+_**Evaluation Process and Interpretation**_
+The DDI evaluation proceeds through four core steps: initial assessment records _E_ 0 = _N_ _solved_ _ _at_ _0 _/N_ _total_ ; iterative debugging
+tracks effectiveness at each attempt; decay analysis fits Equation 1 using nonlinear least squares regression to extract _λ_, setting
+_λ_ = None when insufficient data points ( _n <_ 3 ) exist; and threshold calculation determines strategic intervention timing _t_ _θ_
+using Equation 3.
+The DDI outputs provide comprehensive model characterisation of code generation and debugging capabilities, requiring
+interpretation of both effectiveness metrics and fit quality. For models with high _R_ [2] values ( _≥_ 0 _._ 7 ), the combination of _E_ 0 and
+_λ_ reveals distinct model archetypes: high _E_ 0 + low _λ_ indicates both strong reasoning and persistent debugging (ideal), low _E_ 0 +
+low _λ_ suggests consistent but ineffective approaches, high _E_ 0 + high _λ_ indicates strong initial reasoning but poor debugging
+persistence, while low _E_ 0 + high _λ_ represents both weak reasoning and rapid debugging degradation. However, for models with
+poor fit quality ( _R_ [2] _<_ 0 _._ 7 ), the exponential decay assumption may not apply, indicating that a different mathematical function
+may be required to fully characterise the model behaviour. In such cases, evaluation should rely primarily on _E_ 0 when using
+DDI. Pseudocode for DDI is provided in Appendix: DDI Pseudocode.
+
+
+**4/10**
+
+
+**Model** _E_ 0 _λ_ _A_ 0 _t_ _θ_ _R_ ~~[2]~~
+
+**claude-3-7-sonnet-20250219** 93.902 None 100.00 [] None
+**codegemma:7b** 51.219 0.9309 66.463 [1, 2, 3, 4, 5] Excellent
+**codellama:7b** 21.341 0.2467 45.122 [3, 7, 10, 13, Poor
+19]
+
+**codestral:22b** 58.537 0.3388 89.024 [3, 5, 7, 9, 14] Good
+**deepseek-coder-v2:16b** 71.951 0.9692 84.146 [1, 2, 3, 4, 5] Excellent
+**deepseek-coder:6.7b** 45.732 0.4737 74.390 [2, 4, 5, 7, 10] Excellent
+**devstral:24b** 84.146 0.6438 94.512 [2, 3, 4, 5, 8] Excellent
+**gemma2:9b** 59.146 0.7632 76.219 [1, 3, 4, 4, 7] Excellent
+**gpt-3.5-turbo** 73.781 1.3297 82.317 [1, 2, 2, 3, 4] Excellent
+**gpt-3.5-turbo-1106** 70.732 0.7553 85.976 [1, 3, 4, 4, 7] Excellent
+**gpt-4-1106-preview** 90.244 0.7619 96.951 [1, 3, 4, 4, 7] Poor
+**granite3.3:8b** 68.902 0.9482 82.317 [1, 2, 3, 4, 5] Excellent
+**llama2:7b** 3.659 0.1185 10.976 [6, 14, 20, 26, Poor
+39]
+
+**llama3.1:8b** 56.707 1.1142 72.561 [1, 2, 3, 3, 5] Excellent
+**mistral:instruct** 29.878 0.5291 54.268 [2, 4, 5, 6, 9] Excellent
+**phi4-reasoning:14b** 59.146 0.6052 81.098 [2, 3, 4, 5, 8] Excellent
+**phi4:14b** 83.537 0.7680 93.293 [1, 3, 3, 4, 6] Excellent
+**qwen2.5-coder** 76.219 0.4624 94.159 [2, 4, 5, 7, 10] Excellent
+
+
+**Table 1.** DDI Results for Different Models for _θ ∈{_ 50 _,_ 80 _,_ 90 _,_ 95 _,_ 99 _}_ on the HumanEval dataset. _R_ [2] indicates exponential fit
+quality: Excellent ( _R_ [2] _≥_ 0 _._ 9 ), Good ( 0 _._ 7 _≤_ _R_ [2] _<_ 0 _._ 9 ), Poor ( _R_ [2] _<_ 0 _._ 7 ). Models with _λ_ = None had insufficient data points for
+exponential fitting after filtering zero effectiveness values.
+
+
+**RQ3: Strategic Fresh Starts**
+To investigate whether strategic interventions can mitigate the debugging decay phenomenon identified in RQ2, we implement
+fresh start strategies at DDI calculated strategic intervention points. A fresh start completely clears conversation history and
+begins anew with only the original problem statement. This mechanism addresses the rapid degradation of effectiveness
+observed in the exponential decay pattern, particularly when models become trapped in the low-effectiveness tail, where
+continued debugging attempts yield negligible improvement. The fresh start strategy operates on the hypothesis that reinitialising
+the generation process shifts the model from exploiting failing solution approaches back to exploring alternative solution
+spaces. Based on empirical evidence from RQ2, we observe varied suitable intervention points _t_ _θ_ across different models,
+as demonstrated in Table 1. Given the variance in decay patterns, we strategically implement fresh starts at DDI-calculated
+intervention thresholds, enabling each model to benefit from reinitialisation at its optimal timing. To ensure a fair comparison
+with existing approaches, we maintain the same total attempt budget as previous works [3][,] [4], consisting of six attempts (initial
+generation plus five debugging iterations). Our approach strategically allocates these attempts while triggering fresh starts at
+DDI-calculated intervention points, testing whether strategic reinitialisation can overcome debugging decay while maintaining
+strict comparability with baseline methods.
+
+
+**Evaluation and Experimental Setup**
+
+
+To address our research questions regarding debugging windows (RQ1) and the DDI framework (RQ2), we applied our
+calculation methodology to eighteen SOTA language models using the HumanEval [7] dataset. Our experimental design
+systematically evaluates the decay patterns of debugging effectiveness across diverse model architectures, ranging from smaller,
+specialised models like DeepSeek-Coder 6.7b [31] to larger, general-purpose models such as Claude-3-7-sonnet-20250219 [32],
+GPT-4 [17], and GPT-3.5 [17] . Using normalised debugging effectiveness data from HumanEval [7], we extracted model-specific decay
+constants _λ_ . For each model, we calculated _E_ 0 _,_ _λ_ _,t_ _θ_ where _θ ∈_ 50 _,_ 80 _,_ 90 _,_ 95 _,_ 99 and _R_ [2] . Additionally, we report _A_ 0 values
+representing the final accuracy achieved after six attempts without any fresh start interventions (same as PyCapule [4] ), providing
+a baseline performance metric for comparison with our strategic restart approaches in RQ3, see Table 2.
+Table 1 and Figure 1 present our comprehensive analysis of debugging decay characteristics across these LLMs. The
+debugging window calculations reveal distinct performance characteristics across model architectures.
+Claude-3.7-Sonnet demonstrated remarkable performance, achieving 100% effectiveness ( _A_ 0 = 100% ) essentially within
+two attempts, which prevented fitting to the exponential decay model, resulting _λ_ = _None_ . This exceptional performance
+
+
+**5/10**
+
+
+**Figure 1.** Exponential decay curves fitted to debugging effectiveness data for four language models. The grey dashed lines
+indicate effectiveness thresholds at different _θ_ values. The _λ_ (decay rate) and _R_ [2] (goodness-of-fit) values are displayed for each
+model.
+
+
+represents a unique case where conventional debugging window calculations may not apply.
+Conversely, the Phi-4 [33] model comparison provides particularly revealing insights into the relationship between reasoning
+capabilities and debugging sustainability. While phi4:14b [33] ( _E_ 0 = 83 _._ 537% _,_ _λ_ = 0 _._ 76) significantly outperformed phi4reasoning:14b [33] ( _E_ 0 = 59 _._ 146% _,_ _λ_ = 0 _._ 60) in initial effectiveness by approximately 24%, likely due to phi4-reasoning not
+being instruction fine-tuned and thus more challenging to parse, the reasoning model demonstrated remarkable debugging
+improvement capacity. Despite starting from a substantially lower baseline, phi4-reasoning achieved a final accuracy of
+81.098% compared to phi4:14b’s 93.293%, representing an improvement of 21.95% versus only 9.75%, respectively. The
+reasoning model improved more than twice as much as the standard model through iterative debugging. These findings suggest
+that the decay constant _λ_ captures not only debugging efficiency but also underlying reasoning capabilities and instruction
+adaptability. The reasoning model’s lower _λ_ value (0.591 vs 0.711) indicates superior debugging sustainability, enabling it
+to extract more value from iterative refinement processes. This reveals that reasoning-capable models, although potentially
+harder to prompt initially, possess an enhanced capacity for systematic error correction and solution refinement —a crucial
+characteristic for extended debugging sessions where sustained improvement matters more than initial performance.
+GPT variants exhibit relatively fast effectiveness decay, with gpt-3.5-turbo [17] showing the highest decay rate, reaching the
+80% threshold by attempts 2-3. In contrast, models like codestral:22b [34] and deepseek-coder:6.7b [31] demonstrate more sustained
+debugging capabilities with lower decay rates ( _λ_ = 0 _._ 375 and _λ_ = 0 _._ 330 respectively), extending debugging windows to 5-7
+attempts for the same threshold. DDI reveals nuanced debugging characteristics that would be missed by simple effectiveness
+metrics alone. The case of phi4-reasoning:14b [33] exemplifies this.
+To evaluate the effectiveness of strategic fresh starts proposed in RQ3, we implemented restart interventions at the
+calculated strategic thresholds for _θ ∈{_ 50 _,_ 80 _}_ effectiveness degradation. Table 2 presents the comparative performance results,
+demonstrating the impact of strategic reinitialisation versus continued iterative debugging. The results reveal that strategic fresh
+starts can significantly improve debugging performance across most models without requiring any additional computational
+resources. Since fresh starts only involve clearing conversation history at predetermined intervention points while maintaining
+the same attempt budget, the computational overhead remains equivalent with similar or reduced token usage on average
+
+
+**6/10**
+
+
+**Figure 2.** Normalised debugging effectiveness trajectories compared to baseline continuous debugging ( _A_ 0 ) with fresh start
+strategies implemented at _θ ∈{_ 50 _,_ 80 _}_ . The distinctive spikes in _A_ 50 and _A_ 80 demonstrate successful intervention effects,
+where fresh starts reset the debugging process and break the monotonic decay pattern observed in baseline approaches. These
+spikes represent moments where strategic reinitialisation successfully shifts models from failed solution exploitation back to
+productive exploration, enabling recovery from debugging decay within the same computational budget.
+
+
+compared to continuous debugging sessions. For example, DeepSeek-Coder-V2-16B reduced token consumption from 108,289
+to approximately 89,000 tokens on average, while Codestral-22B maintained usage around 94,000 tokens compared to 97,000
+in the continuous sessions.
+
+Of the six models evaluated, all showed performance improvements when fresh starts were applied at DDI-calculated
+intervention points. Significantly, llama3.1:8b [35] showed the most significant improvement, enhancing its baseline accuracy from
+72.56% to 82.82%. In contrast, deepseek-coder-v2:16b [31] experienced the second largest enhancement, with its baseline accuracy
+increasing from 84.1% to 92.1%. Similarly, Mistral:Instruct [36] demonstrated consistent gains across both thresholds, improving
+from 54.3% to 62.8% and 57.3%. This demonstrates that strategic timing of fresh starts, rather than simply increasing attempt
+counts, can overcome debugging decay patterns and improve overall effectiveness. Analysis of the normalised debugging
+effectiveness patterns (Figure 2) reveals that fresh start interventions successfully break the exponential decay curve observed
+in RQ1. Rather than following the predicted decay trajectory, models implementing fresh starts at strategic intervention points
+demonstrate renewed effectiveness spikes, essentially resetting the decay pattern and enabling continued productive debugging.
+This empirical evidence supports our hypothesis that strategic reinitialisation shifts models from exploitation of failing solution
+approaches back to exploration of alternative solution spaces.
+
+
+**Limitations and Future Work**
+
+
+**Generalisation Limitations**
+
+The primary limitation of DDI lies in its dataset-specific nature. While exponential decay patterns appear robust across multiple
+debugging contexts [2][,] [4], specific _λ_ and _t_ _θ_ values depend on problem set characteristics, including complexity distribution and
+
+
+**7/10**
+
+
+**Model** _A_ 0 _A_ 50 _A_ 80
+codegemma:7b 66.4634 **71.9512** 70.1220
+codestral:22b 89.0244 88.4146 **91.4634**
+
+deepseek-coder- 84.1463 **92.0732** 90.2439
+v2:16b
+
+
+devstral:24b 94.5122 93.9024 **95.1220**
+
+granite3.3:8b 82.3171 **86.5854** 85.3659
+llama3.1:8b 72.5610 **82.3171** 81.7073
+
+mistral:instruct 54.2683 **62.8049** 57.3171
+
+phi4:14b 93.2927 93.9024 **96.3415**
+qwen2.5-coder 94.1588 **95.1220** 94.5122
+
+
+**Table 2.** Performance comparison showing baseline accuracy _A_ 0 achieved within six attempts without intervention, versus
+fresh start strategies implemented at DDI-calculated intervention points where _θ ∈{_ 50 _,_ 80 _}_ . _A_ 50 and _A_ 80 represent final
+accuracy when fresh starts are triggered at _t_ 50 and _t_ 80 thresholds respectively. The corresponding intervention timing ( _t_ _θ_ values)
+for each model can be found in Table 1. Bold values indicate performance improvements over the baseline _A_ 0, demonstrating
+cases where strategic reinitialisation outperforms continued iterative debugging within the same debugging context at no extra
+token usage at all
+
+
+debugging challenge types. Like all evaluation metrics, DDI parameters require dataset-specific calibration and cannot be
+directly compared across different problem sets without statistical validation. Effective generalisation requires either statistically
+sufficient numbers of diverse datasets to establish robust parameter ranges or standardised benchmarks with comprehensive
+complexity coverage that can serve as universal debugging evaluation foundations. Due to computational constraints, our
+current validation focuses on HumanEval variants, though the underlying exponential decay phenomenon has been observed
+across broader programming contexts including other benchmark datasets [4] . Additionally, while our fresh start interventions
+demonstrate performance improvements across almost all evaluated models, the magnitude of these improvements critically
+depends on the selected effectiveness threshold _θ_ . Although we observe consistent benefits regardless of threshold selection,
+selecting _θ_ values for maximum performance gains represents a crucial but unexplored aspect of our framework. The systematic
+selection of strategic intervention thresholds falls outside the scope of this study and represents an important direction for future
+investigation.
+
+
+**Research Directions**
+
+The DDI framework opens several promising research directions. Cross-dataset validation across diverse programming
+benchmarks would establish parameter ranges and calibration requirements for broader applicability. A critical immediate
+direction involves developing principled methods for optimal threshold selection, potentially through adaptive strategies that
+learn from model-specific decay characteristics or problem complexity indicators.
+Perhaps most significantly, comparative analysis of human versus AI debugging decay patterns could validate the theoretical
+foundations of exponential effectiveness degradation, potentially revealing fundamental principles of iterative problem-solving
+that extend beyond code generation to broader cognitive tasks. The mathematical framework’s simplicity and interpretability
+make it well-suited for such interdisciplinary investigation, offering a quantitative foundation for understanding debugging
+effectiveness across both artificial and biological intelligence systems. Importantly, the flexibility of the framework extends
+beyond modelling exponential decay. By applying the same underlying concept, we can incorporate various functions that
+represent the decay patterns observed in the input data, allowing us to extract the decay rate specific to the model in question.
+While we employed exponential functions, as they provided the best fit for the majority of evaluated models, the DDI
+methodology can readily incorporate linear decay, polynomial regression, or other mathematical functions, depending on the
+observed model behaviour. This adaptability ensures the framework remains robust across different model architectures and
+debugging contexts, where alternative decay patterns may emerge as the field evolves.
+
+
+**Conclusion**
+
+
+This work introduces the Debugging Decay Index (DDI), a novel evaluation framework that characterises the exponential
+effectiveness decay patterns inherent in LLM-guided iterative debugging processes. Through a systematic analysis of eighteen
+state-of-the-art (SOTA) language models on HumanEval, we demonstrate that debugging effectiveness typically follows
+predictable exponential decay trajectories, enabling a principled determination of optimal intervention timing rather than relying
+on arbitrary attempt limits. Our key contributions include the mathematical characterisation of debugging decay patterns across
+
+
+**8/10**
+
+
+diverse model architectures; the DDI framework, which provides a unified assessment of the coding and debugging abilities
+of LLMs; and the demonstration that strategic fresh start interventions at DDI-calculated thresholds can break exponential
+decay patterns and improve final accuracy without incurring additional computational costs. The fresh start strategy proves
+particularly effective, requiring zero additional computational resources, and demonstrates that strategic intervention, rather
+than increased attempt budgets, drives performance improvements. The DDI framework provides immediate practical value
+for researchers seeking to optimise debugging workflows, while also opening up promising research directions in adaptive
+intervention strategies and cross-dataset validation.
+
+
+**Additional Information**
+
+
+The authors declare no competing interests.
+
+
+**Data Availability**
+
+
+All benchmark datasets utilised in this study are openly available from their respective public repositories. The code and
+analysis scripts will be made publicly available upon publication.
+
+
+**References**
+
+
+**1.** Jiang, J., Wang, F., Shen, J., Kim, S. & Kim, S. A survey on large language models for code generation (2024). 2406.00515.
+
+
+**2.** Zhong, L., Wang, Z. & Shang, J. Debug like a human: A large language model debugger via verifying runtime execution
+step by step. In Ku, L.-W., Martins, A. & Srikumar, V. (eds.) _Findings of the Association for Computational Linguistics:_
+_ACL 2024_, 851–870 (Association for Computational Linguistics, Bangkok, Thailand, 2024).
+
+
+**3.** Islam, M. A., Ali, M. E. & Parvez, M. R. MapCoder: Multi-agent code generation for competitive problem solving. In
+_Proceedings of the 62nd Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers)_,
+4912–4944 (Association for Computational Linguistics, Bangkok, Thailand, 2024).
+
+
+**4.** Adnan, M., Xu, Z. & Kuhn, C. C. N. Large language model guided self-debugging code generation (2025). 2502.02928.
+
+
+**5.** Chen, X., Lin, M., Schärli, N. & Zhou, D. Teaching large language models to self-debug. In _The 12th International_
+_Conference on Learning Representations_ (2024).
+
+
+**6.** Shojaee, P. _et al._ The illusion of thinking: Understanding the strengths and limitations of reasoning models via the lens of
+problem complexity. _arXiv preprint arXiv:2506.06941_ (2025).
+
+
+**7.** Chen, M. _et al._ Evaluating large language models trained on code (2021). 2107.03374.
+
+
+**8.** Paul, D. G., Zhu, H. & Bayley, I. Benchmarks and metrics for evaluations of code generation: A critical review. _IEEE_
+_AITest_ (2024).
+
+
+**9.** Liu, A. & Coblenz, M. Debugging techniques in professional programming. In _13th Annual Workshop at the Intersection_
+_of PL and HCI_ (2023).
+
+
+**10.** Spinellis, D. _Effective Debugging: 66 Specific Ways to Debug Software and System_ (Addison-Wesley Professional, Boston,
+MA, 2016).
+
+
+**11.** Tong, W. & Zhang, T. Codejudge: Evaluating code generation with large language models. In _Proceedings of the 2024_
+_Conference on Empirical Methods in Natural Language Processing_ (2024).
+
+
+**12.** Chen, B. _et al._ Codet: Code generation with generated tests. _arXiv preprint arXiv:2207.10397_ (2022).
+
+
+**13.** Lyu, Z.-C., Li, X.-Y., Xie, Z. & Li, M. Top pass: Improve code generation by pass@k-maximized code ranking. _Front._
+_Comput. Sci._ (2024).
+
+
+**14.** Shi, F., Fried, D., Ghazvininejad, M., Zettlemoyer, L. & Wang, S. I. Natural language to code translation with execution.
+In _Proceedings of the 2022 Conference on Empirical Methods in Natural Language Processing_ (2022).
+
+
+**15.** Austin, J. _et al._ Program synthesis with large language models. _arXiv preprint arXiv:2108.07732_ (2021).
+
+
+**16.** Li, Y. _et al._ Competition-level code generation with alphacode. _Science_ **378**, 1092–1097 (2022).
+
+
+**17.** OpenAI _et al._ Gpt-4 technical report (2024). 2303.08774.
+
+
+**18.** Hui, B. _et al._ Qwen2.5-coder technical report (2024). 2409.12186.
+
+
+**19.** Liu, J. _et al._ Evaluating language models for efficient code generation. In _First Conference on Language Modeling_ (2024).
+
+
+**9/10**
+
+
+**20.** Liu, J., Xia, C. S., Wang, Y. & Zhang, L. Is your code generated by chatGPT really correct? rigorous evaluation of large
+language models for code generation. In _Thirty-seventh Conference on Neural Information Processing Systems_ (2023).
+
+
+**21.** Chen, L. _et al._ A survey on evaluating large language models in code generation tasks. _arXiv preprint arXiv:2408.16498_
+(2024).
+
+
+**22.** Wang, R. _et al._ Can llms replace human evaluators? an empirical study of llm-as-a-judge in software engineering, DOI:
+
+10.1145/3728963 (2025). 2502.06193.
+
+
+**23.** Dibia, V. _et al._ Aligning offline metrics and human judgments of value for code generation models. In Rogers, A.,
+Boyd-Graber, J. & Okazaki, N. (eds.) _Findings of the Association for Computational Linguistics: ACL 2023_, 8516–8528,
+DOI: 10.18653/v1/2023.findings-acl.540 (Association for Computational Linguistics, Toronto, Canada, 2023).
+
+
+**24.** Zeng, Z., Wang, Y., Xie, R., Ye, W. & Zhang, S. Coderujb: An executable and unified java benchmark for practical
+programming scenarios. In _Proceedings of the 33rd ACM SIGSOFT International Symposium on Software Testing and_
+_Analysis_ (2024).
+
+
+**25.** Yeo, S., Ma, Y.-S., Kim, S. C., Jun, H. & Kim, T. Framework for evaluating code generation ability of large language
+models. _ETRI J._ **46**, 106–117, DOI: 10.4218/etrij.2023-0357 (2024).
+
+
+**26.** Papineni, K., Roukos, S., Ward, T. & Zhu, W. Bleu: a method for automatic evaluation of machine translation. In
+_Proceedings of the 40th Annual Meeting of the Association for Computational Linguistics_, 311–318 (Association for
+Computational Linguistics, Philadelphia, Pennsylvania, USA, 2002).
+
+
+**27.** Ren, S. _et al._ Codebleu: a method for automatic evaluation of code synthesis (2020). 2009.10297.
+
+
+**28.** Lin, C.-Y. Rouge: A package for automatic evaluation of summaries. In _Text Summarization Branches Out_, 74–81
+(Association for Computational Linguistics, Barcelona, Spain, 2004).
+
+
+**29.** Chen, X. _et al._ Revisit self-debugging with self-generated tests for code generation (2025). 2501.12793.
+
+
+**30.** Thomas, D. & Hunt, A. _The Pragmatic Programmer: Your Journey to Mastery, 20th Anniversary Edition_ (Pearson
+Education, Boston, MA, 2019), 20th anniversary edition edn.
+
+
+**31.** Guo, D. _et al._ Deepseek-coder: When the large language model meets programming–the rise of code intelligence. _arXiv_
+_preprint arXiv:2401.14196_ (2024).
+
+
+**32.** Anthropic. Claude 3.7 sonnet and claude code. Online (2025). Https://www.anthropic.com/news/claude-3-7-sonnet.
+
+
+**33.** Abdin, M. _et al._ Phi-4 technical report. _arXiv preprint arXiv:2412.08905_ (2024).
+
+
+**34.** MistralAI. Codestral. Online (2024). Https://mistral.ai/news/codestral.
+
+
+**35.** Touvron, H. _et al._ Llama: Open and efficient foundation language models. _arXiv preprint arXiv:2302.13971_ (2023).
+
+
+**36.** Jiang, A. Q. _et al._ Mistral 7b (2023). 2310.06825.
+
+
+**Author contributions**
+
+
+Muntasir Adnan and Carlos C. N. Kuhn collaborated on exploring the idea, writing, designing the experiments and reviewing
+the manuscript.
+
+
+**Legends**
+
+
+**10/10**
+
+
+|Title|Reference|Description|
+|---|---|---|
+|Table 1|Table 1|DDI Results|
+|Figure 1|Figure 1|Fitted Exponential Decay Curve|
+|Figure 2|Figure 2|Fresh Start Effect|
+|Table 2|Table 2|Fresh Start Results|
+
+
