@@ -30,6 +30,7 @@ sys.path.append(f"{os.path.dirname(os.path.abspath(__file__))}/../..")
 from utils.output_message_format.output_colour import print_info, print_success, print_warning
 from utils.output_message_format.output_colour import print_error
 from utils.logger.Logger import Logger
+from services.Research.Paper.PaperAnalyser import PaperAnalyser
 
 
 @dataclass
@@ -85,6 +86,7 @@ class Paper:
         self.is_downloaded = False
         self.is_analysed = False
         self.analysis_results: Optional[Dict] = None
+        self.paper_analyser = None
         
         self.logger.debug(f"Initialised Paper object for: {self.metadata.title[:50]}...")
 
@@ -189,6 +191,12 @@ class Paper:
             print_success(f"Downloaded successfully: {file_size:.1f} MB")
             self.logger.debug(f"Downloaded to: {self.pdf_path}")
             
+            # Paper Analyser
+            self.paper_analyser = PaperAnalyser(pdf_path=self.pdf_path, 
+                                                output_path=self.analysis_dir,
+                                                paper_title=safe_title)
+            self.logger.debug(f"Initialised PaperAnalyser for: {self.pdf_path.name}")
+            
             return True
             
         except requests.RequestException as e:
@@ -211,15 +219,12 @@ class Paper:
         if not self.is_downloaded or not self.pdf_path or not self.pdf_path.exists():
             raise ValueError("PDF must be downloaded before analysis")
             
-        print_info(f"Starting analysis of: {self.metadata.title[:50]}...")
+        log_message = f"Starting analysis of: {self.metadata.title[:50]}..."
+        print_info(log_message)
+        self.logger.debug(log_message)
         
-        # TODO: Implement analysis pipeline
-        # This will include:
-        # - Text extraction with pymupdf4llm
-        # - Section detection  
-        # - Figure extraction
-        # - Table processing
-        # - Content formatting for LLM
+        text = self.paper_analyser.extract_all_text()
+        sections = self.paper_analyser.extract_sections(save_as_json = False)
         
         self.analysis_results = {
             'status': 'placeholder',

@@ -4,8 +4,9 @@
 # including text extraction, section detection, figure processing, and LLM preprocessing.
 #
 # Usage:
-#      analyser = PaperAnalyser("/path/to/paper.pdf")
-#      text_content = analyser.extract_all_text()
+#   extract_all_text() -> str
+#   extract_sections() -> Dict[str, str]
+#   get_extraction_summary() -> Dict
 # =================================================================================================
 
 import os, sys
@@ -18,6 +19,7 @@ import json
 
 from pathlib import Path
 from typing import Dict, List, Optional, Union
+from collections import Counter
 
 from utils.output_message_format.output_colour import print_info, print_success, print_warning
 from utils.output_message_format.output_colour import print_error
@@ -31,16 +33,23 @@ class PaperAnalyser:
     """
     
     def __init__(self, 
-                 pdf_path: Union[str, Path]) -> None:
+                 pdf_path: Union[str, Path],
+                 output_path: Union[str, Path],
+                 paper_title: str) -> None:
         """
         Initialise the PaperAnalyser with a PDF file.
         
         Args:
             pdf_path: Path to the PDF file to analyse
+            output_path: Directory to save analysis results
+            paper_title: Title of the paper
         """
         self.pdf_path = Path(pdf_path)
-        self.paper_json_path = self.pdf_path.with_suffix('.json')
+        self.analysis_path = Path(output_path) / paper_title.replace(" ", "_")
         self.logger = Logger(self.__class__.__name__, "DEBUG")
+        
+        # Analysis directories
+        self.analysis_path.mkdir(exist_ok=True)
         
         # Verify PDF exists
         if not self.pdf_path.exists():
@@ -56,11 +65,15 @@ class PaperAnalyser:
         self.is_sections_extracted = False
         
         self.logger.debug(f"Initialised PaperAnalyser object for: {self.pdf_path.name}")
+        
+        # Image data
+        self.extracted_images = self._get_all_images()
+        self.image_descriptions = self._get_image_descriptions(self.extracted_images)
 
 
     def extract_all_text(self) -> str:
         """
-        Extract all text content from the PDF, similar to PDF upload processing.
+        Extract all text content from the PDF.
         Preserves document structure and formatting for downstream analysis.
         
         Returns:
@@ -135,7 +148,7 @@ class PaperAnalyser:
             print_error(f"Section extraction failed: {str(e)}")
             self.logger.error(f"Section extraction failed for {self.pdf_path.name}: {str(e)}")
             raise
-        
+    
 
     def get_extraction_summary(self) -> Dict:
         """
@@ -162,6 +175,24 @@ class PaperAnalyser:
             'character_count': char_count,
             'extraction_method': 'pymupdf4llm'
         }
+        
+        
+    def _add_image_description(self,
+                              image_numbers: set[int]) -> str:
+        """
+        Extract the original imageas, generate descriptions for each image.
+        Finally, add those descriptions to the section.
+        """
+        if len(image_numbers) == 0:
+            return ""
+        image_desc = ""
+
+        for image_number in image_numbers:
+            desc = self.image_descriptions.get(image_number, "")
+            if desc:
+                image_desc += f"Figure {image_number} description: {desc}\n"
+
+        return image_desc
 
 
     def _extract_with_pymupdf4llm(self) -> str:
@@ -223,6 +254,24 @@ class PaperAnalyser:
             raise
 
 
+    def _get_image_occurrence_for_section(self,
+                                     section: str) -> set[int]:
+        """
+        Get the image numbers mentioned in a section.
+
+        Args:
+            section (str): The section text.
+
+        Returns:
+            set[int]: Set of image numbers mentioned in the section.
+        """
+        figure_pattern = r"(?:Figure|Fig)\.?\s*(\d+)"  # Capture the number
+        fig_references = re.findall(figure_pattern, section, re.IGNORECASE)
+        # occurrence_count = Counter(fig_references) # Won't be used now
+        temp = set(int(num) for num in fig_references if num.isdigit())
+        return temp
+        
+    
     def _extract_sections_with_regex(self) -> Dict:
         """
         Extract sections using regex pattern matching on the text.
@@ -257,19 +306,21 @@ class PaperAnalyser:
                 continue
             
             section_content = self._get_section_content(matches = matches, current_index = i)
+            images = self._get_image_occurrence_for_section(section_content)
             
             # Store section data
             sections[section_name] = {
                 'text': section_content,
-                'images': [],  # TODO: will contain extracted images' descriptions
+                'images': list(images),
                 'tables': [],  # TODO: will contain extracted tables' descriptions
-                'word_count': len(section_content.split()) if section_content else 0
+                'word_count': len(section_content.split()) if section_content else 0,
+                'image_descriptions': self._add_image_description(images)
             }
             
             self.logger.debug(f"Extracted section '{section_name}': {len(section_content)} characters")
             
         return sections
-    
+        
     
     def _get_section_content(self,
                              matches: list[re.Match],
@@ -313,6 +364,126 @@ class PaperAnalyser:
         }
         
         
+    def _get_all_images(self) -> List[Dict]:
+        """
+        Extract all images from the PDF in sequential order.
+        
+        Returns:
+            List of dictionaries containing image data
+        """
+        if not self.pdf_path.exists():
+            log_message = f"PDF file not found: {self.pdf_path}"
+            self.logger.error(log_message)
+            raise FileNotFoundError(log_message)
+
+        log_message = f"Extracting images from: {self.pdf_path.name}"
+        print_info(log_message)
+        self.logger.debug(log_message)
+        
+        try:
+            doc = fitz.open(str(self.pdf_path))
+            images = []
+            image_counter = 0
+            
+            for page_num in range(len(doc)):
+                page = doc.load_page(page_num)
+                image_list = page.get_images()
+                
+                for img_index, img in enumerate(image_list):
+                    # Get image data
+                    xref = img[0]
+                    pix = fitz.Pixmap(doc, xref)
+                    
+                    # Skip if image is too small (likely decorative)
+                    if pix.width < 50 or pix.height < 50:
+                        pix = None
+                        continue
+                        
+                    # Generate filename
+                    image_counter += 1
+                    img_filename = f"image_{image_counter:03d}.png"
+                    img_path = self.analysis_path / "extracted_images" / img_filename
+                    
+                    # Create directory if needed
+                    img_path.parent.mkdir(exist_ok=True)
+                    
+                    # Save image
+                    if pix.n - pix.alpha < 4:  # GRAY or RGB
+                        pix.save(str(img_path))
+                    else:  # CMYK: convert to RGB first
+                        pix1 = fitz.Pixmap(fitz.csRGB, pix)
+                        pix1.save(str(img_path))
+                        pix1 = None
+                        
+                    # Store image metadata
+                    image_data = {
+                        'filename': img_filename,
+                        'path': str(img_path),
+                        'page': page_num + 1,
+                        'width': pix.width,
+                        'height': pix.height,
+                        'order': image_counter  # Sequential order for matching
+                    }
+                    
+                    images.append(image_data)
+                    self.logger.debug(f"Extracted image {image_counter}: "
+                                      f"{img_filename} from page {page_num + 1}")
+                    
+                    pix = None
+                    
+            doc.close()
+            
+            print_success(f"Image extraction completed: {len(images)} images found")
+            self.logger.debug(f"Extracted {len(images)} images from {self.pdf_path.name}")
+            
+            return images
+            
+        except Exception as e:
+            print_error(f"Image extraction failed: {str(e)}")
+            self.logger.error(f"Image extraction failed for {self.pdf_path.name}: {str(e)}")
+            raise
+
+
+    def _get_image_descriptions(self,
+                                 images: list[dict]) -> dict[int, str]:
+        """
+        Generate descriptions for all extracted images.
+
+        Args:
+            images (list[dict]): List of image metadata dictionaries.
+
+        Returns:
+            dict[int, str]: Dictionary mapping image order to their descriptions.
+        """
+        self.logger.debug(f"Generating descriptions for {len(images)} images")
+        
+        image_desc = {}
+        for image in images:
+            image_desc[image["order"]] = self._get_image_description(image["path"])
+        
+        self.logger.debug(f"Generated descriptions for {len(image_desc)} images")
+        return image_desc
+
+
+    def _get_image_description(self,
+                               image_path: str) -> str:
+        """
+        Generate image description using a Vision Language Model.
+
+        Args:
+            image_path (str): Path to the image file.
+
+        Returns:
+            str: Description of the image.
+        """
+        self.logger.debug(f"Generating description for image: {image_path}")
+        
+        #TODO: Use VLLM to genereate description
+        
+        self.logger.debug(f"Generated description for image: {image_path}")
+        return "This is a sample image description."
+
+
     def _save_as_json(self,
                       content: dict,
                       output_path: Union[str, Path] = None) -> None:
@@ -324,7 +495,7 @@ class PaperAnalyser:
             output_path (Union[str, Path], optional): Path to save the JSON file. Defaults to None.
         """
         if output_path is None:
-            output_path = self.paper_json_path
+            output_path = self.analysis_path / self.pdf_path.with_suffix('.json').name
 
         with open(output_path, "w") as f:
             json.dump(content, f, indent=4)
@@ -334,8 +505,9 @@ class PaperAnalyser:
 
 if __name__ == "__main__":
     try:
-        analyser = PaperAnalyser("services/Research/Paper/downloaded_papers/"
-                                 "The Debugging Decay Index_ Rethinking Debugging St_40ba406a.pdf")
+        analyser = PaperAnalyser("services/Research/Paper/downloaded_papers/The Debugging Decay Index_ Rethinking Debugging St_40ba406a.pdf",
+                                 "services/Research/Paper/analysed_papers",
+                                 "The debugging decay index")
         analyser.extract_sections(save_as_json=True)
         
     except Exception as e:
