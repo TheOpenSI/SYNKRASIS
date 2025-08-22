@@ -1,4 +1,5 @@
 # =======================================================================================
+# Ollama.py using ollama library
 # To add conversation history, set enable_chat_history=True in the Ollama object.
 # In self.generate_response(), change suppress_conversation_history to False, 
 # to include conversation history.
