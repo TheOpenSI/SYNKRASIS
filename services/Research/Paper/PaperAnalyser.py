@@ -67,8 +67,8 @@ class PaperAnalyser:
         self.logger.debug(f"Initialised PaperAnalyser object for: {self.pdf_path.name}")
         
         # Image data
-        self.extracted_images = self._get_all_images()
-        self.image_descriptions = self._get_image_descriptions(self.extracted_images)
+        self.extracted_images = None
+        self.image_descriptions = None
 
 
     def extract_all_text(self) -> str:
@@ -294,6 +294,10 @@ class PaperAnalyser:
             return self._create_fallback_sections()
             
         self.logger.debug(f"Found {len(matches)} section headers using regex pattern: {section_pattern}")
+        
+        # Image Extraction
+        self.extracted_images = self._get_all_images()
+        self.image_descriptions = self._get_image_descriptions(self.extracted_images)
         
         sections = {}
         
