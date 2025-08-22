@@ -15,17 +15,17 @@ from typing import Optional
 from services.Base import ServiceBase
 from services.LLM.Ollama.Ollama import Ollama
 
-class OCR(ServiceBase):
+class VLM(ServiceBase):
     def __init__(self):
         """
         Uses Llama3.2-vision model for OCR.
         """
         super().__init__()
         self.MODEL_NAME = "llama3.2-vision"
-        self.USER_PROMPT = ("Analyze the text in the provided image. Extract all readable content \n"
-                    "and present it in a structured Markdown format that is clear, concise\n"
-                    " and well-organized. Ensure proper formatting (e.g., headings, lists,\n"
-                    " or code blocks) as necessary to represent the content effectively.")
+        self.USER_PROMPT = ("Analyze the provided image. Extract all  content \n"
+                            "and present it in a structured Markdown format that is clear, concise\n"
+                            " and well-organized. Ensure proper formatting (e.g., headings, lists,\n"
+                            " or code blocks) as necessary to represent the content effectively.")
         self.model = Ollama(model_name = self.MODEL_NAME, 
                             enable_chat_history = False,
                             max_history = 0)
