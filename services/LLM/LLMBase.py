@@ -12,13 +12,9 @@
 #   - _prepare_prompt(messages: List[Dict], bos_token: str) -> str
 #   - _prepare_context(context: List[str]) -> Optional[str]
 #   - _prepare_conversation_history(user_query: str) -> str
-#   - init_chat_history(original_question: str)
-#   - add_to_chat_history(response: str, user_prompt: str, process: callable = None)
 #   - set_system_prompt(prompt: str)
 #   - set_system_prompt_from_file(prompt_file: str = None)
 #   - clear_chat_history()
-#   - print_llm_output(response: str, full_query: str = None, is_verbose: bool = False)
-#   - handle_response(response: str, user_prompt: str, full_query: str = None)
 #
 # Abstract Methods:
 #   - generate_response(user_prompt: str, context:List[str] = None, suppress_conversation_history:bool = True) 
@@ -35,7 +31,7 @@ from jinja2 import Template
 
 from services.Base import ServiceBase
 from modules.ChatHistory import ChatHistory
-from utils.output_message_format.output_colour import print_error, print_success, print_model_output
+from utils.output_message_format.output_colour import print_error, print_success
 
 class LLMBase(ServiceBase):
     def __init__(self, 
@@ -64,7 +60,6 @@ class LLMBase(ServiceBase):
         self.system_prompt = ("You are a helpful assistant, "
                               "always answer the question to the best of your ability "
                               "even if the context is not useful.")
-
 
 
     def _prepare_prompt(self, messages: List[Dict], bos_token="") -> str:
@@ -146,27 +141,6 @@ class LLMBase(ServiceBase):
             return
         self.chat_history = ChatHistory(original_question, self.max_history)
         
-        
-    def add_to_chat_history(self, response: str, 
-                            user_prompt: str, 
-                            process: callable = None) -> None:
-        """
-        Add an interaction to the chat history.
-
-        Args:
-            response (str): Model response. Must be the string, not the response object.
-            user_prompt (str): User query.
-            process (callable, optional): A function to process the resoponse if required. Defaults to None.
-        """
-        if self.enable_chat_history and response:
-            if not self.chat_history:
-                self.init_chat_history(user_prompt)
-        
-            if process:
-                response = process(response)
-        
-            self.chat_history.add_interaction(user_prompt, response)
-        
 
     def set_system_prompt(self, prompt: str):
         """
@@ -201,39 +175,6 @@ class LLMBase(ServiceBase):
         with open(prompt_file, "r") as prompt_file:
             self.system_prompt = prompt_file.read()
         # NOTE: Consider clearing the chat history here.
-        
-        
-    def print_llm_output(self, response: str, 
-                     full_query: str = None, 
-                     is_verbose: bool = False) -> None:
-        """
-        Print the interaction with the model.
-        
-        Args:
-            response (str): Model response, must be a string.
-            full_query (str, optional): Full query with context and conversation history. Defaults to None.
-            is_verbose (bool, optional): Print the user query. Defaults to False.
-        """
-        if is_verbose and full_query:
-            # Printing the user query
-            print_model_output(full_query, "USER") # Printing user query
-            print()
-        print_model_output(response, self.model_name)
-        
-        
-    def handle_response(self, response: str, 
-                        user_prompt: str, 
-                        full_query: str = None):
-        """
-        Handles the response from the model
-        
-        Args:
-            response (str): The response from the model, must be a string.
-            user_prompt (str): The user query
-            full_query(str, optional): The full query, defaults to None.
-        """
-        self.add_to_chat_history(response, user_prompt)
-        self.print_llm_output(response, full_query, is_verbose = False)
     
    
     @abstractmethod
