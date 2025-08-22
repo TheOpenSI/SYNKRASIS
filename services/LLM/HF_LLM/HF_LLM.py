@@ -1,8 +1,15 @@
+# =========================================================================================
 # Root folder must have a .env file with HUGGING_FACE_TOKEN
 # Ensure you have access to gated models if you intend to use them
 # apply chat template - https://huggingface.co/docs/transformers/main/en/chat_templating
 # generation prompt - https://huggingface.co/docs/transformers/main/en/chat_templating
-# -------------------------------------------------------------------------------
+# Usage:
+#     - set_tokenizer(add_eos_token: bool = False) -> AutoTokenizer
+#     - generate_response(user_prompt: str, 
+#                         context: List[str] = None, 
+#                         suppress_conversation_history: bool = True) -> Optional[str]
+#     - cleanup():
+# =========================================================================================
 
 import os, sys
 
@@ -16,18 +23,16 @@ from transformers import AutoTokenizer, AutoModelForCausalLM, BitsAndBytesConfig
 from huggingface_hub import login
 from typing import List, Dict, Optional
 
-# Warning
 warnings.filterwarnings('ignore', category=UserWarning, module='torch.utils.checkpoint')
 
-# local imports
-from services.Base import ServiceBase
 from services.LLM.LLMBase import LLMBase
 from utils.output_message_format.output_colour import print_info, print_warning, print_error, print_success, print_model_output
 
-class HF_LLM(ServiceBase, LLMBase):
+class HF_LLM(LLMBase):
 
     def __init__(self,
                  model_name: str = "mistralai/Mistral-7B-v0.1",
+                 verbose_switch: bool = False,
                  quantization: str = "4bit",
                  use_cache: bool = True,
                  device_map: str = "auto",
@@ -49,19 +54,21 @@ class HF_LLM(ServiceBase, LLMBase):
             use_cache (bool): use the cached model when loading the model
             device_map (str): The device map to use for loading the model
             max_new_tokens (int): The maximum number of new tokens to generate
-            do_sample (bool): Whether to use sampling when generating new tokens, Default : False to make it deterministic
+            do_sample (bool): Whether to use sampling when generating new tokens, 
+                Default : False to make it deterministic
             top_p (float): The top-p value to use when sampling
-            top_k (int): The top-k value to use when sampling, the number of highest probability vocabulary tokens to keep for top-k-filtering.
+            top_k (int): The top-k value to use when sampling, the number of highest probability vocabulary tokens 
+                to keep for top-k-filtering.
             temperature (float): The temperature value to use when sampling
             llm_config_file (str): The path to a YAML file containing configuration values
-            stop_strings (List[str]): Default : ["User:"] which supports the default chat template at /config_files/default_chat_template.txt
+            stop_strings (List[str]): Default : ["User:"] which supports the default chat template 
+                at /config_files/default_chat_template.txt
             enable_chat_history (bool): Whether to add chat history
             max_history (int): The maximum number of interactions to store in the chat
         """
 
         # base class
-        ServiceBase.__init__(self)
-        LLMBase.__init__(self, model_name, enable_chat_history, max_history)
+        super().__init__(model_name, enable_chat_history, max_history, verbose_switch)
         # Set attributes (config file values will override these)
         self.quantization = quantization
         self.use_cache = use_cache
@@ -205,7 +212,10 @@ class HF_LLM(ServiceBase, LLMBase):
             raise ValueError("Model or tokenizer not initialized")
 
         context = self._prepare_context(context)
-        conversation_history = "" if suppress_conversation_history else self._prepare_conversation_history(user_prompt)
+        conversation_history = ("" 
+                                if suppress_conversation_history 
+                                else self._prepare_conversation_history(user_prompt))
+        
         messages = [{"role": "System", "content": self.system_prompt},
                     {"role": "Conversation", "content": conversation_history},
                     {"role": "Context", "content": context},
@@ -227,9 +237,12 @@ class HF_LLM(ServiceBase, LLMBase):
 
             self.chat_history.add_interaction(user_prompt, answer)
 
-        print_model_output(prompt, "USER") # Printing user query
-        print()
+        if self.verbose_switch:
+            print_model_output(prompt, "USER")
+            print("\n")
+            
         print_model_output(answer, self.model.name_or_path.strip().split("/")[-1])
+        print("\n")
         return answer
 
 

@@ -1,12 +1,12 @@
 {%- for message in messages %}
     {%- if message['role'] == 'System' %}
-        {{- bos_token + '**System:** ' + message['content'] + '\n\n' }}
+        {{- bos_token + '**System:**\n' + message['content'] + '\n\n' }}
     {%- elif message['role'] == 'User' %}
-        {{- '**User:** ' + message['content'] + "\n\n"}}
+        {{- '**User:**\n' + message['content'] + '\n\n'}}
     {%- elif message['role'] == 'Context' %}
-        {{- '**Context:** ' + message['content'] + "\n\n"}}
+        {{- '**Context:**\n' + message['content'] + '\n\n'}}
     {%- elif message['role'] == 'Conversation' %}
-        {{- '**Conversation History:** ' + message['content'] + "\n\n"}}
+        {{- '**Conversation History:**\n' + message['content'] + '\n'}}
     {%- endif %}
 {%- endfor %}
 {{- '**Assistant Response:** '}}

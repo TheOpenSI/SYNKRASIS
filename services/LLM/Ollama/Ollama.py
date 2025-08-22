@@ -1,12 +1,15 @@
-# ==========================================================================================================
-# Ollama based LLM implementation
-# To add conversation history, set enable_chat_history = True in the Ollama object.
-# In self.generate_response(), change suppress_conversation_history to False, to include conversation history.
-# Model pulling hasn't been tested, but it should work, does not output anything while downloading the model.
-# Methods - 
-#   generate_response(user_prompt: str, context: List[str] = None, suppress_conversation_history: bool = True) -> Optional[str]
-#   chat(messages: List[dict], suppress_conversation_history: bool = True) -> Optional[str]
-# ==========================================================================================================
+# =======================================================================================
+# Ollama.py using ollama library
+# To add conversation history, set enable_chat_history=True in the Ollama object.
+# In self.generate_response(), change suppress_conversation_history to False, 
+# to include conversation history.
+# Usage:
+#     - generate_response(user_prompt: str, 
+#                         context: List[str] = None, 
+#                         suppress_conversation_history: bool = True) -> Optional[str]
+#     - cleanup():
+# =======================================================================================
+
 import os, sys
 
 sys.path.append(f"{os.path.dirname(os.path.abspath(__file__))}/../../..")
@@ -14,20 +17,21 @@ sys.path.append(f"{os.path.dirname(os.path.abspath(__file__))}/../../..")
 import ollama, torch
 from typing import Optional, Dict, List
 
-from services.Base import ServiceBase
 from services.LLM.LLMBase import LLMBase
 from utils.output_message_format.output_colour import print_error, print_info, print_success, print_model_output
-# from utils.code_parsing.code_parser import parse_response # for pycapsule
+from utils.code_parsing.code_parser import parse_response
+from utils.spinner.Spinner import Spinner
 
 
-class Ollama(ServiceBase, LLMBase):
+class Ollama(LLMBase):
     def __init__(self, 
                  model_name: str = "mistral", # uses mistral as default model
                  enable_chat_history:bool = False, 
-                 max_history: int = 3):
+                 max_history: int = 3,
+                 verbose_switch: bool = False):
         # Init will not load the model in GPU, model gets loaded only when generate_response is called
-        ServiceBase.__init__(self)
-        LLMBase.__init__(self, model_name, enable_chat_history, max_history)
+        super().__init__(model_name, enable_chat_history, max_history, verbose_switch)
+        self.spinner = Spinner(message="Pulling model..")
         
         
     def _set_seed(self):
@@ -39,19 +43,9 @@ class Ollama(ServiceBase, LLMBase):
         """
         Pull the model from the server
         """
+        self.spinner.start()
         ollama.pull(self.model_name)
-        
-        
-    def _handle_error(self, e: ollama.ResponseError):
-        """
-        Handles the error when response is not generated
-        """
-        print_error(f"Caught ollama._types.ResponseError: {e}")
-        print_info("Attempting to pull the model, please restart the service once pull is complete.")
-        print_info("This may take a few minutes.")
-        print_info("No output will be visible at stdout until the model is pulled.")
-        self._pull_model()
-        print_success("Model pull complete. Please restart the service.")
+        self.spinner.stop()
 
 
     def generate_response(self,
@@ -66,7 +60,9 @@ class Ollama(ServiceBase, LLMBase):
             suppress_conversation_history (bool): Whether to send conversation history.
         """
         # Conversation history
-        conversation_history = "" if suppress_conversation_history else self._prepare_conversation_history(user_prompt)
+        conversation_history = ("" 
+                                if suppress_conversation_history 
+                                else self._prepare_conversation_history(user_prompt))
 
         # Context
         context = self._prepare_context(context)
@@ -82,37 +78,30 @@ class Ollama(ServiceBase, LLMBase):
         try:
             # Generate response from the model
             response = ollama.generate(model = self.model_name, prompt = full_query)
-            response_str = response["response"]
-            self.handle_response(response_str, user_prompt, full_query)
-            return response_str
+
+            # Add the interaction to chat history
+            if self.enable_chat_history and response:
+                if not self.chat_history:
+                    self.init_chat_history(user_prompt)
+
+                # For chat it's response["message"]["content"]
+                self.chat_history.add_interaction(user_prompt,
+                                                  response["response"])  
+                
+            if self.verbose_switch:
+                print_model_output(full_query, "USER")
+                print("\n")
+                
+            print_model_output(response["response"], self.model_name)
+            print("\n")
+            return response["response"]
 
         except ollama.ResponseError as e:
-            self._handle_error(e)
-            
-    def chat(self, user_prompt: str, messages: List[dict]) -> Optional[str]:
-        """
-        Chat with the model using a list of messages.
-        Workaround for generating response without the jinja template.
-        User has full control of message content and system prompt.
-        
-        Args:
-            user_query (str): User query, must be added to support conversation history
-            messages (List[dict]): List of messages with role and content
-        
-        Returns:
-            Optional[str]: The response from the model
-        """
-        try:
-            response = ollama.chat(
-                model = self.model_name,
-                messages = messages
-            )
-            
-            self.handle_response(response["message"]["content"], user_prompt)
-            return response["message"]["content"]
-            
-        except ollama.ResponseError as e:
-            self._handle_error(e)
+            print_error(f"Caught ollama._types.ResponseError: {e}")
+            print_info("Attempting to pull the model, please restart the service once pull is complete.")
+            print_info("This may take a few minutes.")
+            self._pull_model()
+            print_success("Model pull complete. Please restart the service.")
         
         
     def cleanup(self):

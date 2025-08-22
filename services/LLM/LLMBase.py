@@ -1,5 +1,5 @@
-# ===============================================================================================================================
-# Common traits -
+# ====================================================================================================================
+# Usage -
 # Fields:
 #   - model_name: str
 #   - prompt_template_path: str
@@ -21,41 +21,50 @@
 #   - handle_response(response: str, user_prompt: str, full_query: str = None)
 #
 # Abstract Methods:
-#   - generate_response(user_prompt: str, context:List[str] = None, suppress_conversation_history:bool = True) -> Optional[str]
-# ===============================================================================================================================
+#   - generate_response(user_prompt: str, context:List[str] = None, suppress_conversation_history:bool = True) 
+#                                                                                               -> Optional[str]
+# ====================================================================================================================
+
 import os, sys
 
 sys.path.append(f"{os.path.dirname(os.path.abspath(__file__))}/../..")
 
-from abc import ABC, abstractmethod
+from abc import abstractmethod
 from typing import List, Optional, Dict
 from jinja2 import Template
 
+from services.Base import ServiceBase
 from modules.ChatHistory import ChatHistory
 from utils.output_message_format.output_colour import print_error, print_success, print_model_output
 
-# Uncomment the next line for pycapsule
-# from utils.code_parsing.code_parser import parse_response
-
-class LLMBase(ABC):
+class LLMBase(ServiceBase):
     def __init__(self, 
                  model_name: str, 
                  enable_chat_history: bool = False,
-                 max_history: int = 3):
+                 max_history: int = 3,
+                 verbose_switch: bool = False):
         """
         Base class for all LLM services
         Args:
             model_name (str): Model name as string, use for printing and logging
             enable_chat_history (bool, optional): Use chat history. Defaults to False.
-            max_history (int, optional): Maximum number of interactions to store in history. Defaults to 3.
+            max_history (int, optional): Maximum number of interactions to store in history. 
+                Defaults to 3.
+            verbose_switch (bool, optional): Whether to print out full prompt and response. 
+                Defaults to False.
         """
+        super().__init__()
         self.model_name = model_name
         self.prompt_template_path = os.path.join(os.path.dirname(os.path.abspath(__file__)),
                                                  "../../config_files/default_chat_template.jinja")
         self.enable_chat_history = enable_chat_history
         self.chat_history: ChatHistory = None
         self.max_history = max_history
-        self.system_prompt = "You are a helpful assistant, always answer the question to the best of your ability even if the context is not useful."
+        self.verbose_switch = verbose_switch
+        self.system_prompt = ("You are a helpful assistant, "
+                              "always answer the question to the best of your ability "
+                              "even if the context is not useful.")
+
 
 
     def _prepare_prompt(self, messages: List[Dict], bos_token="") -> str:
@@ -75,7 +84,6 @@ class LLMBase(ABC):
 
         # Render the template with the provided messages and bos_token
         rendered_prompt = template.render(messages=filtered_messages, bos_token=bos_token)
-
         return rendered_prompt
 
 
@@ -105,24 +113,24 @@ class LLMBase(ABC):
         conversation_history = ""
         if self.enable_chat_history:
             
-            # Initialise chat history if not already initialized
+            # Initialise chat history if not already initialised
             if self.chat_history is None:
-                self.init_chat_history(user_query) # user_query is the original question and max_history is 3 by default
-
+                self.init_chat_history(user_query) 
+            
             # Original question
-            conversation_history = "\n" + ">> Original Question: " + self.chat_history.original_question + "\n\n"
+            conversation_history = ">> Original Question: " + self.chat_history.original_question + "\n"
             
             # Uncomment to pass only the original question and last answer
-            # conversation_history += "\n".join([(f">> Your previous answer:\n{answer}\n") for _, answer in self.chat_history.conversation_history])
+            # conversation_history += "\n".join([(f">> Your previous answer:\n{answer}\n") 
+                                            #    for _, answer in self.chat_history.conversation_history])
             
             # Passing both question and answer
             for i, (question, answer) in enumerate(self.chat_history.conversation_history):
-                # Uncomment the next line for pycapsule to extract code from LLM response
-                # _, code = parse_response(answer)
-                if question != self.chat_history.original_question: # Skip question if it is the original question
-                    conversation_history += f">> Previous question {i+1}:\n{question}\n"
+                # Skip the first question since it's same as the original question
+                if question != self.chat_history.original_question:
+                    conversation_history += f">> Previous question {i+1}: {question}\n"
                 # conversation_history += f">> Your previous solution {i+1}:\n{code}\n\n" # Uncomment for pycapsule
-                conversation_history += f">> Your previous solution {i+1}:\n{answer}\n\n"
+                conversation_history += f">> Your previous response {i+1}: {answer}\n\n"
             
             return conversation_history
     
