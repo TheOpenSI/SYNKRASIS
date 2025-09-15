@@ -64,6 +64,9 @@ class Ollama(LLMBase):
             user_prompt (str): The user query
             context (str): optional context
             suppress_conversation_history (bool): Whether to send conversation history.
+        
+        Returns:
+            Optional[str]: The model response or None if an error occurs.
         """
         # Conversation history
         conversation_history = ("" 

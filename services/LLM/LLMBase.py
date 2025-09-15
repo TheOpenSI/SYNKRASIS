@@ -166,6 +166,7 @@ class LLMBase(ServiceBase):
     def set_system_prompt_from_file(self, prompt_file: str = None):
         """
         Set the system prompt from a file.
+        By default, it loads from config_files/system_prompt.txt.
         Args:
             prompt_file (str): The file containing the system prompt.
         """
