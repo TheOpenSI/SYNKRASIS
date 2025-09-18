@@ -1,0 +1,8 @@
+rules:
+  - id: python-sql-injection
+    patterns:
+      - pattern: $CURSOR.execute($QUERY + ...)
+      - pattern-not: $CURSOR.execute($QUERY, ...)
+    message: Potential SQL injection vulnerability detected. Avoid concatenating user input into SQL queries. Use parameterized queries instead.
+    severity: ERROR
+    languages: [python]
