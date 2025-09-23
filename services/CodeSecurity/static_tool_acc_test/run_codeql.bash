@@ -8,7 +8,7 @@ PYTHON_DIR="$1"
 CODEQL_BINARY="$2"
 DATABASE_DIR="$3"
 PROBLEM_ID="$4"
-OUTPUT_DIR="services/CodeSecurity/codeql_acc_test/output_ql"
+OUTPUT_DIR="/home/s448780/workspace_hcc4/SYNKRASIS/services/CodeSecurity/static_tool_acc_test/output_ql"
 
 # help function
 function show_help() {
@@ -19,6 +19,11 @@ function show_help() {
 if [ "$1" == "--help" ] || [ "$#" -ne 4 ]; then
     show_help
     exit 1
+fi
+
+# default codeql binary path
+if [ "$2" == "def" ]; then
+    CODEQL_BINARY="/home/s448780/workspace_hcc4/codeql/codeql"
 fi
 
 # Validate inputs
@@ -40,3 +45,9 @@ fi
 "$CODEQL_BINARY" database analyze "$DATABASE_DIR" codeql/python-queries \
 --format=sarif-latest \
 --output="$OUTPUT_DIR/results$PROBLEM_ID.sarif"
+
+# Remove database dir
+if [ -e "$DATABASE_DIR" ]; then
+    rm -rf "$DATABASE_DIR"
+    echo "Removed database directory '$DATABASE_DIR'."
+fi

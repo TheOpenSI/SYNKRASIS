@@ -6,7 +6,7 @@ set -e
 PYTHON_DIR="$1"
 PROBLEM_ID="$2"
 VERBOSE_FLAG="$3"
-OUTPUT_DIR="/home/s448780/workspace_hcc4/SYNKRASIS/services/CodeSecurity/codeql_acc_test/output_sem"
+OUTPUT_DIR="/home/s448780/workspace_hcc4/SYNKRASIS/services/CodeSecurity/static_tool_acc_test/output_sem"
 
 # Help function
 function show_help() {
