@@ -95,7 +95,8 @@ def run_analysis(sample_index: int,
                  base_path: Path, 
                  codeql_binary: Union[Path, str], 
                  ql_bash_script_path: Path,
-                 sg_bash_script_path: Path) -> List[Tuple[bool, str]]:
+                 sg_bash_script_path: Path,
+                 is_debug: False) -> List[Tuple[bool, str]]:
     """
     Run CodeQL and Semgrep analysis on the provided code snippet.
 
@@ -106,6 +107,7 @@ def run_analysis(sample_index: int,
         codeql_binary (Union[Path, str]): Path to CodeQL binary.
         ql_bash_script_path (Path): Path to CodeQL bash script.
         sg_bash_script_path (Path): Path to Semgrep bash script.
+        is_debug (bool): If True, skip creating the Python file.
 
     Returns:
         List[Tuple[bool, str]]: List of tuples indicating success status and messages for each tool.
@@ -116,30 +118,48 @@ def run_analysis(sample_index: int,
     problem_id = sample_index
 
     # creates main.py file in vul_code directory
-    create_py_file(vul_code, code_file)
+    if not is_debug:
+        create_py_file(vul_code, code_file)
 
     # codeql command
-    ql_command = ql_analysis_cmd(ql_bash_script_path,code_file,codeql_binary,db_dir,problem_id)
+    ql_command = ql_analysis_cmd(ql_bash_script_path, code_file, codeql_binary, db_dir,problem_id)
     
     # semgrep command
-    sg_command = semgrep_analysis_cmd(sg_bash_script_path,code_file,problem_id)
+    sg_command = semgrep_analysis_cmd(sg_bash_script_path, code_file, problem_id)
     
     results = [(False, "Not executed"), (False, "Not executed")]
     
     for i, cmd in enumerate([ql_command, sg_command]):
         try:
             result = subprocess.run(cmd, capture_output=True, text=True)
+            
+            static_tool = "Semgrep" if i == 1 else "CodeQL"
+            
+            # Print stdout and stderr regardless of return code
+            # if result.stdout:
+            #     print(f"{static_tool} stdout: {result.stdout}")
+            # if result.stderr:
+            #     print(f"{static_tool} stderr: {result.stderr}")
                 
             if result.returncode != 0:
-                static_tool = "Semgrep" if i == 1 else "CodeQL"
                 error_msg = f"{static_tool} failed (exit code {result.returncode})"
                 if result.stderr:
                     error_msg += f": {result.stderr.strip()}"
-                results[i] = (False, error_msg)  # Use index assignment
+                results[i] = (False, error_msg)
             else:
-                static_tool = "Semgrep" if i == 1 else "CodeQL"
-                results[i] = (True, f"{static_tool} completed")
-            
+                if i == 0:  # CodeQL
+                    output_file = base_path / "output_ql" / f"results{problem_id}.sarif"
+                    if not output_file.exists():
+                        results[i] = (False, f"{static_tool} completed but no output file created")
+                    else:
+                        results[i] = (True, f"{static_tool} completed")
+                else:  # Semgrep
+                    output_file = base_path / "output_sem" / f"results{problem_id}.json"
+                    if not output_file.exists():
+                        results[i] = (False, f"{static_tool} completed but no output file created")
+                    else:
+                        results[i] = (True, f"{static_tool} completed")
+                
         except Exception as e:
             static_tool = "Semgrep" if i == 1 else "CodeQL"
             results[i] = (False, f"{static_tool} exception: {str(e)}")
@@ -187,7 +207,13 @@ def handle_run_results(results: List[Tuple[bool, str]]) -> Tuple[bool, bool, boo
     
     
     
-def main():
+def main(debug: bool = False):
+    """
+    Main function to run the analysis on the dataset.
+
+    Args:
+        debug (bool, optional): If True, skip creating Python files. Defaults to False.
+    """
     df_path = "services/CodeSecurity/data/python_cyber_native.jsonl"
     codeql_binary = "/home/s448780/workspace_hcc4/codeql/codeql"
     ql_bash_script_path = "services/CodeSecurity/static_tool_acc_test/run_codeql.bash"
@@ -217,7 +243,7 @@ def main():
                 continue
             
             run_results = run_analysis(
-                i, vul_code, base_path, codeql_binary, ql_bash_script_path, sg_bash_script_path
+                i, vul_code, base_path, codeql_binary, ql_bash_script_path, sg_bash_script_path, debug
             )
             both_run_success, codeql_success, semgrep_success = handle_run_results(run_results)
             ql_results = sg_results = []
@@ -244,4 +270,4 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    main(debug=False)

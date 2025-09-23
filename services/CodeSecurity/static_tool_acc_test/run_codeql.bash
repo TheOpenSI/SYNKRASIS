@@ -42,7 +42,9 @@ fi
 "$CODEQL_BINARY" database create "$DATABASE_DIR" --language=python --source-root="$PYTHON_DIR"
 
 # analyze the python file
-"$CODEQL_BINARY" database analyze "$DATABASE_DIR" codeql/python-queries \
+"$CODEQL_BINARY" database analyze "$DATABASE_DIR" \
+codeql/python-queries:codeql-suites/python-security-extended.qls \
+codeql/python-queries:codeql-suites/python-security-experimental.qls \
 --format=sarif-latest \
 --output="$OUTPUT_DIR/results$PROBLEM_ID.sarif"
 
