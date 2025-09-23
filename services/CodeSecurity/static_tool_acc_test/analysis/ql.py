@@ -1,12 +1,11 @@
 import json, os, sys
-from pathlib import Path
 
-def analyse_sarif(file_path: Path) -> list:
+def analyse_sarif(file_path: str) -> list:
     """
     Analyze a SARIF file and extract relevant information.
 
     Args:
-        file_path (Path): The path to the SARIF file.
+        file_path (str): The path to the SARIF file.
     
     Returns:
         list: A list of results extracted from the SARIF file.

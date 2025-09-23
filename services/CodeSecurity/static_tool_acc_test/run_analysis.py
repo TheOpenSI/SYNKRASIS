@@ -223,8 +223,8 @@ def main():
             ql_results = sg_results = []
             if both_run_success:
                 successful_count += 1
-                ql_results = analyse_sarif(base_path / "output" / f"results{i}.sarif")
-                sg_results = analyse_sg_json(base_path / "output_sem" / f"results{i}.json")
+                ql_results = analyse_sarif(str(base_path / "output_ql" / f"results{i}.sarif"))
+                sg_results = analyse_sg_json(str(base_path / "output_sem" / f"results{i}.json"))
             
             else:
                 if not codeql_success:
