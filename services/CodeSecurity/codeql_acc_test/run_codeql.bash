@@ -1,12 +1,14 @@
 #!/bin/bash
 
-# downlaod codeql zip if required
-# wget https://github.com/github/codeql-action/releases/download/codeql-bundle-v2.23.0/codeql-bundle-linux64.tar.gz -O ~/workspace_hcc4/codeql.tar.gz
+# download codeql zip if required
+# wget https://github.com/github/codeql-action/releases/download/codeql-bundle-v2.23.0/codeql-bundle-linux64.tar.gz \
+# -O ~/workspace_hcc4/codeql.tar.gz
 
 PYTHON_DIR="$1"
 CODEQL_BINARY="$2"
 DATABASE_DIR="$3"
 PROBLEM_ID="$4"
+OUTPUT_DIR="services/CodeSecurity/codeql_acc_test/output_ql"
 
 # help function
 function show_help() {
@@ -35,4 +37,6 @@ fi
 "$CODEQL_BINARY" database create "$DATABASE_DIR" --language=python --source-root="$PYTHON_DIR"
 
 # analyze the python file
-"$CODEQL_BINARY" database analyze "$DATABASE_DIR" codeql/python-queries --format=sarif-latest --output=services/CodeSecurity/codeql_acc_test/output/results"$PROBLEM_ID".sarif
+"$CODEQL_BINARY" database analyze "$DATABASE_DIR" codeql/python-queries \
+--format=sarif-latest \
+--output="$OUTPUT_DIR/results$PROBLEM_ID.sarif"

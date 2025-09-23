@@ -1,7 +1,9 @@
-import json, os, sys, subprocess
+import json, os, sys, subprocess, re
 from tqdm import tqdm
 from pathlib import Path
 from typing import Tuple, List, Union
+
+from sariff_test import analyse_sarif
 
 def setup_directories(base_path: str = "services/CodeSecurity/codeql_acc_test") -> Path:
     """
@@ -29,15 +31,14 @@ def run_codeql_analysis(sample_index: int,
     """
     Run CodeQL analysis on a single sample
     """
-    code_file = base_path / "code" / f"sample_{sample_index}_vul.py"
+    code_file = base_path / "code" / "main.py"
     db_dir = base_path / "db"
     # problem_id = f"_{sample_index}_vul"
     problem_id = sample_index
     
     try:
-        with open(code_file, 'w') as f:
-            f.write(vul_code)
-        
+        _create_py_file(vul_code, code_file)
+
         cmd = [
             bash_script_path,
             str(code_file.parent),  
@@ -63,6 +64,32 @@ def run_codeql_analysis(sample_index: int,
     except Exception as e:
         return False, f"Exception during analysis: {str(e)}"
     
+
+def _create_py_file(code: str,
+                    file_path: Path) -> None:
+    """
+    Create a Python file with the given code.
+    """
+    code = _clean_python_content(code)
+    with open(file_path, 'w') as f:
+        f.write(code)
+
+
+def _clean_python_content(code:str) -> str:
+    """
+    Remove unwanted characters from the Python code.
+
+    Args:
+        code (str): The original Python code.
+
+    Returns:
+        str: The cleaned Python code.
+    """
+    # Remove ```python and ``` markers
+    pattern = r"```(python)?\s*|```"
+    code = re.sub(pattern, "", code)
+    return code.strip()
+
 
 def main():
     df_path = "services/CodeSecurity/data/python_cyber_native.jsonl"
@@ -105,7 +132,9 @@ def main():
             else:
                 failed_samples.append((i, message))
                 
-            # break
+            vul_results = analyse_sarif(base_path / "output" / f"results{i}.sarif")
+            print(f"File: results{i}.sarif, Total issues found: {len(vul_results)}")
+            break
                 
         except Exception as e:
             failed_samples.append((i, f"Unexpected error: {str(e)}"))
