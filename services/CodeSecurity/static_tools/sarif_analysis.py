@@ -1,6 +1,6 @@
 import json
 
-with open('results.sarif', 'r') as f:
+with open('services/CodeSecurity/static_tools/results.sarif', 'r') as f:
     sarif_data = json.load(f)
 
 results = sarif_data.get('runs', [{}])[0].get('results', [])
