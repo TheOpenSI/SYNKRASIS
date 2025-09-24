@@ -62,7 +62,8 @@ class StaticToolEval:
         self._setup_directories()
         
         # Consolidates analysis
-        consolidated_output_path = self.base_path / "consolidated_evaluation_results.json"
+        dataset_name = self._process_for_file_name(str(Path(self.dataset_path).stem))
+        consolidated_output_path = self.base_path / f"{dataset_name}_consolidated_evaluation_results.json"
         all_results = []
         
         # Iterate over dataset
@@ -88,7 +89,7 @@ class StaticToolEval:
                         print_error(f"Error running {tool.tool_name} on sample {i}: {result.stderr}")
                     else:
                         self.logger.info(f"{tool.tool_name} analysis completed successfully on sample {i}.")
-                        print_success(f"{tool.tool_name} analysis completed successfully on sample {i}.")
+                        # print_success(f"{tool.tool_name} analysis completed successfully on sample {i}.")
                     
                     # Analysis
                     output_file = self.base_path / tool.output_dir / tool.get_output_file(i)
@@ -261,3 +262,14 @@ class StaticToolEval:
         return data_to_process
     
     
+    def _process_for_file_name(self, name: str) -> str:
+        """
+        Process a string to be safe for use as a file name without extension.
+
+        Args:
+            name (str): The original string.
+        Returns:
+            str: Processed string safe for file names.
+        """
+        safe_name = "".join(c if c.isalnum() else '_' for c in name)
+        return safe_name.strip()
