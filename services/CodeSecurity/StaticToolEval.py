@@ -1,11 +1,14 @@
+# from __future__ import annotations
+
 import os, sys
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', '..')))
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..')))
 
 import json
 import subprocess
-from pathlib import Path
 
+from pathlib import Path
 from typing import Tuple, List, Union
+from tqdm import tqdm
 
 from utils.logger.Logger import Logger
 from utils.output_message_format.output_colour import print_info, print_success, print_error
@@ -29,11 +32,12 @@ class StaticToolEval:
         self.code_file_name = code_file_name
         self.code_dir_name = code_dir_name
         self.base_path = Path(base_path)
+        self.logger = Logger(self.__class__.__name__, "DEBUG")
         
+        os.makedirs(self.base_path, exist_ok=True)
         self.data = self._load_dataset()
         self.vul_process_func = vul_code_processing_func
         self.label_process_func = true_label_processing_func
-        self.logger = Logger(self.__class__.__name__, "DEBUG")
         
         
     def get_code_dir(self) -> str:
@@ -51,14 +55,14 @@ class StaticToolEval:
             
     
     def run_evaluation(self):
-        # Setup directories
-        self._setup_directories()
-        
         # Check if static tools are loaded
         self._check_if_static_tools_loaded()
         
+        # Setup directories
+        self._setup_directories()
+        
         # Iterate over dataset
-        for i, entry in enumerate(self.data):
+        for i, entry in enumerate(tqdm(self.data, desc=f"Processing Code Samples from {Path(self.dataset_path).name}")):
             try:
                 vul_code, true_label = self._get_vul_code_and_label_sample(entry)
                 
@@ -67,28 +71,28 @@ class StaticToolEval:
                 
                 # Run each static tool
                 for tool in self.static_tools:
-                    self.logger.info(f"Running analysis with {tool.name} on sample {i}.")
+                    self.logger.info(f"Running analysis with {tool.tool_name} on sample {i}.")
                     cmd = tool.build_command(i)
                     self.logger.debug(f"Constructed command: {' '.join(cmd)}")
                     
                     result = subprocess.run(cmd, capture_output=True, text=True)
                     
                     if result.returncode != 0:
-                        self.logger.error(f"Error running {tool.name} on sample {i}: {result.stderr}")
-                        print_error(f"Error running {tool.name} on sample {i}: {result.stderr}")
+                        self.logger.error(f"Error running {tool.tool_name} on sample {i}: {result.stderr}")
+                        print_error(f"Error running {tool.tool_name} on sample {i}: {result.stderr}")
                     else:
-                        self.logger.info(f"{tool.name} analysis completed successfully on sample {i}.")
-                        print_success(f"{tool.name} analysis completed successfully on sample {i}.")
+                        self.logger.info(f"{tool.tool_name} analysis completed successfully on sample {i}.")
+                        print_success(f"{tool.tool_name} analysis completed successfully on sample {i}.")
                     
                     # Analysis
                     output_file = self.base_path / tool.output_dir / tool.get_output_file(i)
                     if not output_file.exists():
-                        self.logger.error(f"Expected output file {output_file} not found for {tool.name} on sample {i}.")
-                        print_error(f"Expected output file {output_file} not found for {tool.name} on sample {i}.")
+                        self.logger.error(f"Expected output file {output_file} not found for {tool.tool_name} on sample {i}.")
+                        print_error(f"Expected output file {output_file} not found for {tool.tool_name} on sample {i}.")
                         continue
                     results = tool.run_analysis(str(output_file))
-                    print_info(f"Analysis results from {tool.name} on sample {i}: {results}")
-                    self.logger.info(f"Analysis results from {tool.name} on sample {i}: Found {len(results)} issues.")
+                    print_info(f"Analysis results from {tool.tool_name} on sample {i}: {results}")
+                    self.logger.info(f"Analysis results from {tool.tool_name} on sample {i}: Found {len(results)} issues.")
                     
             except KeyError as e:
                 self.logger.error(f"Missing key in dataset entry: {e}")
@@ -125,6 +129,7 @@ class StaticToolEval:
     
     def _load_default_static_tools(self) -> list[StaticToolBase]:
         return [CodeQL(self), Semgrep(self)]
+        # return [Semgrep(self)]
     
     
     def _get_all_dirs_to_create(self) -> set:
@@ -160,8 +165,8 @@ class StaticToolEval:
         Returns:
             tuple[str, str]: Processed vul_code and true_label.
         """
-        self.logger.debug(f"Extracting vul_code and true_label using keys: \
-            {self.vul_code_key}, {self.true_label_key} from {entry}.")
+        self.logger.debug((f"Extracting vul_code and true_label using keys: "
+                           f"{self.vul_code_key}, {self.true_label_key}"))
         # Will raise KeyError if keys are missing
         vul_code = entry[self.vul_code_key]
         true_label = entry[self.true_label_key]
@@ -204,10 +209,11 @@ class StaticToolEval:
         function_to_use = self.vul_process_func \
                           if process_type == "vul_code" \
                           else self.label_process_func
-        self.logger.debug(f"Processing {process_type} using provided function: {function_to_use.__name__}")
         
         if function_to_use:
+            self.logger.debug(f"Processing {process_type} using provided function: {function_to_use.__name__}")
             self.logger.info("Applying processing function...")
+            
             processed_data = function_to_use(data_to_process)
             if not processed_data or not processed_data.strip():
                 self.logger.error("Processing function returned empty or None.")

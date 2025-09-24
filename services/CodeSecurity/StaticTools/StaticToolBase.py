@@ -7,11 +7,11 @@ from typing import Union
 from pathlib import Path
 from abc import ABC, abstractmethod
 
-from services.CodeSecurity.StaticToolEval import StaticToolEval
+# from services.CodeSecurity.StaticToolEval import StaticToolEval
 
 class StaticToolBase(ABC):
     def __init__(self,
-                 evaluator: StaticToolEval,
+                 evaluator: 'StaticToolEval',
                  tool_name: str,
                  script_path: str,
                  output_dir: str,

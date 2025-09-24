@@ -4,22 +4,20 @@
 set -e
 
 PYTHON_DIR="$1"
-PROBLEM_ID="$2"
+OUTPUT_FILE="$2"
 VERBOSE_FLAG="$3"
-OUTPUT_DIR="/home/s448780/workspace_hcc4/SYNKRASIS/services/CodeSecurity/static_tool_acc_test/output_sem"
 
 # Help function
 function show_help() {
-    echo "Usage: $0 <python_directory> <problem_id> [--verbose]"
+    echo "Usage: $0 <python_directory> <output_file> [--verbose]"
     echo ""
     echo "Arguments:"
-    echo "  python_directory  Directory containing Python code to analyse"
-    echo "  problem_id        Identifier for the output file"
-    echo "  --verbose         (Optional) Show Semgrep output during scan"
+    echo "  python_directory    Directory containing Python code to analyse"
+    echo "  output_file_name    Name for the output file"
+    echo "  --verbose           (Optional) Show Semgrep output during scan"
     echo ""
     echo "Example:"
-    echo "  $0 ./my_code 001"
-    echo "  $0 ./my_code 001 --verbose"
+    echo "  $0 ./my_code output_dir/file.json --verbose"
 }
 
 # Show help if --help or incorrect args
@@ -40,12 +38,6 @@ if [ ! -e "$PYTHON_DIR" ]; then
     exit 1
 fi
 
-# Create output directory if it doesn't exist
-if [ ! -d "$OUTPUT_DIR" ]; then
-    echo "Creating output directory '$OUTPUT_DIR'..."
-    mkdir -p "$OUTPUT_DIR"
-fi
-
 # Determine verbosity
 if [ "$VERBOSE_FLAG" == "--verbose" ]; then
     QUIET_FLAG=""
@@ -59,9 +51,10 @@ fi
 semgrep --config p/python \
         --config p/security-audit \
         --config p/owasp-top-ten \
+        --config p/bandit \
         --json \
-        --output="$OUTPUT_DIR/results$PROBLEM_ID.json" \
+        --output="$OUTPUT_FILE" \
         $QUIET_FLAG \
         "$PYTHON_DIR"
 
-echo "Analysis complete. Results saved to: $OUTPUT_DIR/results$PROBLEM_ID.json"
+echo "Analysis complete. Results saved to: $OUTPUT_FILE"
