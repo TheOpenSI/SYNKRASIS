@@ -262,7 +262,7 @@ def main(debug: bool = False):
             
             print(f"Sample {i} | CodeQl: {len(ql_results)} results | Semgrep: {len(sg_results)} results")
             
-            break
+            # break
                 
         except Exception as e:
             failed_samples.append((i, f"Unexpected error: {str(e)}", vul_code))
