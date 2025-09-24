@@ -61,8 +61,13 @@ class StaticToolEval:
         # Setup directories
         self._setup_directories()
         
+        # Consolidates analysis
+        consolidated_output_path = self.base_path / "consolidated_evaluation_results.json"
+        all_results = []
+        
         # Iterate over dataset
-        for i, entry in enumerate(tqdm(self.data, desc=f"Processing Code Samples from {Path(self.dataset_path).name}")):
+        for i, entry in enumerate(tqdm(self.data, 
+                                       desc=f"Processing Code Samples from {Path(self.dataset_path).name}")):
             try:
                 vul_code, true_label = self._get_vul_code_and_label_sample(entry)
                 
@@ -70,6 +75,7 @@ class StaticToolEval:
                 self._create_code_file(vul_code)
                 
                 # Run each static tool
+                results_for_all_tools = []
                 for tool in self.static_tools:
                     self.logger.info(f"Running analysis with {tool.tool_name} on sample {i}.")
                     cmd = tool.build_command(i)
@@ -87,12 +93,37 @@ class StaticToolEval:
                     # Analysis
                     output_file = self.base_path / tool.output_dir / tool.get_output_file(i)
                     if not output_file.exists():
-                        self.logger.error(f"Expected output file {output_file} not found for {tool.tool_name} on sample {i}.")
-                        print_error(f"Expected output file {output_file} not found for {tool.tool_name} on sample {i}.")
+                        self.logger.error((f"Expected output file {output_file} not found "
+                                           f"for {tool.tool_name} on sample {i}."))
+                        print_error((f"Expected output file {output_file} not found "
+                                     f"for {tool.tool_name} on sample {i}."))
                         continue
+                    
                     results = tool.run_analysis(str(output_file))
-                    print_info(f"Analysis results from {tool.tool_name} on sample {i}: {results}")
-                    self.logger.info(f"Analysis results from {tool.tool_name} on sample {i}: Found {len(results)} issues.")
+                    
+                    # save
+                    results_for_all_tools.append({
+                        "tool": tool.tool_name,
+                        "analysis_results": results,
+                    })
+                    
+                    # log
+                    print_info((f"Analysis results from {tool.tool_name} on "
+                                f"sample {i}: Found {len(results)} issues."))
+                    self.logger.info((f"Analysis results from {tool.tool_name} on "
+                                      f"sample {i}: Found {len(results)} issues."))
+                    
+                # saving consolidated results
+                all_results.append({
+                    "sample_index": i,
+                    "true_label": true_label,
+                    "analysis": results_for_all_tools
+                })
+                
+                # saving to json
+                with open(consolidated_output_path, 'w') as c_f:
+                    json.dump(all_results, c_f, indent=4)
+                self.logger.info(f"Consolidated results updated at {consolidated_output_path}.")
                     
             except KeyError as e:
                 self.logger.error(f"Missing key in dataset entry: {e}")

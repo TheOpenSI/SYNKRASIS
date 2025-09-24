@@ -59,8 +59,31 @@ class CodeQL(StaticToolBase):
             list: A list of results extracted from the SARIF file.
         """
         with open(file_path, "r") as f:
-            sarif_data = json.load(f)
+            sarif_report = json.load(f)
                 
-        results = sarif_data.get("runs")[0].get("results")
+        # results = sarif_data.get("runs")[0].get("results")
+        
+        # return results
+        results = []
+    
+        for run in sarif_report['runs']:
+            rules = run['tool']['driver']['rules']
+            
+            for result in run['results']:
+                rule_index = result['ruleIndex']
+                rule_info = rules[rule_index]
+                
+                # Extract CWE information
+                cwe_tags = [tag for tag in rule_info['properties']['tags'] if tag.startswith('external/cwe/')]
+                cwes = [tag.split('/')[-1].upper() for tag in cwe_tags]
+                
+                vuln_info = {
+                    'type': result['ruleId'],
+                    'description': result['message']['text'],
+                    'cwes': cwes,
+                    'file': result['locations'][0]['physicalLocation']['artifactLocation']['uri'],
+                    'line': result['locations'][0]['physicalLocation']['region']['startLine']
+                }
+                results.append(vuln_info)
         
         return results

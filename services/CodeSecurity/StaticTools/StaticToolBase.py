@@ -1,4 +1,4 @@
-from __future__ import annotations
+# from __future__ import annotations
 
 import sys, os
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', '..')))
@@ -7,6 +7,7 @@ from typing import Union
 from pathlib import Path
 from abc import ABC, abstractmethod
 
+from utils.logger.Logger import Logger
 # from services.CodeSecurity.StaticToolEval import StaticToolEval
 
 class StaticToolBase(ABC):
@@ -15,12 +16,16 @@ class StaticToolBase(ABC):
                  tool_name: str,
                  script_path: str,
                  output_dir: str,
-                 required_dir_names: list[str]) -> None:
+                 required_dir_names: list[str],
+                 debug_mode: bool = False) -> None:
         self.evaluator = evaluator
         self.tool_name = tool_name
         self.script_path = script_path
         self.output_dir = output_dir
         self.required_dir_names = required_dir_names
+        self.debug_mode = debug_mode
+        if self.debug_mode:
+            self.logger = Logger(self.__class__.__name__, log_level="Debug")
         
     
     @abstractmethod

@@ -52,10 +52,28 @@ class Semgrep(StaticToolBase):
             list: A list of results extracted from the Semgrep JSON file.
         """
         with open(file_path, "r") as f:
-            sg_data = json.load(f)
+            semgrep_report = json.load(f)
                 
-        results = sg_data.get("results", [])
+        # results = sg_data.get("results", [])
         
-        return results \
-               if len(results) == 0 \
-               else results[0].get("extra").get("metadata").get("cwe")
+        # return results \
+        #        if len(results) == 0 \
+        #        else results[0].get("extra").get("metadata").get("cwe")
+        
+        vulnerabilities = []
+        
+        for result in semgrep_report['results']:
+            vuln_info = {
+                'type': result['check_id'],
+                'description': result.get('extra', {}).get('message', ""),
+                'severity': result['extra']['metadata'].get('severity', ""),
+                'cwes': result['extra']['metadata'].get('cwe', []),
+                'owasp': result['extra']['metadata'].get('owasp', []),
+                'file': result['path'],
+                'line': result.get('start', {}).get('line', -1),
+                'confidence': result['extra']['metadata'].get('confidence', ""),
+                'impact': result['extra']['metadata'].get('impact', ""),
+            }
+            vulnerabilities.append(vuln_info)
+        
+        return vulnerabilities
