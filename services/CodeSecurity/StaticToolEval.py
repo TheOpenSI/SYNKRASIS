@@ -5,16 +5,20 @@ import json
 import subprocess
 from pathlib import Path
 
+from typing import Tuple, List, Union
+
 from utils.logger.Logger import Logger
 from utils.output_message_format.output_colour import print_info, print_success, print_error
+from services.CodeSecurity.StaticTools. StaticToolBase import StaticToolBase
+from services.CodeSecurity.StaticTools.CodeQL import CodeQL
+from services.CodeSecurity.StaticTools.Semgrep import Semgrep
 
 class StaticToolEval:
     def __init__(self, 
                  dataset_path: str,
                  vul_code_key: str,
                  true_label_key: str,
-                 output_dir: str,
-                 static_tools: list[dict[str, str]],
+                 code_file_name: str = "main.py",
                  code_dir_name: str = "vul_code",
                  base_path: str = "/home/s448780/workspace_hcc4/SYNKRASIS/services/CodeSecurity/exp_dir",
                  vul_code_processing_func: callable = None,
@@ -22,10 +26,7 @@ class StaticToolEval:
         self.dataset_path = dataset_path
         self.vul_code_key = vul_code_key
         self.true_label_key = true_label_key
-        self.output_dir = Path(output_dir)
-        self.static_tools = static_tools \
-                            if static_tools \
-                            else self._load_default_static_tools()
+        self.code_file_name = code_file_name
         self.code_dir_name = code_dir_name
         self.base_path = Path(base_path)
         
@@ -34,10 +35,75 @@ class StaticToolEval:
         self.label_process_func = true_label_processing_func
         self.logger = Logger(self.__class__.__name__, "DEBUG")
         
-        # Setting up directories
+        
+    def get_code_dir(self) -> str:
+        return str(self.base_path / self.code_dir_name)
+    
+    
+    def load_static_tools(self,
+                          static_tools: list[StaticToolBase] = None) -> None:
+        if static_tools is not None:
+            self.logger.info("Loading provided static analysis tools configuration.")
+            self.static_tools = static_tools
+        else:
+            self.logger.info("No static analysis tools provided, loading default configuration.")
+            self.static_tools = self._load_default_static_tools()
+            
+    
+    def run_evaluation(self):
+        # Setup directories
         self._setup_directories()
+        
+        # Check if static tools are loaded
+        self._check_if_static_tools_loaded()
+        
+        # Iterate over dataset
+        for i, entry in enumerate(self.data):
+            try:
+                vul_code, true_label = self._get_vul_code_and_label_sample(entry)
+                
+                # Create code file
+                self._create_code_file(vul_code)
+                
+                # Run each static tool
+                for tool in self.static_tools:
+                    self.logger.info(f"Running analysis with {tool.name} on sample {i}.")
+                    cmd = tool.build_command(i)
+                    self.logger.debug(f"Constructed command: {' '.join(cmd)}")
+                    
+                    result = subprocess.run(cmd, capture_output=True, text=True)
+                    
+                    if result.returncode != 0:
+                        self.logger.error(f"Error running {tool.name} on sample {i}: {result.stderr}")
+                        print_error(f"Error running {tool.name} on sample {i}: {result.stderr}")
+                    else:
+                        self.logger.info(f"{tool.name} analysis completed successfully on sample {i}.")
+                        print_success(f"{tool.name} analysis completed successfully on sample {i}.")
+                    
+                    # Analysis
+                    output_file = self.base_path / tool.output_dir / tool.get_output_file(i)
+                    if not output_file.exists():
+                        self.logger.error(f"Expected output file {output_file} not found for {tool.name} on sample {i}.")
+                        print_error(f"Expected output file {output_file} not found for {tool.name} on sample {i}.")
+                        continue
+                    results = tool.run_analysis(str(output_file))
+                    print_info(f"Analysis results from {tool.name} on sample {i}: {results}")
+                    self.logger.info(f"Analysis results from {tool.name} on sample {i}: Found {len(results)} issues.")
+                    
+            except KeyError as e:
+                self.logger.error(f"Missing key in dataset entry: {e}")
+                print_error(f"Missing key in dataset entry: {e}")
+            except Exception as e:
+                self.logger.error(f"Unexpected error processing sample {i}: {e}")
+                print_error(f"Unexpected error processing sample {i}: {e}")
+                
     
-    
+    def _check_if_static_tools_loaded(self) -> None:
+        if self.static_tools is None:
+            self.logger.error("Static tools not loaded. Please load static tools before setting up directories.")
+            raise ValueError("Static tools not loaded. Please load static tools before setting up directories.")
+        
+        
     def _load_dataset(self) -> list:
         if self.dataset_path.endswith('.jsonl'):
             self.logger.info(f"Loading dataset from JSONL file: {self.dataset_path}")
@@ -57,34 +123,20 @@ class StaticToolEval:
         return data if isinstance(data, list) else [data]
     
     
-    def _load_default_static_tools(self) -> list[dict[str, str]]:
-        self.logger.info("Loading default static analysis tools configuration.")
-        ql_script_path = \
-            "/home/s448780/workspace_hcc4/SYNKRASIS/services/CodeSecurity/scripts/run_codeql.bash",
-        sg_script_path = \
-            "/home/s448780/workspace_hcc4/SYNKRASIS/services/CodeSecurity/scripts/run_semgrep.bash",
-        
-        def_static_tools = [
-            {
-                "name": "CodeQL",
-                "script_path": ql_script_path,
-                "dir_to_create": ["db_ql", "output_ql"]
-            },
-            {
-                "name": "Semgrep",
-                "script_path": sg_script_path,
-                "dir_to_create": ["output_sem"]
-            }
-        ]
-        return def_static_tools
+    def _load_default_static_tools(self) -> list[StaticToolBase]:
+        return [CodeQL(self), Semgrep(self)]
     
     
     def _get_all_dirs_to_create(self) -> set:
+        self._check_if_static_tools_loaded()
+        self.logger.info("Compiling list of all directories to create based on static tools configuration.")
         all_dirs = set()
         for tool in self.static_tools:
-            dirs = tool.get("dir_to_create", [])
+            dirs = tool.required_dir_names
             all_dirs.update(dirs)
         all_dirs.add(self.code_dir_name)
+        
+        self.logger.debug(f"Directories to create: {all_dirs}")
         return all_dirs
     
     
@@ -101,6 +153,13 @@ class StaticToolEval:
     
     
     def _get_vul_code_and_label_sample(self, entry: dict) -> tuple[str, str]:
+        """
+        Extract, Process vul_code and true_label from a dataset entry.
+        Args:
+            entry (dict): A single dataset entry.
+        Returns:
+            tuple[str, str]: Processed vul_code and true_label.
+        """
         self.logger.debug(f"Extracting vul_code and true_label using keys: \
             {self.vul_code_key}, {self.true_label_key} from {entry}.")
         # Will raise KeyError if keys are missing
@@ -116,6 +175,14 @@ class StaticToolEval:
             true_label: {true_label[:15]}... (truncated)")
         return vul_code, true_label
     
+    
+    def _create_code_file(self,
+                          code: str) -> None:
+        self.logger.info("Creating code file from dataset...")
+        with open(self.base_path / self.code_dir_name / self.code_file_name, 'w') as f:
+            f.write(code)
+        self.logger.info(f"Code file created at {self.base_path / self.code_dir_name / self.code_file_name}")
+        
     
     def _process_data(self,
                      data_to_process: str,
@@ -151,6 +218,7 @@ class StaticToolEval:
         
             self.logger.debug(f"Processed data: {processed_data[:15]}... (truncated)")
             return processed_data
+        
         # No processing
         self.logger.debug("No processing function provided, returning original data.")
         return data_to_process

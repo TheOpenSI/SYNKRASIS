@@ -7,12 +7,11 @@
 PYTHON_DIR="$1"
 CODEQL_BINARY="$2"
 DATABASE_DIR="$3"
-PROBLEM_ID="$4"
-OUTPUT_DIR="/home/s448780/workspace_hcc4/SYNKRASIS/services/CodeSecurity/static_tool_acc_test/output_ql"
+OUTPUT_FILE="$4"
 
 # help function
 function show_help() {
-    echo "Usage: $0 <python_directory> <codeql_binary_path> <database_dir> <problem_id>"
+    echo "Usage: $0 <python_directory> <codeql_binary_path> <database_dir> <output_dir>"
 }
 
 # show help if --help or incorrect args
@@ -23,12 +22,15 @@ fi
 
 # default codeql binary path
 if [ "$2" == "def" ]; then
+    echo "Using default CodeQL binary path."
     CODEQL_BINARY="/home/s448780/workspace_hcc4/codeql/codeql"
 fi
 
 # Validate inputs
 if [ ! -e "$PYTHON_DIR" ] || [ ! -e "$CODEQL_BINARY" ]; then
-    echo "Error: Python directory '$PYTHON_DIR' or CodeQL binary '$CODEQL_BINARY' does not exist."
+    echo "Error: Python directory '$PYTHON_DIR' \
+    or CodeQL binary '$CODEQL_BINARY' \
+    does not exist."
     exit 1
 fi
 
@@ -46,9 +48,10 @@ fi
 codeql/python-queries:codeql-suites/python-security-extended.qls \
 codeql/python-queries:codeql-suites/python-security-experimental.qls \
 --format=sarif-latest \
---output="$OUTPUT_DIR/results$PROBLEM_ID.sarif"
+--output="$OUTPUT_FILE"
 
 # Remove database dir
+echo "Cleaning up..."
 if [ -e "$DATABASE_DIR" ]; then
     rm -rf "$DATABASE_DIR"
     echo "Removed database directory '$DATABASE_DIR'."
