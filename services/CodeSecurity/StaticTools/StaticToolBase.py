@@ -1,5 +1,5 @@
-# from __future__ import annotations
-
+from __future__ import annotations
+from typing import TYPE_CHECKING
 import sys, os
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', '..')))
 
@@ -8,11 +8,13 @@ from pathlib import Path
 from abc import ABC, abstractmethod
 
 from utils.logger.Logger import Logger
-# from services.CodeSecurity.StaticToolEval import StaticToolEval
+
+if TYPE_CHECKING:
+    from services.CodeSecurity.StaticToolEval import StaticToolEval
 
 class StaticToolBase(ABC):
     def __init__(self,
-                 evaluator: 'StaticToolEval',
+                 evaluator: StaticToolEval,
                  tool_name: str,
                  script_path: str,
                  output_dir: str,

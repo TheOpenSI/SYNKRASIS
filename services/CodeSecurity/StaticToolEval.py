@@ -1,4 +1,5 @@
-# from __future__ import annotations
+from __future__ import annotations
+from typing import TYPE_CHECKING
 
 import os, sys
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..')))
@@ -12,9 +13,12 @@ from tqdm import tqdm
 
 from utils.logger.Logger import Logger
 from utils.output_message_format.output_colour import print_info, print_success, print_error
-from services.CodeSecurity.StaticTools. StaticToolBase import StaticToolBase
 from services.CodeSecurity.StaticTools.CodeQL import CodeQL
 from services.CodeSecurity.StaticTools.Semgrep import Semgrep
+
+if TYPE_CHECKING:
+    from services.CodeSecurity.StaticTools. StaticToolBase import StaticToolBase
+
 
 class StaticToolEval:
     def __init__(self, 
@@ -23,15 +27,16 @@ class StaticToolEval:
                  true_label_key: str,
                  code_file_name: str = "main.py",
                  code_dir_name: str = "vul_code",
-                 base_path: str = "/home/s448780/workspace_hcc4/SYNKRASIS/services/CodeSecurity/exp_dir",
+                 base_path: str = "/home/s448780/workspace_hcc4/SYNKRASIS/services/CodeSecurity/",
                  vul_code_processing_func: callable = None,
                  true_label_processing_func: callable = None) -> None:
         self.dataset_path = dataset_path
+        self._filename_from_dataset = self._process_for_file_name(str(Path(self.dataset_path).stem))
         self.vul_code_key = vul_code_key
         self.true_label_key = true_label_key
         self.code_file_name = code_file_name
         self.code_dir_name = code_dir_name
-        self.base_path = Path(base_path)
+        self.base_path = Path(base_path) / f"exp_dir_{self._filename_from_dataset}"
         self.logger = Logger(self.__class__.__name__, "DEBUG")
         
         os.makedirs(self.base_path, exist_ok=True)
@@ -62,8 +67,7 @@ class StaticToolEval:
         self._setup_directories()
         
         # Consolidates analysis
-        dataset_name = self._process_for_file_name(str(Path(self.dataset_path).stem))
-        consolidated_output_path = self.base_path / f"{dataset_name}_consolidated_evaluation_results.json"
+        consolidated_output_path = self.base_path / f"{self._filename_from_dataset}_consolidated_evaluation_results.json"
         all_results = []
         
         # Iterate over dataset

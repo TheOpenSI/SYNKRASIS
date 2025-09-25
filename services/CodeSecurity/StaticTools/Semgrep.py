@@ -1,4 +1,5 @@
-# from __future__ import annotations
+from __future__ import annotations
+from typing import TYPE_CHECKING
 
 import sys, os
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', '..')))
@@ -9,11 +10,13 @@ from typing import Union
 from pathlib import Path
 
 from services.CodeSecurity.StaticTools.StaticToolBase import StaticToolBase
-# from services.CodeSecurity.StaticToolEval import StaticToolEval
+
+if TYPE_CHECKING:
+    from services.CodeSecurity.StaticToolEval import StaticToolEval
 
 class Semgrep(StaticToolBase):
     def __init__(self,
-                 evaluator: 'StaticToolEval',
+                 evaluator: StaticToolEval,
                  script_path: str = 
                     "/home/s448780/workspace_hcc4/SYNKRASIS/services/CodeSecurity/scripts/run_semgrep.bash",
                  output_dir: str = "output_sem") -> None:
