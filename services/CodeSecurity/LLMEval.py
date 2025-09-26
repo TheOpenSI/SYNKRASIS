@@ -2,6 +2,7 @@ import sys, os
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..')))
 
 import re
+import time
 
 from typing import Any, Dict
 from pathlib import Path
@@ -63,6 +64,7 @@ class LLMEval(EvaluatorBase):
         self.logger.debug(f"Loading LLM system prompt from: {llm_system_prompt_path}")
         for llm in self.llms:
             llm.set_system_prompt_from_file(llm_system_prompt_path)
+        self.is_delay_required: bool = False if len(self.llms) == 1 else True
             
             
     def _get_all_dirs_to_create(self) -> set:
@@ -120,6 +122,12 @@ class LLMEval(EvaluatorBase):
                         f"sample {sample_index}: {parsed_response}."))
             self.logger.info((f"Analysis results from {llm.model_name} on "
                               f"sample {sample_index}: {parsed_response}."))
+            
+            # delay
+            # NOTE: Is processing the whole dataset for each LLM sequentially better?
+            if self.is_delay_required:
+                self.logger.debug("Delaying for 2 seconds before next LLM analysis.")
+                time.sleep(2)  # Delay to unload vram
         
         return results_for_all_llms
     
@@ -147,7 +155,7 @@ class LLMEval(EvaluatorBase):
         
         # Extract CWE numbers (just the numbers, not confidence)
         cwe_matches = re.findall(r'CWE[-\s]?(\d+)', response, re.IGNORECASE)
-        result['cwe'] = [f'CWE-{num}' for num in cwe_matches]
+        result['cwe'] = list(set([f'CWE-{num}' for num in cwe_matches]))
         
         # Extract raw summary (everything after "### Findings Summary")
         summary_start = response.find('### Findings Summary')
