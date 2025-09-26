@@ -94,9 +94,6 @@ class EvaluatorBase(ABC):
         Results are saved in a consolidated JSON file in the base_path.  
         Note: Ensure that static tools are loaded before calling this method.
         """
-        # Check if static tools are loaded
-        self._check_if_static_tools_loaded()
-        
         # Setup directories
         self._setup_directories()
         
@@ -115,7 +112,7 @@ class EvaluatorBase(ABC):
                 self._create_code_file(vul_code)
                 
                 # Run each static tool
-                results_for_all_candidates = self._run_evaluation_for_each_candidate(i)
+                results_for_all_candidates = self._run_evaluation_for_each_candidate(i, vul_code)
                     
                 # saving consolidated results
                 all_results.append({
@@ -306,12 +303,15 @@ class EvaluatorBase(ABC):
     
     
     @abstractmethod
-    def _run_evaluation_for_each_candidate(self, sample_index: int) -> list[dict]:
+    def _run_evaluation_for_each_candidate(self, 
+                                           sample_index: int, 
+                                           vul_code: str) -> list[dict]:
         """
         Run evaluation for each analysis candidate on a specific sample.
 
         Args:
             sample_index (int): Index of the sample to evaluate.
+            vul_code (str): The vulnerable code to analyse.
             
         Returns:
             list[dict]: List of analysis results from each static tool.

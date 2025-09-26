@@ -77,10 +77,6 @@ class StaticToolEval(EvaluatorBase):
         else:
             self.logger.info("No static analysis tools provided, loading default configuration.")
             self.static_tools = self._load_default_static_tools()
-
-                
-    def _run_evaluation_for_each_candidate(self, sample_index: int) -> list[dict]:
-        self._run_evaluation_for_each_static_tool(sample_index)
     
         
     def _load_default_static_tools(self) -> list[StaticToolBase]:
@@ -129,7 +125,15 @@ class StaticToolEval(EvaluatorBase):
         return "_".join([st.tool_name for st in self.static_tools])
     
     
-    def _run_evaluation_for_each_static_tool(self, sample_index: int) -> list[dict]:
+    def _run_evaluation_for_each_candidate(self, 
+                                           sample_index: int,
+                                           vul_code: str) -> list[dict]:
+        # Static tools will ignore vul_code argument
+        self._run_evaluation_for_each_static_tool(sample_index)
+
+
+    def _run_evaluation_for_each_static_tool(self, 
+                                             sample_index: int) -> list[dict]:
         """
         Run evaluation for each static analysis tool on a given sample.
 
@@ -139,6 +143,7 @@ class StaticToolEval(EvaluatorBase):
         Returns:
             list[dict]: List of analysis results from each static tool.
         """
+        self.logger.debug(f"Running static tool evaluation for sample index: {sample_index}")
         results_for_all_tools = []
         for tool in self.static_tools:
             self.logger.info(f"Running analysis with {tool.tool_name} on sample {sample_index}.")
