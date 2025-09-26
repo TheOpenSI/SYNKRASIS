@@ -30,6 +30,26 @@ class StaticToolEval:
                  base_path: str = "/home/s448780/workspace_hcc4/SYNKRASIS/services/CodeSecurity/",
                  vul_code_processing_func: callable = None,
                  true_label_processing_func: callable = None) -> None:
+        """
+        Static Code Analysis Tool Evaluation Framework
+
+        Args:
+            dataset_path (str): Path to the dataset file (.json or .jsonl).
+            vul_code_key (str): Key to extract vulnerable code from dataset entries.
+            true_label_key (str): Key to extract true label from dataset entries.
+            code_file_name (str, optional): Name of the code file to create for analysis. 
+                Defaults to "main.py".
+            code_dir_name (str, optional): Directory name to store code files.
+            base_path (str, optional): Base path for experiment directories.
+                Will add dastaset name to this path.
+                Defaults to "/home/s448780/workspace_hcc4/SYNKRASIS/services/CodeSecurity/".
+            vul_code_processing_func (callable, optional): Function to process vul_code. 
+                Should take a string and return a processed string, e.g. Remove backticks.
+                Defaults to None.
+            true_label_processing_func (callable, optional): Function to process true_label.
+                Should take a string and return a processed string.
+                Defaults to None.
+        """
         self.dataset_path = dataset_path
         self._filename_from_dataset = self._process_for_file_name(str(Path(self.dataset_path).stem))
         self.vul_code_key = vul_code_key
@@ -37,20 +57,34 @@ class StaticToolEval:
         self.code_file_name = code_file_name
         self.code_dir_name = code_dir_name
         self.base_path = Path(base_path) / f"exp_dir_{self._filename_from_dataset}"
-        self.logger = Logger(self.__class__.__name__, "DEBUG")
-        
         os.makedirs(self.base_path, exist_ok=True)
         self.data = self._load_dataset()
         self.vul_process_func = vul_code_processing_func
         self.label_process_func = true_label_processing_func
+        self.logger = Logger(self.__class__.__name__, "DEBUG")
         
         
     def get_code_dir(self) -> str:
+        """
+        Get the full path to the code directory where code files are saved.
+        Useful for configuring static analysis tools.
+        
+        Returns:
+            str: Full path to the code directory.
+        """
         return str(self.base_path / self.code_dir_name)
     
     
     def load_static_tools(self,
                           static_tools: list[StaticToolBase] = None) -> None:
+        """
+        Load static analysis tools configuration.
+        Must be called before running evaluation.
+        
+        Args:
+            static_tools (list[StaticToolBase], optional): List of static analysis tool instances. 
+                If None, default tools (CodeQL and Semgrep) will be loaded.
+        """
         if static_tools is not None:
             self.logger.info("Loading provided static analysis tools configuration.")
             self.static_tools = static_tools
@@ -59,7 +93,20 @@ class StaticToolEval:
             self.static_tools = self._load_default_static_tools()
             
     
-    def run_evaluation(self):
+    def run_evaluation(self) -> None:
+        """
+        Run the evaluation process:
+        1. Setup directories
+        2. Iterate over dataset entries
+        3. For each entry:
+            a. Extract and process vul_code and true_label
+            b. Create code file
+            c. Run each static analysis tool
+            d. Analyze and collect results
+            e. Save consolidated results
+        Results are saved in a consolidated JSON file in the base_path.  
+        Note: Ensure that static tools are loaded before calling this method.
+        """
         # Check if static tools are loaded
         self._check_if_static_tools_loaded()
         
@@ -67,7 +114,8 @@ class StaticToolEval:
         self._setup_directories()
         
         # Consolidates analysis
-        consolidated_output_path = self.base_path / f"{self._filename_from_dataset}_consolidated_evaluation_results.json"
+        consolidated_output_path = \
+            self.base_path / f"{self._filename_from_dataset}_consolidated_evaluation_results.json"
         all_results = []
         
         # Iterate over dataset
@@ -139,12 +187,25 @@ class StaticToolEval:
                 
     
     def _check_if_static_tools_loaded(self) -> None:
+        """
+        Ensure that static tools are loaded before proceeding.
+        
+        Raises:
+            ValueError: If static tools are not loaded.
+        """
         if self.static_tools is None:
             self.logger.error("Static tools not loaded. Please load static tools before setting up directories.")
             raise ValueError("Static tools not loaded. Please load static tools before setting up directories.")
         
         
     def _load_dataset(self) -> list:
+        """
+        Load dataset from the specified path.
+        Supports .json and .jsonl formats.
+        
+        Returns:
+            list: List of dataset entries (dicts).
+        """
         if self.dataset_path.endswith('.jsonl'):
             self.logger.info(f"Loading dataset from JSONL file: {self.dataset_path}")
             with open(self.dataset_path, 'r') as f:
@@ -164,11 +225,23 @@ class StaticToolEval:
     
     
     def _load_default_static_tools(self) -> list[StaticToolBase]:
+        """
+        Load default static analysis tools: CodeQL and Semgrep.
+        
+        Returns:
+            list[StaticToolBase]: List of default static analysis tool instances.
+        """
         return [CodeQL(self), Semgrep(self)]
         # return [Semgrep(self)]
     
     
     def _get_all_dirs_to_create(self) -> set:
+        """
+        Compile a set of all directories to create based on static tools configuration.
+
+        Returns:
+            set: Set of directory names to create.
+        """
         self._check_if_static_tools_loaded()
         self.logger.info("Compiling list of all directories to create based on static tools configuration.")
         all_dirs = set()
@@ -219,6 +292,12 @@ class StaticToolEval:
     
     def _create_code_file(self,
                           code: str) -> None:
+        """
+        Create a code file from the provided code string.
+
+        Args:
+            code (str): Code string to write to file.
+        """
         self.logger.info("Creating code file from dataset...")
         with open(self.base_path / self.code_dir_name / self.code_file_name, 'w') as f:
             f.write(code)
