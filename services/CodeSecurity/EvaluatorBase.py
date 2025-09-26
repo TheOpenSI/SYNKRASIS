@@ -2,11 +2,13 @@
 # Code Security Evaluator Base Class
 # Inherity from this class to implement specific evaluation strategies.
 # Child classes to implement:
-#   - load_static_tools(static_tools: list[StaticToolBase]) -> None
-#   - run_evaluation() -> None
+#   - _get_all_dirs_to_create() -> set
+#   - _get_consolidated_file_name() -> str
+#   - _run_evaluation_for_each_candidate(sample_index: int) -> list[dict
+#
 # Usage:
 #   - get_code_dir() -> str
-
+#   - run_evaluation() -> None
 # ==============================================================================================
 
 import os, sys
@@ -17,6 +19,7 @@ import json
 from abc import ABC, abstractmethod
 from pathlib import Path
 from typing import Any
+from tqdm import tqdm
 
 from utils.logger.Logger import Logger
 from utils.output_message_format.output_colour import print_error, print_success
@@ -35,14 +38,21 @@ class EvaluatorBase(ABC):
         Base class for code security tool evaluators.
         
         Args:
-            dataset_path (str): Path to the dataset file.
-            vul_code_key (str): Key in the dataset for vulnerable code snippets.
-            true_label_key (str): Key in the dataset for true vulnerability labels.
-            code_file_name (str): Name of the temporary code file to create for analysis.
-            code_dir_name (str): Name of the directory to store temporary code files.
-            base_path (str): Base directory path for storing evaluation results.
-            vul_code_processing_func (callable): Function to process vulnerable code snippets.
-            true_label_processing_func (callable): Function to process true vulnerability labels.
+            dataset_path (str): Path to the dataset file (.json or .jsonl).
+            vul_code_key (str): Key to extract vulnerable code from dataset entries.
+            true_label_key (str): Key to extract true label from dataset entries.
+            code_file_name (str, optional): Name of the code file to create for analysis. 
+                Defaults to "main.py".
+            code_dir_name (str, optional): Directory name to store code files.
+            base_path (str, optional): Base path for experiment directories.
+                Will add dastaset name to this path.
+                Defaults to "/home/s448780/workspace_hcc4/SYNKRASIS/services/CodeSecurity/".
+            vul_code_processing_func (callable, optional): Function to process vul_code. 
+                Should take a string and return a processed string, e.g. Remove backticks.
+                Defaults to None.
+            true_label_processing_func (callable, optional): Function to process true_label.
+                Should take a string and return a processed string.
+                Defaults to None.
         """
         self.logger = Logger(self.__class__.__name__, "DEBUG")
         self.dataset_path = dataset_path
@@ -70,16 +80,60 @@ class EvaluatorBase(ABC):
         return str(self.base_path / self.code_dir_name)
     
     
-    def _check_if_static_tools_loaded(self) -> None:
+    def run_evaluation(self) -> None:
         """
-        Ensure that static tools are loaded before proceeding.
+        Run the evaluation process:
+        1. Setup directories
+        2. Iterate over dataset entries
+        3. For each entry:
+            a. Extract and process vul_code and true_label
+            b. Create code file
+            c. Run each static analysis tool
+            d. Analyze and collect results
+            e. Save consolidated results
+        Results are saved in a consolidated JSON file in the base_path.  
+        Note: Ensure that static tools are loaded before calling this method.
+        """
+        # Check if static tools are loaded
+        self._check_if_static_tools_loaded()
         
-        Raises:
-            ValueError: If static tools are not loaded.
-        """
-        if self.static_tools is None:
-            self.logger.error("Static tools not loaded. Please load static tools before setting up directories.")
-            raise ValueError("Static tools not loaded. Please load static tools before setting up directories.")
+        # Setup directories
+        self._setup_directories()
+        
+        # Consolidates analysis
+        consolidated_output_path = \
+            self.base_path / f"{self._filename_from_dataset}_{self._get_consolidated_file_name()}.json"
+        all_results = []
+        
+        # Iterate over dataset
+        for i, entry in enumerate(tqdm(self.data, 
+                                       desc=f"Processing Code Samples from {Path(self.dataset_path).name}")):
+            try:
+                vul_code, true_label = self._get_vul_code_and_label_sample(entry)
+                
+                # Create code file
+                self._create_code_file(vul_code)
+                
+                # Run each static tool
+                results_for_all_candidates = self._run_evaluation_for_each_candidate(i)
+                    
+                # saving consolidated results
+                all_results.append({
+                    "sample_index": i,
+                    "true_label": true_label,
+                    "analysis": results_for_all_candidates
+                })
+                
+                # saving to json
+                self._save_json(consolidated_output_path, all_results)
+                self.logger.info(f"Consolidated results updated at {consolidated_output_path}.")
+                    
+            except KeyError as e:
+                self.logger.error(f"Missing key in dataset entry: {e}")
+                print_error(f"Missing key in dataset entry: {e}")
+            except Exception as e:
+                self.logger.error(f"Unexpected error processing sample {i}: {e}")
+                print_error(f"Unexpected error processing sample {i}: {e}")
 
     
     def _load_dataset(self) -> list:
@@ -106,37 +160,6 @@ class EvaluatorBase(ABC):
         self.logger.info(f"Loaded {len(data)} samples from the dataset.")
         print_success(f"Loaded {len(data)} samples from the dataset.")
         return data if isinstance(data, list) else [data]
-    
-    
-    def _get_all_dirs_to_create(self) -> set:
-        """
-        Compile a set of all directories to create based on static tools configuration.
-
-        Returns:
-            set: Set of directory names to create.
-        """
-        self._check_if_static_tools_loaded()
-        self.logger.info("Compiling list of all directories to create based on static tools configuration.")
-        all_dirs = set()
-        for tool in self.static_tools:
-            dirs = tool.required_dir_names
-            all_dirs.update(dirs)
-        all_dirs.add(self.code_dir_name)
-        
-        self.logger.debug(f"Directories to create: {all_dirs}")
-        return all_dirs
-    
-    
-    def _setup_directories(self) -> None:
-        """
-        Create necessary directory structure
-        """
-        self.logger.info("Setting up directory structure...")
-        all_dirs_to_create = self._get_all_dirs_to_create()
-        for dir_name in all_dirs_to_create:
-            dir_path = self.base_path / dir_name
-            dir_path.mkdir(parents=True, exist_ok=True)
-        self.logger.info(f"Created directories: {all_dirs_to_create}")
     
     
     def _get_vul_code_and_label_sample(self, entry: dict) -> tuple[str, str]:
@@ -229,25 +252,68 @@ class EvaluatorBase(ABC):
         """
         safe_name = "".join(c if c.isalnum() else '_' for c in name)
         return safe_name.strip()
+
+
+    def _setup_directories(self):
+        self.logger.info("Setting up directory structure...")
+        all_dirs_to_create = self._get_all_dirs_to_create()
+        for dir_name in all_dirs_to_create:
+            dir_path = Path(self.base_path) / dir_name
+            dir_path.mkdir(parents=True, exist_ok=True)
+        self.logger.debug(f"Created directories: {all_dirs_to_create}")
+        
+        
+    def _save_json(self,
+                   file_path: str,
+                   data: Any) -> None:
+        """
+        Save data to a JSON file.
+
+        Args:
+            file_path (str): Path to the JSON file.
+            data (Any): Data to save (should be JSON-serializable).
+        """
+        with open(file_path, 'w') as c_f:
+            try:
+                json.dump(data, c_f, indent=4)
+            except TypeError as e:
+                self.logger.error(f"Data {str(data)} is not JSON-serializable: {e}")
+                self.logger.warning("Saving as string representation instead")
+                fallback_data = {"raw_data": str(data), "error": str(e)}
+                json.dump(fallback_data, c_f, indent=4)
     
     
     @abstractmethod
-    def load_static_tools(self,
-                          static_tools: list[Any]) -> None:
+    def _get_all_dirs_to_create(self) -> set:
         """
-        Load static analysis tools configuration.
-        Must be called before running evaluation.
-        
-        Args:
-            static_tools (list[Any], optional): List of static analysis tool instances. 
-                If None, default tools (CodeQL and Semgrep) will be loaded.
+        Compile a set of all directories to create based on configuration.
+
+        Returns:
+            set: Set of directory names to create.
         """
         pass
     
     
     @abstractmethod
-    def run_evaluation(self) -> None:
+    def _get_consolidated_file_name(self) -> str:
         """
-        Run the full evaluation process
+        Generate a consolidated results file name based on candidates.
+
+        Returns:
+            str: Consolidated results file name.
         """
-        pass 
+        pass
+    
+    
+    @abstractmethod
+    def _run_evaluation_for_each_candidate(self, sample_index: int) -> list[dict]:
+        """
+        Run evaluation for each analysis candidate on a specific sample.
+
+        Args:
+            sample_index (int): Index of the sample to evaluate.
+            
+        Returns:
+            list[dict]: List of analysis results from each static tool.
+        """
+        pass

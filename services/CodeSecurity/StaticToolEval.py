@@ -77,99 +77,10 @@ class StaticToolEval(EvaluatorBase):
         else:
             self.logger.info("No static analysis tools provided, loading default configuration.")
             self.static_tools = self._load_default_static_tools()
-            
-    
-    def run_evaluation(self) -> None:
-        """
-        Run the evaluation process:
-        1. Setup directories
-        2. Iterate over dataset entries
-        3. For each entry:
-            a. Extract and process vul_code and true_label
-            b. Create code file
-            c. Run each static analysis tool
-            d. Analyze and collect results
-            e. Save consolidated results
-        Results are saved in a consolidated JSON file in the base_path.  
-        Note: Ensure that static tools are loaded before calling this method.
-        """
-        # Check if static tools are loaded
-        self._check_if_static_tools_loaded()
-        
-        # Setup directories
-        self._setup_directories()
-        
-        # Consolidates analysis
-        consolidated_output_path = \
-            self.base_path / f"{self._filename_from_dataset}_consolidated_evaluation_results.json"
-        all_results = []
-        
-        # Iterate over dataset
-        for i, entry in enumerate(tqdm(self.data, 
-                                       desc=f"Processing Code Samples from {Path(self.dataset_path).name}")):
-            try:
-                vul_code, true_label = self._get_vul_code_and_label_sample(entry)
+
                 
-                # Create code file
-                self._create_code_file(vul_code)
-                
-                # Run each static tool
-                results_for_all_tools = []
-                for tool in self.static_tools:
-                    self.logger.info(f"Running analysis with {tool.tool_name} on sample {i}.")
-                    cmd = tool.build_command(i)
-                    self.logger.debug(f"Constructed command: {' '.join(cmd)}")
-                    
-                    result = subprocess.run(cmd, capture_output=True, text=True)
-                    
-                    if result.returncode != 0:
-                        self.logger.error(f"Error running {tool.tool_name} on sample {i}: {result.stderr}")
-                        print_error(f"Error running {tool.tool_name} on sample {i}: {result.stderr}")
-                    else:
-                        self.logger.info(f"{tool.tool_name} analysis completed successfully on sample {i}.")
-                        # print_success(f"{tool.tool_name} analysis completed successfully on sample {i}.")
-                    
-                    # Analysis
-                    output_file = self.base_path / tool.output_dir / tool.get_output_file(i)
-                    if not output_file.exists():
-                        self.logger.error((f"Expected output file {output_file} not found "
-                                           f"for {tool.tool_name} on sample {i}."))
-                        print_error((f"Expected output file {output_file} not found "
-                                     f"for {tool.tool_name} on sample {i}."))
-                        continue
-                    
-                    results = tool.run_analysis(str(output_file))
-                    
-                    # save
-                    results_for_all_tools.append({
-                        "tool": tool.tool_name,
-                        "analysis_results": results,
-                    })
-                    
-                    # log
-                    print_info((f"Analysis results from {tool.tool_name} on "
-                                f"sample {i}: Found {len(results)} issues."))
-                    self.logger.info((f"Analysis results from {tool.tool_name} on "
-                                      f"sample {i}: Found {len(results)} issues."))
-                    
-                # saving consolidated results
-                all_results.append({
-                    "sample_index": i,
-                    "true_label": true_label,
-                    "analysis": results_for_all_tools
-                })
-                
-                # saving to json
-                with open(consolidated_output_path, 'w') as c_f:
-                    json.dump(all_results, c_f, indent=4)
-                self.logger.info(f"Consolidated results updated at {consolidated_output_path}.")
-                    
-            except KeyError as e:
-                self.logger.error(f"Missing key in dataset entry: {e}")
-                print_error(f"Missing key in dataset entry: {e}")
-            except Exception as e:
-                self.logger.error(f"Unexpected error processing sample {i}: {e}")
-                print_error(f"Unexpected error processing sample {i}: {e}")
+    def _run_evaluation_for_each_candidate(self, sample_index: int) -> list[dict]:
+        self._run_evaluation_for_each_static_tool(sample_index)
     
         
     def _load_default_static_tools(self) -> list[StaticToolBase]:
@@ -180,4 +91,90 @@ class StaticToolEval(EvaluatorBase):
             list[StaticToolBase]: List of default static analysis tool instances.
         """
         return [CodeQL(self), Semgrep(self)]
-        # return [Semgrep(self)] 
+        # return [Semgrep(self)]
+        
+        
+    def _check_if_static_tools_loaded(self) -> None:
+        """
+        Ensure that static tools are loaded before proceeding.
+        
+        Raises:
+            ValueError: If static tools are not loaded.
+        """
+        if self.static_tools is None:
+            self.logger.error("Static tools not loaded. Please load static tools before setting up directories.")
+            raise ValueError("Static tools not loaded. Please load static tools before setting up directories.")
+        
+        
+    def _get_all_dirs_to_create(self) -> set:
+        """
+        Compile a set of all directories to create based on static tools configuration.
+
+        Returns:
+            set: Set of directory names to create.
+        """
+        self._check_if_static_tools_loaded()
+        self.logger.info("Compiling list of all directories to create based on static tools configuration.")
+        all_dirs = set()
+        for tool in self.static_tools:
+            dirs = tool.required_dir_names
+            all_dirs.update(dirs)
+        all_dirs.add(self.code_dir_name)
+        
+        self.logger.debug(f"Directories to create: {all_dirs}")
+        return all_dirs
+    
+    
+    def _get_consolidated_file_name(self):
+        return "_".join([st.tool_name for st in self.static_tools])
+    
+    
+    def _run_evaluation_for_each_static_tool(self, sample_index: int) -> list[dict]:
+        """
+        Run evaluation for each static analysis tool on a given sample.
+
+        Args:
+            sample_index (int): Index of the sample being evaluated.
+            
+        Returns:
+            list[dict]: List of analysis results from each static tool.
+        """
+        results_for_all_tools = []
+        for tool in self.static_tools:
+            self.logger.info(f"Running analysis with {tool.tool_name} on sample {sample_index}.")
+            cmd = tool.build_command(sample_index)
+            self.logger.debug(f"Constructed command: {' '.join(cmd)}")
+            
+            result = subprocess.run(cmd, capture_output=True, text=True)
+            
+            if result.returncode != 0:
+                self.logger.error(f"Error running {tool.tool_name} on sample {sample_index}: {result.stderr}")
+                print_error(f"Error running {tool.tool_name} on sample {sample_index}: {result.stderr}")
+            else:
+                self.logger.info(f"{tool.tool_name} analysis completed successfully on sample {sample_index}.")
+                # print_success(f"{tool.tool_name} analysis completed successfully on sample {i}.")
+            
+            # Analysis
+            output_file = self.base_path / tool.output_dir / tool.get_output_file(sample_index)
+            if not output_file.exists():
+                self.logger.error((f"Expected output file {output_file} not found "
+                                    f"for {tool.tool_name} on sample {sample_index}."))
+                print_error((f"Expected output file {output_file} not found "
+                                f"for {tool.tool_name} on sample {sample_index}."))
+                continue
+            
+            results = tool.run_analysis(str(output_file))
+            
+            # save
+            results_for_all_tools.append({
+                "tool": tool.tool_name,
+                "analysis_results": results,
+            })
+            
+            # log
+            print_info((f"Analysis results from {tool.tool_name} on "
+                        f"sample {sample_index}: Found {len(results)} issues."))
+            self.logger.info((f"Analysis results from {tool.tool_name} on "
+                                f"sample {sample_index}: Found {len(results)} issues."))
+        
+        return results_for_all_tools
