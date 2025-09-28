@@ -1,0 +1,1 @@
+wget https://cwe.mitre.org/data/published/cwe_latest.pdf -O services/CodeSecurity/data/cwe/cwe_latest.pdf
