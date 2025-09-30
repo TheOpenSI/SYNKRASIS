@@ -1,0 +1,71 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T23:28:30.946759",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "466",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/466": {
+      "ID": "466",
+      "Type": "base_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/466": {
+      "ID": "466",
+      "Name": "Return of Pointer Value Outside of Expected Range",
+      "Abstraction": "Base",
+      "Structure": "Simple",
+      "Status": "Draft",
+      "Description": "A function can return a pointer to memory that is outside of the buffer that the pointer is expected to reference.",
+      "ExtendedDescription": null,
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Name": "C",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Language",
+          "Name": "C++",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Implementation"
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Confidentiality",
+            "Integrity"
+          ],
+          "Impact": [
+            "Read Memory",
+            "Modify Memory"
+          ]
+        }
+      ],
+      "DemonstrativeExamples": null,
+      "PotentialMitigations": null
+    },
+    "/cwe/466/parents": {
+      "weakness_parents": [
+        "119",
+        "20"
+      ],
+      "category_parents": [
+        "1399",
+        "465",
+        "738",
+        "872",
+        "998"
+      ]
+    },
+    "/cwe/466/children": null
+  }
+}

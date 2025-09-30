@@ -1,0 +1,82 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T23:10:24.206559",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "326",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/326": {
+      "ID": "326",
+      "Type": "class_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/326": {
+      "ID": "326",
+      "Name": "Inadequate Encryption Strength",
+      "Abstraction": "Class",
+      "Structure": "Simple",
+      "Status": "Draft",
+      "Description": "The product stores or transmits sensitive data using an encryption scheme that is theoretically sound, but is not strong enough for the level of protection required.",
+      "ExtendedDescription": "A weak encryption scheme can be subjected to brute force attacks that have a reasonable chance of succeeding using current attack methods and resources.",
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Class": "Not Language-Specific",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Architecture and Design",
+          "Note": "COMMISSION: This weakness refers to an incorrect design related to an architectural security tactic."
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Access Control",
+            "Confidentiality"
+          ],
+          "Impact": [
+            "Bypass Protection Mechanism",
+            "Read Application Data"
+          ],
+          "Note": "An attacker may be able to decrypt the data using brute force attacks."
+        }
+      ],
+      "DemonstrativeExamples": null,
+      "PotentialMitigations": [
+        {
+          "Phase": [
+            "Architecture and Design"
+          ],
+          "Description": "Use an encryption scheme that is currently considered to be strong by experts in the field."
+        }
+      ]
+    },
+    "/cwe/326/parents": {
+      "weakness_parents": [],
+      "category_parents": [
+        "1013",
+        "1029",
+        "1346",
+        "1402",
+        "719",
+        "720",
+        "729",
+        "816",
+        "959",
+        "934"
+      ]
+    },
+    "/cwe/326/children": {
+      "weakness_children": [
+        "328"
+      ],
+      "category_children": []
+    }
+  }
+}

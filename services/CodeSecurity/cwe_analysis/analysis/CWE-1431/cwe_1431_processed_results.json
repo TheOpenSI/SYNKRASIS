@@ -1,0 +1,116 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T22:45:33.198132",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "1431",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/1431": {
+      "ID": "1431",
+      "Type": "base_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/1431": {
+      "ID": "1431",
+      "Name": "Driving Intermediate Cryptographic State/Results to Hardware Module Outputs",
+      "Abstraction": "Base",
+      "Structure": "Simple",
+      "Status": "Incomplete",
+      "Description": "The product uses a hardware module implementing a cryptographic\n\t\t  algorithm that writes sensitive information about the intermediate\n\t\t  state or results of its cryptographic operations via one of its output\n\t\t  wires (typically the output port containing the final result).",
+      "ExtendedDescription": null,
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Class": "Not Language-Specific",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Architecture",
+          "Class": "Not Architecture-Specific",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Technology",
+          "Class": "System on Chip",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Implementation",
+          "Note": "\n\nThis can occur when intermediate cryptographic states are directly assigned to output wires or ports.\n"
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Confidentiality"
+          ],
+          "Impact": [
+            "Read Memory",
+            "Read Application Data"
+          ],
+          "Likelihood": [
+            "Unknown"
+          ],
+          "Note": "\n\nMathematically sound cryptographic algorithms rely on their correct implementation for security. These assumptions might break when a hardware crypto module leaks intermediate encryption states or results such that they can be observed by an adversary. If intermediate state is observed, it might be possible for an attacker to identify the secrets used in the cryptographic operation.\n"
+        }
+      ],
+      "DemonstrativeExamples": [
+        {
+          "Entries": [
+            {
+              "IntroText": "The following SystemVerilog code is a crypto module that takes input data and encrypts it by processing the data through multiple encryption rounds. Note: this example is derived from [REF-1469]."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "Verilog",
+              "ExampleCode": "01 | module crypto_core_with_leakage\n 02 | (\n\n```\n\t 03 | input clk,\n\t 04 | input rst,\n\t 05 | input [127:0] data_i,\n\t 06 | output [127:0] data_o,\n\t 07 | output valid\n 08 | );\n 09 |\n 10 | localparam int total_rounds = 10;\n 11 | logic [3:0] round_id_q;\n 12 | logic [127:0] data_state_q, data_state_d;\n 13 | logic [127:0] key_state_q, key_state_d;\n 14 |\n 15 | crypto_algo_round u_algo_round (\n\t 16 | .clk (clk),\n\t 17 | .rst (rst),\n\t 18 | .round_i (round_id_q ),\n\t 19 | .key_i (key_state_q ),\n\t 20 | .data_i (data_state_q),\n\t 21 | .key_o (key_state_d ),\n\t 22 | .data_o (data_state_d)\n 23 | );\n 24 |\n 25 | always @(posedge clk) begin\n\t 26 | if (rst) begin\n\t\t 27 | data_state_q <= 0;\n\t\t 28 | key_state_q <= 0;\n\t\t 29 | round_id_q <= 0;\n\t 30 | end\n\t 31 | else begin\n\t\t 32 | case (round_id_q)\n\t\t\t 33 | total_rounds: begin\n\t\t\t\t 34 | data_state_q <= 0;\n\t\t\t\t 35 | key_state_q <= 0;\n\t\t\t\t 36 | round_id_q <= 0;\n\t\t\t 37 | end\n\t\t\t 38 |\n\t\t\t 39 | default: begin\n\t\t\t\t 40 | data_state_q <= data_state_d;\n\t\t\t\t 41 | key_state_q <= key_state_d;\n\t\t\t\t 42 | round_id_q <= round_id_q + 1;\n\t\t\t 43 | end\n\t\t 44 | endcase\n\t 45 | end\n 46 | end\n 47 |\n 48 | assign valid = (round_id_q == total_rounds) ? 1'b1 : 1'b0;\n 49 |\n 50 | assign data_o = data_state_q;\n 51 |\n 52 | endmodule\n```"
+            },
+            {
+              "BodyText": "In line 50 above, data_state_q is assigned to data_o. Since data_state_q contains intermediate state/results, this allows an attacker to obtain these results through data_o."
+            },
+            {
+              "BodyText": "In line 50 of the fixed logic below, while \"data_state_q\" does not contain the final result, a \"sanitizing\" mechanism drives a safe default value (i.e., 0) to \"data_o\" instead of the value of \"data_state_q\". In doing so, the mechanism prevents the exposure of intermediate state/results which could be used to break soundness of the cryptographic operation being performed. A real-world example of this weakness and mitigation can be seen in a pull request that was submitted to the OpenTitan Github repository [REF-1469]."
+            },
+            {
+              "Nature": "Good",
+              "Language": "Verilog",
+              "ExampleCode": "01 | module crypto_core_without_leakage\n 02 | (\n\n```\n\t 03 | input clk,\n\t 04 | input rst,\n\t 05 | input [127:0] data_i,\n\t 06 | output [127:0] data_o,\n\t 07 | output valid\n\t 08 | );\n 09 |\n 10 | localparam int total_rounds = 10;\n 11 | logic [3:0] round_id_q;\n 12 | logic [127:0] data_state_q, data_state_d;\n 13 | logic [127:0] key_state_q, key_state_d;\n 14 |\n 15 | crypto_algo_round u_algo_round (\n\t 16 | .clk (clk),\n\t 17 | .rst (rst),\n\t 18 | .round_i (round_id_q ),\n\t 19 | .key_i (key_state_q ),\n\t 20 | .data_i (data_state_q),\n\t 21 | .key_o (key_state_d ),\n\t 22 | .data_o (data_state_d)\n 23 | );\n 24 |\n 25 | always @(posedge clk) begin\n\t 26 | if (rst) begin\n\t\t 27 | data_state_q <= 0;\n\t\t 28 | key_state_q <= 0;\n\t\t 29 | round_id_q <= 0;\n\t 30 | end\n\t 31 | else begin\n\t\t 32 | case (round_id_q)\n\t\t\t 33 | total_rounds: begin\n\t\t\t\t 34 | data_state_q <= 0;\n\t\t\t\t 35 | key_state_q <= 0;\n\t\t\t\t 36 | round_id_q <= 0;\n\t\t\t 37 | end\n\t\t\t 38 |\n\t\t\t 39 | default: begin\n\t\t\t\t 40 | data_state_q <= data_state_d;\n\t\t\t\t 41 | key_state_q <= key_state_d;\n\t\t\t\t 42 | round_id_q <= round_id_q + 1;\n\t\t\t 43 | end\n\t\t 44 | endcase\n\t 45 | end\n 46 | end\n 47 |\n 48 | assign valid = (round_id_q == total_rounds) ? 1'b1 : 1'b0;\n 49 |\n 50 | assign data_o = (valid) ? data_state_q : 0;\n 51 |\n 52 | endmodule\n```"
+            }
+          ]
+        }
+      ],
+      "PotentialMitigations": [
+        {
+          "Phase": [
+            "Architecture and Design"
+          ],
+          "Description": "\n\nDesigners/developers should add or modify existing control flow logic along any data flow paths that connect \"sources\" (signals with intermediate cryptographic state/results) with \"sinks\" (hardware module outputs and other signals outside of trusted cryptographic zone). The control flow logic should only allow cryptographic results to be driven to \"sinks\" when appropriate conditions are satisfied (typically when the final result for a cryptographic operation has been generated). When the appropriate conditions are not satisfied (i.e., before or during a cryptographic operation), the control flow logic should drive a safe default value to \"sinks\".\n",
+          "Effectiveness": "High"
+        },
+        {
+          "Phase": [
+            "Implementation"
+          ],
+          "Description": "\n\nDesigners/developers should add or modify existing control flow logic along any data flow paths that connect \"sources\" (signals with intermediate cryptographic state/results) with \"sinks\" (hardware module outputs and other signals outside of trusted cryptographic zone). The control flow logic should only allow cryptographic results to be driven to \"sinks\" when appropriate conditions are satisfied (typically when the final result for a cryptographic operation has been generated). When the appropriate conditions are not satisfied (i.e., before or during a cryptographic operation), the control flow logic should drive a safe default value to \"sinks\".\n",
+          "Effectiveness": "High"
+        }
+      ]
+    },
+    "/cwe/1431/parents": {
+      "weakness_parents": [
+        "200"
+      ],
+      "category_parents": [
+        "1205",
+        "1417",
+        "1433"
+      ]
+    },
+    "/cwe/1431/children": null
+  }
+}

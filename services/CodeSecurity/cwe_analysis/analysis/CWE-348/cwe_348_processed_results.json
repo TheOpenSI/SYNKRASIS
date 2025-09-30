@@ -1,0 +1,93 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T23:13:24.510926",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "348",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/348": {
+      "ID": "348",
+      "Type": "base_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/348": {
+      "ID": "348",
+      "Name": "Use of Less Trusted Source",
+      "Abstraction": "Base",
+      "Structure": "Simple",
+      "Status": "Draft",
+      "Description": "The product has two different sources of the same data or information, but it uses the source that has less support for verification, is less trusted, or is less resistant to attack.",
+      "ExtendedDescription": null,
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Class": "Not Language-Specific",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Architecture and Design"
+        },
+        {
+          "Phase": "Implementation"
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Access Control"
+          ],
+          "Impact": [
+            "Bypass Protection Mechanism",
+            "Gain Privileges or Assume Identity"
+          ],
+          "Note": "An attacker could utilize the untrusted data source to bypass protection mechanisms and gain access to sensitive data."
+        }
+      ],
+      "DemonstrativeExamples": [
+        {
+          "Entries": [
+            {
+              "IntroText": "This code attempts to limit the access of a page to certain IP Addresses. It checks the 'HTTP_X_FORWARDED_FOR' header in case an authorized user is sending the request through a proxy."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "PHP",
+              "ExampleCode": "```\n\t$requestingIP = '0.0.0.0';\n\tif (array_key_exists('HTTP_X_FORWARDED_FOR', $_SERVER)) {\n\t\t$requestingIP = $_SERVER['HTTP_X_FORWARDED_FOR'];\n\telse{\n\t\t$requestingIP = $_SERVER['REMOTE_ADDR'];\n\t}\n\tif(in_array($requestingIP,$ipAllowlist)){\n\t\tgeneratePage();\n\t\treturn;\n\t}\n\telse{\n\t\techo \"You are not authorized to view this page\";\n\t\treturn;\n\t}\n```"
+            },
+            {
+              "BodyText": "The 'HTTP_X_FORWARDED_FOR' header can be user controlled and so should never be trusted. An attacker can falsify the header to gain access to the page."
+            },
+            {
+              "BodyText": "This fixed code only trusts the 'REMOTE_ADDR' header and so avoids the issue:"
+            },
+            {
+              "Nature": "Good",
+              "Language": "PHP",
+              "ExampleCode": "```\n\t$requestingIP = '0.0.0.0';\n\tif (array_key_exists('HTTP_X_FORWARDED_FOR', $_SERVER)) {\n\t\techo \"This application cannot be accessed through a proxy.\";\n\t\treturn;\n\telse{\n\t\t$requestingIP = $_SERVER['REMOTE_ADDR'];\n\t}\n```\n...*"
+            },
+            {
+              "BodyText": "Be aware that 'REMOTE_ADDR' can still be spoofed. This may seem useless because the server will send the response to the fake address and not the attacker, but this may still be enough to conduct an attack. For example, if the generatePage() function in this code is resource intensive, an attacker could flood the server with fake requests using an authorized IP and consume significant resources. This could be a serious DoS attack even though the attacker would never see the page's sensitive content."
+            }
+          ]
+        }
+      ],
+      "PotentialMitigations": null
+    },
+    "/cwe/348/parents": {
+      "weakness_parents": [
+        "345"
+      ],
+      "category_parents": [
+        "1411",
+        "1214",
+        "975"
+      ]
+    },
+    "/cwe/348/children": null
+  }
+}

@@ -1,0 +1,53 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T22:14:30.447971",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "1079",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/1079": {
+      "ID": "1079",
+      "Type": "base_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/1079": {
+      "ID": "1079",
+      "Name": "Parent Class without Virtual Destructor Method",
+      "Abstraction": "Base",
+      "Structure": "Simple",
+      "Status": "Incomplete",
+      "Description": "A parent class contains one or more child classes, but the parent class does not have a virtual destructor method.",
+      "ExtendedDescription": "\n\nThis issue can prevent the product from running reliably due to undefined or unexpected behaviors. If the relevant code is reachable by an attacker, then this reliability problem might introduce a vulnerability.\n",
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": null,
+      "AlternateTerms": null,
+      "ModesOfIntroduction": null,
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Other"
+          ],
+          "Impact": [
+            "Reduce Reliability"
+          ]
+        }
+      ],
+      "DemonstrativeExamples": null,
+      "PotentialMitigations": null
+    },
+    "/cwe/1079/parents": {
+      "weakness_parents": [
+        "1076"
+      ],
+      "category_parents": [
+        "1129",
+        "1306",
+        "1307",
+        "1412",
+        "1006"
+      ]
+    },
+    "/cwe/1079/children": null
+  }
+}

@@ -1,0 +1,92 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T22:35:49.992416",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "1301",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/1301": {
+      "ID": "1301",
+      "Type": "base_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/1301": {
+      "ID": "1301",
+      "Name": "Insufficient or Incomplete Data Removal within Hardware Component",
+      "Abstraction": "Base",
+      "Structure": "Simple",
+      "Status": "Incomplete",
+      "Description": "The product's data removal process does not completely delete all data and potentially sensitive information within hardware components.",
+      "ExtendedDescription": "\n\nPhysical properties of hardware devices, such as remanence of magnetic media, residual charge of ROMs/RAMs, or screen burn-in may still retain sensitive data after a data removal process has taken place and power is removed.\n\n\nRecovering data after erasure or overwriting is possible due to a phenomenon called data remanence. For example, if the same value is written repeatedly to a memory location, the corresponding memory cells can become physically altered to a degree such that even after the original data is erased that data can still be recovered through physical characterization of the memory cells.\n",
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Class": "Not Language-Specific",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Operating_System",
+          "Class": "Not OS-Specific",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Architecture",
+          "Class": "Not Architecture-Specific",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Technology",
+          "Class": "Not Technology-Specific",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Implementation"
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Confidentiality"
+          ],
+          "Impact": [
+            "Read Memory",
+            "Read Application Data"
+          ]
+        }
+      ],
+      "DemonstrativeExamples": null,
+      "PotentialMitigations": [
+        {
+          "Phase": [
+            "Architecture and Design"
+          ],
+          "Description": "Apply blinding or masking techniques to implementations of cryptographic algorithms."
+        },
+        {
+          "Phase": [
+            "Implementation"
+          ],
+          "Description": "Alter the method of erasure, add protection of media, or destroy the media to protect the data."
+        }
+      ]
+    },
+    "/cwe/1301/parents": {
+      "weakness_parents": [],
+      "category_parents": [
+        "1208",
+        "1416"
+      ]
+    },
+    "/cwe/1301/children": {
+      "weakness_children": [
+        "1330"
+      ],
+      "category_children": []
+    }
+  }
+}

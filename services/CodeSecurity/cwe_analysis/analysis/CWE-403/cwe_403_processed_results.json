@@ -1,0 +1,82 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T23:20:29.908765",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "403",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/403": {
+      "ID": "403",
+      "Type": "base_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/403": {
+      "ID": "403",
+      "Name": "Exposure of File Descriptor to Unintended Control Sphere ('File Descriptor Leak')",
+      "Abstraction": "Base",
+      "Structure": "Simple",
+      "Status": "Draft",
+      "Description": "A process does not close sensitive file descriptors before invoking a child process, which allows the child to perform unauthorized I/O operations using those descriptors.",
+      "ExtendedDescription": "When a new process is forked or executed, the child process inherits any open file descriptors. When the child process has fewer privileges than the parent process, this might introduce a vulnerability if the child process can access the file descriptor but does not have the privileges to access the associated file.",
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Name": "C",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Language",
+          "Class": "Not Language-Specific",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Operating_System",
+          "Class": "Unix",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": [
+        {
+          "Term": "File descriptor leak",
+          "Description": "While this issue is frequently called a file descriptor leak, the \"leak\" term is often used in two different ways - exposure of a resource, or consumption of a resource. Use of this term could cause confusion."
+        }
+      ],
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Implementation",
+          "Note": "REALIZATION: This weakness is caused during implementation of an architectural security tactic."
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Confidentiality",
+            "Integrity"
+          ],
+          "Impact": [
+            "Read Application Data",
+            "Modify Application Data"
+          ]
+        }
+      ],
+      "DemonstrativeExamples": null,
+      "PotentialMitigations": null
+    },
+    "/cwe/403/parents": {
+      "weakness_parents": [
+        "402"
+      ],
+      "category_parents": [
+        "1011",
+        "1403",
+        "399",
+        "743",
+        "877",
+        "963"
+      ]
+    },
+    "/cwe/403/children": null
+  }
+}

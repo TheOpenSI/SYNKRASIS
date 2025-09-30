@@ -1,0 +1,99 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T23:38:24.465747",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "538",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/538": {
+      "ID": "538",
+      "Type": "base_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/538": {
+      "ID": "538",
+      "Name": "Insertion of Sensitive Information into Externally-Accessible File or Directory",
+      "Abstraction": "Base",
+      "Structure": "Simple",
+      "Status": "Draft",
+      "Description": "The product places sensitive information into files or directories that are accessible to actors who are allowed to have access to the files, but not to the sensitive information.",
+      "ExtendedDescription": null,
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Class": "Not Language-Specific",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Implementation",
+          "Note": "OMISSION: This weakness is caused by missing a security tactic during the architecture and design phase."
+        },
+        {
+          "Phase": "Operation",
+          "Note": "OMISSION: This weakness is caused by missing a security tactic during the architecture and design phase."
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Confidentiality"
+          ],
+          "Impact": [
+            "Read Files or Directories"
+          ]
+        }
+      ],
+      "DemonstrativeExamples": [
+        {
+          "ID": "DX-179",
+          "Entries": [
+            {
+              "IntroText": "In the following code snippet, a user's full name and credit card number are written to a log file."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "Java",
+              "ExampleCode": "```\n\tlogger.info(\"Username: \" + usernme + \", CCN: \" + ccn);\n```"
+            }
+          ]
+        }
+      ],
+      "PotentialMitigations": [
+        {
+          "Phase": [
+            "Architecture and Design",
+            "Operation",
+            "System Configuration"
+          ],
+          "Description": "Do not expose file and directory information to the user."
+        }
+      ]
+    },
+    "/cwe/538/parents": {
+      "weakness_parents": [
+        "200"
+      ],
+      "category_parents": [
+        "1011",
+        "1345",
+        "1417",
+        "199",
+        "815",
+        "963"
+      ]
+    },
+    "/cwe/538/children": {
+      "weakness_children": [
+        "532",
+        "540",
+        "651"
+      ],
+      "category_children": []
+    }
+  }
+}

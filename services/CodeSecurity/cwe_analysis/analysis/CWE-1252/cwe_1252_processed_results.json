@@ -1,0 +1,108 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T22:28:55.007897",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "1252",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/1252": {
+      "ID": "1252",
+      "Type": "base_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/1252": {
+      "ID": "1252",
+      "Name": "CPU Hardware Not Configured to Support Exclusivity of Write and Execute Operations",
+      "Abstraction": "Base",
+      "Structure": "Simple",
+      "Status": "Incomplete",
+      "Description": "The CPU is not configured to provide hardware support for exclusivity of write and execute operations on memory. This allows an attacker to execute data from all of memory.",
+      "ExtendedDescription": "\n\nCPUs provide a special bit that supports exclusivity of write and execute operations. This bit is used to segregate areas of memory to either mark them as code (instructions, which can be executed) or data (which should not be executed). In this way, if a user can write to a region of memory, the user cannot execute from that region and vice versa. This exclusivity provided by special hardware bit is leveraged by the operating system to protect executable space. While this bit is available in most modern processors by default, in some CPUs the exclusivity is implemented via a memory-protection unit (MPU) and memory-management unit (MMU) in which memory regions can be carved out with exact read, write, and execute permissions. However, if the CPU does not have an MMU/MPU, then there is no write exclusivity. Without configuring exclusivity of operations via segregated areas of memory, an attacker may be able to inject malicious code onto memory and later execute it.\n",
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Class": "Not Language-Specific",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Operating_System",
+          "Class": "Not OS-Specific",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Architecture",
+          "Class": "Not Architecture-Specific",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Technology",
+          "Name": "Microcontroller Hardware",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Technology",
+          "Name": "Processor Hardware",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Architecture and Design"
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Confidentiality",
+            "Integrity"
+          ],
+          "Impact": [
+            "Execute Unauthorized Code or Commands"
+          ]
+        }
+      ],
+      "DemonstrativeExamples": [
+        {
+          "Entries": [
+            {
+              "IntroText": "MCS51 Microcontroller (based on 8051) does not have a special bit to support write exclusivity. It also does not have an MMU/MPU support. The Cortex-M CPU has an optional MPU that supports up to 8 regions."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "Other",
+              "ExampleCode": "```\n\tThe optional MPU is not configured.\n```"
+            },
+            {
+              "BodyText": "If the MPU is not configured, then an attacker will be able to inject malicious data into memory and execute it."
+            }
+          ]
+        }
+      ],
+      "PotentialMitigations": [
+        {
+          "Phase": [
+            "Architecture and Design"
+          ],
+          "Description": "\n\nImplement a dedicated bit that can be leveraged by the Operating System to mark data areas as non-executable. If such a bit is not available in the CPU, implement MMU/MPU (memory management unit / memory protection unit).\n"
+        },
+        {
+          "Phase": [
+            "Integration"
+          ],
+          "Description": "\n\nIf MMU/MPU are not available, then the firewalls need to be implemented in the SoC interconnect to mimic the write-exclusivity operation.\n"
+        }
+      ]
+    },
+    "/cwe/1252/parents": {
+      "weakness_parents": [],
+      "category_parents": [
+        "1201",
+        "1396"
+      ]
+    },
+    "/cwe/1252/children": null
+  }
+}

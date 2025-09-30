@@ -1,0 +1,99 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T23:45:51.730135",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "594",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/594": {
+      "ID": "594",
+      "Type": "variant_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/594": {
+      "ID": "594",
+      "Name": "J2EE Framework: Saving Unserializable Objects to Disk",
+      "Abstraction": "Variant",
+      "Structure": "Simple",
+      "Status": "Incomplete",
+      "Description": "When the J2EE container attempts to write unserializable objects to disk there is no guarantee that the process will complete successfully.",
+      "ExtendedDescription": "In heavy load conditions, most J2EE application frameworks flush objects to disk to manage memory requirements of incoming requests. For example, session scoped objects, and even application scoped objects, are written to disk when required. While these application frameworks do the real work of writing objects to disk, they do not enforce that those objects be serializable, thus leaving the web application vulnerable to crashes induced by serialization failure. An attacker may be able to mount a denial of service attack by sending enough requests to the server to force the web application to save objects to disk.",
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Name": "Java",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Implementation"
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Integrity"
+          ],
+          "Impact": [
+            "Modify Application Data"
+          ],
+          "Note": "Data represented by unserializable objects can be corrupted."
+        },
+        {
+          "Scope": [
+            "Availability"
+          ],
+          "Impact": [
+            "DoS: Crash, Exit, or Restart"
+          ],
+          "Note": "Non-serializability of objects can lead to system crash."
+        }
+      ],
+      "DemonstrativeExamples": [
+        {
+          "Entries": [
+            {
+              "IntroText": "In the following Java example, a Customer Entity JavaBean provides access to customer information in a database for a business application. The Customer Entity JavaBean is used as a session scoped object to return customer information to a Session EJB."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "Java",
+              "ExampleCode": "```\n\t@Entity\n\tpublic class Customer {\n\t\t\tprivate String id;\n\t\t\tprivate String firstName;\n\t\t\tprivate String lastName;\n\t\t\tprivate Address address;\n\t\t\tpublic Customer() {\n\t\t\t}\n\t\t\tpublic Customer(String id, String firstName, String lastName) {...}\n\t\t\t@Id\n\t\t\tpublic String getCustomerId() {...}\n\t\t\tpublic void setCustomerId(String id) {...}\n\t\t\tpublic String getFirstName() {...}\n\t\t\tpublic void setFirstName(String firstName) {...}\n\t\t\tpublic String getLastName() {...}\n\t\t\tpublic void setLastName(String lastName) {...}\n\t\t\t@OneToOne()\n\t\t\tpublic Address getAddress() {...}\n\t\t\tpublic void setAddress(Address address) {...}\n\t}\n```"
+            },
+            {
+              "BodyText": "However, the Customer Entity JavaBean is an unserialized object which can cause serialization failure and crash the application when the J2EE container attempts to write the object to the system. Session scoped objects must implement the Serializable interface to ensure that the objects serialize properly."
+            },
+            {
+              "Nature": "Good",
+              "Language": "Java",
+              "ExampleCode": "```\n\tpublic class Customer implements Serializable {...}\n```"
+            }
+          ]
+        }
+      ],
+      "PotentialMitigations": [
+        {
+          "Phase": [
+            "Architecture and Design",
+            "Implementation"
+          ],
+          "Description": "All objects that become part of session and application scope must implement the java.io.Serializable interface to ensure serializability of containing objects."
+        }
+      ]
+    },
+    "/cwe/594/parents": {
+      "weakness_parents": [
+        "1076"
+      ],
+      "category_parents": [
+        "1412",
+        "998"
+      ]
+    },
+    "/cwe/594/children": null
+  }
+}

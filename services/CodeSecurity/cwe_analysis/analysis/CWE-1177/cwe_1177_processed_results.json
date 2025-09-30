@@ -1,0 +1,90 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T22:22:44.961023",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "1177",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/1177": {
+      "ID": "1177",
+      "Type": "class_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/1177": {
+      "ID": "1177",
+      "Name": "Use of Prohibited Code",
+      "Abstraction": "Class",
+      "Structure": "Simple",
+      "Status": "Incomplete",
+      "Description": "The product uses a function, library, or third party component\n\t     that has been explicitly prohibited, whether by the developer or\n\t     the customer.",
+      "ExtendedDescription": "\n\nThe developer - or customers - may wish to restrict or eliminate use of a function, library, or third party component for any number of reasons, including real or suspected vulnerabilities; difficulty to use securely; export controls or license requirements; obsolete or poorly-maintained code; internal code being scheduled for deprecation; etc.\n\n\nTo reduce risk of vulnerabilities, the developer might maintain a list of \"banned\" functions that programmers must avoid using because the functions are difficult or impossible to use securely. This issue can also make the product more costly and difficult to maintain.\n",
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": null,
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Implementation"
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Other"
+          ],
+          "Impact": [
+            "Reduce Maintainability"
+          ]
+        }
+      ],
+      "DemonstrativeExamples": [
+        {
+          "ID": "DX-5",
+          "Entries": [
+            {
+              "IntroText": "The code below calls the gets() function to read in data from the command line."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "C",
+              "ExampleCode": "```\n\t\tchar buf[24];\n\t\tprintf(\"Please enter your name and press <Enter>\\n\");\n\t\tgets(buf);\n\t\t...\n\t}\n```"
+            },
+            {
+              "BodyText": "However, gets() is inherently unsafe, because it copies all input from STDIN to the buffer without checking size. This allows the user to provide a string that is larger than the buffer size, resulting in an overflow condition."
+            }
+          ]
+        },
+        {
+          "ID": "DX-6",
+          "Entries": [
+            {
+              "IntroText": "The following code attempts to create a local copy of a buffer to perform some manipulations to the data."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "C",
+              "ExampleCode": "```\n\tvoid manipulate_string(char * string){\n\t\tchar buf[24];\n\t\tstrcpy(buf, string);\n\t\t...\n\t}\n```"
+            },
+            {
+              "BodyText": "However, the programmer does not ensure that the size of the data pointed to by string will fit in the local buffer and copies the data with the potentially dangerous strcpy() function. This may result in a buffer overflow condition if an attacker can influence the contents of the string parameter."
+            }
+          ]
+        }
+      ],
+      "PotentialMitigations": null
+    },
+    "/cwe/1177/parents": {
+      "weakness_parents": [],
+      "category_parents": [
+        "1412"
+      ]
+    },
+    "/cwe/1177/children": {
+      "weakness_children": [
+        "242",
+        "676"
+      ],
+      "category_children": []
+    }
+  }
+}

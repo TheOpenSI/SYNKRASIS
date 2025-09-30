@@ -1,0 +1,218 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T23:33:31.614681",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "502",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/502": {
+      "ID": "502",
+      "Type": "base_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/502": {
+      "ID": "502",
+      "Name": "Deserialization of Untrusted Data",
+      "Abstraction": "Base",
+      "Structure": "Simple",
+      "Status": "Draft",
+      "Description": "The product deserializes untrusted data without sufficiently ensuring that the resulting data will be valid.",
+      "ExtendedDescription": null,
+      "LikelihoodOfExploit": "Medium",
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Name": "Java",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Language",
+          "Name": "Ruby",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Language",
+          "Name": "PHP",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Language",
+          "Name": "Python",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Language",
+          "Name": "JavaScript",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Technology",
+          "Class": "ICS/OT",
+          "Prevalence": "Often"
+        }
+      ],
+      "AlternateTerms": [
+        {
+          "Term": "Marshaling, Unmarshaling",
+          "Description": "Marshaling and unmarshaling are effectively synonyms for serialization and deserialization, respectively."
+        },
+        {
+          "Term": "Pickling, Unpickling",
+          "Description": "In Python, the \"pickle\" functionality is used to perform serialization and deserialization."
+        },
+        {
+          "Term": "PHP Object Injection",
+          "Description": "Some PHP application researchers use this term when attacking unsafe use of the unserialize() function; but it is also used for CWE-915."
+        }
+      ],
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Architecture and Design",
+          "Note": "OMISSION: This weakness is caused by missing a security tactic during the architecture and design phase."
+        },
+        {
+          "Phase": "Implementation"
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Integrity"
+          ],
+          "Impact": [
+            "Modify Application Data",
+            "Unexpected State"
+          ],
+          "Note": "Attackers can modify unexpected objects or data that was assumed to be safe from modification. Deserialized data or code could be modified without using the provided accessor functions, or unexpected functions could be invoked."
+        },
+        {
+          "Scope": [
+            "Availability"
+          ],
+          "Impact": [
+            "DoS: Resource Consumption (CPU)"
+          ],
+          "Note": "If a function is making an assumption on when to terminate, based on a sentry in a string, it could easily never terminate."
+        },
+        {
+          "Scope": [
+            "Other"
+          ],
+          "Impact": [
+            "Varies by Context"
+          ],
+          "Note": "The consequences can vary widely, because it depends on which objects or methods are being deserialized, and how they are used. Making an assumption that the code in the deserialized object is valid is dangerous and can enable exploitation. One example is attackers using gadget chains to perform unauthorized actions, such as generating a shell."
+        }
+      ],
+      "DemonstrativeExamples": [
+        {
+          "Entries": [
+            {
+              "IntroText": "This code snippet deserializes an object from a file and uses it as a UI button:"
+            },
+            {
+              "Nature": "Bad",
+              "Language": "Java",
+              "ExampleCode": "```\n\ttry {\n\t\tFile file = new File(\"object.obj\");\n\t\tObjectInputStream in = new ObjectInputStream(new FileInputStream(file));\n\t\tjavax.swing.JButton button = (javax.swing.JButton) in.readObject();\n\t\tin.close();\n\t}\n```"
+            },
+            {
+              "BodyText": "This code does not attempt to verify the source or contents of the file before deserializing it. An attacker may be able to replace the intended file with a file that contains arbitrary malicious code which will be executed when the button is pressed."
+            },
+            {
+              "BodyText": "To mitigate this, explicitly define final readObject() to prevent deserialization. An example of this is:"
+            },
+            {
+              "Nature": "Good",
+              "Language": "Java",
+              "ExampleCode": "```\n\tprivate final void readObject(ObjectInputStream in) throws java.io.IOException {\n\tthrow new java.io.IOException(\"Cannot be deserialized\"); }\n```"
+            }
+          ]
+        },
+        {
+          "Entries": [
+            {
+              "IntroText": "In Python, the Pickle library handles the serialization and deserialization processes. In this example derived from [REF-467], the code receives and parses data, and afterwards tries to authenticate a user based on validating a token."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "Python",
+              "ExampleCode": "```\n\ttry {\n\t\t\tclass ExampleProtocol(protocol.Protocol):\n\t\t\tdef dataReceived(self, data):\n\t\t\t# Code that would be here would parse the incoming data\n\t\t\t# After receiving headers, call confirmAuth() to authenticate\n\t\t\tdef confirmAuth(self, headers):\n\t\t\ttry:\n\t\t\ttoken = cPickle.loads(base64.b64decode(headers['AuthToken']))\n\t\t\tif not check_hmac(token['signature'], token['data'], getSecretKey()):\n\t\t\traise AuthFail\n\t\t\tself.secure_data = token['data']\n\t\t\texcept:\n\t\t\traise AuthFail\n\t}\n```"
+            },
+            {
+              "BodyText": "Unfortunately, the code does not verify that the incoming data is legitimate. An attacker can construct a illegitimate, serialized object \"AuthToken\" that instantiates one of Python's subprocesses to execute arbitrary commands. For instance,the attacker could construct a pickle that leverages Python's subprocess module, which spawns new processes and includes a number of arguments for various uses. Since Pickle allows objects to define the process for how they should be unpickled, the attacker can direct the unpickle process to call Popen in the subprocess module and execute /bin/sh."
+            }
+          ]
+        }
+      ],
+      "PotentialMitigations": [
+        {
+          "Phase": [
+            "Architecture and Design",
+            "Implementation"
+          ],
+          "Description": "If available, use the signing/sealing features of the programming language to assure that deserialized data has not been tainted. For example, a hash-based message authentication code (HMAC) could be used to ensure that data has not been modified."
+        },
+        {
+          "Phase": [
+            "Implementation"
+          ],
+          "Description": "When deserializing data, populate a new object rather than just deserializing. The result is that the data flows through safe input validation and that the functions are safe."
+        },
+        {
+          "Phase": [
+            "Implementation"
+          ],
+          "Description": "Explicitly define a final object() to prevent deserialization."
+        },
+        {
+          "Phase": [
+            "Architecture and Design",
+            "Implementation"
+          ],
+          "Description": "\n\nMake fields transient to protect them from deserialization.\n\n\nAn attempt to serialize and then deserialize a class containing transient fields will result in NULLs where the transient data should be. This is an excellent way to prevent time, environment-based, or sensitive variables from being carried over and used improperly.\n"
+        },
+        {
+          "Phase": [
+            "Implementation"
+          ],
+          "Description": "Avoid having unnecessary types or gadgets (a sequence of instances and method invocations that can self-execute during the deserialization process, often found in libraries) available that can be leveraged for malicious ends. This limits the potential for unintended or unauthorized types and gadgets to be leveraged by the attacker. Add only acceptable classes to an allowlist. Note: new gadgets are constantly being discovered, so this alone is not a sufficient mitigation."
+        },
+        {
+          "Phase": [
+            "Architecture and Design",
+            "Implementation"
+          ],
+          "Description": "Employ cryptography of the data or code for protection. However, it's important to note that it would still be client-side security. This is risky because if the client is compromised then the security implemented on the client (the cryptography) can be bypassed."
+        },
+        {
+          "MitigationID": "MIT-29",
+          "Phase": [
+            "Operation"
+          ],
+          "Strategy": "Firewall",
+          "Description": "Use an application firewall that can detect attacks against this weakness. It can be beneficial in cases in which the code cannot be fixed (because it is controlled by a third party), as an emergency prevention measure while more comprehensive software assurance measures are applied, or to provide defense in depth [REF-1481].",
+          "Effectiveness": "Moderate",
+          "EffectivenessNotes": "An application firewall might not cover all possible input vectors. In addition, attack techniques might be available to bypass the protection mechanism, such as using malformed inputs that can still be processed by the component that receives those inputs. Depending on functionality, an application firewall might inadvertently reject or modify legitimate requests. Finally, some manual effort may be required for customization."
+        }
+      ]
+    },
+    "/cwe/502/parents": {
+      "weakness_parents": [
+        "913"
+      ],
+      "category_parents": [
+        "1019",
+        "1034",
+        "1148",
+        "1308",
+        "1354",
+        "1415",
+        "399",
+        "858",
+        "994"
+      ]
+    },
+    "/cwe/502/children": null
+  }
+}

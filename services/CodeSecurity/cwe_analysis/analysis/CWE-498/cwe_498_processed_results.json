@@ -1,0 +1,101 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T23:32:46.720061",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "498",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/498": {
+      "ID": "498",
+      "Type": "variant_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/498": {
+      "ID": "498",
+      "Name": "Cloneable Class Containing Sensitive Information",
+      "Abstraction": "Variant",
+      "Structure": "Simple",
+      "Status": "Draft",
+      "Description": "The code contains a class with sensitive data, but the class is cloneable. The data can then be accessed by cloning the class.",
+      "ExtendedDescription": "Cloneable classes are effectively open classes, since data cannot be hidden in them. Classes that do not explicitly deny cloning can be cloned by any other class without running the constructor.",
+      "LikelihoodOfExploit": "Medium",
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Name": "C++",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Language",
+          "Name": "Java",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Language",
+          "Name": "C#",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Implementation"
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Access Control"
+          ],
+          "Impact": [
+            "Bypass Protection Mechanism"
+          ],
+          "Note": "A class that can be cloned can be produced without executing the constructor. This is dangerous since the constructor may perform security-related checks. By allowing the object to be cloned, those checks may be bypassed."
+        }
+      ],
+      "DemonstrativeExamples": [
+        {
+          "Entries": [
+            {
+              "IntroText": "The following example demonstrates the weakness."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "Java",
+              "ExampleCode": "```\n\tpublic class CloneClient {\n\t\t\tpublic CloneClient() //throws\n\t\t\tjava.lang.CloneNotSupportedException {\n\t\t\t\t\tTeacher t1 = new Teacher(\"guddu\",\"22,nagar road\");\n\t\t\t\t\t//...\n\t\t\t\t\t// Do some stuff to remove the teacher.\n\t\t\t\t\tTeacher t2 = (Teacher)t1.clone();\n\t\t\t\t\tSystem.out.println(t2.name);\n\t\t\t}\n\t\t\tpublic static void main(String args[]) {\n\t\t\t\t\tnew CloneClient();\n\t\t\t}\n\t}\n\tclass Teacher implements Cloneable {\n\t\t\tpublic Object clone() {\n\t\t\t\t\ttry {\n\t\t\t\t\t\treturn super.clone();\n\t\t\t\t\t}\n\t\t\t\t\tcatch (java.lang.CloneNotSupportedException e) {\n\t\t\t\t\t\t\tthrow new RuntimeException(e.toString());\n\t\t\t\t\t}\n\t\t\t}\n\t\t\tpublic String name;\n\t\t\tpublic String clas;\n\t\t\tpublic Teacher(String name,String clas) {\n\t\t\t\t\tthis.name = name;\n\t\t\t\t\tthis.clas = clas;\n\t\t\t}\n\t}\n```"
+            },
+            {
+              "BodyText": "Make classes uncloneable by defining a clone function like:"
+            },
+            {
+              "Nature": "Good",
+              "Language": "Java",
+              "ExampleCode": "```\n\tpublic final void clone() throws java.lang.CloneNotSupportedException {\n\t\tthrow new java.lang.CloneNotSupportedException();\n\t}\n```"
+            }
+          ]
+        }
+      ],
+      "PotentialMitigations": [
+        {
+          "Phase": [
+            "Implementation"
+          ],
+          "Description": "If you do make your classes clonable, ensure that your clone method is final and throw super.clone()."
+        }
+      ]
+    },
+    "/cwe/498/parents": {
+      "weakness_parents": [
+        "668"
+      ],
+      "category_parents": [
+        "1139",
+        "1403",
+        "849",
+        "963"
+      ]
+    },
+    "/cwe/498/children": null
+  }
+}

@@ -1,0 +1,120 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T23:30:15.440596",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "479",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/479": {
+      "ID": "479",
+      "Type": "variant_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/479": {
+      "ID": "479",
+      "Name": "Signal Handler Use of a Non-reentrant Function",
+      "Abstraction": "Variant",
+      "Structure": "Simple",
+      "Status": "Draft",
+      "Description": "The product defines a signal handler that calls a non-reentrant function.",
+      "ExtendedDescription": "\n\nNon-reentrant functions are functions that cannot safely be called, interrupted, and then recalled before the first call has finished without resulting in memory corruption. This can lead to an unexpected system state and unpredictable results with a variety of potential consequences depending on context, including denial of service and code execution.\n\n\nMany functions are not reentrant, but some of them can result in the corruption of memory if they are used in a signal handler. The function call syslog() is an example of this. In order to perform its functionality, it allocates a small amount of memory as \"scratch space.\" If syslog() is suspended by a signal call and the signal handler calls syslog(), the memory used by both of these functions enters an undefined, and possibly, exploitable state. Implementations of malloc() and free() manage metadata in global structures in order to track which memory is allocated versus which memory is available, but they are non-reentrant. Simultaneous calls to these functions can cause corruption of the metadata.\n",
+      "LikelihoodOfExploit": "Low",
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Name": "C",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Language",
+          "Name": "C++",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Implementation"
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Integrity",
+            "Confidentiality",
+            "Availability"
+          ],
+          "Impact": [
+            "Execute Unauthorized Code or Commands"
+          ],
+          "Note": "It may be possible to execute arbitrary code through the use of a write-what-where condition."
+        },
+        {
+          "Scope": [
+            "Integrity"
+          ],
+          "Impact": [
+            "Modify Memory",
+            "Modify Application Data"
+          ],
+          "Note": "Signal race conditions often result in data corruption."
+        }
+      ],
+      "DemonstrativeExamples": [
+        {
+          "ID": "DX-171",
+          "Entries": [
+            {
+              "IntroText": "In this example, a signal handler uses syslog() to log a message:"
+            },
+            {
+              "Nature": "Bad",
+              "Language": "C",
+              "ExampleCode": "```\n\tchar *message;\n\tvoid sh(int dummy) {\n\t\tsyslog(LOG_NOTICE,\"%s\\n\",message);\n\t\tsleep(10);\n\t\texit(0);\n\t}\n\tint main(int argc,char* argv[]) {\n\t\t...\n\t\tsignal(SIGHUP,sh);\n\t\tsignal(SIGTERM,sh);\n\t\tsleep(10);\n\t\texit(0);\n\t}\n\t\tIf the execution of the first call to the signal handler is suspended after invoking syslog(), and the signal handler is called a second time, the memory allocated by syslog() enters an undefined, and possibly, exploitable state.\n```"
+            }
+          ]
+        }
+      ],
+      "PotentialMitigations": [
+        {
+          "Phase": [
+            "Requirements"
+          ],
+          "Description": "Require languages or libraries that provide reentrant functionality, or otherwise make it easier to avoid this weakness."
+        },
+        {
+          "Phase": [
+            "Architecture and Design"
+          ],
+          "Description": "Design signal handlers to only set flags rather than perform complex functionality."
+        },
+        {
+          "Phase": [
+            "Implementation"
+          ],
+          "Description": "Ensure that non-reentrant functions are not found in signal handlers."
+        },
+        {
+          "Phase": [
+            "Implementation"
+          ],
+          "Description": "Use sanity checks to reduce the timing window for exploitation of race conditions. This is only a partial solution, since many attacks might fail, but other attacks still might work within the narrower window, even accidentally.",
+          "Effectiveness": "Defense in Depth"
+        }
+      ]
+    },
+    "/cwe/479/parents": {
+      "weakness_parents": [],
+      "category_parents": [
+        "1166",
+        "1401",
+        "745",
+        "847",
+        "879",
+        "1001"
+      ]
+    },
+    "/cwe/479/children": null
+  }
+}

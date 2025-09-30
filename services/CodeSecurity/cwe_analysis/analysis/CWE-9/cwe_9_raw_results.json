@@ -1,0 +1,269 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-30T00:14:46.316735",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "9",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/9": {
+      "endpoint": "/cwe/9",
+      "url": "https://cwe-api.mitre.org/api/v1/cwe/9",
+      "status_code": 200,
+      "success": true,
+      "error": null,
+      "data": [
+        {
+          "Type": "variant_weakness",
+          "ID": "9"
+        }
+      ]
+    },
+    "/cwe/weakness/9": {
+      "endpoint": "/cwe/weakness/9",
+      "url": "https://cwe-api.mitre.org/api/v1/cwe/weakness/9",
+      "status_code": 200,
+      "success": true,
+      "error": null,
+      "data": {
+        "Weaknesses": [
+          {
+            "ID": "9",
+            "Name": "J2EE Misconfiguration: Weak Access Permissions for EJB Methods",
+            "Abstraction": "Variant",
+            "Structure": "Simple",
+            "Status": "Draft",
+            "Description": "If elevated access rights are assigned to EJB methods, then an attacker can take advantage of the permissions to exploit the product.",
+            "ExtendedDescription": "If the EJB deployment descriptor contains one or more method permissions that grant access to the special ANYONE role, it indicates that access control for the application has not been fully thought through or that the application is structured in such a way that reasonable access control restrictions are impossible.",
+            "RelatedWeaknesses": [
+              {
+                "Nature": "ChildOf",
+                "CweID": "266",
+                "ViewID": "1000",
+                "Ordinal": "Primary"
+              }
+            ],
+            "ModesOfIntroduction": [
+              {
+                "Phase": "Architecture and Design"
+              },
+              {
+                "Phase": "Implementation"
+              }
+            ],
+            "CommonConsequences": [
+              {
+                "Scope": [
+                  "Other"
+                ],
+                "Impact": [
+                  "Other"
+                ]
+              }
+            ],
+            "PotentialMitigations": [
+              {
+                "Phase": [
+                  "Architecture and Design",
+                  "System Configuration"
+                ],
+                "Description": "Follow the principle of least privilege when assigning access rights to EJB methods. Permission to invoke EJB methods should not be granted to the ANYONE role."
+              }
+            ],
+            "DemonstrativeExamples": [
+              {
+                "Entries": [
+                  {
+                    "IntroText": "The following deployment descriptor grants ANYONE permission to invoke the Employee EJB's method named getSalary()."
+                  },
+                  {
+                    "Nature": "Bad",
+                    "Language": "XML",
+                    "ExampleCode": "```\n\t<ejb-jar>\n\t\t...\n\t\t<assembly-descriptor>\n\t\t\t<method-permission>\n\t\t\t\t<role-name>ANYONE</role-name>\n\t\t\t\t<method>\n\t\t\t\t<ejb-name>Employee</ejb-name>\n\t\t\t\t<method-name>getSalary</method-name>\n\t\t\t</method-permission>\n\t\t</assembly-descriptor>\n\t\t...\n\t</ejb-jar>\n```"
+                  }
+                ]
+              }
+            ],
+            "TaxonomyMappings": [
+              {
+                "TaxonomyName": "7 Pernicious Kingdoms",
+                "EntryName": "J2EE Misconfiguration: Weak Access Permissions"
+              }
+            ],
+            "References": [
+              {
+                "ExternalReferenceID": "REF-6",
+                "Authors": [
+                  "Katrina Tsipenyuk",
+                  "Brian Chess",
+                  "Gary McGraw"
+                ],
+                "Title": "Seven Pernicious Kingdoms: A Taxonomy of Software Security Errors",
+                "Publication": "NIST Workshop on Software Security Assurance Tools Techniques and Metrics",
+                "PublicationYear": "2005",
+                "PublicationMonth": "11",
+                "PublicationDay": "07",
+                "Publisher": "NIST",
+                "URL": "https://samate.nist.gov/SSATTM_Content/papers/Seven%20Pernicious%20Kingdoms%20-%20Taxonomy%20of%20Sw%20Security%20Errors%20-%20Tsipenyuk%20-%20Chess%20-%20McGraw.pdf"
+              }
+            ],
+            "MappingNotes": {
+              "Usage": "Allowed",
+              "Rationale": "This CWE entry is at the Variant level of abstraction, which is a preferred level of abstraction for mapping to the root causes of vulnerabilities.",
+              "Comments": "Carefully read both the name and description to ensure that this mapping is an appropriate fit. Do not try to 'force' a mapping to a lower-level Base/Variant simply to comply with this preferred level of abstraction.",
+              "Reasons": [
+                "Acceptable-Use"
+              ]
+            },
+            "ContentHistory": [
+              {
+                "Type": "Submission",
+                "SubmissionName": "7 Pernicious Kingdoms",
+                "SubmissionDate": "2006-07-19",
+                "SubmissionVersion": "Draft 3",
+                "SubmissionReleaseDate": "2006-07-19"
+              },
+              {
+                "Type": "Modification",
+                "ModificationName": "Eric Dalci",
+                "ModificationOrganization": "Cigital",
+                "ModificationDate": "2008-07-01",
+                "ModificationComment": "updated Time_of_Introduction"
+              },
+              {
+                "Type": "Modification",
+                "ModificationName": "CWE Content Team",
+                "ModificationOrganization": "MITRE",
+                "ModificationDate": "2008-09-08",
+                "ModificationComment": "updated Relationships, Other_Notes, Taxonomy_Mappings"
+              },
+              {
+                "Type": "Modification",
+                "ModificationName": "CWE Content Team",
+                "ModificationOrganization": "MITRE",
+                "ModificationDate": "2009-03-10",
+                "ModificationComment": "updated Relationships"
+              },
+              {
+                "Type": "Modification",
+                "ModificationName": "CWE Content Team",
+                "ModificationOrganization": "MITRE",
+                "ModificationDate": "2009-07-27",
+                "ModificationComment": "updated Demonstrative_Examples"
+              },
+              {
+                "Type": "Modification",
+                "ModificationName": "CWE Content Team",
+                "ModificationOrganization": "MITRE",
+                "ModificationDate": "2011-06-01",
+                "ModificationComment": "updated Common_Consequences"
+              },
+              {
+                "Type": "Modification",
+                "ModificationName": "CWE Content Team",
+                "ModificationOrganization": "MITRE",
+                "ModificationDate": "2012-05-11",
+                "ModificationComment": "updated Relationships"
+              },
+              {
+                "Type": "Modification",
+                "ModificationName": "CWE Content Team",
+                "ModificationOrganization": "MITRE",
+                "ModificationDate": "2012-10-30",
+                "ModificationComment": "updated Potential_Mitigations"
+              },
+              {
+                "Type": "Modification",
+                "ModificationName": "CWE Content Team",
+                "ModificationOrganization": "MITRE",
+                "ModificationDate": "2014-06-23",
+                "ModificationComment": "updated Description, Other_Notes"
+              },
+              {
+                "Type": "Modification",
+                "ModificationName": "CWE Content Team",
+                "ModificationOrganization": "MITRE",
+                "ModificationDate": "2020-02-24",
+                "ModificationComment": "updated References, Relationships"
+              },
+              {
+                "Type": "Modification",
+                "ModificationName": "CWE Content Team",
+                "ModificationOrganization": "MITRE",
+                "ModificationDate": "2023-01-31",
+                "ModificationComment": "updated Description"
+              },
+              {
+                "Type": "Modification",
+                "ModificationName": "CWE Content Team",
+                "ModificationOrganization": "MITRE",
+                "ModificationDate": "2023-04-27",
+                "ModificationComment": "updated Relationships"
+              },
+              {
+                "Type": "Modification",
+                "ModificationName": "CWE Content Team",
+                "ModificationOrganization": "MITRE",
+                "ModificationDate": "2023-06-29",
+                "ModificationComment": "updated Mapping_Notes"
+              },
+              {
+                "Type": "Rename",
+                "PreviousEntryName": "J2EE Misconfiguration: Weak Access Permissions",
+                "Date": "2008-04-11"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    "/cwe/9/parents": {
+      "endpoint": "/cwe/9/parents",
+      "url": "https://cwe-api.mitre.org/api/v1/cwe/9/parents",
+      "status_code": 200,
+      "success": true,
+      "error": null,
+      "data": [
+        {
+          "Type": "base_weakness",
+          "ID": "266",
+          "ViewID": "1000",
+          "Primary_Parent": true
+        },
+        {
+          "Type": "category",
+          "ID": "1396",
+          "ViewID": "1400"
+        },
+        {
+          "Type": "category",
+          "ID": "2",
+          "ViewID": "700"
+        },
+        {
+          "Type": "category",
+          "ID": "723",
+          "ViewID": "711"
+        },
+        {
+          "Type": "category",
+          "ID": "731",
+          "ViewID": "711"
+        },
+        {
+          "Type": "category",
+          "ID": "901",
+          "ViewID": "888"
+        }
+      ]
+    },
+    "/cwe/9/children": {
+      "endpoint": "/cwe/9/children",
+      "url": "https://cwe-api.mitre.org/api/v1/cwe/9/children",
+      "status_code": 200,
+      "success": true,
+      "error": null,
+      "data": []
+    }
+  }
+}

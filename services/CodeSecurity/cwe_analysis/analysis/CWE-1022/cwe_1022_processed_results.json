@@ -1,0 +1,139 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T22:08:06.225196",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "1022",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/1022": {
+      "ID": "1022",
+      "Type": "variant_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/1022": {
+      "ID": "1022",
+      "Name": "Use of Web Link to Untrusted Target with window.opener Access",
+      "Abstraction": "Variant",
+      "Structure": "Simple",
+      "Status": "Incomplete",
+      "Description": "The web application produces links to untrusted external sites outside of its sphere of control, but it does not properly prevent the external site from modifying  security-critical properties of the window.opener object, such as the location property.",
+      "ExtendedDescription": "When a user clicks a link to an external site (\"target\"), the target=\"_blank\" attribute causes the target site's contents to be opened in a new window or tab, which runs in the same process as the original page. The window.opener object records information about the original page that offered the link. If an attacker can run script on the target page, then they could read or modify certain properties of the window.opener object, including the location property - even if the original and target site are not the same origin. An attacker can modify the location property to automatically redirect the user to a malicious site, e.g. as part of a phishing attack. Since this redirect happens in the original window/tab - which is not necessarily visible, since the browser is focusing the display on the new target page - the user might not notice any suspicious redirection.",
+      "LikelihoodOfExploit": "Medium",
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Name": "JavaScript",
+          "Prevalence": "Often"
+        },
+        {
+          "Type": "Technology",
+          "Class": "Web Based",
+          "Prevalence": "Often"
+        }
+      ],
+      "AlternateTerms": [
+        {
+          "Term": "tabnabbing"
+        }
+      ],
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Architecture and Design",
+          "Note": "This weakness is introduced during the design of an application when the architect does not specify that a linked external document should not be able to alter the location of the calling page."
+        },
+        {
+          "Phase": "Implementation",
+          "Note": "This weakness is introduced during the coding of an application when the developer does not include the noopener and/or noreferrer value for the rel attribute."
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Confidentiality"
+          ],
+          "Impact": [
+            "Alter Execution Logic"
+          ],
+          "Note": "The user may be redirected to an untrusted page that contains undesired content or malicious script code."
+        }
+      ],
+      "DemonstrativeExamples": [
+        {
+          "Entries": [
+            {
+              "IntroText": "In this example, the application opens a link in a named window/tab without taking precautions to prevent the called page from tampering with the calling page's location in the browser."
+            },
+            {
+              "BodyText": "There are two ways that this weakness is commonly seen. The first is when the application generates an <a> tag is with target=\"_blank\" to point to a target site:"
+            },
+            {
+              "Nature": "Bad",
+              "Language": "HTML",
+              "ExampleCode": "```\n\t<a href=\"http://attacker-site.example.com/useful-page.html\" target=\"_blank\">\n```"
+            },
+            {
+              "BodyText": "If the attacker offers a useful page on this link (or compromises a trusted, popular site), then a user may click on this link. However, the attacker could use scripting code to modify the window.opener's location property to redirect the application to a malicious, attacker-controlled page - such as one that mimics the look and feel of the original application and convinces the user to re-enter authentication credentials, i.e. phishing:"
+            },
+            {
+              "Nature": "Attack",
+              "Language": "JavaScript",
+              "ExampleCode": "```\n\twindow.opener.location = 'http://phishing.example.org/popular-bank-page';\n```"
+            },
+            {
+              "BodyText": "To mitigate this type of weakness, some browsers support the \"rel\" attribute with a value of \"noopener\", which sets the window.opener object equal to null. Another option is to use the \"rel\" attribute with a value of \"noreferrer\", which in essence does the same thing."
+            },
+            {
+              "Nature": "Good",
+              "Language": "HTML",
+              "ExampleCode": "```\n\t<a href=\"http://attacker-site.example.com/useful-page.html\" target=\"_blank\" rel=\"noopener noreferrer\">\n```"
+            },
+            {
+              "BodyText": "A second way that this weakness is commonly seen is when opening a new site directly within JavaScript. In this case, a new site is opened using the window.open() function."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "JavaScript",
+              "ExampleCode": "```\n\tvar newWindow = window.open(\"http://attacker-site.example.com/useful-page.html\", \"_blank\");\n```"
+            },
+            {
+              "BodyText": "To mitigate this, set the window.opener object to null."
+            },
+            {
+              "Nature": "Good",
+              "Language": "JavaScript",
+              "ExampleCode": "```\n\tvar newWindow = window.open(\"http://attacker-site.example.com/useful-page.html\", \"_blank\");\n\tnewWindow.opener = null;\n```"
+            }
+          ]
+        }
+      ],
+      "PotentialMitigations": [
+        {
+          "Phase": [
+            "Architecture and Design"
+          ],
+          "Description": "Specify in the design that any linked external document must not be granted access to the location object of the calling page."
+        },
+        {
+          "Phase": [
+            "Implementation"
+          ],
+          "Description": "\n\nWhen creating a link to an external document using the <a> tag with a defined target, for example \"_blank\" or a named frame, provide the rel attribute with a value \"noopener noreferrer\".\n\n\nIf opening the external document in a new window via javascript, then reset the opener by setting it equal to null.\n"
+        },
+        {
+          "Phase": [
+            "Implementation"
+          ],
+          "Description": "\n\nDo not use \"_blank\" targets. However, this can affect the usability of the application.\n"
+        }
+      ]
+    },
+    "/cwe/1022/parents": {
+      "weakness_parents": [],
+      "category_parents": [
+        "1396"
+      ]
+    },
+    "/cwe/1022/children": null
+  }
+}

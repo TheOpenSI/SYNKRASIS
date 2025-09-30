@@ -1,0 +1,52 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T22:14:00.339025",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "1075",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/1075": {
+      "ID": "1075",
+      "Type": "base_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/1075": {
+      "ID": "1075",
+      "Name": "Unconditional Control Flow Transfer outside of Switch Block",
+      "Abstraction": "Base",
+      "Structure": "Simple",
+      "Status": "Incomplete",
+      "Description": "The product performs unconditional control transfer (such as a\n\t\t\t\t\t\"goto\") in code outside of a branching structure such as a switch\n\t\t\t\t\tblock.",
+      "ExtendedDescription": "\n\nThis issue makes it more difficult to maintain the product, which indirectly affects security by making it more difficult or time-consuming to find and/or fix vulnerabilities. It also might make it easier to introduce vulnerabilities.\n",
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": null,
+      "AlternateTerms": null,
+      "ModesOfIntroduction": null,
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Other"
+          ],
+          "Impact": [
+            "Reduce Maintainability"
+          ]
+        }
+      ],
+      "DemonstrativeExamples": null,
+      "PotentialMitigations": null
+    },
+    "/cwe/1075/parents": {
+      "weakness_parents": [
+        "1120"
+      ],
+      "category_parents": [
+        "1130",
+        "1307",
+        "1412",
+        "1226"
+      ]
+    },
+    "/cwe/1075/children": null
+  }
+}

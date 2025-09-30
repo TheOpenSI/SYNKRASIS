@@ -1,0 +1,94 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T23:43:15.203278",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "575",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/575": {
+      "ID": "575",
+      "Type": "variant_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/575": {
+      "ID": "575",
+      "Name": "EJB Bad Practices: Use of AWT Swing",
+      "Abstraction": "Variant",
+      "Structure": "Simple",
+      "Status": "Draft",
+      "Description": "The product violates the Enterprise JavaBeans (EJB) specification by using AWT/Swing.",
+      "ExtendedDescription": "The Enterprise JavaBeans specification requires that every bean provider follow a set of programming guidelines designed to ensure that the bean will be portable and behave consistently in any EJB container. In this case, the product violates the following EJB guideline: \"An enterprise bean must not use the AWT functionality to attempt to output information to a display, or to input information from a keyboard.\" The specification justifies this requirement in the following way: \"Most servers do not allow direct interaction between an application program and a keyboard/display attached to the server system.\"",
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Name": "Java",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Implementation"
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Other"
+          ],
+          "Impact": [
+            "Quality Degradation"
+          ]
+        }
+      ],
+      "DemonstrativeExamples": [
+        {
+          "Entries": [
+            {
+              "IntroText": "The following Java example is a simple converter class for converting US dollars to Yen. This converter class demonstrates the improper practice of using a stateless session Enterprise JavaBean that implements an AWT Component and AWT keyboard event listener to retrieve keyboard input from the user for the amount of the US dollars to convert to Yen."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "Java",
+              "ExampleCode": "```\n\t@Stateless\n\tpublic class ConverterSessionBean extends Component implements KeyListener, ConverterSessionRemote {\n```\n/* member variables for receiving keyboard input using AWT API */* \n\t\t\t\n\t\t\t...\n\t\t\tprivate StringBuffer enteredText = new StringBuffer();\n\t\t\t\n\t\t\t\n\t\t\t */* conversion rate on US dollars to Yen */* \n\t\t\t\n\t\t\tprivate BigDecimal yenRate = new BigDecimal(\"115.3100\");\n\t\t\t\n\t\t\tpublic ConverterSessionBean() {\n\t\t\t```\n\t\t\t\t\tsuper();\n```\n/* method calls for setting up AWT Component for receiving keyboard input */* \n\t\t\t\t\t\n\t\t\t\t\t...\n\t\t\t\t\taddKeyListener(this);}\n\t\t\t\n\t\t\tpublic BigDecimal dollarToYen(BigDecimal dollars) {\n\t\t\t```\n\t\t\t\tBigDecimal result = dollars.multiply(yenRate);\n\t\t\t\treturn result.setScale(2, BigDecimal.ROUND_DOWN);\n\t\t\t}\n```\n/* member functions for implementing AWT KeyListener interface */* \n\t\t\t\n\t\t\tpublic void keyTyped(KeyEvent event) {\n\t\t\t```\n\t\t\t\t...\n\t\t\t}\n\t\t\tpublic void keyPressed(KeyEvent e) {\n\t\t\t}\n\t\t\tpublic void keyReleased(KeyEvent e) {\n\t\t\t}\n```\n/* member functions for receiving keyboard input and displaying output */* \n\t\t\t\n\t\t\tpublic void paint(Graphics g) {...}\n\t\t\t\n\t\t\t...}"
+            },
+            {
+              "BodyText": "This use of the AWT and Swing APIs within any kind of Enterprise JavaBean not only violates the restriction of the EJB specification against using AWT or Swing within an EJB but also violates the intended use of Enterprise JavaBeans to separate business logic from presentation logic."
+            },
+            {
+              "BodyText": "The Stateless Session Enterprise JavaBean should contain only business logic. Presentation logic should be provided by some other mechanism such as Servlets or Java Server Pages (JSP) as in the following Java/JSP example."
+            },
+            {
+              "Nature": "Good",
+              "Language": "Java",
+              "ExampleCode": "```\n\t@Stateless\n\tpublic class ConverterSessionBean implements ConverterSessionRemoteInterface {\n```\n/* conversion rate on US dollars to Yen */* \n\t\t\tprivate BigDecimal yenRate = new BigDecimal(\"115.3100\");\n\t\t\t\n\t\t\tpublic ConverterSessionBean() {\n\t\t\t}\n\t\t\t\n\t\t\t\n\t\t\t */* remote method to convert US dollars to Yen */* \n\t\t\t\n\t\t\tpublic BigDecimal dollarToYen(BigDecimal dollars) {\n\t\t\t```\n\t\t\t\tBigDecimal result = dollars.multiply(yenRate);\n\t\t\t\treturn result.setScale(2, BigDecimal.ROUND_DOWN);\n\t\t\t}\n\t}\n```"
+            },
+            {
+              "Nature": "Good",
+              "Language": "JSP",
+              "ExampleCode": "```\n\t<%@ page import=\"converter.ejb.Converter, java.math.*, javax.naming.*\"%>\n\t<%!\n\t\t\tprivate Converter converter = null;\n\t\t\tpublic void jspInit() {\n\t\t\t\ttry {\n\t\t\t\t\tInitialContext ic = new InitialContext();\n\t\t\t\t\tconverter = (Converter) ic.lookup(Converter.class.getName());\n\t\t\t\t} catch (Exception ex) {\n\t\t\t\t\tSystem.out.println(\"Couldn't create converter bean.\"+ ex.getMessage());\n\t\t\t\t}\n\t\t\t}\n\t\t\tpublic void jspDestroy() {\n\t\t\t\tconverter = null;\n\t\t\t}\n\t%>\n\t<html>\n\t\t\t<head><title>Converter</title></head>\n\t\t\t<body bgcolor=\"white\">\n\t\t\t\t\t<h1>Converter</h1>\n\t\t\t\t\t<hr>\n\t\t\t\t\t<p>Enter an amount to convert:</p>\n\t\t\t\t\t<form method=\"get\">\n\t\t\t\t\t\t<input type=\"text\" name=\"amount\" size=\"25\"><br>\n\t\t\t\t\t\t<p>\n\t\t\t\t\t\t<input type=\"submit\" value=\"Submit\">\n\t\t\t\t\t\t<input type=\"reset\" value=\"Reset\">\n\t\t\t\t\t</form>\n\t\t\t\t\t<%\n\t\t\t\t\t\tString amount = request.getParameter(\"amount\");\n\t\t\t\t\t\tif ( amount != null && amount.length() > 0 ) {\n\t\t\t\t\t\t\tBigDecimal d = new BigDecimal(amount);\n\t\t\t\t\t\t\tBigDecimal yenAmount = converter.dollarToYen(d);\n\t\t\t\t\t%>\n\t\t\t\t\t<p>\n\t\t\t\t\t<%= amount %> dollars are <%= yenAmount %> Yen.\n\t\t\t\t\t<p>\n\t\t\t\t\t<%\n\t\t\t\t\t\t}\n\t\t\t\t\t%>\n\t\t\t</body>\n\t</html>\n```"
+            }
+          ]
+        }
+      ],
+      "PotentialMitigations": [
+        {
+          "Phase": [
+            "Architecture and Design"
+          ],
+          "Description": "Do not use AWT/Swing when writing EJBs."
+        }
+      ]
+    },
+    "/cwe/575/parents": {
+      "weakness_parents": [],
+      "category_parents": [
+        "1412",
+        "1001"
+      ]
+    },
+    "/cwe/575/children": null
+  }
+}

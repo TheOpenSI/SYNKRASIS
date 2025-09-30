@@ -1,0 +1,101 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T23:01:12.695396",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "258",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/258": {
+      "ID": "258",
+      "Type": "variant_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/258": {
+      "ID": "258",
+      "Name": "Empty Password in Configuration File",
+      "Abstraction": "Variant",
+      "Structure": "Simple",
+      "Status": "Incomplete",
+      "Description": "Using an empty string as a password is insecure.",
+      "ExtendedDescription": null,
+      "LikelihoodOfExploit": "High",
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Class": "Not Language-Specific",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Architecture and Design"
+        },
+        {
+          "Phase": "Implementation",
+          "Note": "REALIZATION: This weakness is caused during implementation of an architectural security tactic."
+        },
+        {
+          "Phase": "Operation"
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Access Control"
+          ],
+          "Impact": [
+            "Gain Privileges or Assume Identity"
+          ]
+        }
+      ],
+      "DemonstrativeExamples": [
+        {
+          "Entries": [
+            {
+              "IntroText": "The following examples show a portion of properties and configuration files for Java and ASP.NET applications. The files include username and password information but the password is provided as an empty string."
+            },
+            {
+              "BodyText": "This Java example shows a properties file with an empty password string."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "Java",
+              "ExampleCode": "```\n```\n# Java Web App ResourceBundle properties file* \n\t...\n\twebapp.ldap.username=secretUsername\n\twebapp.ldap.password=\n\t..."
+            },
+            {
+              "BodyText": "The following example shows a portion of a configuration file for an ASP.Net application. This configuration file includes username and password information for a connection to a database and the password is provided as an empty string."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "ASP.NET",
+              "ExampleCode": "```\n\t...\n\t<connectionStrings>\n\t<add name=\"ud_DEV\" connectionString=\"connectDB=uDB; uid=db2admin; pwd=; dbalias=uDB;\" providerName=\"System.Data.Odbc\" />\n\t</connectionStrings>\n\t...\n```"
+            },
+            {
+              "BodyText": "An empty string should never be used as a password as this can allow unauthorized access to the application. Username and password information should not be included in a configuration file or a properties file in clear text. If possible, encrypt this information and avoid CWE-260 and CWE-13."
+            }
+          ]
+        }
+      ],
+      "PotentialMitigations": [
+        {
+          "Phase": [
+            "System Configuration"
+          ],
+          "Description": "Passwords should be at least eight characters long -- the longer the better. Avoid passwords that are in any way similar to other passwords you have. Avoid using words that may be found in a dictionary, names book, on a map, etc. Consider incorporating numbers and/or punctuation into your password. If you do use common words, consider replacing letters in that word with numbers and punctuation. However, do not use \"similar-looking\" punctuation. For example, it is not a good idea to change cat to c@t, ca+, (@+, or anything similar. Finally, it is never appropriate to use an empty string as a password."
+        }
+      ]
+    },
+    "/cwe/258/parents": {
+      "weakness_parents": [],
+      "category_parents": [
+        "1010",
+        "1396",
+        "254",
+        "950"
+      ]
+    },
+    "/cwe/258/children": null
+  }
+}

@@ -1,0 +1,107 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T22:41:31.453507",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "1357",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/1357": {
+      "ID": "1357",
+      "Type": "class_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/1357": {
+      "ID": "1357",
+      "Name": "Reliance on Insufficiently Trustworthy Component",
+      "Abstraction": "Class",
+      "Structure": "Simple",
+      "Status": "Incomplete",
+      "Description": "The product is built from multiple separate components, but it uses a component that is not sufficiently trusted to meet expectations for security, reliability, updateability, and maintainability.",
+      "ExtendedDescription": "\n\nMany modern hardware and software products are built by combining multiple smaller components together into one larger entity, often during the design or architecture phase. For example, a hardware component might be built by a separate supplier, or the product might use an open-source software library from a third party.\n\n\nRegardless of the source, each component should be sufficiently trusted to ensure correct, secure operation of the product. If a component is not trustworthy, it can produce significant risks for the overall product, such as vulnerabilities that cannot be patched fast enough (if at all); hidden functionality such as malware; inability to update or replace the component if needed for security purposes; hardware components built from parts that do not meet specifications in ways that can lead to weaknesses; etc. Note that a component might not be trustworthy even if it is owned by the product vendor, such as a software component whose source code is lost and was built by developers who left the company, or a component that was developed by a separate company that was acquired and brought into the product's own company.\n\n\nNote that there can be disagreement as to whether a component is sufficiently trustworthy, since trust is ultimately subjective. Different stakeholders (e.g., customers, vendors, governments) have various threat models and ways to assess trust, and design/architecture choices might make tradeoffs between security, reliability, safety, privacy, cost, and other characteristics.\n",
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": [
+        {
+          "Type": "Architecture",
+          "Class": "Not Architecture-Specific",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Technology",
+          "Class": "Not Technology-Specific",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Technology",
+          "Class": "ICS/OT",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Requirements",
+          "Note": "Requirements might include criteria for which the only available solutions are provided by insufficiently trusted components."
+        },
+        {
+          "Phase": "Architecture and Design",
+          "Note": "An insufficiently trusted component might be selected because it is less expensive to do in-house, requires expertise that is not available in-house, or might allow the product to reach the market faster."
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Other"
+          ],
+          "Impact": [
+            "Reduce Maintainability"
+          ]
+        }
+      ],
+      "DemonstrativeExamples": null,
+      "PotentialMitigations": [
+        {
+          "Phase": [
+            "Requirements",
+            "Architecture and Design",
+            "Implementation"
+          ],
+          "Description": "For each component, ensure that its supply chain is well-controlled with sub-tier suppliers using best practices. For third-party software components such as libraries, ensure that they are developed and actively maintained by reputable vendors."
+        },
+        {
+          "Phase": [
+            "Architecture and Design",
+            "Implementation",
+            "Integration",
+            "Manufacturing"
+          ],
+          "Description": "Maintain a Bill of Materials for all components and sub-components of the product. For software, maintain a Software Bill of Materials (SBOM). According to [REF-1247], \"An SBOM is a formal, machine-readable inventory of software components and dependencies, information about those components, and their hierarchical relationships.\""
+        },
+        {
+          "Phase": [
+            "Operation",
+            "Patching and Maintenance"
+          ],
+          "Description": "Continue to monitor changes in each of the product's components, especially when the changes indicate new vulnerabilities, end-of-life (EOL) plans, supplier practices that affect trustworthiness, etc."
+        }
+      ]
+    },
+    "/cwe/1357/parents": {
+      "weakness_parents": [],
+      "category_parents": [
+        "1208",
+        "1367",
+        "1368",
+        "1370",
+        "1412"
+      ]
+    },
+    "/cwe/1357/children": {
+      "weakness_children": [
+        "1104",
+        "1329"
+      ],
+      "category_children": []
+    }
+  }
+}

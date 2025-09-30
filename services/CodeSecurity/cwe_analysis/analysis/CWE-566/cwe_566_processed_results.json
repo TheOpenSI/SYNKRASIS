@@ -1,0 +1,103 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T23:42:08.197326",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "566",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/566": {
+      "ID": "566",
+      "Type": "variant_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/566": {
+      "ID": "566",
+      "Name": "Authorization Bypass Through User-Controlled SQL Primary Key",
+      "Abstraction": "Variant",
+      "Structure": "Simple",
+      "Status": "Incomplete",
+      "Description": "The product uses a database table that includes records that should not be accessible to an actor, but it executes a SQL statement with a primary key that can be controlled by that actor.",
+      "ExtendedDescription": "\n\nWhen a user can set a primary key to any value, then the user can modify the key to point to unauthorized records.\n\n\nDatabase access control errors occur when:\n\n\n  - Data enters a program from an untrusted source.\n\n  - The data is used to specify the value of a primary key in a SQL query.\n\n  - The untrusted source does not have the permissions to be able to access all rows in the associated table.\n\n",
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Name": "SQL",
+          "Prevalence": "Often"
+        },
+        {
+          "Type": "Technology",
+          "Name": "Database Server",
+          "Prevalence": "Often"
+        }
+      ],
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Architecture and Design",
+          "Note": "COMMISSION: This weakness refers to an incorrect design related to an architectural security tactic."
+        },
+        {
+          "Phase": "Implementation"
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Confidentiality",
+            "Integrity",
+            "Access Control"
+          ],
+          "Impact": [
+            "Read Application Data",
+            "Modify Application Data",
+            "Bypass Protection Mechanism"
+          ]
+        }
+      ],
+      "DemonstrativeExamples": [
+        {
+          "ID": "DX-195",
+          "Entries": [
+            {
+              "IntroText": "The following code uses a parameterized statement, which escapes metacharacters and prevents SQL injection vulnerabilities, to construct and execute a SQL query that searches for an invoice matching the specified identifier [1]. The identifier is selected from a list of all invoices associated with the current authenticated user."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "C#",
+              "ExampleCode": "```\n\t...\n\t conn = new SqlConnection(_ConnectionString);\n\t conn.Open();\n\t int16 id = System.Convert.ToInt16(invoiceID.Text);\n\t SqlCommand query = new SqlCommand( \"SELECT * FROM invoices WHERE id = @id\", conn);\n\t query.Parameters.AddWithValue(\"@id\", id);\n\t SqlDataReader objReader = objCommand.ExecuteReader();\n\t ... \n```"
+            },
+            {
+              "BodyText": "The problem is that the developer has not considered all of the possible values of id. Although the interface generates a list of invoice identifiers that belong to the current user, an attacker can bypass this interface to request any desired invoice. Because the code in this example does not check to ensure that the user has permission to access the requested invoice, it will display any invoice, even if it does not belong to the current user."
+            }
+          ]
+        }
+      ],
+      "PotentialMitigations": [
+        {
+          "Phase": [
+            "Implementation"
+          ],
+          "Description": "Assume all input is malicious. Use a standard input validation mechanism to validate all input for length, type, syntax, and business rules before accepting the data. Use an \"accept known good\" validation strategy."
+        },
+        {
+          "Phase": [
+            "Implementation"
+          ],
+          "Description": "Use a parameterized query AND make sure that the accepted values conform to the business rules. Construct your SQL statement accordingly."
+        }
+      ]
+    },
+    "/cwe/566/parents": {
+      "weakness_parents": [],
+      "category_parents": [
+        "1011",
+        "1345",
+        "1396",
+        "994"
+      ]
+    },
+    "/cwe/566/children": null
+  }
+}

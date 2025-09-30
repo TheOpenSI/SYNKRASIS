@@ -1,0 +1,222 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T23:29:53.081969",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "476",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/476": {
+      "ID": "476",
+      "Type": "base_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/476": {
+      "ID": "476",
+      "Name": "NULL Pointer Dereference",
+      "Abstraction": "Base",
+      "Structure": "Simple",
+      "Status": "Stable",
+      "Description": "The product dereferences a pointer that it expects to be valid but is NULL.",
+      "ExtendedDescription": null,
+      "LikelihoodOfExploit": "Medium",
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Name": "C",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Language",
+          "Name": "C++",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Language",
+          "Name": "Java",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Language",
+          "Name": "C#",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Language",
+          "Name": "Go",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": [
+        {
+          "Term": "NPD",
+          "Description": "Common abbreviation for Null Pointer Dereference"
+        },
+        {
+          "Term": "null deref",
+          "Description": "Common abbreviation for Null Pointer Dereference"
+        },
+        {
+          "Term": "NPE",
+          "Description": "Common abbreviation for Null Pointer Exception"
+        },
+        {
+          "Term": "nil pointer dereference",
+          "Description": "used for access of nil in Go programs"
+        }
+      ],
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Implementation"
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Availability"
+          ],
+          "Impact": [
+            "DoS: Crash, Exit, or Restart"
+          ],
+          "Note": "NULL pointer dereferences usually result in the failure of the process unless exception handling (on some platforms) is available and implemented. Even when exception handling is being used, it can still be very difficult to return the software to a safe state of operation."
+        },
+        {
+          "Scope": [
+            "Integrity",
+            "Confidentiality"
+          ],
+          "Impact": [
+            "Execute Unauthorized Code or Commands",
+            "Read Memory",
+            "Modify Memory"
+          ],
+          "Note": "In rare circumstances, when NULL is equivalent to the 0x0 memory address and privileged code can access it, then writing or reading memory is possible, which may lead to code execution."
+        }
+      ],
+      "DemonstrativeExamples": [
+        {
+          "ID": "DX-1",
+          "Entries": [
+            {
+              "IntroText": "This example takes an IP address from a user, verifies that it is well formed and then looks up the hostname and copies it into a buffer."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "C",
+              "ExampleCode": "```\n\tvoid host_lookup(char *user_supplied_addr){\n\t\t\tstruct hostent *hp;\n\t\t\tin_addr_t *addr;\n\t\t\tchar hostname[64];\n\t\t\tin_addr_t inet_addr(const char *cp);\n```\n/*routine that ensures user_supplied_addr is in the right format for conversion */* \n\t\t\t\n\t\t\tvalidate_addr_form(user_supplied_addr);\n\t\t\taddr = inet_addr(user_supplied_addr);\n\t\t\thp = gethostbyaddr( addr, sizeof(struct in_addr), AF_INET);\n\t\t\tstrcpy(hostname, hp->h_name);}"
+            },
+            {
+              "BodyText": "If an attacker provides an address that appears to be well-formed, but the address does not resolve to a hostname, then the call to gethostbyaddr() will return NULL. Since the code does not check the return value from gethostbyaddr (CWE-252), a NULL pointer dereference (CWE-476) would then occur in the call to strcpy()."
+            },
+            {
+              "BodyText": "Note that this code is also vulnerable to a buffer overflow (CWE-119)."
+            }
+          ]
+        },
+        {
+          "Entries": [
+            {
+              "IntroText": "In the following code, the programmer assumes that the system always has a property named \"cmd\" defined. If an attacker can control the program's environment so that \"cmd\" is not defined, the program throws a NULL pointer exception when it attempts to call the trim() method."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "Java",
+              "ExampleCode": "```\n\tString cmd = System.getProperty(\"cmd\");\n\tcmd = cmd.trim();\n```"
+            }
+          ]
+        },
+        {
+          "ID": "DX-110",
+          "Entries": [
+            {
+              "IntroText": "This Android application has registered to handle a URL when sent an intent:"
+            },
+            {
+              "Nature": "Bad",
+              "Language": "Java",
+              "ExampleCode": "```\n```\n...* \n\tIntentFilter filter = new IntentFilter(\"com.example.URLHandler.openURL\");\n\tMyReceiver receiver = new MyReceiver();\n\tregisterReceiver(receiver, filter);\n\t\n\t *...* \n\t\n\tpublic class UrlHandlerReceiver extends BroadcastReceiver {\n\t```\n\t\t\t@Override\n\t\t\tpublic void onReceive(Context context, Intent intent) {\n\t\t\t\t\tif(\"com.example.URLHandler.openURL\".equals(intent.getAction())) {\n\t\t\t\t\t\tString URL = intent.getStringExtra(\"URLToOpen\");\n\t\t\t\t\t\tint length = URL.length();\n```\n...* \n\t\t\t\t\t}}}"
+            },
+            {
+              "BodyText": "The application assumes the URL will always be included in the intent. When the URL is not present, the call to getStringExtra() will return null, thus causing a null pointer exception when length() is called."
+            }
+          ]
+        },
+        {
+          "Entries": [
+            {
+              "IntroText": "Consider the following example of a typical client server exchange. The HandleRequest function is intended to perform a request and use a defer to close the connection whenever the function returns."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "Go",
+              "ExampleCode": "```\n\tfunc HandleRequest(client http.Client, request *http.Request) (*http.Response, error) { \n\t\t response, err := client.Do(request)\n\t\t defer response.Body.Close()\n\t\t if err != nil { \n\t\t\t return nil, err\n\t\t }\n\t\t...\n\t }\n```"
+            },
+            {
+              "BodyText": "If a user supplies a malformed request or violates the client policy, the Do method can return a nil response and a non-nil err."
+            },
+            {
+              "BodyText": "This HandleRequest Function evaluates the close before checking the error. A deferred call's arguments are evaluated immediately, so the defer statement panics due to a nil response."
+            }
+          ]
+        }
+      ],
+      "PotentialMitigations": [
+        {
+          "MitigationID": "MIT-56",
+          "Phase": [
+            "Implementation"
+          ],
+          "Description": "For any pointers that could have been modified or provided from a function that can return NULL, check the pointer for NULL before use. When working with a multithreaded or otherwise asynchronous environment, ensure that proper locking APIs are used to lock before the check, and unlock when it has finished [REF-1484]."
+        },
+        {
+          "Phase": [
+            "Requirements"
+          ],
+          "Description": "Select a programming language that is not susceptible to these issues."
+        },
+        {
+          "Phase": [
+            "Implementation"
+          ],
+          "Description": "Check the results of all functions that return a value and verify that the value is non-null before acting upon it.",
+          "Effectiveness": "Moderate",
+          "EffectivenessNotes": "Checking the return value of the function will typically be sufficient, however beware of race conditions (CWE-362) in a concurrent environment. This solution does not handle the use of improperly initialized variables (CWE-665)."
+        },
+        {
+          "Phase": [
+            "Architecture and Design"
+          ],
+          "Description": "Identify all variables and data stores that receive information from external sources, and apply input validation to make sure that they are only initialized to expected values."
+        },
+        {
+          "Phase": [
+            "Implementation"
+          ],
+          "Description": "Explicitly initialize all variables and other data stores, either during declaration or just before the first usage."
+        }
+      ]
+    },
+    "/cwe/476/parents": {
+      "weakness_parents": [
+        "754"
+      ],
+      "category_parents": [
+        "1136",
+        "1157",
+        "1306",
+        "1412",
+        "465",
+        "398",
+        "730",
+        "737",
+        "742",
+        "808",
+        "871",
+        "876",
+        "971",
+        "867"
+      ]
+    },
+    "/cwe/476/children": null
+  }
+}

@@ -1,0 +1,33 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-30T00:16:37.999948",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "92",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/92": {
+      "ID": "92",
+      "Type": "deprecated_weakness",
+      "is_deprecated": true
+    },
+    "/cwe/weakness/92": {
+      "ID": "92",
+      "Name": "DEPRECATED: Improper Sanitization of Custom Special Characters",
+      "Abstraction": "Base",
+      "Structure": "Simple",
+      "Status": "Deprecated",
+      "Description": "This entry has been deprecated. It originally came from PLOVER, which sometimes defined \"other\" and \"miscellaneous\" categories in order to satisfy exhaustiveness requirements for taxonomies. Within the context of CWE, the use of a more abstract entry is preferred in mapping situations. CWE-75 is a more appropriate mapping.",
+      "ExtendedDescription": null,
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": null,
+      "AlternateTerms": null,
+      "ModesOfIntroduction": null,
+      "CommonConsequences": null,
+      "DemonstrativeExamples": null,
+      "PotentialMitigations": null
+    },
+    "/cwe/92/parents": null,
+    "/cwe/92/children": null
+  }
+}

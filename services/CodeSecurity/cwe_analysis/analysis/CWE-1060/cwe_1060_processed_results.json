@@ -1,0 +1,52 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T22:11:59.784215",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "1060",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/1060": {
+      "ID": "1060",
+      "Type": "base_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/1060": {
+      "ID": "1060",
+      "Name": "Excessive Number of Inefficient Server-Side Data Accesses",
+      "Abstraction": "Base",
+      "Structure": "Simple",
+      "Status": "Incomplete",
+      "Description": "The product performs too many data queries without using efficient data processing functionality such as stored procedures.",
+      "ExtendedDescription": "\n\nThis issue can make the product perform more slowly due to computational expense. If the relevant code is reachable by an attacker, then this performance problem might introduce a vulnerability.\n\n\nWhile the interpretation of \"too many data queries\" may vary for each product or developer, CISQ recommends a default maximum of 5 data queries for an inefficient function/procedure.\n",
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": null,
+      "AlternateTerms": null,
+      "ModesOfIntroduction": null,
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Other"
+          ],
+          "Impact": [
+            "Reduce Performance"
+          ]
+        }
+      ],
+      "DemonstrativeExamples": null,
+      "PotentialMitigations": null
+    },
+    "/cwe/1060/parents": {
+      "weakness_parents": [
+        "1120"
+      ],
+      "category_parents": [
+        "1132",
+        "1309",
+        "1412",
+        "1226"
+      ]
+    },
+    "/cwe/1060/children": null
+  }
+}

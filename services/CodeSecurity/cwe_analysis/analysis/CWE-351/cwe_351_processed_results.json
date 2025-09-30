@@ -1,0 +1,61 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T23:13:54.256318",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "351",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/351": {
+      "ID": "351",
+      "Type": "base_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/351": {
+      "ID": "351",
+      "Name": "Insufficient Type Distinction",
+      "Abstraction": "Base",
+      "Structure": "Simple",
+      "Status": "Draft",
+      "Description": "The product does not properly distinguish between different types of elements in a way that leads to insecure behavior.",
+      "ExtendedDescription": null,
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Class": "Not Language-Specific",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Implementation"
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Other"
+          ],
+          "Impact": [
+            "Other"
+          ]
+        }
+      ],
+      "DemonstrativeExamples": null,
+      "PotentialMitigations": null
+    },
+    "/cwe/351/parents": {
+      "weakness_parents": [
+        "345"
+      ],
+      "category_parents": [
+        "1411",
+        "1214",
+        "993"
+      ]
+    },
+    "/cwe/351/children": null
+  }
+}

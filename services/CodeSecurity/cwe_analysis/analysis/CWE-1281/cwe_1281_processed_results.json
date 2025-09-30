@@ -1,0 +1,150 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T22:32:56.039059",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "1281",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/1281": {
+      "ID": "1281",
+      "Type": "base_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/1281": {
+      "ID": "1281",
+      "Name": "Sequence of Processor Instructions Leads to Unexpected Behavior",
+      "Abstraction": "Base",
+      "Structure": "Simple",
+      "Status": "Incomplete",
+      "Description": "Specific combinations of processor instructions lead to undesirable behavior such as locking the processor until a hard reset performed.",
+      "ExtendedDescription": "\n\nIf the instruction set architecture (ISA) and processor logic are not designed carefully and tested thoroughly, certain combinations of instructions may lead to locking the processor or other unexpected and undesirable behavior. Upon encountering unimplemented instruction opcodes or illegal instruction operands, the processor should throw an exception and carry on without negatively impacting security. However, specific combinations of legal and illegal instructions may cause unexpected behavior with security implications such as allowing unprivileged programs to completely lock the CPU. \n",
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Class": "Not Language-Specific",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Operating_System",
+          "Class": "Not OS-Specific",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Architecture",
+          "Class": "Not Architecture-Specific",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Technology",
+          "Class": "Not Technology-Specific",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Technology",
+          "Name": "Processor Hardware",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Architecture and Design",
+          "Note": "Unexpected behavior from certain instruction combinations can arise from bugs in the ISA"
+        },
+        {
+          "Phase": "Implementation",
+          "Note": "Unexpected behavior from certain instruction combinations can arise because of implementation details such as speculative execution, caching etc."
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Integrity",
+            "Availability"
+          ],
+          "Impact": [
+            "Varies by Context"
+          ]
+        }
+      ],
+      "DemonstrativeExamples": [
+        {
+          "Entries": [
+            {
+              "IntroText": "The Pentium F00F bug is a real-world example of how a sequence of instructions can lock a processor. The \"cmpxchg8b\" instruction compares contents of registers with a memory location. The operand is expected to be a memory location, but in the bad code snippet it is the eax register. Because the specified operand is illegal, an exception is generated, which is the correct behavior and not a security issue in itself. However, when prefixed with the \"lock\" instruction, the processor deadlocks because locked memory transactions require a read and write pair of transactions to occur before the lock on the memory bus is released. The exception causes a read to occur but there is no corresponding write, as there would have been if a legal operand had been supplied to the cmpxchg8b instruction. [REF-1331]"
+            },
+            {
+              "Nature": "Bad",
+              "Language": "x86 Assembly",
+              "ExampleCode": "lock cmpxchg8b eax"
+            }
+          ]
+        },
+        {
+          "Entries": [
+            {
+              "IntroText": "The Cyrix Coma bug was capable of trapping a Cyrix 6x86, 6x86L, or 6x86MX processor in an infinite loop. An infinite loop on a processor is not necessarily an issue on its own, as interrupts could stop the loop. However, on select Cyrix processors, the x86 Assembly 'xchg' instruction was designed to prevent interrupts. On these processors, if the loop was such that a new 'xchg' instruction entered the instruction pipeline before the previous one exited, the processor would become deadlocked. [REF-1323]"
+            }
+          ]
+        },
+        {
+          "Entries": [
+            {
+              "IntroText": "The Motorola MC6800 microprocessor contained the first documented instance of a Halt and Catch Fire instruction - an instruction that causes the normal function of a processor to stop. If the MC6800 was given the opcode 0x9D or 0xDD, the processor would begin to read all memory very quickly, in sequence, and without executing any other instructions. This will cause the processor to become unresponsive to anything but a hard reset. [REF-1324]"
+            }
+          ]
+        },
+        {
+          "Entries": [
+            {
+              "IntroText": "The example code is taken from the commit stage inside the processor core of the HACK@DAC'19 buggy CVA6 SoC [REF-1342]. To ensure the correct execution of atomic instructions, the CPU must guarantee atomicity: no other device overwrites the memory location between the atomic read starts and the atomic write finishes. Another device may overwrite the memory location only before the read operation or after the write operation, but never between them, and finally, the content will still be consistent."
+            },
+            {
+              "BodyText": "Atomicity is especially critical when the variable to be modified is a mutex, counting semaphore, or similar piece of data that controls access to shared resources. Failure to ensure atomicity may result in two processors accessing a shared resource simultaneously, permanent lock-up, or similar disastrous behavior."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "Verilog",
+              "ExampleCode": "```\n```\nif (csr_exception_i.valid && csr_exception_i.cause[63] && commit_instr_i[0].fu != CSR) begin** \n\t```\n\t\t exception_o = csr_exception_i;\n\t\t exception_o.tval = commit_instr_i[0].ex.tval;\n\t end\n```"
+            },
+            {
+              "BodyText": "The above vulnerable code checks for CSR interrupts and gives them precedence over any other exception. However, the interrupts should not occur when the processor runs a series of atomic instructions. In the above vulnerable code, the required check must be included to ensure the processor is not in the middle of a series of atomic instructions."
+            },
+            {
+              "BodyText": "Refrain from interrupting if the intention is to commit an atomic instruction that should not be interrupted. This can be done by adding a condition to check whether the current committing instruction is atomic. [REF-1343]"
+            },
+            {
+              "Nature": "Good",
+              "Language": "Verilog",
+              "ExampleCode": "```\n```\nif (csr_exception_i.valid && csr_exception_i.cause[63] && !amo_valid_commit_o && commit_instr_i[0].fu != CSR) begin** \n\t```\n\t\t exception_o = csr_exception_i;\n\t\t exception_o.tval = commit_instr_i[0].ex.tval;\n\t end\n```"
+            }
+          ]
+        }
+      ],
+      "PotentialMitigations": [
+        {
+          "Phase": [
+            "Testing"
+          ],
+          "Description": "Implement a rigorous testing strategy that incorporates randomization to explore instruction sequences that are unlikely to appear in normal workloads in order to identify halt and catch fire instruction sequences."
+        },
+        {
+          "Phase": [
+            "Patching and Maintenance"
+          ],
+          "Description": "Patch operating system to avoid running Halt and Catch Fire type sequences or to mitigate the damage caused by unexpected behavior. See [REF-1108]."
+        }
+      ]
+    },
+    "/cwe/1281/parents": {
+      "weakness_parents": [],
+      "category_parents": [
+        "1201",
+        "1410"
+      ]
+    },
+    "/cwe/1281/children": null
+  }
+}

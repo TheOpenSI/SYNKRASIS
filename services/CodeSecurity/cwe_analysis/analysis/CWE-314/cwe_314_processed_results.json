@@ -1,0 +1,60 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T23:08:47.174374",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "314",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/314": {
+      "ID": "314",
+      "Type": "variant_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/314": {
+      "ID": "314",
+      "Name": "Cleartext Storage in the Registry",
+      "Abstraction": "Variant",
+      "Structure": "Simple",
+      "Status": "Draft",
+      "Description": "The product stores sensitive information in cleartext in the registry.",
+      "ExtendedDescription": "Attackers can read the information by accessing the registry key. Even if the information is encoded in a way that is not human-readable, certain techniques could determine which encoding is being used, then decode the information.",
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Class": "Not Language-Specific",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Architecture and Design",
+          "Note": "OMISSION: This weakness is caused by missing a security tactic during the architecture and design phase."
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Confidentiality"
+          ],
+          "Impact": [
+            "Read Application Data"
+          ]
+        }
+      ],
+      "DemonstrativeExamples": null,
+      "PotentialMitigations": null
+    },
+    "/cwe/314/parents": {
+      "weakness_parents": [],
+      "category_parents": [
+        "1013",
+        "1402",
+        "963"
+      ]
+    },
+    "/cwe/314/children": null
+  }
+}

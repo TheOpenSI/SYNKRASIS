@@ -1,0 +1,78 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T23:33:01.601141",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "5",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/5": {
+      "ID": "5",
+      "Type": "variant_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/5": {
+      "ID": "5",
+      "Name": "J2EE Misconfiguration: Data Transmission Without Encryption",
+      "Abstraction": "Variant",
+      "Structure": "Simple",
+      "Status": "Draft",
+      "Description": "Information sent over a network can be compromised while in transit. An attacker may be able to read or modify the contents if the data are sent in plaintext or are weakly encrypted.",
+      "ExtendedDescription": null,
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Name": "Java",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Implementation"
+        },
+        {
+          "Phase": "Operation"
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Confidentiality"
+          ],
+          "Impact": [
+            "Read Application Data"
+          ]
+        },
+        {
+          "Scope": [
+            "Integrity"
+          ],
+          "Impact": [
+            "Modify Application Data"
+          ]
+        }
+      ],
+      "DemonstrativeExamples": null,
+      "PotentialMitigations": [
+        {
+          "Phase": [
+            "System Configuration"
+          ],
+          "Description": "The product configuration should ensure that SSL or an encryption mechanism of equivalent strength and vetted reputation is used for all access-controlled pages."
+        }
+      ]
+    },
+    "/cwe/5/parents": {
+      "weakness_parents": [],
+      "category_parents": [
+        "1402",
+        "2",
+        "731",
+        "963"
+      ]
+    },
+    "/cwe/5/children": null
+  }
+}

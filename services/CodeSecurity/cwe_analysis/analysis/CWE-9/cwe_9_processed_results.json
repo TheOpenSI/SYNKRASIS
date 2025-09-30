@@ -1,0 +1,79 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-30T00:14:46.318957",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "9",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/9": {
+      "ID": "9",
+      "Type": "variant_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/9": {
+      "ID": "9",
+      "Name": "J2EE Misconfiguration: Weak Access Permissions for EJB Methods",
+      "Abstraction": "Variant",
+      "Structure": "Simple",
+      "Status": "Draft",
+      "Description": "If elevated access rights are assigned to EJB methods, then an attacker can take advantage of the permissions to exploit the product.",
+      "ExtendedDescription": "If the EJB deployment descriptor contains one or more method permissions that grant access to the special ANYONE role, it indicates that access control for the application has not been fully thought through or that the application is structured in such a way that reasonable access control restrictions are impossible.",
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": null,
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Architecture and Design"
+        },
+        {
+          "Phase": "Implementation"
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Other"
+          ],
+          "Impact": [
+            "Other"
+          ]
+        }
+      ],
+      "DemonstrativeExamples": [
+        {
+          "Entries": [
+            {
+              "IntroText": "The following deployment descriptor grants ANYONE permission to invoke the Employee EJB's method named getSalary()."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "XML",
+              "ExampleCode": "```\n\t<ejb-jar>\n\t\t...\n\t\t<assembly-descriptor>\n\t\t\t<method-permission>\n\t\t\t\t<role-name>ANYONE</role-name>\n\t\t\t\t<method>\n\t\t\t\t<ejb-name>Employee</ejb-name>\n\t\t\t\t<method-name>getSalary</method-name>\n\t\t\t</method-permission>\n\t\t</assembly-descriptor>\n\t\t...\n\t</ejb-jar>\n```"
+            }
+          ]
+        }
+      ],
+      "PotentialMitigations": [
+        {
+          "Phase": [
+            "Architecture and Design",
+            "System Configuration"
+          ],
+          "Description": "Follow the principle of least privilege when assigning access rights to EJB methods. Permission to invoke EJB methods should not be granted to the ANYONE role."
+        }
+      ]
+    },
+    "/cwe/9/parents": {
+      "weakness_parents": [],
+      "category_parents": [
+        "1396",
+        "2",
+        "723",
+        "731",
+        "901"
+      ]
+    },
+    "/cwe/9/children": null
+  }
+}

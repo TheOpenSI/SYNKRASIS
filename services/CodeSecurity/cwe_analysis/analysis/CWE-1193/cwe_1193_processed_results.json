@@ -1,0 +1,61 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T22:23:59.594964",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "1193",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/1193": {
+      "ID": "1193",
+      "Type": "base_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/1193": {
+      "ID": "1193",
+      "Name": "Power-On of Untrusted Execution Core Before Enabling Fabric Access Control",
+      "Abstraction": "Base",
+      "Structure": "Simple",
+      "Status": "Draft",
+      "Description": "The product enables components that contain untrusted firmware before memory and fabric access controls have been enabled.",
+      "ExtendedDescription": "\n\n After initial reset, System-on-Chip (SoC) fabric access controls and other security features need to be programmed by trusted firmware as part of the boot sequence. If untrusted IPs or peripheral microcontrollers are enabled first, then the untrusted component can master transactions on the hardware bus and target memory or other assets to compromise the SoC boot firmware.\n",
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": null,
+      "AlternateTerms": null,
+      "ModesOfIntroduction": null,
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Access Control"
+          ],
+          "Impact": [
+            "Bypass Protection Mechanism"
+          ],
+          "Likelihood": [
+            "High"
+          ],
+          "Note": "An untrusted component can master transactions on the HW bus and target memory or other assets to compromise the SoC boot firmware."
+        }
+      ],
+      "DemonstrativeExamples": null,
+      "PotentialMitigations": [
+        {
+          "Phase": [
+            "Architecture and Design"
+          ],
+          "Description": "\n\nThe boot sequence should enable fabric access controls and memory protections before enabling third-party hardware IPs and peripheral microcontrollers that use untrusted firmware.\n"
+        }
+      ]
+    },
+    "/cwe/1193/parents": {
+      "weakness_parents": [
+        "696"
+      ],
+      "category_parents": [
+        "1196",
+        "1410"
+      ]
+    },
+    "/cwe/1193/children": null
+  }
+}

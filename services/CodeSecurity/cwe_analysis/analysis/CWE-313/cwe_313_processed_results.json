@@ -1,0 +1,89 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T23:08:39.751384",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "313",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/313": {
+      "ID": "313",
+      "Type": "variant_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/313": {
+      "ID": "313",
+      "Name": "Cleartext Storage in a File or on Disk",
+      "Abstraction": "Variant",
+      "Structure": "Simple",
+      "Status": "Draft",
+      "Description": "The product stores sensitive information in cleartext in a file, or on disk.",
+      "ExtendedDescription": "The sensitive information could be read by attackers with access to the file, or with physical or administrator access to the raw disk. Even if the information is encoded in a way that is not human-readable, certain techniques could determine which encoding is being used, then decode the information.",
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Class": "Not Language-Specific",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Architecture and Design",
+          "Note": "OMISSION: This weakness is caused by missing a security tactic during the architecture and design phase."
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Confidentiality"
+          ],
+          "Impact": [
+            "Read Application Data"
+          ]
+        }
+      ],
+      "DemonstrativeExamples": [
+        {
+          "ID": "DX-43",
+          "Entries": [
+            {
+              "IntroText": "The following examples show a portion of properties and configuration files for Java and ASP.NET applications. The files include username and password information but they are stored in cleartext."
+            },
+            {
+              "BodyText": "This Java example shows a properties file with a cleartext username / password pair."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "Java",
+              "ExampleCode": "```\n```\n# Java Web App ResourceBundle properties file* \n\t...\n\twebapp.ldap.username=secretUsername\n\twebapp.ldap.password=secretPassword\n\t..."
+            },
+            {
+              "BodyText": "The following example shows a portion of a configuration file for an ASP.Net application. This configuration file includes username and password information for a connection to a database but the pair is stored in cleartext."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "ASP.NET",
+              "ExampleCode": "```\n\t...\n\t<connectionStrings>\n\t\t<add name=\"ud_DEV\" connectionString=\"connectDB=uDB; uid=db2admin; pwd=password; dbalias=uDB;\" providerName=\"System.Data.Odbc\" />\n\t</connectionStrings>\n\t...\n```"
+            },
+            {
+              "BodyText": "Username and password information should not be included in a configuration file or a properties file in cleartext as this will allow anyone who can read the file access to the resource. If possible, encrypt this information."
+            }
+          ]
+        }
+      ],
+      "PotentialMitigations": null
+    },
+    "/cwe/313/parents": {
+      "weakness_parents": [],
+      "category_parents": [
+        "1013",
+        "1348",
+        "1402",
+        "963"
+      ]
+    },
+    "/cwe/313/children": null
+  }
+}

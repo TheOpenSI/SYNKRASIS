@@ -1,0 +1,110 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T23:16:53.730635",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "375",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/375": {
+      "ID": "375",
+      "Type": "base_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/375": {
+      "ID": "375",
+      "Name": "Returning a Mutable Object to an Untrusted Caller",
+      "Abstraction": "Base",
+      "Structure": "Simple",
+      "Status": "Draft",
+      "Description": "Sending non-cloned mutable data as a return value may result in that data being altered or deleted by the calling function.",
+      "ExtendedDescription": "In situations where functions return references to mutable data, it is possible that the external code which called the function may make changes to the data sent. If this data was not previously cloned, the class will then be using modified data which may violate assumptions about its internal state.",
+      "LikelihoodOfExploit": "Medium",
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Name": "C",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Language",
+          "Name": "C++",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Language",
+          "Name": "Java",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Language",
+          "Name": "C#",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Implementation"
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Access Control",
+            "Integrity"
+          ],
+          "Impact": [
+            "Modify Memory"
+          ],
+          "Note": "Potentially data could be tampered with by another function which should not have been tampered with."
+        }
+      ],
+      "DemonstrativeExamples": [
+        {
+          "Entries": [
+            {
+              "IntroText": "This class has a private list of patients, but provides a way to see the list :"
+            },
+            {
+              "Nature": "Bad",
+              "Language": "Java",
+              "ExampleCode": "```\n\tpublic class ClinicalTrial {\n\t\tprivate PatientClass[] patientList = new PatientClass[50];\n\t\tpublic getPatients(...){\n\t\t\treturn patientList;\n\t\t}\n\t}\n```"
+            },
+            {
+              "BodyText": "While this code only means to allow reading of the patient list, the getPatients() method returns a reference to the class's original patient list instead of a reference to a copy of the list. Any caller of this method can arbitrarily modify the contents of the patient list even though it is a private member of the class."
+            }
+          ]
+        }
+      ],
+      "PotentialMitigations": [
+        {
+          "Phase": [
+            "Implementation"
+          ],
+          "Description": "Declare returned data which should not be altered as constant or immutable."
+        },
+        {
+          "Phase": [
+            "Implementation"
+          ],
+          "Description": "Clone all mutable data before returning references to it. This is the preferred mitigation. This way, regardless of what changes are made to the data, a valid copy is retained for use by the class."
+        }
+      ]
+    },
+    "/cwe/375/parents": {
+      "weakness_parents": [
+        "668"
+      ],
+      "category_parents": [
+        "1139",
+        "1181",
+        "1403",
+        "371",
+        "849",
+        "963"
+      ]
+    },
+    "/cwe/375/children": null
+  }
+}

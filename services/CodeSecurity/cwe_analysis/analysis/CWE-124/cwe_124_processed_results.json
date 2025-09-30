@@ -1,0 +1,145 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T22:27:09.080522",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "124",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/124": {
+      "ID": "124",
+      "Type": "base_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/124": {
+      "ID": "124",
+      "Name": "Buffer Underwrite ('Buffer Underflow')",
+      "Abstraction": "Base",
+      "Structure": "Simple",
+      "Status": "Incomplete",
+      "Description": "The product writes to a buffer using an index or pointer that references a memory location prior to the beginning of the buffer.",
+      "ExtendedDescription": "This typically occurs when a pointer or its index is decremented to a position before the buffer, when pointer arithmetic results in a position before the beginning of the valid memory location, or when a negative index is used.",
+      "LikelihoodOfExploit": "Medium",
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Name": "C",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Language",
+          "Name": "C++",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": [
+        {
+          "Term": "buffer underrun",
+          "Description": "Some prominent vendors and researchers use the term \"buffer underrun\". \"Buffer underflow\" is more commonly used, although both terms are also sometimes used to describe a buffer under-read (CWE-127)."
+        }
+      ],
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Implementation"
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Integrity",
+            "Availability"
+          ],
+          "Impact": [
+            "Modify Memory",
+            "DoS: Crash, Exit, or Restart"
+          ],
+          "Note": "Out of bounds memory access will very likely result in the corruption of relevant memory, and perhaps instructions, possibly leading to a crash."
+        },
+        {
+          "Scope": [
+            "Integrity",
+            "Confidentiality",
+            "Availability",
+            "Access Control",
+            "Other"
+          ],
+          "Impact": [
+            "Execute Unauthorized Code or Commands",
+            "Modify Memory",
+            "Bypass Protection Mechanism",
+            "Other"
+          ],
+          "Note": "If the corrupted memory can be effectively controlled, it may be possible to execute arbitrary code. If the corrupted memory is data rather than instructions, the system will continue to function with improper changes, possibly in violation of an implicit or explicit policy. The consequences would only be limited by how the affected data is used, such as an adjacent memory location that is used to specify whether the user has special privileges."
+        },
+        {
+          "Scope": [
+            "Access Control",
+            "Other"
+          ],
+          "Impact": [
+            "Bypass Protection Mechanism",
+            "Other"
+          ],
+          "Note": "When the consequence is arbitrary code execution, this can often be used to subvert any other security service."
+        }
+      ],
+      "DemonstrativeExamples": [
+        {
+          "ID": "DX-87",
+          "Entries": [
+            {
+              "IntroText": "In the following C/C++ example, a utility function is used to trim trailing whitespace from a character string. The function copies the input string to a local character string and uses a while statement to remove the trailing whitespace by moving backward through the string and overwriting whitespace with a NUL character."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "C",
+              "ExampleCode": "```\n\tchar* trimTrailingWhitespace(char *strMessage, int length) {\n\t\t\tchar *retMessage;\n\t\t\tchar *message = malloc(sizeof(char)*(length+1));\n```\n// copy input string to a temporary string* \n\t\t\tchar message[length+1];\n\t\t\tint index;\n\t\t\tfor (index = 0; index < length; index++) {\n\t\t\t```\n\t\t\t\tmessage[index] = strMessage[index];\n\t\t\t}\n\t\t\tmessage[index] = '\\0';\n```\n// trim trailing whitespace* \n\t\t\tint len = index-1;\n\t\t\twhile (isspace(message[len])) {\n\t\t\t```\n\t\t\t\tmessage[len] = '\\0';\n\t\t\t\tlen--;\n\t\t\t}\n```\n// return string without trailing whitespace* \n\t\t\tretMessage = message;\n\t\t\treturn retMessage;}"
+            },
+            {
+              "BodyText": "However, this function can cause a buffer underwrite if the input character string contains all whitespace. On some systems the while statement will move backwards past the beginning of a character string and will call the isspace() function on an address outside of the bounds of the local buffer."
+            }
+          ]
+        },
+        {
+          "ID": "DX-88",
+          "Entries": [
+            {
+              "IntroText": "The following is an example of code that may result in a buffer underwrite. This code is attempting to replace the substring \"Replace Me\" in destBuf with the string stored in srcBuf. It does so by using the function strstr(), which returns a pointer to the found substring in destBuf. Using pointer arithmetic, the starting index of the substring is found."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "C",
+              "ExampleCode": "```\n\tint main() { \n\t\t...\n\t\t char *result = strstr(destBuf, \"Replace Me\");\n\t\t int idx = result - destBuf;\n\t\t strcpy(&destBuf[idx], srcBuf);\n\t\t ...\n\t} \n```"
+            },
+            {
+              "BodyText": "In the case where the substring is not found in destBuf, strstr() will return NULL, causing the pointer arithmetic to be undefined, potentially setting the value of idx to a negative number. If idx is negative, this will result in a buffer underwrite of destBuf."
+            }
+          ]
+        }
+      ],
+      "PotentialMitigations": [
+        {
+          "Phase": [
+            "Requirements"
+          ],
+          "Description": "Choose a language that is not susceptible to these issues."
+        },
+        {
+          "Phase": [
+            "Implementation"
+          ],
+          "Description": "All calculated values that are used as index or for pointer arithmetic should be validated to ensure that they are within an expected range."
+        }
+      ]
+    },
+    "/cwe/124/parents": {
+      "weakness_parents": [],
+      "category_parents": [
+        "1399",
+        "1218",
+        "970"
+      ]
+    },
+    "/cwe/124/children": null
+  }
+}

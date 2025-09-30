@@ -1,0 +1,66 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T23:16:01.600345",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "368",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/368": {
+      "ID": "368",
+      "Type": "base_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/368": {
+      "ID": "368",
+      "Name": "Context Switching Race Condition",
+      "Abstraction": "Base",
+      "Structure": "Simple",
+      "Status": "Draft",
+      "Description": "A product performs a series of non-atomic actions to switch between contexts that cross privilege or other security boundaries, but a race condition allows an attacker to modify or misrepresent the product's behavior during the switch.",
+      "ExtendedDescription": "This is commonly seen in web browser vulnerabilities in which the attacker can perform certain actions while the browser is transitioning from a trusted to an untrusted domain, or vice versa, and the browser performs the actions on one domain using the trust level and resources of the other domain.",
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Class": "Not Language-Specific",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Architecture and Design"
+        },
+        {
+          "Phase": "Implementation"
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Integrity",
+            "Confidentiality"
+          ],
+          "Impact": [
+            "Modify Application Data",
+            "Read Application Data"
+          ]
+        }
+      ],
+      "DemonstrativeExamples": null,
+      "PotentialMitigations": null
+    },
+    "/cwe/368/parents": {
+      "weakness_parents": [
+        "362"
+      ],
+      "category_parents": [
+        "1401",
+        "557",
+        "986"
+      ]
+    },
+    "/cwe/368/children": null
+  }
+}

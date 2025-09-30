@@ -1,0 +1,102 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T23:01:42.698368",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "261",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/261": {
+      "ID": "261",
+      "Type": "base_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/261": {
+      "ID": "261",
+      "Name": "Weak Encoding for Password",
+      "Abstraction": "Base",
+      "Structure": "Simple",
+      "Status": "Incomplete",
+      "Description": "Obscuring a password with a trivial encoding does not protect the password.",
+      "ExtendedDescription": "Password management issues occur when a password is stored in plaintext in an application's properties or configuration file. A programmer can attempt to remedy the password management problem by obscuring the password with an encoding function, such as base 64 encoding, but this effort does not adequately protect the password.",
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Class": "Not Language-Specific",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Architecture and Design",
+          "Note": "COMMISSION: This weakness refers to an incorrect design related to an architectural security tactic."
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Access Control"
+          ],
+          "Impact": [
+            "Gain Privileges or Assume Identity"
+          ]
+        }
+      ],
+      "DemonstrativeExamples": [
+        {
+          "Entries": [
+            {
+              "IntroText": "The following code reads a password from a properties file and uses the password to connect to a database."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "Java",
+              "ExampleCode": "```\n\t...\n\tProperties prop = new Properties();\n\tprop.load(new FileInputStream(\"config.properties\"));\n\tString password = Base64.decode(prop.getProperty(\"password\"));\n\tDriverManager.getConnection(url, usr, password);\n\t...\n```"
+            },
+            {
+              "BodyText": "This code will run successfully, but anyone with access to config.properties can read the value of password and easily determine that the value has been base 64 encoded. If a devious employee has access to this information, they can use it to break into the system."
+            }
+          ]
+        },
+        {
+          "Entries": [
+            {
+              "IntroText": "The following code reads a password from the registry and uses the password to create a new network credential."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "C#",
+              "ExampleCode": "```\n\t...\n\tstring value = regKey.GetValue(passKey).ToString();\n\tbyte[] decVal = Convert.FromBase64String(value);\n\tNetworkCredential netCred = newNetworkCredential(username,decVal.toString(),domain);\n\t...\n```"
+            },
+            {
+              "BodyText": "This code will run successfully, but anyone who has access to the registry key used to store the password can read the value of password. If a devious employee has access to this information, they can use it to break into the system."
+            }
+          ]
+        }
+      ],
+      "PotentialMitigations": [
+        {
+          "Description": "Passwords should be encrypted with keys that are at least 128 bits in length for adequate security."
+        }
+      ]
+    },
+    "/cwe/261/parents": {
+      "weakness_parents": [
+        "522"
+      ],
+      "category_parents": [
+        "1013",
+        "1346",
+        "1396",
+        "255",
+        "310",
+        "254",
+        "729",
+        "959"
+      ]
+    },
+    "/cwe/261/children": null
+  }
+}

@@ -1,0 +1,221 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T22:54:45.658464",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "209",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/209": {
+      "ID": "209",
+      "Type": "base_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/209": {
+      "ID": "209",
+      "Name": "Generation of Error Message Containing Sensitive Information",
+      "Abstraction": "Base",
+      "Structure": "Simple",
+      "Status": "Draft",
+      "Description": "The product generates an error message that includes sensitive information about its environment, users, or associated data.",
+      "ExtendedDescription": null,
+      "LikelihoodOfExploit": "High",
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Name": "PHP",
+          "Prevalence": "Often"
+        },
+        {
+          "Type": "Language",
+          "Name": "Java",
+          "Prevalence": "Often"
+        },
+        {
+          "Type": "Language",
+          "Class": "Not Language-Specific",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Architecture and Design"
+        },
+        {
+          "Phase": "Implementation",
+          "Note": "REALIZATION: This weakness is caused during implementation of an architectural security tactic."
+        },
+        {
+          "Phase": "System Configuration"
+        },
+        {
+          "Phase": "Operation"
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Confidentiality"
+          ],
+          "Impact": [
+            "Read Application Data"
+          ],
+          "Note": "Often this will either reveal sensitive information which may be used to launch another, more focused attack or disclose private information stored in the server. For example, an attempt to exploit a path traversal weakness (CWE-22) might yield the full pathname of the installed application. In turn, this could be used to select the proper number of \"..\" sequences to navigate to the targeted file. An attack using SQL injection (CWE-89) might not initially succeed, but an error message could reveal the malformed query, which would expose query logic and possibly even passwords or other sensitive information used within the query."
+        }
+      ],
+      "DemonstrativeExamples": [
+        {
+          "Entries": [
+            {
+              "IntroText": "In the following example, sensitive information might be printed depending on the exception that occurs."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "Java",
+              "ExampleCode": "```\n\ttry {\n\t\t/.../\n\t}\n\tcatch (Exception e) {\n\t\tSystem.out.println(e);\n\t}\n```"
+            },
+            {
+              "BodyText": "If an exception related to SQL is handled by the catch, then the output might contain sensitive information such as SQL query structure or private information. If this output is redirected to a web user, this may represent a security problem."
+            }
+          ]
+        },
+        {
+          "ID": "DX-118",
+          "Entries": [
+            {
+              "IntroText": "This code tries to open a database connection, and prints any exceptions that occur."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "PHP",
+              "ExampleCode": "```\n\ttry {\n\t\topenDbConnection();\n\t}\n```\n//print exception message that includes exception message and configuration file location* \n\tcatch (Exception $e) {\n\t```\n\t\techo 'Caught exception: ', $e->getMessage(), '\\n';\n\t\techo 'Check credentials in config file at: ', $Mysql_config_location, '\\n';\n\t}\n```"
+            },
+            {
+              "BodyText": "If an exception occurs, the printed message exposes the location of the configuration file the script is using. An attacker can use this information to target the configuration file (perhaps exploiting a Path Traversal weakness). If the file can be read, the attacker could gain credentials for accessing the database. The attacker may also be able to replace the file with a malicious one, causing the application to use an arbitrary database."
+            }
+          ]
+        },
+        {
+          "Entries": [
+            {
+              "IntroText": "The following code generates an error message that leaks the full pathname of the configuration file."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "Perl",
+              "ExampleCode": "```\n\t$ConfigDir = \"/home/myprog/config\";\n\t$uname = GetUserInput(\"username\");\n```\n# avoid CWE-22, CWE-78, others.* \n\tExitError(\"Bad hacker!\") if ($uname !~ /^\\w+$/);\n\t$file = \"$ConfigDir/$uname.txt\";\n\tif (! (-e $file)) {\n\t```\n\t\tExitError(\"Error: $file does not exist\");\n\t}\n\t...\n```"
+            },
+            {
+              "BodyText": "If this code is running on a server, such as a web application, then the person making the request should not know what the full pathname of the configuration directory is. By submitting a username that does not produce a $file that exists, an attacker could get this pathname. It could then be used to exploit path traversal or symbolic link following problems that may exist elsewhere in the application."
+            }
+          ]
+        },
+        {
+          "ID": "DX-119",
+          "Entries": [
+            {
+              "IntroText": "In the example below, the method getUserBankAccount retrieves a bank account object from a database using the supplied username and account number to query the database. If an SQLException is raised when querying the database, an error message is created and output to a log file."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "Java",
+              "ExampleCode": "```\n\tpublic BankAccount getUserBankAccount(String username, String accountNumber) {\n\t\t\tBankAccount userAccount = null;\n\t\t\tString query = null;\n\t\t\ttry {\n\t\t\t\tif (isAuthorizedUser(username)) {\n\t\t\t\t\tquery = \"SELECT * FROM accounts WHERE owner = \"\n\t\t\t\t\t+ username + \" AND accountID = \" + accountNumber;\n\t\t\t\t\tDatabaseManager dbManager = new DatabaseManager();\n\t\t\t\t\tConnection conn = dbManager.getConnection();\n\t\t\t\t\tStatement stmt = conn.createStatement();\n\t\t\t\t\tResultSet queryResult = stmt.executeQuery(query);\n\t\t\t\t\tuserAccount = (BankAccount)queryResult.getObject(accountNumber);\n\t\t\t\t}\n\t\t\t} catch (SQLException ex) {\n\t\t\t\tString logMessage = \"Unable to retrieve account information from database,\\nquery: \" + query;\n\t\t\t\tLogger.getLogger(BankManager.class.getName()).log(Level.SEVERE, logMessage, ex);\n\t\t\t}\n\t\t\treturn userAccount;\n\t}\n```"
+            },
+            {
+              "BodyText": "The error message that is created includes information about the database query that may contain sensitive information about the database or query logic. In this case, the error message will expose the table name and column names used in the database. This data could be used to simplify other attacks, such as SQL injection (CWE-89) to directly access the database."
+            }
+          ]
+        }
+      ],
+      "PotentialMitigations": [
+        {
+          "MitigationID": "MIT-39",
+          "Phase": [
+            "Implementation"
+          ],
+          "Description": "\n\nEnsure that error messages only contain minimal details that are useful to the intended audience and no one else. The messages need to strike the balance between being too cryptic (which can confuse users) or being too detailed (which may reveal more than intended). The messages should not reveal the methods that were used to determine the error. Attackers can use detailed information to refine or optimize their original attack, thereby increasing their chances of success.\n\n\nIf errors must be captured in some detail, record them in log messages, but consider what could occur if the log messages can be viewed by attackers. Highly sensitive information such as passwords should never be saved to log files.\n\n\nAvoid inconsistent messaging that might accidentally tip off an attacker about internal state, such as whether a user account exists or not.\n"
+        },
+        {
+          "Phase": [
+            "Implementation"
+          ],
+          "Description": "Handle exceptions internally and do not display errors containing potentially sensitive information to a user."
+        },
+        {
+          "MitigationID": "MIT-33",
+          "Phase": [
+            "Implementation"
+          ],
+          "Strategy": "Attack Surface Reduction",
+          "Description": "Use naming conventions and strong types to make it easier to spot when sensitive data is being used. When creating structures, objects, or other complex entities, separate the sensitive and non-sensitive data as much as possible.",
+          "Effectiveness": "Defense in Depth",
+          "EffectivenessNotes": "This makes it easier to spot places in the code where data is being used that is unencrypted."
+        },
+        {
+          "MitigationID": "MIT-40",
+          "Phase": [
+            "Implementation",
+            "Build and Compilation"
+          ],
+          "Strategy": "Compilation or Build Hardening",
+          "Description": "Debugging information should not make its way into a production release."
+        },
+        {
+          "MitigationID": "MIT-40",
+          "Phase": [
+            "Implementation",
+            "Build and Compilation"
+          ],
+          "Strategy": "Environment Hardening",
+          "Description": "Debugging information should not make its way into a production release."
+        },
+        {
+          "Phase": [
+            "System Configuration"
+          ],
+          "Description": "Where available, configure the environment to use less verbose error messages. For example, in PHP, disable the display_errors setting during configuration, or at runtime using the error_reporting() function."
+        },
+        {
+          "Phase": [
+            "System Configuration"
+          ],
+          "Description": "Create default error pages or messages that do not leak any information."
+        }
+      ]
+    },
+    "/cwe/209/parents": {
+      "weakness_parents": [
+        "200",
+        "755"
+      ],
+      "category_parents": [
+        "1015",
+        "1032",
+        "1348",
+        "1417",
+        "717",
+        "199",
+        "389",
+        "728",
+        "731",
+        "751",
+        "801",
+        "815",
+        "851",
+        "880",
+        "963",
+        "867",
+        "933"
+      ]
+    },
+    "/cwe/209/children": {
+      "weakness_children": [
+        "210",
+        "211",
+        "550"
+      ],
+      "category_children": []
+    }
+  }
+}

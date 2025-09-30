@@ -1,0 +1,33 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T23:05:41.509447",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "292",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/292": {
+      "ID": "292",
+      "Type": "deprecated_weakness",
+      "is_deprecated": true
+    },
+    "/cwe/weakness/292": {
+      "ID": "292",
+      "Name": "DEPRECATED: Trusting Self-reported DNS Name",
+      "Abstraction": "Variant",
+      "Structure": "Simple",
+      "Status": "Deprecated",
+      "Description": "This entry has been deprecated because it was a duplicate of CWE-350. All content has been transferred to CWE-350.",
+      "ExtendedDescription": null,
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": null,
+      "AlternateTerms": null,
+      "ModesOfIntroduction": null,
+      "CommonConsequences": null,
+      "DemonstrativeExamples": null,
+      "PotentialMitigations": null
+    },
+    "/cwe/292/parents": null,
+    "/cwe/292/children": null
+  }
+}

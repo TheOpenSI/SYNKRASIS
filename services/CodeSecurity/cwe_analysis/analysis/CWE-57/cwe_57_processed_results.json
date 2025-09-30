@@ -1,0 +1,69 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T23:42:30.507811",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "57",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/57": {
+      "ID": "57",
+      "Type": "variant_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/57": {
+      "ID": "57",
+      "Name": "Path Equivalence: 'fakedir/../realdir/filename'",
+      "Abstraction": "Variant",
+      "Structure": "Simple",
+      "Status": "Incomplete",
+      "Description": "The product contains protection mechanisms to restrict access to 'realdir/filename', but it constructs pathnames using external input in the form of 'fakedir/../realdir/filename' that are not handled by those mechanisms. This allows attackers to perform unauthorized actions against the targeted file.",
+      "ExtendedDescription": null,
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Class": "Not Language-Specific",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Implementation"
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Confidentiality",
+            "Integrity"
+          ],
+          "Impact": [
+            "Read Files or Directories",
+            "Modify Files or Directories"
+          ]
+        }
+      ],
+      "DemonstrativeExamples": null,
+      "PotentialMitigations": [
+        {
+          "MitigationID": "MIT-20",
+          "Phase": [
+            "Implementation"
+          ],
+          "Strategy": "Input Validation",
+          "Description": "Inputs should be decoded and canonicalized to the application's current internal representation before being validated (CWE-180). Make sure that the application does not decode the same input twice (CWE-174). Such errors could be used to bypass allowlist validation schemes by introducing dangerous inputs after they have been checked."
+        }
+      ]
+    },
+    "/cwe/57/parents": {
+      "weakness_parents": [],
+      "category_parents": [
+        "1404",
+        "981"
+      ]
+    },
+    "/cwe/57/children": null
+  }
+}

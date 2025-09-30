@@ -1,0 +1,116 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T23:15:46.500186",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "366",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/366": {
+      "ID": "366",
+      "Type": "base_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/366": {
+      "ID": "366",
+      "Name": "Race Condition within a Thread",
+      "Abstraction": "Base",
+      "Structure": "Simple",
+      "Status": "Draft",
+      "Description": "If two threads of execution use a resource simultaneously, there exists the possibility that resources may be used while invalid, in turn making the state of execution undefined.",
+      "ExtendedDescription": null,
+      "LikelihoodOfExploit": "Medium",
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Name": "C",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Language",
+          "Name": "C++",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Language",
+          "Name": "Java",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Language",
+          "Name": "C#",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Implementation"
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Integrity",
+            "Other"
+          ],
+          "Impact": [
+            "Alter Execution Logic",
+            "Unexpected State"
+          ],
+          "Note": "The main problem is that -- if a lock is overcome -- data could be altered in a bad state."
+        }
+      ],
+      "DemonstrativeExamples": [
+        {
+          "Entries": [
+            {
+              "IntroText": "The following example demonstrates the weakness."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "C",
+              "ExampleCode": "```\n\tint foo = 0;\n\tint storenum(int num) {\n\t\tstatic int counter = 0;\n\t\tcounter++;\n\t\tif (num > foo) foo = num;\n\t\treturn foo;\n\t}\n```"
+            },
+            {
+              "Nature": "Bad",
+              "Language": "Java",
+              "ExampleCode": "```\n\tpublic classRace {\n\t\t\tstatic int foo = 0;\n\t\t\tpublic static void main() {\n\t\t\t\t\tnew Threader().start();\n\t\t\t\t\tfoo = 1;\n\t\t\t}\n\t\t\tpublic static class Threader extends Thread {\n\t\t\t\t\tpublic void run() {\n\t\t\t\t\t\tSystem.out.println(foo);\n\t\t\t\t\t}\n\t\t\t}\n\t}\n```"
+            }
+          ]
+        }
+      ],
+      "PotentialMitigations": [
+        {
+          "Phase": [
+            "Architecture and Design"
+          ],
+          "Description": "Use locking functionality. This is the recommended solution. Implement some form of locking mechanism around code which alters or reads persistent data in a multithreaded environment."
+        },
+        {
+          "Phase": [
+            "Architecture and Design"
+          ],
+          "Description": "Create resource-locking validation checks. If no inherent locking mechanisms exist, use flags and signals to enforce your own blocking scheme when resources are being used by other threads of execution."
+        }
+      ]
+    },
+    "/cwe/366/parents": {
+      "weakness_parents": [
+        "362",
+        "662"
+      ],
+      "category_parents": [
+        "1142",
+        "1169",
+        "1401",
+        "557",
+        "748",
+        "852",
+        "882",
+        "986"
+      ]
+    },
+    "/cwe/366/children": null
+  }
+}

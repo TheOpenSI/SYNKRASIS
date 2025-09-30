@@ -1,0 +1,52 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T22:10:36.883211",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "1050",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/1050": {
+      "ID": "1050",
+      "Type": "base_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/1050": {
+      "ID": "1050",
+      "Name": "Excessive Platform Resource Consumption within a Loop",
+      "Abstraction": "Base",
+      "Structure": "Simple",
+      "Status": "Incomplete",
+      "Description": "The product has a loop body or loop condition that contains a control element that directly or\n\t\t\t\t\tindirectly consumes platform resources, e.g. messaging, sessions, locks, or file\n\t\t\t\t\tdescriptors.",
+      "ExtendedDescription": "\n\nThis issue can make the product perform more slowly. If an attacker can influence the number of iterations in the loop, then this performance problem might allow a denial of service by consuming more platform resources than intended.\n",
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": null,
+      "AlternateTerms": null,
+      "ModesOfIntroduction": null,
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Other"
+          ],
+          "Impact": [
+            "Reduce Performance"
+          ]
+        }
+      ],
+      "DemonstrativeExamples": null,
+      "PotentialMitigations": null
+    },
+    "/cwe/1050/parents": {
+      "weakness_parents": [
+        "405"
+      ],
+      "category_parents": [
+        "1132",
+        "1309",
+        "1416",
+        "1006"
+      ]
+    },
+    "/cwe/1050/children": null
+  }
+}

@@ -1,0 +1,53 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T22:09:36.598954",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "1043",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/1043": {
+      "ID": "1043",
+      "Type": "base_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/1043": {
+      "ID": "1043",
+      "Name": "Data Element Aggregating an Excessively Large Number of Non-Primitive Elements",
+      "Abstraction": "Base",
+      "Structure": "Simple",
+      "Status": "Incomplete",
+      "Description": "The product uses a data element that has an excessively large\n\t\t\t\t\tnumber of sub-elements with non-primitive data types such as structures or aggregated objects.",
+      "ExtendedDescription": "\n\nThis issue can make the product perform more slowly. If the relevant code is reachable by an attacker, then this performance problem might introduce a vulnerability.\n\n\nWhile the interpretation of \"excessively large\" may vary for each product or developer, CISQ recommends a default of 5 sub-elements.\n",
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": null,
+      "AlternateTerms": null,
+      "ModesOfIntroduction": null,
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Other"
+          ],
+          "Impact": [
+            "Reduce Performance"
+          ]
+        }
+      ],
+      "DemonstrativeExamples": null,
+      "PotentialMitigations": null
+    },
+    "/cwe/1043/parents": {
+      "weakness_parents": [
+        "1093"
+      ],
+      "category_parents": [
+        "1132",
+        "1309",
+        "1412",
+        "1006",
+        "1226"
+      ]
+    },
+    "/cwe/1043/children": null
+  }
+}

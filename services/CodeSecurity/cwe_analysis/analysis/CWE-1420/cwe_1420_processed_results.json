@@ -1,0 +1,202 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T22:44:09.835386",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "1420",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/1420": {
+      "ID": "1420",
+      "Type": "base_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/1420": {
+      "ID": "1420",
+      "Name": "Exposure of Sensitive Information during Transient Execution",
+      "Abstraction": "Base",
+      "Structure": "Simple",
+      "Status": "Incomplete",
+      "Description": "A processor event or prediction may allow incorrect operations (or correct operations with incorrect data) to execute transiently, potentially exposing data over a covert channel.",
+      "ExtendedDescription": "\n\nWhen operations execute but do not commit to the processor's architectural state, this is commonly referred to as transient execution. This behavior can occur when the processor mis-predicts an outcome (such as a branch target), or when a processor event (such as an exception or microcode assist, etc.) is handled after younger operations have already executed. Operations that execute transiently may exhibit observable discrepancies (CWE-203) in covert channels [REF-1400] such as data caches. Observable discrepancies of this kind can be detected and analyzed using timing or power analysis techniques, which may allow an attacker to infer information about the operations that executed transiently. For example, the attacker may be able to infer confidential data that was accessed or used by those operations.\n\n\nTransient execution weaknesses may be exploited using one of two methods. In the first method, the attacker generates a code sequence that exposes data through a covert channel when it is executed transiently (the attacker must also be able to trigger transient execution). Some transient execution weaknesses can only expose data that is accessible within the attacker's processor context. For example, an attacker executing code in a software sandbox may be able to use a transient execution weakness to expose data within the same address space, but outside of the attacker's sandbox. Other transient execution weaknesses can expose data that is architecturally inaccessible, that is, data protected by hardware-enforced boundaries such as page tables or privilege rings. These weaknesses are the subject of CWE-1421.\n\n\nIn the second exploitation method, the attacker first identifies a code sequence in a victim program that, when executed transiently, can expose data that is architecturally accessible within the victim's processor context. For instance, the attacker may search the victim program for code sequences that resemble a bounds-check bypass sequence (see Demonstrative Example 1). If the attacker can trigger a mis-prediction of the conditional branch and influence the index of the out-of-bounds array access, then the attacker may be able to infer the value of out-of-bounds data by monitoring observable discrepancies in a covert channel.\n",
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Class": "Not Language-Specific",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Operating_System",
+          "Class": "Not OS-Specific",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Architecture",
+          "Class": "Not Architecture-Specific",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Technology",
+          "Class": "Not Technology-Specific",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Architecture and Design",
+          "Note": "This weakness can be introduced when a computing unit (such as a CPU, GPU, accelerator, or any other processor) uses out-of-order execution, speculation, or any other microarchitectural feature that can allow microarchitectural operations to execute without committing to architectural state."
+        },
+        {
+          "Phase": "Implementation",
+          "Note": "This weakness can be introduced when sandboxes or managed runtimes are not properly isolated by using hardware-enforced boundaries. Developers of sandbox or managed runtime software should exercise caution when relying on software techniques (such as bounds checking) to prevent code in one sandbox from accessing confidential data in another sandbox. For example, an attacker sandbox may be able to trigger a processor event or mis-prediction in a manner that allows it to transiently read a victim sandbox's private data."
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Confidentiality"
+          ],
+          "Impact": [
+            "Read Memory"
+          ],
+          "Likelihood": [
+            "Medium"
+          ]
+        }
+      ],
+      "DemonstrativeExamples": [
+        {
+          "Entries": [
+            {
+              "IntroText": "Secure programs perform bounds checking before accessing an array if the source of the array index is provided by an untrusted source such as user input. In the code below, data from array1 will not be accessed if x is out of bounds. The following code snippet is from [REF-1415]:"
+            },
+            {
+              "Nature": "Bad",
+              "Language": "C",
+              "ExampleCode": "```\n\tif (x < array1_size)\n\t\ty = array2[array1[x] * 4096];\n```"
+            },
+            {
+              "BodyText": "However, if this code executes on a processor that performs conditional branch prediction the outcome of the if statement could be mis-predicted and the access on the next line will occur with a value of x that can point to an out-of-bounds location (within the program's memory).\n\n\nEven though the processor does not commit the architectural effects of the mis-predicted branch, the memory accesses alter data cache state, which is not rolled back after the branch is resolved. The cache state can reveal array1[x] thereby providing a mechanism to recover the data value located at address array1 + x."
+            }
+          ]
+        },
+        {
+          "Entries": [
+            {
+              "IntroText": "Some managed runtimes or just-in-time (JIT) compilers may overwrite recently executed code with new code. When the instruction pointer enters the new code, the processor may inadvertently execute the stale code that had been overwritten. This can happen, for instance, when the processor issues a store that overwrites a sequence of code, but the processor fetches and executes the (stale) code before the store updates memory. Similar to the first example, the processor does not commit the stale code's architectural effects, though microarchitectural side effects can persist. Hence, confidential information accessed or used by the stale code may be inferred via an observable discrepancy in a covert channel. This vulnerability is described in more detail in [REF-1427]."
+            }
+          ]
+        }
+      ],
+      "PotentialMitigations": [
+        {
+          "Phase": [
+            "Architecture and Design"
+          ],
+          "Description": "The hardware designer can attempt to prevent transient execution from causing observable discrepancies in specific covert channels.",
+          "Effectiveness": "Limited",
+          "EffectivenessNotes": "\n\nThis technique has many pitfalls. For example, InvisiSpec was an early attempt to mitigate this weakness by blocking \"micro-architectural covert and side channels through the multiprocessor data cache hierarchy due to speculative loads\" [REF-1417]. Commodity processors and SoCs have many covert and side channels that exist outside of the data cache hierarchy. Even when some of these channels are blocked, others (such as execution ports [REF-1418]) may allow an attacker to infer confidential data. Mitigation strategies that attempt to prevent transient execution from causing observable discrepancies also have other pitfalls, for example, see [REF-1419].\n"
+        },
+        {
+          "Phase": [
+            "Requirements"
+          ],
+          "Description": "\n\nProcessor designers may expose instructions or other architectural features that allow software to mitigate the effects of transient execution, but without disabling predictors. These features may also help to limit opportunities for data exposure.\n",
+          "Effectiveness": "Moderate",
+          "EffectivenessNotes": "\n\nInstructions or features that constrain transient execution or suppress its side effects may impact performance.\n"
+        },
+        {
+          "Phase": [
+            "Requirements"
+          ],
+          "Description": "\n\nProcessor designers may expose registers (for example, control registers or model-specific registers) that allow privileged and/or user software to disable specific predictors or other hardware features that can cause confidential data to be exposed during transient execution.\n",
+          "Effectiveness": "Limited",
+          "EffectivenessNotes": "\n\nDisabling specific predictors or other hardware features may result in significant performance overhead.\n"
+        },
+        {
+          "Phase": [
+            "Requirements"
+          ],
+          "Description": "\n\nProcessor designers, system software vendors, or other agents may choose to restrict the ability of unprivileged software to access to high-resolution timers that are commonly used to monitor covert channels.\n",
+          "Effectiveness": "Defense in Depth",
+          "EffectivenessNotes": "\n\nSpecific software algorithms can be used by an attacker to compensate for a lack of a high-resolution time source [REF-1420].\n"
+        },
+        {
+          "Phase": [
+            "Build and Compilation"
+          ],
+          "Description": "\n\nIsolate sandboxes or managed runtimes in separate address spaces (separate processes). For examples, see [REF-1421].\n",
+          "Effectiveness": "High"
+        },
+        {
+          "Phase": [
+            "Build and Compilation"
+          ],
+          "Description": "\n\nInclude serialization instructions (for example, LFENCE) that prevent processor events or mis-predictions prior to the serialization instruction from causing transient execution after the serialization instruction. For some weaknesses, a serialization instruction can also prevent a processor event or a mis-prediction from occurring after the serialization instruction (for example, CVE-2018-3639 can allow a processor to predict that a load will not depend on an older store; a serialization instruction between the store and the load may allow the store to update memory and prevent the prediction from happening at all).\n",
+          "Effectiveness": "Moderate",
+          "EffectivenessNotes": "\n\nWhen used to comprehensively mitigate a transient execution weakness (for example, by inserting an LFENCE after every instruction in a program), serialization instructions can introduce significant performance overhead. On the other hand, when used to mitigate only a relatively small number of high-risk code sequences, serialization instructions may have a low or negligible impact on performance.\n"
+        },
+        {
+          "Phase": [
+            "Build and Compilation"
+          ],
+          "Description": "\n\nUse control-flow integrity (CFI) techniques to constrain the behavior of instructions that redirect the instruction pointer, such as indirect branch instructions.\n",
+          "Effectiveness": "Moderate",
+          "EffectivenessNotes": "\n\nSome CFI techniques may not be able to constrain transient execution, even though they are effective at constraining architectural execution. Or they may be able to provide some additional protection against a transient execution weakness, but without comprehensively mitigating the weakness. For example, Clang-CFI provides strong architectural CFI properties and can make some transient execution weaknesses more difficult to exploit [REF-1398].\n"
+        },
+        {
+          "Phase": [
+            "Build and Compilation"
+          ],
+          "Description": "\n\nIf the weakness is exposed by a single instruction (or a small set of instructions), then the compiler (or JIT, etc.) can be configured to prevent the affected instruction(s) from being generated, and instead generate an alternate sequence of instructions that is not affected by the weakness. One prominent example of this mitigation is retpoline ([REF-1414]).\n",
+          "Effectiveness": "Limited",
+          "EffectivenessNotes": "\n\nThis technique may only be effective for software that is compiled with this mitigation. For some transient execution weaknesses, this technique may not be sufficient to protect software that is compiled without the affected instruction(s). For example, see CWE-1421.\n"
+        },
+        {
+          "Phase": [
+            "Build and Compilation"
+          ],
+          "Description": "\n\nUse software techniques that can mitigate the consequences of transient execution. For example, address masking can be used in some circumstances to prevent out-of-bounds transient reads.\n",
+          "Effectiveness": "Limited",
+          "EffectivenessNotes": "\n\nAddress masking and related software mitigation techniques have been used to harden specific code sequences that could potentially be exploited via transient execution. For example, the Linux kernel makes limited use of manually inserted address masks to mitigate bounds-check bypass [REF-1390]. Compiler-based techniques have also been used to automatically harden software [REF-1425].\n"
+        },
+        {
+          "Phase": [
+            "Build and Compilation"
+          ],
+          "Description": "\n\nUse software techniques (including the use of serialization instructions) that are intended to reduce the number of instructions that can be executed transiently after a processor event or misprediction.\n",
+          "Effectiveness": "Incidental",
+          "EffectivenessNotes": "\n\nSome transient execution weaknesses can be exploited even if a single instruction is executed transiently after a processor event or mis-prediction. This mitigation strategy has many other pitfalls that prevent it from eliminating this weakness entirely. For example, see [REF-1389].\n"
+        },
+        {
+          "Phase": [
+            "Documentation"
+          ],
+          "Description": "\n\nIf a hardware feature can allow incorrect operations (or correct operations with incorrect data) to execute transiently, the hardware designer may opt to disclose this behavior in architecture documentation. This documentation can inform users about potential consequences and effective mitigations.\n",
+          "Effectiveness": "High"
+        }
+      ]
+    },
+    "/cwe/1420/parents": {
+      "weakness_parents": [
+        "669"
+      ],
+      "category_parents": [
+        "1198",
+        "1201",
+        "1202",
+        "1416"
+      ]
+    },
+    "/cwe/1420/children": {
+      "weakness_children": [
+        "1421",
+        "1422",
+        "1423"
+      ],
+      "category_children": []
+    }
+  }
+}

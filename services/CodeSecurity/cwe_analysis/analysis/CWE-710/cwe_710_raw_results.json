@@ -1,0 +1,381 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-30T00:01:11.519857",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "710",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/710": {
+      "endpoint": "/cwe/710",
+      "url": "https://cwe-api.mitre.org/api/v1/cwe/710",
+      "status_code": 200,
+      "success": true,
+      "error": null,
+      "data": [
+        {
+          "Type": "pillar_weakness",
+          "ID": "710"
+        }
+      ]
+    },
+    "/cwe/weakness/710": {
+      "endpoint": "/cwe/weakness/710",
+      "url": "https://cwe-api.mitre.org/api/v1/cwe/weakness/710",
+      "status_code": 200,
+      "success": true,
+      "error": null,
+      "data": {
+        "Weaknesses": [
+          {
+            "ID": "710",
+            "Name": "Improper Adherence to Coding Standards",
+            "Abstraction": "Pillar",
+            "Structure": "Simple",
+            "Status": "Incomplete",
+            "Description": "The product does not follow certain coding rules for development, which can lead to resultant weaknesses or increase the severity of the associated vulnerabilities.",
+            "ApplicablePlatforms": [
+              {
+                "Type": "Language",
+                "Class": "Not Language-Specific",
+                "Prevalence": "Undetermined"
+              },
+              {
+                "Type": "Technology",
+                "Class": "Not Technology-Specific",
+                "Prevalence": "Undetermined"
+              }
+            ],
+            "ModesOfIntroduction": [
+              {
+                "Phase": "Architecture and Design"
+              },
+              {
+                "Phase": "Implementation"
+              }
+            ],
+            "CommonConsequences": [
+              {
+                "Scope": [
+                  "Other"
+                ],
+                "Impact": [
+                  "Other"
+                ]
+              }
+            ],
+            "PotentialMitigations": [
+              {
+                "Phase": [
+                  "Implementation"
+                ],
+                "Description": "Document and closely follow coding standards."
+              },
+              {
+                "Phase": [
+                  "Testing",
+                  "Implementation"
+                ],
+                "Description": "Where possible, use automated tools to enforce the standards."
+              }
+            ],
+            "MappingNotes": {
+              "Usage": "Discouraged",
+              "Rationale": "This CWE entry is extremely high-level, a Pillar.",
+              "Comments": "Consider children or descendants of this entry instead.",
+              "Reasons": [
+                "Abstraction"
+              ]
+            },
+            "ContentHistory": [
+              {
+                "Type": "Submission",
+                "SubmissionName": "CWE Content Team",
+                "SubmissionOrganization": "MITRE",
+                "SubmissionDate": "2008-09-09",
+                "SubmissionVersion": "1.0",
+                "SubmissionReleaseDate": "2008-09-09"
+              },
+              {
+                "Type": "Modification",
+                "ModificationName": "CWE Content Team",
+                "ModificationOrganization": "MITRE",
+                "ModificationDate": "2009-03-10",
+                "ModificationComment": "updated Relationships"
+              },
+              {
+                "Type": "Modification",
+                "ModificationName": "CWE Content Team",
+                "ModificationOrganization": "MITRE",
+                "ModificationDate": "2011-06-01",
+                "ModificationComment": "updated Common_Consequences"
+              },
+              {
+                "Type": "Modification",
+                "ModificationName": "CWE Content Team",
+                "ModificationOrganization": "MITRE",
+                "ModificationDate": "2012-05-11",
+                "ModificationComment": "updated Relationships"
+              },
+              {
+                "Type": "Modification",
+                "ModificationName": "CWE Content Team",
+                "ModificationOrganization": "MITRE",
+                "ModificationDate": "2012-10-30",
+                "ModificationComment": "updated Potential_Mitigations"
+              },
+              {
+                "Type": "Modification",
+                "ModificationName": "CWE Content Team",
+                "ModificationOrganization": "MITRE",
+                "ModificationDate": "2013-02-21",
+                "ModificationComment": "updated Relationships"
+              },
+              {
+                "Type": "Modification",
+                "ModificationName": "CWE Content Team",
+                "ModificationOrganization": "MITRE",
+                "ModificationDate": "2014-07-30",
+                "ModificationComment": "updated Relationships"
+              },
+              {
+                "Type": "Modification",
+                "ModificationName": "CWE Content Team",
+                "ModificationOrganization": "MITRE",
+                "ModificationDate": "2017-01-19",
+                "ModificationComment": "updated Relationships"
+              },
+              {
+                "Type": "Modification",
+                "ModificationName": "CWE Content Team",
+                "ModificationOrganization": "MITRE",
+                "ModificationDate": "2017-11-08",
+                "ModificationComment": "updated Applicable_Platforms, Name, Relationships"
+              },
+              {
+                "Type": "Modification",
+                "ModificationName": "CWE Content Team",
+                "ModificationOrganization": "MITRE",
+                "ModificationDate": "2019-01-03",
+                "ModificationComment": "updated Relationships"
+              },
+              {
+                "Type": "Modification",
+                "ModificationName": "CWE Content Team",
+                "ModificationOrganization": "MITRE",
+                "ModificationDate": "2020-02-24",
+                "ModificationComment": "updated Applicable_Platforms, Relationships, Type"
+              },
+              {
+                "Type": "Modification",
+                "ModificationName": "CWE Content Team",
+                "ModificationOrganization": "MITRE",
+                "ModificationDate": "2022-04-28",
+                "ModificationComment": "updated Relationships"
+              },
+              {
+                "Type": "Modification",
+                "ModificationName": "CWE Content Team",
+                "ModificationOrganization": "MITRE",
+                "ModificationDate": "2023-01-31",
+                "ModificationComment": "updated Description"
+              },
+              {
+                "Type": "Modification",
+                "ModificationName": "CWE Content Team",
+                "ModificationOrganization": "MITRE",
+                "ModificationDate": "2023-04-27",
+                "ModificationComment": "updated Relationships"
+              },
+              {
+                "Type": "Modification",
+                "ModificationName": "CWE Content Team",
+                "ModificationOrganization": "MITRE",
+                "ModificationDate": "2023-06-29",
+                "ModificationComment": "updated Mapping_Notes"
+              },
+              {
+                "Type": "Modification",
+                "ModificationName": "CWE Content Team",
+                "ModificationOrganization": "MITRE",
+                "ModificationDate": "2024-02-29",
+                "ModificationComment": "updated Relationships",
+                "ModificationVersion": "4.14",
+                "ModificationReleaseDate": "2024-02-29"
+              },
+              {
+                "Type": "Rename",
+                "PreviousEntryName": "Coding Standards Violation",
+                "Date": "2017-11-08"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    "/cwe/710/parents": {
+      "endpoint": "/cwe/710/parents",
+      "url": "https://cwe-api.mitre.org/api/v1/cwe/710/parents",
+      "status_code": 200,
+      "success": true,
+      "error": null,
+      "data": [
+        {
+          "Type": "view",
+          "ID": "1000",
+          "ViewID": "1000"
+        },
+        {
+          "Type": "category",
+          "ID": "1370",
+          "ViewID": "1358"
+        },
+        {
+          "Type": "category",
+          "ID": "1375",
+          "ViewID": "1358"
+        },
+        {
+          "Type": "category",
+          "ID": "1383",
+          "ViewID": "1358"
+        },
+        {
+          "Type": "category",
+          "ID": "1412",
+          "ViewID": "1400"
+        },
+        {
+          "Type": "category",
+          "ID": "978",
+          "ViewID": "888"
+        }
+      ]
+    },
+    "/cwe/710/children": {
+      "endpoint": "/cwe/710/children",
+      "url": "https://cwe-api.mitre.org/api/v1/cwe/710/children",
+      "status_code": 200,
+      "success": true,
+      "error": null,
+      "data": [
+        {
+          "Type": "base_weakness",
+          "ID": "1041"
+        },
+        {
+          "Type": "base_weakness",
+          "ID": "1044"
+        },
+        {
+          "Type": "base_weakness",
+          "ID": "1048"
+        },
+        {
+          "Type": "class_weakness",
+          "ID": "1059"
+        },
+        {
+          "Type": "class_weakness",
+          "ID": "1061"
+        },
+        {
+          "Type": "base_weakness",
+          "ID": "1065"
+        },
+        {
+          "Type": "base_weakness",
+          "ID": "1066"
+        },
+        {
+          "Type": "base_weakness",
+          "ID": "1068"
+        },
+        {
+          "Type": "class_weakness",
+          "ID": "1076"
+        },
+        {
+          "Type": "base_weakness",
+          "ID": "1092"
+        },
+        {
+          "Type": "class_weakness",
+          "ID": "1093"
+        },
+        {
+          "Type": "base_weakness",
+          "ID": "1101"
+        },
+        {
+          "Type": "class_weakness",
+          "ID": "1120"
+        },
+        {
+          "Type": "base_weakness",
+          "ID": "1126"
+        },
+        {
+          "Type": "base_weakness",
+          "ID": "1127"
+        },
+        {
+          "Type": "class_weakness",
+          "ID": "1164"
+        },
+        {
+          "Type": "class_weakness",
+          "ID": "1177"
+        },
+        {
+          "Type": "base_weakness",
+          "ID": "1209"
+        },
+        {
+          "Type": "class_weakness",
+          "ID": "1357"
+        },
+        {
+          "Type": "base_weakness",
+          "ID": "476"
+        },
+        {
+          "Type": "base_weakness",
+          "ID": "477"
+        },
+        {
+          "Type": "base_weakness",
+          "ID": "484"
+        },
+        {
+          "Type": "base_weakness",
+          "ID": "489"
+        },
+        {
+          "Type": "base_weakness",
+          "ID": "570"
+        },
+        {
+          "Type": "base_weakness",
+          "ID": "571"
+        },
+        {
+          "Type": "class_weakness",
+          "ID": "573"
+        },
+        {
+          "Type": "class_weakness",
+          "ID": "657"
+        },
+        {
+          "Type": "class_weakness",
+          "ID": "684"
+        },
+        {
+          "Type": "class_weakness",
+          "ID": "758"
+        }
+      ]
+    }
+  }
+}

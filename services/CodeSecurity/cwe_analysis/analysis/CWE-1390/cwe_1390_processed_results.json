@@ -1,0 +1,114 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T22:42:39.257630",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "1390",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/1390": {
+      "ID": "1390",
+      "Type": "class_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/1390": {
+      "ID": "1390",
+      "Name": "Weak Authentication",
+      "Abstraction": "Class",
+      "Structure": "Simple",
+      "Status": "Incomplete",
+      "Description": "The product uses an authentication mechanism to restrict access to specific users or identities, but the mechanism does not sufficiently prove that the claimed identity is correct.",
+      "ExtendedDescription": "\n\nAttackers may be able to bypass weak authentication faster and/or with less effort than expected.\n",
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Class": "Not Language-Specific",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Technology",
+          "Class": "ICS/OT",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Technology",
+          "Class": "Not Technology-Specific",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Architecture and Design"
+        },
+        {
+          "Phase": "Implementation"
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Integrity",
+            "Confidentiality",
+            "Availability",
+            "Access Control"
+          ],
+          "Impact": [
+            "Read Application Data",
+            "Gain Privileges or Assume Identity",
+            "Execute Unauthorized Code or Commands"
+          ],
+          "Note": "This weakness can lead to the exposure of resources or functionality to unintended actors, possibly providing attackers with sensitive information or even execute arbitrary code."
+        }
+      ],
+      "DemonstrativeExamples": [
+        {
+          "ID": "DX-153",
+          "Entries": [
+            {
+              "IntroText": "In 2022, the OT:ICEFALL study examined products by 10 different Operational Technology (OT) vendors. The researchers reported 56 vulnerabilities and said that the products were \"insecure by design\" [REF-1283]. If exploited, these vulnerabilities often allowed adversaries to change how the products operated, ranging from denial of service to changing the code that the products executed. Since these products were often used in industries such as power, electrical, water, and others, there could even be safety implications."
+            },
+            {
+              "BodyText": "Multiple OT products used weak authentication."
+            }
+          ]
+        }
+      ],
+      "PotentialMitigations": null
+    },
+    "/cwe/1390/parents": {
+      "weakness_parents": [
+        "287"
+      ],
+      "category_parents": [
+        "1396"
+      ]
+    },
+    "/cwe/1390/children": {
+      "weakness_children": [
+        "1391",
+        "262",
+        "263",
+        "289",
+        "290",
+        "294",
+        "301",
+        "302",
+        "303",
+        "305",
+        "307",
+        "308",
+        "309",
+        "522",
+        "593",
+        "603",
+        "620",
+        "640",
+        "804",
+        "836"
+      ],
+      "category_children": []
+    }
+  }
+}

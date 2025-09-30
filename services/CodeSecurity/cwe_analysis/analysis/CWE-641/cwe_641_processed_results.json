@@ -1,0 +1,101 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T23:52:29.742538",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "641",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/641": {
+      "ID": "641",
+      "Type": "base_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/641": {
+      "ID": "641",
+      "Name": "Improper Restriction of Names for Files and Other Resources",
+      "Abstraction": "Base",
+      "Structure": "Simple",
+      "Status": "Incomplete",
+      "Description": "The product constructs the name of a file or other resource using input from an upstream component, but it does not restrict or incorrectly restricts the resulting name.",
+      "ExtendedDescription": "This may produce resultant weaknesses. For instance, if the names of these resources contain scripting characters, it is possible that a script may get executed in the client's browser if the application ever displays the name of the resource on a dynamically generated web page. Alternately, if the resources are consumed by some application parser, a specially crafted name can exploit some vulnerability internal to the parser, potentially resulting in execution of arbitrary code on the server machine. The problems will vary based on the context of usage of such malformed resource names and whether vulnerabilities are present in or assumptions are made by the targeted technology that would make code execution possible.",
+      "LikelihoodOfExploit": "Low",
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Class": "Not Language-Specific",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Architecture and Design"
+        },
+        {
+          "Phase": "Implementation",
+          "Note": "REALIZATION: This weakness is caused during implementation of an architectural security tactic."
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Integrity",
+            "Confidentiality",
+            "Availability"
+          ],
+          "Impact": [
+            "Execute Unauthorized Code or Commands"
+          ],
+          "Note": "Execution of arbitrary code in the context of usage of the resources with dangerous names."
+        },
+        {
+          "Scope": [
+            "Confidentiality",
+            "Availability"
+          ],
+          "Impact": [
+            "Read Application Data",
+            "DoS: Crash, Exit, or Restart"
+          ],
+          "Note": "Crash of the consumer code of these resources resulting in information leakage or denial of service."
+        }
+      ],
+      "DemonstrativeExamples": null,
+      "PotentialMitigations": [
+        {
+          "Phase": [
+            "Architecture and Design"
+          ],
+          "Description": "Do not allow users to control names of resources used on the server side."
+        },
+        {
+          "Phase": [
+            "Architecture and Design"
+          ],
+          "Description": "Perform allowlist input validation at entry points and also before consuming the resources. Reject bad file names rather than trying to cleanse them."
+        },
+        {
+          "Phase": [
+            "Architecture and Design"
+          ],
+          "Description": "Make sure that technologies consuming the resources are not vulnerable (e.g. buffer overflow, format string, etc.) in a way that would allow code execution if the name of the resource is malformed."
+        }
+      ]
+    },
+    "/cwe/641/parents": {
+      "weakness_parents": [
+        "99"
+      ],
+      "category_parents": [
+        "1019",
+        "1409",
+        "1215",
+        "137",
+        "399",
+        "990"
+      ]
+    },
+    "/cwe/641/children": null
+  }
+}

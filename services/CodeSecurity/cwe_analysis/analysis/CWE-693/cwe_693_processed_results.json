@@ -1,0 +1,105 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T23:59:03.432881",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "693",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/693": {
+      "ID": "693",
+      "Type": "pillar_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/693": {
+      "ID": "693",
+      "Name": "Protection Mechanism Failure",
+      "Abstraction": "Pillar",
+      "Structure": "Simple",
+      "Status": "Draft",
+      "Description": "The product does not use or incorrectly uses a protection mechanism that provides sufficient defense against directed attacks against the product.",
+      "ExtendedDescription": "This weakness covers three distinct situations. A \"missing\" protection mechanism occurs when the application does not define any mechanism against a certain class of attack. An \"insufficient\" protection mechanism might provide some defenses - for example, against the most common attacks - but it does not protect against everything that is intended. Finally, an \"ignored\" mechanism occurs when a mechanism is available and in active use within the product, but the developer has not applied it in some code path.",
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Class": "Not Language-Specific",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Technology",
+          "Class": "Not Technology-Specific",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Technology",
+          "Class": "ICS/OT",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Architecture and Design"
+        },
+        {
+          "Phase": "Implementation"
+        },
+        {
+          "Phase": "Operation"
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Access Control"
+          ],
+          "Impact": [
+            "Bypass Protection Mechanism"
+          ]
+        }
+      ],
+      "DemonstrativeExamples": null,
+      "PotentialMitigations": null
+    },
+    "/cwe/693/parents": {
+      "weakness_parents": [],
+      "category_parents": [
+        "1370",
+        "1413",
+        "975"
+      ]
+    },
+    "/cwe/693/children": {
+      "weakness_children": [
+        "1039",
+        "1248",
+        "1253",
+        "1269",
+        "1278",
+        "1291",
+        "1318",
+        "1319",
+        "1326",
+        "1338",
+        "184",
+        "311",
+        "326",
+        "327",
+        "330",
+        "345",
+        "357",
+        "358",
+        "424",
+        "602",
+        "653",
+        "654",
+        "655",
+        "656",
+        "757",
+        "807"
+      ],
+      "category_children": []
+    }
+  }
+}

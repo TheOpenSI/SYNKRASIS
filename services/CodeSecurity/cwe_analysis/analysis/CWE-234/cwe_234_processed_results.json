@@ -1,0 +1,106 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T22:58:21.069891",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "234",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/234": {
+      "ID": "234",
+      "Type": "variant_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/234": {
+      "ID": "234",
+      "Name": "Failure to Handle Missing Parameter",
+      "Abstraction": "Variant",
+      "Structure": "Simple",
+      "Status": "Incomplete",
+      "Description": "If too few arguments are sent to a function, the function will still pop the expected number of arguments from the stack. Potentially, a variable number of arguments could be exhausted in a function as well.",
+      "ExtendedDescription": null,
+      "LikelihoodOfExploit": "High",
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Class": "Not Language-Specific",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Implementation"
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Integrity",
+            "Confidentiality",
+            "Availability",
+            "Access Control"
+          ],
+          "Impact": [
+            "Execute Unauthorized Code or Commands",
+            "Gain Privileges or Assume Identity"
+          ],
+          "Note": "There is the potential for arbitrary code execution with privileges of the vulnerable program if function parameter list is exhausted."
+        },
+        {
+          "Scope": [
+            "Availability"
+          ],
+          "Impact": [
+            "DoS: Crash, Exit, or Restart"
+          ],
+          "Note": "Potentially a program could fail if it needs more arguments then are available."
+        }
+      ],
+      "DemonstrativeExamples": [
+        {
+          "Entries": [
+            {
+              "IntroText": "The following example demonstrates the weakness."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "C",
+              "ExampleCode": "```\n\tfoo_funct(one, two);\n\tvoid foo_funct(int one, int two, int three) {\n\t\tprintf(\"1) %d\\n2) %d\\n3) %d\\n\", one, two, three);\n\t}\n```"
+            },
+            {
+              "Nature": "Bad",
+              "Language": "C",
+              "ExampleCode": "```\n\tvoid some_function(int foo, ...) {\n\t\tint a[3], i;\n\t\tva_list ap;\n\t\tva_start(ap, foo);\n\t\tfor (i = 0; i < sizeof(a) / sizeof(int); i++) a[i] = va_arg(ap, int);\n\t\tva_end(ap);\n\t}\n\tint main(int argc, char *argv[]) {\n\t\tsome_function(17, 42);\n\t}\n```"
+            },
+            {
+              "BodyText": "This can be exploited to disclose information with no work whatsoever. In fact, each time this function is run, it will print out the next 4 bytes on the stack after the two numbers sent to it."
+            }
+          ]
+        }
+      ],
+      "PotentialMitigations": [
+        {
+          "Phase": [
+            "Build and Compilation"
+          ],
+          "Description": "This issue can be simply combated with the use of proper build process."
+        },
+        {
+          "Phase": [
+            "Implementation"
+          ],
+          "Description": "Forward declare all functions. This is the recommended solution. Properly forward declaration of all used functions will result in a compiler error if too few arguments are sent to a function."
+        }
+      ]
+    },
+    "/cwe/234/parents": {
+      "weakness_parents": [],
+      "category_parents": [
+        "1407",
+        "993"
+      ]
+    },
+    "/cwe/234/children": null
+  }
+}

@@ -1,0 +1,67 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T23:36:02.409204",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "520",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/520": {
+      "ID": "520",
+      "Type": "variant_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/520": {
+      "ID": "520",
+      "Name": ".NET Misconfiguration: Use of Impersonation",
+      "Abstraction": "Variant",
+      "Structure": "Simple",
+      "Status": "Incomplete",
+      "Description": "Allowing a .NET application to run at potentially escalated levels of access to the underlying operating and file systems can be dangerous and result in various forms of attacks.",
+      "ExtendedDescription": ".NET server applications can optionally execute using the identity of the user authenticated to the client. The intention of this functionality is to bypass authentication and access control checks within the .NET application code. Authentication is done by the underlying web server (Microsoft Internet Information Service IIS), which passes the authenticated token, or unauthenticated anonymous token, to the .NET application. Using the token to impersonate the client, the application then relies on the settings within the NTFS directories and files to control access. Impersonation enables the application, on the server running the .NET application, to both execute code and access resources in the context of the authenticated and authorized user.",
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": null,
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Architecture and Design"
+        },
+        {
+          "Phase": "Implementation"
+        },
+        {
+          "Phase": "Operation"
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Access Control"
+          ],
+          "Impact": [
+            "Gain Privileges or Assume Identity"
+          ]
+        }
+      ],
+      "DemonstrativeExamples": null,
+      "PotentialMitigations": [
+        {
+          "Phase": [
+            "Operation"
+          ],
+          "Description": "Run the application with limited privilege to the underlying operating and file system."
+        }
+      ]
+    },
+    "/cwe/520/parents": {
+      "weakness_parents": [],
+      "category_parents": [
+        "1349",
+        "1396",
+        "731",
+        "901"
+      ]
+    },
+    "/cwe/520/children": null
+  }
+}

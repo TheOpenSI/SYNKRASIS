@@ -1,0 +1,107 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T23:19:30.129484",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "396",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/396": {
+      "ID": "396",
+      "Type": "base_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/396": {
+      "ID": "396",
+      "Name": "Declaration of Catch for Generic Exception",
+      "Abstraction": "Base",
+      "Structure": "Simple",
+      "Status": "Draft",
+      "Description": "Catching overly broad exceptions promotes complex error handling code that is more likely to contain security vulnerabilities.",
+      "ExtendedDescription": "Multiple catch blocks can get ugly and repetitive, but \"condensing\" catch blocks by catching a high-level class like Exception can obscure exceptions that deserve special treatment or that should not be caught at this point in the program. Catching an overly broad exception essentially defeats the purpose of a language's typed exceptions, and can become particularly dangerous if the program grows and begins to throw new types of exceptions. The new exception types will not receive any attention.",
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Name": "C++",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Language",
+          "Name": "Java",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Language",
+          "Name": "C#",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Language",
+          "Name": "Python",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Implementation"
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Non-Repudiation",
+            "Other"
+          ],
+          "Impact": [
+            "Hide Activities"
+          ],
+          "Note": "A generic exception can hide details about unexpected adversary activities by making it difficult to properly troubleshoot error conditions during execution."
+        }
+      ],
+      "DemonstrativeExamples": [
+        {
+          "Entries": [
+            {
+              "IntroText": "The following code excerpt handles three types of exceptions in an identical fashion."
+            },
+            {
+              "Nature": "Good",
+              "Language": "Java",
+              "ExampleCode": "```\n\ttry {\n\t\tdoExchange();\n\t}\n\tcatch (IOException e) {\n\t\tlogger.error(\"doExchange failed\", e);\n\t}\n\tcatch (InvocationTargetException e) {\n\t\t\tlogger.error(\"doExchange failed\", e);\n\t}\n\tcatch (SQLException e) {\n\t\t\tlogger.error(\"doExchange failed\", e);\n\t}\n```"
+            },
+            {
+              "BodyText": "At first blush, it may seem preferable to deal with these exceptions in a single catch block, as follows:"
+            },
+            {
+              "Nature": "Bad",
+              "Language": "Java",
+              "ExampleCode": "```\n\ttry {\n\t\tdoExchange();\n\t}\n\tcatch (Exception e) {\n\t\tlogger.error(\"doExchange failed\", e);\n\t}\n```"
+            },
+            {
+              "BodyText": "However, if doExchange() is modified to throw a new type of exception that should be handled in some different kind of way, the broad catch block will prevent the compiler from pointing out the situation. Further, the new catch block will now also handle exceptions derived from RuntimeException such as ClassCastException, and NullPointerException, which is not the programmer's intent."
+            }
+          ]
+        }
+      ],
+      "PotentialMitigations": null
+    },
+    "/cwe/396/parents": {
+      "weakness_parents": [
+        "221",
+        "705",
+        "755"
+      ],
+      "category_parents": [
+        "1129",
+        "1131",
+        "1410",
+        "389",
+        "388",
+        "960"
+      ]
+    },
+    "/cwe/396/children": null
+  }
+}

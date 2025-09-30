@@ -1,0 +1,181 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T22:13:00.034654",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "1068",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/1068": {
+      "endpoint": "/cwe/1068",
+      "url": "https://cwe-api.mitre.org/api/v1/cwe/1068",
+      "status_code": 200,
+      "success": true,
+      "error": null,
+      "data": [
+        {
+          "Type": "base_weakness",
+          "ID": "1068"
+        }
+      ]
+    },
+    "/cwe/weakness/1068": {
+      "endpoint": "/cwe/weakness/1068",
+      "url": "https://cwe-api.mitre.org/api/v1/cwe/weakness/1068",
+      "status_code": 200,
+      "success": true,
+      "error": null,
+      "data": {
+        "Weaknesses": [
+          {
+            "ID": "1068",
+            "Name": "Inconsistency Between Implementation and Documented Design",
+            "Abstraction": "Base",
+            "Structure": "Simple",
+            "Status": "Incomplete",
+            "Description": "The implementation of the product is not consistent with the\n\t\t\t\t\tdesign as described within the relevant documentation.",
+            "ExtendedDescription": "\n\nThis issue makes it more difficult to maintain the product due to inconsistencies, which indirectly affects security by making it more difficult or time-consuming to find and/or fix vulnerabilities. It also might make it easier to introduce vulnerabilities.\n",
+            "RelatedWeaknesses": [
+              {
+                "Nature": "ChildOf",
+                "CweID": "710",
+                "ViewID": "1000",
+                "Ordinal": "Primary"
+              }
+            ],
+            "WeaknessOrdinalities": [
+              {
+                "Ordinality": "Indirect"
+              }
+            ],
+            "ApplicablePlatforms": [
+              {
+                "Type": "Technology",
+                "Class": "Not Technology-Specific",
+                "Prevalence": "Undetermined"
+              },
+              {
+                "Type": "Technology",
+                "Class": "ICS/OT",
+                "Prevalence": "Undetermined"
+              }
+            ],
+            "ModesOfIntroduction": [
+              {
+                "Phase": "Implementation"
+              }
+            ],
+            "References": [
+              {
+                "ExternalReferenceID": "REF-963",
+                "Authors": [
+                  "Robert A. Martin",
+                  "Lawrence H. Shafer"
+                ],
+                "Title": "Providing a Framework for Effective Software Quality Assessment",
+                "PublicationYear": "1996",
+                "PublicationMonth": "07",
+                "URL": "https://www.researchgate.net/publication/285403022_PROVIDING_A_FRAMEWORK_FOR_EFFECTIVE_SOFTWARE_QUALITY_MEASUREMENT_MAKING_A_SCIENCE_OF_RISK_ASSESSMENT",
+                "URLDate": "2023-04-07"
+              }
+            ],
+            "MappingNotes": {
+              "Usage": "Prohibited",
+              "Rationale": "This entry is primarily a quality issue with no direct security implications.",
+              "Comments": "Look for weaknesses that are focused specifically on insecure behaviors that have more direct security implications.",
+              "Reasons": [
+                "Other"
+              ]
+            },
+            "ContentHistory": [
+              {
+                "Type": "Submission",
+                "SubmissionName": "CWE Content Team",
+                "SubmissionOrganization": "MITRE",
+                "SubmissionDate": "2018-07-02",
+                "SubmissionComment": "Entry derived from Common Quality Enumeration (CQE) Draft 0.9.",
+                "SubmissionVersion": "3.2",
+                "SubmissionReleaseDate": "2019-01-03"
+              },
+              {
+                "Type": "Modification",
+                "ModificationName": "CWE Content Team",
+                "ModificationOrganization": "MITRE",
+                "ModificationDate": "2020-02-24",
+                "ModificationComment": "updated Relationships"
+              },
+              {
+                "Type": "Modification",
+                "ModificationName": "CWE Content Team",
+                "ModificationOrganization": "MITRE",
+                "ModificationDate": "2023-01-31",
+                "ModificationComment": "updated Applicable_Platforms, Description, Relationships"
+              },
+              {
+                "Type": "Modification",
+                "ModificationName": "CWE Content Team",
+                "ModificationOrganization": "MITRE",
+                "ModificationDate": "2023-04-27",
+                "ModificationComment": "updated Relationships, Time_of_Introduction"
+              },
+              {
+                "Type": "Modification",
+                "ModificationName": "CWE Content Team",
+                "ModificationOrganization": "MITRE",
+                "ModificationDate": "2023-06-29",
+                "ModificationComment": "updated Mapping_Notes"
+              },
+              {
+                "Type": "Modification",
+                "ModificationName": "CWE Content Team",
+                "ModificationOrganization": "MITRE",
+                "ModificationDate": "2024-02-29",
+                "ModificationComment": "updated Mapping_Notes",
+                "ModificationVersion": "4.14",
+                "ModificationReleaseDate": "2024-02-29"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    "/cwe/1068/parents": {
+      "endpoint": "/cwe/1068/parents",
+      "url": "https://cwe-api.mitre.org/api/v1/cwe/1068/parents",
+      "status_code": 200,
+      "success": true,
+      "error": null,
+      "data": [
+        {
+          "Type": "pillar_weakness",
+          "ID": "710",
+          "ViewID": "1000",
+          "Primary_Parent": true
+        },
+        {
+          "Type": "category",
+          "ID": "1368",
+          "ViewID": "1358"
+        },
+        {
+          "Type": "category",
+          "ID": "1412",
+          "ViewID": "1400"
+        },
+        {
+          "Type": "category",
+          "ID": "1225",
+          "ViewID": "699"
+        }
+      ]
+    },
+    "/cwe/1068/children": {
+      "endpoint": "/cwe/1068/children",
+      "url": "https://cwe-api.mitre.org/api/v1/cwe/1068/children",
+      "status_code": 200,
+      "success": true,
+      "error": null,
+      "data": []
+    }
+  }
+}

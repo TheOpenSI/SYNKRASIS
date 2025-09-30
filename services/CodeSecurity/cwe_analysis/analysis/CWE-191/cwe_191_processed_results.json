@@ -1,0 +1,141 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T22:52:13.609926",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "191",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/191": {
+      "ID": "191",
+      "Type": "base_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/191": {
+      "ID": "191",
+      "Name": "Integer Underflow (Wrap or Wraparound)",
+      "Abstraction": "Base",
+      "Structure": "Simple",
+      "Status": "Draft",
+      "Description": "The product subtracts one value from another, such that the result is less than the minimum allowable integer value, which produces a value that is not equal to the correct result.",
+      "ExtendedDescription": "This can happen in signed and unsigned cases.",
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Name": "C",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Language",
+          "Name": "C++",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Language",
+          "Name": "Java",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Language",
+          "Name": "C#",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": [
+        {
+          "Term": "Integer underflow",
+          "Description": "\n\n\"Integer underflow\" is sometimes used to identify signedness errors in which an originally positive number becomes negative as a result of subtraction. However, there are cases of bad subtraction in which unsigned integers are involved, so it's not always a signedness issue.\n\n\n\"Integer underflow\" is occasionally used to describe array index errors in which the index is negative.\n"
+        }
+      ],
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Implementation"
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Availability"
+          ],
+          "Impact": [
+            "DoS: Crash, Exit, or Restart",
+            "DoS: Resource Consumption (CPU)",
+            "DoS: Resource Consumption (Memory)",
+            "DoS: Instability"
+          ],
+          "Note": "This weakness will generally lead to undefined behavior and therefore crashes. In the case of overflows involving loop index variables, the likelihood of infinite loops is also high."
+        },
+        {
+          "Scope": [
+            "Integrity"
+          ],
+          "Impact": [
+            "Modify Memory"
+          ],
+          "Note": "If the value in question is important to data (as opposed to flow), simple data corruption has occurred. Also, if the wrap around results in other conditions such as buffer overflows, further memory corruption may occur."
+        },
+        {
+          "Scope": [
+            "Confidentiality",
+            "Availability",
+            "Access Control"
+          ],
+          "Impact": [
+            "Execute Unauthorized Code or Commands",
+            "Bypass Protection Mechanism"
+          ],
+          "Note": "This weakness can sometimes trigger buffer overflows which can be used to execute arbitrary code. This is usually outside the scope of a program's implicit security policy."
+        }
+      ],
+      "DemonstrativeExamples": [
+        {
+          "Entries": [
+            {
+              "IntroText": "The following example subtracts from a 32 bit signed integer."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "C",
+              "ExampleCode": "```\n\t#include <stdio.h>\n\t#include <stdbool.h>\n\tmain (void)\n\t{\n\t\tint i;\n\t\ti = -2147483648;\n\t\ti = i - 1;\n\t\treturn 0;\n\t}\n```"
+            },
+            {
+              "BodyText": "The example has an integer underflow. The value of i is already at the lowest negative value possible, so after subtracting 1, the new value of i is 2147483647."
+            }
+          ]
+        },
+        {
+          "ID": "DX-137",
+          "Entries": [
+            {
+              "IntroText": "This code performs a stack allocation based on a length calculation."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "C",
+              "ExampleCode": "```\n\t int a = 5, b = 6;\n\t size_t len = a - b;\n\t char buf[len]; // Just blows up the stack \n }\n```"
+            },
+            {
+              "BodyText": "Since a and b are declared as signed ints, the \"a - b\" subtraction gives a negative result (-1). However, since len is declared to be unsigned, len is cast to an extremely large positive number (on 32-bit systems - 4294967295). As a result, the buffer buf[len] declaration uses an extremely large size to allocate on the stack, very likely more than the entire computer's memory space."
+            },
+            {
+              "BodyText": "Miscalculations usually will not be so obvious. The calculation will either be complicated or the result of an attacker's input to attain the negative value."
+            }
+          ]
+        }
+      ],
+      "PotentialMitigations": null
+    },
+    "/cwe/191/parents": {
+      "weakness_parents": [],
+      "category_parents": [
+        "1137",
+        "1158",
+        "1408",
+        "189",
+        "998"
+      ]
+    },
+    "/cwe/191/children": null
+  }
+}

@@ -1,0 +1,88 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T23:44:37.079813",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "585",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/585": {
+      "ID": "585",
+      "Type": "variant_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/585": {
+      "ID": "585",
+      "Name": "Empty Synchronized Block",
+      "Abstraction": "Variant",
+      "Structure": "Simple",
+      "Status": "Draft",
+      "Description": "The product contains an empty synchronized block.",
+      "ExtendedDescription": "An empty synchronized block does not actually accomplish any synchronization and may indicate a troubled section of code. An empty synchronized block can occur because code no longer needed within the synchronized block is commented out without removing the synchronized block.",
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Name": "Java",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Implementation"
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Other"
+          ],
+          "Impact": [
+            "Other"
+          ],
+          "Note": "An empty synchronized block will wait until nobody else is using the synchronizer being specified. While this may be part of the desired behavior, because you haven't protected the subsequent code by placing it inside the synchronized block, nothing is stopping somebody else from modifying whatever it was you were waiting for while you run the subsequent code."
+        }
+      ],
+      "DemonstrativeExamples": [
+        {
+          "ID": "DX-214",
+          "Entries": [
+            {
+              "IntroText": "The following code attempts to synchronize on an object, but does not execute anything in the synchronized block. This does not actually accomplish anything and may be a sign that a programmer is wrestling with synchronization but has not yet achieved the result they intend."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "Java",
+              "ExampleCode": "```\n\tsynchronized(this) { }\n```"
+            },
+            {
+              "BodyText": "Instead, in a correct usage, the synchronized statement should contain procedures that access or modify data that is exposed to multiple threads. For example, consider a scenario in which several threads are accessing student records at the same time. The method which sets the student ID to a new value will need to make sure that nobody else is accessing this data at the same time and will require synchronization."
+            },
+            {
+              "Nature": "Good",
+              "Language": "Java",
+              "ExampleCode": "```\n\tpublic void setID(int ID){\n\t\tsynchronized(this){\n\t\t\tthis.ID = ID;\n\t\t}\n\t}\n```"
+            }
+          ]
+        }
+      ],
+      "PotentialMitigations": [
+        {
+          "Phase": [
+            "Implementation"
+          ],
+          "Description": "When you come across an empty synchronized statement, or a synchronized statement in which the code has been commented out, try to determine what the original intentions were and whether or not the synchronized block is still necessary."
+        }
+      ]
+    },
+    "/cwe/585/parents": {
+      "weakness_parents": [],
+      "category_parents": [
+        "1412",
+        "987"
+      ]
+    },
+    "/cwe/585/children": null
+  }
+}

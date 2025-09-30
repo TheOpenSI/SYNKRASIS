@@ -1,0 +1,52 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T22:13:37.728049",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "1072",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/1072": {
+      "ID": "1072",
+      "Type": "base_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/1072": {
+      "ID": "1072",
+      "Name": "Data Resource Access without Use of Connection Pooling",
+      "Abstraction": "Base",
+      "Structure": "Simple",
+      "Status": "Incomplete",
+      "Description": "The product accesses a data resource through a database without using a\n\t\t\t\t\tconnection pooling capability.",
+      "ExtendedDescription": "\n\nThis issue can make the product perform more slowly, as connection pools allow connections to be reused without the overhead and time consumption of opening and closing a new connection. If the relevant code is reachable by an attacker, then this performance problem might introduce a vulnerability.\n",
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": null,
+      "AlternateTerms": null,
+      "ModesOfIntroduction": null,
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Other"
+          ],
+          "Impact": [
+            "Reduce Performance"
+          ]
+        }
+      ],
+      "DemonstrativeExamples": null,
+      "PotentialMitigations": null
+    },
+    "/cwe/1072/parents": {
+      "weakness_parents": [
+        "405"
+      ],
+      "category_parents": [
+        "1132",
+        "1309",
+        "1416",
+        "1006"
+      ]
+    },
+    "/cwe/1072/children": null
+  }
+}

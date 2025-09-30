@@ -1,0 +1,66 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T23:14:46.549767",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "358",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/358": {
+      "ID": "358",
+      "Type": "base_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/358": {
+      "ID": "358",
+      "Name": "Improperly Implemented Security Check for Standard",
+      "Abstraction": "Base",
+      "Structure": "Simple",
+      "Status": "Draft",
+      "Description": "The product does not implement or incorrectly implements one or more security-relevant checks as specified by the design of a standardized algorithm, protocol, or technique.",
+      "ExtendedDescription": null,
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Class": "Not Language-Specific",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Architecture and Design"
+        },
+        {
+          "Phase": "Implementation",
+          "Note": "\n\nThis is an implementation error, in which the algorithm/technique requires certain security-related behaviors or conditions that are not implemented or checked properly, thus causing a vulnerability.\n"
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Access Control"
+          ],
+          "Impact": [
+            "Bypass Protection Mechanism"
+          ]
+        }
+      ],
+      "DemonstrativeExamples": null,
+      "PotentialMitigations": null
+    },
+    "/cwe/358/parents": {
+      "weakness_parents": [
+        "573"
+      ],
+      "category_parents": [
+        "1366",
+        "1412",
+        "1006",
+        "978"
+      ]
+    },
+    "/cwe/358/children": null
+  }
+}

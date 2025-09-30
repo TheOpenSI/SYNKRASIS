@@ -1,0 +1,49 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T22:16:15.945111",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "1092",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/1092": {
+      "ID": "1092",
+      "Type": "base_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/1092": {
+      "ID": "1092",
+      "Name": "Use of Same Invokable Control Element in Multiple Architectural Layers",
+      "Abstraction": "Base",
+      "Structure": "Simple",
+      "Status": "Incomplete",
+      "Description": "The product uses the same control element across multiple\n\t\t\t\t\tarchitectural layers.",
+      "ExtendedDescription": "\n\nThis issue makes it more difficult to understand and maintain the product, which indirectly affects security by making it more difficult or time-consuming to find and/or fix vulnerabilities. It also might make it easier to introduce vulnerabilities.\n",
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": null,
+      "AlternateTerms": null,
+      "ModesOfIntroduction": null,
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Other"
+          ],
+          "Impact": [
+            "Reduce Maintainability"
+          ]
+        }
+      ],
+      "DemonstrativeExamples": null,
+      "PotentialMitigations": null
+    },
+    "/cwe/1092/parents": {
+      "weakness_parents": [],
+      "category_parents": [
+        "1130",
+        "1412",
+        "1006"
+      ]
+    },
+    "/cwe/1092/children": null
+  }
+}

@@ -1,0 +1,145 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T22:40:23.085652",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "1339",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/1339": {
+      "ID": "1339",
+      "Type": "base_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/1339": {
+      "ID": "1339",
+      "Name": "Insufficient Precision or Accuracy of a Real Number",
+      "Abstraction": "Base",
+      "Structure": "Simple",
+      "Status": "Draft",
+      "Description": "The product processes a real number with an implementation in which the number's representation does not preserve required accuracy and precision in its fractional part, causing an incorrect result.",
+      "ExtendedDescription": "\n\nWhen a security decision or calculation requires highly precise, accurate numbers such as financial calculations or prices, then small variations in the number could be exploited by an attacker. \n\n\nThere are multiple ways to store the fractional part of a real number in a computer. In all of these cases, there is a limit to the accuracy of recording a fraction. If the fraction can be represented in a fixed number of digits (binary or decimal), there might not be enough digits assigned to represent the number. In other cases the number cannot be represented in a fixed number of digits due to repeating in decimal or binary notation (e.g. 0.333333...) or due to a transcendental number such as Π or √2. Rounding of numbers can lead to situations where the computer results do not adequately match the result of sufficiently accurate math. \n",
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Class": "Not Language-Specific",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Operating_System",
+          "Class": "Not OS-Specific",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Architecture",
+          "Class": "Not Architecture-Specific",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Technology",
+          "Class": "Not Technology-Specific",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Implementation",
+          "Note": "This weakness is introduced when the developer picks a method to represent a real number. The weakness may only be visible with very specific numeric inputs."
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Availability"
+          ],
+          "Impact": [
+            "DoS: Crash, Exit, or Restart"
+          ],
+          "Note": "This weakness will generally lead to undefined results and therefore crashes. In some implementations the program will halt if the weakness causes an overflow during a calculation."
+        },
+        {
+          "Scope": [
+            "Integrity"
+          ],
+          "Impact": [
+            "Execute Unauthorized Code or Commands"
+          ],
+          "Note": "The results of the math are not as expected. This could cause issues where a value would not be properly calculated and provide an incorrect answer."
+        },
+        {
+          "Scope": [
+            "Confidentiality",
+            "Availability",
+            "Access Control"
+          ],
+          "Impact": [
+            "Read Application Data",
+            "Modify Application Data"
+          ],
+          "Note": "This weakness can sometimes trigger buffer overflows which can be used to execute arbitrary code. This is usually outside the scope of a product's implicit security policy."
+        }
+      ],
+      "DemonstrativeExamples": [
+        {
+          "Entries": [
+            {
+              "IntroText": "Muller's Recurrence is a series that is supposed to converge to the number 5. When running this series with the following code, different implementations of real numbers fail at specific iterations:"
+            },
+            {
+              "Nature": "Bad",
+              "Language": "Rust",
+              "ExampleCode": "fn rec_float(y: f64, z: f64) -> f64 \n {\n\n```\n\t 108.0 - ((815.0 - 1500.0 / z) / y);\n }\n fn float_calc(turns: usize) -> f64 \n {\n\t let mut x: Vec<f64> = vec![4.0, 4.25];\n\t (2..turns + 1).for_each(|number| \n\t {\n\t\t x.push(rec_float(x[number - 1], x[number - 2]));\n\t });\n\t x[turns]\n }\n```"
+            },
+            {
+              "BodyText": "The chart below shows values for different data structures in the rust language when Muller's recurrence is executed to 80 iterations. The data structure f64 is a 64 bit float. The data structures I<number>F<number> are fixed representations 128 bits in length that use the first number as the size of the integer and the second size as the size of the fraction (e.g. I16F112 uses 16 bits for the integer and 112 bits for the fraction). The data structure of Ratio comes in three different implementations: i32 uses a ratio of 32 bit signed integers, i64 uses a ratio of 64 bit signed integers and BigInt uses a ratio of signed integer with up to 2^32 digits of base 256. Notice how even with 112 bits of fractions or ratios of 64bit unsigned integers, this math still does not converge to an expected value of 5."
+            },
+            {
+              "Nature": "Good",
+              "Language": "Rust",
+              "ExampleCode": "Use num_rational::BigRational;\n\n fn rec_big(y: BigRational, z: BigRational) -> BigRational\n {\n\n```\n\t BigRational::from_integer(BigInt::from(108))\n\t\t - ((BigRational::from_integer(BigInt::from(815))\n\t\t - BigRational::from_integer(BigInt::from(1500)) / z)\n\t\t / y)\n }\n fn big_calc(turns: usize) -> BigRational \n {\n\t let mut x: Vec<BigRational> = vec![BigRational::from_float(4.0).unwrap(), BigRational::from_float(4.25).unwrap(),];\n\t (2..turns + 1).for_each(|number| \n\t {\n\t\t x.push(rec_big(x[number - 1].clone(), x[number - 2].clone()));\n\t });\n\t x[turns].clone()\n }\n```"
+            }
+          ]
+        },
+        {
+          "Entries": [
+            {
+              "IntroText": "On February 25, 1991, during the eve of the Iraqi invasion of Saudi Arabia, a Scud missile fired from Iraqi positions hit a US Army barracks in Dhahran, Saudi Arabia. It miscalculated time and killed 28 people [REF-1190]."
+            },
+            {
+              "Reference": "REF-1190"
+            }
+          ]
+        },
+        {
+          "Entries": [
+            {
+              "IntroText": "Sleipner A, an offshore drilling platform in the North Sea, was incorrectly constructed with an underestimate of 50% of strength in a critical cluster of buoyancy cells needed for construction. This led to a leak in buoyancy cells during lowering, causing a seismic event of 3.0 on the Richter Scale and about $700M loss [REF-1281]."
+            },
+            {
+              "Reference": "REF-1281"
+            }
+          ]
+        }
+      ],
+      "PotentialMitigations": [
+        {
+          "Phase": [
+            "Implementation",
+            "Patching and Maintenance"
+          ],
+          "Description": "The developer or maintainer can move to a more accurate representation of real numbers. In extreme cases, the programmer can move to representations such as ratios of BigInts which can represent real numbers to extremely fine precision. The programmer can also use the concept of an Unum real. The memory and CPU tradeoffs of this change must be examined. Since floating point reals are used in many products and many locations, they are implemented in hardware and most format changes will cause the calculations to be moved into software resulting in slower products."
+        }
+      ]
+    },
+    "/cwe/1339/parents": {
+      "weakness_parents": [],
+      "category_parents": [
+        "1408",
+        "189"
+      ]
+    },
+    "/cwe/1339/children": null
+  }
+}

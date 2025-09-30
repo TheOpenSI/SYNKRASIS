@@ -1,0 +1,52 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T22:15:45.792292",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "1089",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/1089": {
+      "ID": "1089",
+      "Type": "base_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/1089": {
+      "ID": "1089",
+      "Name": "Large Data Table with Excessive Number of Indices",
+      "Abstraction": "Base",
+      "Structure": "Simple",
+      "Status": "Incomplete",
+      "Description": "The product uses a large data table that contains an excessively large number of\n\t\t\t\t\tindices.",
+      "ExtendedDescription": "\n\nThis issue can make the product perform more slowly. If the relevant code is reachable by an attacker, then this performance problem might introduce a vulnerability.\n\n\nWhile the interpretation of \"large data table\" and \"excessively large number of indices\" may vary for each product or developer, CISQ recommends a default threshold of 1000000 rows for a \"large\" table and a default threshold of 3 indices.\n",
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": null,
+      "AlternateTerms": null,
+      "ModesOfIntroduction": null,
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Other"
+          ],
+          "Impact": [
+            "Reduce Performance"
+          ]
+        }
+      ],
+      "DemonstrativeExamples": null,
+      "PotentialMitigations": null
+    },
+    "/cwe/1089/parents": {
+      "weakness_parents": [
+        "405"
+      ],
+      "category_parents": [
+        "1132",
+        "1309",
+        "1416",
+        "1006"
+      ]
+    },
+    "/cwe/1089/children": null
+  }
+}

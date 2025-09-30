@@ -1,0 +1,76 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T23:49:29.277744",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "62",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/62": {
+      "ID": "62",
+      "Type": "variant_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/62": {
+      "ID": "62",
+      "Name": "UNIX Hard Link",
+      "Abstraction": "Variant",
+      "Structure": "Simple",
+      "Status": "Incomplete",
+      "Description": "The product, when opening a file or directory, does not sufficiently account for when the name is associated with a hard link to a target that is outside of the intended control sphere. This could allow an attacker to cause the product to operate on unauthorized files.",
+      "ExtendedDescription": "Failure for a system to check for hard links can result in vulnerability to different types of attacks. For example, an attacker can escalate their privileges if a file used by a privileged program is replaced with a hard link to a sensitive file (e.g. /etc/passwd). When the process opens the file, the attacker can assume the privileges of that process.",
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Class": "Not Language-Specific",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Operating_System",
+          "Class": "Unix",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Implementation"
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Confidentiality",
+            "Integrity"
+          ],
+          "Impact": [
+            "Read Files or Directories",
+            "Modify Files or Directories"
+          ]
+        }
+      ],
+      "DemonstrativeExamples": null,
+      "PotentialMitigations": [
+        {
+          "MitigationID": "MIT-48.1",
+          "Phase": [
+            "Architecture and Design"
+          ],
+          "Strategy": "Separation of Privilege",
+          "Description": "\n\nFollow the principle of least privilege when assigning access rights to entities in a software system.\n\n\nDenying access to a file can prevent an attacker from replacing that file with a link to a sensitive file. Ensure good compartmentalization in the system to provide protected areas that can be trusted.\n"
+        }
+      ]
+    },
+    "/cwe/62/parents": {
+      "weakness_parents": [],
+      "category_parents": [
+        "1404",
+        "743",
+        "877",
+        "980"
+      ]
+    },
+    "/cwe/62/children": null
+  }
+}

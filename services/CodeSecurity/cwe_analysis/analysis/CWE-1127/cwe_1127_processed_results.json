@@ -1,0 +1,52 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T22:21:07.735033",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "1127",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/1127": {
+      "ID": "1127",
+      "Type": "base_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/1127": {
+      "ID": "1127",
+      "Name": "Compilation with Insufficient Warnings or Errors",
+      "Abstraction": "Base",
+      "Structure": "Simple",
+      "Status": "Incomplete",
+      "Description": "The code is compiled without sufficient warnings enabled, which\n\t\t\t\t\tmay prevent the detection of subtle bugs or quality\n\t\t\t\t\tissues.",
+      "ExtendedDescription": "\n\nThis issue makes it more difficult to maintain the product, which indirectly affects security by making it more difficult or time-consuming to find and/or fix vulnerabilities. It also might make it easier to introduce vulnerabilities.\n",
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": null,
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Build and Compilation"
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Other"
+          ],
+          "Impact": [
+            "Reduce Maintainability"
+          ]
+        }
+      ],
+      "DemonstrativeExamples": null,
+      "PotentialMitigations": null
+    },
+    "/cwe/1127/parents": {
+      "weakness_parents": [],
+      "category_parents": [
+        "1412",
+        "1006"
+      ]
+    },
+    "/cwe/1127/children": null
+  }
+}

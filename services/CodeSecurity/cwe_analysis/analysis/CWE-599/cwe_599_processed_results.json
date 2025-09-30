@@ -1,0 +1,103 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T23:46:28.949764",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "599",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/599": {
+      "ID": "599",
+      "Type": "variant_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/599": {
+      "ID": "599",
+      "Name": "Missing Validation of OpenSSL Certificate",
+      "Abstraction": "Variant",
+      "Structure": "Simple",
+      "Status": "Incomplete",
+      "Description": "The product uses OpenSSL and trusts or uses a certificate without using the SSL_get_verify_result() function to ensure that the certificate satisfies all necessary security requirements.",
+      "ExtendedDescription": "This could allow an attacker to use an invalid certificate to claim to be a trusted host, use expired certificates, or conduct other attacks that could be detected if the certificate is properly validated.",
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": null,
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Implementation"
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Confidentiality"
+          ],
+          "Impact": [
+            "Read Application Data"
+          ],
+          "Note": "The data read may not be properly secured, it might be viewed by an attacker."
+        },
+        {
+          "Scope": [
+            "Access Control"
+          ],
+          "Impact": [
+            "Bypass Protection Mechanism",
+            "Gain Privileges or Assume Identity"
+          ],
+          "Note": "Trust afforded to the system in question may allow for spoofing or redirection attacks."
+        },
+        {
+          "Scope": [
+            "Access Control"
+          ],
+          "Impact": [
+            "Gain Privileges or Assume Identity"
+          ],
+          "Note": "If the certificate is not checked, it may be possible for a redirection or spoofing attack to allow a malicious host with a valid certificate to provide data under the guise of a trusted host. While the attacker in question may have a valid certificate, it may simply be a valid certificate for a different site. In order to ensure data integrity, we must check that the certificate is valid, and that it pertains to the site we wish to access."
+        }
+      ],
+      "DemonstrativeExamples": [
+        {
+          "ID": "DX-125",
+          "Entries": [
+            {
+              "IntroText": "The following OpenSSL code ensures that the host has a certificate."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "C",
+              "ExampleCode": "```\n\tif (cert = SSL_get_peer_certificate(ssl)) {\n```\n// got certificate, host can be trusted* \n\t\t\t\n\t\t\t\n\t\t\t *//foo=SSL_get_verify_result(ssl);* \n\t\t\t\n\t\t\t\n\t\t\t *//if (X509_V_OK==foo) ...* \n\t\t\t}"
+            },
+            {
+              "BodyText": "Note that the code does not call SSL_get_verify_result(ssl), which effectively disables the validation step that checks the certificate."
+            }
+          ]
+        }
+      ],
+      "PotentialMitigations": [
+        {
+          "Phase": [
+            "Architecture and Design"
+          ],
+          "Description": "Ensure that proper authentication is included in the system design."
+        },
+        {
+          "Phase": [
+            "Implementation"
+          ],
+          "Description": "Understand and properly implement all checks necessary to ensure the identity of entities involved in encrypted communications."
+        }
+      ]
+    },
+    "/cwe/599/parents": {
+      "weakness_parents": [],
+      "category_parents": [
+        "1014",
+        "1396",
+        "948"
+      ]
+    },
+    "/cwe/599/children": null
+  }
+}

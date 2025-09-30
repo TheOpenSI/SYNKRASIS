@@ -1,0 +1,106 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T23:28:45.836355",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "468",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/468": {
+      "ID": "468",
+      "Type": "base_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/468": {
+      "ID": "468",
+      "Name": "Incorrect Pointer Scaling",
+      "Abstraction": "Base",
+      "Structure": "Simple",
+      "Status": "Incomplete",
+      "Description": "In C and C++, one may often accidentally refer to the wrong memory due to the semantics of when math operations are implicitly scaled.",
+      "ExtendedDescription": null,
+      "LikelihoodOfExploit": "Medium",
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Name": "C",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Language",
+          "Name": "C++",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Implementation",
+          "Note": "Programmers may try to index from a pointer by adding a number of bytes. This is incorrect because C and C++ implicitly scale the operand by the size of the data type."
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Confidentiality",
+            "Integrity"
+          ],
+          "Impact": [
+            "Read Memory",
+            "Modify Memory"
+          ],
+          "Note": "Incorrect pointer scaling will often result in buffer overflow conditions. Confidentiality can be compromised if the weakness is in the context of a buffer over-read or under-read."
+        }
+      ],
+      "DemonstrativeExamples": [
+        {
+          "ID": "DX-55",
+          "Entries": [
+            {
+              "IntroText": "This example attempts to calculate the position of the second byte of a pointer."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "C",
+              "ExampleCode": "```\n\tint *p = x;\n\tchar * second_char = (char *)(p + 1);\n```"
+            },
+            {
+              "BodyText": "In this example, second_char is intended to point to the second byte of p. But, adding 1 to p actually adds sizeof(int) to p, giving a result that is incorrect (3 bytes off on 32-bit platforms). If the resulting memory address is read, this could potentially be an information leak. If it is a write, it could be a security-critical write to unauthorized memory-- whether or not it is a buffer overflow. Note that the above code may also be wrong in other ways, particularly in a little endian environment."
+            }
+          ]
+        }
+      ],
+      "PotentialMitigations": [
+        {
+          "Phase": [
+            "Architecture and Design"
+          ],
+          "Description": "Use a platform with high-level memory abstractions."
+        },
+        {
+          "Phase": [
+            "Implementation"
+          ],
+          "Description": "Always use array indexing instead of direct pointer manipulation."
+        },
+        {
+          "Phase": [
+            "Architecture and Design"
+          ],
+          "Description": "Use technologies for preventing buffer overflows."
+        }
+      ]
+    },
+    "/cwe/468/parents": {
+      "weakness_parents": [],
+      "category_parents": [
+        "1160",
+        "1408",
+        "465",
+        "737",
+        "998"
+      ]
+    },
+    "/cwe/468/children": null
+  }
+}

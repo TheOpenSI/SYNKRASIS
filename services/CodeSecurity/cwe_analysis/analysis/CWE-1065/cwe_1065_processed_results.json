@@ -1,0 +1,49 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T22:12:37.439202",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "1065",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/1065": {
+      "ID": "1065",
+      "Type": "base_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/1065": {
+      "ID": "1065",
+      "Name": "Runtime Resource Management Control Element in a Component Built to Run on Application Servers",
+      "Abstraction": "Base",
+      "Structure": "Simple",
+      "Status": "Incomplete",
+      "Description": "The product uses deployed components from application servers, but it also uses low-level functions/methods for management of resources, instead of the API provided by the application server.",
+      "ExtendedDescription": "\n\nThis issue can prevent the product from running reliably. If the relevant code is reachable by an attacker, then this reliability problem might introduce a vulnerability.\n",
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": null,
+      "AlternateTerms": null,
+      "ModesOfIntroduction": null,
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Other"
+          ],
+          "Impact": [
+            "Reduce Reliability"
+          ]
+        }
+      ],
+      "DemonstrativeExamples": null,
+      "PotentialMitigations": null
+    },
+    "/cwe/1065/parents": {
+      "weakness_parents": [],
+      "category_parents": [
+        "1129",
+        "1412",
+        "1006"
+      ]
+    },
+    "/cwe/1065/children": null
+  }
+}

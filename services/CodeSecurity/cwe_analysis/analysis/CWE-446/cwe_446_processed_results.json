@@ -1,0 +1,70 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T23:26:01.785320",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "446",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/446": {
+      "ID": "446",
+      "Type": "class_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/446": {
+      "ID": "446",
+      "Name": "UI Discrepancy for Security Feature",
+      "Abstraction": "Class",
+      "Structure": "Simple",
+      "Status": "Incomplete",
+      "Description": "The user interface does not correctly enable or configure a security feature, but the interface provides feedback that causes the user to believe that the feature is in a secure state.",
+      "ExtendedDescription": "When the user interface does not properly reflect what the user asks of it, then it can lead the user into a false sense of security. For example, the user might check a box to enable a security option to enable encrypted communications, but the product does not actually enable the encryption. Alternately, the user might provide a \"restrict ALL\" access control rule, but the product only implements \"restrict SOME\".",
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Class": "Not Language-Specific",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Architecture and Design"
+        },
+        {
+          "Phase": "Implementation"
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Other"
+          ],
+          "Impact": [
+            "Varies by Context"
+          ]
+        }
+      ],
+      "DemonstrativeExamples": null,
+      "PotentialMitigations": null
+    },
+    "/cwe/446/parents": {
+      "weakness_parents": [
+        "684"
+      ],
+      "category_parents": [
+        "1412",
+        "996"
+      ]
+    },
+    "/cwe/446/children": {
+      "weakness_children": [
+        "447",
+        "448",
+        "449"
+      ],
+      "category_children": []
+    }
+  }
+}

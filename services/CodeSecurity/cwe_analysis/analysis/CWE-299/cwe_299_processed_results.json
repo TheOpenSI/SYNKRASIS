@@ -1,0 +1,121 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T23:06:33.796251",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "299",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/299": {
+      "ID": "299",
+      "Type": "base_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/299": {
+      "ID": "299",
+      "Name": "Improper Check for Certificate Revocation",
+      "Abstraction": "Base",
+      "Structure": "Simple",
+      "Status": "Draft",
+      "Description": "The product does not check or incorrectly checks the revocation status of a certificate, which may cause it to use a certificate that has been compromised.",
+      "ExtendedDescription": "An improper check for certificate revocation is a far more serious flaw than related certificate failures. This is because the use of any revoked certificate is almost certainly malicious. The most common reason for certificate revocation is compromise of the system in question, with the result that no legitimate servers will be using a revoked certificate, unless they are sorely out of sync.",
+      "LikelihoodOfExploit": "Medium",
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Class": "Not Language-Specific",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Implementation",
+          "Note": "When the product uses certificate pinning, the developer might not properly validate all relevant components of the certificate before pinning the certificate. This can make it difficult or expensive to test after the pinning is complete."
+        },
+        {
+          "Phase": "Implementation",
+          "Note": "REALIZATION: This weakness is caused during implementation of an architectural security tactic."
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Access Control"
+          ],
+          "Impact": [
+            "Gain Privileges or Assume Identity"
+          ],
+          "Note": "Trust may be assigned to an entity who is not who it claims to be."
+        },
+        {
+          "Scope": [
+            "Integrity",
+            "Other"
+          ],
+          "Impact": [
+            "Other"
+          ],
+          "Note": "Data from an untrusted (and possibly malicious) source may be integrated."
+        },
+        {
+          "Scope": [
+            "Confidentiality"
+          ],
+          "Impact": [
+            "Read Application Data"
+          ],
+          "Note": "Data may be disclosed to an entity impersonating a trusted entity, resulting in information disclosure."
+        }
+      ],
+      "DemonstrativeExamples": [
+        {
+          "ID": "DX-124",
+          "Entries": [
+            {
+              "IntroText": "The following OpenSSL code ensures that there is a certificate before continuing execution."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "C",
+              "ExampleCode": "```\n\tif (cert = SSL_get_peer_certificate(ssl)) {\n```\n// got a certificate, do secret things*"
+            },
+            {
+              "BodyText": "Because this code does not use SSL_get_verify_results() to check the certificate, it could accept certificates that have been revoked (X509_V_ERR_CERT_REVOKED). The product could be communicating with a malicious host."
+            }
+          ]
+        }
+      ],
+      "PotentialMitigations": [
+        {
+          "Phase": [
+            "Architecture and Design"
+          ],
+          "Description": "Ensure that certificates are checked for revoked status."
+        },
+        {
+          "Phase": [
+            "Implementation"
+          ],
+          "Description": "If certificate pinning is being used, ensure that all relevant properties of the certificate are fully validated before the certificate is pinned, including the revoked status."
+        }
+      ]
+    },
+    "/cwe/299/parents": {
+      "weakness_parents": [
+        "404"
+      ],
+      "category_parents": [
+        "1014",
+        "1396",
+        "948"
+      ]
+    },
+    "/cwe/299/children": {
+      "weakness_children": [
+        "370"
+      ],
+      "category_children": []
+    }
+  }
+}

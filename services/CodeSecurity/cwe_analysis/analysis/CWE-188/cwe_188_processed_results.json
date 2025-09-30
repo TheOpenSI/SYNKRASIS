@@ -1,0 +1,108 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T22:51:58.307219",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "188",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/188": {
+      "ID": "188",
+      "Type": "base_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/188": {
+      "ID": "188",
+      "Name": "Reliance on Data/Memory Layout",
+      "Abstraction": "Base",
+      "Structure": "Simple",
+      "Status": "Draft",
+      "Description": "The product makes invalid assumptions about how protocol data or memory is organized at a lower level, resulting in unintended program behavior.",
+      "ExtendedDescription": "\n\nWhen changing platforms or protocol versions, in-memory organization of data may change in unintended ways. For example, some architectures may place local variables A and B right next to each other with A on top; some may place them next to each other with B on top; and others may add some padding to each. The padding size may vary to ensure that each variable is aligned to a proper word size.\n\n\nIn protocol implementations, it is common to calculate an offset relative to another field to pick out a specific piece of data. Exceptional conditions, often involving new protocol versions, may add corner cases that change the data layout in an unusual way. The result can be that an implementation accesses an unintended field in the packet, treating data of one type as data of another type.\n",
+      "LikelihoodOfExploit": "Low",
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Name": "C",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Language",
+          "Name": "C++",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Implementation"
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Integrity",
+            "Confidentiality"
+          ],
+          "Impact": [
+            "Modify Memory",
+            "Read Memory"
+          ],
+          "Note": "Can result in unintended modifications or exposure of sensitive memory."
+        }
+      ],
+      "DemonstrativeExamples": [
+        {
+          "ID": "DX-216",
+          "Entries": [
+            {
+              "IntroText": "In this example function, the memory address of variable b is derived by adding 1 to the address of variable a. This derived address is then used to assign the value 0 to b."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "C",
+              "ExampleCode": "```\n\tvoid example() {\n\t\tchar a;\n\t\tchar b;\n\t\t*(&a + 1) = 0;\n\t}\n```"
+            },
+            {
+              "BodyText": "Here, b may not be one byte past a. It may be one byte in front of a. Or, they may have three bytes between them because they are aligned on 32-bit boundaries."
+            }
+          ]
+        }
+      ],
+      "PotentialMitigations": [
+        {
+          "Phase": [
+            "Implementation",
+            "Architecture and Design"
+          ],
+          "Description": "In flat address space situations, never allow computing memory addresses as offsets from another memory address."
+        },
+        {
+          "Phase": [
+            "Architecture and Design"
+          ],
+          "Description": "Fully specify protocol layout unambiguously, providing a structured grammar (e.g., a compilable yacc grammar)."
+        },
+        {
+          "Phase": [
+            "Testing"
+          ],
+          "Description": "Testing: Test that the implementation properly handles each case in the protocol grammar."
+        }
+      ]
+    },
+    "/cwe/188/parents": {
+      "weakness_parents": [],
+      "category_parents": [
+        "1399",
+        "977"
+      ]
+    },
+    "/cwe/188/children": {
+      "weakness_children": [
+        "198"
+      ],
+      "category_children": []
+    }
+  }
+}

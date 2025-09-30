@@ -1,0 +1,82 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T23:48:07.339108",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "61",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/61": {
+      "ID": "61",
+      "Type": "compound_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/61": {
+      "ID": "61",
+      "Name": "UNIX Symbolic Link (Symlink) Following",
+      "Abstraction": "Compound",
+      "Structure": "Composite",
+      "Status": "Incomplete",
+      "Description": "The product, when opening a file or directory, does not sufficiently account for when the file is a symbolic link that resolves to a target outside of the intended control sphere. This could allow an attacker to cause the product to operate on unauthorized files.",
+      "ExtendedDescription": "A product that allows UNIX symbolic links (symlink) as part of paths whether in internal code or through user input can allow an attacker to spoof the symbolic link and traverse the file system to unintended locations or access arbitrary files. The symbolic link can permit an attacker to read/write/corrupt a file that they originally did not have permissions to access.",
+      "LikelihoodOfExploit": "High",
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Class": "Not Language-Specific",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": [
+        {
+          "Term": "Symlink following"
+        },
+        {
+          "Term": "symlink vulnerability"
+        }
+      ],
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Implementation",
+          "Note": "These are typically reported for temporary files or privileged programs."
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Confidentiality",
+            "Integrity"
+          ],
+          "Impact": [
+            "Read Files or Directories",
+            "Modify Files or Directories"
+          ]
+        }
+      ],
+      "DemonstrativeExamples": null,
+      "PotentialMitigations": [
+        {
+          "Phase": [
+            "Implementation"
+          ],
+          "Description": "Symbolic link attacks often occur when a program creates a tmp directory that stores files/links. Access to the directory should be restricted to the program as to prevent attackers from manipulating the files."
+        },
+        {
+          "MitigationID": "MIT-48.1",
+          "Phase": [
+            "Architecture and Design"
+          ],
+          "Strategy": "Separation of Privilege",
+          "Description": "\n\nFollow the principle of least privilege when assigning access rights to entities in a software system.\n\n\nDenying access to a file can prevent an attacker from replacing that file with a link to a sensitive file. Ensure good compartmentalization in the system to provide protected areas that can be trusted.\n"
+        }
+      ]
+    },
+    "/cwe/61/parents": {
+      "weakness_parents": [],
+      "category_parents": [
+        "1404"
+      ]
+    },
+    "/cwe/61/children": null
+  }
+}

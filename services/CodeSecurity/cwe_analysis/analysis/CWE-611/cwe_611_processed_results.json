@@ -1,0 +1,105 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T23:48:22.231153",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "611",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/611": {
+      "ID": "611",
+      "Type": "base_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/611": {
+      "ID": "611",
+      "Name": "Improper Restriction of XML External Entity Reference",
+      "Abstraction": "Base",
+      "Structure": "Simple",
+      "Status": "Draft",
+      "Description": "The product processes an XML document that can contain XML entities with URIs that resolve to documents outside of the intended sphere of control, causing the product to embed incorrect documents into its output.",
+      "ExtendedDescription": "\n\nXML documents optionally contain a Document Type Definition (DTD), which, among other features, enables the definition of XML entities. It is possible to define an entity by providing a substitution string in the form of a URI. The XML parser can access the contents of this URI and embed these contents back into the XML document for further processing.\n\n\nBy submitting an XML file that defines an external entity with a file:// URI, an attacker can cause the processing application to read the contents of a local file. For example, a URI such as \"file:///c:/winnt/win.ini\" designates (in Windows) the file C:\\Winnt\\win.ini, or file:///etc/passwd designates the password file in Unix-based systems. Using URIs with other schemes such as http://, the attacker can force the application to make outgoing requests to servers that the attacker cannot reach directly, which can be used to bypass firewall restrictions or hide the source of attacks such as port scanning.\n\n\nOnce the content of the URI is read, it is fed back into the application that is processing the XML. This application may echo back the data (e.g. in an error message), thereby exposing the file contents.\n",
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Name": "XML",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Technology",
+          "Class": "Web Based",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": [
+        {
+          "Term": "XXE",
+          "Description": "An acronym used for the term \"XML eXternal Entities\""
+        }
+      ],
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Implementation",
+          "Note": "REALIZATION: This weakness is caused during implementation of an architectural security tactic."
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Confidentiality"
+          ],
+          "Impact": [
+            "Read Application Data",
+            "Read Files or Directories"
+          ],
+          "Note": "If the attacker is able to include a crafted DTD and a default entity resolver is enabled, the attacker may be able to access arbitrary files on the system."
+        },
+        {
+          "Scope": [
+            "Integrity"
+          ],
+          "Impact": [
+            "Bypass Protection Mechanism"
+          ],
+          "Note": "The DTD may include arbitrary HTTP requests that the server may execute. This could lead to other attacks leveraging the server's trust relationship with other entities."
+        },
+        {
+          "Scope": [
+            "Availability"
+          ],
+          "Impact": [
+            "DoS: Resource Consumption (CPU)",
+            "DoS: Resource Consumption (Memory)"
+          ],
+          "Note": "The product could consume excessive CPU cycles or memory using a URI that points to a large file, or a device that always returns data such as /dev/random. Alternately, the URI could reference a file that contains many nested or recursive entity references to further slow down parsing."
+        }
+      ],
+      "DemonstrativeExamples": null,
+      "PotentialMitigations": [
+        {
+          "Phase": [
+            "Implementation",
+            "System Configuration"
+          ],
+          "Description": "Many XML parsers and validators can be configured to disable external entity expansion."
+        }
+      ]
+    },
+    "/cwe/611/parents": {
+      "weakness_parents": [
+        "610"
+      ],
+      "category_parents": [
+        "1015",
+        "1030",
+        "1308",
+        "1349",
+        "1396",
+        "19",
+        "990"
+      ]
+    },
+    "/cwe/611/children": null
+  }
+}

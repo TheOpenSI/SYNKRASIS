@@ -1,0 +1,98 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-30T00:16:23.103845",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "917",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/917": {
+      "ID": "917",
+      "Type": "base_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/917": {
+      "ID": "917",
+      "Name": "Improper Neutralization of Special Elements used in an Expression Language Statement ('Expression Language Injection')",
+      "Abstraction": "Base",
+      "Structure": "Simple",
+      "Status": "Incomplete",
+      "Description": "The product constructs all or part of an expression language (EL) statement in a framework such as a Java Server Page (JSP) using externally-influenced input from an upstream component, but it does not neutralize or incorrectly neutralizes special elements that could modify the intended EL statement before it is executed.",
+      "ExtendedDescription": "Frameworks such as Java Server Page (JSP) allow a developer to insert executable expressions within otherwise-static content. When the developer is not aware of the executable nature of these expressions and/or does not disable them, then if an attacker can inject expressions, this could lead to code execution or other unexpected behaviors.",
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Name": "Java",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": [
+        {
+          "Term": "EL Injection"
+        }
+      ],
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Architecture and Design"
+        },
+        {
+          "Phase": "Implementation"
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Confidentiality"
+          ],
+          "Impact": [
+            "Read Application Data"
+          ]
+        },
+        {
+          "Scope": [
+            "Integrity"
+          ],
+          "Impact": [
+            "Execute Unauthorized Code or Commands"
+          ]
+        }
+      ],
+      "DemonstrativeExamples": null,
+      "PotentialMitigations": [
+        {
+          "Phase": [
+            "Architecture and Design"
+          ],
+          "Description": "Avoid adding user-controlled data into an expression interpreter when possible."
+        },
+        {
+          "Phase": [
+            "Implementation"
+          ],
+          "Description": "\n\nIf user-controlled data must be added to an expression interpreter, one or more of the following should be performed:\n\n\n  - Validate that the user input will not evaluate as an expression\n\n  - Encode the user input in a way that ensures it is not evaluated as an expression\n\n"
+        },
+        {
+          "Phase": [
+            "System Configuration",
+            "Operation"
+          ],
+          "Description": "The framework or tooling might allow the developer to disable or deactivate the processing of EL expressions, such as setting the isELIgnored attribute for a JSP page to \"true\"."
+        }
+      ]
+    },
+    "/cwe/917/parents": {
+      "weakness_parents": [
+        "77",
+        "74"
+      ],
+      "category_parents": [
+        "1027",
+        "1347",
+        "1409",
+        "137"
+      ]
+    },
+    "/cwe/917/children": null
+  }
+}

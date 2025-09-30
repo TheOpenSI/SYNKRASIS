@@ -1,0 +1,91 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T23:31:15.044265",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "487",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/487": {
+      "ID": "487",
+      "Type": "base_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/487": {
+      "ID": "487",
+      "Name": "Reliance on Package-level Scope",
+      "Abstraction": "Base",
+      "Structure": "Simple",
+      "Status": "Incomplete",
+      "Description": "Java packages are not inherently closed; therefore, relying on them for code security is not a good practice.",
+      "ExtendedDescription": "The purpose of package scope is to prevent accidental access by other parts of a program. This is an ease-of-software-development feature but not a security feature.",
+      "LikelihoodOfExploit": "Medium",
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Name": "Java",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Implementation"
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Confidentiality"
+          ],
+          "Impact": [
+            "Read Application Data"
+          ],
+          "Note": "Any data in a Java package can be accessed outside of the Java framework if the package is distributed."
+        },
+        {
+          "Scope": [
+            "Integrity"
+          ],
+          "Impact": [
+            "Modify Application Data"
+          ],
+          "Note": "The data in a Java class can be modified by anyone outside of the Java framework if the packages is distributed."
+        }
+      ],
+      "DemonstrativeExamples": [
+        {
+          "Entries": [
+            {
+              "IntroText": "The following example demonstrates the weakness."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "Java",
+              "ExampleCode": "```\n\tpackage math;\n\tpublic class Lebesgue implements Integration{\n\t\t\tpublic final Static String youAreHidingThisFunction(functionToIntegrate){\n\t\t\t\t\treturn ...;\n\t\t\t}\n\t}\n```"
+            }
+          ]
+        }
+      ],
+      "PotentialMitigations": [
+        {
+          "Phase": [
+            "Architecture and Design",
+            "Implementation"
+          ],
+          "Description": "Data should be private static and final whenever possible. This will assure that your code is protected by instantiating early, preventing access and tampering."
+        }
+      ]
+    },
+    "/cwe/487/parents": {
+      "weakness_parents": [],
+      "category_parents": [
+        "1416",
+        "1006",
+        "850",
+        "966"
+      ]
+    },
+    "/cwe/487/children": null
+  }
+}

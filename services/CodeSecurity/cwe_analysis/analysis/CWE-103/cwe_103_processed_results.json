@@ -1,0 +1,103 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T22:08:43.868574",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "103",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/103": {
+      "ID": "103",
+      "Type": "variant_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/103": {
+      "ID": "103",
+      "Name": "Struts: Incomplete validate() Method Definition",
+      "Abstraction": "Variant",
+      "Structure": "Simple",
+      "Status": "Draft",
+      "Description": "The product has a validator form that either does not define a validate() method, or defines a validate() method but does not call super.validate().",
+      "ExtendedDescription": "If the code does not call super.validate(), the Validation Framework cannot check the contents of the form against a validation form. In other words, the validation framework will be disabled for the given form.",
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Name": "Java",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Implementation"
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Other"
+          ],
+          "Impact": [
+            "Other"
+          ],
+          "Note": "Disabling the validation framework for a form exposes the product to numerous types of attacks. Unchecked input is the root cause of vulnerabilities like cross-site scripting, process control, and SQL injection."
+        },
+        {
+          "Scope": [
+            "Confidentiality",
+            "Integrity",
+            "Availability",
+            "Other"
+          ],
+          "Impact": [
+            "Other"
+          ],
+          "Note": "Although J2EE applications are not generally susceptible to memory corruption attacks, if a J2EE application interfaces with native code that does not perform array bounds checking, an attacker may be able to use an input validation mistake in the J2EE application to launch a buffer overflow attack."
+        }
+      ],
+      "DemonstrativeExamples": [
+        {
+          "Entries": [
+            {
+              "IntroText": "In the following Java example the class RegistrationForm is a Struts framework ActionForm Bean that will maintain user input data from a registration webpage for an online business site. The user will enter registration data and the RegistrationForm bean in the Struts framework will maintain the user data. Tthe RegistrationForm class implements the validate method to validate the user input entered into the form."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "Java",
+              "ExampleCode": "```\n\tpublic class RegistrationForm extends org.apache.struts.validator.ValidatorForm {\n\t\t// private variables for registration form\n\t\tprivate String name;\n\t\tprivate String email;\n\t\t...\n\t\tpublic RegistrationForm() {\n\t\t\tsuper();\n\t\t}\n\t\tpublic ActionErrors validate(ActionMapping mapping, HttpServletRequest request) {\n\t\t\tActionErrors errors = new ActionErrors();\n\t\t\tif (getName() == null || getName().length() < 1) {\n\t\t\t\terrors.add(\"name\", new ActionMessage(\"error.name.required\"));\n\t\t\t}\n\t\t\treturn errors;\n\t\t}\n\t\t// getter and setter methods for private variables\n\t\t...\n\t}\n```"
+            },
+            {
+              "BodyText": "Although the validate method is implemented in this example the method does not call the validate method of the ValidatorForm parent class with a call super.validate(). Without the call to the parent validator class only the custom validation will be performed and the default validation will not be performed. The following example shows that the validate method of the ValidatorForm class is called within the implementation of the validate method."
+            },
+            {
+              "Nature": "Good",
+              "Language": "Java",
+              "ExampleCode": "```\n\tpublic class RegistrationForm extends org.apache.struts.validator.ValidatorForm {\n\t\t\t// private variables for registration form\n\t\t\tprivate String name;\n\t\t\tprivate String email;\n\t\t\t...\n\t\t\tpublic RegistrationForm() {\n\t\t\t\tsuper();\n\t\t\t}\n\t\t\tpublic ActionErrors validate(ActionMapping mapping, HttpServletRequest request) {\n\t\t\t\tActionErrors errors = super.validate(mapping, request);\n\t\t\t\tif (errors == null) {\n\t\t\t\t\terrors = new ActionErrors();\n\t\t\t\t}\n\t\t\tif (getName() == null || getName().length() < 1) {\n\t\t\t\terrors.add(\"name\", new ActionMessage(\"error.name.required\"));\n\t\t\t}\n\t\t\treturn errors;\n\t}\n\t\t// getter and setter methods for private variables\n\t\t...\n\t}\n```"
+            }
+          ]
+        }
+      ],
+      "PotentialMitigations": [
+        {
+          "Phase": [
+            "Implementation"
+          ],
+          "Description": "Implement the validate() method and call super.validate() within that method."
+        }
+      ]
+    },
+    "/cwe/103/parents": {
+      "weakness_parents": [
+        "573",
+        "20"
+      ],
+      "category_parents": [
+        "1412",
+        "722",
+        "990"
+      ]
+    },
+    "/cwe/103/children": null
+  }
+}

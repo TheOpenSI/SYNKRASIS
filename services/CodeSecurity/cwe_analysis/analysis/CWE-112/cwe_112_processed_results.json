@@ -1,0 +1,100 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T22:20:08.232170",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "112",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/112": {
+      "ID": "112",
+      "Type": "base_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/112": {
+      "ID": "112",
+      "Name": "Missing XML Validation",
+      "Abstraction": "Base",
+      "Structure": "Simple",
+      "Status": "Draft",
+      "Description": "The product accepts XML from an untrusted source but does not validate the XML against the proper schema.",
+      "ExtendedDescription": "Most successful attacks begin with a violation of the programmer's assumptions. By accepting an XML document without validating it against a DTD or XML schema, the programmer leaves a door open for attackers to provide unexpected, unreasonable, or malicious input.",
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Class": "Not Language-Specific",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Implementation"
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Integrity"
+          ],
+          "Impact": [
+            "Unexpected State"
+          ]
+        }
+      ],
+      "DemonstrativeExamples": [
+        {
+          "Entries": [
+            {
+              "IntroText": "The following code loads and parses an XML file."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "Java",
+              "ExampleCode": "```\n```\n// Read DOM* \n\ttry {\n\t```\n\t\t...\n\t\tDocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();\n\t\tfactory.setValidating( false );\n\t\t....\n\t\tc_dom = factory.newDocumentBuilder().parse( xmlFile );\n\t} catch(Exception ex) {\n\t\t...\n\t}\n```"
+            },
+            {
+              "BodyText": "The XML file is loaded without validating it against a known XML Schema or DTD."
+            }
+          ]
+        },
+        {
+          "Entries": [
+            {
+              "IntroText": "The following code creates a DocumentBuilder object to be used in building an XML document."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "Java",
+              "ExampleCode": "```\n\tDocumentBuilderFactory builderFactory = DocumentBuilderFactory.newInstance();\n\tbuilderFactory.setNamespaceAware(true);\n\tDocumentBuilder builder = builderFactory.newDocumentBuilder();\n```"
+            },
+            {
+              "BodyText": "The DocumentBuilder object does not validate an XML document against a schema, making it possible to create an invalid XML document."
+            }
+          ]
+        }
+      ],
+      "PotentialMitigations": [
+        {
+          "Phase": [
+            "Architecture and Design"
+          ],
+          "Strategy": "Input Validation",
+          "Description": "\n\nAlways validate XML input against a known XML Schema or DTD.\n\n\nIt is not possible for an XML parser to validate all aspects of a document's content because a parser cannot understand the complete semantics of the data. However, a parser can do a complete and thorough job of checking the document's structure and therefore guarantee to the code that processes the document that the content is well-formed.\n"
+        }
+      ]
+    },
+    "/cwe/112/parents": {
+      "weakness_parents": [
+        "20"
+      ],
+      "category_parents": [
+        "1406",
+        "1215",
+        "990"
+      ]
+    },
+    "/cwe/112/children": null
+  }
+}

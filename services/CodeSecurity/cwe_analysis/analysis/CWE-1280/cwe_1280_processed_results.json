@@ -1,0 +1,124 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T22:32:48.494133",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "1280",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/1280": {
+      "ID": "1280",
+      "Type": "base_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/1280": {
+      "ID": "1280",
+      "Name": "Access Control Check Implemented After Asset is Accessed",
+      "Abstraction": "Base",
+      "Structure": "Simple",
+      "Status": "Incomplete",
+      "Description": "A product's hardware-based access control check occurs after the asset has been accessed.",
+      "ExtendedDescription": "\n\nThe product implements a hardware-based access control check. The asset should be accessible only after the check is successful. If, however, this operation is not atomic and the asset is accessed before the check is complete, the security of the system may be compromised.\n",
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Name": "Verilog",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Language",
+          "Name": "VHDL",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Language",
+          "Class": "Not Language-Specific",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Operating_System",
+          "Class": "Not OS-Specific",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Architecture",
+          "Class": "Not Architecture-Specific",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Technology",
+          "Class": "Not Technology-Specific",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Implementation"
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Access Control",
+            "Confidentiality",
+            "Integrity"
+          ],
+          "Impact": [
+            "Modify Memory",
+            "Read Memory",
+            "Modify Application Data",
+            "Read Application Data",
+            "Gain Privileges or Assume Identity",
+            "Bypass Protection Mechanism"
+          ]
+        }
+      ],
+      "DemonstrativeExamples": [
+        {
+          "ID": "DX-187",
+          "Entries": [
+            {
+              "IntroText": "Assume that the module foo_bar implements a protected register. The register content is the asset. Only transactions made by user id (indicated by signal usr_id) 0x4 are allowed to modify the register contents. The signal grant_access is used to provide access."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "Verilog",
+              "ExampleCode": "module foo_bar(data_out, usr_id, data_in, clk, rst_n);\n output reg [7:0] data_out;\n input wire [2:0] usr_id;\n input wire [7:0] data_in; \n input wire clk, rst_n;\n wire grant_access;\n always @ (posedge clk or negedge rst_n)\n begin\n\n```\n\t if (!rst_n)\n\t\t data_out = 0; \n\t else \n\t\t data_out = (grant_access) ? data_in : data_out;\n\t\t assign grant_access = (usr_id == 3'h4) ? 1'b1 : 1'b0;\n end\n endmodule\n```"
+            },
+            {
+              "BodyText": "This code uses Verilog blocking assignments for data_out and grant_access. Therefore, these assignments happen sequentially (i.e., data_out is updated to new value first, and grant_access is updated the next cycle) and not in parallel. Therefore, the asset data_out is allowed to be modified even before the access control check is complete and grant_access signal is set. Since grant_access does not have a reset value, it will be meta-stable and will randomly go to either 0 or 1."
+            },
+            {
+              "BodyText": "Flipping the order of the assignment of data_out and grant_access should solve the problem. The correct snippet of code is shown below."
+            },
+            {
+              "Nature": "Good",
+              "Language": "Verilog",
+              "ExampleCode": "always @ (posedge clk or negedge rst_n)\n begin\n\n```\n\t if (!rst_n)\n\t\t data_out = 0;\n\t else\n\t\t assign grant_access = (usr_id == 3'h4) ? 1'b1 : 1'b0;\n\t\t data_out = (grant_access) ? data_in : data_out;\n end\n endmodule\n```"
+            }
+          ]
+        }
+      ],
+      "PotentialMitigations": [
+        {
+          "Phase": [
+            "Implementation"
+          ],
+          "Description": "Implement the access control check first. Access should only be given to asset if agent is authorized."
+        }
+      ]
+    },
+    "/cwe/1280/parents": {
+      "weakness_parents": [
+        "696"
+      ],
+      "category_parents": [
+        "1198",
+        "1410"
+      ]
+    },
+    "/cwe/1280/children": null
+  }
+}

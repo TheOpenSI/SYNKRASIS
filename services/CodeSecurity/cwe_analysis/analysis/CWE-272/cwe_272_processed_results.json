@@ -1,0 +1,141 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T23:02:57.339481",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "272",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/272": {
+      "ID": "272",
+      "Type": "base_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/272": {
+      "ID": "272",
+      "Name": "Least Privilege Violation",
+      "Abstraction": "Base",
+      "Structure": "Simple",
+      "Status": "Incomplete",
+      "Description": "The elevated privilege level required to perform operations such as chroot() should be dropped immediately after the operation is performed.",
+      "ExtendedDescription": null,
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Class": "Not Language-Specific",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Implementation",
+          "Note": "REALIZATION: This weakness is caused during implementation of an architectural security tactic."
+        },
+        {
+          "Phase": "Operation"
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Access Control",
+            "Confidentiality"
+          ],
+          "Impact": [
+            "Gain Privileges or Assume Identity",
+            "Read Application Data",
+            "Read Files or Directories"
+          ],
+          "Note": "An attacker may be able to access resources with the elevated privilege that could not be accessed with the attacker's original privileges. This is particularly likely in conjunction with another flaw, such as a buffer overflow."
+        }
+      ],
+      "DemonstrativeExamples": [
+        {
+          "Entries": [
+            {
+              "IntroText": "The following example demonstrates the weakness."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "C",
+              "ExampleCode": "```\n\tsetuid(0);\n```\n// Do some important stuff* \n\tsetuid(old_uid);\n\t\n\t *// Do some non privileged stuff.*"
+            }
+          ]
+        },
+        {
+          "ID": "DX-142",
+          "Entries": [
+            {
+              "IntroText": "The following example demonstrates the weakness."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "Java",
+              "ExampleCode": "```\n\tAccessController.doPrivileged(new PrivilegedAction() {\n\t\t\tpublic Object run() {\n```\n// privileged code goes here, for example:* \n\t\t\t\tSystem.loadLibrary(\"awt\");\n\t\t\t\treturn null;\n\t\t\t\t\n\t\t\t\t *// nothing to return* \n\t\t\t\t}"
+            }
+          ]
+        },
+        {
+          "ID": "DX-98",
+          "Entries": [
+            {
+              "IntroText": "The following code calls chroot() to restrict the application to a subset of the filesystem below APP_HOME in order to prevent an attacker from using the program to gain unauthorized access to files located elsewhere. The code then opens a file specified by the user and processes the contents of the file."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "C",
+              "ExampleCode": "```\n\tchroot(APP_HOME);\n\tchdir(\"/\");\n\tFILE* data = fopen(argv[1], \"r+\");\n\t...\n```"
+            },
+            {
+              "BodyText": "Constraining the process inside the application's home directory before opening any files is a valuable security measure. However, the absence of a call to setuid() with some non-zero value means the application is continuing to operate with unnecessary root privileges. Any successful exploit carried out by an attacker against the application can now result in a privilege escalation attack because any malicious operations will be performed with the privileges of the superuser. If the application drops to the privilege level of a non-root user, the potential for damage is substantially reduced."
+            }
+          ]
+        }
+      ],
+      "PotentialMitigations": [
+        {
+          "MitigationID": "MIT-1",
+          "Phase": [
+            "Architecture and Design",
+            "Operation"
+          ],
+          "Description": "Very carefully manage the setting, management, and handling of privileges. Explicitly manage trust zones in the software."
+        },
+        {
+          "MitigationID": "MIT-48",
+          "Phase": [
+            "Architecture and Design"
+          ],
+          "Strategy": "Separation of Privilege",
+          "Description": "Follow the principle of least privilege when assigning access rights to entities in a software system."
+        },
+        {
+          "MitigationID": "MIT-46",
+          "Phase": [
+            "Architecture and Design"
+          ],
+          "Strategy": "Separation of Privilege",
+          "Description": "\n\nCompartmentalize the system to have \"safe\" areas where trust boundaries can be unambiguously drawn. Do not allow sensitive data to go outside of the trust boundary and always be careful when interfacing with a compartment outside of the safe area.\n\n\nEnsure that appropriate compartmentalization is built into the system design, and the compartmentalization allows for and reinforces privilege separation functionality. Architects and designers should rely on the principle of least privilege to decide the appropriate time to use privileges and the time to drop privileges.\n"
+        }
+      ]
+    },
+    "/cwe/272/parents": {
+      "weakness_parents": [
+        "271"
+      ],
+      "category_parents": [
+        "1011",
+        "1149",
+        "1396",
+        "265",
+        "254",
+        "748",
+        "859",
+        "901"
+      ]
+    },
+    "/cwe/272/children": null
+  }
+}

@@ -1,0 +1,136 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T22:26:37.183186",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "1234",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/1234": {
+      "ID": "1234",
+      "Type": "base_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/1234": {
+      "ID": "1234",
+      "Name": "Hardware Internal or Debug Modes Allow Override of Locks",
+      "Abstraction": "Base",
+      "Structure": "Simple",
+      "Status": "Incomplete",
+      "Description": "System configuration protection may be bypassed during debug mode.",
+      "ExtendedDescription": "\n\nDevice configuration controls are commonly programmed after a device power reset by a trusted firmware or software module (e.g., BIOS/bootloader) and then locked from any further modification. This is commonly implemented using a trusted lock bit, which when set, disables writes to a protected set of registers or address regions. The lock protection is intended to prevent modification of certain system configuration (e.g., memory/memory protection unit configuration). If debug features supported by hardware or internal modes/system states are supported in the hardware design, modification of the lock protection may be allowed allowing access and modification of configuration information.\n",
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Class": "Not Language-Specific",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Operating_System",
+          "Class": "Not OS-Specific",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Architecture",
+          "Class": "Not Architecture-Specific",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Technology",
+          "Class": "Not Technology-Specific",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Architecture and Design"
+        },
+        {
+          "Phase": "Implementation"
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Access Control"
+          ],
+          "Impact": [
+            "Bypass Protection Mechanism"
+          ],
+          "Likelihood": [
+            "High"
+          ],
+          "Note": "Bypass of lock bit allows access and modification of system configuration even when the lock bit is set."
+        }
+      ],
+      "DemonstrativeExamples": [
+        {
+          "Entries": [
+            {
+              "IntroText": "For example, consider the example Locked_override_register example. This register module supports a lock mode that blocks any writes after lock is set to 1. \n However, it also allows override of the lock protection when scan_mode or debug_unlocked modes are active."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "Verilog",
+              "ExampleCode": "module Locked_register_example\n (\n input [15:0] Data_in,\n input Clk,\n input resetn,\n input write,\n input Lock,\n input scan_mode,\n input debug_unlocked,\n output reg [15:0] Data_out\n );\n\n reg lock_status;\n\n always @(posedge Clk or negedge resetn)\n\n```\n\t if (~resetn) // Register is reset resetn\n\t begin\n\t\t lock_status <= 1'b0;\n\t end\n\t else if (Lock)\n\t begin\n\t\t lock_status <= 1'b1;\n\t end\n\t else if (~Lock)\n\t begin\n\t\t lock_status <= lock_status\n\t end\n always @(posedge Clk or negedge resetn)\n\t if (~resetn) // Register is reset resetn\n\t begin\n\t\t Data_out <= 16'h0000;\n\t end\n\t else if (write & (~lock_status | scan_mode | debug_unlocked) ) // Register protected by Lock bit input, overrides supported for scan_mode & debug_unlocked\n\t begin\n\t\t Data_out <= Data_in;\n\t end\n\t else if (~write)\n\t begin\n\t\t Data_out <= Data_out;\n\t end\n endmodule\n```"
+            },
+            {
+              "BodyText": "If either the scan_mode or the debug_unlocked modes can be triggered by software, then the lock protection may be bypassed."
+            },
+            {
+              "Nature": "Good",
+              "ExampleCode": "Either remove the debug and scan mode overrides or protect enabling of these modes so that only trusted and authorized users may enable these modes."
+            }
+          ]
+        },
+        {
+          "Entries": [
+            {
+              "IntroText": "The following example code [REF-1375] is taken from the register lock security peripheral of the HACK@DAC'21 buggy OpenPiton SoC. It demonstrates how to lock read or write access to security-critical hardware registers (e.g., crypto keys, system integrity code, etc.). The configuration to lock all the sensitive registers in the SoC is managed through the reglk_mem registers. These reglk_mem registers are reset when the hardware powers up and configured during boot up. Malicious users, even with kernel-level software privilege, do not get access to the sensitive contents that are locked down. Hence, the security of the entire system can potentially be compromised if the register lock configurations are corrupted or if the register locks are disabled."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "Verilog",
+              "ExampleCode": "...\n always @(posedge clk_i)\n\n```\n\t begin\n```\nif(~(rst_ni && ~jtag_unlock && ~rst_9))** \n\t\t\n\t\t```\n\t\t\t begin\n\t\t\t\t for (j=0; j < 6; j=j+1) begin\n\t\t\t\t\t reglk_mem[j] <= 'h0;\n\t\t\t\t end\n\t\t\t end\n ...\n```"
+            },
+            {
+              "BodyText": "The example code [REF-1375] illustrates an instance of a vulnerable implementation of register locks in the SoC. In this flawed implementation [REF-1375], the reglk_mem registers are also being reset when the system enters debug mode (indicated by the jtag_unlock signal). Consequently, users can simply put the processor in debug mode to access sensitive contents that are supposed to be protected by the register lock feature."
+            },
+            {
+              "BodyText": "This can be mitigated by excluding debug mode signals from the reset logic of security-critical register locks as demonstrated in the following code snippet [REF-1376]."
+            },
+            {
+              "Nature": "Good",
+              "Language": "Verilog",
+              "ExampleCode": "...\n always @(posedge clk_i)\n\n```\n\t begin\n```\nif(~(rst_ni && ~rst_9))** \n\t\t\n\t\t```\n\t\t\t begin\n\t\t\t\t for (j=0; j < 6; j=j+1) begin\n\t\t\t\t\t reglk_mem[j] <= 'h0;\n\t\t\t\t end\n\t\t\t end\n ...\n```"
+            }
+          ]
+        }
+      ],
+      "PotentialMitigations": [
+        {
+          "Phase": [
+            "Architecture and Design",
+            "Implementation",
+            "Testing"
+          ],
+          "Description": "\n\n  - Security Lock bit protections should be reviewed for any bypass/override modes supported.\n\n  - Any supported override modes either should be removed or protected using authenticated debug modes.\n\n  - Security lock programming flow and lock properties should be tested in pre-silicon and post-silicon testing.\n\n",
+          "Effectiveness": "High"
+        }
+      ]
+    },
+    "/cwe/1234/parents": {
+      "weakness_parents": [
+        "667"
+      ],
+      "category_parents": [
+        "1199",
+        "1207",
+        "1401"
+      ]
+    },
+    "/cwe/1234/children": null
+  }
+}

@@ -1,0 +1,131 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T23:01:35.253783",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "260",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/260": {
+      "ID": "260",
+      "Type": "base_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/260": {
+      "ID": "260",
+      "Name": "Password in Configuration File",
+      "Abstraction": "Base",
+      "Structure": "Simple",
+      "Status": "Incomplete",
+      "Description": "The product stores a password in a configuration file that might be accessible to actors who do not know the password.",
+      "ExtendedDescription": "This can result in compromise of the system for which the password is used. An attacker could gain access to this file and learn the stored password or worse yet, change the password to one of their choosing.",
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Class": "Not Language-Specific",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Architecture and Design",
+          "Note": "OMISSION: This weakness is caused by missing a security tactic during the architecture and design phase."
+        },
+        {
+          "Phase": "Implementation"
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Access Control"
+          ],
+          "Impact": [
+            "Gain Privileges or Assume Identity"
+          ]
+        }
+      ],
+      "DemonstrativeExamples": [
+        {
+          "Entries": [
+            {
+              "IntroText": "Below is a snippet from a Java properties file."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "Java",
+              "ExampleCode": "```\n\twebapp.ldap.username = secretUsername\n\twebapp.ldap.password = secretPassword\n```"
+            },
+            {
+              "BodyText": "Because the LDAP credentials are stored in plaintext, anyone with access to the file can gain access to the resource."
+            }
+          ]
+        },
+        {
+          "ID": "DX-43",
+          "Entries": [
+            {
+              "IntroText": "The following examples show a portion of properties and configuration files for Java and ASP.NET applications. The files include username and password information but they are stored in cleartext."
+            },
+            {
+              "BodyText": "This Java example shows a properties file with a cleartext username / password pair."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "Java",
+              "ExampleCode": "```\n```\n# Java Web App ResourceBundle properties file* \n\t...\n\twebapp.ldap.username=secretUsername\n\twebapp.ldap.password=secretPassword\n\t..."
+            },
+            {
+              "BodyText": "The following example shows a portion of a configuration file for an ASP.Net application. This configuration file includes username and password information for a connection to a database but the pair is stored in cleartext."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "ASP.NET",
+              "ExampleCode": "```\n\t...\n\t<connectionStrings>\n\t\t<add name=\"ud_DEV\" connectionString=\"connectDB=uDB; uid=db2admin; pwd=password; dbalias=uDB;\" providerName=\"System.Data.Odbc\" />\n\t</connectionStrings>\n\t...\n```"
+            },
+            {
+              "BodyText": "Username and password information should not be included in a configuration file or a properties file in cleartext as this will allow anyone who can read the file access to the resource. If possible, encrypt this information."
+            }
+          ]
+        }
+      ],
+      "PotentialMitigations": [
+        {
+          "Phase": [
+            "Architecture and Design"
+          ],
+          "Description": "Avoid storing passwords in easily accessible locations."
+        },
+        {
+          "Phase": [
+            "Architecture and Design"
+          ],
+          "Description": "Consider storing cryptographic hashes of passwords as an alternative to storing in plaintext."
+        }
+      ]
+    },
+    "/cwe/260/parents": {
+      "weakness_parents": [
+        "522"
+      ],
+      "category_parents": [
+        "1013",
+        "1349",
+        "1396",
+        "255",
+        "254",
+        "963"
+      ]
+    },
+    "/cwe/260/children": {
+      "weakness_children": [
+        "13",
+        "258",
+        "555"
+      ],
+      "category_children": []
+    }
+  }
+}

@@ -1,0 +1,93 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T23:07:17.161209",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "302",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/302": {
+      "ID": "302",
+      "Type": "base_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/302": {
+      "ID": "302",
+      "Name": "Authentication Bypass by Assumed-Immutable Data",
+      "Abstraction": "Base",
+      "Structure": "Simple",
+      "Status": "Incomplete",
+      "Description": "The authentication scheme or implementation uses key data elements that are assumed to be immutable, but can be controlled or modified by the attacker.",
+      "ExtendedDescription": null,
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Class": "Not Language-Specific",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Architecture and Design",
+          "Note": "COMMISSION: This weakness refers to an incorrect design related to an architectural security tactic."
+        },
+        {
+          "Phase": "Implementation"
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Access Control"
+          ],
+          "Impact": [
+            "Bypass Protection Mechanism"
+          ]
+        }
+      ],
+      "DemonstrativeExamples": [
+        {
+          "Entries": [
+            {
+              "IntroText": "In the following example, an \"authenticated\" cookie is used to determine whether or not a user should be granted access to a system."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "Java",
+              "ExampleCode": "```\n\tboolean authenticated = new Boolean(getCookieValue(\"authenticated\")).booleanValue();\n\tif (authenticated) {\n\t\t...\n\t}\n```"
+            },
+            {
+              "BodyText": "Modifying the value of a cookie on the client-side is trivial, but many developers assume that cookies are essentially immutable."
+            }
+          ]
+        }
+      ],
+      "PotentialMitigations": [
+        {
+          "Phase": [
+            "Architecture and Design",
+            "Operation",
+            "Implementation"
+          ],
+          "Description": "Implement proper protection for immutable data (e.g. environment variable, hidden form fields, etc.)"
+        }
+      ]
+    },
+    "/cwe/302/parents": {
+      "weakness_parents": [
+        "1390"
+      ],
+      "category_parents": [
+        "1010",
+        "1353",
+        "1396",
+        "724",
+        "859",
+        "949"
+      ]
+    },
+    "/cwe/302/children": null
+  }
+}

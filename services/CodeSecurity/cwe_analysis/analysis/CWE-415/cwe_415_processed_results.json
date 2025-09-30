@@ -1,0 +1,133 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T23:21:59.702275",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "415",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/415": {
+      "ID": "415",
+      "Type": "variant_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/415": {
+      "ID": "415",
+      "Name": "Double Free",
+      "Abstraction": "Variant",
+      "Structure": "Simple",
+      "Status": "Draft",
+      "Description": "The product calls free() twice on the same memory address.",
+      "ExtendedDescription": null,
+      "LikelihoodOfExploit": "High",
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Name": "C",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Language",
+          "Name": "C++",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": [
+        {
+          "Term": "Double-free"
+        }
+      ],
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Implementation"
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Integrity",
+            "Confidentiality",
+            "Availability"
+          ],
+          "Impact": [
+            "Modify Memory",
+            "Execute Unauthorized Code or Commands"
+          ],
+          "Note": "\n\nWhen a program calls free() twice with the same argument, the program's memory management data structures may become corrupted, potentially leading to the reading or modification of unexpected memory addresses. This corruption can cause the program to crash or, in some circumstances, cause two later calls to malloc() to return the same pointer. If malloc() returns the same value twice and the program later gives the attacker control over the data that is written into this doubly-allocated memory, the program becomes vulnerable to a buffer overflow attack.\n\n\nDoubly freeing memory may result in a write-what-where condition, allowing an attacker to execute arbitrary code.\n"
+        }
+      ],
+      "DemonstrativeExamples": [
+        {
+          "ID": "DX-149",
+          "Entries": [
+            {
+              "IntroText": "The following code shows a simple example of a double free vulnerability."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "C",
+              "ExampleCode": "```\n\t char* ptr = (char*)malloc (SIZE);\n\t ...\n\t if (abrt) { \n\t\t free(ptr); \n\t }\n\t ...\n\t free(ptr); \n```"
+            },
+            {
+              "BodyText": "Double free vulnerabilities have two common (and sometimes overlapping) causes:"
+            },
+            {
+              "BodyText": "- Error conditions and other exceptional circumstances\n\n  - Confusion over which part of the program is responsible for freeing the memory"
+            },
+            {
+              "BodyText": "Although some double free vulnerabilities are not much more complicated than this example, most are spread out across hundreds of lines of code or even different files. Programmers seem particularly susceptible to freeing global variables more than once."
+            }
+          ]
+        },
+        {
+          "Entries": [
+            {
+              "IntroText": "While contrived, this code should be exploitable on Linux distributions that do not ship with heap-chunk check summing turned on."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "C",
+              "ExampleCode": "```\n\t#include <stdio.h>\n\t#include <unistd.h>\n\t#define BUFSIZE1 512\n\t#define BUFSIZE2 ((BUFSIZE1/2) - 8)\n\tint main(int argc, char **argv) {\n\t\tchar *buf1R1;\n\t\tchar *buf2R1;\n\t\tchar *buf1R2;\n\t\tbuf1R1 = (char *) malloc(BUFSIZE2);\n\t\tbuf2R1 = (char *) malloc(BUFSIZE2);\n\t\tfree(buf1R1);\n\t\tfree(buf2R1);\n\t\tbuf1R2 = (char *) malloc(BUFSIZE1);\n\t\tstrncpy(buf1R2, argv[1], BUFSIZE1-1);\n\t\tfree(buf2R1);\n\t\tfree(buf1R2);\n\t}\n```"
+            }
+          ]
+        }
+      ],
+      "PotentialMitigations": [
+        {
+          "Phase": [
+            "Architecture and Design"
+          ],
+          "Description": "Choose a language that provides automatic memory management."
+        },
+        {
+          "Phase": [
+            "Implementation"
+          ],
+          "Description": "Ensure that each allocation is freed only once. After freeing a chunk, set the pointer to NULL to ensure the pointer cannot be freed again. In complicated error conditions, be sure that clean-up routines respect the state of allocation properly. If the language is object oriented, ensure that object destructors delete each chunk of memory only once."
+        },
+        {
+          "Phase": [
+            "Implementation"
+          ],
+          "Description": "Use a static analysis tool to find double free instances."
+        }
+      ]
+    },
+    "/cwe/415/parents": {
+      "weakness_parents": [
+        "666",
+        "672"
+      ],
+      "category_parents": [
+        "1162",
+        "1399",
+        "398",
+        "742",
+        "876",
+        "1237",
+        "969"
+      ]
+    },
+    "/cwe/415/children": null
+  }
+}

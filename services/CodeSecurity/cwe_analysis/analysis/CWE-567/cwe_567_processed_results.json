@@ -1,0 +1,100 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T23:42:15.643056",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "567",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/567": {
+      "ID": "567",
+      "Type": "base_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/567": {
+      "ID": "567",
+      "Name": "Unsynchronized Access to Shared Data in a Multithreaded Context",
+      "Abstraction": "Base",
+      "Structure": "Simple",
+      "Status": "Draft",
+      "Description": "The product does not properly synchronize shared data, such as static variables across threads, which can lead to undefined behavior and unpredictable data changes.",
+      "ExtendedDescription": "\n\nWithin servlets, shared static variables are not protected from concurrent access, but servlets are multithreaded. This is a typical programming mistake in J2EE applications, since the multithreading is handled by the framework. When a shared variable can be influenced by an attacker, one thread could wind up modifying the variable to contain data that is not valid for a different thread that is also using the data within the variable.\n\n\nNote that this weakness is not unique to servlets.\n",
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Name": "Java",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Implementation"
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Confidentiality",
+            "Integrity",
+            "Availability"
+          ],
+          "Impact": [
+            "Read Application Data",
+            "Modify Application Data",
+            "DoS: Instability",
+            "DoS: Crash, Exit, or Restart"
+          ],
+          "Note": "If the shared variable contains sensitive data, it may be manipulated or displayed in another user session. If this data is used to control the application, its value can be manipulated to cause the application to crash or perform poorly."
+        }
+      ],
+      "DemonstrativeExamples": [
+        {
+          "Entries": [
+            {
+              "IntroText": "The following code implements a basic counter for how many times the page has been accesed."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "Java",
+              "ExampleCode": "```\n\tpublic static class Counter extends HttpServlet {\n\t\tstatic int count = 0;\n\t\tprotected void doGet(HttpServletRequest in, HttpServletResponse out)\n\t\tthrows ServletException, IOException {\n\t\t\tout.setContentType(\"text/plain\");\n\t\t\tPrintWriter p = out.getWriter();\n\t\t\tcount++;\n\t\t\tp.println(count + \" hits so far!\");\n\t\t}\n\t}\n```"
+            },
+            {
+              "BodyText": "Consider when two separate threads, Thread A and Thread B, concurrently handle two different requests:"
+            },
+            {
+              "BodyText": "- Assume this is the first occurrence of doGet, so the value of count is 0.\n\n  - doGet() is called within Thread A.\n\n  - The execution of doGet() in Thread A continues to the point AFTER the value of the count variable is read, then incremented, but BEFORE it is saved back to count. At this stage, the incremented value is 1, but the value of count is 0.\n\n  - doGet() is called within Thread B, and due to a higher thread priority, Thread B progresses to the point where the count variable is accessed (where it is still 0), incremented, and saved. After the save, count is 1.\n\n  - Thread A continues. It saves the intermediate, incremented value to the count variable - but the incremented value is 1, so count is \"re-saved\" to 1."
+            },
+            {
+              "BodyText": "At this point, both Thread A and Thread B print that one hit has been seen, even though two separate requests have been processed. The value of count should be 2, not 1."
+            },
+            {
+              "BodyText": "While this example does not have any real serious implications, if the shared variable in question is used for resource tracking, then resource consumption could occur. Other scenarios exist."
+            }
+          ]
+        }
+      ],
+      "PotentialMitigations": [
+        {
+          "Phase": [
+            "Implementation"
+          ],
+          "Description": "Remove the use of static variables used between servlets. If this cannot be avoided, use synchronized access for these variables."
+        }
+      ]
+    },
+    "/cwe/567/parents": {
+      "weakness_parents": [
+        "662"
+      ],
+      "category_parents": [
+        "1142",
+        "1401",
+        "852",
+        "986"
+      ]
+    },
+    "/cwe/567/children": null
+  }
+}

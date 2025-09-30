@@ -1,0 +1,202 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T23:55:23.831324",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "665",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/665": {
+      "ID": "665",
+      "Type": "class_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/665": {
+      "ID": "665",
+      "Name": "Improper Initialization",
+      "Abstraction": "Class",
+      "Structure": "Simple",
+      "Status": "Draft",
+      "Description": "The product does not initialize or incorrectly initializes a resource, which might leave the resource in an unexpected state when it is accessed or used.",
+      "ExtendedDescription": "This can have security implications when the associated resource is expected to have certain properties or values, such as a variable that determines whether a user has been authenticated or not.",
+      "LikelihoodOfExploit": "Medium",
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Class": "Not Language-Specific",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Implementation",
+          "Note": "This weakness can occur in code paths that are not well-tested, such as rare error conditions. This is because the use of uninitialized data would be noticed as a bug during frequently-used functionality."
+        },
+        {
+          "Phase": "Operation"
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Confidentiality"
+          ],
+          "Impact": [
+            "Read Memory",
+            "Read Application Data"
+          ],
+          "Note": "When reusing a resource such as memory or a program variable, the original contents of that resource may not be cleared before it is sent to an untrusted party."
+        },
+        {
+          "Scope": [
+            "Access Control"
+          ],
+          "Impact": [
+            "Bypass Protection Mechanism"
+          ],
+          "Note": "If security-critical decisions rely on a variable having a \"0\" or equivalent value, and the programming language performs this initialization on behalf of the programmer, then a bypass of security may occur."
+        },
+        {
+          "Scope": [
+            "Availability"
+          ],
+          "Impact": [
+            "DoS: Crash, Exit, or Restart"
+          ],
+          "Note": "The uninitialized data may contain values that cause program flow to change in ways that the programmer did not intend. For example, if an uninitialized variable is used as an array index in C, then its previous contents may produce an index that is outside the range of the array, possibly causing a crash or an exit in other environments."
+        }
+      ],
+      "DemonstrativeExamples": [
+        {
+          "ID": "DX-105",
+          "Entries": [
+            {
+              "IntroText": "Here, a boolean initiailized field is consulted to ensure that initialization tasks are only completed once. However, the field is mistakenly set to true during static initialization, so the initialization code is never reached."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "Java",
+              "ExampleCode": "```\n\tprivate boolean initialized = true;\n\tpublic void someMethod() {\n\t\t\tif (!initialized) {\n```\n// perform initialization tasks* \n\t\t\t\t\t...\n\t\t\t\t\t\n\t\t\t\t\tinitialized = true;}"
+            }
+          ]
+        },
+        {
+          "ID": "DX-54",
+          "Entries": [
+            {
+              "IntroText": "The following code intends to limit certain operations to the administrator only."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "Perl",
+              "ExampleCode": "```\n\t$username = GetCurrentUser();\n\t$state = GetStateData($username);\n\tif (defined($state)) {\n\t\t$uid = ExtractUserID($state);\n\t}\n```\n# do stuff* \n\tif ($uid == 0) {\n\t```\n\t\tDoAdminThings();\n\t}\n```"
+            },
+            {
+              "BodyText": "If the application is unable to extract the state information - say, due to a database timeout - then the $uid variable will not be explicitly set by the programmer. This will cause $uid to be regarded as equivalent to \"0\" in the conditional, allowing the original user to perform administrator actions. Even if the attacker cannot directly influence the state data, unexpected errors could cause incorrect privileges to be assigned to a user just by accident."
+            }
+          ]
+        },
+        {
+          "ID": "DX-106",
+          "Entries": [
+            {
+              "IntroText": "The following code intends to concatenate a string to a variable and print the string."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "C",
+              "ExampleCode": "```\n\tchar str[20];\n\tstrcat(str, \"hello world\");\n\tprintf(\"%s\", str);\n```"
+            },
+            {
+              "BodyText": "This might seem innocent enough, but str was not initialized, so it contains random memory. As a result, str[0] might not contain the null terminator, so the copy might start at an offset other than 0. The consequences can vary, depending on the underlying memory."
+            },
+            {
+              "BodyText": "If a null terminator is found before str[8], then some bytes of random garbage will be printed before the \"hello world\" string. The memory might contain sensitive information from previous uses, such as a password (which might occur as a result of CWE-14 or CWE-244). In this example, it might not be a big deal, but consider what could happen if large amounts of memory are printed out before the null terminator is found."
+            },
+            {
+              "BodyText": "If a null terminator isn't found before str[8], then a buffer overflow could occur, since strcat will first look for the null terminator, then copy 12 bytes starting with that location. Alternately, a buffer over-read might occur (CWE-126) if a null terminator isn't found before the end of the memory segment is reached, leading to a segmentation fault and crash."
+            }
+          ]
+        }
+      ],
+      "PotentialMitigations": [
+        {
+          "MitigationID": "MIT-3",
+          "Phase": [
+            "Requirements"
+          ],
+          "Strategy": "Language Selection",
+          "Description": "\n\nUse a language that does not allow this weakness to occur or provides constructs that make this weakness easier to avoid.\n\n\nFor example, in Java, if the programmer does not explicitly initialize a variable, then the code could produce a compile-time error (if the variable is local) or automatically initialize the variable to the default value for the variable's type. In Perl, if explicit initialization is not performed, then a default value of undef is assigned, which is interpreted as 0, false, or an equivalent value depending on the context in which the variable is accessed.\n"
+        },
+        {
+          "Phase": [
+            "Architecture and Design"
+          ],
+          "Description": "Identify all variables and data stores that receive information from external sources, and apply input validation to make sure that they are only initialized to expected values."
+        },
+        {
+          "Phase": [
+            "Implementation"
+          ],
+          "Description": "Explicitly initialize all your variables and other data stores, either during declaration or just before the first usage."
+        },
+        {
+          "Phase": [
+            "Implementation"
+          ],
+          "Description": "Pay close attention to complex conditionals that affect initialization, since some conditions might not perform the initialization."
+        },
+        {
+          "Phase": [
+            "Implementation"
+          ],
+          "Description": "Avoid race conditions (CWE-362) during initialization routines."
+        },
+        {
+          "Phase": [
+            "Build and Compilation"
+          ],
+          "Description": "Run or compile your product with settings that generate warnings about uninitialized variables or data."
+        },
+        {
+          "Phase": [
+            "Testing"
+          ],
+          "Description": "Use automated static analysis tools that target this type of weakness. Many modern techniques use data flow analysis to minimize the number of false positives. This is not a perfect solution, since 100% accuracy and coverage are not feasible."
+        }
+      ]
+    },
+    "/cwe/665/parents": {
+      "weakness_parents": [],
+      "category_parents": [
+        "1135",
+        "1306",
+        "1308",
+        "1416",
+        "740",
+        "742",
+        "752",
+        "846",
+        "874",
+        "876",
+        "962"
+      ]
+    },
+    "/cwe/665/children": {
+      "weakness_children": [
+        "1188",
+        "1279",
+        "1419",
+        "1434",
+        "455",
+        "456",
+        "457",
+        "770",
+        "908",
+        "909"
+      ],
+      "category_children": []
+    }
+  }
+}

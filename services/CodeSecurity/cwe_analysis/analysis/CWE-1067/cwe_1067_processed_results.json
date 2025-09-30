@@ -1,0 +1,52 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T22:12:52.504297",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "1067",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/1067": {
+      "ID": "1067",
+      "Type": "base_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/1067": {
+      "ID": "1067",
+      "Name": "Excessive Execution of Sequential Searches of Data Resource",
+      "Abstraction": "Base",
+      "Structure": "Simple",
+      "Status": "Incomplete",
+      "Description": "The product contains a data query against an SQL table or view\n\t\t\t\t\tthat is configured in a way that does not utilize an index and may cause\n\t\t\t\t\tsequential searches to be performed.",
+      "ExtendedDescription": "\n\nThis issue can make the product perform more slowly. If the relevant code is reachable by an attacker, then this performance problem might introduce a vulnerability.\n",
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": null,
+      "AlternateTerms": null,
+      "ModesOfIntroduction": null,
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Other"
+          ],
+          "Impact": [
+            "Reduce Performance"
+          ]
+        }
+      ],
+      "DemonstrativeExamples": null,
+      "PotentialMitigations": null
+    },
+    "/cwe/1067/parents": {
+      "weakness_parents": [
+        "1176"
+      ],
+      "category_parents": [
+        "1132",
+        "1309",
+        "1416",
+        "1006"
+      ]
+    },
+    "/cwe/1067/children": null
+  }
+}

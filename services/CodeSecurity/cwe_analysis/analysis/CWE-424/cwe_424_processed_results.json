@@ -1,0 +1,76 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T23:23:17.153161",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "424",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/424": {
+      "ID": "424",
+      "Type": "class_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/424": {
+      "ID": "424",
+      "Name": "Improper Protection of Alternate Path",
+      "Abstraction": "Class",
+      "Structure": "Simple",
+      "Status": "Draft",
+      "Description": "The product does not sufficiently protect all possible paths that a user can take to access restricted functionality or resources.",
+      "ExtendedDescription": null,
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Class": "Not Language-Specific",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Architecture and Design"
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Access Control"
+          ],
+          "Impact": [
+            "Bypass Protection Mechanism",
+            "Gain Privileges or Assume Identity"
+          ]
+        }
+      ],
+      "DemonstrativeExamples": null,
+      "PotentialMitigations": [
+        {
+          "Phase": [
+            "Architecture and Design"
+          ],
+          "Description": "Deploy different layers of protection to implement security in depth."
+        }
+      ]
+    },
+    "/cwe/424/parents": {
+      "weakness_parents": [
+        "638"
+      ],
+      "category_parents": [
+        "1306",
+        "1308",
+        "1309",
+        "1418",
+        "945"
+      ]
+    },
+    "/cwe/424/children": {
+      "weakness_children": [
+        "425"
+      ],
+      "category_children": []
+    }
+  }
+}

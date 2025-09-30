@@ -1,0 +1,262 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T23:26:31.576751",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "45",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/45": {
+      "endpoint": "/cwe/45",
+      "url": "https://cwe-api.mitre.org/api/v1/cwe/45",
+      "status_code": 200,
+      "success": true,
+      "error": null,
+      "data": [
+        {
+          "Type": "variant_weakness",
+          "ID": "45"
+        }
+      ]
+    },
+    "/cwe/weakness/45": {
+      "endpoint": "/cwe/weakness/45",
+      "url": "https://cwe-api.mitre.org/api/v1/cwe/weakness/45",
+      "status_code": 200,
+      "success": true,
+      "error": null,
+      "data": {
+        "Weaknesses": [
+          {
+            "ID": "45",
+            "Name": "Path Equivalence: 'file...name' (Multiple Internal Dot)",
+            "Abstraction": "Variant",
+            "Structure": "Simple",
+            "Status": "Incomplete",
+            "Description": "The product accepts path input in the form of multiple internal dot ('file...dir') without appropriate validation, which can lead to ambiguous path resolution and allow an attacker to traverse the file system to unintended locations or access arbitrary files.",
+            "RelatedWeaknesses": [
+              {
+                "Nature": "ChildOf",
+                "CweID": "44",
+                "ViewID": "1000",
+                "Ordinal": "Primary"
+              },
+              {
+                "Nature": "ChildOf",
+                "CweID": "165",
+                "ViewID": "1000"
+              }
+            ],
+            "ApplicablePlatforms": [
+              {
+                "Type": "Language",
+                "Class": "Not Language-Specific",
+                "Prevalence": "Undetermined"
+              }
+            ],
+            "ModesOfIntroduction": [
+              {
+                "Phase": "Implementation"
+              }
+            ],
+            "CommonConsequences": [
+              {
+                "Scope": [
+                  "Confidentiality",
+                  "Integrity"
+                ],
+                "Impact": [
+                  "Read Files or Directories",
+                  "Modify Files or Directories"
+                ]
+              }
+            ],
+            "FunctionalAreas": [
+              "File Processing"
+            ],
+            "AffectedResources": [
+              "File or Directory"
+            ],
+            "TaxonomyMappings": [
+              {
+                "TaxonomyName": "PLOVER",
+                "EntryName": "Multiple Internal Dot - 'file...dir'"
+              },
+              {
+                "TaxonomyName": "Software Fault Patterns",
+                "EntryID": "SFP16",
+                "EntryName": "Path Traversal"
+              }
+            ],
+            "MappingNotes": {
+              "Usage": "Allowed",
+              "Rationale": "This CWE entry is at the Variant level of abstraction, which is a preferred level of abstraction for mapping to the root causes of vulnerabilities.",
+              "Comments": "Carefully read both the name and description to ensure that this mapping is an appropriate fit. Do not try to 'force' a mapping to a lower-level Base/Variant simply to comply with this preferred level of abstraction.",
+              "Reasons": [
+                "Acceptable-Use"
+              ]
+            },
+            "Notes": [
+              {
+                "Type": "Relationship",
+                "Note": "An improper attempt to remove the internal dots from the string could lead to CWE-181 (Incorrect Behavior Order: Validate Before Filter)."
+              }
+            ],
+            "ContentHistory": [
+              {
+                "Type": "Submission",
+                "SubmissionName": "PLOVER",
+                "SubmissionDate": "2006-07-19",
+                "SubmissionVersion": "Draft 3",
+                "SubmissionReleaseDate": "2006-07-19"
+              },
+              {
+                "Type": "Modification",
+                "ModificationName": "Eric Dalci",
+                "ModificationOrganization": "Cigital",
+                "ModificationDate": "2008-07-01",
+                "ModificationComment": "updated Time_of_Introduction"
+              },
+              {
+                "Type": "Modification",
+                "ModificationName": "CWE Content Team",
+                "ModificationOrganization": "MITRE",
+                "ModificationDate": "2008-09-08",
+                "ModificationComment": "updated Relationships, Other_Notes, Taxonomy_Mappings"
+              },
+              {
+                "Type": "Modification",
+                "ModificationName": "CWE Content Team",
+                "ModificationOrganization": "MITRE",
+                "ModificationDate": "2009-05-27",
+                "ModificationComment": "updated Relationships"
+              },
+              {
+                "Type": "Modification",
+                "ModificationName": "CWE Content Team",
+                "ModificationOrganization": "MITRE",
+                "ModificationDate": "2011-06-01",
+                "ModificationComment": "updated Common_Consequences"
+              },
+              {
+                "Type": "Modification",
+                "ModificationName": "CWE Content Team",
+                "ModificationOrganization": "MITRE",
+                "ModificationDate": "2012-05-11",
+                "ModificationComment": "updated Relationships"
+              },
+              {
+                "Type": "Modification",
+                "ModificationName": "CWE Content Team",
+                "ModificationOrganization": "MITRE",
+                "ModificationDate": "2012-10-30",
+                "ModificationComment": "updated Potential_Mitigations"
+              },
+              {
+                "Type": "Modification",
+                "ModificationName": "CWE Content Team",
+                "ModificationOrganization": "MITRE",
+                "ModificationDate": "2014-06-23",
+                "ModificationComment": "updated Other_Notes, Relationship_Notes"
+              },
+              {
+                "Type": "Modification",
+                "ModificationName": "CWE Content Team",
+                "ModificationOrganization": "MITRE",
+                "ModificationDate": "2014-07-30",
+                "ModificationComment": "updated Relationships, Taxonomy_Mappings"
+              },
+              {
+                "Type": "Modification",
+                "ModificationName": "CWE Content Team",
+                "ModificationOrganization": "MITRE",
+                "ModificationDate": "2017-11-08",
+                "ModificationComment": "updated Applicable_Platforms"
+              },
+              {
+                "Type": "Modification",
+                "ModificationName": "CWE Content Team",
+                "ModificationOrganization": "MITRE",
+                "ModificationDate": "2020-02-24",
+                "ModificationComment": "updated Relationships"
+              },
+              {
+                "Type": "Modification",
+                "ModificationName": "CWE Content Team",
+                "ModificationOrganization": "MITRE",
+                "ModificationDate": "2023-01-31",
+                "ModificationComment": "updated Description"
+              },
+              {
+                "Type": "Modification",
+                "ModificationName": "CWE Content Team",
+                "ModificationOrganization": "MITRE",
+                "ModificationDate": "2023-04-27",
+                "ModificationComment": "updated Relationships"
+              },
+              {
+                "Type": "Modification",
+                "ModificationName": "CWE Content Team",
+                "ModificationOrganization": "MITRE",
+                "ModificationDate": "2023-06-29",
+                "ModificationComment": "updated Mapping_Notes"
+              },
+              {
+                "Type": "Modification",
+                "ModificationName": "CWE Content Team",
+                "ModificationOrganization": "MITRE",
+                "ModificationDate": "2025-09-09",
+                "ModificationComment": "updated Affected_Resources, Functional_Areas",
+                "ModificationVersion": "4.18",
+                "ModificationReleaseDate": "2025-09-09"
+              },
+              {
+                "Type": "Rename",
+                "PreviousEntryName": "Path Issue - Multiple Internal Dot - 'file...dir'",
+                "Date": "2008-04-11"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    "/cwe/45/parents": {
+      "endpoint": "/cwe/45/parents",
+      "url": "https://cwe-api.mitre.org/api/v1/cwe/45/parents",
+      "status_code": 200,
+      "success": true,
+      "error": null,
+      "data": [
+        {
+          "Type": "variant_weakness",
+          "ID": "165",
+          "ViewID": "1000"
+        },
+        {
+          "Type": "variant_weakness",
+          "ID": "44",
+          "ViewID": "1000",
+          "Primary_Parent": true
+        },
+        {
+          "Type": "category",
+          "ID": "1404",
+          "ViewID": "1400"
+        },
+        {
+          "Type": "category",
+          "ID": "981",
+          "ViewID": "888"
+        }
+      ]
+    },
+    "/cwe/45/children": {
+      "endpoint": "/cwe/45/children",
+      "url": "https://cwe-api.mitre.org/api/v1/cwe/45/children",
+      "status_code": 200,
+      "success": true,
+      "error": null,
+      "data": []
+    }
+  }
+}

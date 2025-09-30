@@ -1,0 +1,52 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T22:16:30.995165",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "1094",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/1094": {
+      "ID": "1094",
+      "Type": "base_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/1094": {
+      "ID": "1094",
+      "Name": "Excessive Index Range Scan for a Data Resource",
+      "Abstraction": "Base",
+      "Structure": "Simple",
+      "Status": "Incomplete",
+      "Description": "The product contains an index range scan for a large data table,\n\t\t\t\t\tbut the scan can cover a large number of rows.",
+      "ExtendedDescription": "\n\nThis issue can make the product perform more slowly. If the relevant code is reachable by an attacker, then this performance problem might introduce a vulnerability.\n\n\nWhile the interpretation of \"large data table\" and \"excessive index range\" may vary for each product or developer, CISQ recommends a threshold of 1000000 table rows and a threshold of 10 for the index range.\n",
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": null,
+      "AlternateTerms": null,
+      "ModesOfIntroduction": null,
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Other"
+          ],
+          "Impact": [
+            "Reduce Performance"
+          ]
+        }
+      ],
+      "DemonstrativeExamples": null,
+      "PotentialMitigations": null
+    },
+    "/cwe/1094/parents": {
+      "weakness_parents": [
+        "405"
+      ],
+      "category_parents": [
+        "1132",
+        "1309",
+        "1416",
+        "1006"
+      ]
+    },
+    "/cwe/1094/children": null
+  }
+}

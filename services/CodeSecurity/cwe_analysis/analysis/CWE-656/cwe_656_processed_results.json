@@ -1,0 +1,100 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T23:54:30.807929",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "656",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/656": {
+      "ID": "656",
+      "Type": "class_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/656": {
+      "ID": "656",
+      "Name": "Reliance on Security Through Obscurity",
+      "Abstraction": "Class",
+      "Structure": "Simple",
+      "Status": "Draft",
+      "Description": "The product uses a protection mechanism whose strength depends heavily on its obscurity, such that knowledge of its algorithms or key data is sufficient to defeat the mechanism.",
+      "ExtendedDescription": "This reliance on \"security through obscurity\" can produce resultant weaknesses if an attacker is able to reverse engineer the inner workings of the mechanism. Note that obscurity can be one small part of defense in depth, since it can create more work for an attacker; however, it is a significant risk if used as the primary means of protection.",
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Class": "Not Language-Specific",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": [
+        {
+          "Term": "Never Assuming your secrets are safe"
+        }
+      ],
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Architecture and Design"
+        },
+        {
+          "Phase": "Implementation",
+          "Note": "REALIZATION: This weakness is caused during implementation of an architectural security tactic."
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Confidentiality",
+            "Integrity",
+            "Availability",
+            "Other"
+          ],
+          "Impact": [
+            "Other"
+          ],
+          "Note": "The security mechanism can be bypassed easily."
+        }
+      ],
+      "DemonstrativeExamples": [
+        {
+          "ID": "DX-168",
+          "Entries": [
+            {
+              "IntroText": "The design of TCP relies on the secrecy of Initial Sequence Numbers (ISNs), as originally covered in CVE-1999-0077 [REF-542]. If ISNs can be guessed (due to predictability, CWE-330) or sniffed (due to lack of encryption during transmission, CWE-312), then an attacker can hijack or spoof connections. Many TCP implementations have had variations of this problem over the years, including CVE-2004-0641, CVE-2002-1463, CVE-2001-0751, CVE-2001-0328, CVE-2001-0288, CVE-2001-0163, CVE-2001-0162, CVE-2000-0916, and CVE-2000-0328."
+            },
+            {
+              "Reference": "REF-542"
+            }
+          ]
+        }
+      ],
+      "PotentialMitigations": [
+        {
+          "Phase": [
+            "Architecture and Design"
+          ],
+          "Description": "Always consider whether knowledge of your code or design is sufficient to break it. Reverse engineering is a highly successful discipline, and financially feasible for motivated adversaries. Black-box techniques are established for binary analysis of executables that use obfuscation, runtime analysis of proprietary protocols, inferring file formats, and others."
+        },
+        {
+          "Phase": [
+            "Architecture and Design"
+          ],
+          "Description": "When available, use publicly-vetted algorithms and procedures, as these are more likely to undergo more extensive security analysis and testing. This is especially the case with encryption and authentication."
+        }
+      ]
+    },
+    "/cwe/656/parents": {
+      "weakness_parents": [
+        "657"
+      ],
+      "category_parents": [
+        "1011",
+        "1348",
+        "1418",
+        "1006",
+        "975"
+      ]
+    },
+    "/cwe/656/children": null
+  }
+}

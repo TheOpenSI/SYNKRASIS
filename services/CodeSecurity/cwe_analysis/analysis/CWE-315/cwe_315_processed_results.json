@@ -1,0 +1,78 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T23:08:54.627754",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "315",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/315": {
+      "ID": "315",
+      "Type": "variant_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/315": {
+      "ID": "315",
+      "Name": "Cleartext Storage of Sensitive Information in a Cookie",
+      "Abstraction": "Variant",
+      "Structure": "Simple",
+      "Status": "Draft",
+      "Description": "The product stores sensitive information in cleartext in a cookie.",
+      "ExtendedDescription": "Attackers can use widely-available tools to view the cookie and read the sensitive information. Even if the information is encoded in a way that is not human-readable, certain techniques could determine which encoding is being used, then decode the information.",
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Class": "Not Language-Specific",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Architecture and Design",
+          "Note": "OMISSION: This weakness is caused by missing a security tactic during the architecture and design phase."
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Confidentiality"
+          ],
+          "Impact": [
+            "Read Application Data"
+          ]
+        }
+      ],
+      "DemonstrativeExamples": [
+        {
+          "ID": "DX-44",
+          "Entries": [
+            {
+              "IntroText": "The following code excerpt stores a plaintext user account ID in a browser cookie."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "Java",
+              "ExampleCode": "```\n\tresponse.addCookie( new Cookie(\"userAccountID\", acctID) );\n```"
+            },
+            {
+              "BodyText": "Because the account ID is in plaintext, the user's account information is exposed if their computer is compromised by an attacker."
+            }
+          ]
+        }
+      ],
+      "PotentialMitigations": null
+    },
+    "/cwe/315/parents": {
+      "weakness_parents": [],
+      "category_parents": [
+        "1013",
+        "1349",
+        "1402",
+        "963"
+      ]
+    },
+    "/cwe/315/children": null
+  }
+}

@@ -1,0 +1,152 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T22:35:42.459734",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "1300",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/1300": {
+      "ID": "1300",
+      "Type": "base_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/1300": {
+      "ID": "1300",
+      "Name": "Improper Protection of Physical Side Channels",
+      "Abstraction": "Base",
+      "Structure": "Simple",
+      "Status": "Stable",
+      "Description": "The device does not contain sufficient protection\n\tmechanisms to prevent physical side channels from exposing\n\tsensitive information due to patterns in physically observable\n\tphenomena such as variations in power consumption,\n\telectromagnetic emissions (EME), or acoustic emissions.",
+      "ExtendedDescription": "\n\nAn adversary could monitor and measure physical phenomena to detect patterns and make inferences, even if it is not possible to extract the information in the digital domain.\n\n\nPhysical side channels have been well-studied for decades in the context of breaking implementations of cryptographic algorithms or other attacks against security features. These side channels may be easily observed by an adversary with physical access to the device, or using a tool that is in close proximity. If the adversary can monitor hardware operation and correlate its data processing with power, EME, and acoustic measurements, the adversary might be able to recover of secret keys and data.\n",
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Class": "Not Language-Specific",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Operating_System",
+          "Class": "Not OS-Specific",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Architecture",
+          "Class": "Not Architecture-Specific",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Technology",
+          "Class": "Not Technology-Specific",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Implementation"
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Confidentiality"
+          ],
+          "Impact": [
+            "Read Memory",
+            "Read Application Data"
+          ]
+        }
+      ],
+      "DemonstrativeExamples": [
+        {
+          "Entries": [
+            {
+              "IntroText": "Consider a device that checks a passcode to unlock the screen."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "Other",
+              "ExampleCode": "As each character of the PIN number is entered, a correct character exhibits one current pulse shape while an incorrect character exhibits a different current pulse shape."
+            },
+            {
+              "BodyText": "PIN numbers used to unlock a cell phone should not exhibit any characteristics about themselves. This creates a side channel. An attacker could monitor the pulses using an oscilloscope or other method. Once the first character is correctly guessed (based on the oscilloscope readings), they can then move to the next character, which is much more efficient than the brute force method of guessing every possible sequence of characters."
+            },
+            {
+              "Nature": "Good",
+              "Language": "Other",
+              "ExampleCode": "Rather than comparing each character to the correct PIN value as it is entered, the device could accumulate the PIN in a register, and do the comparison all at once at the end. Alternatively, the components for the comparison could be modified so that the current pulse shape is the same regardless of the correctness of the entered character."
+            }
+          ]
+        },
+        {
+          "Entries": [
+            {
+              "IntroText": "Consider the device vulnerability CVE-2021-3011, which affects certain microcontrollers [REF-1221]. The Google Titan Security Key is used for two-factor authentication using cryptographic algorithms. The device uses an internal secret key for this purpose and exchanges information based on this key for the authentication. If this internal secret key and the encryption algorithm were known to an adversary, the key function could be duplicated, allowing the adversary to masquerade as the legitimate user."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "Other",
+              "ExampleCode": "The local method of extracting the secret key consists of plugging the key into a USB port and using electromagnetic (EM) sniffing tools and computers."
+            },
+            {
+              "Nature": "Good",
+              "Language": "Other",
+              "ExampleCode": "Several solutions could have been considered by the manufacturer. For example, the manufacturer could shield the circuitry in the key or add randomized delays, indirect calculations with random values involved, or randomly ordered calculations to make extraction much more difficult. The manufacturer could use a combination of these techniques."
+            }
+          ]
+        },
+        {
+          "Entries": [
+            {
+              "IntroText": "The code snippet provided here is part of the modular exponentiation module found in the HACK@DAC'21 Openpiton System-on-Chip (SoC), specifically within the RSA peripheral [REF-1368]. Modular exponentiation, denoted as \"a^b mod n,\" is a crucial operation in the RSA public/private key encryption. In RSA encryption, where 'c' represents ciphertext, 'm' stands for a message, and 'd' corresponds to the private key, the decryption process is carried out using this modular exponentiation as follows: m = c^d mod n, where 'n' is the result of multiplying two large prime numbers."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "Verilog",
+              "ExampleCode": "...\n module mod_exp\n\n```\n\t ...\n\t `UPDATE: begin\n\t\t if (exponent_reg != 'd0) begin\n```\nif (exponent_reg[0])** \n\t\t\t\n\t\t\t```\n```\nresult_reg <= result_next;** \n\t\t\t\t base_reg <= base_next;\n\t\t\t exponent_reg <= exponent_next;\n\t\t\t state <= `UPDATE;\n\t\t\t ...\n\t endmodule"
+            },
+            {
+              "BodyText": "The vulnerable code shows a buggy implementation of binary exponentiation where it updates the result register (result_reg) only when the corresponding exponent bit (exponent_reg[0]) is set to 1. However, when this exponent bit is 0, the output register is not updated. It's important to note that this implementation introduces a physical power side-channel vulnerability within the RSA core. This vulnerability could expose the private exponent to a determined physical attacker. Such exposure of the private exponent could lead to a complete compromise of the private key."
+            },
+            {
+              "BodyText": "To address mitigation requirements, the developer can develop the module by minimizing dependency on conditions, particularly those reliant on secret keys. In situations where branching is unavoidable, developers can implement masking mechanisms to obfuscate the power consumption patterns exhibited by the module (see good code example). Additionally, certain algorithms, such as the Karatsuba algorithm, can be implemented as illustrative examples of side-channel resistant algorithms, as they necessitate only a limited number of branch conditions [REF-1369]."
+            },
+            {
+              "Nature": "Good",
+              "Language": "Verilog",
+              "ExampleCode": "...\n module mod_exp\n\n```\n\t ...\n\t `UPDATE: begin\n\t\t if (exponent_reg != 'd0) begin\n```\nif (exponent_reg[0]) begin** \n\t\t\t\n\t\t\t```\n```\nresult_reg <= result_next;** \n\t\t\t\t\n\t\t\t **end else begin** \n\t\t\t\n\t\t\t```\n```\nmask_reg <= result_next;** \n\t\t\t\t\n\t\t\t **end** \n\t\t\t base_reg <= base_next;\n\t\t\t exponent_reg <= exponent_next;\n\t\t\t state <= `UPDATE;\n\t\t\t ...\n\t endmodule"
+            }
+          ]
+        }
+      ],
+      "PotentialMitigations": [
+        {
+          "Phase": [
+            "Architecture and Design"
+          ],
+          "Description": "Apply blinding or masking techniques to implementations of cryptographic algorithms."
+        },
+        {
+          "Phase": [
+            "Implementation"
+          ],
+          "Description": "Add shielding or tamper-resistant protections to the device to increase the difficulty of obtaining measurements of the side-channel."
+        }
+      ]
+    },
+    "/cwe/1300/parents": {
+      "weakness_parents": [],
+      "category_parents": [
+        "1417"
+      ]
+    },
+    "/cwe/1300/children": {
+      "weakness_children": [
+        "1255"
+      ],
+      "category_children": []
+    }
+  }
+}

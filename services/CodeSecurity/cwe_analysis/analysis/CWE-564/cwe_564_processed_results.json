@@ -1,0 +1,115 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T23:41:53.295771",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "564",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/564": {
+      "ID": "564",
+      "Type": "variant_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/564": {
+      "ID": "564",
+      "Name": "SQL Injection: Hibernate",
+      "Abstraction": "Variant",
+      "Structure": "Simple",
+      "Status": "Incomplete",
+      "Description": "Using Hibernate to execute a dynamic SQL statement built with user-controlled input can allow an attacker to modify the statement's meaning or to execute arbitrary SQL commands.",
+      "ExtendedDescription": null,
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Name": "SQL",
+          "Prevalence": "Often"
+        },
+        {
+          "Type": "Technology",
+          "Name": "Database Server",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Architecture and Design"
+        },
+        {
+          "Phase": "Implementation"
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Confidentiality",
+            "Integrity"
+          ],
+          "Impact": [
+            "Read Application Data",
+            "Modify Application Data"
+          ]
+        }
+      ],
+      "DemonstrativeExamples": [
+        {
+          "Entries": [
+            {
+              "IntroText": "The following code excerpt uses Hibernate's HQL syntax to build a dynamic query that's vulnerable to SQL injection."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "Java",
+              "ExampleCode": "```\n\tString street = getStreetFromUser();\n\tQuery query = session.createQuery(\"from Address a where a.street='\" + street + \"'\");\n```"
+            }
+          ]
+        }
+      ],
+      "PotentialMitigations": [
+        {
+          "Phase": [
+            "Requirements"
+          ],
+          "Description": "A non-SQL style database which is not subject to this flaw may be chosen."
+        },
+        {
+          "Phase": [
+            "Architecture and Design"
+          ],
+          "Description": "Follow the principle of least privilege when creating user accounts to a SQL database. Users should only have the minimum privileges necessary to use their account. If the requirements of the system indicate that a user can read and modify their own data, then limit their privileges so they cannot read/write others' data."
+        },
+        {
+          "MitigationID": "MIT-15",
+          "Phase": [
+            "Architecture and Design"
+          ],
+          "Description": "For any security checks that are performed on the client side, ensure that these checks are duplicated on the server side, in order to avoid CWE-602. Attackers can bypass the client-side checks by modifying values after the checks have been performed, or by changing the client to remove the client-side checks entirely. Then, these modified values would be submitted to the server."
+        },
+        {
+          "Phase": [
+            "Implementation"
+          ],
+          "Description": "Implement SQL strings using prepared statements that bind variables. Prepared statements that do not bind variables can be vulnerable to attack."
+        },
+        {
+          "Phase": [
+            "Implementation"
+          ],
+          "Description": "Use vigorous allowlist style checking on any user input that may be used in a SQL command. Rather than escape meta-characters, it is safest to disallow them entirely. Reason: Later use of data that have been entered in the database may neglect to escape meta-characters before use. Narrowly define the set of safe characters based on the expected value of the parameter in the request."
+        }
+      ]
+    },
+    "/cwe/564/parents": {
+      "weakness_parents": [],
+      "category_parents": [
+        "1027",
+        "1347",
+        "1409",
+        "990"
+      ]
+    },
+    "/cwe/564/children": null
+  }
+}

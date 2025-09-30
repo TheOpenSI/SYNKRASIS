@@ -1,0 +1,86 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T22:56:11.835699",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "219",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/219": {
+      "ID": "219",
+      "Type": "variant_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/219": {
+      "ID": "219",
+      "Name": "Storage of File with Sensitive Data Under Web Root",
+      "Abstraction": "Variant",
+      "Structure": "Simple",
+      "Status": "Draft",
+      "Description": "The product stores sensitive data under the web document root with insufficient access control, which might make it accessible to untrusted parties.",
+      "ExtendedDescription": "Besides public-facing web pages and code, products may store sensitive data, code that is not directly invoked, or other files under the web document root of the web server. If the server is not configured or otherwise used to prevent direct access to those files, then attackers may obtain this sensitive data.",
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Class": "Not Language-Specific",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Operation",
+          "Note": "COMMISSION: This weakness refers to an incorrect design related to an architectural security tactic."
+        },
+        {
+          "Phase": "Implementation",
+          "Note": "COMMISSION: This weakness refers to an incorrect design related to an architectural security tactic."
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Confidentiality"
+          ],
+          "Impact": [
+            "Read Application Data"
+          ]
+        }
+      ],
+      "DemonstrativeExamples": null,
+      "PotentialMitigations": [
+        {
+          "Phase": [
+            "Implementation",
+            "System Configuration"
+          ],
+          "Description": "Avoid storing information under the web root directory."
+        },
+        {
+          "Phase": [
+            "System Configuration"
+          ],
+          "Description": "Access control permissions should be set to prevent reading/writing of sensitive files inside/outside of the web directory."
+        }
+      ]
+    },
+    "/cwe/219/parents": {
+      "weakness_parents": [],
+      "category_parents": [
+        "1011",
+        "1345",
+        "1403",
+        "731",
+        "815",
+        "963"
+      ]
+    },
+    "/cwe/219/children": {
+      "weakness_children": [
+        "433"
+      ],
+      "category_children": []
+    }
+  }
+}

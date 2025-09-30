@@ -1,0 +1,84 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-30T00:17:00.324812",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "922",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/922": {
+      "ID": "922",
+      "Type": "class_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/922": {
+      "ID": "922",
+      "Name": "Insecure Storage of Sensitive Information",
+      "Abstraction": "Class",
+      "Structure": "Simple",
+      "Status": "Incomplete",
+      "Description": "The product stores sensitive information without properly limiting read or write access by unauthorized actors.",
+      "ExtendedDescription": "If read access is not properly restricted, then attackers can steal the sensitive information. If write access is not properly restricted, then attackers can modify and possibly delete the data, causing incorrect results and possibly a denial of service.",
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Class": "Not Language-Specific",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Architecture and Design",
+          "Note": "OMISSION: This weakness is caused by missing a security tactic during the architecture and design phase."
+        },
+        {
+          "Phase": "Implementation"
+        },
+        {
+          "Phase": "System Configuration"
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Confidentiality"
+          ],
+          "Impact": [
+            "Read Application Data",
+            "Read Files or Directories"
+          ],
+          "Note": "Attackers can read sensitive information by accessing the unrestricted storage mechanism."
+        },
+        {
+          "Scope": [
+            "Integrity"
+          ],
+          "Impact": [
+            "Modify Application Data",
+            "Modify Files or Directories"
+          ],
+          "Note": "Attackers can overwrite sensitive information by accessing the unrestricted storage mechanism."
+        }
+      ],
+      "DemonstrativeExamples": null,
+      "PotentialMitigations": null
+    },
+    "/cwe/922/parents": {
+      "weakness_parents": [],
+      "category_parents": [
+        "1013",
+        "1345",
+        "1416"
+      ]
+    },
+    "/cwe/922/children": {
+      "weakness_children": [
+        "312",
+        "921"
+      ],
+      "category_children": []
+    }
+  }
+}

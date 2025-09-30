@@ -1,0 +1,91 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T23:47:30.123724",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "605",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/605": {
+      "ID": "605",
+      "Type": "variant_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/605": {
+      "ID": "605",
+      "Name": "Multiple Binds to the Same Port",
+      "Abstraction": "Variant",
+      "Structure": "Simple",
+      "Status": "Draft",
+      "Description": "When multiple sockets are allowed to bind to the same port, other services on that port may be stolen or spoofed.",
+      "ExtendedDescription": "On most systems, a combination of setting the SO_REUSEADDR socket option, and a call to bind() allows any process to bind to a port to which a previous process has bound with INADDR_ANY. This allows a user to bind to the specific address of a server bound to INADDR_ANY on an unprivileged port, and steal its UDP packets/TCP connection.",
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Class": "Not Language-Specific",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Implementation"
+        },
+        {
+          "Phase": "Operation"
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Confidentiality",
+            "Integrity"
+          ],
+          "Impact": [
+            "Read Application Data"
+          ],
+          "Note": "Packets from a variety of network services may be stolen or the services spoofed."
+        }
+      ],
+      "DemonstrativeExamples": [
+        {
+          "ID": "DX-184",
+          "Entries": [
+            {
+              "IntroText": "This code binds a server socket to port 21, allowing the server to listen for traffic on that port."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "C",
+              "ExampleCode": "```\n\tvoid bind_socket(void) {\n\t\t\tint server_sockfd;\n\t\t\tint server_len;\n\t\t\tstruct sockaddr_in server_address;\n```\n/*unlink the socket if already bound to avoid an error when bind() is called*/* \n\t\t\t\n\t\t\tunlink(\"server_socket\");\n\t\t\tserver_sockfd = socket(AF_INET, SOCK_STREAM, 0);\n\t\t\t\n\t\t\tserver_address.sin_family = AF_INET;\n\t\t\tserver_address.sin_port = 21;\n\t\t\tserver_address.sin_addr.s_addr = htonl(INADDR_ANY);\n\t\t\tserver_len = sizeof(struct sockaddr_in);\n\t\t\t\n\t\t\tbind(server_sockfd, (struct sockaddr *) &s1, server_len);}"
+            },
+            {
+              "BodyText": "This code may result in two servers binding a socket to same port, thus receiving each other's traffic. This could be used by an attacker to steal packets meant for another process, such as a secure FTP server."
+            }
+          ]
+        }
+      ],
+      "PotentialMitigations": [
+        {
+          "Phase": [
+            "Policy"
+          ],
+          "Description": "Restrict server socket address to known local addresses."
+        }
+      ]
+    },
+    "/cwe/605/parents": {
+      "weakness_parents": [
+        "666",
+        "675"
+      ],
+      "category_parents": [
+        "1412",
+        "1006",
+        "954"
+      ]
+    },
+    "/cwe/605/children": null
+  }
+}

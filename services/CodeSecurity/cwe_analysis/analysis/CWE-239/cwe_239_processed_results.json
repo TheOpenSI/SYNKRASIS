@@ -1,0 +1,60 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T22:58:58.300304",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "239",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/239": {
+      "ID": "239",
+      "Type": "variant_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/239": {
+      "ID": "239",
+      "Name": "Failure to Handle Incomplete Element",
+      "Abstraction": "Variant",
+      "Structure": "Simple",
+      "Status": "Draft",
+      "Description": "The product does not properly handle when a particular element is not completely specified.",
+      "ExtendedDescription": null,
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Class": "Not Language-Specific",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Implementation"
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Integrity",
+            "Other"
+          ],
+          "Impact": [
+            "Varies by Context",
+            "Unexpected State"
+          ]
+        }
+      ],
+      "DemonstrativeExamples": null,
+      "PotentialMitigations": null
+    },
+    "/cwe/239/parents": {
+      "weakness_parents": [],
+      "category_parents": [
+        "1407",
+        "993"
+      ]
+    },
+    "/cwe/239/children": null
+  }
+}

@@ -1,0 +1,192 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-30T00:14:01.222721",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "863",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/863": {
+      "ID": "863",
+      "Type": "class_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/863": {
+      "ID": "863",
+      "Name": "Incorrect Authorization",
+      "Abstraction": "Class",
+      "Structure": "Simple",
+      "Status": "Incomplete",
+      "Description": "The product performs an authorization check when an actor attempts to access a resource or perform an action, but it does not correctly perform the check.",
+      "ExtendedDescription": null,
+      "LikelihoodOfExploit": "High",
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Class": "Not Language-Specific",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Technology",
+          "Name": "Web Server",
+          "Prevalence": "Often"
+        },
+        {
+          "Type": "Technology",
+          "Name": "Database Server",
+          "Prevalence": "Often"
+        }
+      ],
+      "AlternateTerms": [
+        {
+          "Term": "AuthZ",
+          "Description": "\"AuthZ\" is typically used as an abbreviation of \"authorization\" within the web application security community. It is distinct from \"AuthN\" (or, sometimes, \"AuthC\") which is an abbreviation of \"authentication.\" The use of \"Auth\" as an abbreviation is discouraged, since it could be used for either authentication or authorization."
+        }
+      ],
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Architecture and Design",
+          "Note": "Authorization weaknesses may arise when a single-user application is ported to a multi-user environment."
+        },
+        {
+          "Phase": "Implementation",
+          "Note": "\n\nREALIZATION: This weakness is caused during implementation of an architectural security tactic.\n\n\nA developer may introduce authorization weaknesses because of a lack of understanding about the underlying technologies. For example, a developer may assume that attackers cannot modify certain inputs such as headers or cookies.\n"
+        },
+        {
+          "Phase": "Operation"
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Confidentiality"
+          ],
+          "Impact": [
+            "Read Application Data",
+            "Read Files or Directories"
+          ],
+          "Note": "An attacker could bypass intended access restrictions to read sensitive data, either by reading the data directly from a data store that is not correctly restricted, or by accessing insufficiently-protected, privileged functionality to read the data."
+        },
+        {
+          "Scope": [
+            "Integrity"
+          ],
+          "Impact": [
+            "Modify Application Data",
+            "Modify Files or Directories"
+          ],
+          "Note": "An attacker could bypass intended access restrictions to modify sensitive data, either by writing the data directly to a data store that is not correctly restricted, or by accessing insufficiently-protected, privileged functionality to write the data."
+        },
+        {
+          "Scope": [
+            "Access Control"
+          ],
+          "Impact": [
+            "Gain Privileges or Assume Identity",
+            "Bypass Protection Mechanism"
+          ],
+          "Note": "An attacker could bypass intended access restrictions to gain privileges by modifying or reading critical data directly, or by accessing privileged functionality."
+        },
+        {
+          "Scope": [
+            "Confidentiality",
+            "Integrity",
+            "Availability"
+          ],
+          "Impact": [
+            "Execute Unauthorized Code or Commands"
+          ],
+          "Note": "An attacker could use elevated privileges to execute unauthorized commands or code."
+        },
+        {
+          "Scope": [
+            "Availability"
+          ],
+          "Impact": [
+            "DoS: Crash, Exit, or Restart",
+            "DoS: Resource Consumption (CPU)",
+            "DoS: Resource Consumption (Memory)",
+            "DoS: Resource Consumption (Other)"
+          ],
+          "Note": "An attacker could gain unauthorized access to resources on the system and excessively consume those resources, leading to a denial of service."
+        }
+      ],
+      "DemonstrativeExamples": [
+        {
+          "Entries": [
+            {
+              "IntroText": "The following code could be for a medical records application. It displays a record to already authenticated users, confirming the user's authorization using a value stored in a cookie."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "PHP",
+              "ExampleCode": "```\n\t$role = $_COOKIES['role'];\n\tif (!$role) {\n\t\t$role = getRole('user');\n\t\tif ($role) {\n\t\t\t// save the cookie to send out in future responses\n\t\t\tsetcookie(\"role\", $role, time()+60*60*2);\n\t\t}\n\t\telse{\n\t\t\tShowLoginScreen();\n\t\t\tdie(\"\\n\");\n\t\t}\n\t}\n\tif ($role == 'Reader') {\n\t\tDisplayMedicalHistory($_POST['patient_ID']);\n\t}\n\telse{\n\t\tdie(\"You are not Authorized to view this record\\n\");\n\t}\n```"
+            },
+            {
+              "BodyText": "The programmer expects that the cookie will only be set when getRole() succeeds. The programmer even diligently specifies a 2-hour expiration for the cookie. However, the attacker can easily set the \"role\" cookie to the value \"Reader\". As a result, the $role variable is \"Reader\", and getRole() is never invoked. The attacker has bypassed the authorization system."
+            }
+          ]
+        }
+      ],
+      "PotentialMitigations": [
+        {
+          "Phase": [
+            "Architecture and Design"
+          ],
+          "Description": "\n\nDivide the product into anonymous, normal, privileged, and administrative areas. Reduce the attack surface by carefully mapping roles with data and functionality. Use role-based access control (RBAC) [REF-229] to enforce the roles at the appropriate boundaries.\n\n\nNote that this approach may not protect against horizontal authorization, i.e., it will not protect a user from attacking others with the same role.\n"
+        },
+        {
+          "Phase": [
+            "Architecture and Design"
+          ],
+          "Description": "Ensure that access control checks are performed related to the business logic. These checks may be different than the access control checks that are applied to more generic resources such as files, connections, processes, memory, and database records. For example, a database may restrict access for medical records to a specific database user, but each record might only be intended to be accessible to the patient and the patient's doctor [REF-7]."
+        },
+        {
+          "MitigationID": "MIT-4.4",
+          "Phase": [
+            "Architecture and Design"
+          ],
+          "Strategy": "Libraries or Frameworks",
+          "Description": "\n\nUse a vetted library or framework that does not allow this weakness to occur or provides constructs that make this weakness easier to avoid.\n\n\nFor example, consider using authorization frameworks such as the JAAS Authorization Framework [REF-233] and the OWASP ESAPI Access Control feature [REF-45].\n"
+        },
+        {
+          "Phase": [
+            "Architecture and Design"
+          ],
+          "Description": "\n\nFor web applications, make sure that the access control mechanism is enforced correctly at the server side on every page. Users should not be able to access any unauthorized functionality or information by simply requesting direct access to that page.\n\n\nOne way to do this is to ensure that all pages containing sensitive information are not cached, and that all such pages restrict access to requests that are accompanied by an active and authenticated session token associated with a user who has the required permissions to access that page.\n"
+        },
+        {
+          "Phase": [
+            "System Configuration",
+            "Installation"
+          ],
+          "Description": "Use the access control capabilities of your operating system and server environment and define your access control lists accordingly. Use a \"default deny\" policy when defining these ACLs."
+        }
+      ]
+    },
+    "/cwe/863/parents": {
+      "weakness_parents": [
+        "285"
+      ],
+      "category_parents": [
+        "1011",
+        "1345",
+        "1396",
+        "813",
+        "817",
+        "866"
+      ]
+    },
+    "/cwe/863/children": {
+      "weakness_children": [
+        "1244",
+        "551",
+        "639",
+        "647",
+        "804",
+        "942"
+      ],
+      "category_children": []
+    }
+  }
+}

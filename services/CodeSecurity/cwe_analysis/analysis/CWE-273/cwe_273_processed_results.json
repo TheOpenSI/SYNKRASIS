@@ -1,0 +1,118 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T23:03:04.791944",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "273",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/273": {
+      "ID": "273",
+      "Type": "base_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/273": {
+      "ID": "273",
+      "Name": "Improper Check for Dropped Privileges",
+      "Abstraction": "Base",
+      "Structure": "Simple",
+      "Status": "Incomplete",
+      "Description": "The product attempts to drop privileges but does not check or incorrectly checks to see if the drop succeeded.",
+      "ExtendedDescription": "If the drop fails, the product will continue to run with the raised privileges, which might provide additional access to unprivileged users.",
+      "LikelihoodOfExploit": "Medium",
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Class": "Not Language-Specific",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Implementation",
+          "Note": "\n\nREALIZATION: This weakness is caused during implementation of an architectural security tactic.\n\n\nThis issue is likely to occur in restrictive environments in which the operating system or application provides fine-grained control over privilege management.\n"
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Access Control"
+          ],
+          "Impact": [
+            "Gain Privileges or Assume Identity"
+          ],
+          "Note": "If privileges are not dropped, neither are access rights of the user. Often these rights can be prevented from being dropped."
+        },
+        {
+          "Scope": [
+            "Access Control",
+            "Non-Repudiation"
+          ],
+          "Impact": [
+            "Gain Privileges or Assume Identity",
+            "Hide Activities"
+          ],
+          "Note": "If privileges are not dropped, in some cases the system may record actions as the user which is being impersonated rather than the impersonator."
+        }
+      ],
+      "DemonstrativeExamples": [
+        {
+          "Entries": [
+            {
+              "IntroText": "This code attempts to take on the privileges of a user before creating a file, thus avoiding performing the action with unnecessarily high privileges:"
+            },
+            {
+              "Nature": "Bad",
+              "Language": "C++",
+              "ExampleCode": "```\n\tbool DoSecureStuff(HANDLE hPipe) {\n\t\tbool fDataWritten = false;\n\t\tImpersonateNamedPipeClient(hPipe);\n\t\tHANDLE hFile = CreateFile(...);\n\t\t/../\n\t\tRevertToSelf()\n\t\t/../\n\t}\n```"
+            },
+            {
+              "BodyText": "The call to ImpersonateNamedPipeClient may fail, but the return value is not checked. If the call fails, the code may execute with higher privileges than intended. In this case, an attacker could exploit this behavior to write a file to a location that the attacker does not have access to."
+            }
+          ]
+        }
+      ],
+      "PotentialMitigations": [
+        {
+          "MitigationID": "MIT-46",
+          "Phase": [
+            "Architecture and Design"
+          ],
+          "Strategy": "Separation of Privilege",
+          "Description": "\n\nCompartmentalize the system to have \"safe\" areas where trust boundaries can be unambiguously drawn. Do not allow sensitive data to go outside of the trust boundary and always be careful when interfacing with a compartment outside of the safe area.\n\n\nEnsure that appropriate compartmentalization is built into the system design, and the compartmentalization allows for and reinforces privilege separation functionality. Architects and designers should rely on the principle of least privilege to decide the appropriate time to use privileges and the time to drop privileges.\n"
+        },
+        {
+          "MitigationID": "MIT-53",
+          "Phase": [
+            "Implementation"
+          ],
+          "Description": "Check the results of all functions that return a value and verify that the value is expected.",
+          "Effectiveness": "High",
+          "EffectivenessNotes": "Checking the return value of the function will typically be sufficient, however beware of race conditions (CWE-362) in a concurrent environment."
+        },
+        {
+          "Phase": [
+            "Implementation"
+          ],
+          "Description": "In Windows, make sure that the process token has the SeImpersonatePrivilege(Microsoft Server 2003). Code that relies on impersonation for security must ensure that the impersonation succeeded, i.e., that a proper privilege demotion happened."
+        }
+      ]
+    },
+    "/cwe/273/parents": {
+      "weakness_parents": [
+        "271",
+        "754"
+      ],
+      "category_parents": [
+        "1011",
+        "1171",
+        "1396",
+        "265",
+        "748",
+        "962"
+      ]
+    },
+    "/cwe/273/children": null
+  }
+}

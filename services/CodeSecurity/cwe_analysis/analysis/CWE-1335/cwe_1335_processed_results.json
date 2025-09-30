@@ -1,0 +1,125 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T22:39:52.950790",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "1335",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/1335": {
+      "ID": "1335",
+      "Type": "base_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/1335": {
+      "ID": "1335",
+      "Name": "Incorrect Bitwise Shift of Integer",
+      "Abstraction": "Base",
+      "Structure": "Simple",
+      "Status": "Draft",
+      "Description": "An integer value is specified to be shifted by a negative amount or an amount greater than or equal to the number of bits contained in the value causing an unexpected or indeterminate result.",
+      "ExtendedDescription": "\n\nSpecifying a value to be shifted by a negative amount is undefined in various languages. Various computer architectures implement this action in different ways. The compilers and interpreters when generating code to accomplish a shift generally do not do a check for this issue.\n\n\nSpecifying an over-shift, a shift greater than or equal to the number of bits contained in a value to be shifted, produces a result which varies by architecture and compiler. In some languages, this action is specifically listed as producing an undefined result.\n",
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Name": "C",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Language",
+          "Name": "C++",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Language",
+          "Name": "C#",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Language",
+          "Name": "Java",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Language",
+          "Name": "JavaScript",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Operating_System",
+          "Class": "Not OS-Specific",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Technology",
+          "Class": "Not Technology-Specific",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Implementation",
+          "Note": "Adding shifts without properly verifying the size and sign of the shift amount."
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Integrity"
+          ],
+          "Impact": [
+            "DoS: Crash, Exit, or Restart"
+          ]
+        }
+      ],
+      "DemonstrativeExamples": [
+        {
+          "Entries": [
+            {
+              "IntroText": "A negative shift amount for an x86 or x86_64 shift instruction will produce the number of bits to be shifted by taking a 2's-complement of the shift amount and effectively masking that amount to the lowest 6 bits for a 64 bit shift instruction."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "C",
+              "ExampleCode": "unsigned int r = 1 << -5;"
+            },
+            {
+              "BodyText": "The example above ends up with a shift amount of -5. The hexadecimal value is FFFFFFFFFFFFFFFD which, when bits above the 6th bit are masked off, the shift amount becomes a binary shift value of 111101 which is 61 decimal. A shift of 61 produces a very different result than -5. The previous example is a very simple version of the following code which is probably more realistic of what happens in a real system."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "C",
+              "ExampleCode": "int choose_bit(int reg_bit, int bit_number_from_elsewhere) \n {\n\n```\n\t if (NEED_TO_SHIFT)\n\t {\n\t\t reg_bit -= bit_number_from_elsewhere;\n\t }\n\t return reg_bit;\n }\n unsigned int handle_io_register(unsigned int *r)\n {\n\t unsigned int the_bit = 1 << choose_bit(5, 10);\n\t *r |= the_bit;\n\t return the_bit;\n }\n```"
+            },
+            {
+              "Nature": "Good",
+              "Language": "C",
+              "ExampleCode": "int choose_bit(int reg_bit, int bit_number_from_elsewhere) \n {\n\n```\n\t if (NEED_TO_SHIFT)\n\t {\n\t\t reg_bit -= bit_number_from_elsewhere;\n\t }\n\t return reg_bit;\n }\n unsigned int handle_io_register(unsigned int *r)\n {\n\t int the_bit_number = choose_bit(5, 10);\n\t if ((the_bit_number > 0) && (the_bit_number < 63))\n\t {\n\t\t unsigned int the_bit = 1 << the_bit_number;\n\t\t *r |= the_bit;\n\t }\n\t return the_bit;\n }\n```"
+            },
+            {
+              "BodyText": "Note that the good example not only checks for negative shifts and disallows them, but it also checks for over-shifts. No bit operation is done if the shift is out of bounds. Depending on the program, perhaps an error message should be logged."
+            }
+          ]
+        }
+      ],
+      "PotentialMitigations": [
+        {
+          "Phase": [
+            "Implementation"
+          ],
+          "Description": "Implicitly or explicitly add checks and mitigation for negative or over-shift values."
+        }
+      ]
+    },
+    "/cwe/1335/parents": {
+      "weakness_parents": [],
+      "category_parents": [
+        "1408",
+        "189"
+      ]
+    },
+    "/cwe/1335/children": null
+  }
+}

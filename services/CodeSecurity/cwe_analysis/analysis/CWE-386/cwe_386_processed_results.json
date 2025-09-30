@@ -1,0 +1,110 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T23:18:23.106313",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "386",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/386": {
+      "ID": "386",
+      "Type": "base_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/386": {
+      "ID": "386",
+      "Name": "Symbolic Name not Mapping to Correct Object",
+      "Abstraction": "Base",
+      "Structure": "Simple",
+      "Status": "Draft",
+      "Description": "A constant symbolic reference to an object is used, even though the reference can resolve to a different object over time.",
+      "ExtendedDescription": null,
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Class": "Not Language-Specific",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Architecture and Design"
+        },
+        {
+          "Phase": "Implementation"
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Access Control"
+          ],
+          "Impact": [
+            "Gain Privileges or Assume Identity"
+          ],
+          "Note": "The attacker can gain access to otherwise unauthorized resources."
+        },
+        {
+          "Scope": [
+            "Integrity",
+            "Confidentiality",
+            "Other"
+          ],
+          "Impact": [
+            "Modify Application Data",
+            "Modify Files or Directories",
+            "Read Application Data",
+            "Read Files or Directories",
+            "Other"
+          ],
+          "Note": "Race conditions such as this kind may be employed to gain read or write access to resources not normally readable or writable by the user in question."
+        },
+        {
+          "Scope": [
+            "Integrity",
+            "Other"
+          ],
+          "Impact": [
+            "Modify Application Data",
+            "Other"
+          ],
+          "Note": "The resource in question, or other resources (through the corrupted one) may be changed in undesirable ways by a malicious user."
+        },
+        {
+          "Scope": [
+            "Non-Repudiation"
+          ],
+          "Impact": [
+            "Hide Activities"
+          ],
+          "Note": "If a file or other resource is written in this method, as opposed to a valid way, logging of the activity may not occur."
+        },
+        {
+          "Scope": [
+            "Non-Repudiation",
+            "Integrity"
+          ],
+          "Impact": [
+            "Modify Files or Directories"
+          ],
+          "Note": "In some cases it may be possible to delete files that a malicious user might not otherwise have access to -- such as log files."
+        }
+      ],
+      "DemonstrativeExamples": null,
+      "PotentialMitigations": null
+    },
+    "/cwe/386/parents": {
+      "weakness_parents": [
+        "706"
+      ],
+      "category_parents": [
+        "1416",
+        "557",
+        "980"
+      ]
+    },
+    "/cwe/386/children": null
+  }
+}

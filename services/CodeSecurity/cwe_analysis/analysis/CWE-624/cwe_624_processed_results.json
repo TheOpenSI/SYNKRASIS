@@ -1,0 +1,75 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T23:50:06.506777",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "624",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/624": {
+      "ID": "624",
+      "Type": "base_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/624": {
+      "ID": "624",
+      "Name": "Executable Regular Expression Error",
+      "Abstraction": "Base",
+      "Structure": "Simple",
+      "Status": "Incomplete",
+      "Description": "The product uses a regular expression that either (1) contains an executable component with user-controlled inputs, or (2) allows a user to enable execution by inserting pattern modifiers.",
+      "ExtendedDescription": "Case (2) is possible in the PHP preg_replace() function, and possibly in other languages when a user-controlled input is inserted into a string that is later parsed as a regular expression.",
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Name": "PHP",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Language",
+          "Name": "Perl",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Implementation"
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Confidentiality",
+            "Integrity",
+            "Availability"
+          ],
+          "Impact": [
+            "Execute Unauthorized Code or Commands"
+          ]
+        }
+      ],
+      "DemonstrativeExamples": null,
+      "PotentialMitigations": [
+        {
+          "Phase": [
+            "Implementation"
+          ],
+          "Description": "The regular expression feature in some languages allows inputs to be quoted or escaped before insertion, such as \\Q and \\E in Perl."
+        }
+      ]
+    },
+    "/cwe/624/parents": {
+      "weakness_parents": [
+        "77"
+      ],
+      "category_parents": [
+        "1409",
+        "19",
+        "990"
+      ]
+    },
+    "/cwe/624/children": null
+  }
+}

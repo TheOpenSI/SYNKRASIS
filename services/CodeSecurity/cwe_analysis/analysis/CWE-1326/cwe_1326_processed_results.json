@@ -1,0 +1,141 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T22:38:45.111167",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "1326",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/1326": {
+      "ID": "1326",
+      "Type": "base_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/1326": {
+      "ID": "1326",
+      "Name": "Missing Immutable Root of Trust in Hardware",
+      "Abstraction": "Base",
+      "Structure": "Simple",
+      "Status": "Draft",
+      "Description": "A missing immutable root of trust in the hardware results in the ability to bypass secure boot or execute untrusted or adversarial boot code.",
+      "ExtendedDescription": "\n\nA System-on-Chip (SoC) implements secure boot by verifying or authenticating signed boot code. The signing of the code is achieved by an entity that the SoC trusts. Before executing the boot code, the SoC verifies that the code or the public key with which the code has been signed has not been tampered with. The other data upon which the SoC depends are system-hardware settings in fuses such as whether \"Secure Boot is enabled\". These data play a crucial role in establishing a Root of Trust (RoT) to execute secure-boot flows.\n\n\nOne of the many ways RoT is achieved is by storing the code and data in memory or fuses. This memory should be immutable, i.e., once the RoT is programmed/provisioned in memory, that memory should be locked and prevented from further programming or writes. If the memory contents (i.e., RoT) are mutable, then an adversary can modify the RoT to execute their choice of code, resulting in a compromised secure boot.\n\n\nNote that, for components like ROM, secure patching/update features should be supported to allow authenticated and authorized updates in the field. \n",
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Class": "Not Language-Specific",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Operating_System",
+          "Class": "Not OS-Specific",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Architecture",
+          "Class": "Not Architecture-Specific",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Technology",
+          "Name": "Security Hardware",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Technology",
+          "Class": "Not Technology-Specific",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Architecture and Design"
+        },
+        {
+          "Phase": "Implementation",
+          "Note": "Such issues could be introduced during policy definition, hardware architecture, design, manufacturing, and/or provisioning. They can be identified later during testing or system configuration phases."
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Authentication",
+            "Authorization"
+          ],
+          "Impact": [
+            "Gain Privileges or Assume Identity",
+            "Execute Unauthorized Code or Commands",
+            "Modify Memory"
+          ],
+          "Likelihood": [
+            "High"
+          ]
+        }
+      ],
+      "DemonstrativeExamples": [
+        {
+          "Entries": [
+            {
+              "IntroText": "The RoT is stored in memory. This memory can be modified by an adversary. For example, if an SoC implements \"Secure Boot\" by storing the boot code in an off-chip/on-chip flash, the contents of the flash can be modified by using a flash programmer. Similarly, if the boot code is stored in ROM (Read-Only Memory) but the public key or the hash of the public key (used to enable \"Secure Boot\") is stored in Flash or a memory that is susceptible to modifications or writes, the implementation is vulnerable."
+            },
+            {
+              "BodyText": "In general, if the boot code, key materials and data that enable \"Secure Boot\" are all mutable, the implementation is vulnerable."
+            },
+            {
+              "BodyText": "Good architecture defines RoT as immutable in hardware. One of the best ways to achieve immutability is to store boot code, public key or hash of the public key and other relevant data in Read-Only Memory (ROM) or One-Time Programmable (OTP) memory that prevents further programming or writes."
+            }
+          ]
+        },
+        {
+          "Entries": [
+            {
+              "IntroText": "The example code below is a snippet from the bootrom of the HACK@DAC'19 buggy OpenPiton SoC [REF-1348]. The contents of the bootrom are critical in implementing the hardware root of trust."
+            },
+            {
+              "BodyText": "It performs security-critical functions such as defining the system's device tree, validating the hardware cryptographic accelerators in the system, etc. Hence, write access to bootrom should be strictly limited to authorized users or removed completely so that bootrom is immutable. In this example (see the vulnerable code source), the boot instructions are stored in bootrom memory, mem. This memory can be read using the read address, addr_i, but write access should be restricted or removed."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "Verilog",
+              "ExampleCode": "```\n\t...\n\t\talways_ff @(posedge clk_i) begin\n\t\t\tif (req_i) begin\n\t\t\t\tif (!we_i) begin\n\t\t\t\t\traddr_q <= addr_i[$clog2(RomSize)-1+3:3];\n\t\t\t\t end else begin \n```\nmem[addr_i[$clog2(RomSize)-1+3:3]] <= wdata_i;**  end end end ...\n\n```\n\t // this prevents spurious Xes from propagating into the speculative fetch stage of the core \n\tassign rdata_o = (raddr_q < RomSize) ? mem[raddr_q] : '0;\n\t ... \n```"
+            },
+            {
+              "BodyText": "The vulnerable code shows an insecure implementation of the bootrom where bootrom can be written directly by enabling write enable, we_i, and using write address, addr_i, and write data, wdata_i."
+            },
+            {
+              "BodyText": "To mitigate this issue, remove the write access to bootrom memory. [REF-1349]"
+            },
+            {
+              "Nature": "Good",
+              "Language": "Verilog",
+              "ExampleCode": "```\n\t...\n\t\talways_ff @(posedge clk_i) begin\n```\nif (req_i) begin** \n\t\t\t\n\t\t\t```\n\t\t\t\traddr_q <= addr_i[$clog2(RomSize)-1+3:3];\n\t\t\t end\n\t\t end\n\t ...\n\t // this prevents spurious Xes from propagating into the speculative fetch stage of the core \n\tassign rdata_o = (raddr_q < RomSize) ? mem[raddr_q] : '0;\n\t ... \n```"
+            }
+          ]
+        }
+      ],
+      "PotentialMitigations": [
+        {
+          "Phase": [
+            "Architecture and Design"
+          ],
+          "Description": "When architecting the system, the RoT should be designated for storage in a memory that does not allow further programming/writes."
+        },
+        {
+          "Phase": [
+            "Implementation"
+          ],
+          "Description": "During implementation and test, the RoT memory location should be demonstrated to not allow further programming/writes."
+        }
+      ]
+    },
+    "/cwe/1326/parents": {
+      "weakness_parents": [],
+      "category_parents": [
+        "1196",
+        "1413"
+      ]
+    },
+    "/cwe/1326/children": null
+  }
+}

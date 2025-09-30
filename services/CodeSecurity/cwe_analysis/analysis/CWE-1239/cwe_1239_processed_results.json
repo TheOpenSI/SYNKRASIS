@@ -1,0 +1,121 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T22:27:01.548320",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "1239",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/1239": {
+      "ID": "1239",
+      "Type": "variant_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/1239": {
+      "ID": "1239",
+      "Name": "Improper Zeroization of Hardware Register",
+      "Abstraction": "Variant",
+      "Structure": "Simple",
+      "Status": "Draft",
+      "Description": "The hardware product does not properly clear sensitive information from built-in registers when the user of the hardware block changes.",
+      "ExtendedDescription": "Hardware logic operates on data stored in registers local to the hardware block. Most hardware IPs, including cryptographic accelerators, rely on registers to buffer I/O, store intermediate values, and interface with software. The result of this is that sensitive information, such as passwords or encryption keys, can exist in locations not transparent to the user of the hardware logic. When a different entity obtains access to the IP due to a change in operating mode or conditions, the new entity can extract information belonging to the previous user if no mechanisms are in place to clear register contents. It is important to clear information stored in the hardware if a physical attack on the product is detected, or if the user of the hardware block changes. The process of clearing register contents in a hardware IP is referred to as zeroization in standards for cryptographic hardware modules such as FIPS-140-2 [REF-267].",
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Class": "Not Language-Specific",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Operating_System",
+          "Class": "Not OS-Specific",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Architecture",
+          "Class": "Not Architecture-Specific",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Technology",
+          "Class": "System on Chip",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Architecture and Design",
+          "Note": "Lack of hardware mechanisms to zeroize or clear registers in the design or specification."
+        },
+        {
+          "Phase": "Implementation",
+          "Note": "Mechanisms to zeroize and clear registers are in the design but implemented incorrectly."
+        },
+        {
+          "Phase": "Operation",
+          "Note": "Hardware-provided zeroization mechanisms are not used appropriately by the IP user (ex. firmware), or data remanence issues are not taken into account."
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Confidentiality"
+          ],
+          "Impact": [
+            "Varies by Context"
+          ],
+          "Note": "The consequences will depend on the information disclosed due to the vulnerability."
+        }
+      ],
+      "DemonstrativeExamples": [
+        {
+          "Entries": [
+            {
+              "IntroText": "Suppose a hardware IP for implementing an encryption routine works as expected, but it leaves the intermediate results in some registers that can be accessed. Exactly why this access happens is immaterial - it might be unintentional or intentional, where the designer wanted a \"quick fix\" for something."
+            }
+          ]
+        },
+        {
+          "Entries": [
+            {
+              "IntroText": "The example code below [REF-1379] is taken from the SHA256 Interface/wrapper controller module of the HACK@DAC'21 buggy OpenPiton SoC. Within the wrapper module there are a set of 16 memory-mapped registers referenced data[0] to data[15]. These registers are 32 bits in size and are used to store the data received on the AXI Lite interface for hashing. Once both the message to be hashed and a request to start the hash computation are received, the values of these registers will be forwarded to the underlying SHA256 module for processing. Once forwarded, the values in these registers no longer need to be retained. In fact, if not cleared or overwritten, these sensitive values can be read over the AXI Lite interface, potentially compromising any previously confidential data stored therein."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "Verilog",
+              "ExampleCode": "...\n\n```\n\t // Implement SHA256 I/O memory map interface\n\t // Write side\n\t always @(posedge clk_i)\n\t\t begin\n\t\t\t if(~(rst_ni && ~rst_3))\n\t\t\t\t begin\n\t\t\t\t\t startHash <= 0;\n\t\t\t\t\t newMessage <= 0;\n\t\t\t\t\t data[0] <= 0;\n\t\t\t\t\t data[1] <= 0;\n\t\t\t\t\t data[2] <= 0;\n\t\t\t\t\t ...\n\t\t\t\t\t data[14] <= 0;\n\t\t\t\t\t data[15] <= 0;\n ...\n```"
+            },
+            {
+              "BodyText": "In the previous code snippet [REF-1379] there is the lack of a data clearance mechanism for the memory-mapped I/O registers after their utilization. These registers get cleared only when a reset condition is met. This condition is met when either the global negative-edge reset input signal (rst_ni) or the dedicated reset input signal for SHA256 peripheral (rst_3) is active. In other words, if either of these reset signals is true, the registers will be cleared. However, in cases where there is not a reset condition these registers retain their values until the next hash operation. It is during the time between an old hash operation and a new hash operation that that data is open to unauthorized disclosure."
+            },
+            {
+              "BodyText": "To correct the issue of data persisting between hash operations, the memory mapped I/O registers need to be cleared once the values written in these registers are propagated to the SHA256 module. This could be done for example by adding a new condition to zeroize the memory mapped I/O registers once the hash value is computed, i.e., hashValid signal asserted, as shown in the good code example below [REF-1380]. This fix will clear the memory-mapped I/O registers after the data has been provided as input to the SHA engine."
+            },
+            {
+              "Nature": "Good",
+              "Language": "Verilog",
+              "ExampleCode": "...\n\n```\n\t // Implement SHA256 I/O memory map interface\n\t // Write side\n\t always @(posedge clk_i)\n\t\t begin\n\t\t\t if(~(rst_ni && ~rst_3))\n\t\t\t\t begin\n\t\t\t\t\t startHash <= 0;\n\t\t\t\t\t newMessage <= 0;\n\t\t\t\t\t data[0] <= 0;\n\t\t\t\t\t data[1] <= 0;\n\t\t\t\t\t data[2] <= 0;\n\t\t\t\t\t ...\n\t\t\t\t\t data[14] <= 0;\n\t\t\t\t\t data[15] <= 0;\n\t\t\t\t end\n```\nelse if(hashValid && ~hashValid_r)** \n\t\t\t```\n```\nbegin** \n\t\t\t\t```\n```\ndata[0] <= 0;** \n\t\t\t\t\t\n\t\t\t\t\t **data[1] <= 0;** \n\t\t\t\t\t\n\t\t\t\t\t **data[2] <= 0;** \n\t\t\t\t\t\n\t\t\t\t\t **...** \n\t\t\t\t\t\n\t\t\t\t\t **data[14] <= 0;** \n\t\t\t\t\t\n\t\t\t\t\t **data[15] <= 0;** \n\t\t\t\t\t end\n\t\t\t\t ..."
+            }
+          ]
+        }
+      ],
+      "PotentialMitigations": [
+        {
+          "Phase": [
+            "Architecture and Design"
+          ],
+          "Description": "Every register potentially containing sensitive information must have a policy specifying how and when information is cleared, in addition to clarifying if it is the responsibility of the hardware logic or IP user to initiate the zeroization procedure at the appropriate time.",
+          "EffectivenessNotes": "Unfortunately, data disclosure can occur even after information has been overwritten/zeroized from the digital perspective. Physical characteristics of the memory can reveal the history of previously written data. For example, if the same value is written repeatedly to a memory location, the corresponding memory cells can become physically altered to a degree that even if the original data is erased it can still be recovered through physical characterization of the memory cells [REF-1055]."
+        }
+      ]
+    },
+    "/cwe/1239/parents": {
+      "weakness_parents": [],
+      "category_parents": [
+        "1416"
+      ]
+    },
+    "/cwe/1239/children": null
+  }
+}

@@ -1,0 +1,201 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T23:25:46.880923",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "444",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/444": {
+      "ID": "444",
+      "Type": "base_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/444": {
+      "ID": "444",
+      "Name": "Inconsistent Interpretation of HTTP Requests ('HTTP Request/Response Smuggling')",
+      "Abstraction": "Base",
+      "Structure": "Simple",
+      "Status": "Incomplete",
+      "Description": "The product acts as an intermediary HTTP agent\n         (such as a proxy or firewall) in the data flow between two\n         entities such as a client and server, but it does not\n         interpret malformed HTTP requests or responses in ways that\n         are consistent with how the messages will be processed by\n         those entities that are at the ultimate destination.",
+      "ExtendedDescription": "\n\nHTTP requests or responses (\"messages\") can be malformed or unexpected in ways that cause web servers or clients to interpret the messages in different ways than intermediary HTTP agents such as load balancers, reverse proxies, web caching proxies, application firewalls, etc. For example, an adversary may be able to add duplicate or different header fields that a client or server might interpret as one set of messages, whereas the intermediary might interpret the same sequence of bytes as a different set of messages. For example, discrepancies can arise in how to handle duplicate headers like two Transfer-encoding (TE) or two Content-length (CL), or the malicious HTTP message will have different headers for TE and CL.\n\n\nThe inconsistent parsing and interpretation of messages can allow the adversary to \"smuggle\" a message to the client/server without the intermediary being aware of it.\n\n\nThis weakness is usually the result of the usage of outdated or incompatible HTTP protocol versions in the HTTP agents.\n",
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Class": "Not Language-Specific",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Technology",
+          "Class": "Web Based",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": [
+        {
+          "Term": "HTTP Request Smuggling"
+        },
+        {
+          "Term": "HTTP Response Smuggling"
+        },
+        {
+          "Term": "HTTP Smuggling"
+        }
+      ],
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Implementation"
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Integrity",
+            "Non-Repudiation",
+            "Access Control"
+          ],
+          "Impact": [
+            "Unexpected State",
+            "Hide Activities",
+            "Bypass Protection Mechanism"
+          ],
+          "Note": "An attacker could create HTTP messages to exploit a number of weaknesses including 1) the message can trick the web server to associate a URL with another URL's webpage and caching the contents of the webpage (web cache poisoning attack), 2) the message can be structured to bypass the firewall protection mechanisms and gain unauthorized access to a web application, and 3) the message can invoke a script or a page that returns client credentials (similar to a Cross Site Scripting attack)."
+        }
+      ],
+      "DemonstrativeExamples": [
+        {
+          "Entries": [
+            {
+              "IntroText": "In the following example, a malformed HTTP request is sent to a website that includes a proxy server and a web server with the intent of poisoning the cache to associate one webpage with another malicious webpage."
+            },
+            {
+              "Nature": "Attack",
+              "ExampleCode": "POST http://www.website.com/foobar.html HTTP/1.1\n Host: www.website.com\n Connection: Keep-Alive\n Content-Type: application/x-www-form-urlencoded\n Content-Length: 0\n Content-Length: 54\n\n GET /poison.html HTTP/1.1\n Host: www.website.com\n Bla: GET http://www.website.com/page_to_poison.html HTTP/1.1\n Host: www.website.com\n Connection: Keep-Alive"
+            },
+            {
+              "BodyText": "When this request is sent to the proxy server, the proxy server parses the first four lines of the POST request and encounters the two \"Content-Length\" headers. The proxy server ignores the first header, so it assumes the request has a body of length 54 bytes. Therefore, it treats the data in the next three lines that contain exactly 54 bytes as the first request's body:"
+            },
+            {
+              "Nature": "Result",
+              "ExampleCode": "GET /poison.html HTTP/1.1\n Host: www.website.com\n Bla:"
+            },
+            {
+              "BodyText": "The proxy then parses the remaining bytes, which it treats as the client's second request:"
+            },
+            {
+              "Nature": "Attack",
+              "ExampleCode": "GET http://www.website.com/page_to_poison.html HTTP/1.1\n Host: www.website.com\n Connection: Keep-Alive"
+            },
+            {
+              "BodyText": "The original request is forwarded by the proxy server to the web server. Unlike the proxy, the web server uses the first \"Content-Length\" header and considers that the first POST request has no body."
+            },
+            {
+              "Nature": "Attack",
+              "ExampleCode": "POST http://www.website.com/foobar.html HTTP/1.1\n Host: www.website.com\n Connection: Keep-Alive\n Content-Type: application/x-www-form-urlencoded\n Content-Length: 0\n\n *Content-Length: 54 (ignored by server)*"
+            },
+            {
+              "BodyText": "Because the web server has assumed the original POST request was length 0, it parses the second request that follows, i.e. for GET /poison.html:"
+            },
+            {
+              "Nature": "Attack",
+              "ExampleCode": "GET /poison.html HTTP/1.1\n Host: www.website.com\n Bla: GET http://www.website.com/page_to_poison.html HTTP/1.1\n Host: www.website.com\n Connection: Keep-Alive"
+            },
+            {
+              "BodyText": "Note that the \"Bla:\" header is treated as a regular header, so it is not parsed as a separate GET request."
+            },
+            {
+              "BodyText": "The requests the web server sees are \"POST /foobar.html\" and \"GET /poison.html\", so it sends back two responses with the contents of the \"foobar.html\" page and the \"poison.html\" page, respectively. The proxy matches these responses to the two requests it thinks were sent by the client - \"POST /foobar.html\" and \"GET /page_to_poison.html\". If the response is cacheable, the proxy caches the contents of \"poison.html\" under the URL \"page_to_poison.html\", and the cache is poisoned! Any client requesting \"page_to_poison.html\" from the proxy would receive the \"poison.html\" page."
+            },
+            {
+              "BodyText": "When a website includes both a proxy server and a web server, some protection against this type of attack can be achieved by installing a web application firewall, or using a web server that includes a stricter HTTP parsing procedure or make all webpages non-cacheable."
+            },
+            {
+              "BodyText": "Additionally, if a web application includes a Java servlet for processing requests, the servlet can check for multiple \"Content-Length\" headers and if they are found the servlet can return an error response thereby preventing the poison page to be cached, as shown below."
+            },
+            {
+              "Nature": "Good",
+              "Language": "Java",
+              "ExampleCode": "```\n\tprotected void processRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException { \n```\n// Set up response writer object* \n\t\t\t...\n\t\t\ttry { \n\t\t\t```\n```\n// check for multiple content length headers* \n\t\t\t\t\tEnumeration contentLengthHeaders = request.getHeaders(\"Content-Length\"); \n\t\t\t\t\tint count = 0; \n\t\t\t\t\twhile (contentLengthHeaders.hasMoreElements()) { \n\t\t\t\t\t```\n\t\t\t\t\t\tcount++; \n\t\t\t\t\t} \n\t\t\t\t\tif (count > 1) { \n```\n// output error response* } \n\t\t\t\t\telse { \n\t\t\t\t\t```\n```\n// process request* } \n\t\t\t\t\t} catch (Exception ex) {...}}"
+            }
+          ]
+        },
+        {
+          "Entries": [
+            {
+              "IntroText": "In the following example, a malformed HTTP request is sent to a website that includes a web server with a firewall with the intent of bypassing the web server firewall to smuggle malicious code into the system."
+            },
+            {
+              "Nature": "Attack",
+              "ExampleCode": "```\n\tPOST /page.asp HTTP/1.1\n\tHost: www.website.com\n\tConnection: Keep-Alive\n\tContent-Length: 49223\n\tzzz...zzz [\"z\" x 49152]\n\tPOST /page.asp HTTP/1.0\n\tConnection: Keep-Alive\n\tContent-Length: 30\n\tPOST /page.asp HTTP/1.0\n\tBla: POST /page.asp?cmd.exe HTTP/1.0\n\tConnection: Keep-Alive\n```"
+            },
+            {
+              "BodyText": "When this request is sent to the web server, the first POST request has a content-length of 49,223 bytes, and the firewall treats the line with 49,152 copies of \"z\" and the lines with an additional lines with 71 bytes as its body (49,152+71=49,223). The firewall then continues to parse what it thinks is the second request starting with the line with the third POST request."
+            },
+            {
+              "BodyText": "Note that there is no CRLF after the \"Bla: \" header so the POST in the line is parsed as the value of the \"Bla:\" header. Although the line contains the pattern identified with a worm (\"cmd.exe\"), it is not blocked, since it is considered part of a header value. Therefore, \"cmd.exe\" is smuggled through the firewall."
+            },
+            {
+              "BodyText": "When the request is passed through the firewall the web server the first request is ignored because the web server does not find an expected \"Content-Type: application/x-www-form-urlencoded\" header, and starts parsing the second request."
+            },
+            {
+              "BodyText": "This second request has a content-length of 30 bytes, which is exactly the length of the next two lines up to the space after the \"Bla:\" header. And unlike the firewall, the web server processes the final POST as a separate third request and the \"cmd.exe\" worm is smuggled through the firewall to the web server."
+            },
+            {
+              "BodyText": "To avoid this attack a Web server firewall product must be used that is designed to prevent this type of attack."
+            }
+          ]
+        },
+        {
+          "Entries": [
+            {
+              "IntroText": "The interpretation of HTTP responses can be manipulated if response headers include a space between the header name and colon, or if HTTP 1.1 headers are sent through a proxy configured for HTTP 1.0, allowing for HTTP response smuggling. This can be exploited in web browsers and other applications when used in combination with various proxy servers. For instance, the HTTP response interpreted by the front-end/client HTTP agent/entity - in this case the web browser - can interpret a single response from an adversary-compromised web server as being two responses from two different web sites. In the Example below, notice the extra space after the Content-Length and Set-Cookie headers."
+            },
+            {
+              "Nature": "Attack",
+              "ExampleCode": "HTTP/1.1 200 OK\n Date: Fri, 08 Aug 2016 08:12:31 GMT\n Server: Apache (Unix)\n Connection: Keep-Alive\n Content-Encoding: gzip\n Content-Type: text/html\n\n **Content-Length :**  2345\n Transfer-Encoding: chunked\n\n **Set-Cookie :**  token=\"Malicious Code\"\n\n <HTML> ... \"Malicious Code\""
+            }
+          ]
+        }
+      ],
+      "PotentialMitigations": [
+        {
+          "Phase": [
+            "Implementation"
+          ],
+          "Description": "Use a web server that employs a strict HTTP parsing procedure, such as Apache [REF-433]."
+        },
+        {
+          "Phase": [
+            "Implementation"
+          ],
+          "Description": "Use only SSL communication."
+        },
+        {
+          "Phase": [
+            "Implementation"
+          ],
+          "Description": "Terminate the client session after each request."
+        },
+        {
+          "Phase": [
+            "System Configuration"
+          ],
+          "Description": "Turn all pages to non-cacheable."
+        }
+      ]
+    },
+    "/cwe/444/parents": {
+      "weakness_parents": [
+        "436"
+      ],
+      "category_parents": [
+        "1348",
+        "1398",
+        "438",
+        "990"
+      ]
+    },
+    "/cwe/444/children": null
+  }
+}

@@ -1,0 +1,63 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T22:18:01.770198",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "1104",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/1104": {
+      "ID": "1104",
+      "Type": "base_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/1104": {
+      "ID": "1104",
+      "Name": "Use of Unmaintained Third Party Components",
+      "Abstraction": "Base",
+      "Structure": "Simple",
+      "Status": "Incomplete",
+      "Description": "The product relies on third-party components that are not\n\t\t\t\t\tactively supported or maintained by the original developer or a trusted proxy\n\t\t\t\t\tfor the original developer.",
+      "ExtendedDescription": "\n\nReliance on components that are no longer maintained can make it difficult or impossible to fix significant bugs, vulnerabilities, or quality issues. In effect, unmaintained code can become obsolete.\n\n\nThis issue makes it more difficult to maintain the product, which indirectly affects security by making it more difficult or time-consuming to find and/or fix vulnerabilities. It also might make it easier to introduce vulnerabilities.\n",
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": [
+        {
+          "Type": "Technology",
+          "Class": "Not Technology-Specific",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Technology",
+          "Class": "ICS/OT",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": null,
+      "ModesOfIntroduction": null,
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Other"
+          ],
+          "Impact": [
+            "Reduce Maintainability"
+          ]
+        }
+      ],
+      "DemonstrativeExamples": null,
+      "PotentialMitigations": null
+    },
+    "/cwe/1104/parents": {
+      "weakness_parents": [
+        "1357"
+      ],
+      "category_parents": [
+        "1352",
+        "1368",
+        "1415",
+        "1006"
+      ]
+    },
+    "/cwe/1104/children": null
+  }
+}

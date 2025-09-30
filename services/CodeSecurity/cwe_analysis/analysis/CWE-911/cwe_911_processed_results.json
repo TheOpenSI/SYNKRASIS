@@ -1,0 +1,85 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-30T00:15:38.460390",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "911",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/911": {
+      "ID": "911",
+      "Type": "base_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/911": {
+      "ID": "911",
+      "Name": "Improper Update of Reference Count",
+      "Abstraction": "Base",
+      "Structure": "Simple",
+      "Status": "Incomplete",
+      "Description": "The product uses a reference count to manage a resource, but it does not update or incorrectly updates the reference count.",
+      "ExtendedDescription": "Reference counts can be used when tracking how many objects contain a reference to a particular resource, such as in memory management or garbage collection. When the reference count reaches zero, the resource can be de-allocated or reused because there are no more objects that use it. If the reference count accidentally reaches zero, then the resource might be released too soon, even though it is still in use. If all objects no longer use the resource, but the reference count is not zero, then the resource might not ever be released.",
+      "LikelihoodOfExploit": "Medium",
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Name": "C",
+          "Prevalence": "Sometimes"
+        },
+        {
+          "Type": "Language",
+          "Name": "C++",
+          "Prevalence": "Sometimes"
+        },
+        {
+          "Type": "Language",
+          "Class": "Not Language-Specific",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Implementation"
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Availability"
+          ],
+          "Impact": [
+            "DoS: Resource Consumption (Memory)",
+            "DoS: Resource Consumption (Other)"
+          ],
+          "Likelihood": [
+            "High"
+          ],
+          "Note": "An adversary that can cause a resource counter to become inaccurate may be able to create situations where resources are not accounted for and not released, thus causing resources to become scarce for future needs."
+        },
+        {
+          "Scope": [
+            "Availability"
+          ],
+          "Impact": [
+            "DoS: Crash, Exit, or Restart"
+          ],
+          "Likelihood": [
+            "Low"
+          ],
+          "Note": "An adversary that can cause a resource counter to become inaccurate may be able to force an error that causes the product to crash or exit out of its current operation."
+        }
+      ],
+      "DemonstrativeExamples": null,
+      "PotentialMitigations": null
+    },
+    "/cwe/911/parents": {
+      "weakness_parents": [],
+      "category_parents": [
+        "1416",
+        "399"
+      ]
+    },
+    "/cwe/911/children": null
+  }
+}

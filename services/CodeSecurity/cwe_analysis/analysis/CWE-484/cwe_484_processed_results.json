@@ -1,0 +1,119 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T23:31:00.136561",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "484",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/484": {
+      "ID": "484",
+      "Type": "base_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/484": {
+      "ID": "484",
+      "Name": "Omitted Break Statement in Switch",
+      "Abstraction": "Base",
+      "Structure": "Simple",
+      "Status": "Draft",
+      "Description": "The product omits a break statement within a switch or similar construct, causing code associated with multiple conditions to execute. This can cause problems when the programmer only intended to execute code associated with one condition.",
+      "ExtendedDescription": "This can lead to critical code executing in situations where it should not.",
+      "LikelihoodOfExploit": "Medium",
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Name": "C",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Language",
+          "Name": "C++",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Language",
+          "Name": "Java",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Language",
+          "Name": "C#",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Language",
+          "Name": "PHP",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Implementation"
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Other"
+          ],
+          "Impact": [
+            "Alter Execution Logic"
+          ],
+          "Note": "This weakness can cause unintended logic to be executed and other unexpected application behavior."
+        }
+      ],
+      "DemonstrativeExamples": [
+        {
+          "ID": "DX-182",
+          "Entries": [
+            {
+              "IntroText": "In both of these examples, a message is printed based on the month passed into the function:"
+            },
+            {
+              "Nature": "Bad",
+              "Language": "Java",
+              "ExampleCode": "```\n\tpublic void printMessage(int month){\n\t\t\tswitch (month) {\n\t\t\t\t\tcase 1: print(\"January\");\n\t\t\t\t\tcase 2: print(\"February\");\n\t\t\t\t\tcase 3: print(\"March\");\n\t\t\t\t\tcase 4: print(\"April\");\n\t\t\t\t\tcase 5: print(\"May\");\n\t\t\t\t\tcase 6: print(\"June\");\n\t\t\t\t\tcase 7: print(\"July\");\n\t\t\t\t\tcase 8: print(\"August\");\n\t\t\t\t\tcase 9: print(\"September\");\n\t\t\t\t\tcase 10: print(\"October\");\n\t\t\t\t\tcase 11: print(\"November\");\n\t\t\t\t\tcase 12: print(\"December\");\n\t\t\t}\n\t\t\tprintln(\" is a great month\");\n\t}\n```"
+            },
+            {
+              "Nature": "Bad",
+              "Language": "C",
+              "ExampleCode": "```\n\tvoid printMessage(int month){\n\t\t\tswitch (month) {\n\t\t\t\t\tcase 1: printf(\"January\");\n\t\t\t\t\tcase 2: printf(\"February\");\n\t\t\t\t\tcase 3: printf(\"March\");\n\t\t\t\t\tcase 4: printf(\"April\");\n\t\t\t\t\tcase 5: printff(\"May\");\n\t\t\t\t\tcase 6: printf(\"June\");\n\t\t\t\t\tcase 7: printf(\"July\");\n\t\t\t\t\tcase 8: printf(\"August\");\n\t\t\t\t\tcase 9: printf(\"September\");\n\t\t\t\t\tcase 10: printf(\"October\");\n\t\t\t\t\tcase 11: printf(\"November\");\n\t\t\t\t\tcase 12: printf(\"December\");\n\t\t\t}\n\t\t\tprintf(\" is a great month\");\n\t}\n```"
+            },
+            {
+              "BodyText": "Both examples do not use a break statement after each case, which leads to unintended fall-through behavior. For example, calling \"printMessage(10)\" will result in the text \"OctoberNovemberDecember is a great month\" being printed."
+            }
+          ]
+        }
+      ],
+      "PotentialMitigations": [
+        {
+          "Phase": [
+            "Implementation"
+          ],
+          "Description": "Omitting a break statement so that one may fall through is often indistinguishable from an error, and therefore should be avoided. If you need to use fall-through capabilities, make sure that you have clearly documented this within the switch statement, and ensure that you have examined all the logical possibilities."
+        },
+        {
+          "Phase": [
+            "Implementation"
+          ],
+          "Description": "The functionality of omitting a break statement could be clarified with an if statement. This method is much safer."
+        }
+      ]
+    },
+    "/cwe/484/parents": {
+      "weakness_parents": [
+        "670"
+      ],
+      "category_parents": [
+        "1306",
+        "1307",
+        "1412",
+        "438",
+        "962"
+      ]
+    },
+    "/cwe/484/children": null
+  }
+}

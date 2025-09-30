@@ -1,0 +1,116 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T23:00:12.703312",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "248",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/248": {
+      "ID": "248",
+      "Type": "base_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/248": {
+      "ID": "248",
+      "Name": "Uncaught Exception",
+      "Abstraction": "Base",
+      "Structure": "Simple",
+      "Status": "Draft",
+      "Description": "An exception is thrown from a function, but it is not caught.",
+      "ExtendedDescription": "When an exception is not caught, it may cause the program to crash or expose sensitive information.",
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Name": "C++",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Language",
+          "Name": "Java",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Language",
+          "Name": "C#",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Implementation"
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Availability",
+            "Confidentiality"
+          ],
+          "Impact": [
+            "DoS: Crash, Exit, or Restart",
+            "Read Application Data"
+          ],
+          "Note": "An uncaught exception could cause the system to be placed in a state that could lead to a crash, exposure of sensitive information or other unintended behaviors."
+        }
+      ],
+      "DemonstrativeExamples": [
+        {
+          "ID": "DX-39",
+          "Entries": [
+            {
+              "IntroText": "The following example attempts to resolve a hostname."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "Java",
+              "ExampleCode": "```\n\tprotected void doPost (HttpServletRequest req, HttpServletResponse res) throws IOException {\n\t\tString ip = req.getRemoteAddr();\n\t\tInetAddress addr = InetAddress.getByName(ip);\n\t\t...\n\t\tout.println(\"hello \" + addr.getHostName());\n\t}\n```"
+            },
+            {
+              "BodyText": "A DNS lookup failure will cause the Servlet to throw an exception."
+            }
+          ]
+        },
+        {
+          "Entries": [
+            {
+              "IntroText": "The _alloca() function allocates memory on the stack. If an allocation request is too large for the available stack space, _alloca() throws an exception. If the exception is not caught, the program will crash, potentially enabling a denial of service attack. _alloca() has been deprecated as of Microsoft Visual Studio 2005(R). It has been replaced with the more secure _alloca_s()."
+            }
+          ]
+        },
+        {
+          "Entries": [
+            {
+              "IntroText": "EnterCriticalSection() can raise an exception, potentially causing the program to crash. Under operating systems prior to Windows 2000, the EnterCriticalSection() function can raise an exception in low memory situations. If the exception is not caught, the program will crash, potentially enabling a denial of service attack."
+            }
+          ]
+        }
+      ],
+      "PotentialMitigations": null
+    },
+    "/cwe/248/parents": {
+      "weakness_parents": [
+        "705",
+        "755"
+      ],
+      "category_parents": [
+        "1141",
+        "1181",
+        "1410",
+        "389",
+        "227",
+        "730",
+        "851",
+        "962"
+      ]
+    },
+    "/cwe/248/children": {
+      "weakness_children": [
+        "600"
+      ],
+      "category_children": []
+    }
+  }
+}

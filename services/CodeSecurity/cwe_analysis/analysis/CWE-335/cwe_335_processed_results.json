@@ -1,0 +1,129 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T23:11:39.281305",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "335",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/335": {
+      "ID": "335",
+      "Type": "base_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/335": {
+      "ID": "335",
+      "Name": "Incorrect Usage of Seeds in Pseudo-Random Number Generator (PRNG)",
+      "Abstraction": "Base",
+      "Structure": "Simple",
+      "Status": "Draft",
+      "Description": "The product uses a Pseudo-Random Number Generator (PRNG) but does not correctly manage seeds.",
+      "ExtendedDescription": "\n\n PRNGs are deterministic and, while their output appears random, they cannot actually create entropy. They rely on cryptographically secure and unique seeds for entropy so proper seeding is critical to the secure operation of the PRNG.\n\n\n Management of seeds could be broken down into two main areas: \n\n\n  -  (1) protecting seeds as cryptographic material (such as a cryptographic key); \n\n  -  (2) whenever possible, using a uniquely generated seed from a cryptographically secure source \n\n PRNGs require a seed as input to generate a stream of numbers that are functionally indistinguishable from random numbers. While the output is, in many cases, sufficient for cryptographic uses, the output of any PRNG is directly determined by the seed provided as input. If the seed can be ascertained by a third party, the entire output of the PRNG can be made known to them. As such, the seed should be kept secret and should ideally not be able to be guessed. For example, the current time may be a poor seed. Knowing the approximate time the PRNG was seeded greatly reduces the possible key space. \n\n Seeds do not necessarily need to be unique, but reusing seeds may open up attacks if the seed is discovered. \n",
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Class": "Not Language-Specific",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Implementation",
+          "Note": "REALIZATION: This weakness is caused during implementation of an architectural security tactic."
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Access Control",
+            "Other"
+          ],
+          "Impact": [
+            "Bypass Protection Mechanism",
+            "Other"
+          ],
+          "Note": "If a PRNG is used incorrectly, such as using the same seed for each initialization or using a predictable seed, then an attacker may be able to easily guess the seed and thus the random numbers. This could lead to unauthorized access to a system if the seed is used for authentication and authorization."
+        }
+      ],
+      "DemonstrativeExamples": [
+        {
+          "ID": "DX-177",
+          "Entries": [
+            {
+              "IntroText": "The following code uses a statistical PRNG to generate account IDs."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "Java",
+              "ExampleCode": "```\n\tprivate static final long SEED = 1234567890;\n\tpublic int generateAccountID() {\n\t\tRandom random = new Random(SEED);\n\t\treturn random.nextInt();\n\t}\n```"
+            },
+            {
+              "BodyText": "Because the program uses the same seed value for every invocation of the PRNG, its values are predictable, making the system vulnerable to attack."
+            }
+          ]
+        },
+        {
+          "ID": "DX-102",
+          "Entries": [
+            {
+              "IntroText": "Both of these examples use a statistical PRNG seeded with the current value of the system clock to generate a random number:"
+            },
+            {
+              "Nature": "Bad",
+              "Language": "Java",
+              "ExampleCode": "```\n\tRandom random = new Random(System.currentTimeMillis());\n\tint accountID = random.nextInt();\n```"
+            },
+            {
+              "Nature": "Bad",
+              "Language": "C",
+              "ExampleCode": "```\n\tsrand(time());\n\tint randNum = rand();\n```"
+            },
+            {
+              "BodyText": "An attacker can easily predict the seed used by these PRNGs, and so also predict the stream of random numbers generated. Note these examples also exhibit CWE-338 (Use of Cryptographically Weak PRNG)."
+            }
+          ]
+        },
+        {
+          "ID": "DX-178",
+          "Entries": [
+            {
+              "IntroText": "This code grabs some random bytes and uses them for a seed in a PRNG, in order to generate a new cryptographic key."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "Python",
+              "ExampleCode": "```\n```\n# getting 2 bytes of randomness for the seeding the PRNG * \n\t seed = os.urandom(2)\n\t random.seed(a=seed)\n\t key = random.getrandbits(128)"
+            },
+            {
+              "BodyText": "Since only 2 bytes are used as a seed, an attacker will only need to guess 2^16 (65,536) values before being able to replicate the state of the PRNG."
+            }
+          ]
+        }
+      ],
+      "PotentialMitigations": null
+    },
+    "/cwe/335/parents": {
+      "weakness_parents": [
+        "330"
+      ],
+      "category_parents": [
+        "1013",
+        "1346",
+        "1414",
+        "1213",
+        "310",
+        "905"
+      ]
+    },
+    "/cwe/335/children": {
+      "weakness_children": [
+        "336",
+        "337",
+        "339"
+      ],
+      "category_children": []
+    }
+  }
+}

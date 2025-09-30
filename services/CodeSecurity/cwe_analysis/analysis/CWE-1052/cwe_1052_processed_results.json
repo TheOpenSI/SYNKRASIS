@@ -1,0 +1,52 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T22:10:51.958630",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "1052",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/1052": {
+      "ID": "1052",
+      "Type": "base_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/1052": {
+      "ID": "1052",
+      "Name": "Excessive Use of Hard-Coded Literals in Initialization",
+      "Abstraction": "Base",
+      "Structure": "Simple",
+      "Status": "Incomplete",
+      "Description": "The product initializes a data element using a hard-coded\n\t\t\t\t\tliteral that is not a simple integer or static constant element.",
+      "ExtendedDescription": "\n\nThis issue makes it more difficult to modify or maintain the product, which indirectly affects security by making it more difficult or time-consuming to find and/or fix vulnerabilities. It also might make it easier to introduce vulnerabilities.\n",
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": null,
+      "AlternateTerms": null,
+      "ModesOfIntroduction": null,
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Other"
+          ],
+          "Impact": [
+            "Reduce Maintainability"
+          ]
+        }
+      ],
+      "DemonstrativeExamples": null,
+      "PotentialMitigations": null
+    },
+    "/cwe/1052/parents": {
+      "weakness_parents": [
+        "1419"
+      ],
+      "category_parents": [
+        "1130",
+        "1307",
+        "1416",
+        "452"
+      ]
+    },
+    "/cwe/1052/children": null
+  }
+}

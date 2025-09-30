@@ -1,0 +1,64 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T23:37:10.069098",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "529",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/529": {
+      "ID": "529",
+      "Type": "variant_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/529": {
+      "ID": "529",
+      "Name": "Exposure of Access Control List Files to an Unauthorized Control Sphere",
+      "Abstraction": "Variant",
+      "Structure": "Simple",
+      "Status": "Incomplete",
+      "Description": "The product stores access control list files in a directory or other container that is accessible to actors outside of the intended control sphere.",
+      "ExtendedDescription": "Exposure of these access control list files may give the attacker information about the configuration of the site or system. This information may then be used to bypass the intended security policy or identify trusted systems from which an attack can be launched.",
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": null,
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Operation",
+          "Note": "OMISSION: This weakness is caused by missing a security tactic during the architecture and design phase."
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Confidentiality",
+            "Access Control"
+          ],
+          "Impact": [
+            "Read Application Data",
+            "Bypass Protection Mechanism"
+          ]
+        }
+      ],
+      "DemonstrativeExamples": null,
+      "PotentialMitigations": [
+        {
+          "Phase": [
+            "System Configuration"
+          ],
+          "Description": "Protect access control list files."
+        }
+      ]
+    },
+    "/cwe/529/parents": {
+      "weakness_parents": [],
+      "category_parents": [
+        "1011",
+        "1403",
+        "731",
+        "963"
+      ]
+    },
+    "/cwe/529/children": null
+  }
+}

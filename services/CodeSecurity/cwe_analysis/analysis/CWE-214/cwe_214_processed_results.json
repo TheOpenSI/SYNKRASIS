@@ -1,0 +1,83 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T22:55:34.170371",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "214",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/214": {
+      "ID": "214",
+      "Type": "base_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/214": {
+      "ID": "214",
+      "Name": "Invocation of Process Using Visible Sensitive Information",
+      "Abstraction": "Base",
+      "Structure": "Simple",
+      "Status": "Incomplete",
+      "Description": "A process is invoked with sensitive command-line arguments, environment variables, or other elements that can be seen by other processes on the operating system.",
+      "ExtendedDescription": "Many operating systems allow a user to list information about processes that are owned by other users. Other users could see information such as command line arguments or environment variable settings. When this data contains sensitive information such as credentials, it might allow other users to launch an attack against the product or related resources.",
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Class": "Not Language-Specific",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Architecture and Design"
+        },
+        {
+          "Phase": "Implementation",
+          "Note": "REALIZATION: This weakness is caused during implementation of an architectural security tactic."
+        },
+        {
+          "Phase": "Operation"
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Confidentiality"
+          ],
+          "Impact": [
+            "Read Application Data"
+          ]
+        }
+      ],
+      "DemonstrativeExamples": [
+        {
+          "Entries": [
+            {
+              "IntroText": "In the example below, the password for a keystore file is read from a system property."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "Java",
+              "ExampleCode": "```\n\tString keystorePass = System.getProperty(\"javax.net.ssl.keyStorePassword\");\n\tif (keystorePass == null) {\n\t\tSystem.err.println(\"ERROR: Keystore password not specified.\");\n\t\tSystem.exit(-1);\n\t}\n\t...\n```"
+            },
+            {
+              "BodyText": "If the property is defined on the command line when the program is invoked (using the -D... syntax), the password may be displayed in the OS process list."
+            }
+          ]
+        }
+      ],
+      "PotentialMitigations": null
+    },
+    "/cwe/214/parents": {
+      "weakness_parents": [],
+      "category_parents": [
+        "1016",
+        "1417",
+        "199",
+        "963"
+      ]
+    },
+    "/cwe/214/children": null
+  }
+}

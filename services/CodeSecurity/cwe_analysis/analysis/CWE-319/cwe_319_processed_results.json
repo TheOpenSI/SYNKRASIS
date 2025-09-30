@@ -1,0 +1,238 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T23:09:24.620237",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "319",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/319": {
+      "ID": "319",
+      "Type": "base_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/319": {
+      "ID": "319",
+      "Name": "Cleartext Transmission of Sensitive Information",
+      "Abstraction": "Base",
+      "Structure": "Simple",
+      "Status": "Draft",
+      "Description": "The product transmits sensitive or security-critical data in cleartext in a communication channel that can be sniffed by unauthorized actors.",
+      "ExtendedDescription": null,
+      "LikelihoodOfExploit": "High",
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Class": "Not Language-Specific",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Technology",
+          "Class": "Cloud Computing",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Technology",
+          "Class": "Mobile",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Technology",
+          "Class": "ICS/OT",
+          "Prevalence": "Often"
+        },
+        {
+          "Type": "Technology",
+          "Class": "System on Chip",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Technology",
+          "Name": "Test/Debug Hardware",
+          "Prevalence": "Often"
+        }
+      ],
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Architecture and Design",
+          "Note": "OMISSION: This weakness is caused by missing a security tactic during the architecture and design phase."
+        },
+        {
+          "Phase": "Architecture and Design",
+          "Note": "For hardware, this may be introduced when design does not plan for an attacker having physical access while a legitimate user is remotely operating the device."
+        },
+        {
+          "Phase": "Operation"
+        },
+        {
+          "Phase": "System Configuration"
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Integrity",
+            "Confidentiality"
+          ],
+          "Impact": [
+            "Read Application Data",
+            "Modify Files or Directories"
+          ],
+          "Note": "Anyone can read the information by gaining access to the channel being used for communication. Many communication channels can be \"sniffed\" (monitored) by adversaries during data transmission. For example, in networking, packets can traverse many intermediary nodes from the source to the destination, whether across the internet, an internal network, the cloud, etc. Some actors might have privileged access to a network interface or any link along the channel, such as a router, but they might not be authorized to collect the underlying data. As a result, network traffic could be sniffed by adversaries, spilling security-critical data."
+        },
+        {
+          "Scope": [
+            "Integrity",
+            "Confidentiality"
+          ],
+          "Impact": [
+            "Read Application Data",
+            "Modify Files or Directories",
+            "Other"
+          ],
+          "Note": "When full communications are recorded or logged, such as with a packet dump, an adversary could attempt to obtain the dump long after the transmission has occurred and try to \"sniff\" the cleartext from the recorded communications in the dump itself. Even if the information is encoded in a way that is not human-readable, certain techniques could determine which encoding is being used, then decode the information."
+        }
+      ],
+      "DemonstrativeExamples": [
+        {
+          "ID": "DX-42",
+          "Entries": [
+            {
+              "IntroText": "The following code attempts to establish a connection to a site to communicate sensitive information."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "Java",
+              "ExampleCode": "```\n\ttry {\n\t\tURL u = new URL(\"http://www.secret.example.org/\");\n\t\tHttpURLConnection hu = (HttpURLConnection) u.openConnection();\n\t\thu.setRequestMethod(\"PUT\");\n\t\thu.connect();\n\t\tOutputStream os = hu.getOutputStream();\n\t\thu.disconnect();\n\t}\n\tcatch (IOException e) {\n```\n//...* \n\t\t}"
+            },
+            {
+              "BodyText": "Though a connection is successfully made, the connection is unencrypted and it is possible that all sensitive data sent to or received from the server will be read by unintended actors."
+            }
+          ]
+        },
+        {
+          "ID": "DX-153",
+          "Entries": [
+            {
+              "IntroText": "In 2022, the OT:ICEFALL study examined products by 10 different Operational Technology (OT) vendors. The researchers reported 56 vulnerabilities and said that the products were \"insecure by design\" [REF-1283]. If exploited, these vulnerabilities often allowed adversaries to change how the products operated, ranging from denial of service to changing the code that the products executed. Since these products were often used in industries such as power, electrical, water, and others, there could even be safety implications."
+            },
+            {
+              "BodyText": "Multiple vendors used cleartext transmission of sensitive information in their OT products."
+            }
+          ]
+        },
+        {
+          "Entries": [
+            {
+              "IntroText": "A TAP accessible register is read/written by a JTAG based tool, for internal use by authorized users. However, an adversary can connect a probing device and collect the values from the unencrypted channel connecting the JTAG interface to the authorized user, if no additional protections are employed."
+            }
+          ]
+        },
+        {
+          "Entries": [
+            {
+              "IntroText": "The following Azure CLI command lists the properties of a particular storage account:"
+            },
+            {
+              "Nature": "Informative",
+              "Language": "Shell",
+              "ExampleCode": "```\n\taz storage account show -g {ResourceGroupName} -n {StorageAccountName}\n```"
+            },
+            {
+              "BodyText": "The JSON result might be:"
+            },
+            {
+              "Nature": "Bad",
+              "Language": "JSON",
+              "ExampleCode": "```\n\t {\n\t\t \"name\": \"{StorageAccountName}\",\n\t\t \"enableHttpsTrafficOnly\": false,\n\t\t \"type\": \"Microsoft.Storage/storageAccounts\"\n\t } \n```"
+            },
+            {
+              "BodyText": "The enableHttpsTrafficOnly value is set to false, because the default setting for Secure transfer is set to Disabled. This allows cloud storage resources to successfully connect and transfer data without the use of encryption (e.g., HTTP, SMB 2.1, SMB 3.0, etc.)."
+            },
+            {
+              "BodyText": "Azure's storage accounts can be configured to only accept requests from secure connections made over HTTPS. The secure transfer setting can be enabled using Azure's Portal (GUI) or programmatically by setting the enableHttpsTrafficOnly property to True on the storage account, such as:"
+            },
+            {
+              "Nature": "Good",
+              "Language": "Shell",
+              "ExampleCode": "```\n\taz storage account update -g {ResourceGroupName} -n {StorageAccountName} --https-only true\n```"
+            },
+            {
+              "BodyText": "The change can be confirmed from the result by verifying that the enableHttpsTrafficOnly value is true:"
+            },
+            {
+              "Nature": "Good",
+              "Language": "JSON",
+              "ExampleCode": "```\n\t {\n\t\t \"name\": \"{StorageAccountName}\",\n\t\t \"enableHttpsTrafficOnly\": true,\n\t\t \"type\": \"Microsoft.Storage/storageAccounts\"\n\t } \n```"
+            },
+            {
+              "BodyText": "Note: to enable secure transfer using Azure's Portal instead of the command line:\n\n\n  1. Open the Create storage account pane in the Azure portal.\n\n  1. In the Advanced page, select the Enable secure transfer checkbox."
+            }
+          ]
+        }
+      ],
+      "PotentialMitigations": [
+        {
+          "Phase": [
+            "Architecture and Design"
+          ],
+          "Description": "Before transmitting, encrypt the data using reliable, confidentiality-protecting cryptographic protocols."
+        },
+        {
+          "Phase": [
+            "Implementation"
+          ],
+          "Description": "When using web applications with SSL, use SSL for the entire session from login to logout, not just for the initial login page."
+        },
+        {
+          "Phase": [
+            "Implementation"
+          ],
+          "Description": "When designing hardware platforms, ensure that approved encryption algorithms (such as those recommended by NIST) protect paths from security critical data to trusted user applications."
+        },
+        {
+          "Phase": [
+            "Testing"
+          ],
+          "Description": "Use tools and techniques that require manual (human) analysis, such as penetration testing, threat modeling, and interactive tools that allow the tester to record and modify an active session. These may be more effective than strictly automated techniques. This is especially the case with weaknesses that are related to design and business rules."
+        },
+        {
+          "Phase": [
+            "Operation"
+          ],
+          "Description": "Configure servers to use encrypted channels for communication, which may include SSL or other secure protocols."
+        }
+      ]
+    },
+    "/cwe/319/parents": {
+      "weakness_parents": [
+        "311"
+      ],
+      "category_parents": [
+        "1013",
+        "1029",
+        "1148",
+        "1207",
+        "1346",
+        "1366",
+        "1402",
+        "199",
+        "751",
+        "818",
+        "858",
+        "859",
+        "963",
+        "934"
+      ]
+    },
+    "/cwe/319/children": {
+      "weakness_children": [
+        "1428",
+        "5",
+        "614"
+      ],
+      "category_children": []
+    }
+  }
+}

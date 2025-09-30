@@ -1,0 +1,140 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T22:37:59.919554",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "1320",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/1320": {
+      "ID": "1320",
+      "Type": "base_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/1320": {
+      "ID": "1320",
+      "Name": "Improper Protection for Outbound Error Messages and Alert Signals",
+      "Abstraction": "Base",
+      "Structure": "Simple",
+      "Status": "Draft",
+      "Description": "Untrusted agents can disable alerts about signal conditions exceeding limits or the response mechanism that handles such alerts.\n\t\t\t",
+      "ExtendedDescription": "\n\nHardware sensors are used to detect whether a device is operating within design limits. The threshold values for these limits are set by hardware fuses or trusted software such as a BIOS. Modification of these limits may be protected by hardware mechanisms.\n\n\nWhen device sensors detect out of bound conditions, alert signals may be generated for remedial action, which may take the form of device shutdown or throttling.\n\n\nWarning signals that are not properly secured may be disabled or used to generate spurious alerts, causing degraded performance or denial-of-service (DoS). These alerts may be masked by untrusted software. Examples of these alerts involve thermal and power sensor alerts.\n",
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Class": "Not Language-Specific",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Operating_System",
+          "Class": "Not OS-Specific",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Architecture",
+          "Class": "Not Architecture-Specific",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Technology",
+          "Class": "System on Chip",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Technology",
+          "Name": "Microcontroller Hardware",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Technology",
+          "Name": "Memory Hardware",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Technology",
+          "Name": "Power Management Hardware",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Technology",
+          "Name": "Processor Hardware",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Technology",
+          "Name": "Test/Debug Hardware",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Technology",
+          "Name": "Sensor Hardware",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Architecture and Design"
+        },
+        {
+          "Phase": "Implementation"
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Availability"
+          ],
+          "Impact": [
+            "DoS: Instability",
+            "DoS: Crash, Exit, or Restart",
+            "Reduce Reliability",
+            "Unexpected State"
+          ],
+          "Likelihood": [
+            "High"
+          ]
+        }
+      ],
+      "DemonstrativeExamples": [
+        {
+          "Entries": [
+            {
+              "IntroText": "Consider a platform design where a Digital-Thermal Sensor (DTS) is used to monitor temperature and compare that output against a threshold value. If the temperature output equals or exceeds the threshold value, the DTS unit sends an alert signal to the processor.\n\n\nThe processor, upon getting the alert, input triggers system shutdown. The alert signal is handled as a General-Purpose-I/O (GPIO) pin in input mode."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "Other",
+              "ExampleCode": "The processor-GPIO controller exposes software-programmable controls that allow untrusted software to reprogram the state of the GPIO pin."
+            },
+            {
+              "BodyText": "Reprogramming the state of the GPIO pin allows malicious software to trigger spurious alerts or to set the alert pin to a zero value so that thermal sensor alerts are not received by the processor."
+            },
+            {
+              "Nature": "Good",
+              "Language": "Other",
+              "ExampleCode": "The GPIO alert-signal pin is blocked from untrusted software access and is controlled only by trusted software, such as the System BIOS."
+            }
+          ]
+        }
+      ],
+      "PotentialMitigations": [
+        {
+          "Phase": [
+            "Architecture and Design"
+          ],
+          "Description": "Alert signals generated by critical events should be protected from access by untrusted agents. Only hardware or trusted firmware modules should be able to alter the alert configuration."
+        }
+      ]
+    },
+    "/cwe/1320/parents": {
+      "weakness_parents": [],
+      "category_parents": [
+        "1206",
+        "1396"
+      ]
+    },
+    "/cwe/1320/children": null
+  }
+}

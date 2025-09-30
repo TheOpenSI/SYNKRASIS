@@ -1,0 +1,223 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T22:57:36.177067",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "229",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/229": {
+      "endpoint": "/cwe/229",
+      "url": "https://cwe-api.mitre.org/api/v1/cwe/229",
+      "status_code": 200,
+      "success": true,
+      "error": null,
+      "data": [
+        {
+          "Type": "base_weakness",
+          "ID": "229"
+        }
+      ]
+    },
+    "/cwe/weakness/229": {
+      "endpoint": "/cwe/weakness/229",
+      "url": "https://cwe-api.mitre.org/api/v1/cwe/weakness/229",
+      "status_code": 200,
+      "success": true,
+      "error": null,
+      "data": {
+        "Weaknesses": [
+          {
+            "ID": "229",
+            "Name": "Improper Handling of Values",
+            "Abstraction": "Base",
+            "Structure": "Simple",
+            "Status": "Incomplete",
+            "Description": "The product does not properly handle when the expected number of values for parameters, fields, or arguments is not provided in input, or if those values are undefined.",
+            "RelatedWeaknesses": [
+              {
+                "Nature": "ChildOf",
+                "CweID": "228",
+                "ViewID": "1000",
+                "Ordinal": "Primary"
+              }
+            ],
+            "ModesOfIntroduction": [
+              {
+                "Phase": "Implementation"
+              }
+            ],
+            "CommonConsequences": [
+              {
+                "Scope": [
+                  "Integrity"
+                ],
+                "Impact": [
+                  "Unexpected State"
+                ]
+              }
+            ],
+            "MappingNotes": {
+              "Usage": "Allowed",
+              "Rationale": "This CWE entry is at the Base level of abstraction, which is a preferred level of abstraction for mapping to the root causes of vulnerabilities.",
+              "Comments": "Carefully read both the name and description to ensure that this mapping is an appropriate fit. Do not try to 'force' a mapping to a lower-level Base/Variant simply to comply with this preferred level of abstraction.",
+              "Reasons": [
+                "Acceptable-Use"
+              ]
+            },
+            "ContentHistory": [
+              {
+                "Type": "Submission",
+                "SubmissionName": "CWE Community",
+                "SubmissionDate": "2006-07-19",
+                "SubmissionComment": "Submitted by members of the CWE community to extend early CWE versions",
+                "SubmissionVersion": "Draft 3",
+                "SubmissionReleaseDate": "2006-07-19"
+              },
+              {
+                "Type": "Modification",
+                "ModificationName": "Eric Dalci",
+                "ModificationOrganization": "Cigital",
+                "ModificationDate": "2008-07-01",
+                "ModificationComment": "updated Time_of_Introduction"
+              },
+              {
+                "Type": "Modification",
+                "ModificationName": "CWE Content Team",
+                "ModificationOrganization": "MITRE",
+                "ModificationDate": "2008-09-08",
+                "ModificationComment": "updated Relationships"
+              },
+              {
+                "Type": "Modification",
+                "ModificationName": "CWE Content Team",
+                "ModificationOrganization": "MITRE",
+                "ModificationDate": "2009-03-10",
+                "ModificationComment": "updated Description"
+              },
+              {
+                "Type": "Modification",
+                "ModificationName": "CWE Content Team",
+                "ModificationOrganization": "MITRE",
+                "ModificationDate": "2011-06-01",
+                "ModificationComment": "updated Common_Consequences"
+              },
+              {
+                "Type": "Modification",
+                "ModificationName": "CWE Content Team",
+                "ModificationOrganization": "MITRE",
+                "ModificationDate": "2011-06-27",
+                "ModificationComment": "updated Common_Consequences"
+              },
+              {
+                "Type": "Modification",
+                "ModificationName": "CWE Content Team",
+                "ModificationOrganization": "MITRE",
+                "ModificationDate": "2012-05-11",
+                "ModificationComment": "updated Relationships"
+              },
+              {
+                "Type": "Modification",
+                "ModificationName": "CWE Content Team",
+                "ModificationOrganization": "MITRE",
+                "ModificationDate": "2013-07-17",
+                "ModificationComment": "updated Description, Type"
+              },
+              {
+                "Type": "Modification",
+                "ModificationName": "CWE Content Team",
+                "ModificationOrganization": "MITRE",
+                "ModificationDate": "2014-07-30",
+                "ModificationComment": "updated Relationships"
+              },
+              {
+                "Type": "Modification",
+                "ModificationName": "CWE Content Team",
+                "ModificationOrganization": "MITRE",
+                "ModificationDate": "2020-02-24",
+                "ModificationComment": "updated Relationships"
+              },
+              {
+                "Type": "Modification",
+                "ModificationName": "CWE Content Team",
+                "ModificationOrganization": "MITRE",
+                "ModificationDate": "2023-01-31",
+                "ModificationComment": "updated Description"
+              },
+              {
+                "Type": "Modification",
+                "ModificationName": "CWE Content Team",
+                "ModificationOrganization": "MITRE",
+                "ModificationDate": "2023-04-27",
+                "ModificationComment": "updated Relationships, Time_of_Introduction"
+              },
+              {
+                "Type": "Modification",
+                "ModificationName": "CWE Content Team",
+                "ModificationOrganization": "MITRE",
+                "ModificationDate": "2023-06-29",
+                "ModificationComment": "updated Mapping_Notes"
+              },
+              {
+                "Type": "Rename",
+                "PreviousEntryName": "Value Problems",
+                "Date": "2008-04-11"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    "/cwe/229/parents": {
+      "endpoint": "/cwe/229/parents",
+      "url": "https://cwe-api.mitre.org/api/v1/cwe/229/parents",
+      "status_code": 200,
+      "success": true,
+      "error": null,
+      "data": [
+        {
+          "Type": "class_weakness",
+          "ID": "228",
+          "ViewID": "1000",
+          "Primary_Parent": true
+        },
+        {
+          "Type": "category",
+          "ID": "1407",
+          "ViewID": "1400"
+        },
+        {
+          "Type": "category",
+          "ID": "19",
+          "ViewID": "699"
+        },
+        {
+          "Type": "category",
+          "ID": "993",
+          "ViewID": "888"
+        }
+      ]
+    },
+    "/cwe/229/children": {
+      "endpoint": "/cwe/229/children",
+      "url": "https://cwe-api.mitre.org/api/v1/cwe/229/children",
+      "status_code": 200,
+      "success": true,
+      "error": null,
+      "data": [
+        {
+          "Type": "variant_weakness",
+          "ID": "230"
+        },
+        {
+          "Type": "variant_weakness",
+          "ID": "231"
+        },
+        {
+          "Type": "variant_weakness",
+          "ID": "232"
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,66 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-30T00:04:21.996363",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "765",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/765": {
+      "ID": "765",
+      "Type": "base_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/765": {
+      "ID": "765",
+      "Name": "Multiple Unlocks of a Critical Resource",
+      "Abstraction": "Base",
+      "Structure": "Simple",
+      "Status": "Incomplete",
+      "Description": "The product unlocks a critical resource more times than intended, leading to an unexpected state in the system.",
+      "ExtendedDescription": "When the product is operating in a concurrent environment and repeatedly unlocks a critical resource, the consequences will vary based on the type of lock, the lock's implementation, and the resource being protected. In some situations such as with semaphores, the resources are pooled and extra calls to unlock will increase the count for the number of available resources, likely resulting in a crash or unpredictable behavior when the system nears capacity.",
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": null,
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Implementation"
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Availability",
+            "Integrity"
+          ],
+          "Impact": [
+            "DoS: Crash, Exit, or Restart",
+            "Modify Memory",
+            "Unexpected State"
+          ]
+        }
+      ],
+      "DemonstrativeExamples": null,
+      "PotentialMitigations": [
+        {
+          "Phase": [
+            "Implementation"
+          ],
+          "Description": "When locking and unlocking a resource, try to be sure that all control paths through the code in which the resource is locked one or more times correspond to exactly as many unlocks. If the product acquires a lock and then determines it is not able to perform its intended behavior, be sure to release the lock(s) before waiting for conditions to improve. Reacquire the lock(s) before trying again."
+        }
+      ]
+    },
+    "/cwe/765/parents": {
+      "weakness_parents": [
+        "667",
+        "675"
+      ],
+      "category_parents": [
+        "1401",
+        "411",
+        "987"
+      ]
+    },
+    "/cwe/765/children": null
+  }
+}

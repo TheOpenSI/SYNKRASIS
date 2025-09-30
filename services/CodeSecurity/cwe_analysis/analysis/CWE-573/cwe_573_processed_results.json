@@ -1,0 +1,79 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T23:43:00.310535",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "573",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/573": {
+      "ID": "573",
+      "Type": "class_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/573": {
+      "ID": "573",
+      "Name": "Improper Following of Specification by Caller",
+      "Abstraction": "Class",
+      "Structure": "Simple",
+      "Status": "Draft",
+      "Description": "The product does not follow or incorrectly follows the specifications as required by the implementation language, environment, framework, protocol, or platform.",
+      "ExtendedDescription": "When leveraging external functionality, such as an API, it is important that the caller does so in accordance with the requirements of the external functionality or else unintended behaviors may result, possibly leaving the system vulnerable to any number of exploits.",
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": null,
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Implementation"
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Other"
+          ],
+          "Impact": [
+            "Quality Degradation",
+            "Varies by Context"
+          ]
+        }
+      ],
+      "DemonstrativeExamples": null,
+      "PotentialMitigations": null
+    },
+    "/cwe/573/parents": {
+      "weakness_parents": [],
+      "category_parents": [
+        "1140",
+        "1412",
+        "850",
+        "1001"
+      ]
+    },
+    "/cwe/573/children": {
+      "weakness_children": [
+        "103",
+        "104",
+        "243",
+        "253",
+        "296",
+        "304",
+        "325",
+        "329",
+        "358",
+        "475",
+        "568",
+        "577",
+        "578",
+        "579",
+        "580",
+        "581",
+        "628",
+        "675",
+        "694",
+        "695"
+      ],
+      "category_children": []
+    }
+  }
+}

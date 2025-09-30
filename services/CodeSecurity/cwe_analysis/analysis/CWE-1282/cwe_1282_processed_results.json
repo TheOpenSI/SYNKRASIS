@@ -1,0 +1,91 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T22:33:03.559181",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "1282",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/1282": {
+      "ID": "1282",
+      "Type": "base_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/1282": {
+      "ID": "1282",
+      "Name": "Assumed-Immutable Data is Stored in Writable Memory",
+      "Abstraction": "Base",
+      "Structure": "Simple",
+      "Status": "Incomplete",
+      "Description": "Immutable data, such as a first-stage bootloader, device identifiers, and \"write-once\" configuration settings are stored in writable memory that can be re-programmed or updated in the field.",
+      "ExtendedDescription": "\n\nSecurity services such as secure boot, authentication of code and data, and device attestation all require assets such as the first stage bootloader, public keys, golden hash digests, etc. which are implicitly trusted. Storing these assets in read-only memory (ROM), fuses, or one-time programmable (OTP) memory provides strong integrity guarantees and provides a root of trust for securing the rest of the system. Security is lost if assets assumed to be immutable can be modified.\n",
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Class": "Not Language-Specific",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Operating_System",
+          "Class": "Not OS-Specific",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Architecture",
+          "Class": "Not Architecture-Specific",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Technology",
+          "Class": "Not Technology-Specific",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Implementation",
+          "Note": "Keys, code, configuration settings, and other data should be programmed in write-once or read-only memory instead of writable memory."
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Integrity"
+          ],
+          "Impact": [
+            "Varies by Context"
+          ]
+        }
+      ],
+      "DemonstrativeExamples": [
+        {
+          "Entries": [
+            {
+              "IntroText": "Cryptographic hash functions are commonly used to create unique fixed-length digests used to ensure the integrity of code and keys. A golden digest is stored on the device and compared to the digest computed from the data to be verified. If the digests match, the data has not been maliciously modified. If an attacker can modify the golden digest they then have the ability to store arbitrary data that passes the verification check. Hash digests used to verify public keys and early stage boot code should be immutable, with the strongest protection offered by hardware immutability."
+            }
+          ]
+        }
+      ],
+      "PotentialMitigations": [
+        {
+          "Phase": [
+            "Implementation"
+          ],
+          "Description": "All immutable code or data should be programmed into ROM or write-once memory."
+        }
+      ]
+    },
+    "/cwe/1282/parents": {
+      "weakness_parents": [
+        "668"
+      ],
+      "category_parents": [
+        "1202",
+        "1403"
+      ]
+    },
+    "/cwe/1282/children": null
+  }
+}

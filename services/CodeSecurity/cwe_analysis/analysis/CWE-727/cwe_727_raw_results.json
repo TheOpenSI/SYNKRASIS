@@ -1,0 +1,94 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-30T00:01:41.687116",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "727",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/727": {
+      "endpoint": "/cwe/727",
+      "url": "https://cwe-api.mitre.org/api/v1/cwe/727",
+      "status_code": 200,
+      "success": true,
+      "error": null,
+      "data": [
+        {
+          "Type": "category",
+          "ID": "727"
+        }
+      ]
+    },
+    "/cwe/weakness/727": {
+      "endpoint": "/cwe/weakness/727",
+      "url": "https://cwe-api.mitre.org/api/v1/cwe/weakness/727",
+      "status_code": 404,
+      "success": false,
+      "error": "HTTP 404: \"for weakness: cwe (727) not found, use the category endpoint\"\n",
+      "data": null
+    },
+    "/cwe/727/parents": {
+      "endpoint": "/cwe/727/parents",
+      "url": "https://cwe-api.mitre.org/api/v1/cwe/727/parents",
+      "status_code": 200,
+      "success": true,
+      "error": null,
+      "data": [
+        {
+          "Type": "view",
+          "ID": "711",
+          "ViewID": "711"
+        }
+      ]
+    },
+    "/cwe/727/children": {
+      "endpoint": "/cwe/727/children",
+      "url": "https://cwe-api.mitre.org/api/v1/cwe/727/children",
+      "status_code": 200,
+      "success": true,
+      "error": null,
+      "data": [
+        {
+          "Type": "base_weakness",
+          "ID": "117",
+          "ViewID": "711"
+        },
+        {
+          "Type": "class_weakness",
+          "ID": "74",
+          "ViewID": "711"
+        },
+        {
+          "Type": "class_weakness",
+          "ID": "77",
+          "ViewID": "711"
+        },
+        {
+          "Type": "base_weakness",
+          "ID": "78",
+          "ViewID": "711"
+        },
+        {
+          "Type": "base_weakness",
+          "ID": "89",
+          "ViewID": "711"
+        },
+        {
+          "Type": "base_weakness",
+          "ID": "91",
+          "ViewID": "711"
+        },
+        {
+          "Type": "variant_weakness",
+          "ID": "95",
+          "ViewID": "711"
+        },
+        {
+          "Type": "variant_weakness",
+          "ID": "98",
+          "ViewID": "711"
+        }
+      ]
+    }
+  }
+}

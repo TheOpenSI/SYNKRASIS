@@ -1,0 +1,185 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T23:14:01.914639",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "352",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/352": {
+      "ID": "352",
+      "Type": "compound_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/352": {
+      "ID": "352",
+      "Name": "Cross-Site Request Forgery (CSRF)",
+      "Abstraction": "Compound",
+      "Structure": "Composite",
+      "Status": "Stable",
+      "Description": "The web application does not, or cannot, sufficiently verify whether a request was intentionally provided by the user who sent the request, which could have originated from an unauthorized actor. ",
+      "ExtendedDescription": null,
+      "LikelihoodOfExploit": "Medium",
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Class": "Not Language-Specific",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Technology",
+          "Name": "Web Server",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": [
+        {
+          "Term": "Session Riding"
+        },
+        {
+          "Term": "Cross Site Reference Forgery"
+        },
+        {
+          "Term": "XSRF"
+        },
+        {
+          "Term": "CSRF"
+        }
+      ],
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Architecture and Design",
+          "Note": "REALIZATION: This weakness is caused during implementation of an architectural security tactic."
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Confidentiality",
+            "Integrity",
+            "Availability",
+            "Non-Repudiation",
+            "Access Control"
+          ],
+          "Impact": [
+            "Gain Privileges or Assume Identity",
+            "Bypass Protection Mechanism",
+            "Read Application Data",
+            "Modify Application Data",
+            "DoS: Crash, Exit, or Restart"
+          ],
+          "Note": "The consequences will vary depending on the nature of the functionality that is vulnerable to CSRF. An attacker could trick a client into making an unintentional request to the web server via a URL, image load, XMLHttpRequest, etc., which would then be treated as an authentic request from the client - effectively performing any operations as the victim, leading to an exposure of data, unintended code execution, etc. If the victim is an administrator or privileged user, the consequences may include obtaining complete control over the web application - deleting or stealing data, uninstalling the product, or using it to launch other attacks against all of the product's users. Because the attacker has the identity of the victim, the scope of CSRF is limited only by the victim's privileges."
+        }
+      ],
+      "DemonstrativeExamples": [
+        {
+          "Entries": [
+            {
+              "IntroText": "This example PHP code attempts to secure the form submission process by validating that the user submitting the form has a valid session. A CSRF attack would not be prevented by this countermeasure because the attacker forges a request through the user's web browser in which a valid session already exists."
+            },
+            {
+              "BodyText": "The following HTML is intended to allow a user to update a profile."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "HTML",
+              "ExampleCode": "```\n\t<form action=\"/url/profile.php\" method=\"post\">\n\t<input type=\"text\" name=\"firstname\"/>\n\t<input type=\"text\" name=\"lastname\"/>\n\t<br/>\n\t<input type=\"text\" name=\"email\"/>\n\t<input type=\"submit\" name=\"submit\" value=\"Update\"/>\n\t</form>\n```"
+            },
+            {
+              "BodyText": "profile.php contains the following code."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "PHP",
+              "ExampleCode": "```\n\t// initiate the session in order to validate sessions\n\tsession_start();\n```\n//if the session is registered to a valid user then allow update* \n\t\n\tif (! session_is_registered(\"username\")) {\n\t```\n\t\t\techo \"invalid session detected!\";\n```\n// Redirect user to login page* \n\t\t\t[...]\n\t\t\t\n\t\t\texit;}\n\t\n\t\n\t *// The user session is valid, so process the request* \n\t\n\t\n\t *// and update the information* \n\t\n\tupdate_profile();\n\t\n\tfunction update_profile {\n\t```\n```\n// read in the data from $POST and send an update* \n\t\t\t\n\t\t\t\n\t\t\t *// to the database* \n\t\t\tSendUpdateToDatabase($_SESSION['username'], $_POST['email']);\n\t\t\t[...]\n\t\t\techo \"Your profile has been successfully updated.\";}"
+            },
+            {
+              "BodyText": "This code may look protected since it checks for a valid session. However, CSRF attacks can be staged from virtually any tag or HTML construct, including image tags, links, embed or object tags, or other attributes that load background images."
+            },
+            {
+              "BodyText": "The attacker can then host code that will silently change the username and email address of any user that visits the page while remaining logged in to the target web application. The code might be an innocent-looking web page such as:"
+            },
+            {
+              "Nature": "Attack",
+              "Language": "HTML",
+              "ExampleCode": "```\n\t<SCRIPT>\n\tfunction SendAttack () {\n\t\tform.email = \"attacker@example.com\";\n```\n// send to profile.php* \n\t\tform.submit();}\n\t</SCRIPT>\n\t\n\t<BODY onload=\"javascript:SendAttack();\">\n\t\n\t<form action=\"http://victim.example.com/profile.php\" id=\"form\" method=\"post\">\n\t<input type=\"hidden\" name=\"firstname\" value=\"Funny\">\n\t<input type=\"hidden\" name=\"lastname\" value=\"Joke\">\n\t<br/>\n\t<input type=\"hidden\" name=\"email\">\n\t</form>"
+            },
+            {
+              "BodyText": "Notice how the form contains hidden fields, so when it is loaded into the browser, the user will not notice it. Because SendAttack() is defined in the body's onload attribute, it will be automatically called when the victim loads the web page."
+            },
+            {
+              "BodyText": "Assuming that the user is already logged in to victim.example.com, profile.php will see that a valid user session has been established, then update the email address to the attacker's own address. At this stage, the user's identity has been compromised, and messages sent through this profile could be sent to the attacker's address."
+            }
+          ]
+        }
+      ],
+      "PotentialMitigations": [
+        {
+          "MitigationID": "MIT-4",
+          "Phase": [
+            "Architecture and Design"
+          ],
+          "Strategy": "Libraries or Frameworks",
+          "Description": "\n\nUse a vetted library or framework that does not allow this weakness to occur or provides constructs that make this weakness easier to avoid [REF-1482].\n\n\nFor example, use anti-CSRF packages such as the OWASP CSRFGuard. [REF-330]\n\n\nAnother example is the ESAPI Session Management control, which includes a component for CSRF. [REF-45]\n"
+        },
+        {
+          "Phase": [
+            "Implementation"
+          ],
+          "Description": "Ensure that the application is free of cross-site scripting issues (CWE-79), because most CSRF defenses can be bypassed using attacker-controlled script."
+        },
+        {
+          "Phase": [
+            "Architecture and Design"
+          ],
+          "Description": "Generate a unique nonce for each form, place the nonce into the form, and verify the nonce upon receipt of the form. Be sure that the nonce is not predictable (CWE-330). [REF-332]",
+          "EffectivenessNotes": "Note that this can be bypassed using XSS (CWE-79)."
+        },
+        {
+          "Phase": [
+            "Architecture and Design"
+          ],
+          "Description": "Identify especially dangerous operations. When the user performs a dangerous operation, send a separate confirmation request to ensure that the user intended to perform that operation.",
+          "EffectivenessNotes": "Note that this can be bypassed using XSS (CWE-79)."
+        },
+        {
+          "Phase": [
+            "Architecture and Design"
+          ],
+          "Description": "\n\nUse the \"double-submitted cookie\" method as described by Felten and Zeller:\n\n\nWhen a user visits a site, the site should generate a pseudorandom value and set it as a cookie on the user's machine. The site should require every form submission to include this value as a form value and also as a cookie value. When a POST request is sent to the site, the request should only be considered valid if the form value and the cookie value are the same.\n\n\nBecause of the same-origin policy, an attacker cannot read or modify the value stored in the cookie. To successfully submit a form on behalf of the user, the attacker would have to correctly guess the pseudorandom value. If the pseudorandom value is cryptographically strong, this will be prohibitively difficult.\n\n\nThis technique requires Javascript, so it may not work for browsers that have Javascript disabled. [REF-331]\n",
+          "EffectivenessNotes": "Note that this can probably be bypassed using XSS (CWE-79), or when using web technologies that enable the attacker to read raw headers from HTTP requests."
+        },
+        {
+          "Phase": [
+            "Architecture and Design"
+          ],
+          "Description": "Do not use the GET method for any request that triggers a state change."
+        },
+        {
+          "Phase": [
+            "Implementation"
+          ],
+          "Description": "Check the HTTP Referer header to see if the request originated from an expected page. This could break legitimate functionality, because users or proxies may have disabled sending the Referer for privacy reasons.",
+          "EffectivenessNotes": "Note that this can be bypassed using XSS (CWE-79). An attacker could use XSS to generate a spoofed Referer, or to generate a malicious request from a page whose Referer would be allowed."
+        }
+      ]
+    },
+    "/cwe/352/parents": {
+      "weakness_parents": [
+        "345"
+      ],
+      "category_parents": [
+        "1019",
+        "1345",
+        "1411",
+        "716",
+        "751",
+        "801",
+        "814",
+        "864",
+        "936"
+      ]
+    },
+    "/cwe/352/children": null
+  }
+}

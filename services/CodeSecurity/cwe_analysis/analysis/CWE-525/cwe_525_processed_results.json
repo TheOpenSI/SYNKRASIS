@@ -1,0 +1,82 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T23:36:39.627269",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "525",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/525": {
+      "ID": "525",
+      "Type": "variant_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/525": {
+      "ID": "525",
+      "Name": "Use of Web Browser Cache Containing Sensitive Information",
+      "Abstraction": "Variant",
+      "Structure": "Simple",
+      "Status": "Incomplete",
+      "Description": "The web application does not use an appropriate caching policy that specifies the extent to which each web page and associated form fields should be cached.",
+      "ExtendedDescription": null,
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": null,
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Implementation"
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Confidentiality"
+          ],
+          "Impact": [
+            "Read Application Data"
+          ],
+          "Note": "Browsers often store information in a client-side cache, which can leave behind sensitive information for other users to find and exploit, such as passwords or credit card numbers. The locations at most risk include public terminals, such as those in libraries and Internet cafes."
+        }
+      ],
+      "DemonstrativeExamples": null,
+      "PotentialMitigations": [
+        {
+          "Phase": [
+            "Architecture and Design"
+          ],
+          "Description": "Protect information stored in cache."
+        },
+        {
+          "Phase": [
+            "Architecture and Design",
+            "Implementation"
+          ],
+          "Description": "Use a restrictive caching policy for forms and web pages that potentially contain sensitive information."
+        },
+        {
+          "Phase": [
+            "Architecture and Design"
+          ],
+          "Description": "Do not store unnecessarily sensitive information in the cache."
+        },
+        {
+          "Phase": [
+            "Architecture and Design"
+          ],
+          "Description": "Consider using encryption in the cache."
+        }
+      ]
+    },
+    "/cwe/525/parents": {
+      "weakness_parents": [],
+      "category_parents": [
+        "1348",
+        "1403",
+        "723",
+        "724",
+        "966"
+      ]
+    },
+    "/cwe/525/children": null
+  }
+}

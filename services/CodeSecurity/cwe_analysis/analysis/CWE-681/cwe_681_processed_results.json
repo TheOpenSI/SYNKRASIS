@@ -1,0 +1,159 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T23:57:24.882851",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "681",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/681": {
+      "ID": "681",
+      "Type": "base_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/681": {
+      "ID": "681",
+      "Name": "Incorrect Conversion between Numeric Types",
+      "Abstraction": "Base",
+      "Structure": "Simple",
+      "Status": "Draft",
+      "Description": "When converting from one data type to another, such as long to integer, data can be omitted or translated in a way that produces unexpected values. If the resulting values are used in a sensitive context, then dangerous behaviors may occur.",
+      "ExtendedDescription": null,
+      "LikelihoodOfExploit": "High",
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Name": "C",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Language",
+          "Class": "Not Language-Specific",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Implementation"
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Other",
+            "Integrity"
+          ],
+          "Impact": [
+            "Unexpected State",
+            "Quality Degradation"
+          ],
+          "Note": "The program could wind up using the wrong number and generate incorrect results. If the number is used to allocate resources or make a security decision, then this could introduce a vulnerability."
+        }
+      ],
+      "DemonstrativeExamples": [
+        {
+          "Entries": [
+            {
+              "IntroText": "In the following Java example, a float literal is cast to an integer, thus causing a loss of precision."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "Java",
+              "ExampleCode": "```\n\tint i = (int) 33457.8f;\n```"
+            }
+          ]
+        },
+        {
+          "Entries": [
+            {
+              "IntroText": "This code adds a float and an integer together, casting the result to an integer."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "PHP",
+              "ExampleCode": "```\n\t$floatVal = 1.8345;\n\t$intVal = 3;\n\t$result = (int)$floatVal + $intVal;\n```"
+            },
+            {
+              "BodyText": "Normally, PHP will preserve the precision of this operation, making $result = 4.8345. After the cast to int, it is reasonable to expect PHP to follow rounding convention and set $result = 5. However, the explicit cast to int always rounds DOWN, so the final value of $result is 4. This behavior may have unintended consequences."
+            }
+          ]
+        },
+        {
+          "ID": "DX-73",
+          "Entries": [
+            {
+              "IntroText": "In this example the variable amount can hold a negative value when it is returned. Because the function is declared to return an unsigned int, amount will be implicitly converted to unsigned."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "C",
+              "ExampleCode": "```\n\tunsigned int readdata () {\n\t\tint amount = 0;\n\t\t...\n\t\tif (result == ERROR)\n\t\tamount = -1;\n\t\t...\n\t\treturn amount;\n\t}\n```"
+            },
+            {
+              "BodyText": "If the error condition in the code above is met, then the return value of readdata() will be 4,294,967,295 on a system that uses 32-bit integers."
+            }
+          ]
+        },
+        {
+          "ID": "DX-74",
+          "Entries": [
+            {
+              "IntroText": "In this example, depending on the return value of accecssmainframe(), the variable amount can hold a negative value when it is returned. Because the function is declared to return an unsigned value, amount will be implicitly cast to an unsigned number."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "C",
+              "ExampleCode": "```\n\tunsigned int readdata () {\n\t\tint amount = 0;\n\t\t...\n\t\tamount = accessmainframe();\n\t\t...\n\t\treturn amount;\n\t}\n```"
+            },
+            {
+              "BodyText": "If the return value of accessmainframe() is -1, then the return value of readdata() will be 4,294,967,295 on a system that uses 32-bit integers."
+            }
+          ]
+        }
+      ],
+      "PotentialMitigations": [
+        {
+          "Phase": [
+            "Implementation"
+          ],
+          "Description": "Avoid making conversion between numeric types. Always check for the allowed ranges."
+        }
+      ]
+    },
+    "/cwe/681/parents": {
+      "weakness_parents": [
+        "704"
+      ],
+      "category_parents": [
+        "1131",
+        "1137",
+        "1158",
+        "1159",
+        "1306",
+        "1308",
+        "1416",
+        "136",
+        "189",
+        "738",
+        "739",
+        "808",
+        "848",
+        "872",
+        "873",
+        "998",
+        "867"
+      ]
+    },
+    "/cwe/681/children": {
+      "weakness_children": [
+        "192",
+        "194",
+        "195",
+        "196",
+        "197"
+      ],
+      "category_children": []
+    }
+  }
+}

@@ -1,0 +1,93 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T23:24:39.656365",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "435",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/435": {
+      "ID": "435",
+      "Type": "pillar_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/435": {
+      "ID": "435",
+      "Name": "Improper Interaction Between Multiple Correctly-Behaving Entities",
+      "Abstraction": "Pillar",
+      "Structure": "Simple",
+      "Status": "Draft",
+      "Description": "An interaction error occurs when two entities have correct behavior when running independently of each other, but when they are integrated as components in a larger system or process, they introduce incorrect behaviors that may cause resultant weaknesses.",
+      "ExtendedDescription": "When a system or process combines multiple independent components, this often produces new, emergent behaviors at the system level. However, if the interactions between these components are not fully accounted for, some of the emergent behaviors can be incorrect or even insecure.",
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Class": "Not Language-Specific",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Technology",
+          "Class": "Not Technology-Specific",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": [
+        {
+          "Term": "Interaction Error"
+        },
+        {
+          "Term": "Emergent Fault"
+        }
+      ],
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Architecture and Design"
+        },
+        {
+          "Phase": "Implementation"
+        },
+        {
+          "Phase": "Operation"
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Integrity"
+          ],
+          "Impact": [
+            "Unexpected State",
+            "Varies by Context"
+          ]
+        }
+      ],
+      "DemonstrativeExamples": [
+        {
+          "Entries": [
+            {
+              "IntroText": "The paper \"Insertion, Evasion, and Denial of Service: Eluding Network Intrusion Detection\" [REF-428] shows that OSes varied widely in how they manage unusual packets, which made it difficult or impossible for intrusion detection systems to properly detect certain attacker manipulations that took advantage of these OS differences."
+            }
+          ]
+        }
+      ],
+      "PotentialMitigations": null
+    },
+    "/cwe/435/parents": {
+      "weakness_parents": [],
+      "category_parents": [
+        "1398",
+        "957"
+      ]
+    },
+    "/cwe/435/children": {
+      "weakness_children": [
+        "1038",
+        "188",
+        "436",
+        "439"
+      ],
+      "category_children": []
+    }
+  }
+}

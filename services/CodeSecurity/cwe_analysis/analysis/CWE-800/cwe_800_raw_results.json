@@ -1,0 +1,68 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-30T00:09:24.374930",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "800",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/800": {
+      "endpoint": "/cwe/800",
+      "url": "https://cwe-api.mitre.org/api/v1/cwe/800",
+      "status_code": 200,
+      "success": true,
+      "error": null,
+      "data": [
+        {
+          "Type": "view",
+          "ID": "800"
+        }
+      ]
+    },
+    "/cwe/weakness/800": {
+      "endpoint": "/cwe/weakness/800",
+      "url": "https://cwe-api.mitre.org/api/v1/cwe/weakness/800",
+      "status_code": 404,
+      "success": false,
+      "error": "HTTP 404: \"for weakness: cwe (800) not found, use the view endpoint\"\n",
+      "data": null
+    },
+    "/cwe/800/parents": {
+      "endpoint": "/cwe/800/parents",
+      "url": "https://cwe-api.mitre.org/api/v1/cwe/800/parents",
+      "status_code": 200,
+      "success": true,
+      "error": null,
+      "data": []
+    },
+    "/cwe/800/children": {
+      "endpoint": "/cwe/800/children",
+      "url": "https://cwe-api.mitre.org/api/v1/cwe/800/children",
+      "status_code": 200,
+      "success": true,
+      "error": null,
+      "data": [
+        {
+          "Type": "category",
+          "ID": "801",
+          "ViewID": "800"
+        },
+        {
+          "Type": "category",
+          "ID": "802",
+          "ViewID": "800"
+        },
+        {
+          "Type": "category",
+          "ID": "803",
+          "ViewID": "800"
+        },
+        {
+          "Type": "category",
+          "ID": "808",
+          "ViewID": "800"
+        }
+      ]
+    }
+  }
+}

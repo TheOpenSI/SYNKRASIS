@@ -1,0 +1,88 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T22:51:05.532095",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "181",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/181": {
+      "ID": "181",
+      "Type": "variant_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/181": {
+      "ID": "181",
+      "Name": "Incorrect Behavior Order: Validate Before Filter",
+      "Abstraction": "Variant",
+      "Structure": "Simple",
+      "Status": "Draft",
+      "Description": "The product validates data before it has been filtered, which prevents the product from detecting data that becomes invalid after the filtering step.",
+      "ExtendedDescription": "This can be used by an attacker to bypass the validation and launch attacks that expose weaknesses that would otherwise be prevented, such as injection.",
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Class": "Not Language-Specific",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": [
+        {
+          "Term": "Validate-before-cleanse"
+        }
+      ],
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Implementation"
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Access Control"
+          ],
+          "Impact": [
+            "Bypass Protection Mechanism"
+          ]
+        }
+      ],
+      "DemonstrativeExamples": [
+        {
+          "ID": "DX-36",
+          "Entries": [
+            {
+              "IntroText": "This script creates a subdirectory within a user directory and sets the user as the owner."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "PHP",
+              "ExampleCode": "```\n\tfunction createDir($userName,$dirName){\n\t\t$userDir = '/users/'. $userName;\n\t\tif(strpos($dirName,'..') !== false){\n\t\t\techo 'Directory name contains invalid sequence';\n\t\t\treturn;\n\t\t}\n```\n//filter out '~' because other scripts identify user directories by this prefix* \n\t\t$dirName = str_replace('~','',$dirName);\n\t\t$newDir = $userDir . $dirName;\n\t\tmkdir($newDir, 0700);\n\t\tchown($newDir,$userName);}"
+            },
+            {
+              "BodyText": "While the script attempts to screen for '..' sequences, an attacker can submit a directory path including \".~.\", which will then become \"..\" after the filtering step. This allows a Path Traversal (CWE-21) attack to occur."
+            }
+          ]
+        }
+      ],
+      "PotentialMitigations": [
+        {
+          "Phase": [
+            "Implementation",
+            "Architecture and Design"
+          ],
+          "Description": "Inputs should be decoded and canonicalized to the application's current internal representation before being filtered."
+        }
+      ]
+    },
+    "/cwe/181/parents": {
+      "weakness_parents": [],
+      "category_parents": [
+        "1410",
+        "722",
+        "992"
+      ]
+    },
+    "/cwe/181/children": null
+  }
+}

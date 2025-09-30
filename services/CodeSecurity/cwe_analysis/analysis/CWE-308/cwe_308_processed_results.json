@@ -1,0 +1,95 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T23:08:02.089965",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "308",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/308": {
+      "ID": "308",
+      "Type": "base_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/308": {
+      "ID": "308",
+      "Name": "Use of Single-factor Authentication",
+      "Abstraction": "Base",
+      "Structure": "Simple",
+      "Status": "Draft",
+      "Description": "The use of single-factor authentication can lead to unnecessary risk of compromise when compared with the benefits of a dual-factor authentication scheme.",
+      "ExtendedDescription": "While the use of multiple authentication schemes is simply piling on more complexity on top of authentication, it is inestimably valuable to have such measures of redundancy. The use of weak, reused, and common passwords is rampant on the internet. Without the added protection of multiple authentication schemes, a single mistake can result in the compromise of an account. For this reason, if multiple schemes are possible and also easy to use, they should be implemented and required.",
+      "LikelihoodOfExploit": "High",
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Class": "Not Language-Specific",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Architecture and Design",
+          "Note": "COMMISSION: This weakness refers to an incorrect design related to an architectural security tactic."
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Access Control"
+          ],
+          "Impact": [
+            "Bypass Protection Mechanism"
+          ],
+          "Note": "If the secret in a single-factor authentication scheme gets compromised, full authentication is possible."
+        }
+      ],
+      "DemonstrativeExamples": [
+        {
+          "ID": "DX-101",
+          "Entries": [
+            {
+              "IntroText": "In both of these examples, a user is logged in if their given password matches a stored password:"
+            },
+            {
+              "Nature": "Bad",
+              "Language": "C",
+              "ExampleCode": "```\n\tunsigned char *check_passwd(char *plaintext) {\n\t\tctext = simple_digest(\"sha1\",plaintext,strlen(plaintext), ... );\n```\n//Login if hash matches stored hash* \n\t\tif (equal(ctext, secret_password())) {\n\t\t```\n\t\t\tlogin_user();\n\t\t}\n\t}\n```"
+            },
+            {
+              "Nature": "Bad",
+              "Language": "Java",
+              "ExampleCode": "```\n\tString plainText = new String(plainTextIn);\n\tMessageDigest encer = MessageDigest.getInstance(\"SHA\");\n\tencer.update(plainTextIn);\n\tbyte[] digest = password.digest();\n```\n//Login if hash matches stored hash* \n\tif (equal(digest,secret_password())) {\n\t```\n\t\tlogin_user();\n\t}\n```"
+            },
+            {
+              "BodyText": "This code relies exclusively on a password mechanism (CWE-309) using only one factor of authentication (CWE-308). If an attacker can steal or guess a user's password, they are given full access to their account. Note this code also uses SHA-1, which is a weak hash (CWE-328). It also does not use a salt (CWE-759)."
+            }
+          ]
+        }
+      ],
+      "PotentialMitigations": [
+        {
+          "Phase": [
+            "Architecture and Design"
+          ],
+          "Description": "Use multiple independent authentication schemes, which ensures that -- if one of the methods is compromised -- the system itself is still likely safe from compromise."
+        }
+      ]
+    },
+    "/cwe/308/parents": {
+      "weakness_parents": [
+        "1390"
+      ],
+      "category_parents": [
+        "1010",
+        "1028",
+        "1368",
+        "1396",
+        "1211",
+        "947"
+      ]
+    },
+    "/cwe/308/children": null
+  }
+}

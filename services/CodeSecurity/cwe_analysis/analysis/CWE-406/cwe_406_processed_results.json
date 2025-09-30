@@ -1,0 +1,110 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T23:20:52.441198",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "406",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/406": {
+      "ID": "406",
+      "Type": "class_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/406": {
+      "ID": "406",
+      "Name": "Insufficient Control of Network Message Volume (Network Amplification)",
+      "Abstraction": "Class",
+      "Structure": "Simple",
+      "Status": "Incomplete",
+      "Description": "The product does not sufficiently monitor or control transmitted network traffic volume, so that an actor can cause the product to transmit more traffic than should be allowed for that actor.",
+      "ExtendedDescription": "In the absence of a policy to restrict asymmetric resource consumption, the application or system cannot distinguish between legitimate transmissions and traffic intended to serve as an amplifying attack on target systems. Systems can often be configured to restrict the amount of traffic sent out on behalf of a client, based on the client's origin or access level. This is usually defined in a resource allocation policy. In the absence of a mechanism to keep track of transmissions, the system or application can be easily abused to transmit asymmetrically greater traffic than the request or client should be permitted to.",
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Class": "Not Language-Specific",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Operation"
+        },
+        {
+          "Phase": "Architecture and Design",
+          "Note": "If the application uses UDP, then it could potentially be subject to spoofing attacks that use the inherent weaknesses of UDP to perform traffic amplification, although this problem can exist in other protocols or contexts."
+        },
+        {
+          "Phase": "Implementation"
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Availability"
+          ],
+          "Impact": [
+            "DoS: Amplification",
+            "DoS: Crash, Exit, or Restart",
+            "DoS: Resource Consumption (CPU)",
+            "DoS: Resource Consumption (Memory)",
+            "DoS: Resource Consumption (Other)"
+          ],
+          "Note": "System resources can be quickly consumed leading to poor application performance or system crash. This may affect network performance and could be used to attack other systems and applications relying on network performance."
+        }
+      ],
+      "DemonstrativeExamples": [
+        {
+          "ID": "DX-113",
+          "Entries": [
+            {
+              "IntroText": "This code listens on a port for DNS requests and sends the result to the requesting address."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "Python",
+              "ExampleCode": "```\n\tsock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)\n\tsock.bind( (UDP_IP,UDP_PORT) )\n\twhile true:\n\t\t\tdata = sock.recvfrom(1024)\n\t\t\tif not data:\n\t\t\t\tbreak\n\t\t\t(requestIP, nameToResolve) = parseUDPpacket(data)\n\t\t\trecord = resolveName(nameToResolve)\n\t\t\tsendResponse(requestIP,record)\n```"
+            },
+            {
+              "BodyText": "This code sends a DNS record to a requesting IP address. UDP allows the source IP address to be easily changed ('spoofed'), thus allowing an attacker to redirect responses to a target, which may be then be overwhelmed by the network traffic."
+            }
+          ]
+        }
+      ],
+      "PotentialMitigations": [
+        {
+          "Phase": [
+            "Architecture and Design"
+          ],
+          "Strategy": "Separation of Privilege",
+          "Description": "An application must make network resources available to a client commensurate with the client's access level."
+        },
+        {
+          "Phase": [
+            "Policy"
+          ],
+          "Description": "Define a clear policy for network resource allocation and consumption."
+        },
+        {
+          "Phase": [
+            "Implementation"
+          ],
+          "Description": "An application must, at all times, keep track of network resources and meter their usage appropriately."
+        }
+      ]
+    },
+    "/cwe/406/parents": {
+      "weakness_parents": [
+        "405"
+      ],
+      "category_parents": [
+        "1382",
+        "1416",
+        "977"
+      ]
+    },
+    "/cwe/406/children": null
+  }
+}

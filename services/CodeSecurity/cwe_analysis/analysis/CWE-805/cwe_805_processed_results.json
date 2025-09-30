@@ -1,0 +1,281 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-30T00:09:39.473323",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "805",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/805": {
+      "ID": "805",
+      "Type": "base_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/805": {
+      "ID": "805",
+      "Name": "Buffer Access with Incorrect Length Value",
+      "Abstraction": "Base",
+      "Structure": "Simple",
+      "Status": "Incomplete",
+      "Description": "The product uses a sequential operation to read or write a buffer, but it uses an incorrect length value that causes it to access memory that is outside of the bounds of the buffer.",
+      "ExtendedDescription": "When the length value exceeds the size of the destination, a buffer overflow could occur.",
+      "LikelihoodOfExploit": "High",
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Name": "C",
+          "Prevalence": "Often"
+        },
+        {
+          "Type": "Language",
+          "Name": "C++",
+          "Prevalence": "Often"
+        },
+        {
+          "Type": "Language",
+          "Class": "Assembly",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Implementation"
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Integrity",
+            "Confidentiality",
+            "Availability"
+          ],
+          "Impact": [
+            "Read Memory",
+            "Modify Memory",
+            "Execute Unauthorized Code or Commands"
+          ],
+          "Note": "Buffer overflows often can be used to execute arbitrary code, which is usually outside the scope of a program's implicit security policy. This can often be used to subvert any other security service."
+        },
+        {
+          "Scope": [
+            "Availability"
+          ],
+          "Impact": [
+            "Modify Memory",
+            "DoS: Crash, Exit, or Restart",
+            "DoS: Resource Consumption (CPU)"
+          ],
+          "Note": "Buffer overflows generally lead to crashes. Other attacks leading to lack of availability are possible, including putting the program into an infinite loop."
+        }
+      ],
+      "DemonstrativeExamples": [
+        {
+          "ID": "DX-1",
+          "Entries": [
+            {
+              "IntroText": "This example takes an IP address from a user, verifies that it is well formed and then looks up the hostname and copies it into a buffer."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "C",
+              "ExampleCode": "```\n\tvoid host_lookup(char *user_supplied_addr){\n\t\t\tstruct hostent *hp;\n\t\t\tin_addr_t *addr;\n\t\t\tchar hostname[64];\n\t\t\tin_addr_t inet_addr(const char *cp);\n```\n/*routine that ensures user_supplied_addr is in the right format for conversion */* \n\t\t\t\n\t\t\tvalidate_addr_form(user_supplied_addr);\n\t\t\taddr = inet_addr(user_supplied_addr);\n\t\t\thp = gethostbyaddr( addr, sizeof(struct in_addr), AF_INET);\n\t\t\tstrcpy(hostname, hp->h_name);}"
+            },
+            {
+              "BodyText": "This function allocates a buffer of 64 bytes to store the hostname under the assumption that the maximum length value of hostname is 64 bytes, however there is no guarantee that the hostname will not be larger than 64 bytes. If an attacker specifies an address which resolves to a very large hostname, then the function may overwrite sensitive data or even relinquish control flow to the attacker."
+            },
+            {
+              "BodyText": "Note that this example also contains an unchecked return value (CWE-252) that can lead to a NULL pointer dereference (CWE-476)."
+            }
+          ]
+        },
+        {
+          "ID": "DX-114",
+          "Entries": [
+            {
+              "IntroText": "In the following example, it is possible to request that memcpy move a much larger segment of memory than assumed:"
+            },
+            {
+              "Nature": "Bad",
+              "Language": "C",
+              "ExampleCode": "```\n\tint returnChunkSize(void *) {\n```\n/* if chunk info is valid, return the size of usable memory,* \n\t\t\t\n\t\t\t\n\t\t\t ** else, return -1 to indicate an error* \n\t\t\t\n\t\t\t\n\t\t\t **/* \n\t\t\t...}\n\tint main() {\n\t```\n\t\t...\n\t\tmemcpy(destBuf, srcBuf, (returnChunkSize(destBuf)-1));\n\t\t...\n\t}\n```"
+            },
+            {
+              "BodyText": "If returnChunkSize() happens to encounter an error it will return -1. Notice that the return value is not checked before the memcpy operation (CWE-252), so -1 can be passed as the size argument to memcpy() (CWE-805). Because memcpy() assumes that the value is unsigned, it will be interpreted as MAXINT-1 (CWE-195), and therefore will copy far more memory than is likely available to the destination buffer (CWE-787, CWE-788)."
+            }
+          ]
+        },
+        {
+          "Entries": [
+            {
+              "IntroText": "In the following example, the source character string is copied to the dest character string using the method strncpy."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "C",
+              "ExampleCode": "```\n\t...\n\tchar source[21] = \"the character string\";\n\tchar dest[12];\n\tstrncpy(dest, source, sizeof(source)-1);\n\t...\n```"
+            },
+            {
+              "BodyText": "However, in the call to strncpy the source character string is used within the sizeof call to determine the number of characters to copy. This will create a buffer overflow as the size of the source character string is greater than the dest character string. The dest character string should be used within the sizeof call to ensure that the correct number of characters are copied, as shown below."
+            },
+            {
+              "Nature": "Good",
+              "Language": "C",
+              "ExampleCode": "```\n\t...\n\tchar source[21] = \"the character string\";\n\tchar dest[12];\n\tstrncpy(dest, source, sizeof(dest)-1);\n\t...\n```"
+            }
+          ]
+        },
+        {
+          "Entries": [
+            {
+              "IntroText": "In this example, the method outputFilenameToLog outputs a filename to a log file. The method arguments include a pointer to a character string containing the file name and an integer for the number of characters in the string. The filename is copied to a buffer where the buffer size is set to a maximum size for inputs to the log file. The method then calls another method to save the contents of the buffer to the log file."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "C",
+              "ExampleCode": "```\n\t#define LOG_INPUT_SIZE 40\n```\n// saves the file name to a log file* \n\tint outputFilenameToLog(char *filename, int length) {\n\t```\n\t\t\tint success;\n```\n// buffer with size set to maximum size for input to log file* \n\t\t\tchar buf[LOG_INPUT_SIZE];\n\t\t\t\n\t\t\t\n\t\t\t *// copy filename to buffer* \n\t\t\tstrncpy(buf, filename, length);\n\t\t\t\n\t\t\t\n\t\t\t *// save to log file* \n\t\t\tsuccess = saveToLogFile(buf);\n\t\t\t\n\t\t\treturn success;}"
+            },
+            {
+              "BodyText": "However, in this case the string copy method, strncpy, mistakenly uses the length method argument to determine the number of characters to copy rather than using the size of the local character string, buf. This can lead to a buffer overflow if the number of characters contained in character string pointed to by filename is larger then the number of characters allowed for the local character string. The string copy method should use the buf character string within a sizeof call to ensure that only characters up to the size of the buf array are copied to avoid a buffer overflow, as shown below."
+            },
+            {
+              "Nature": "Good",
+              "Language": "C",
+              "ExampleCode": "```\n\t...\n```\n// copy filename to buffer* \n\tstrncpy(buf, filename, sizeof(buf)-1);\n\t..."
+            }
+          ]
+        },
+        {
+          "ID": "DX-189",
+          "Entries": [
+            {
+              "IntroText": "Windows provides the MultiByteToWideChar(), WideCharToMultiByte(), UnicodeToBytes(), and BytesToUnicode() functions to convert between arbitrary multibyte (usually ANSI) character strings and Unicode (wide character) strings. The size arguments to these functions are specified in different units, (one in bytes, the other in characters) making their use prone to error."
+            },
+            {
+              "BodyText": "In a multibyte character string, each character occupies a varying number of bytes, and therefore the size of such strings is most easily specified as a total number of bytes. In Unicode, however, characters are always a fixed size, and string lengths are typically given by the number of characters they contain. Mistakenly specifying the wrong units in a size argument can lead to a buffer overflow."
+            },
+            {
+              "BodyText": "The following function takes a username specified as a multibyte string and a pointer to a structure for user information and populates the structure with information about the specified user. Since Windows authentication uses Unicode for usernames, the username argument is first converted from a multibyte string to a Unicode string."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "C",
+              "ExampleCode": "```\n\tvoid getUserInfo(char *username, struct _USER_INFO_2 info){\n\t\tWCHAR unicodeUser[UNLEN+1];\n\t\tMultiByteToWideChar(CP_ACP, 0, username, -1, unicodeUser, sizeof(unicodeUser));\n\t\tNetUserGetInfo(NULL, unicodeUser, 2, (LPBYTE *)&info);\n\t}\n```"
+            },
+            {
+              "BodyText": "This function incorrectly passes the size of unicodeUser in bytes instead of characters. The call to MultiByteToWideChar() can therefore write up to (UNLEN+1)*sizeof(WCHAR) wide characters, or (UNLEN+1)*sizeof(WCHAR)*sizeof(WCHAR) bytes, to the unicodeUser array, which has only (UNLEN+1)*sizeof(WCHAR) bytes allocated."
+            },
+            {
+              "BodyText": "If the username string contains more than UNLEN characters, the call to MultiByteToWideChar() will overflow the buffer unicodeUser."
+            }
+          ]
+        }
+      ],
+      "PotentialMitigations": [
+        {
+          "MitigationID": "MIT-3",
+          "Phase": [
+            "Requirements"
+          ],
+          "Strategy": "Language Selection",
+          "Description": "\n\nUse a language that does not allow this weakness to occur or provides constructs that make this weakness easier to avoid.\n\n\nFor example, many languages that perform their own memory management, such as Java and Perl, are not subject to buffer overflows. Other languages, such as Ada and C#, typically provide overflow protection, but the protection can be disabled by the programmer.\n\n\nBe wary that a language's interface to native code may still be subject to overflows, even if the language itself is theoretically safe.\n"
+        },
+        {
+          "MitigationID": "MIT-4.1",
+          "Phase": [
+            "Architecture and Design"
+          ],
+          "Strategy": "Libraries or Frameworks",
+          "Description": "\n\nUse a vetted library or framework that does not allow this weakness to occur or provides constructs that make this weakness easier to avoid.\n\n\nExamples include the Safe C String Library (SafeStr) by Messier and Viega [REF-57], and the Strsafe.h library from Microsoft [REF-56]. These libraries provide safer versions of overflow-prone string-handling functions.\n",
+          "EffectivenessNotes": "This is not a complete solution, since many buffer overflows are not related to strings."
+        },
+        {
+          "MitigationID": "MIT-10",
+          "Phase": [
+            "Operation",
+            "Build and Compilation"
+          ],
+          "Strategy": "Environment Hardening",
+          "Description": "\n\nUse automatic buffer overflow detection mechanisms that are offered by certain compilers or compiler extensions. Examples include: the Microsoft Visual Studio /GS flag, Fedora/Red Hat FORTIFY_SOURCE GCC flag, StackGuard, and ProPolice, which provide various mechanisms including canary-based detection and range/index checking. \n\n\n D3-SFCV (Stack Frame Canary Validation) from D3FEND [REF-1334] discusses canary-based detection in detail. \n",
+          "Effectiveness": "Defense in Depth",
+          "EffectivenessNotes": "\n\n This is not necessarily a complete solution, since these mechanisms only detect certain types of overflows. In addition, the result is still a denial of service, since the typical response is to exit the application. \n"
+        },
+        {
+          "MitigationID": "MIT-9",
+          "Phase": [
+            "Implementation"
+          ],
+          "Description": "\n\nConsider adhering to the following rules when allocating and managing an application's memory:\n\n\n  - Double check that the buffer is as large as specified.\n\n  - When using functions that accept a number of bytes to copy, such as strncpy(), be aware that if the destination buffer size is equal to the source buffer size, it may not NULL-terminate the string.\n\n  - Check buffer boundaries if accessing the buffer in a loop and make sure there is no danger of writing past the allocated space.\n\n  - If necessary, truncate all input strings to a reasonable length before passing them to the copy and concatenation functions.\n\n"
+        },
+        {
+          "MitigationID": "MIT-15",
+          "Phase": [
+            "Architecture and Design"
+          ],
+          "Description": "For any security checks that are performed on the client side, ensure that these checks are duplicated on the server side, in order to avoid CWE-602. Attackers can bypass the client-side checks by modifying values after the checks have been performed, or by changing the client to remove the client-side checks entirely. Then, these modified values would be submitted to the server."
+        },
+        {
+          "MitigationID": "MIT-11",
+          "Phase": [
+            "Operation",
+            "Build and Compilation"
+          ],
+          "Strategy": "Environment Hardening",
+          "Description": "\n\nRun or compile the software using features or extensions that randomly arrange the positions of a program's executable and libraries in memory. Because this makes the addresses unpredictable, it can prevent an attacker from reliably jumping to exploitable code. \n\n\n Examples include Address Space Layout Randomization (ASLR) [REF-58] [REF-60] and Position-Independent Executables (PIE) [REF-64]. Imported modules may be similarly realigned if their default memory addresses conflict with other modules, in a process known as \"rebasing\" (for Windows) and \"prelinking\" (for Linux) [REF-1332] using randomly generated addresses. ASLR for libraries cannot be used in conjunction with prelink since it would require relocating the libraries at run-time, defeating the whole purpose of prelinking. \n\n\n For more information on these techniques see D3-SAOR (Segment Address Offset Randomization) from D3FEND [REF-1335]. \n",
+          "Effectiveness": "Defense in Depth",
+          "EffectivenessNotes": "These techniques do not provide a complete solution. For instance, exploits frequently use a bug that discloses memory addresses in order to maximize reliability of code execution [REF-1337]. It has also been shown that a side-channel attack can bypass ASLR [REF-1333]."
+        },
+        {
+          "MitigationID": "MIT-12",
+          "Phase": [
+            "Operation"
+          ],
+          "Strategy": "Environment Hardening",
+          "Description": "\n\n Use a CPU and operating system that offers Data Execution Protection (using hardware NX or XD bits) or the equivalent techniques that simulate this feature in software, such as PaX [REF-60] [REF-61]. These techniques ensure that any instruction executed is exclusively at a memory address that is part of the code segment. \n\n\n For more information on these techniques see D3-PSEP (Process Segment Execution Prevention) from D3FEND [REF-1336]. \n",
+          "Effectiveness": "Defense in Depth",
+          "EffectivenessNotes": "This is not a complete solution, since buffer overflows could be used to overwrite nearby variables to modify the software's state in dangerous ways. In addition, it cannot be used in cases in which self-modifying code is required. Finally, an attack could still cause a denial of service, since the typical response is to exit the application."
+        },
+        {
+          "MitigationID": "MIT-17",
+          "Phase": [
+            "Architecture and Design",
+            "Operation"
+          ],
+          "Strategy": "Environment Hardening",
+          "Description": "Run your code using the lowest privileges that are required to accomplish the necessary tasks [REF-76]. If possible, create isolated accounts with limited privileges that are only used for a single task. That way, a successful attack will not immediately give the attacker access to the rest of the product or its environment. For example, database applications rarely need to run as the database administrator, especially in day-to-day operations."
+        },
+        {
+          "MitigationID": "MIT-22",
+          "Phase": [
+            "Architecture and Design",
+            "Operation"
+          ],
+          "Strategy": "Sandbox or Jail",
+          "Description": "\n\nRun the code in a \"jail\" or similar sandbox environment that enforces strict boundaries between the process and the operating system. This may effectively restrict which files can be accessed in a particular directory or which commands can be executed by the software.\n\n\nOS-level examples include the Unix chroot jail, AppArmor, and SELinux. In general, managed code may provide some protection. For example, java.io.FilePermission in the Java SecurityManager allows the software to specify restrictions on file operations.\n\n\nThis may not be a feasible solution, and it only limits the impact to the operating system; the rest of the application may still be subject to compromise.\n\n\nBe careful to avoid CWE-243 and other weaknesses related to jails.\n",
+          "Effectiveness": "Limited",
+          "EffectivenessNotes": "The effectiveness of this mitigation depends on the prevention capabilities of the specific sandbox or jail being used and might only help to reduce the scope of an attack, such as restricting the attacker to certain system calls or limiting the portion of the file system that can be accessed."
+        }
+      ]
+    },
+    "/cwe/805/parents": {
+      "weakness_parents": [
+        "119"
+      ],
+      "category_parents": [
+        "1160",
+        "1399",
+        "1218",
+        "740",
+        "802",
+        "874",
+        "867"
+      ]
+    },
+    "/cwe/805/children": {
+      "weakness_children": [
+        "806"
+      ],
+      "category_children": []
+    }
+  }
+}

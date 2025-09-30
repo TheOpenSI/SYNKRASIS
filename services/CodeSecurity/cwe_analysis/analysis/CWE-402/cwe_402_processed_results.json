@@ -1,0 +1,68 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T23:20:22.462315",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "402",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/402": {
+      "ID": "402",
+      "Type": "class_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/402": {
+      "ID": "402",
+      "Name": "Transmission of Private Resources into a New Sphere ('Resource Leak')",
+      "Abstraction": "Class",
+      "Structure": "Simple",
+      "Status": "Draft",
+      "Description": "The product makes resources available to untrusted parties when those resources are only intended to be accessed by the product.",
+      "ExtendedDescription": null,
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": null,
+      "AlternateTerms": [
+        {
+          "Term": "Resource Leak"
+        }
+      ],
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Architecture and Design"
+        },
+        {
+          "Phase": "Implementation"
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Confidentiality"
+          ],
+          "Impact": [
+            "Read Application Data"
+          ]
+        }
+      ],
+      "DemonstrativeExamples": null,
+      "PotentialMitigations": null
+    },
+    "/cwe/402/parents": {
+      "weakness_parents": [
+        "668"
+      ],
+      "category_parents": [
+        "1345",
+        "1403",
+        "963"
+      ]
+    },
+    "/cwe/402/children": {
+      "weakness_children": [
+        "403",
+        "619"
+      ],
+      "category_children": []
+    }
+  }
+}

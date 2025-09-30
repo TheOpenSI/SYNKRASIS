@@ -1,0 +1,33 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T22:38:30.052115",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "1324",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/1324": {
+      "ID": "1324",
+      "Type": "deprecated_weakness",
+      "is_deprecated": true
+    },
+    "/cwe/weakness/1324": {
+      "ID": "1324",
+      "Name": "DEPRECATED: Sensitive Information Accessible by Physical Probing of JTAG Interface",
+      "Abstraction": "Base",
+      "Structure": "Simple",
+      "Status": "Deprecated",
+      "Description": "This entry has been deprecated because it was at a lower level of abstraction than supported by CWE. All relevant content has been integrated into CWE-319.",
+      "ExtendedDescription": null,
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": null,
+      "AlternateTerms": null,
+      "ModesOfIntroduction": null,
+      "CommonConsequences": null,
+      "DemonstrativeExamples": null,
+      "PotentialMitigations": null
+    },
+    "/cwe/1324/parents": null,
+    "/cwe/1324/children": null
+  }
+}

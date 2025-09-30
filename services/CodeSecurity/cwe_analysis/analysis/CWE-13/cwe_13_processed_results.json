@@ -1,0 +1,81 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T22:35:27.166415",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "13",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/13": {
+      "ID": "13",
+      "Type": "variant_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/13": {
+      "ID": "13",
+      "Name": "ASP.NET Misconfiguration: Password in Configuration File",
+      "Abstraction": "Variant",
+      "Structure": "Simple",
+      "Status": "Draft",
+      "Description": "Storing a plaintext password in a configuration file allows anyone who can read the file access to the password-protected resource making them an easy target for attackers.",
+      "ExtendedDescription": null,
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": null,
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Architecture and Design"
+        },
+        {
+          "Phase": "Implementation"
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Access Control"
+          ],
+          "Impact": [
+            "Gain Privileges or Assume Identity"
+          ]
+        }
+      ],
+      "DemonstrativeExamples": [
+        {
+          "Entries": [
+            {
+              "IntroText": "The following example shows a portion of a configuration file for an ASP.Net application. This configuration file includes username and password information for a connection to a database, but the pair is stored in plaintext."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "ASP.NET",
+              "ExampleCode": "```\n\t...\n\t<connectionStrings>\n\t\t<add name=\"ud_DEV\" connectionString=\"connectDB=uDB; uid=db2admin; pwd=password; dbalias=uDB;\" providerName=\"System.Data.Odbc\" />\n\t</connectionStrings>\n\t...\n```"
+            },
+            {
+              "BodyText": "Username and password information should not be included in a configuration file or a properties file in plaintext as this will allow anyone who can read the file access to the resource. If possible, encrypt this information."
+            }
+          ]
+        }
+      ],
+      "PotentialMitigations": [
+        {
+          "Phase": [
+            "Implementation"
+          ],
+          "Description": "Credentials stored in configuration files should be encrypted, Use standard APIs and industry accepted algorithms to encrypt the credentials stored in configuration files."
+        }
+      ]
+    },
+    "/cwe/13/parents": {
+      "weakness_parents": [],
+      "category_parents": [
+        "1349",
+        "1396",
+        "2",
+        "731",
+        "963"
+      ]
+    },
+    "/cwe/13/children": null
+  }
+}

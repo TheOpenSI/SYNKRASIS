@@ -1,0 +1,90 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T23:11:24.412459",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "333",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/333": {
+      "ID": "333",
+      "Type": "variant_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/333": {
+      "ID": "333",
+      "Name": "Improper Handling of Insufficient Entropy in TRNG",
+      "Abstraction": "Variant",
+      "Structure": "Simple",
+      "Status": "Draft",
+      "Description": "True random number generators (TRNG) generally have a limited source of entropy and therefore can fail or block.",
+      "ExtendedDescription": "The rate at which true random numbers can be generated is limited. It is important that one uses them only when they are needed for security.",
+      "LikelihoodOfExploit": "Low",
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Class": "Not Language-Specific",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Architecture and Design"
+        },
+        {
+          "Phase": "Implementation",
+          "Note": "REALIZATION: This weakness is caused during implementation of an architectural security tactic."
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Availability"
+          ],
+          "Impact": [
+            "DoS: Crash, Exit, or Restart"
+          ],
+          "Note": "A program may crash or block if it runs out of random numbers."
+        }
+      ],
+      "DemonstrativeExamples": [
+        {
+          "Entries": [
+            {
+              "IntroText": "This code uses a TRNG to generate a unique session id for new connections to a server:"
+            },
+            {
+              "Nature": "Bad",
+              "Language": "C",
+              "ExampleCode": "```\n\twhile (1){\n\t\t\tif (haveNewConnection()){\n\t\t\t\tif (hwRandom()){\n\t\t\t\t\tint sessionID = hwRandom();\n\t\t\t\t\tcreateNewConnection(sessionID);\n\t\t\t\t} } }\n```"
+            },
+            {
+              "BodyText": "This code does not attempt to limit the number of new connections or make sure the TRNG can successfully generate a new random number. An attacker may be able to create many new connections and exhaust the entropy of the TRNG. The TRNG may then block and cause the program to crash or hang."
+            }
+          ]
+        }
+      ],
+      "PotentialMitigations": [
+        {
+          "Phase": [
+            "Implementation"
+          ],
+          "Description": "Rather than failing on a lack of random numbers, it is often preferable to wait for more numbers to be created."
+        }
+      ]
+    },
+    "/cwe/333/parents": {
+      "weakness_parents": [
+        "755"
+      ],
+      "category_parents": [
+        "1013",
+        "1414",
+        "861",
+        "905"
+      ]
+    },
+    "/cwe/333/children": null
+  }
+}

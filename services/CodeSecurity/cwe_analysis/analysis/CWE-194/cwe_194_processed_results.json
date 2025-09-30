@@ -1,0 +1,94 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T22:52:36.437912",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "194",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/194": {
+      "ID": "194",
+      "Type": "variant_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/194": {
+      "ID": "194",
+      "Name": "Unexpected Sign Extension",
+      "Abstraction": "Variant",
+      "Structure": "Simple",
+      "Status": "Incomplete",
+      "Description": "The product performs an operation on a number that causes it to be sign extended when it is transformed into a larger data type. When the original number is negative, this can produce unexpected values that lead to resultant weaknesses.",
+      "ExtendedDescription": null,
+      "LikelihoodOfExploit": "High",
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Name": "C",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Language",
+          "Name": "C++",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Implementation"
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Integrity",
+            "Confidentiality",
+            "Availability",
+            "Other"
+          ],
+          "Impact": [
+            "Read Memory",
+            "Modify Memory",
+            "Other"
+          ],
+          "Note": "When an unexpected sign extension occurs in code that operates directly on memory buffers, such as a size value or a memory index, then it could cause the program to write or read outside the boundaries of the intended buffer. If the numeric value is associated with an application-level resource, such as a quantity or price for a product in an e-commerce site, then the sign extension could produce a value that is much higher (or lower) than the application's allowable range."
+        }
+      ],
+      "DemonstrativeExamples": [
+        {
+          "ID": "DX-23",
+          "Entries": [
+            {
+              "IntroText": "The following code reads a maximum size and performs a sanity check on that size. It then performs a strncpy, assuming it will not exceed the boundaries of the array. While the use of \"short s\" is forced in this particular example, short int's are frequently used within real-world code, such as code that processes structured data."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "C",
+              "ExampleCode": "```\n\tint GetUntrustedInt () {\n\t\treturn(0x0000FFFF);\n\t}\n\tvoid main (int argc, char **argv) {\n\t\t\tchar path[256];\n\t\t\tchar *input;\n\t\t\tint i;\n\t\t\tshort s;\n\t\t\tunsigned int sz;\n\t\t\ti = GetUntrustedInt();\n\t\t\ts = i;\n\t\t\t/* s is -1 so it passes the safety check - CWE-697 */\n\t\t\tif (s > 256) {\n\t\t\t\tDiePainfully(\"go away!\\n\");\n\t\t\t}\n\t\t\t/* s is sign-extended and saved in sz */\n\t\t\tsz = s;\n\t\t\t/* output: i=65535, s=-1, sz=4294967295 - your mileage may vary */\n\t\t\tprintf(\"i=%d, s=%d, sz=%u\\n\", i, s, sz);\n\t\t\tinput = GetUserInput(\"Enter pathname:\");\n\t\t\t/* strncpy interprets s as unsigned int, so it's treated as MAX_INT\n\t\t\t(CWE-195), enabling buffer overflow (CWE-119) */\n\t\t\tstrncpy(path, input, s);\n\t\t\tpath[255] = '\\0'; /* don't want CWE-170 */\n\t\t\tprintf(\"Path is: %s\\n\", path);\n\t}\n```"
+            },
+            {
+              "BodyText": "This code first exhibits an example of CWE-839, allowing \"s\" to be a negative number. When the negative short \"s\" is converted to an unsigned integer, it becomes an extremely large positive integer. When this converted integer is used by strncpy() it will lead to a buffer overflow (CWE-119)."
+            }
+          ]
+        }
+      ],
+      "PotentialMitigations": [
+        {
+          "Phase": [
+            "Implementation"
+          ],
+          "Description": "Avoid using signed variables if you don't need to represent negative values. When negative values are needed, perform validation after you save those values to larger data types, or before passing them to functions that are expecting unsigned values."
+        }
+      ]
+    },
+    "/cwe/194/parents": {
+      "weakness_parents": [],
+      "category_parents": [
+        "1158",
+        "1416",
+        "998"
+      ]
+    },
+    "/cwe/194/children": null
+  }
+}

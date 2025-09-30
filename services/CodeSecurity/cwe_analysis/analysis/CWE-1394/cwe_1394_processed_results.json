@@ -1,0 +1,95 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T22:43:09.388423",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "1394",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/1394": {
+      "ID": "1394",
+      "Type": "base_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/1394": {
+      "ID": "1394",
+      "Name": "Use of Default Cryptographic Key",
+      "Abstraction": "Base",
+      "Structure": "Simple",
+      "Status": "Incomplete",
+      "Description": "The product uses a default cryptographic key for potentially critical functionality.",
+      "ExtendedDescription": "It is common practice for products to be designed to use default keys. The rationale is to simplify the manufacturing process or the system administrator's task of installation and deployment into an enterprise. However, if admins do not change the defaults, it is easier for attackers to bypass authentication quickly across multiple organizations.",
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Class": "Not Language-Specific",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Operating_System",
+          "Class": "Not OS-Specific",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Architecture",
+          "Class": "Not Architecture-Specific",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Technology",
+          "Class": "Not Technology-Specific",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Architecture and Design"
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Authentication"
+          ],
+          "Impact": [
+            "Gain Privileges or Assume Identity"
+          ]
+        }
+      ],
+      "DemonstrativeExamples": null,
+      "PotentialMitigations": [
+        {
+          "Phase": [
+            "Requirements"
+          ],
+          "Description": "Prohibit use of default, hard-coded, or other values that do not vary for each installation of the product - especially for separate organizations.",
+          "Effectiveness": "High"
+        },
+        {
+          "Phase": [
+            "Architecture and Design"
+          ],
+          "Description": "Force the administrator to change the credential upon installation.",
+          "Effectiveness": "High"
+        },
+        {
+          "Phase": [
+            "Installation",
+            "Operation"
+          ],
+          "Description": "The product administrator could change the defaults upon installation or during operation.",
+          "Effectiveness": "Moderate"
+        }
+      ]
+    },
+    "/cwe/1394/parents": {
+      "weakness_parents": [],
+      "category_parents": [
+        "1396"
+      ]
+    },
+    "/cwe/1394/children": null
+  }
+}

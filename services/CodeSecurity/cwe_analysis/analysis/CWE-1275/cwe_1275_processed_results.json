@@ -1,0 +1,124 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T22:32:03.315058",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "1275",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/1275": {
+      "ID": "1275",
+      "Type": "variant_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/1275": {
+      "ID": "1275",
+      "Name": "Sensitive Cookie with Improper SameSite Attribute",
+      "Abstraction": "Variant",
+      "Structure": "Simple",
+      "Status": "Incomplete",
+      "Description": "The SameSite attribute for sensitive cookies is not set, or an insecure value is used.",
+      "ExtendedDescription": "The SameSite attribute controls how cookies are sent for cross-domain requests. This attribute may have three values: 'Lax', 'Strict', or 'None'. If the 'None' value is used, a website may create a cross-domain POST HTTP request to another website, and the browser automatically adds cookies to this request. This may lead to Cross-Site-Request-Forgery (CSRF) attacks if there are no additional protections in place (such as Anti-CSRF tokens).",
+      "LikelihoodOfExploit": "Medium",
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Class": "Not Language-Specific",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Operating_System",
+          "Class": "Not OS-Specific",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Architecture",
+          "Class": "Not Architecture-Specific",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Technology",
+          "Class": "Web Based",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Implementation",
+          "Note": "This weakness occurs during implementation when the coder does not properly set the SameSite attribute."
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Confidentiality",
+            "Integrity",
+            "Non-Repudiation",
+            "Access Control"
+          ],
+          "Impact": [
+            "Modify Application Data"
+          ],
+          "Likelihood": [
+            "Low"
+          ],
+          "Note": "If the website does not impose additional defense against CSRF attacks, failing to use the 'Lax' or 'Strict' values could increase the risk of exposure to CSRF attacks. The likelihood of the integrity breach is Low because a successful attack does not only depend on an insecure SameSite attribute. In order to perform a CSRF attack there are many conditions that must be met, such as the lack of CSRF tokens, no confirmations for sensitive actions on the website, a \"simple\" \"Content-Type\" header in the HTTP request and many more."
+        }
+      ],
+      "DemonstrativeExamples": [
+        {
+          "Entries": [
+            {
+              "IntroText": "In this example, a cookie is used to store a session ID for a client's interaction with a website. The snippet of code below establishes a new cookie to hold the sessionID."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "JavaScript",
+              "ExampleCode": "let sessionId = generateSessionId()\n let cookieOptions = { domain: 'example.com' }\n response.cookie('sessionid', sessionId, cookieOptions)"
+            },
+            {
+              "BodyText": "Since the sameSite attribute is not specified, the cookie will be sent to the website with each request made by the client. An attacker can potentially perform a CSRF attack by using the following malicious page:"
+            },
+            {
+              "Nature": "Attack",
+              "Language": "HTML",
+              "ExampleCode": "<html>\n\n```\n\t <form id=evil action=\"http://local:3002/setEmail\" method=\"POST\">\n\t\t <input type=\"hidden\" name=\"newEmail\" value=\"abc@example.com\" />\n\t </form>\n <script>evil.submit()</script>\n </html>\n```"
+            },
+            {
+              "BodyText": "When the client visits this malicious web page, it submits a '/setEmail' POST HTTP request to the vulnerable website. Since the browser automatically appends the 'sessionid' cookie to the request, the website automatically performs a 'setEmail' action on behalf of the client."
+            },
+            {
+              "BodyText": "To mitigate the risk, use the sameSite attribute of the 'sessionid' cookie set to 'Strict'."
+            },
+            {
+              "Nature": "Good",
+              "Language": "JavaScript",
+              "ExampleCode": "let sessionId = generateSessionId()\n let cookieOptions = { domain: 'example.com', sameSite: 'Strict' }\n response.cookie('sessionid', sessionId, cookieOptions)"
+            }
+          ]
+        }
+      ],
+      "PotentialMitigations": [
+        {
+          "Phase": [
+            "Implementation"
+          ],
+          "Description": "Set the SameSite attribute of a sensitive cookie to 'Lax' or 'Strict'. This instructs the browser to apply this cookie only to same-domain requests, which provides a good Defense in Depth against CSRF attacks. When the 'Lax' value is in use, cookies are also sent for top-level cross-domain navigation via HTTP GET, HEAD, OPTIONS, and TRACE methods, but not for other HTTP methods that are more like to cause side-effects of state mutation.",
+          "Effectiveness": "High",
+          "EffectivenessNotes": "While this mitigation is effective for protecting cookies from a browser's own scripting engine, third-party components or plugins may have their own engines that allow access to cookies. Attackers might also be able to use XMLHTTPResponse to read the headers directly and obtain the cookie."
+        }
+      ]
+    },
+    "/cwe/1275/parents": {
+      "weakness_parents": [
+        "923"
+      ],
+      "category_parents": [
+        "1345",
+        "1396"
+      ]
+    },
+    "/cwe/1275/children": null
+  }
+}

@@ -1,0 +1,120 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-30T00:12:46.336211",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "838",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/838": {
+      "ID": "838",
+      "Type": "base_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/838": {
+      "ID": "838",
+      "Name": "Inappropriate Encoding for Output Context",
+      "Abstraction": "Base",
+      "Structure": "Simple",
+      "Status": "Incomplete",
+      "Description": "The product uses or specifies an encoding when generating output to a downstream component, but the specified encoding is not the same as the encoding that is expected by the downstream component.",
+      "ExtendedDescription": "\n\nThis weakness can cause the downstream component to use a decoding method that produces different data than what the product intended to send. When the wrong encoding is used - even if closely related - the downstream component could decode the data incorrectly. This can have security consequences when the provided boundaries between control and data are inadvertently broken, because the resulting data could introduce control characters or special elements that were not sent by the product. The resulting data could then be used to bypass protection mechanisms such as input validation, and enable injection attacks.\n\n\nWhile using output encoding is essential for ensuring that communications between components are accurate, the use of the wrong encoding - even if closely related - could cause the downstream component to misinterpret the output.\n\n\nFor example, HTML entity encoding is used for elements in the HTML body of a web page. However, a programmer might use entity encoding when generating output for that is used within an attribute of an HTML tag, which could contain functional Javascript that is not affected by the HTML encoding.\n\n\nWhile web applications have received the most attention for this problem, this weakness could potentially apply to any type of product that uses a communications stream that could support multiple encodings.\n",
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Class": "Not Language-Specific",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": null,
+      "ModesOfIntroduction": null,
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Integrity",
+            "Confidentiality",
+            "Availability"
+          ],
+          "Impact": [
+            "Modify Application Data",
+            "Execute Unauthorized Code or Commands"
+          ],
+          "Note": "An attacker could modify the structure of the message or data being sent to the downstream component, possibly injecting commands."
+        }
+      ],
+      "DemonstrativeExamples": [
+        {
+          "Entries": [
+            {
+              "IntroText": "This code dynamically builds an HTML page using POST data:"
+            },
+            {
+              "Nature": "Bad",
+              "Language": "PHP",
+              "ExampleCode": "```\n\t$username = $_POST['username'];\n\t$picSource = $_POST['picsource'];\n\t$picAltText = $_POST['picalttext'];\n```\n...* \n\t\n\techo \"<title>Welcome, \" . htmlentities($username) .\"</title>\";\n\techo \"<img src='\". htmlentities($picSource) .\" ' alt='\". htmlentities($picAltText) . '\" />';\n\t\n\t *...*"
+            },
+            {
+              "BodyText": "The programmer attempts to avoid XSS exploits (CWE-79) by encoding the POST values so they will not be interpreted as valid HTML. However, the htmlentities() encoding is not appropriate when the data are used as HTML attributes, allowing more attributes to be injected."
+            },
+            {
+              "BodyText": "For example, an attacker can set picAltText to:"
+            },
+            {
+              "Nature": "Attack",
+              "ExampleCode": "```\n\t\"altTextHere' onload='alert(document.cookie)\"\n```"
+            },
+            {
+              "BodyText": "This will result in the generated HTML image tag:"
+            },
+            {
+              "Nature": "Result",
+              "Language": "HTML",
+              "ExampleCode": "```\n\t<img src='pic.jpg' alt='altTextHere' onload='alert(document.cookie)' />\n```"
+            },
+            {
+              "BodyText": "The attacker can inject arbitrary javascript into the tag due to this incorrect encoding."
+            }
+          ]
+        }
+      ],
+      "PotentialMitigations": [
+        {
+          "Phase": [
+            "Implementation"
+          ],
+          "Strategy": "Output Encoding",
+          "Description": "Use context-aware encoding. That is, understand which encoding is being used by the downstream component, and ensure that this encoding is used. If an encoding can be specified, do so, instead of assuming that the default encoding is the same as the default being assumed by the downstream component."
+        },
+        {
+          "Phase": [
+            "Architecture and Design"
+          ],
+          "Strategy": "Output Encoding",
+          "Description": "Where possible, use communications protocols or data formats that provide strict boundaries between control and data. If this is not feasible, ensure that the protocols or formats allow the communicating components to explicitly state which encoding/decoding method is being used. Some template frameworks provide built-in support."
+        },
+        {
+          "MitigationID": "MIT-4.3",
+          "Phase": [
+            "Architecture and Design"
+          ],
+          "Strategy": "Libraries or Frameworks",
+          "Description": "\n\nUse a vetted library or framework that does not allow this weakness to occur or provides constructs that make this weakness easier to avoid.\n\n\nFor example, consider using the ESAPI Encoding control [REF-45] or a similar tool, library, or framework. These will help the programmer encode outputs in a manner less prone to error.\n\n\nNote that some template mechanisms provide built-in support for the appropriate encoding.\n"
+        }
+      ]
+    },
+    "/cwe/838/parents": {
+      "weakness_parents": [
+        "116"
+      ],
+      "category_parents": [
+        "1138",
+        "1407",
+        "137",
+        "845",
+        "867"
+      ]
+    },
+    "/cwe/838/children": null
+  }
+}

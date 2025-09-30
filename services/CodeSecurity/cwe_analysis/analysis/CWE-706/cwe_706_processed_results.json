@@ -1,0 +1,77 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-30T00:00:41.380186",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "706",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/706": {
+      "ID": "706",
+      "Type": "class_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/706": {
+      "ID": "706",
+      "Name": "Use of Incorrectly-Resolved Name or Reference",
+      "Abstraction": "Class",
+      "Structure": "Simple",
+      "Status": "Incomplete",
+      "Description": "The product uses a name or reference to access a resource, but the name/reference resolves to a resource that is outside of the intended control sphere.",
+      "ExtendedDescription": null,
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Class": "Not Language-Specific",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Architecture and Design"
+        },
+        {
+          "Phase": "Implementation"
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Confidentiality",
+            "Integrity"
+          ],
+          "Impact": [
+            "Read Application Data",
+            "Modify Application Data"
+          ]
+        }
+      ],
+      "DemonstrativeExamples": null,
+      "PotentialMitigations": null
+    },
+    "/cwe/706/parents": {
+      "weakness_parents": [],
+      "category_parents": [
+        "1345",
+        "1416",
+        "981",
+        "932"
+      ]
+    },
+    "/cwe/706/children": {
+      "weakness_children": [
+        "178",
+        "22",
+        "386",
+        "41",
+        "59",
+        "66",
+        "827",
+        "98"
+      ],
+      "category_children": []
+    }
+  }
+}

@@ -1,0 +1,33 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T22:55:49.218809",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "216",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/216": {
+      "ID": "216",
+      "Type": "deprecated_weakness",
+      "is_deprecated": true
+    },
+    "/cwe/weakness/216": {
+      "ID": "216",
+      "Name": "DEPRECATED: Containment Errors (Container Errors)",
+      "Abstraction": "Class",
+      "Structure": "Simple",
+      "Status": "Deprecated",
+      "Description": "This entry has been deprecated, as it was not effective as a weakness and was structured more like a category. In addition, the name is inappropriate, since the \"container\" term is widely understood by developers in different ways than originally intended by PLOVER, the original source for this entry.",
+      "ExtendedDescription": null,
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": null,
+      "AlternateTerms": null,
+      "ModesOfIntroduction": null,
+      "CommonConsequences": null,
+      "DemonstrativeExamples": null,
+      "PotentialMitigations": null
+    },
+    "/cwe/216/parents": null,
+    "/cwe/216/children": null
+  }
+}

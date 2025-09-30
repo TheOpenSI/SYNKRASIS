@@ -1,0 +1,58 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T22:58:43.408412",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "237",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/237": {
+      "ID": "237",
+      "Type": "base_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/237": {
+      "ID": "237",
+      "Name": "Improper Handling of Structural Elements",
+      "Abstraction": "Base",
+      "Structure": "Simple",
+      "Status": "Incomplete",
+      "Description": "The product does not handle or incorrectly handles inputs that are related to complex structures.",
+      "ExtendedDescription": null,
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": null,
+      "AlternateTerms": null,
+      "ModesOfIntroduction": null,
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Integrity"
+          ],
+          "Impact": [
+            "Unexpected State"
+          ]
+        }
+      ],
+      "DemonstrativeExamples": null,
+      "PotentialMitigations": null
+    },
+    "/cwe/237/parents": {
+      "weakness_parents": [
+        "228"
+      ],
+      "category_parents": [
+        "1407",
+        "19",
+        "993"
+      ]
+    },
+    "/cwe/237/children": {
+      "weakness_children": [
+        "238",
+        "239",
+        "240"
+      ],
+      "category_children": []
+    }
+  }
+}

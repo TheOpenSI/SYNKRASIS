@@ -1,0 +1,106 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-30T00:17:22.662312",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "925",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/925": {
+      "ID": "925",
+      "Type": "variant_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/925": {
+      "ID": "925",
+      "Name": "Improper Verification of Intent by Broadcast Receiver",
+      "Abstraction": "Variant",
+      "Structure": "Simple",
+      "Status": "Incomplete",
+      "Description": "The Android application uses a Broadcast Receiver that receives an Intent but does not properly verify that the Intent came from an authorized source.",
+      "ExtendedDescription": "Certain types of Intents, identified by action string, can only be broadcast by the operating system itself, not by third-party applications. However, when an application registers to receive these implicit system intents, it is also registered to receive any explicit intents. While a malicious application cannot send an implicit system intent, it can send an explicit intent to the target application, which may assume that any received intent is a valid implicit system intent and not an explicit intent from another application. This may lead to unintended behavior.",
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Class": "Not Language-Specific",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Technology",
+          "Class": "Mobile",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": [
+        {
+          "Term": "Intent Spoofing"
+        }
+      ],
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Architecture and Design"
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Integrity"
+          ],
+          "Impact": [
+            "Gain Privileges or Assume Identity"
+          ],
+          "Note": "Another application can impersonate the operating system and cause the software to perform an unintended action."
+        }
+      ],
+      "DemonstrativeExamples": [
+        {
+          "Entries": [
+            {
+              "IntroText": "The following example demonstrates the weakness."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "XML",
+              "ExampleCode": "```\n\t<manifest package=\"com.example.vulnerableApplication\">\n\t\t\t<application>\n```\n...* \n\t\t\t\n\t\t\t```\n\t\t\t\t\t<receiver android:name=\".ShutdownReceiver\">\n\t\t\t\t\t\t<intent-filter>\n\t\t\t\t\t\t\t<action android:name=\"android.intent.action.ACTION_SHUTDOWN\" />\n\t\t\t\t\t\t</intent-filter>\n\t\t\t\t\t</receiver>\n```\n...* \n\t\t\t\n\t\t\t</application></manifest>"
+            },
+            {
+              "BodyText": "The ShutdownReceiver class will handle the intent:"
+            },
+            {
+              "Nature": "Bad",
+              "Language": "Java",
+              "ExampleCode": "```\n```\n...* \n\tIntentFilter filter = new IntentFilter(Intent.ACTION_SHUTDOWN);\n\tBroadcastReceiver sReceiver = new ShutDownReceiver();\n\tregisterReceiver(sReceiver, filter);\n\t\n\t *...* \n\t\n\tpublic class ShutdownReceiver extends BroadcastReceiver {\n\t```\n\t\t@Override\n\t\tpublic void onReceive(final Context context, final Intent intent) {\n\t\t\tmainActivity.saveLocalData();\n\t\t\tmainActivity.stopActivity();\n\t\t}\n\t}\n```"
+            },
+            {
+              "BodyText": "Because the method does not confirm that the intent action is the expected system intent, any received intent will trigger the shutdown procedure, as shown here:"
+            },
+            {
+              "Nature": "Attack",
+              "Language": "Java",
+              "ExampleCode": "```\n\twindow.location = examplescheme://method?parameter=value\n```"
+            },
+            {
+              "BodyText": "An attacker can use this behavior to cause a denial of service."
+            }
+          ]
+        }
+      ],
+      "PotentialMitigations": [
+        {
+          "Phase": [
+            "Architecture and Design"
+          ],
+          "Description": "Before acting on the Intent, check the Intent Action to make sure it matches the expected System action."
+        }
+      ]
+    },
+    "/cwe/925/parents": {
+      "weakness_parents": [],
+      "category_parents": [
+        "1396"
+      ]
+    },
+    "/cwe/925/children": null
+  }
+}

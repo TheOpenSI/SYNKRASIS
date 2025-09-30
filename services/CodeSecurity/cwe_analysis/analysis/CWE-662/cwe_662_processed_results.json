@@ -1,0 +1,138 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T23:55:00.970826",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "662",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/662": {
+      "ID": "662",
+      "Type": "class_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/662": {
+      "ID": "662",
+      "Name": "Improper Synchronization",
+      "Abstraction": "Class",
+      "Structure": "Simple",
+      "Status": "Draft",
+      "Description": "The product utilizes multiple threads or processes to allow temporary access to a shared resource that can only be exclusive to one process at a time, but it does not properly synchronize these actions, which might cause simultaneous accesses of this resource by multiple threads or processes.",
+      "ExtendedDescription": "\n\nSynchronization refers to a variety of behaviors and mechanisms that allow two or more independently-operating processes or threads to ensure that they operate on shared resources in predictable ways that do not interfere with each other. Some shared resource operations cannot be executed atomically; that is, multiple steps must be guaranteed to execute sequentially, without any interference by other processes. Synchronization mechanisms vary widely, but they may include locking, mutexes, and semaphores. When a multi-step operation on a shared resource cannot be guaranteed to execute independent of interference, then the resulting behavior can be unpredictable. Improper synchronization could lead to data or memory corruption, denial of service, etc.\n",
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": null,
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Architecture and Design"
+        },
+        {
+          "Phase": "Implementation"
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Integrity",
+            "Confidentiality",
+            "Other"
+          ],
+          "Impact": [
+            "Modify Application Data",
+            "Read Application Data",
+            "Alter Execution Logic"
+          ]
+        }
+      ],
+      "DemonstrativeExamples": [
+        {
+          "ID": "DX-24",
+          "Entries": [
+            {
+              "IntroText": "The following function attempts to acquire a lock in order to perform operations on a shared resource."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "C",
+              "ExampleCode": "```\n\tvoid f(pthread_mutex_t *mutex) {\n\t\t\tpthread_mutex_lock(mutex);\n```\n/* access shared resource */* \n\t\t\t\n\t\t\t\n\t\t\tpthread_mutex_unlock(mutex);}"
+            },
+            {
+              "BodyText": "However, the code does not check the value returned by pthread_mutex_lock() for errors. If pthread_mutex_lock() cannot acquire the mutex for any reason, the function may introduce a race condition into the program and result in undefined behavior."
+            },
+            {
+              "BodyText": "In order to avoid data races, correctly written programs must check the result of thread synchronization functions and appropriately handle all errors, either by attempting to recover from them or reporting them to higher levels."
+            },
+            {
+              "Nature": "Good",
+              "Language": "C",
+              "ExampleCode": "```\n\tint f(pthread_mutex_t *mutex) {\n\t\t\tint result;\n\t\t\tresult = pthread_mutex_lock(mutex);\n\t\t\tif (0 != result)\n\t\t\t\treturn result;\n```\n/* access shared resource */* \n\t\t\t\n\t\t\t\n\t\t\treturn pthread_mutex_unlock(mutex);}"
+            }
+          ]
+        },
+        {
+          "ID": "DX-170",
+          "Entries": [
+            {
+              "IntroText": "The following code intends to fork a process, then have both the parent and child processes print a single line."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "C",
+              "ExampleCode": "```\n\tstatic void print (char * string) {\n\t\t\tchar * word;\n\t\t\tint counter;\n\t\t\tfor (word = string; counter = *word++; ) {\n\t\t\t\t\tputc(counter, stdout);\n\t\t\t\t\tfflush(stdout);\n```\n/* Make timing window a little larger... */* \n\t\t\t\t\t\n\t\t\t\t\tsleep(1);}}\n\t\n\tint main(void) {\n\t```\n\t\t\tpid_t pid;\n\t\t\tpid = fork();\n\t\t\tif (pid == -1) {\n\t\t\t\texit(-2);\n\t\t\t}\n\t\t\telse if (pid == 0) {\n\t\t\t\tprint(\"child\\n\");\n\t\t\t}\n\t\t\telse {\n\t\t\t\tprint(\"PARENT\\n\");\n\t\t\t}\n\t\t\texit(0);\n\t}\n```"
+            },
+            {
+              "BodyText": "One might expect the code to print out something like:"
+            },
+            {
+              "BodyText": "```\n\t\tPARENT\n\t\tchild\n```"
+            },
+            {
+              "BodyText": "However, because the parent and child are executing concurrently, and stdout is flushed each time a character is printed, the output might be mixed together, such as:"
+            },
+            {
+              "BodyText": "```\n\t\tPcAhRiElNdT\n\t\t[blank line]\n\t\t[blank line]\n```"
+            }
+          ]
+        }
+      ],
+      "PotentialMitigations": [
+        {
+          "Phase": [
+            "Implementation"
+          ],
+          "Description": "Use industry standard APIs to synchronize your code."
+        }
+      ]
+    },
+    "/cwe/662/parents": {
+      "weakness_parents": [],
+      "category_parents": [
+        "1142",
+        "1166",
+        "1306",
+        "1308",
+        "1416",
+        "745",
+        "852",
+        "879",
+        "986"
+      ]
+    },
+    "/cwe/662/children": {
+      "weakness_children": [
+        "1058",
+        "1096",
+        "366",
+        "543",
+        "567",
+        "663",
+        "667",
+        "764",
+        "820",
+        "821",
+        "833"
+      ],
+      "category_children": []
+    }
+  }
+}

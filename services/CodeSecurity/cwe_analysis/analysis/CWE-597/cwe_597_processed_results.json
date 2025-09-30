@@ -1,0 +1,125 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T23:46:14.060993",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "597",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/597": {
+      "ID": "597",
+      "Type": "variant_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/597": {
+      "ID": "597",
+      "Name": "Use of Wrong Operator in String Comparison",
+      "Abstraction": "Variant",
+      "Structure": "Simple",
+      "Status": "Draft",
+      "Description": "The product uses the wrong operator when comparing a string, such as using \"==\" when the .equals() method should be used instead.",
+      "ExtendedDescription": "In Java, using == or != to compare two strings for equality actually compares two objects for equality rather than their string values for equality. Chances are good that the two references will never be equal. While this weakness often only affects program correctness, if the equality is used for a security decision, the unintended comparison result could be leveraged to affect program security.",
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": null,
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Implementation"
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Other"
+          ],
+          "Impact": [
+            "Other"
+          ]
+        }
+      ],
+      "DemonstrativeExamples": [
+        {
+          "ID": "DX-60",
+          "Entries": [
+            {
+              "IntroText": "In the example below, two Java String objects are declared and initialized with the same string values. An if statement is used to determine if the strings are equivalent."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "Java",
+              "ExampleCode": "```\n\tString str1 = new String(\"Hello\");\n\tString str2 = new String(\"Hello\");\n\tif (str1 == str2) {\n\t\tSystem.out.println(\"str1 == str2\");\n\t}\n```"
+            },
+            {
+              "BodyText": "However, the if statement will not be executed as the strings are compared using the \"==\" operator. For Java objects, such as String objects, the \"==\" operator compares object references, not object values. While the two String objects above contain the same string values, they refer to different object references, so the System.out.println statement will not be executed. To compare object values, the previous code could be modified to use the equals method:"
+            },
+            {
+              "Nature": "Good",
+              "Language": "Java",
+              "ExampleCode": "```\n\tif (str1.equals(str2)) {\n\t\tSystem.out.println(\"str1 equals str2\");\n\t}\n```"
+            }
+          ]
+        },
+        {
+          "Entries": [
+            {
+              "IntroText": "In the example below, three JavaScript variables are declared and initialized with the same values. Note that JavaScript will change a value between numeric and string as needed, which is the reason an integer is included with the strings. An if statement is used to determine whether the values are the same."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "JavaScript",
+              "ExampleCode": "<p id=\"ieq3s1\" type=\"text\">(i === s1) is FALSE</p>\n <p id=\"s4eq3i\" type=\"text\">(s4 === i) is FALSE</p>\n <p id=\"s4eq3s1\" type=\"text\">(s4 === s1) is FALSE</p>\n\n var i = 65;\n var s1 = '65';\n var s4 = new String('65');\n\n if (i === s1)\n {\n\n```\n\tdocument.getElementById(\"ieq3s1\").innerHTML = \"(i === s1) is TRUE\";\n }\n if (s4 === i)\n {\n\tdocument.getElementById(\"s4eq3i\").innerHTML = \"(s4 === i) is TRUE\";\n }\n if (s4 === s1)\n {\n\tdocument.getElementById(\"s4eq3s1\").innerHTML = \"(s4 === s1) is TRUE\";\n }\n```"
+            },
+            {
+              "BodyText": "However, the body of the if statement will not be executed, as the \"===\" compares both the type of the variable AND the value. As the types of the first comparison are number and string, it fails. The types in the second are int and reference, so this one fails as well. The types in the third are reference and string, so it also fails.\n\n\nWhile the variables above contain the same values, they are contained in different types, so the document.getElementById... statement will not be executed in any of the cases.\n\n\nTo compare object values, the previous code is modified and shown below to use the \"==\" for value comparison so the comparison in this example executes the HTML statement:"
+            },
+            {
+              "Nature": "Good",
+              "Language": "JavaScript",
+              "ExampleCode": "<p id=\"ieq2s1\" type=\"text\">(i == s1) is FALSE</p>\n <p id=\"s4eq2i\" type=\"text\">(s4 == i) is FALSE</p>\n <p id=\"s4eq2s1\" type=\"text\">(s4 == s1) is FALSE</p>\n\n var i = 65;\n var s1 = '65';\n var s4 = new String('65');\n\n if (i == s1)\n {\n\n```\n\tdocument.getElementById(\"ieq2s1\").innerHTML = \"(i == s1) is TRUE\";\n }\n if (s4 == i)\n {\n\tdocument.getElementById(\"s4eq2i\").innerHTML = \"(s4 == i) is TRUE\";\n }\n if (s4 == s1)\n {\n\tdocument.getElementById(\"s4eq2s1\").innerHTML = \"(s4 == s1) is TRUE\";\n }\n```"
+            }
+          ]
+        },
+        {
+          "Entries": [
+            {
+              "IntroText": "In the example below, two PHP variables are declared and initialized with the same numbers - one as a string, the other as an integer. Note that PHP will change the string value to a number for a comparison. An if statement is used to determine whether the values are the same."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "PHP",
+              "ExampleCode": "var $i = 65;\n var $s1 = \"65\";\n\n if ($i === $s1)\n {\n\n```\n\techo '($i === $s1) is TRUE'. \"\\n\";\n }\n else\n {\n\techo '($i === $s1) is FALSE'. \"\\n\";\n }\n```"
+            },
+            {
+              "BodyText": "However, the body of the if statement will not be executed, as the \"===\" compares both the type of the variable AND the value. As the types of the first comparison are number and string, it fails.\n\n\nWhile the variables above contain the same values, they are contained in different types, so the TRUE portion of the if statement will not be executed.\n\n\nTo compare object values, the previous code is modified and shown below to use the \"==\" for value comparison (string converted to number) so the comparison in this example executes the TRUE statement:"
+            },
+            {
+              "Nature": "Good",
+              "Language": "PHP",
+              "ExampleCode": "var $i = 65;\n var $s1 = \"65\";\n\n if ($i == $s1)\n {\n\n```\n\techo '($i == $s1) is TRUE'. \"\\n\";\n }\n else\n {\n\techo '($i == $s1) is FALSE'. \"\\n\";\n }\n```"
+            }
+          ]
+        }
+      ],
+      "PotentialMitigations": [
+        {
+          "Phase": [
+            "Implementation"
+          ],
+          "Description": "Within Java, use .equals() to compare string values.\n Within JavaScript, use == to compare string values.\n Within PHP, use == to compare a numeric value to a string value. (PHP converts the string to a number.)",
+          "Effectiveness": "High"
+        }
+      ]
+    },
+    "/cwe/597/parents": {
+      "weakness_parents": [],
+      "category_parents": [
+        "1136",
+        "1181",
+        "1397",
+        "847",
+        "998"
+      ]
+    },
+    "/cwe/597/children": null
+  }
+}

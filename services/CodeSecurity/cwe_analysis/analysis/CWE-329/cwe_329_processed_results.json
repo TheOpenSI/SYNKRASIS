@@ -1,0 +1,98 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T23:10:46.963693",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "329",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/329": {
+      "ID": "329",
+      "Type": "variant_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/329": {
+      "ID": "329",
+      "Name": "Generation of Predictable IV with CBC Mode",
+      "Abstraction": "Variant",
+      "Structure": "Simple",
+      "Status": "Draft",
+      "Description": "The product generates and uses a predictable initialization Vector (IV) with Cipher Block Chaining (CBC) Mode, which causes algorithms to be susceptible to dictionary attacks when they are encrypted under the same key.",
+      "ExtendedDescription": "\n\nCBC mode eliminates a weakness of Electronic Code Book (ECB) mode by allowing identical plaintext blocks to be encrypted to different ciphertext blocks. This is possible by the XOR-ing of an IV with the initial plaintext block so that every plaintext block in the chain is XOR'd with a different value before encryption. If IVs are reused, then identical plaintexts would be encrypted to identical ciphertexts. However, even if IVs are not identical but are predictable, then they still break the security of CBC mode against Chosen Plaintext Attacks (CPA).\n",
+      "LikelihoodOfExploit": "Medium",
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Class": "Not Language-Specific",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Technology",
+          "Class": "ICS/OT",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Implementation",
+          "Note": "Developers might dismiss the importance of an unpredictable IV and choose an easier implementation to save effort, weakening the scheme in the process."
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Confidentiality"
+          ],
+          "Impact": [
+            "Read Application Data"
+          ],
+          "Note": "If the IV is not properly initialized, data that is encrypted can be compromised and leak information."
+        }
+      ],
+      "DemonstrativeExamples": [
+        {
+          "ID": "DX-143",
+          "Entries": [
+            {
+              "IntroText": "In the following examples, CBC mode is used when encrypting data:"
+            },
+            {
+              "Nature": "Bad",
+              "Language": "C",
+              "ExampleCode": "```\n\tEVP_CIPHER_CTX ctx;\n\tchar key[EVP_MAX_KEY_LENGTH];\n\tchar iv[EVP_MAX_IV_LENGTH];\n\tRAND_bytes(key, b);\n\tmemset(iv,0,EVP_MAX_IV_LENGTH);\n\tEVP_EncryptInit(&ctx,EVP_bf_cbc(), key,iv);\n```"
+            },
+            {
+              "Nature": "Bad",
+              "Language": "Java",
+              "ExampleCode": "```\n\tpublic class SymmetricCipherTest {\n\t\t\tpublic static void main() {\n\t\t\t\t\tbyte[] text =\"Secret\".getBytes();\n\t\t\t\t\tbyte[] iv ={\n\t\t\t\t\t\t0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00\n\t\t\t\t\t};\n\t\t\t\t\tKeyGenerator kg = KeyGenerator.getInstance(\"DES\");\n\t\t\t\t\tkg.init(56);\n\t\t\t\t\tSecretKey key = kg.generateKey();\n\t\t\t\t\tCipher cipher = Cipher.getInstance(\"DES/CBC/PKCS5Padding\");\n\t\t\t\t\tIvParameterSpec ips = new IvParameterSpec(iv);\n\t\t\t\t\tcipher.init(Cipher.ENCRYPT_MODE, key, ips);\n\t\t\t\t\treturn cipher.doFinal(inpBytes);\n\t\t\t}\n\t}\n```"
+            },
+            {
+              "BodyText": "In both of these examples, the initialization vector (IV) is always a block of zeros. This makes the resulting cipher text much more predictable and susceptible to a dictionary attack."
+            }
+          ]
+        }
+      ],
+      "PotentialMitigations": [
+        {
+          "Phase": [
+            "Implementation"
+          ],
+          "Description": "NIST recommends two methods of generating unpredictable IVs for CBC mode [REF-1172]. The first is to generate the IV randomly. The second method is to encrypt a nonce with the same key and cipher to be used to encrypt the plaintext. In this case the nonce must be unique but can be predictable, since the block cipher will act as a pseudo random permutation."
+        }
+      ]
+    },
+    "/cwe/329/parents": {
+      "weakness_parents": [
+        "573"
+      ],
+      "category_parents": [
+        "1346",
+        "1370",
+        "1414",
+        "959"
+      ]
+    },
+    "/cwe/329/children": null
+  }
+}

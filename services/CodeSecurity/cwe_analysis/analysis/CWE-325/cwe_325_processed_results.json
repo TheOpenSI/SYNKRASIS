@@ -1,0 +1,117 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T23:10:16.755635",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "325",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/325": {
+      "ID": "325",
+      "Type": "base_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/325": {
+      "ID": "325",
+      "Name": "Missing Cryptographic Step",
+      "Abstraction": "Base",
+      "Structure": "Simple",
+      "Status": "Draft",
+      "Description": "The product does not implement a required step in a cryptographic algorithm, resulting in weaker encryption than advertised by the algorithm.",
+      "ExtendedDescription": null,
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Class": "Not Language-Specific",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Technology",
+          "Class": "Not Technology-Specific",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Implementation",
+          "Note": "Developers sometimes omit \"expensive\" (resource-intensive) steps in order to improve performance, especially in devices with limited memory or slower CPUs. This step may be taken under a mistaken impression that the step is unnecessary for the cryptographic algorithm."
+        },
+        {
+          "Phase": "Requirements",
+          "Note": "This issue may happen when the requirements for the cryptographic algorithm are not clearly stated."
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Access Control"
+          ],
+          "Impact": [
+            "Bypass Protection Mechanism"
+          ]
+        },
+        {
+          "Scope": [
+            "Confidentiality",
+            "Integrity"
+          ],
+          "Impact": [
+            "Read Application Data",
+            "Modify Application Data"
+          ]
+        },
+        {
+          "Scope": [
+            "Accountability",
+            "Non-Repudiation"
+          ],
+          "Impact": [
+            "Hide Activities"
+          ]
+        }
+      ],
+      "DemonstrativeExamples": [
+        {
+          "Entries": [
+            {
+              "IntroText": "The example code is taken from the HMAC engine inside the buggy OpenPiton SoC of HACK@DAC'21 [REF-1358]. HAMC is a message authentication code (MAC) that uses both a hash and a secret crypto key. The HMAC engine in HACK@DAC SoC uses the SHA-256 module for the calculation of the HMAC for 512 bits messages."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "Verilog",
+              "ExampleCode": "**logic [511:0] bigData;** \n ...\n\n hmac hmac(\n\n```\n\t .clk_i(clk_i),\n\t .rst_ni(rst_ni && ~rst_4),\n\t .init_i(startHash && ~startHash_r),\n\t .key_i(key),\n\t .ikey_hash_i(ikey_hash), \n\t .okey_hash_i(okey_hash), \n\t .key_hash_bypass_i(key_hash_bypass),\n```\n.message_i(bigData),** \n\t .hash_o(hash),\n\t .ready_o(ready),\n\t .hash_valid_o(hashValid)"
+            },
+            {
+              "BodyText": "However, this HMAC engine cannot handle messages that are longer than 512 bits. Moreover, a complete HMAC will contain an iterate hash function that breaks up a message into blocks of a fixed size and iterates over them with a compression function (e.g., SHA-256). Therefore, the implementation of the HMAC in OpenPiton SoC is incomplete. Such HMAC engines will not be used in real-world applications as the messages will usually be longer than 512 bits. For instance, OpenTitan offers a comprehensive HMAC implementation that utilizes a FIFO for temporarily storing the truncated message, as detailed in [REF-1359]."
+            },
+            {
+              "BodyText": "To mitigate this, implement the iterative function to break up a message into blocks of a fixed size."
+            }
+          ]
+        }
+      ],
+      "PotentialMitigations": null
+    },
+    "/cwe/325/parents": {
+      "weakness_parents": [
+        "573"
+      ],
+      "category_parents": [
+        "1013",
+        "1029",
+        "1205",
+        "1346",
+        "1366",
+        "1402",
+        "719",
+        "720",
+        "310",
+        "958",
+        "934"
+      ]
+    },
+    "/cwe/325/children": null
+  }
+}

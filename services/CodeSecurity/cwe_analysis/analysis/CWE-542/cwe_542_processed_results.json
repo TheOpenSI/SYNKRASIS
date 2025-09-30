@@ -1,0 +1,33 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T23:39:01.685897",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "542",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/542": {
+      "ID": "542",
+      "Type": "deprecated_weakness",
+      "is_deprecated": true
+    },
+    "/cwe/weakness/542": {
+      "ID": "542",
+      "Name": "DEPRECATED: Information Exposure Through Cleanup Log Files",
+      "Abstraction": "Variant",
+      "Structure": "Simple",
+      "Status": "Deprecated",
+      "Description": "This entry has been deprecated because its abstraction was too low-level.  See CWE-532.",
+      "ExtendedDescription": null,
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": null,
+      "AlternateTerms": null,
+      "ModesOfIntroduction": null,
+      "CommonConsequences": null,
+      "DemonstrativeExamples": null,
+      "PotentialMitigations": null
+    },
+    "/cwe/542/parents": null,
+    "/cwe/542/children": null
+  }
+}

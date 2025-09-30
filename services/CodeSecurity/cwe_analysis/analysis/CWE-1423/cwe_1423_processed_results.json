@@ -1,0 +1,206 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T22:44:32.869152",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "1423",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/1423": {
+      "ID": "1423",
+      "Type": "base_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/1423": {
+      "ID": "1423",
+      "Name": "Exposure of Sensitive Information caused by Shared Microarchitectural Predictor State that Influences Transient Execution",
+      "Abstraction": "Base",
+      "Structure": "Simple",
+      "Status": "Incomplete",
+      "Description": "Shared microarchitectural predictor state may allow code to influence\n\t\t\t\ttransient execution across a hardware boundary, potentially exposing\n\t\t\t\tdata that is accessible beyond the boundary over a covert channel.\n\t\t\t",
+      "ExtendedDescription": "\n\nMany commodity processors have Instruction Set Architecture (ISA) features that protect software components from one another. These features can include memory segmentation, virtual memory, privilege rings, trusted execution environments, and virtual machines, among others. For example, virtual memory provides each process with its own address space, which prevents processes from accessing each other's private data. Many of these features can be used to form hardware-enforced security boundaries between software components.\n\n\nWhen separate software components (for example, two processes) share microarchitectural predictor state across a hardware boundary, code in one component may be able to influence microarchitectural predictor behavior in another component. If the predictor can cause transient execution, the shared predictor state may allow an attacker to influence transient execution in a victim, and in a manner that could allow the attacker to infer private data from the victim by monitoring observable discrepancies (CWE-203) in a covert channel [REF-1400].\n\n\nPredictor state may be shared when the processor transitions from one component to another (for example, when a process makes a system call to enter the kernel). Many commodity processors have features which prevent microarchitectural predictions that occur before a boundary from influencing predictions that occur after the boundary.\n\n\nPredictor state may also be shared between hardware threads, for example, sibling hardware threads on a processor that supports simultaneous multithreading (SMT). This sharing may be benign if the hardware threads are simultaneously executing in the same software component, or it could expose a weakness if one sibling is a malicious software component, and the other sibling is a victim software component. Processors that share microarchitectural predictors between hardware threads may have features which prevent microarchitectural predictions that occur on one hardware thread from influencing predictions that occur on another hardware thread.\n\n\nFeatures that restrict predictor state sharing across transitions or between hardware threads may be always-on, on by default, or may require opt-in from software.\n",
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Class": "Not Language-Specific",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Operating_System",
+          "Class": "Not OS-Specific",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Architecture",
+          "Class": "Not Architecture-Specific",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Technology",
+          "Name": "Microcontroller Hardware",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Technology",
+          "Name": "Processor Hardware",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Technology",
+          "Name": "Memory Hardware",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Technology",
+          "Class": "System on Chip",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Architecture and Design",
+          "Note": "\n\nThis weakness can be introduced during hardware architecture and design if predictor state is not properly isolated between modes (for example, user mode and kernel mode), if predictor state is not isolated between hardware threads, or if it is not isolated between other kinds of execution contexts supported by the processor.\n"
+        },
+        {
+          "Phase": "Implementation",
+          "Note": "\n\nThis weakness can be introduced during system software implementation if predictor-state-sanitizing operations (for example, the indirect branch prediction barrier on Intel x86) are not invoked when switching from one context to another.\n"
+        },
+        {
+          "Phase": "System Configuration",
+          "Note": "\n\nThis weakness can be introduced if the system has not been configured according to the hardware vendor's recommendations for mitigating the weakness.\n"
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Confidentiality"
+          ],
+          "Impact": [
+            "Read Memory"
+          ],
+          "Likelihood": [
+            "Medium"
+          ]
+        }
+      ],
+      "DemonstrativeExamples": [
+        {
+          "Entries": [
+            {
+              "IntroText": "Branch Target Injection (BTI) is a vulnerability that can allow an SMT hardware thread to maliciously train the indirect branch predictor state that is shared with its sibling hardware thread. A cross-thread BTI attack requires the attacker to find a vulnerable code sequence within the victim software. For example, the authors of [REF-1415] identified the following code sequence in the Windows library ntdll.dll:"
+            },
+            {
+              "Nature": "Bad",
+              "Language": "x86 Assembly",
+              "ExampleCode": "```\n\t adc edi,dword ptr [ebx+edx+13BE13BDh]\n\t adc dl,byte ptr [edi]\n\t ...\n indirect_branch_site:\n\t jmp dword ptr [rsi] # at this point attacker knows edx, controls edi and ebx\n```"
+            },
+            {
+              "BodyText": "To successfully exploit this code sequence to disclose the victim's private data, the attacker must also be able to find an indirect branch site within the victim, where the attacker controls the values in edi and ebx, and the attacker knows the value in edx as shown above at the indirect branch site.\n\n\nA proof-of-concept cross-thread BTI attack might proceed as follows:\n\n\n  1. The attacker thread and victim thread must be co-scheduled on the same physical processor core. \n\n  1. The attacker thread must train the shared branch predictor so that when the victim thread reaches indirect_branch_site, the jmp instruction will be predicted to target example_code_sequence instead of the correct architectural target. The training procedure may vary by processor, and the attacker may need to reverse-engineer the branch predictor to identify a suitable training algorithm. \n\n  1. This step assumes that the attacker can control some values in the victim program, specifically the values in edi and ebx at indirect_branch_site. When the victim reaches indirect_branch_site the processor will (mis)predict example_code_sequence as the target and (transiently) execute the adc instructions. If the attacker chooses ebx so that `ebx = m \n   -  0x13BE13BD - edx, then the first adc will load 32 bits from address m in the victim's address space and add *m (the data loaded from) to the attacker-controlled base address in edi. The second adc instruction accesses a location in memory whose address corresponds to *m`. \n\n\n\n  1. The adversary uses a covert channel analysis technique such as Flush+Reload ([REF-1416]) to infer the value of the victim's private data *m."
+            }
+          ]
+        },
+        {
+          "Entries": [
+            {
+              "IntroText": "BTI can also allow software in one execution context to maliciously train branch predictor entries that can be used in another context. For example, on some processors user-mode software may be able to train predictor entries that can also be used after transitioning into kernel mode, such as after invoking a system call. This vulnerability does not necessarily require SMT and may instead be performed in synchronous steps, though it does require the attacker to find an exploitable code sequence in the victim's code, for example, in the kernel."
+            }
+          ]
+        }
+      ],
+      "PotentialMitigations": [
+        {
+          "Phase": [
+            "Architecture and Design"
+          ],
+          "Description": "\n\nThe hardware designer can attempt to prevent transient execution from causing observable discrepancies in specific covert channels.\n"
+        },
+        {
+          "Phase": [
+            "Architecture and Design"
+          ],
+          "Description": "\n\nHardware designers may choose to use microarchitectural bits to tag predictor entries. For example, each predictor entry may be tagged with a kernel-mode bit which, when set, indicates that the predictor entry was created in kernel mode. The processor can use this bit to enforce that predictions in the current mode must have been trained in the current mode. This can prevent malicious cross-mode training, such as when user-mode software attempts to create predictor entries that influence transient execution in the kernel. Predictor entry tags can also be used to associate each predictor entry with the SMT thread that created it, and thus the processor can enforce that each predictor entry can only be used by the SMT thread that created it. This can prevent an SMT thread from using predictor entries crafted by a malicious sibling SMT thread.\n",
+          "Effectiveness": "Moderate",
+          "EffectivenessNotes": "\n\nTagging can be highly effective for predictor state that is comprised of discrete elements, such as an array of recently visited branch targets. Predictor state can also have different representations that are not conducive to tagging. For example, some processors keep a compressed digest of branch history which does not contain discrete elements that can be individually tagged.\n"
+        },
+        {
+          "Phase": [
+            "Architecture and Design"
+          ],
+          "Description": "\n\nHardware designers may choose to sanitize microarchitectural predictor state (for example, branch prediction history) when the processor transitions to a different context, for example, whenever a system call is invoked. Alternatively, the hardware may expose instruction(s) that allow software to sanitize predictor state according to the user's threat model. For example, this can allow operating system software to sanitize predictor state when performing a context switch from one process to another.\n",
+          "Effectiveness": "Moderate",
+          "EffectivenessNotes": "\n\nThis technique may not be able to mitigate weaknesses that arise from predictor state that is shared across SMT threads. Sanitizing predictor state on context switches may also negatively impact performance, either by removing predictor entries that could be reused when returning to the previous context, or by slowing down the context switch itself.\n"
+        },
+        {
+          "Phase": [
+            "Implementation"
+          ],
+          "Description": "\n\nSystem software can mitigate this weakness by invoking predictor-state-sanitizing operations (for example, the indirect branch prediction barrier on Intel x86) when switching from one context to another, according to the hardware vendor's recommendations.\n",
+          "Effectiveness": "Moderate",
+          "EffectivenessNotes": "\n\nThis technique may not be able to mitigate weaknesses that arise from predictor state shared across SMT threads. Sanitizing predictor state may also negatively impact performance in some circumstances.\n"
+        },
+        {
+          "Phase": [
+            "Build and Compilation"
+          ],
+          "Description": "\n\nIf the weakness is exposed by a single instruction (or a small set of instructions), then the compiler (or JIT, etc.) can be configured to prevent the affected instruction(s) from being generated. One prominent example of this mitigation is retpoline ([REF-1414]).\n",
+          "Effectiveness": "Limited",
+          "EffectivenessNotes": "\n\nThis technique is only effective for software that is compiled with this mitigation. Additionally, an alternate instruction sequence may mitigate the weakness on some processors but not others, even when the processors share the same ISA. For example, retpoline has been documented as effective on some x86 processors, but not fully effective on other x86 processors.\n"
+        },
+        {
+          "Phase": [
+            "Build and Compilation"
+          ],
+          "Description": "\n\nUse control-flow integrity (CFI) techniques to constrain the behavior of instructions that redirect the instruction pointer, such as indirect branch instructions.\n",
+          "Effectiveness": "Moderate",
+          "EffectivenessNotes": "\n\nSome CFI techniques may not be able to constrain transient execution, even though they are effective at constraining architectural execution. Or they may be able to provide some additional protection against a transient execution weakness, but without comprehensively mitigating the weakness. For example, Clang-CFI provides strong architectural CFI properties and can make some transient execution weaknesses more difficult to exploit [REF-1398].\n"
+        },
+        {
+          "Phase": [
+            "Build and Compilation"
+          ],
+          "Description": "\n\nUse software techniques (including the use of serialization instructions) that are intended to reduce the number of instructions that can be executed transiently after a processor event or misprediction.\n",
+          "Effectiveness": "Incidental",
+          "EffectivenessNotes": "\n\nSome transient execution weaknesses can be exploited even if a single instruction is executed transiently after a processor event or mis-prediction. This mitigation strategy has many other pitfalls that prevent it from eliminating this weakness entirely. For example, see [REF-1389].\n"
+        },
+        {
+          "Phase": [
+            "System Configuration"
+          ],
+          "Description": "\n\nSome systems may allow the user to disable predictor sharing. For example, this could be a BIOS configuration, or a model-specific register (MSR) that can be configured by the operating system or virtual machine monitor.\n",
+          "Effectiveness": "Moderate",
+          "EffectivenessNotes": "\n\nDisabling predictor sharing can negatively impact performance for some workloads that benefit from shared predictor state.\n"
+        },
+        {
+          "Phase": [
+            "Patching and Maintenance"
+          ],
+          "Description": "\n\nThe hardware vendor may provide a patch to, for example, sanitize predictor state when the processor transitions to a different context, or to prevent predictor entries from being shared across SMT threads. A patch may also introduce new ISA that allows software to toggle a mitigation.\n",
+          "Effectiveness": "Moderate",
+          "EffectivenessNotes": "\n\nThis mitigation may only be fully effective if the patch prevents predictor sharing across all contexts that are affected by the weakness. Additionally, sanitizing predictor state and/or preventing shared predictor state can negatively impact performance in some circumstances.\n"
+        },
+        {
+          "Phase": [
+            "Documentation"
+          ],
+          "Description": "\n\nIf a hardware feature can allow microarchitectural predictor state to be shared between contexts, SMT threads, or other architecturally defined boundaries, the hardware designer may opt to disclose this behavior in architecture documentation. This documentation can inform users about potential consequences and effective mitigations.\n",
+          "Effectiveness": "High"
+        },
+        {
+          "Phase": [
+            "Requirements"
+          ],
+          "Description": "\n\nProcessor designers, system software vendors, or other agents may choose to restrict the ability of unprivileged software to access to high-resolution timers that are commonly used to monitor covert channels.\n"
+        }
+      ]
+    },
+    "/cwe/1423/parents": {
+      "weakness_parents": [],
+      "category_parents": [
+        "1416"
+      ]
+    },
+    "/cwe/1423/children": null
+  }
+}

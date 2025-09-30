@@ -1,0 +1,123 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T22:43:01.862558",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "1393",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/1393": {
+      "ID": "1393",
+      "Type": "base_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/1393": {
+      "ID": "1393",
+      "Name": "Use of Default Password",
+      "Abstraction": "Base",
+      "Structure": "Simple",
+      "Status": "Incomplete",
+      "Description": "The product uses default passwords for potentially critical functionality.",
+      "ExtendedDescription": "It is common practice for products to be designed to use default passwords for authentication. The rationale is to simplify the manufacturing process or the system administrator's task of installation and deployment into an enterprise. However, if admins do not change the defaults, then it makes it easier for attackers to quickly bypass authentication across multiple organizations. There are many lists of default passwords and default-password scanning tools that are easily available from the World Wide Web.",
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Class": "Not Language-Specific",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Operating_System",
+          "Class": "Not OS-Specific",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Architecture",
+          "Class": "Not Architecture-Specific",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Technology",
+          "Class": "Not Technology-Specific",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Technology",
+          "Class": "ICS/OT",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Architecture and Design"
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Authentication"
+          ],
+          "Impact": [
+            "Gain Privileges or Assume Identity"
+          ]
+        }
+      ],
+      "DemonstrativeExamples": [
+        {
+          "ID": "DX-153",
+          "Entries": [
+            {
+              "IntroText": "In 2022, the OT:ICEFALL study examined products by 10 different Operational Technology (OT) vendors. The researchers reported 56 vulnerabilities and said that the products were \"insecure by design\" [REF-1283]. If exploited, these vulnerabilities often allowed adversaries to change how the products operated, ranging from denial of service to changing the code that the products executed. Since these products were often used in industries such as power, electrical, water, and others, there could even be safety implications."
+            },
+            {
+              "BodyText": "Multiple OT products used default credentials."
+            }
+          ]
+        }
+      ],
+      "PotentialMitigations": [
+        {
+          "Phase": [
+            "Requirements"
+          ],
+          "Description": "Prohibit use of default, hard-coded, or other values that do not vary for each installation of the product - especially for separate organizations.",
+          "Effectiveness": "High"
+        },
+        {
+          "Phase": [
+            "Documentation"
+          ],
+          "Description": "Ensure that product documentation clearly emphasizes the presence of default passwords and provides steps for the administrator to change them.",
+          "Effectiveness": "Limited"
+        },
+        {
+          "Phase": [
+            "Architecture and Design"
+          ],
+          "Description": "Force the administrator to change the credential upon installation.",
+          "Effectiveness": "High"
+        },
+        {
+          "Phase": [
+            "Installation",
+            "Operation"
+          ],
+          "Description": "The product administrator could change the defaults upon installation or during operation.",
+          "Effectiveness": "Moderate"
+        }
+      ]
+    },
+    "/cwe/1393/parents": {
+      "weakness_parents": [],
+      "category_parents": [
+        "1364",
+        "1366",
+        "1368",
+        "1376",
+        "1396"
+      ]
+    },
+    "/cwe/1393/children": null
+  }
+}

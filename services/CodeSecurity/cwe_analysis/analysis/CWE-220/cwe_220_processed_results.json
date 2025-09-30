@@ -1,0 +1,78 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T22:56:27.298054",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "220",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/220": {
+      "ID": "220",
+      "Type": "variant_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/220": {
+      "ID": "220",
+      "Name": "Storage of File With Sensitive Data Under FTP Root",
+      "Abstraction": "Variant",
+      "Structure": "Simple",
+      "Status": "Draft",
+      "Description": "The product stores sensitive data under the FTP server root with insufficient access control, which might make it accessible to untrusted parties.",
+      "ExtendedDescription": null,
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Class": "Not Language-Specific",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Operation"
+        },
+        {
+          "Phase": "Architecture and Design",
+          "Note": "COMMISSION: This weakness refers to an incorrect design related to an architectural security tactic."
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Confidentiality"
+          ],
+          "Impact": [
+            "Read Application Data"
+          ]
+        }
+      ],
+      "DemonstrativeExamples": null,
+      "PotentialMitigations": [
+        {
+          "Phase": [
+            "Implementation",
+            "System Configuration"
+          ],
+          "Description": "Avoid storing information under the FTP root directory."
+        },
+        {
+          "Phase": [
+            "System Configuration"
+          ],
+          "Description": "Access control permissions should be set to prevent reading/writing of sensitive files inside/outside of the FTP directory."
+        }
+      ]
+    },
+    "/cwe/220/parents": {
+      "weakness_parents": [],
+      "category_parents": [
+        "1011",
+        "1029",
+        "1403",
+        "963"
+      ]
+    },
+    "/cwe/220/children": null
+  }
+}

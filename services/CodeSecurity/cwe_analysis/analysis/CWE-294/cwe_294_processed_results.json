@@ -1,0 +1,79 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T23:05:56.372501",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "294",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/294": {
+      "ID": "294",
+      "Type": "base_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/294": {
+      "ID": "294",
+      "Name": "Authentication Bypass by Capture-replay",
+      "Abstraction": "Base",
+      "Structure": "Simple",
+      "Status": "Incomplete",
+      "Description": "A capture-replay flaw exists when the design of the product makes it possible for a malicious user to sniff network traffic and bypass authentication by replaying it to the server in question to the same effect as the original message (or with minor changes).",
+      "ExtendedDescription": "Capture-replay attacks are common and can be difficult to defeat without cryptography. They are a subset of network injection attacks that rely on observing previously-sent valid commands, then changing them slightly if necessary and resending the same commands to the server.",
+      "LikelihoodOfExploit": "High",
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Class": "Not Language-Specific",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Architecture and Design",
+          "Note": "COMMISSION: This weakness refers to an incorrect design related to an architectural security tactic."
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Access Control"
+          ],
+          "Impact": [
+            "Gain Privileges or Assume Identity"
+          ],
+          "Note": "Messages sent with a capture-relay attack allow access to resources which are not otherwise accessible without proper authentication."
+        }
+      ],
+      "DemonstrativeExamples": null,
+      "PotentialMitigations": [
+        {
+          "Phase": [
+            "Architecture and Design"
+          ],
+          "Description": "Utilize some sequence or time stamping functionality along with a checksum which takes this into account in order to ensure that messages can be parsed only once."
+        },
+        {
+          "Phase": [
+            "Architecture and Design"
+          ],
+          "Description": "Since any attacker who can listen to traffic can see sequence numbers, it is necessary to sign messages with some kind of cryptography to ensure that sequence numbers are not simply doctored along with content."
+        }
+      ]
+    },
+    "/cwe/294/parents": {
+      "weakness_parents": [
+        "1390",
+        "287"
+      ],
+      "category_parents": [
+        "1010",
+        "1353",
+        "1396",
+        "1211",
+        "956"
+      ]
+    },
+    "/cwe/294/children": null
+  }
+}

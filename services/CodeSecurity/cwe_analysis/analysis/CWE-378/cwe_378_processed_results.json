@@ -1,0 +1,129 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T23:17:16.095412",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "378",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/378": {
+      "ID": "378",
+      "Type": "base_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/378": {
+      "ID": "378",
+      "Name": "Creation of Temporary File With Insecure Permissions",
+      "Abstraction": "Base",
+      "Structure": "Simple",
+      "Status": "Draft",
+      "Description": "Opening temporary files without appropriate measures or controls can leave the file, its contents and any function that it impacts vulnerable to attack.",
+      "ExtendedDescription": null,
+      "LikelihoodOfExploit": "High",
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Class": "Not Language-Specific",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Implementation"
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Confidentiality"
+          ],
+          "Impact": [
+            "Read Application Data"
+          ],
+          "Note": "If the temporary file can be read by the attacker, sensitive information may be in that file which could be revealed."
+        },
+        {
+          "Scope": [
+            "Authorization",
+            "Other"
+          ],
+          "Impact": [
+            "Other"
+          ],
+          "Note": "If that file can be written to by the attacker, the file might be moved into a place to which the attacker does not have access. This will allow the attacker to gain selective resource access-control privileges."
+        },
+        {
+          "Scope": [
+            "Integrity",
+            "Other"
+          ],
+          "Impact": [
+            "Other"
+          ],
+          "Note": "Depending on the data stored in the temporary file, there is the potential for an attacker to gain an additional input vector which is trusted as non-malicious. It may be possible to make arbitrary changes to data structures, user information, or even process ownership."
+        }
+      ],
+      "DemonstrativeExamples": [
+        {
+          "ID": "DX-139",
+          "Entries": [
+            {
+              "IntroText": "In the following code examples a temporary file is created and written to. After using the temporary file, the file is closed and deleted from the file system."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "C",
+              "ExampleCode": "```\n\tFILE *stream;\n\tif( (stream = tmpfile()) == NULL ) {\n\t\t\tperror(\"Could not open new temporary file\\n\");\n\t\t\treturn (-1);\n\t}\n```\n// write data to tmp file* \n\t...\n\t// remove tmp file\n\trmtmp();"
+            },
+            {
+              "BodyText": "However, within this C/C++ code the method tmpfile() is used to create and open the temp file. The tmpfile() method works the same way as the fopen() method would with read/write permission, allowing attackers to read potentially sensitive information contained in the temp file or modify the contents of the file."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "Java",
+              "ExampleCode": "```\n\ttry {\n\t\tFile temp = File.createTempFile(\"pattern\", \".suffix\");\n\t\ttemp.deleteOnExit();\n\t\tBufferedWriter out = new BufferedWriter(new FileWriter(temp));\n\t\tout.write(\"aString\");\n\t\tout.close();\n\t}\n\tcatch (IOException e) {\n\t}\n```"
+            },
+            {
+              "BodyText": "Similarly, the createTempFile() method used in the Java code creates a temp file that may be readable and writable to all users."
+            },
+            {
+              "BodyText": "Additionally both methods used above place the file into a default directory. On UNIX systems the default directory is usually \"/tmp\" or \"/var/tmp\" and on Windows systems the default directory is usually \"C:\\\\Windows\\\\Temp\", which may be easily accessible to attackers, possibly enabling them to read and modify the contents of the temp file."
+            }
+          ]
+        }
+      ],
+      "PotentialMitigations": [
+        {
+          "Phase": [
+            "Requirements"
+          ],
+          "Description": "Many contemporary languages have functions which properly handle this condition. Older C temp file functions are especially susceptible."
+        },
+        {
+          "Phase": [
+            "Implementation"
+          ],
+          "Description": "Ensure that you use proper file permissions. This can be achieved by using a safe temp file function. Temporary files should be writable and readable only by the process that owns the file."
+        },
+        {
+          "Phase": [
+            "Implementation"
+          ],
+          "Description": "Randomize temporary file names. This can also be achieved by using a safe temp-file function. This will ensure that temporary files will not be created in predictable places."
+        }
+      ]
+    },
+    "/cwe/378/parents": {
+      "weakness_parents": [
+        "377"
+      ],
+      "category_parents": [
+        "1403",
+        "1219",
+        "964"
+      ]
+    },
+    "/cwe/378/children": null
+  }
+}

@@ -1,0 +1,79 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T22:51:20.605493",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "183",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/183": {
+      "ID": "183",
+      "Type": "base_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/183": {
+      "ID": "183",
+      "Name": "Permissive List of Allowed Inputs",
+      "Abstraction": "Base",
+      "Structure": "Simple",
+      "Status": "Draft",
+      "Description": "The product implements a protection mechanism that relies on a list of inputs (or properties of inputs) that are explicitly allowed by policy because the inputs are assumed to be safe, but the list is too permissive - that is, it allows an input that is unsafe, leading to resultant weaknesses.",
+      "ExtendedDescription": null,
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Class": "Not Language-Specific",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": [
+        {
+          "Term": "Allowlist / Allow List",
+          "Description": "This is used by CWE and CAPEC instead of other commonly-used terms. Its counterpart is denylist."
+        },
+        {
+          "Term": "Safelist / Safe List",
+          "Description": "This is often used by security tools such as firewalls, email or web gateways, proxies, etc."
+        },
+        {
+          "Term": "Whitelist / White List",
+          "Description": "This term is frequently used, but usage has been declining as organizations have started to adopt other terms."
+        }
+      ],
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Implementation"
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Access Control"
+          ],
+          "Impact": [
+            "Bypass Protection Mechanism"
+          ]
+        }
+      ],
+      "DemonstrativeExamples": null,
+      "PotentialMitigations": null
+    },
+    "/cwe/183/parents": {
+      "weakness_parents": [],
+      "category_parents": [
+        "1348",
+        "1397",
+        "1215",
+        "722",
+        "990"
+      ]
+    },
+    "/cwe/183/children": {
+      "weakness_children": [
+        "942"
+      ],
+      "category_children": []
+    }
+  }
+}

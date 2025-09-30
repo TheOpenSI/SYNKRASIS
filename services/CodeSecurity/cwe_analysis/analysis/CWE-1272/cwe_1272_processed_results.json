@@ -1,0 +1,129 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T22:31:40.705463",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "1272",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/1272": {
+      "ID": "1272",
+      "Type": "base_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/1272": {
+      "ID": "1272",
+      "Name": "Sensitive Information Uncleared Before Debug/Power State Transition",
+      "Abstraction": "Base",
+      "Structure": "Simple",
+      "Status": "Stable",
+      "Description": "The product performs a power or debug state transition, but it does not clear sensitive information that should no longer be accessible due to changes to information access restrictions.",
+      "ExtendedDescription": "\n\nA device or system frequently employs many power and sleep states during its normal operation (e.g., normal power, additional power, low power, hibernate, deep sleep, etc.). A device also may be operating within a debug condition. State transitions can happen from one power or debug state to another. If there is information available in the previous state which should not be available in the next state and is not properly removed before the transition into the next state, sensitive information may leak from the system.\n",
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Name": "VHDL",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Language",
+          "Name": "Verilog",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Language",
+          "Class": "Hardware Description Language",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Operating_System",
+          "Class": "Not OS-Specific",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Architecture",
+          "Class": "Not Architecture-Specific",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Technology",
+          "Class": "Not Technology-Specific",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Architecture and Design"
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Confidentiality",
+            "Integrity",
+            "Availability",
+            "Access Control",
+            "Accountability",
+            "Authentication",
+            "Authorization",
+            "Non-Repudiation"
+          ],
+          "Impact": [
+            "Read Memory",
+            "Read Application Data"
+          ],
+          "Likelihood": [
+            "High"
+          ],
+          "Note": "Sensitive information may be used to unlock additional capabilities of the device and take advantage of hidden functionalities which could be used to compromise device security."
+        }
+      ],
+      "DemonstrativeExamples": [
+        {
+          "ID": "DX-147",
+          "Entries": [
+            {
+              "IntroText": "This example shows how an attacker can take advantage of an incorrect state transition."
+            },
+            {
+              "BodyText": "Suppose a device is transitioning from state A to state B. During state A, it can read certain private keys from the hidden fuses that are only accessible in state A but not in state B. The device reads the keys, performs operations using those keys, then transitions to state B, where those private keys should no longer be accessible."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "Other",
+              "ExampleCode": "During the transition from A to B, the device does not scrub the memory."
+            },
+            {
+              "BodyText": "After the transition to state B, even though the private keys are no longer accessible directly from the fuses in state B, they can be accessed indirectly by reading the memory that contains the private keys."
+            },
+            {
+              "Nature": "Good",
+              "Language": "Other",
+              "ExampleCode": "For transition from state A to state B, remove information which should not be available once the transition is complete."
+            }
+          ]
+        }
+      ],
+      "PotentialMitigations": [
+        {
+          "Phase": [
+            "Architecture and Design",
+            "Implementation"
+          ],
+          "Description": "During state transitions, information not needed in the next state should be removed before the transition to the next state."
+        }
+      ]
+    },
+    "/cwe/1272/parents": {
+      "weakness_parents": [],
+      "category_parents": [
+        "1207",
+        "1416",
+        "1433"
+      ]
+    },
+    "/cwe/1272/children": null
+  }
+}

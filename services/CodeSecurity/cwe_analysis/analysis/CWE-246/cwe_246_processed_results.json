@@ -1,0 +1,83 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T22:59:57.830868",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "246",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/246": {
+      "ID": "246",
+      "Type": "variant_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/246": {
+      "ID": "246",
+      "Name": "J2EE Bad Practices: Direct Use of Sockets",
+      "Abstraction": "Variant",
+      "Structure": "Simple",
+      "Status": "Draft",
+      "Description": "The J2EE application directly uses sockets instead of using framework method calls.",
+      "ExtendedDescription": "\n\nThe J2EE standard permits the use of sockets only for the purpose of communication with legacy systems when no higher-level protocol is available. Authoring your own communication protocol requires wrestling with difficult security issues.\n\n\nWithout significant scrutiny by a security expert, chances are good that a custom communication protocol will suffer from security problems. Many of the same issues apply to a custom implementation of a standard protocol. While there are usually more resources available that address security concerns related to implementing a standard protocol, these resources are also available to attackers.\n",
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Name": "Java",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Implementation"
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Other"
+          ],
+          "Impact": [
+            "Quality Degradation"
+          ]
+        }
+      ],
+      "DemonstrativeExamples": [
+        {
+          "ID": "DX-197",
+          "Entries": [
+            {
+              "IntroText": "The following example opens a socket to connect to a remote server."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "Java",
+              "ExampleCode": "```\n\tpublic void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {\n```\n// Perform servlet tasks.* \n\t\t\t...\n\t\t\t\n\t\t\t\n\t\t\t *// Open a socket to a remote server (bad).* \n\t\t\tSocket sock = null;\n\t\t\t\n\t\t\ttry {\n\t\t\t```\n\t\t\t\t\tsock = new Socket(remoteHostname, 3000);\n```\n// Do something with the socket.* \n\t\t\t\t\t...} catch (Exception e) {\n\t\t\t```\n\t\t\t\t...\n\t\t\t}\n\t}\n```"
+            },
+            {
+              "BodyText": "A Socket object is created directly within the Java servlet, which is a dangerous way to manage remote connections."
+            }
+          ]
+        }
+      ],
+      "PotentialMitigations": [
+        {
+          "Phase": [
+            "Architecture and Design"
+          ],
+          "Description": "Use framework method calls instead of using sockets directly."
+        }
+      ]
+    },
+    "/cwe/246/parents": {
+      "weakness_parents": [],
+      "category_parents": [
+        "1412",
+        "227",
+        "1001"
+      ]
+    },
+    "/cwe/246/children": null
+  }
+}

@@ -1,0 +1,65 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T23:46:21.514562",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "598",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/598": {
+      "ID": "598",
+      "Type": "variant_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/598": {
+      "ID": "598",
+      "Name": "Use of GET Request Method With Sensitive Query Strings",
+      "Abstraction": "Variant",
+      "Structure": "Simple",
+      "Status": "Draft",
+      "Description": "The web application uses the HTTP GET method to process a request and includes sensitive information in the query string of that request.",
+      "ExtendedDescription": null,
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": null,
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Architecture and Design"
+        },
+        {
+          "Phase": "Implementation"
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Confidentiality"
+          ],
+          "Impact": [
+            "Read Application Data"
+          ],
+          "Note": "At a minimum, attackers can garner information from query strings that can be utilized in escalating their method of attack, such as information about the internal workings of the application or database column names. Successful exploitation of query string parameter vulnerabilities could lead to an attacker impersonating a legitimate user, obtaining proprietary data, or simply executing actions not intended by the application developers."
+        }
+      ],
+      "DemonstrativeExamples": null,
+      "PotentialMitigations": [
+        {
+          "Phase": [
+            "Implementation"
+          ],
+          "Description": "When sensitive information is sent, use the POST method (e.g. registration form)."
+        }
+      ]
+    },
+    "/cwe/598/parents": {
+      "weakness_parents": [],
+      "category_parents": [
+        "1348",
+        "1417",
+        "729",
+        "963"
+      ]
+    },
+    "/cwe/598/children": null
+  }
+}

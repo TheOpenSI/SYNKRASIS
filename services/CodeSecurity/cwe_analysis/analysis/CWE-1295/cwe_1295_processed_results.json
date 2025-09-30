@@ -1,0 +1,115 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T22:34:49.477591",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "1295",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/1295": {
+      "ID": "1295",
+      "Type": "base_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/1295": {
+      "ID": "1295",
+      "Name": "Debug Messages Revealing Unnecessary Information",
+      "Abstraction": "Base",
+      "Structure": "Simple",
+      "Status": "Incomplete",
+      "Description": "The product fails to adequately prevent the revealing of unnecessary and potentially sensitive system information within debugging messages.",
+      "ExtendedDescription": "\n\nDebug messages are messages that help troubleshoot an issue by revealing the internal state of the system. For example, debug data in design can be exposed through internal memory array dumps or boot logs through interfaces like UART via TAP commands, scan chain, etc. Thus, the more information contained in a debug message, the easier it is to debug. However, there is also the risk of revealing information that could help an attacker either decipher a vulnerability, and/or gain a better understanding of the system. Thus, this extra information could lower the \"security by obscurity\" factor. While \"security by obscurity\" alone is insufficient, it can help as a part of \"Defense-in-depth\". \n",
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Class": "Not Language-Specific",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Operating_System",
+          "Class": "Not OS-Specific",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Architecture",
+          "Class": "Not Architecture-Specific",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Technology",
+          "Class": "Not Technology-Specific",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Implementation"
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Confidentiality",
+            "Integrity",
+            "Availability",
+            "Access Control",
+            "Accountability",
+            "Authentication",
+            "Authorization",
+            "Non-Repudiation"
+          ],
+          "Impact": [
+            "Read Memory",
+            "Bypass Protection Mechanism",
+            "Gain Privileges or Assume Identity",
+            "Varies by Context"
+          ],
+          "Likelihood": [
+            "Medium"
+          ]
+        }
+      ],
+      "DemonstrativeExamples": [
+        {
+          "Entries": [
+            {
+              "IntroText": "This example here shows how an attacker can take advantage of unnecessary information in debug messages."
+            },
+            {
+              "BodyText": "Example 1: Suppose in response to a Test Access Port (TAP) chaining request the debug message also reveals the current TAP hierarchy (the full topology) in addition to the success/failure message."
+            },
+            {
+              "BodyText": "Example 2: In response to a password-filling request, the debug message, instead of a simple Granted/Denied response, prints an elaborate message, \"The user-entered password does not match the actual password stored in <directory name>.\""
+            },
+            {
+              "BodyText": "The result of the above examples is that the user is able to gather additional unauthorized information about the system from the debug messages."
+            },
+            {
+              "BodyText": "The solution is to ensure that Debug messages do not reveal additional details."
+            }
+          ]
+        }
+      ],
+      "PotentialMitigations": [
+        {
+          "Phase": [
+            "Implementation"
+          ],
+          "Description": "Ensure that a debug message does not reveal any unnecessary information during the debug process for the intended response."
+        }
+      ]
+    },
+    "/cwe/1295/parents": {
+      "weakness_parents": [
+        "200"
+      ],
+      "category_parents": [
+        "1207",
+        "1417"
+      ]
+    },
+    "/cwe/1295/children": null
+  }
+}

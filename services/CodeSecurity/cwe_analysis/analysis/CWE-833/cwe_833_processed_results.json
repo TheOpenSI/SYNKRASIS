@@ -1,0 +1,55 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-30T00:12:08.825730",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "833",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/833": {
+      "ID": "833",
+      "Type": "base_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/833": {
+      "ID": "833",
+      "Name": "Deadlock",
+      "Abstraction": "Base",
+      "Structure": "Simple",
+      "Status": "Incomplete",
+      "Description": "The product contains multiple threads or executable segments that are waiting for each other to release a necessary lock, resulting in deadlock.",
+      "ExtendedDescription": null,
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": null,
+      "AlternateTerms": null,
+      "ModesOfIntroduction": null,
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Availability"
+          ],
+          "Impact": [
+            "DoS: Resource Consumption (CPU)",
+            "DoS: Resource Consumption (Other)",
+            "DoS: Crash, Exit, or Restart"
+          ],
+          "Note": "Each thread of execution will \"hang\" and prevent tasks from completing. In some cases, CPU consumption may occur if a lock check occurs in a tight loop."
+        }
+      ],
+      "DemonstrativeExamples": null,
+      "PotentialMitigations": null
+    },
+    "/cwe/833/parents": {
+      "weakness_parents": [
+        "667",
+        "662"
+      ],
+      "category_parents": [
+        "1401",
+        "411",
+        "853"
+      ]
+    },
+    "/cwe/833/children": null
+  }
+}

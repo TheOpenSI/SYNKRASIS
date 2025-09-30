@@ -1,0 +1,182 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T22:24:52.733164",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "121",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/121": {
+      "ID": "121",
+      "Type": "variant_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/121": {
+      "ID": "121",
+      "Name": "Stack-based Buffer Overflow",
+      "Abstraction": "Variant",
+      "Structure": "Simple",
+      "Status": "Draft",
+      "Description": "A stack-based buffer overflow condition is a condition where the buffer being overwritten is allocated on the stack (i.e., is a local variable or, rarely, a parameter to a function).",
+      "ExtendedDescription": null,
+      "LikelihoodOfExploit": "High",
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Name": "C",
+          "Prevalence": "Often"
+        },
+        {
+          "Type": "Language",
+          "Name": "C++",
+          "Prevalence": "Often"
+        }
+      ],
+      "AlternateTerms": [
+        {
+          "Term": "Stack Overflow",
+          "Description": "\"Stack Overflow\" is often used to mean the same thing as stack-based buffer overflow, however it is also used on occasion to mean stack exhaustion, usually a result from an excessively recursive function call. Due to the ambiguity of the term, use of stack overflow to describe either circumstance is discouraged."
+        }
+      ],
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Implementation"
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Availability"
+          ],
+          "Impact": [
+            "Modify Memory",
+            "DoS: Crash, Exit, or Restart",
+            "DoS: Resource Consumption (CPU)",
+            "DoS: Resource Consumption (Memory)"
+          ],
+          "Note": "Buffer overflows generally lead to crashes. Other attacks leading to lack of availability are possible, including putting the program into an infinite loop."
+        },
+        {
+          "Scope": [
+            "Integrity",
+            "Confidentiality",
+            "Availability",
+            "Access Control"
+          ],
+          "Impact": [
+            "Modify Memory",
+            "Execute Unauthorized Code or Commands",
+            "Bypass Protection Mechanism"
+          ],
+          "Note": "Buffer overflows often can be used to execute arbitrary code, which is usually outside the scope of a program's implicit security policy."
+        },
+        {
+          "Scope": [
+            "Integrity",
+            "Confidentiality",
+            "Availability",
+            "Access Control",
+            "Other"
+          ],
+          "Impact": [
+            "Modify Memory",
+            "Execute Unauthorized Code or Commands",
+            "Bypass Protection Mechanism",
+            "Other"
+          ],
+          "Note": "When the consequence is arbitrary code execution, this can often be used to subvert any other security service."
+        }
+      ],
+      "DemonstrativeExamples": [
+        {
+          "Entries": [
+            {
+              "IntroText": "While buffer overflow examples can be rather complex, it is possible to have very simple, yet still exploitable, stack-based buffer overflows:"
+            },
+            {
+              "Nature": "Bad",
+              "Language": "C",
+              "ExampleCode": "```\n\t#define BUFSIZE 256\n\tint main(int argc, char **argv) {\n\t\tchar buf[BUFSIZE];\n\t\tstrcpy(buf, argv[1]);\n\t}\n```"
+            },
+            {
+              "BodyText": "The buffer size is fixed, but there is no guarantee the string in argv[1] will not exceed this size and cause an overflow."
+            }
+          ]
+        },
+        {
+          "ID": "DX-1",
+          "Entries": [
+            {
+              "IntroText": "This example takes an IP address from a user, verifies that it is well formed and then looks up the hostname and copies it into a buffer."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "C",
+              "ExampleCode": "```\n\tvoid host_lookup(char *user_supplied_addr){\n\t\t\tstruct hostent *hp;\n\t\t\tin_addr_t *addr;\n\t\t\tchar hostname[64];\n\t\t\tin_addr_t inet_addr(const char *cp);\n```\n/*routine that ensures user_supplied_addr is in the right format for conversion */* \n\t\t\t\n\t\t\tvalidate_addr_form(user_supplied_addr);\n\t\t\taddr = inet_addr(user_supplied_addr);\n\t\t\thp = gethostbyaddr( addr, sizeof(struct in_addr), AF_INET);\n\t\t\tstrcpy(hostname, hp->h_name);}"
+            },
+            {
+              "BodyText": "This function allocates a buffer of 64 bytes to store the hostname, however there is no guarantee that the hostname will not be larger than 64 bytes. If an attacker specifies an address which resolves to a very large hostname, then the function may overwrite sensitive data or even relinquish control flow to the attacker."
+            },
+            {
+              "BodyText": "Note that this example also contains an unchecked return value (CWE-252) that can lead to a NULL pointer dereference (CWE-476)."
+            }
+          ]
+        }
+      ],
+      "PotentialMitigations": [
+        {
+          "MitigationID": "MIT-10",
+          "Phase": [
+            "Operation",
+            "Build and Compilation"
+          ],
+          "Strategy": "Environment Hardening",
+          "Description": "\n\nUse automatic buffer overflow detection mechanisms that are offered by certain compilers or compiler extensions. Examples include: the Microsoft Visual Studio /GS flag, Fedora/Red Hat FORTIFY_SOURCE GCC flag, StackGuard, and ProPolice, which provide various mechanisms including canary-based detection and range/index checking. \n\n\n D3-SFCV (Stack Frame Canary Validation) from D3FEND [REF-1334] discusses canary-based detection in detail. \n",
+          "Effectiveness": "Defense in Depth",
+          "EffectivenessNotes": "\n\n This is not necessarily a complete solution, since these mechanisms only detect certain types of overflows. In addition, the result is still a denial of service, since the typical response is to exit the application. \n"
+        },
+        {
+          "Phase": [
+            "Architecture and Design"
+          ],
+          "Description": "Use an abstraction library to abstract away risky APIs. Not a complete solution."
+        },
+        {
+          "Phase": [
+            "Implementation"
+          ],
+          "Description": "Implement and perform bounds checking on input."
+        },
+        {
+          "Phase": [
+            "Implementation"
+          ],
+          "Description": "Do not use dangerous functions such as gets. Use safer, equivalent functions which check for boundary errors."
+        },
+        {
+          "MitigationID": "MIT-11",
+          "Phase": [
+            "Operation",
+            "Build and Compilation"
+          ],
+          "Strategy": "Environment Hardening",
+          "Description": "\n\nRun or compile the software using features or extensions that randomly arrange the positions of a program's executable and libraries in memory. Because this makes the addresses unpredictable, it can prevent an attacker from reliably jumping to exploitable code. \n\n\n Examples include Address Space Layout Randomization (ASLR) [REF-58] [REF-60] and Position-Independent Executables (PIE) [REF-64]. Imported modules may be similarly realigned if their default memory addresses conflict with other modules, in a process known as \"rebasing\" (for Windows) and \"prelinking\" (for Linux) [REF-1332] using randomly generated addresses. ASLR for libraries cannot be used in conjunction with prelink since it would require relocating the libraries at run-time, defeating the whole purpose of prelinking. \n\n\n For more information on these techniques see D3-SAOR (Segment Address Offset Randomization) from D3FEND [REF-1335]. \n",
+          "Effectiveness": "Defense in Depth",
+          "EffectivenessNotes": "These techniques do not provide a complete solution. For instance, exploits frequently use a bug that discloses memory addresses in order to maximize reliability of code execution [REF-1337]. It has also been shown that a side-channel attack can bypass ASLR [REF-1333]"
+        }
+      ]
+    },
+    "/cwe/121/parents": {
+      "weakness_parents": [],
+      "category_parents": [
+        "1160",
+        "1161",
+        "1365",
+        "1366",
+        "1399",
+        "970"
+      ]
+    },
+    "/cwe/121/children": null
+  }
+}

@@ -1,0 +1,118 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-30T00:02:12.045896",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "734",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/734": {
+      "endpoint": "/cwe/734",
+      "url": "https://cwe-api.mitre.org/api/v1/cwe/734",
+      "status_code": 200,
+      "success": true,
+      "error": null,
+      "data": [
+        {
+          "Type": "view",
+          "ID": "734"
+        }
+      ]
+    },
+    "/cwe/weakness/734": {
+      "endpoint": "/cwe/weakness/734",
+      "url": "https://cwe-api.mitre.org/api/v1/cwe/weakness/734",
+      "status_code": 404,
+      "success": false,
+      "error": "HTTP 404: \"for weakness: cwe (734) not found, use the view endpoint\"\n",
+      "data": null
+    },
+    "/cwe/734/parents": {
+      "endpoint": "/cwe/734/parents",
+      "url": "https://cwe-api.mitre.org/api/v1/cwe/734/parents",
+      "status_code": 200,
+      "success": true,
+      "error": null,
+      "data": []
+    },
+    "/cwe/734/children": {
+      "endpoint": "/cwe/734/children",
+      "url": "https://cwe-api.mitre.org/api/v1/cwe/734/children",
+      "status_code": 200,
+      "success": true,
+      "error": null,
+      "data": [
+        {
+          "Type": "category",
+          "ID": "735",
+          "ViewID": "734"
+        },
+        {
+          "Type": "category",
+          "ID": "736",
+          "ViewID": "734"
+        },
+        {
+          "Type": "category",
+          "ID": "737",
+          "ViewID": "734"
+        },
+        {
+          "Type": "category",
+          "ID": "738",
+          "ViewID": "734"
+        },
+        {
+          "Type": "category",
+          "ID": "739",
+          "ViewID": "734"
+        },
+        {
+          "Type": "category",
+          "ID": "740",
+          "ViewID": "734"
+        },
+        {
+          "Type": "category",
+          "ID": "741",
+          "ViewID": "734"
+        },
+        {
+          "Type": "category",
+          "ID": "742",
+          "ViewID": "734"
+        },
+        {
+          "Type": "category",
+          "ID": "743",
+          "ViewID": "734"
+        },
+        {
+          "Type": "category",
+          "ID": "744",
+          "ViewID": "734"
+        },
+        {
+          "Type": "category",
+          "ID": "745",
+          "ViewID": "734"
+        },
+        {
+          "Type": "category",
+          "ID": "746",
+          "ViewID": "734"
+        },
+        {
+          "Type": "category",
+          "ID": "747",
+          "ViewID": "734"
+        },
+        {
+          "Type": "category",
+          "ID": "748",
+          "ViewID": "734"
+        }
+      ]
+    }
+  }
+}

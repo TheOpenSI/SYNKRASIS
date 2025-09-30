@@ -1,0 +1,50 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T22:16:47.340305",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "1096",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/1096": {
+      "ID": "1096",
+      "Type": "variant_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/1096": {
+      "ID": "1096",
+      "Name": "Singleton Class Instance Creation without Proper Locking or Synchronization",
+      "Abstraction": "Variant",
+      "Structure": "Simple",
+      "Status": "Incomplete",
+      "Description": "The product implements a Singleton design pattern but does not use appropriate locking or other synchronization mechanism to ensure that the singleton class is only instantiated once.",
+      "ExtendedDescription": "\n\nThis issue can prevent the product from running reliably, e.g. by making the instantiation process non-thread-safe and introducing deadlock (CWE-833) or livelock conditions. If the relevant code is reachable by an attacker, then this reliability problem might introduce a vulnerability.\n",
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": null,
+      "AlternateTerms": null,
+      "ModesOfIntroduction": null,
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Other"
+          ],
+          "Impact": [
+            "Reduce Reliability"
+          ]
+        }
+      ],
+      "DemonstrativeExamples": null,
+      "PotentialMitigations": null
+    },
+    "/cwe/1096/parents": {
+      "weakness_parents": [
+        "662"
+      ],
+      "category_parents": [
+        "1129",
+        "1401"
+      ]
+    },
+    "/cwe/1096/children": null
+  }
+}

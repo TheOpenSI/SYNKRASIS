@@ -1,0 +1,92 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T22:55:26.626276",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "213",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/213": {
+      "ID": "213",
+      "Type": "base_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/213": {
+      "ID": "213",
+      "Name": "Exposure of Sensitive Information Due to Incompatible Policies",
+      "Abstraction": "Base",
+      "Structure": "Simple",
+      "Status": "Draft",
+      "Description": "The product's intended functionality exposes information to certain actors in accordance with the developer's security policy, but this information is regarded as sensitive according to the intended security policies of other stakeholders such as the product's administrator, users, or others whose information is being processed.",
+      "ExtendedDescription": "\n\nWhen handling information, the developer must consider whether the information is regarded as sensitive by different stakeholders, such as users or administrators. Each stakeholder effectively has its own intended security policy that the product is expected to uphold. When a developer does not treat that information as sensitive, this can introduce a vulnerability that violates the expectations of the product's users.\n",
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Class": "Not Language-Specific",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Policy",
+          "Note": "This can occur when the product's policy does not account for all relevant stakeholders, or when the policies of other stakeholders are not interpreted properly."
+        },
+        {
+          "Phase": "Requirements",
+          "Note": "This can occur when requirements do not explicitly account for all relevant stakeholders."
+        },
+        {
+          "Phase": "Architecture and Design",
+          "Note": "Communications or data exchange frameworks may be chosen that exchange or provide access to more information than strictly needed."
+        },
+        {
+          "Phase": "Implementation",
+          "Note": "This can occur when the developer does not properly track the flow of sensitive information and how it is exposed, e.g., via an API."
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Confidentiality"
+          ],
+          "Impact": [
+            "Read Application Data"
+          ]
+        }
+      ],
+      "DemonstrativeExamples": [
+        {
+          "ID": "DX-130",
+          "Entries": [
+            {
+              "IntroText": "This code displays some information on a web page."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "JSP",
+              "ExampleCode": "```\n\tSocial Security Number: <%= ssn %></br>Credit Card Number: <%= ccn %>\n```"
+            },
+            {
+              "BodyText": "The code displays a user's credit card and social security numbers, even though they aren't absolutely necessary."
+            }
+          ]
+        }
+      ],
+      "PotentialMitigations": null
+    },
+    "/cwe/213/parents": {
+      "weakness_parents": [
+        "200"
+      ],
+      "category_parents": [
+        "1348",
+        "1417",
+        "199",
+        "963"
+      ]
+    },
+    "/cwe/213/children": null
+  }
+}

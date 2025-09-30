@@ -1,0 +1,92 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T23:32:54.149588",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "499",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/499": {
+      "ID": "499",
+      "Type": "variant_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/499": {
+      "ID": "499",
+      "Name": "Serializable Class Containing Sensitive Data",
+      "Abstraction": "Variant",
+      "Structure": "Simple",
+      "Status": "Draft",
+      "Description": "The code contains a class with sensitive data, but the class does not explicitly deny serialization. The data can be accessed by serializing the class through another class.",
+      "ExtendedDescription": "Serializable classes are effectively open classes since data cannot be hidden in them. Classes that do not explicitly deny serialization can be serialized by any other class, which can then in turn use the data stored inside it.",
+      "LikelihoodOfExploit": "High",
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Name": "Java",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Implementation"
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Confidentiality"
+          ],
+          "Impact": [
+            "Read Application Data"
+          ],
+          "Note": "an attacker can write out the class to a byte stream, then extract the important data from it."
+        }
+      ],
+      "DemonstrativeExamples": [
+        {
+          "Entries": [
+            {
+              "IntroText": "This code creates a new record for a medical patient:"
+            },
+            {
+              "Nature": "Bad",
+              "Language": "Java",
+              "ExampleCode": "```\n\tclass PatientRecord {\n\t\tprivate String name;\n\t\tprivate String socialSecurityNum;\n\t\tpublic Patient(String name,String ssn) {\n\t\t\tthis.SetName(name);\n\t\t\tthis.SetSocialSecurityNumber(ssn);\n\t\t}\n\t}\n```"
+            },
+            {
+              "BodyText": "This object does not explicitly deny serialization, allowing an attacker to serialize an instance of this object and gain a patient's name and Social Security number even though those fields are private."
+            }
+          ]
+        }
+      ],
+      "PotentialMitigations": [
+        {
+          "Phase": [
+            "Implementation"
+          ],
+          "Description": "In Java, explicitly define final writeObject() to prevent serialization. This is the recommended solution. Define the writeObject() function to throw an exception explicitly denying serialization."
+        },
+        {
+          "Phase": [
+            "Implementation"
+          ],
+          "Description": "Make sure to prevent serialization of your objects."
+        }
+      ]
+    },
+    "/cwe/499/parents": {
+      "weakness_parents": [
+        "668"
+      ],
+      "category_parents": [
+        "1148",
+        "1403",
+        "858",
+        "963"
+      ]
+    },
+    "/cwe/499/children": null
+  }
+}

@@ -1,0 +1,33 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T22:57:06.179662",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "225",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/225": {
+      "ID": "225",
+      "Type": "deprecated_weakness",
+      "is_deprecated": true
+    },
+    "/cwe/weakness/225": {
+      "ID": "225",
+      "Name": "DEPRECATED: General Information Management Problems",
+      "Abstraction": "Base",
+      "Structure": "Simple",
+      "Status": "Deprecated",
+      "Description": "This weakness can be found at CWE-199.",
+      "ExtendedDescription": null,
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": null,
+      "AlternateTerms": null,
+      "ModesOfIntroduction": null,
+      "CommonConsequences": null,
+      "DemonstrativeExamples": null,
+      "PotentialMitigations": null
+    },
+    "/cwe/225/parents": null,
+    "/cwe/225/children": null
+  }
+}

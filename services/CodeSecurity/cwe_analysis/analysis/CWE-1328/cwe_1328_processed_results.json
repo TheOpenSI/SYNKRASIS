@@ -1,0 +1,118 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T22:39:00.176711",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "1328",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/1328": {
+      "ID": "1328",
+      "Type": "base_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/1328": {
+      "ID": "1328",
+      "Name": "Security Version Number Mutable to Older Versions",
+      "Abstraction": "Base",
+      "Structure": "Simple",
+      "Status": "Draft",
+      "Description": "Security-version number in hardware is mutable, resulting in the ability to downgrade (roll-back) the boot firmware to vulnerable code versions.",
+      "ExtendedDescription": "\n\nA System-on-Chip (SoC) implements secure boot or verified boot. It might support a security version number, which prevents downgrading the current firmware to a vulnerable version. Once downgraded to a previous version, an adversary can launch exploits on the SoC and thus compromise the security of the SoC. These downgrade attacks are also referred to as roll-back attacks.\n\n\nThe security version number must be stored securely and persistently across power-on resets. A common weakness is that the security version number is modifiable by an adversary, allowing roll-back or downgrade attacks or, under certain circumstances, preventing upgrades (i.e. Denial-of-Service on upgrades). In both cases, the SoC is in a vulnerable state.\n",
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Class": "Not Language-Specific",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Operating_System",
+          "Class": "Not OS-Specific",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Architecture",
+          "Class": "Not Architecture-Specific",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Technology",
+          "Name": "Security Hardware",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Technology",
+          "Class": "Not Technology-Specific",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Architecture and Design"
+        },
+        {
+          "Phase": "Implementation",
+          "Note": "Such issues could be introduced during hardware architecture and design, and can be identified later during testing or system configuration phases."
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Confidentiality",
+            "Integrity",
+            "Authentication",
+            "Authorization"
+          ],
+          "Impact": [
+            "Other"
+          ],
+          "Likelihood": [
+            "High"
+          ],
+          "Note": "Impact includes roll-back or downgrade to a vulnerable version of the firmware or DoS (prevent upgrades)."
+        }
+      ],
+      "DemonstrativeExamples": [
+        {
+          "Entries": [
+            {
+              "IntroText": "A new version of firmware is signed with a security version number higher than the previous version. During the firmware update process the SoC checks for the security version number and upgrades the SoC firmware with the latest version. This security version number is stored in persistent memory upon successful upgrade for use across power-on resets."
+            },
+            {
+              "BodyText": "In general, if the security version number is mutable, the implementation is vulnerable. A mutable security version number allows an adversary to change the security version to a lower value to allow roll-back or to a higher value to prevent future upgrades."
+            },
+            {
+              "BodyText": "The security version number should be stored in immutable hardware such as fuses, and the writes to these fuses should be highly access-controlled with appropriate authentication and authorization protections."
+            }
+          ]
+        }
+      ],
+      "PotentialMitigations": [
+        {
+          "Phase": [
+            "Architecture and Design"
+          ],
+          "Description": "When architecting the system, security version data should be designated for storage in registers that are either read-only or have access controls that prevent modification by an untrusted agent."
+        },
+        {
+          "Phase": [
+            "Implementation"
+          ],
+          "Description": "During implementation and test, security version data should be demonstrated to be read-only and access controls should be validated."
+        }
+      ]
+    },
+    "/cwe/1328/parents": {
+      "weakness_parents": [
+        "285"
+      ],
+      "category_parents": [
+        "1196",
+        "1396"
+      ]
+    },
+    "/cwe/1328/children": null
+  }
+}

@@ -1,0 +1,96 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T23:07:09.719292",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "301",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/301": {
+      "ID": "301",
+      "Type": "base_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/301": {
+      "ID": "301",
+      "Name": "Reflection Attack in an Authentication Protocol",
+      "Abstraction": "Base",
+      "Structure": "Simple",
+      "Status": "Draft",
+      "Description": "Simple authentication protocols are subject to reflection attacks if a malicious user can use the target machine to impersonate a trusted user.",
+      "ExtendedDescription": "\n\nA mutual authentication protocol requires each party to respond to a random challenge by the other party by encrypting it with a pre-shared key. Often, however, such protocols employ the same pre-shared key for communication with a number of different entities. A malicious user or an attacker can easily compromise this protocol without possessing the correct key by employing a reflection attack on the protocol.\n\n\nReflection attacks capitalize on mutual authentication schemes in order to trick the target into revealing the secret shared between it and another valid user. In a basic mutual-authentication scheme, a secret is known to both the valid user and the server; this allows them to authenticate. In order that they may verify this shared secret without sending it plainly over the wire, they utilize a Diffie-Hellman-style scheme in which they each pick a value, then request the hash of that value as keyed by the shared secret. In a reflection attack, the attacker claims to be a valid user and requests the hash of a random value from the server. When the server returns this value and requests its own value to be hashed, the attacker opens another connection to the server. This time, the hash requested by the attacker is the value which the server requested in the first connection. When the server returns this hashed value, it is used in the first connection, authenticating the attacker successfully as the impersonated valid user.\n",
+      "LikelihoodOfExploit": "Medium",
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Class": "Not Language-Specific",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Architecture and Design",
+          "Note": "COMMISSION: This weakness refers to an incorrect design related to an architectural security tactic."
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Access Control"
+          ],
+          "Impact": [
+            "Gain Privileges or Assume Identity"
+          ],
+          "Note": "The primary result of reflection attacks is successful authentication with a target machine -- as an impersonated user."
+        }
+      ],
+      "DemonstrativeExamples": [
+        {
+          "Entries": [
+            {
+              "IntroText": "The following example demonstrates the weakness."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "C",
+              "ExampleCode": "```\n\tunsigned char *simple_digest(char *alg,char *buf,unsigned int len, int *olen) {\n\t\tconst EVP_MD *m;\n\t\tEVP_MD_CTX ctx;\n\t\tunsigned char *ret;\n\t\tOpenSSL_add_all_digests();\n\t\tif (!(m = EVP_get_digestbyname(alg))) return NULL;\n\t\tif (!(ret = (unsigned char*)malloc(EVP_MAX_MD_SIZE))) return NULL;\n\t\tEVP_DigestInit(&ctx, m);\n\t\tEVP_DigestUpdate(&ctx,buf,len);\n\t\tEVP_DigestFinal(&ctx,ret,olen);\n\t\treturn ret;\n\t}\n\tunsigned char *generate_password_and_cmd(char *password_and_cmd) {\n\t\tsimple_digest(\"sha1\",password,strlen(password_and_cmd)\n\t\t...\n\t\t);\n\t}\n```"
+            },
+            {
+              "Nature": "Bad",
+              "Language": "Java",
+              "ExampleCode": "```\n\tString command = new String(\"some cmd to execute & the password\") MessageDigest encer = MessageDigest.getInstance(\"SHA\");\n\tencer.update(command.getBytes(\"UTF-8\"));\n\tbyte[] digest = encer.digest();\n```"
+            }
+          ]
+        }
+      ],
+      "PotentialMitigations": [
+        {
+          "Phase": [
+            "Architecture and Design"
+          ],
+          "Description": "Use different keys for the initiator and responder or of a different type of challenge for the initiator and responder."
+        },
+        {
+          "Phase": [
+            "Architecture and Design"
+          ],
+          "Description": "Let the initiator prove its identity before proceeding."
+        }
+      ]
+    },
+    "/cwe/301/parents": {
+      "weakness_parents": [
+        "1390"
+      ],
+      "category_parents": [
+        "1010",
+        "1396",
+        "718",
+        "1211",
+        "956"
+      ]
+    },
+    "/cwe/301/children": null
+  }
+}

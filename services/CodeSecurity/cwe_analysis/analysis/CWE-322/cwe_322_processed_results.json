@@ -1,0 +1,96 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T23:09:54.407240",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "322",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/322": {
+      "ID": "322",
+      "Type": "base_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/322": {
+      "ID": "322",
+      "Name": "Key Exchange without Entity Authentication",
+      "Abstraction": "Base",
+      "Structure": "Simple",
+      "Status": "Draft",
+      "Description": "The product performs a key exchange with an actor without verifying the identity of that actor.",
+      "ExtendedDescription": "Performing a key exchange will preserve the integrity of the information sent between two entities, but this will not guarantee that the entities are who they claim they are. This may enable an attacker to impersonate an actor by modifying traffic between the two entities. Typically, this involves a victim client that contacts a malicious server that is impersonating a trusted server. If the client skips authentication or ignores an authentication failure, the malicious server may request authentication information from the user. The malicious server can then use this authentication information to log in to the trusted server using the victim's credentials, sniff traffic between the victim and trusted server, etc.",
+      "LikelihoodOfExploit": "High",
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Class": "Not Language-Specific",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Architecture and Design",
+          "Note": "OMISSION: This weakness is caused by missing a security tactic during the architecture and design phase."
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Access Control"
+          ],
+          "Impact": [
+            "Bypass Protection Mechanism"
+          ],
+          "Note": "No authentication takes place in this process, bypassing an assumed protection of encryption."
+        },
+        {
+          "Scope": [
+            "Confidentiality"
+          ],
+          "Impact": [
+            "Read Application Data"
+          ],
+          "Note": "The encrypted communication between a user and a trusted host may be subject to sniffing by any actor in the communication path."
+        }
+      ],
+      "DemonstrativeExamples": [
+        {
+          "Entries": [
+            {
+              "IntroText": "Many systems have used Diffie-Hellman key exchange without authenticating the entities exchanging keys, allowing attackers to influence communications by redirecting or interfering with the communication path. Many people using SSL/TLS skip the authentication (often unknowingly)."
+            }
+          ]
+        }
+      ],
+      "PotentialMitigations": [
+        {
+          "Phase": [
+            "Architecture and Design"
+          ],
+          "Description": "Ensure that proper authentication is included in the system design."
+        },
+        {
+          "Phase": [
+            "Implementation"
+          ],
+          "Description": "Understand and properly implement all checks necessary to ensure the identity of entities involved in encrypted communications."
+        }
+      ]
+    },
+    "/cwe/322/parents": {
+      "weakness_parents": [],
+      "category_parents": [
+        "1010",
+        "1346",
+        "1396",
+        "1211",
+        "1214",
+        "320",
+        "417",
+        "959"
+      ]
+    },
+    "/cwe/322/children": null
+  }
+}

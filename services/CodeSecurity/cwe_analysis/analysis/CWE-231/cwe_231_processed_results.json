@@ -1,0 +1,59 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T22:57:58.731447",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "231",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/231": {
+      "ID": "231",
+      "Type": "variant_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/231": {
+      "ID": "231",
+      "Name": "Improper Handling of Extra Values",
+      "Abstraction": "Variant",
+      "Structure": "Simple",
+      "Status": "Draft",
+      "Description": "The product does not handle or incorrectly handles when more values are provided than expected.",
+      "ExtendedDescription": null,
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Class": "Not Language-Specific",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Implementation",
+          "Note": "This typically occurs in situations when only one value is expected."
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Integrity"
+          ],
+          "Impact": [
+            "Unexpected State"
+          ]
+        }
+      ],
+      "DemonstrativeExamples": null,
+      "PotentialMitigations": null
+    },
+    "/cwe/231/parents": {
+      "weakness_parents": [],
+      "category_parents": [
+        "1407",
+        "993"
+      ]
+    },
+    "/cwe/231/children": null
+  }
+}

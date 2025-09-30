@@ -1,0 +1,63 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T22:54:30.347357",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "207",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/207": {
+      "ID": "207",
+      "Type": "variant_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/207": {
+      "ID": "207",
+      "Name": "Observable Behavioral Discrepancy With Equivalent Products",
+      "Abstraction": "Variant",
+      "Structure": "Simple",
+      "Status": "Draft",
+      "Description": "The product operates in an environment in which its existence or specific identity should not be known, but it behaves differently than other products with equivalent functionality, in a way that is observable to an attacker.",
+      "ExtendedDescription": "For many kinds of products, multiple products may be available that perform the same functionality, such as a web server, network interface, or intrusion detection system. Attackers often perform \"fingerprinting,\" which uses discrepancies in order to identify which specific product is in use. Once the specific product has been identified, the attacks can be made more customized and efficient. Often, an organization might intentionally allow the specific product to be identifiable. However, in some environments, the ability to identify a distinct product is unacceptable, and it is expected that every product would behave in exactly the same way. In these more restricted environments, a behavioral difference might pose an unacceptable risk if it makes it easier to identify the product's vendor, model, configuration, version, etc.",
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Class": "Not Language-Specific",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Architecture and Design"
+        },
+        {
+          "Phase": "Implementation"
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Confidentiality",
+            "Access Control"
+          ],
+          "Impact": [
+            "Read Application Data",
+            "Bypass Protection Mechanism"
+          ]
+        }
+      ],
+      "DemonstrativeExamples": null,
+      "PotentialMitigations": null
+    },
+    "/cwe/207/parents": {
+      "weakness_parents": [],
+      "category_parents": [
+        "1417",
+        "967"
+      ]
+    },
+    "/cwe/207/children": null
+  }
+}

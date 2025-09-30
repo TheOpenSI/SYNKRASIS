@@ -1,0 +1,88 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T23:24:09.680383",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "431",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/431": {
+      "ID": "431",
+      "Type": "base_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/431": {
+      "ID": "431",
+      "Name": "Missing Handler",
+      "Abstraction": "Base",
+      "Structure": "Simple",
+      "Status": "Draft",
+      "Description": "A handler is not available or implemented.",
+      "ExtendedDescription": "When an exception is thrown and not caught, the process has given up an opportunity to decide if a given failure or event is worth a change in execution.",
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Class": "Not Language-Specific",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Implementation"
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Other"
+          ],
+          "Impact": [
+            "Varies by Context"
+          ]
+        }
+      ],
+      "DemonstrativeExamples": [
+        {
+          "Entries": [
+            {
+              "IntroText": "If a Servlet does not catch all exceptions, it may reveal debugging information that will help an adversary form a plan of attack. In the following method a DNS lookup failure will cause the Servlet to throw an exception."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "Java",
+              "ExampleCode": "```\n\tprotected void doPost (HttpServletRequest req, HttpServletResponse res) throws IOException {\n\t\tString ip = req.getRemoteAddr();\n\t\tInetAddress addr = InetAddress.getByName(ip);\n\t\t...\n\t\tout.println(\"hello \" + addr.getHostName());\n\t}\n```"
+            },
+            {
+              "BodyText": "When a Servlet throws an exception, the default error response the Servlet container sends back to the user typically includes debugging information. This information is of great value to an attacker."
+            }
+          ]
+        }
+      ],
+      "PotentialMitigations": [
+        {
+          "Phase": [
+            "Implementation"
+          ],
+          "Description": "Handle all possible situations (e.g. error condition)."
+        },
+        {
+          "Phase": [
+            "Implementation"
+          ],
+          "Description": "If an operation can throw an Exception, implement a handler for that specific exception."
+        }
+      ]
+    },
+    "/cwe/431/parents": {
+      "weakness_parents": [],
+      "category_parents": [
+        "1410",
+        "429",
+        "962"
+      ]
+    },
+    "/cwe/431/children": null
+  }
+}

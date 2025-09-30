@@ -1,0 +1,274 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T23:15:16.732572",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "362",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/362": {
+      "ID": "362",
+      "Type": "class_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/362": {
+      "ID": "362",
+      "Name": "Concurrent Execution using Shared Resource with Improper Synchronization ('Race Condition')",
+      "Abstraction": "Class",
+      "Structure": "Simple",
+      "Status": "Draft",
+      "Description": "The product contains a concurrent code sequence that requires temporary, exclusive access to a shared resource, but a timing window exists in which the shared resource can be modified by another code sequence operating concurrently.",
+      "ExtendedDescription": "\n\nA race condition occurs within concurrent environments, and it is effectively a property of a code sequence. Depending on the context, a code sequence may be in the form of a function call, a small number of instructions, a series of program invocations, etc.\n\n\nA race condition violates these properties, which are closely related:\n\n\n  - Exclusivity - the code sequence is given exclusive access to the shared resource, i.e., no other code sequence can modify properties of the shared resource before the original sequence has completed execution.\n\n  - Atomicity - the code sequence is behaviorally atomic, i.e., no other thread or process can concurrently execute the same sequence of instructions (or a subset) against the same resource.\n\nA race condition exists when an \"interfering code sequence\" can still access the shared resource, violating exclusivity.\n\nThe interfering code sequence could be \"trusted\" or \"untrusted.\" A trusted interfering code sequence occurs within the product; it cannot be modified by the attacker, and it can only be invoked indirectly. An untrusted interfering code sequence can be authored directly by the attacker, and typically it is external to the vulnerable product.\n",
+      "LikelihoodOfExploit": "Medium",
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Name": "C",
+          "Prevalence": "Sometimes"
+        },
+        {
+          "Type": "Language",
+          "Name": "C++",
+          "Prevalence": "Sometimes"
+        },
+        {
+          "Type": "Language",
+          "Name": "Java",
+          "Prevalence": "Sometimes"
+        },
+        {
+          "Type": "Technology",
+          "Class": "Mobile",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Technology",
+          "Class": "ICS/OT",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": [
+        {
+          "Term": "Race Condition"
+        }
+      ],
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Architecture and Design"
+        },
+        {
+          "Phase": "Implementation",
+          "Note": "Programmers may assume that certain code sequences execute too quickly to be affected by an interfering code sequence; when they are not, this violates atomicity. For example, the single \"x++\" statement may appear atomic at the code layer, but it is actually non-atomic at the instruction layer, since it involves a read (the original value of x), followed by a computation (x+1), followed by a write (save the result to x)."
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Availability"
+          ],
+          "Impact": [
+            "DoS: Resource Consumption (CPU)",
+            "DoS: Resource Consumption (Memory)",
+            "DoS: Resource Consumption (Other)"
+          ],
+          "Note": "When a race condition makes it possible to bypass a resource cleanup routine or trigger multiple initialization routines, it may lead to resource exhaustion."
+        },
+        {
+          "Scope": [
+            "Availability"
+          ],
+          "Impact": [
+            "DoS: Crash, Exit, or Restart",
+            "DoS: Instability"
+          ],
+          "Note": "When a race condition allows multiple control flows to access a resource simultaneously, it might lead the product(s) into unexpected states, possibly resulting in a crash."
+        },
+        {
+          "Scope": [
+            "Confidentiality",
+            "Integrity"
+          ],
+          "Impact": [
+            "Read Files or Directories",
+            "Read Application Data"
+          ],
+          "Note": "When a race condition is combined with predictable resource names and loose permissions, it may be possible for an attacker to overwrite or access confidential data (CWE-59)."
+        },
+        {
+          "Scope": [
+            "Access Control"
+          ],
+          "Impact": [
+            "Execute Unauthorized Code or Commands",
+            "Gain Privileges or Assume Identity",
+            "Bypass Protection Mechanism"
+          ],
+          "Note": "This can have security implications when the expected synchronization is in security-critical code, such as recording whether a user is authenticated or modifying important state information that should not be influenced by an outsider."
+        }
+      ],
+      "DemonstrativeExamples": [
+        {
+          "Entries": [
+            {
+              "IntroText": "This code could be used in an e-commerce application that supports transfers between accounts. It takes the total amount of the transfer, sends it to the new account, and deducts the amount from the original account."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "Perl",
+              "ExampleCode": "```\n\t$transfer_amount = GetTransferAmount();\n\t$balance = GetBalanceFromDatabase();\n\tif ($transfer_amount < 0) {\n\t\tFatalError(\"Bad Transfer Amount\");\n\t}\n\t$newbalance = $balance - $transfer_amount;\n\tif (($balance - $transfer_amount) < 0) {\n\t\tFatalError(\"Insufficient Funds\");\n\t}\n\tSendNewBalanceToDatabase($newbalance);\n\tNotifyUser(\"Transfer of $transfer_amount succeeded.\");\n\tNotifyUser(\"New balance: $newbalance\");\n```"
+            },
+            {
+              "BodyText": "A race condition could occur between the calls to GetBalanceFromDatabase() and SendNewBalanceToDatabase()."
+            },
+            {
+              "BodyText": "Suppose the balance is initially 100.00. An attack could be constructed as follows:"
+            },
+            {
+              "Nature": "Attack",
+              "Language": "Other",
+              "ExampleCode": "```\n\tIn the following pseudocode, the attacker makes two simultaneous calls of the program, CALLER-1 and CALLER-2. Both callers are for the same user account.\n\tCALLER-1 (the attacker) is associated with PROGRAM-1 (the instance that handles CALLER-1). CALLER-2 is associated with PROGRAM-2.\n\tCALLER-1 makes a transfer request of 80.00.\n\tPROGRAM-1 calls GetBalanceFromDatabase and sets $balance to 100.00\n\tPROGRAM-1 calculates $newbalance as 20.00, then calls SendNewBalanceToDatabase().\n\tDue to high server load, the PROGRAM-1 call to SendNewBalanceToDatabase() encounters a delay.\n\tCALLER-2 makes a transfer request of 1.00.\n\tPROGRAM-2 calls GetBalanceFromDatabase() and sets $balance to 100.00. This happens because the previous PROGRAM-1 request was not processed yet.\n\tPROGRAM-2 determines the new balance as 99.00.\n\tAfter the initial delay, PROGRAM-1 commits its balance to the database, setting it to 20.00.\n\tPROGRAM-2 sends a request to update the database, setting the balance to 99.00\n```"
+            },
+            {
+              "BodyText": "At this stage, the attacker should have a balance of 19.00 (due to 81.00 worth of transfers), but the balance is 99.00, as recorded in the database."
+            },
+            {
+              "BodyText": "To prevent this weakness, the programmer has several options, including using a lock to prevent multiple simultaneous requests to the web application, or using a synchronization mechanism that includes all the code between GetBalanceFromDatabase() and SendNewBalanceToDatabase()."
+            }
+          ]
+        },
+        {
+          "ID": "DX-24",
+          "Entries": [
+            {
+              "IntroText": "The following function attempts to acquire a lock in order to perform operations on a shared resource."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "C",
+              "ExampleCode": "```\n\tvoid f(pthread_mutex_t *mutex) {\n\t\t\tpthread_mutex_lock(mutex);\n```\n/* access shared resource */* \n\t\t\t\n\t\t\t\n\t\t\tpthread_mutex_unlock(mutex);}"
+            },
+            {
+              "BodyText": "However, the code does not check the value returned by pthread_mutex_lock() for errors. If pthread_mutex_lock() cannot acquire the mutex for any reason, the function may introduce a race condition into the program and result in undefined behavior."
+            },
+            {
+              "BodyText": "In order to avoid data races, correctly written programs must check the result of thread synchronization functions and appropriately handle all errors, either by attempting to recover from them or reporting them to higher levels."
+            },
+            {
+              "Nature": "Good",
+              "Language": "C",
+              "ExampleCode": "```\n\tint f(pthread_mutex_t *mutex) {\n\t\t\tint result;\n\t\t\tresult = pthread_mutex_lock(mutex);\n\t\t\tif (0 != result)\n\t\t\t\treturn result;\n```\n/* access shared resource */* \n\t\t\t\n\t\t\t\n\t\t\treturn pthread_mutex_unlock(mutex);}"
+            }
+          ]
+        },
+        {
+          "ID": "DX-132",
+          "Entries": [
+            {
+              "IntroText": "Suppose a processor's Memory Management Unit (MMU) has 5 other shadow MMUs to distribute its workload for its various cores. Each MMU has the start address and end address of \"accessible\" memory. Any time this accessible range changes (as per the processor's boot status), the main MMU sends an update message to all the shadow MMUs."
+            },
+            {
+              "BodyText": "Suppose the interconnect fabric does not prioritize such \"update\" packets over other general traffic packets. This introduces a race condition. If an attacker can flood the target with enough messages so that some of those attack packets reach the target before the new access ranges gets updated, then the attacker can leverage this scenario."
+            }
+          ]
+        }
+      ],
+      "PotentialMitigations": [
+        {
+          "Phase": [
+            "Architecture and Design"
+          ],
+          "Description": "In languages that support it, use synchronization primitives. Only wrap these around critical code to minimize the impact on performance."
+        },
+        {
+          "Phase": [
+            "Architecture and Design"
+          ],
+          "Description": "Use thread-safe capabilities such as the data access abstraction in Spring."
+        },
+        {
+          "Phase": [
+            "Architecture and Design"
+          ],
+          "Description": "\n\nMinimize the usage of shared resources in order to remove as much complexity as possible from the control flow and to reduce the likelihood of unexpected conditions occurring.\n\n\nAdditionally, this will minimize the amount of synchronization necessary and may even help to reduce the likelihood of a denial of service where an attacker may be able to repeatedly trigger a critical section (CWE-400).\n"
+        },
+        {
+          "Phase": [
+            "Implementation"
+          ],
+          "Description": "When using multithreading and operating on shared variables, only use thread-safe functions."
+        },
+        {
+          "Phase": [
+            "Implementation"
+          ],
+          "Description": "Use atomic operations on shared variables. Be wary of innocent-looking constructs such as \"x++\". This may appear atomic at the code layer, but it is actually non-atomic at the instruction layer, since it involves a read, followed by a computation, followed by a write."
+        },
+        {
+          "Phase": [
+            "Implementation"
+          ],
+          "Description": "Use a mutex if available, but be sure to avoid related weaknesses such as CWE-412."
+        },
+        {
+          "Phase": [
+            "Implementation"
+          ],
+          "Description": "Avoid double-checked locking (CWE-609) and other implementation errors that arise when trying to avoid the overhead of synchronization."
+        },
+        {
+          "Phase": [
+            "Implementation"
+          ],
+          "Description": "Disable interrupts or signals over critical parts of the code, but also make sure that the code does not go into a large or infinite loop."
+        },
+        {
+          "Phase": [
+            "Implementation"
+          ],
+          "Description": "Use the volatile type modifier for critical variables to avoid unexpected compiler optimization or reordering. This does not necessarily solve the synchronization problem, but it can help."
+        },
+        {
+          "MitigationID": "MIT-17",
+          "Phase": [
+            "Architecture and Design",
+            "Operation"
+          ],
+          "Strategy": "Environment Hardening",
+          "Description": "Run your code using the lowest privileges that are required to accomplish the necessary tasks [REF-76]. If possible, create isolated accounts with limited privileges that are only used for a single task. That way, a successful attack will not immediately give the attacker access to the rest of the software or its environment. For example, database applications rarely need to run as the database administrator, especially in day-to-day operations."
+        }
+      ]
+    },
+    "/cwe/362/parents": {
+      "weakness_parents": [],
+      "category_parents": [
+        "1142",
+        "1364",
+        "1365",
+        "1366",
+        "1376",
+        "1401",
+        "743",
+        "751",
+        "801",
+        "852",
+        "877",
+        "882",
+        "988",
+        "867"
+      ]
+    },
+    "/cwe/362/children": {
+      "weakness_children": [
+        "1223",
+        "1298",
+        "364",
+        "366",
+        "367",
+        "368",
+        "421",
+        "689"
+      ],
+      "category_children": []
+    }
+  }
+}

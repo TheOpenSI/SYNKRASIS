@@ -1,0 +1,67 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T23:58:25.763243",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "689",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/689": {
+      "ID": "689",
+      "Type": "compound_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/689": {
+      "ID": "689",
+      "Name": "Permission Race Condition During Resource Copy",
+      "Abstraction": "Compound",
+      "Structure": "Composite",
+      "Status": "Draft",
+      "Description": "The product, while copying or cloning a resource, does not set the resource's permissions or access control until the copy is complete, leaving the resource exposed to other spheres while the copy is taking place.",
+      "ExtendedDescription": null,
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Name": "C",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Language",
+          "Name": "Perl",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Implementation",
+          "Note": "\n\nCommon examples occur in file archive extraction, in which the product begins the extraction with insecure default permissions, then only sets the final permissions (as specified in the archive) once the copy is complete. The larger the archive, the larger the timing window for the race condition.\n\n\nThis weakness has also occurred in some operating system utilities that perform copies of deeply nested directories containing a large number of files.\n\n\nThis weakness can occur in any type of functionality that involves copying objects or resources in a multi-user environment, including at the application level. For example, a document management system might allow a user to copy a private document, but if it does not set the new copy to be private as soon as the copy begins, then other users might be able to view the document while the copy is still taking place.\n"
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Confidentiality",
+            "Integrity"
+          ],
+          "Impact": [
+            "Read Application Data",
+            "Modify Application Data"
+          ]
+        }
+      ],
+      "DemonstrativeExamples": null,
+      "PotentialMitigations": null
+    },
+    "/cwe/689/parents": {
+      "weakness_parents": [
+        "362"
+      ],
+      "category_parents": [
+        "1401"
+      ]
+    },
+    "/cwe/689/children": null
+  }
+}

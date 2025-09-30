@@ -1,0 +1,93 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T23:12:10.058108",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "339",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/339": {
+      "ID": "339",
+      "Type": "variant_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/339": {
+      "ID": "339",
+      "Name": "Small Seed Space in PRNG",
+      "Abstraction": "Variant",
+      "Structure": "Simple",
+      "Status": "Draft",
+      "Description": "A Pseudo-Random Number Generator (PRNG) uses a relatively small seed space, which makes it more susceptible to brute force attacks.",
+      "ExtendedDescription": "PRNGs are entirely deterministic once seeded, so it should be extremely difficult to guess the seed. If an attacker can collect the outputs of a PRNG and then brute force the seed by trying every possibility to see which seed matches the observed output, then the attacker will know the output of any subsequent calls to the PRNG. A small seed space implies that the attacker will have far fewer possible values to try to exhaust all possibilities.",
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Class": "Not Language-Specific",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Implementation",
+          "Note": "REALIZATION: This weakness is caused during implementation of an architectural security tactic."
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Other"
+          ],
+          "Impact": [
+            "Varies by Context"
+          ]
+        }
+      ],
+      "DemonstrativeExamples": [
+        {
+          "ID": "DX-178",
+          "Entries": [
+            {
+              "IntroText": "This code grabs some random bytes and uses them for a seed in a PRNG, in order to generate a new cryptographic key."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "Python",
+              "ExampleCode": "```\n```\n# getting 2 bytes of randomness for the seeding the PRNG * \n\t seed = os.urandom(2)\n\t random.seed(a=seed)\n\t key = random.getrandbits(128)"
+            },
+            {
+              "BodyText": "Since only 2 bytes are used as a seed, an attacker will only need to guess 2^16 (65,536) values before being able to replicate the state of the PRNG."
+            }
+          ]
+        }
+      ],
+      "PotentialMitigations": [
+        {
+          "Phase": [
+            "Architecture and Design"
+          ],
+          "Description": "Use well vetted pseudo-random number generating algorithms with adequate length seeds. Pseudo-random number generators can produce predictable numbers if the generator is known and the seed can be guessed. A 256-bit seed is a good starting point for producing a \"random enough\" number."
+        },
+        {
+          "MitigationID": "MIT-2",
+          "Phase": [
+            "Architecture and Design",
+            "Requirements"
+          ],
+          "Strategy": "Libraries or Frameworks",
+          "Description": "Use products or modules that conform to FIPS 140-2 [REF-267] to avoid obvious entropy problems, or use the more recent FIPS 140-3 [REF-1192] if possible."
+        }
+      ]
+    },
+    "/cwe/339/parents": {
+      "weakness_parents": [],
+      "category_parents": [
+        "1013",
+        "1414",
+        "905"
+      ]
+    },
+    "/cwe/339/children": null
+  }
+}

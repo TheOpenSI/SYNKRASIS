@@ -1,0 +1,60 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T22:58:28.518610",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "235",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/235": {
+      "ID": "235",
+      "Type": "variant_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/235": {
+      "ID": "235",
+      "Name": "Improper Handling of Extra Parameters",
+      "Abstraction": "Variant",
+      "Structure": "Simple",
+      "Status": "Draft",
+      "Description": "The product does not handle or incorrectly handles when the number of parameters, fields, or arguments with the same name exceeds the expected amount.",
+      "ExtendedDescription": null,
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Class": "Not Language-Specific",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Implementation",
+          "Note": "This typically occurs in situations when only one element is expected to be specified."
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Integrity"
+          ],
+          "Impact": [
+            "Unexpected State"
+          ]
+        }
+      ],
+      "DemonstrativeExamples": null,
+      "PotentialMitigations": null
+    },
+    "/cwe/235/parents": {
+      "weakness_parents": [],
+      "category_parents": [
+        "1348",
+        "1407",
+        "993"
+      ]
+    },
+    "/cwe/235/children": null
+  }
+}

@@ -1,0 +1,192 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-30T00:02:27.849756",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "749",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/749": {
+      "ID": "749",
+      "Type": "base_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/749": {
+      "ID": "749",
+      "Name": "Exposed Dangerous Method or Function",
+      "Abstraction": "Base",
+      "Structure": "Simple",
+      "Status": "Incomplete",
+      "Description": "The product provides an Applications Programming Interface (API) or similar interface for interaction with external actors, but the interface includes a dangerous method or function that is not properly restricted.",
+      "ExtendedDescription": "\n\nThis weakness can lead to a wide variety of resultant weaknesses, depending on the behavior of the exposed method. It can apply to any number of technologies and approaches, such as ActiveX controls, Java functions, IOCTLs, and so on.\n\n\nThe exposure can occur in a few different ways:\n\n\n  - The function/method was never intended to be exposed to outside actors.\n\n  - The function/method was only intended to be accessible to a limited set of actors, such as Internet-based access from a single web site.\n\n",
+      "LikelihoodOfExploit": "Low",
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Class": "Not Language-Specific",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Architecture and Design"
+        },
+        {
+          "Phase": "Implementation"
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Integrity",
+            "Confidentiality",
+            "Availability",
+            "Access Control",
+            "Other"
+          ],
+          "Impact": [
+            "Gain Privileges or Assume Identity",
+            "Read Application Data",
+            "Modify Application Data",
+            "Execute Unauthorized Code or Commands",
+            "Other"
+          ],
+          "Note": "Exposing critical functionality essentially provides an attacker with the privilege level of the exposed functionality. This could result in the modification or exposure of sensitive data or possibly even execution of arbitrary code."
+        }
+      ],
+      "DemonstrativeExamples": [
+        {
+          "Entries": [
+            {
+              "IntroText": "In the following Java example the method removeDatabase will delete the database with the name specified in the input parameter."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "Java",
+              "ExampleCode": "```\n\tpublic void removeDatabase(String databaseName) {\n\t\t\ttry {\n\t\t\t\t\tStatement stmt = conn.createStatement();\n\t\t\t\t\tstmt.execute(\"DROP DATABASE \" + databaseName);\n\t\t\t} catch (SQLException ex) {...}\n\t}\n```"
+            },
+            {
+              "BodyText": "The method in this example is declared public and therefore is exposed to any class in the application. Deleting a database should be considered a critical operation within an application and access to this potentially dangerous method should be restricted. Within Java this can be accomplished simply by declaring the method private thereby exposing it only to the enclosing class as in the following example."
+            },
+            {
+              "Nature": "Good",
+              "Language": "Java",
+              "ExampleCode": "```\n\tprivate void removeDatabase(String databaseName) {\n\t\t\ttry {\n\t\t\t\t\tStatement stmt = conn.createStatement();\n\t\t\t\t\tstmt.execute(\"DROP DATABASE \" + databaseName);\n\t\t\t} catch (SQLException ex) {...}\n\t\t\t}\n```"
+            }
+          ]
+        },
+        {
+          "ID": "DX-109",
+          "Entries": [
+            {
+              "IntroText": "These Android and iOS applications intercept URL loading within a WebView and perform special actions if a particular URL scheme is used, thus allowing the Javascript within the WebView to communicate with the application:"
+            },
+            {
+              "Nature": "Bad",
+              "Language": "Java",
+              "ExampleCode": "```\n```\n// Android* \n\t@Override\n\tpublic boolean shouldOverrideUrlLoading(WebView view, String url){\n\t```\n\t\t\tif (url.substring(0,14).equalsIgnoreCase(\"examplescheme:\")){\n\t\t\t\tif(url.substring(14,25).equalsIgnoreCase(\"getUserInfo\")){\n\t\t\t\t\twriteDataToView(view, UserData);\n\t\t\t\t\treturn false;\n\t\t\t\t}\n\t\t\t\telse{\n\t\t\t\t\treturn true;\n\t\t\t\t}\n\t\t\t}\n\t}\n```"
+            },
+            {
+              "Nature": "Bad",
+              "Language": "Objective-C",
+              "ExampleCode": "```\n```\n// iOS* \n\t-(BOOL) webView:(UIWebView *)exWebView shouldStartLoadWithRequest:(NSURLRequest *)exRequest navigationType:(UIWebViewNavigationType)exNavigationType\n\t{\n\t```\n\t\t\tNSURL *URL = [exRequest URL];\n\t\t\tif ([[URL scheme] isEqualToString:@\"exampleScheme\"])\n\t\t\t{\n\t\t\t\t\tNSString *functionString = [URL resourceSpecifier];\n\t\t\t\t\tif ([functionString hasPrefix:@\"specialFunction\"])\n\t\t\t\t\t{\n```\n// Make data available back in webview.* \n\t\t\t\t\t\t\tUIWebView *webView = [self writeDataToView:[URL query]];}\n\t\t\t\t\treturn NO;}\n\t\t\treturn YES;}"
+            },
+            {
+              "BodyText": "A call into native code can then be initiated by passing parameters within the URL:"
+            },
+            {
+              "Nature": "Attack",
+              "Language": "JavaScript",
+              "ExampleCode": "```\n\twindow.location = examplescheme://method?parameter=value\n```"
+            },
+            {
+              "BodyText": "Because the application does not check the source, a malicious website loaded within this WebView has the same access to the API as a trusted site."
+            }
+          ]
+        },
+        {
+          "Entries": [
+            {
+              "IntroText": "This application uses a WebView to display websites, and creates a Javascript interface to a Java object to allow enhanced functionality on a trusted website:"
+            },
+            {
+              "Nature": "Bad",
+              "Language": "Java",
+              "ExampleCode": "```\n\tpublic class WebViewGUI extends Activity {\n\t\t\tWebView mainWebView;\n\t\t\tpublic void onCreate(Bundle savedInstanceState) {\n\t\t\t\tsuper.onCreate(savedInstanceState);\n\t\t\t\tmainWebView = new WebView(this);\n\t\t\t\tmainWebView.getSettings().setJavaScriptEnabled(true);\n\t\t\t\tmainWebView.addJavascriptInterface(new JavaScriptInterface(), \"userInfoObject\");\n\t\t\t\tmainWebView.loadUrl(\"file:///android_asset/www/index.html\");\n\t\t\t\tsetContentView(mainWebView);\n\t\t\t}\n\t\t\tfinal class JavaScriptInterface {\n\t\t\t\t\tJavaScriptInterface () {}\n\t\t\t\t\tpublic String getUserInfo() {\n\t\t\t\t\t\treturn currentUser.Info();\n\t\t\t\t\t}\n\t\t\t}\n\t}\n```"
+            },
+            {
+              "BodyText": "Before Android 4.2 all methods, including inherited ones, are exposed to Javascript when using addJavascriptInterface(). This means that a malicious website loaded within this WebView can use reflection to acquire a reference to arbitrary Java objects. This will allow the website code to perform any action the parent application is authorized to."
+            },
+            {
+              "BodyText": "For example, if the application has permission to send text messages:"
+            },
+            {
+              "Nature": "Attack",
+              "Language": "JavaScript",
+              "ExampleCode": "```\n\t<script>\n\t\tuserInfoObject.getClass().forName('android.telephony.SmsManager').getMethod('getDefault',null).sendTextMessage(attackNumber, null, attackMessage, null, null);\n\t</script>\n```"
+            },
+            {
+              "BodyText": "This malicious script can use the userInfoObject object to load the SmsManager object and send arbitrary text messages to any recipient."
+            }
+          ]
+        },
+        {
+          "Entries": [
+            {
+              "IntroText": "After Android 4.2, only methods annotated with @JavascriptInterface are available in JavaScript, protecting usage of getClass() by default, as in this example:"
+            },
+            {
+              "Nature": "Bad",
+              "Language": "Java",
+              "ExampleCode": "```\n\tfinal class JavaScriptInterface {\n\t\t\tJavaScriptInterface () { }\n\t\t\t@JavascriptInterface\n\t\t\tpublic String getUserInfo() {\n\t\t\t\treturn currentUser.Info();\n\t\t\t}\n\t}\n```"
+            },
+            {
+              "BodyText": "This code is not vulnerable to the above attack, but still may expose user info to malicious pages loaded in the WebView. Even malicious iframes loaded within a trusted page may access the exposed interface:"
+            },
+            {
+              "Nature": "Attack",
+              "Language": "JavaScript",
+              "ExampleCode": "```\n\t<script>\n\t\tvar info = window.userInfoObject.getUserInfo();\n\t\tsendUserInfo(info);\n\t</script>\n```"
+            },
+            {
+              "BodyText": "This malicious code within an iframe is able to access the interface object and steal the user's data."
+            }
+          ]
+        }
+      ],
+      "PotentialMitigations": [
+        {
+          "Phase": [
+            "Architecture and Design"
+          ],
+          "Description": "If you must expose a method, make sure to perform input validation on all arguments, limit access to authorized parties, and protect against all possible vulnerabilities."
+        },
+        {
+          "Phase": [
+            "Architecture and Design",
+            "Implementation"
+          ],
+          "Strategy": "Attack Surface Reduction",
+          "Description": "\n\nIdentify all exposed functionality. Explicitly list all functionality that must be exposed to some user or set of users. Identify which functionality may be:\n\n\n  - accessible to all users\n\n  - restricted to a small set of privileged users\n\n  - prevented from being directly accessible at all\n\nEnsure that the implemented code follows these expectations. This includes setting the appropriate access modifiers where applicable (public, private, protected, etc.) or not marking ActiveX controls safe-for-scripting."
+        }
+      ]
+    },
+    "/cwe/749/parents": {
+      "weakness_parents": [],
+      "category_parents": [
+        "1416",
+        "1228",
+        "808",
+        "975"
+      ]
+    },
+    "/cwe/749/children": {
+      "weakness_children": [
+        "618",
+        "782"
+      ],
+      "category_children": []
+    }
+  }
+}

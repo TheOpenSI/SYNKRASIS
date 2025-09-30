@@ -1,0 +1,166 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T23:40:23.601420",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "552",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/552": {
+      "ID": "552",
+      "Type": "base_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/552": {
+      "ID": "552",
+      "Name": "Files or Directories Accessible to External Parties",
+      "Abstraction": "Base",
+      "Structure": "Simple",
+      "Status": "Draft",
+      "Description": "The product makes files or directories accessible to unauthorized actors, even though they should not be.",
+      "ExtendedDescription": "\n\nWeb servers, FTP servers, and similar servers may store a set of files underneath a \"root\" directory that is accessible to the server's users. Applications may store sensitive files underneath this root without also using access control to limit which users may request those files, if any. Alternately, an application might package multiple files or directories into an archive file (e.g., ZIP or tar), but the application might not exclude sensitive files that are underneath those directories.\n\n\nIn cloud technologies and containers, this weakness might present itself in the form of misconfigured storage accounts that can be read or written by a public or anonymous user.\n",
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Class": "Not Language-Specific",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Technology",
+          "Class": "Not Technology-Specific",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Technology",
+          "Class": "Cloud Computing",
+          "Prevalence": "Often"
+        }
+      ],
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Architecture and Design"
+        },
+        {
+          "Phase": "Implementation",
+          "Note": "OMISSION: This weakness is caused by missing a security tactic during the architecture and design phase."
+        },
+        {
+          "Phase": "Operation",
+          "Note": "OMISSION: This weakness is caused by missing a security tactic during the architecture and design phase."
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Confidentiality",
+            "Integrity"
+          ],
+          "Impact": [
+            "Read Files or Directories",
+            "Modify Files or Directories"
+          ]
+        }
+      ],
+      "DemonstrativeExamples": [
+        {
+          "ID": "DX-160",
+          "Entries": [
+            {
+              "IntroText": "The following Azure command updates the settings for a storage account:"
+            },
+            {
+              "Nature": "Bad",
+              "Language": "Shell",
+              "ExampleCode": "```\n\taz storage account update --name <storage-account> --resource-group <resource-group> --allow-blob-public-access true\n```"
+            },
+            {
+              "BodyText": "However, \"Allow Blob Public Access\" is set to true, meaning that anonymous/public users can access blobs."
+            },
+            {
+              "BodyText": "The command could be modified to disable \"Allow Blob Public Access\" by setting it to false."
+            },
+            {
+              "Nature": "Good",
+              "Language": "Shell",
+              "ExampleCode": "```\n\taz storage account update --name <storage-account> --resource-group <resource-group> --allow-blob-public-access false\n```"
+            }
+          ]
+        },
+        {
+          "ID": "DX-161",
+          "Entries": [
+            {
+              "IntroText": "The following Google Cloud Storage command gets the settings for a storage account named 'BUCKET_NAME':"
+            },
+            {
+              "Nature": "Informative",
+              "Language": "Shell",
+              "ExampleCode": "```\n\t gsutil iam get gs://BUCKET_NAME\n```"
+            },
+            {
+              "BodyText": "Suppose the command returns the following result:"
+            },
+            {
+              "Nature": "Bad",
+              "Language": "JSON",
+              "ExampleCode": "{\n\n```\n\t \"bindings\":[{\n\t\t \"members\":[\n\t\t\t \"projectEditor: PROJECT-ID\",\n\t\t\t \"projectOwner: PROJECT-ID\" \n\t\t ],\n\t\t \"role\":\"roles/storage.legacyBucketOwner\"\n\t },\n\t {\n\t\t \"members\":[ \n\t\t\t \"allUsers\",\n\t\t\t \"projectViewer: PROJECT-ID\"\n\t\t\t ],\n\t\t\t \"role\":\"roles/storage.legacyBucketReader\"\n\t\t }\n\t ]\n }\n```"
+            },
+            {
+              "BodyText": "This result includes the \"allUsers\" or IAM role added as members, causing this policy configuration to allow public access to cloud storage resources. There would be a similar concern if \"allAuthenticatedUsers\" was present."
+            },
+            {
+              "BodyText": "The command could be modified to remove \"allUsers\" and/or \"allAuthenticatedUsers\" as follows:"
+            },
+            {
+              "Nature": "Good",
+              "Language": "Shell",
+              "ExampleCode": "gsutil iam ch -d allUsers gs://BUCKET_NAME\n gsutil iam ch -d allAuthenticatedUsers gs://BUCKET_NAME"
+            }
+          ]
+        }
+      ],
+      "PotentialMitigations": [
+        {
+          "Phase": [
+            "Implementation",
+            "System Configuration",
+            "Operation"
+          ],
+          "Description": "When storing data in the cloud (e.g., S3 buckets, Azure blobs, Google Cloud Storage, etc.), use the provider's controls to disable public access."
+        }
+      ]
+    },
+    "/cwe/552/parents": {
+      "weakness_parents": [
+        "285",
+        "668"
+      ],
+      "category_parents": [
+        "1011",
+        "1345",
+        "1403",
+        "1212",
+        "731",
+        "743",
+        "815",
+        "877",
+        "963"
+      ]
+    },
+    "/cwe/552/children": {
+      "weakness_children": [
+        "219",
+        "220",
+        "527",
+        "528",
+        "529",
+        "530",
+        "539",
+        "553"
+      ],
+      "category_children": []
+    }
+  }
+}

@@ -1,0 +1,139 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T22:09:06.482642",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "1039",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/1039": {
+      "ID": "1039",
+      "Type": "class_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/1039": {
+      "ID": "1039",
+      "Name": "Inadequate Detection or Handling of Adversarial Input Perturbations in Automated Recognition Mechanism",
+      "Abstraction": "Class",
+      "Structure": "Simple",
+      "Status": "Incomplete",
+      "Description": "The product uses an automated mechanism such as machine learning to recognize complex data inputs (e.g. image or audio) as a particular concept or category, but it does not properly detect or handle inputs that have been modified or constructed in a way that causes the mechanism to detect a different, incorrect concept.",
+      "ExtendedDescription": "\n\nWhen techniques such as machine learning are used to automatically classify input streams, and those classifications are used for security-critical decisions, then any mistake in classification can introduce a vulnerability that allows attackers to cause the product to make the wrong security decision or disrupt service of the automated mechanism. If the mechanism is not developed or \"trained\" with enough input data or has not adequately undergone test and evaluation, then attackers may be able to craft malicious inputs that intentionally trigger the incorrect classification.\n\n\nTargeted technologies include, but are not necessarily limited to:\n\n\n  - automated speech recognition\n\n  - automated image recognition\n\n  - automated cyber defense\n\n  - Chatbot, LLMs, generative AI\n\nFor example, an attacker might modify road signs or road surface markings to trick autonomous vehicles into misreading the sign/marking and performing a dangerous action. Another example includes an attacker that crafts highly specific and complex prompts to \"jailbreak\" a chatbot to bypass safety or privacy mechanisms, better known as prompt injection attacks.",
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Class": "Not Language-Specific",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Technology",
+          "Name": "AI/ML",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Architecture and Design",
+          "Note": "This issue can be introduced into the automated algorithm itself due to inadequate training data used as well as lack of validation, verification, testing, and evaluation of the algorithm. These factors can affect the overall robustness of the algorithm when introduced into operational settings."
+        },
+        {
+          "Phase": "Implementation",
+          "Note": "The developer might not apply external validation of inputs into the algorithm."
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Integrity"
+          ],
+          "Impact": [
+            "Bypass Protection Mechanism"
+          ],
+          "Note": "When the automated recognition is used in a protection mechanism, an attacker may be able to craft inputs that are misinterpreted in a way that grants excess privileges."
+        },
+        {
+          "Scope": [
+            "Availability"
+          ],
+          "Impact": [
+            "DoS: Resource Consumption (Other)",
+            "DoS: Instability"
+          ],
+          "Note": "There could be disruption to the service of the automated recognition system, which could cause further downstream failures of the software."
+        },
+        {
+          "Scope": [
+            "Confidentiality"
+          ],
+          "Impact": [
+            "Read Application Data"
+          ],
+          "Note": "This weakness could lead to breaches of data privacy through exposing features of the training data, e.g., by using membership inference attacks or prompt injection attacks."
+        },
+        {
+          "Scope": [
+            "Other"
+          ],
+          "Impact": [
+            "Varies by Context"
+          ],
+          "Note": "The consequences depend on how the application applies or integrates the affected algorithm."
+        }
+      ],
+      "DemonstrativeExamples": null,
+      "PotentialMitigations": [
+        {
+          "Phase": [
+            "Architecture and Design"
+          ],
+          "Description": "Algorithmic modifications such as model pruning or compression can help mitigate this weakness. Model pruning ensures that only weights that are most relevant to the task are used in the inference of incoming data and has shown resilience to adversarial perturbed data."
+        },
+        {
+          "Phase": [
+            "Architecture and Design"
+          ],
+          "Description": "Consider implementing adversarial training, a method that introduces adversarial examples into the training data to promote robustness of algorithm at inference time."
+        },
+        {
+          "Phase": [
+            "Architecture and Design"
+          ],
+          "Description": "Consider implementing model hardening to fortify the internal structure of the algorithm, including techniques such as regularization and optimization to desensitize algorithms to minor input perturbations and/or changes."
+        },
+        {
+          "Phase": [
+            "Implementation"
+          ],
+          "Description": "Consider implementing multiple models or using model ensembling techniques to improve robustness of individual model weaknesses against adversarial input perturbations."
+        },
+        {
+          "Phase": [
+            "Implementation"
+          ],
+          "Description": "Incorporate uncertainty estimations into the algorithm that trigger human intervention or secondary/fallback software when reached. This could be when inference predictions and confidence scores are abnormally high/low comparative to expected model performance."
+        },
+        {
+          "Phase": [
+            "Integration"
+          ],
+          "Description": "Reactive defenses such as input sanitization, defensive distillation, and input transformations can all be implemented before input data reaches the algorithm for inference."
+        },
+        {
+          "Phase": [
+            "Integration"
+          ],
+          "Description": "Consider reducing the output granularity of the inference/prediction such that attackers cannot gain additional information due to leakage in order to craft adversarially perturbed data."
+        }
+      ]
+    },
+    "/cwe/1039/parents": {
+      "weakness_parents": [],
+      "category_parents": [
+        "1413"
+      ]
+    },
+    "/cwe/1039/children": null
+  }
+}

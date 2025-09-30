@@ -1,0 +1,69 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T23:40:01.274650",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "55",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/55": {
+      "ID": "55",
+      "Type": "variant_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/55": {
+      "ID": "55",
+      "Name": "Path Equivalence: '/./' (Single Dot Directory)",
+      "Abstraction": "Variant",
+      "Structure": "Simple",
+      "Status": "Incomplete",
+      "Description": "The product accepts path input in the form of single dot directory exploit ('/./') without appropriate validation, which can lead to ambiguous path resolution and allow an attacker to traverse the file system to unintended locations or access arbitrary files.",
+      "ExtendedDescription": null,
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Class": "Not Language-Specific",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Implementation"
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Confidentiality",
+            "Integrity"
+          ],
+          "Impact": [
+            "Read Files or Directories",
+            "Modify Files or Directories"
+          ]
+        }
+      ],
+      "DemonstrativeExamples": null,
+      "PotentialMitigations": [
+        {
+          "MitigationID": "MIT-20",
+          "Phase": [
+            "Implementation"
+          ],
+          "Strategy": "Input Validation",
+          "Description": "Inputs should be decoded and canonicalized to the application's current internal representation before being validated (CWE-180). Make sure that the application does not decode the same input twice (CWE-174). Such errors could be used to bypass allowlist validation schemes by introducing dangerous inputs after they have been checked."
+        }
+      ]
+    },
+    "/cwe/55/parents": {
+      "weakness_parents": [],
+      "category_parents": [
+        "1404",
+        "981"
+      ]
+    },
+    "/cwe/55/children": null
+  }
+}

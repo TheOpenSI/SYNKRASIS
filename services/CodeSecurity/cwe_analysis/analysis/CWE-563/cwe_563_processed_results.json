@@ -1,0 +1,85 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T23:41:45.834809",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "563",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/563": {
+      "ID": "563",
+      "Type": "base_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/563": {
+      "ID": "563",
+      "Name": "Assignment to Variable without Use",
+      "Abstraction": "Base",
+      "Structure": "Simple",
+      "Status": "Draft",
+      "Description": "The variable's value is assigned but never used, making it a dead store.",
+      "ExtendedDescription": "After the assignment, the variable is either assigned another value or goes out of scope. It is likely that the variable is simply vestigial, but it is also possible that the unused variable points out a bug.",
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": null,
+      "AlternateTerms": [
+        {
+          "Term": "Unused Variable"
+        }
+      ],
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Implementation"
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Other"
+          ],
+          "Impact": [
+            "Quality Degradation",
+            "Varies by Context"
+          ],
+          "Note": "This weakness could be an indication of a bug in the program or a deprecated variable that was not removed and is an indication of poor quality. This could lead to further bugs and the introduction of weaknesses."
+        }
+      ],
+      "DemonstrativeExamples": [
+        {
+          "ID": "DX-218",
+          "Entries": [
+            {
+              "IntroText": "The following code excerpt assigns to the variable r and then overwrites the value without using it."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "C",
+              "ExampleCode": "```\n\tr = getName();\n\tr = getNewBuffer(buf);\n```"
+            }
+          ]
+        }
+      ],
+      "PotentialMitigations": [
+        {
+          "Phase": [
+            "Implementation"
+          ],
+          "Description": "Remove unused variables from the code."
+        }
+      ]
+    },
+    "/cwe/563/parents": {
+      "weakness_parents": [
+        "1164"
+      ],
+      "category_parents": [
+        "1186",
+        "1412",
+        "1006",
+        "747",
+        "883",
+        "886"
+      ]
+    },
+    "/cwe/563/children": null
+  }
+}

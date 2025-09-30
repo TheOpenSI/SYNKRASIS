@@ -1,0 +1,300 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T22:53:29.623093",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "20",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/20": {
+      "ID": "20",
+      "Type": "class_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/20": {
+      "ID": "20",
+      "Name": "Improper Input Validation",
+      "Abstraction": "Class",
+      "Structure": "Simple",
+      "Status": "Stable",
+      "Description": "The product receives input or data, but it does\n        not validate or incorrectly validates that the input has the\n        properties that are required to process the data safely and\n        correctly.",
+      "ExtendedDescription": "\n\nInput validation is a frequently-used technique for checking potentially dangerous inputs in order to ensure that the inputs are safe for processing within the code, or when communicating with other components.\n\n\nInput can consist of:\n\n\n  - raw data - strings, numbers, parameters, file contents, etc.\n\n  - metadata - information about the raw data, such as headers or size\n\nData can be simple or structured. Structured data can be composed of many nested layers, composed of combinations of metadata and raw data, with other simple or structured data.\n\nMany properties of raw data or metadata may need to be validated upon entry into the code, such as:\n\n\n  - specified quantities such as size, length, frequency, price, rate, number of operations, time, etc.\n\n  - implied or derived quantities, such as the actual size of a file instead of a specified size\n\n  - indexes, offsets, or positions into more complex data structures\n\n  - symbolic keys or other elements into hash tables, associative arrays, etc.\n\n  - well-formedness, i.e. syntactic correctness - compliance with expected syntax \n\n  - lexical token correctness - compliance with rules for what is treated as a token\n\n  - specified or derived type - the actual type of the input (or what the input appears to be)\n\n  - consistency - between individual data elements, between raw data and metadata, between references, etc.\n\n  - conformance to domain-specific rules, e.g. business logic \n\n  - equivalence - ensuring that equivalent inputs are treated the same\n\n  - authenticity, ownership, or other attestations about the input, e.g. a cryptographic signature to prove the source of the data\n\nImplied or derived properties of data must often be calculated or inferred by the code itself. Errors in deriving properties may be considered a contributing factor to improper input validation. ",
+      "LikelihoodOfExploit": "High",
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Class": "Not Language-Specific",
+          "Prevalence": "Often"
+        }
+      ],
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Architecture and Design"
+        },
+        {
+          "Phase": "Implementation",
+          "Note": "\n\nREALIZATION: This weakness is caused during implementation of an architectural security tactic.\n\n\nIf a programmer believes that an attacker cannot modify certain inputs, then the programmer might not perform any input validation at all. For example, in web applications, many programmers believe that cookies and hidden form fields can not be modified from a web browser (CWE-472), although they can be altered using a proxy or a custom program. In a client-server architecture, the programmer might assume that client-side security checks cannot be bypassed, even when a custom client could be written that skips those checks (CWE-602).\n"
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Availability"
+          ],
+          "Impact": [
+            "DoS: Crash, Exit, or Restart",
+            "DoS: Resource Consumption (CPU)",
+            "DoS: Resource Consumption (Memory)"
+          ],
+          "Note": "An attacker could provide unexpected values and cause a program crash or arbitrary control of resource allocation, leading to excessive consumption of resources such as memory and CPU."
+        },
+        {
+          "Scope": [
+            "Confidentiality"
+          ],
+          "Impact": [
+            "Read Memory",
+            "Read Files or Directories"
+          ],
+          "Note": "An attacker could read confidential data if they are able to control resource references."
+        },
+        {
+          "Scope": [
+            "Integrity",
+            "Confidentiality",
+            "Availability"
+          ],
+          "Impact": [
+            "Modify Memory",
+            "Execute Unauthorized Code or Commands"
+          ],
+          "Note": "An attacker could use malicious input to modify data or possibly alter control flow in unexpected ways, including arbitrary command execution."
+        }
+      ],
+      "DemonstrativeExamples": [
+        {
+          "ID": "DX-135",
+          "Entries": [
+            {
+              "IntroText": "This example demonstrates a shopping interaction in which the user is free to specify the quantity of items to be purchased and a total is calculated."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "Java",
+              "ExampleCode": "```\n\t...\n\tpublic static final double price = 20.00;\n\tint quantity = currentUser.getAttribute(\"quantity\");\n\tdouble total = price * quantity;\n\tchargeUser(total);\n\t...\n```"
+            },
+            {
+              "BodyText": "The user has no control over the price variable, however the code does not prevent a negative value from being specified for quantity. If an attacker were to provide a negative value, then the user would have their account credited instead of debited."
+            }
+          ]
+        },
+        {
+          "ID": "DX-136",
+          "Entries": [
+            {
+              "IntroText": "This example asks the user for a height and width of an m X n game board with a maximum dimension of 100 squares."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "C",
+              "ExampleCode": "```\n\t...\n\t#define MAX_DIM 100\n\t...\n```\n/* board dimensions */* \n\t\n\tint m,n, error;\n\tboard_square_t *board;\n\tprintf(\"Please specify the board height: \\n\");\n\terror = scanf(\"%d\", &m);\n\tif ( EOF == error ){\n\t```\n\t\tdie(\"No integer passed: Die evil hacker!\\n\");\n\t}\n\tprintf(\"Please specify the board width: \\n\");\n\terror = scanf(\"%d\", &n);\n\tif ( EOF == error ){\n\t\tdie(\"No integer passed: Die evil hacker!\\n\");\n\t}\n\tif ( m > MAX_DIM || n > MAX_DIM ) {\n\t\tdie(\"Value too large: Die evil hacker!\\n\");\n\t}\n\tboard = (board_square_t*) malloc( m * n * sizeof(board_square_t));\n\t...\n```"
+            },
+            {
+              "BodyText": "While this code checks to make sure the user cannot specify large, positive integers and consume too much memory, it does not check for negative values supplied by the user. As a result, an attacker can perform a resource consumption (CWE-400) attack against this program by specifying two, large negative values that will not overflow, resulting in a very large memory allocation (CWE-789) and possibly a system crash. Alternatively, an attacker can provide very large negative values which will cause an integer overflow (CWE-190) and unexpected behavior will follow depending on how the values are treated in the remainder of the program."
+            }
+          ]
+        },
+        {
+          "Entries": [
+            {
+              "IntroText": "The following example shows a PHP application in which the programmer attempts to display a user's birthday and homepage."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "PHP",
+              "ExampleCode": "```\n\t$birthday = $_GET['birthday'];\n\t$homepage = $_GET['homepage'];\n\techo \"Birthday: $birthday<br>Homepage: <a href=$homepage>click here</a>\"\n```"
+            },
+            {
+              "BodyText": "The programmer intended for $birthday to be in a date format and $homepage to be a valid URL. However, since the values are derived from an HTTP request, if an attacker can trick a victim into clicking a crafted URL with <script> tags providing the values for birthday and / or homepage, then the script will run on the client's browser when the web server echoes the content. Notice that even if the programmer were to defend the $birthday variable by restricting input to integers and dashes, it would still be possible for an attacker to provide a string of the form:"
+            },
+            {
+              "Nature": "Attack",
+              "ExampleCode": "```\n\t2009-01-09--\n```"
+            },
+            {
+              "BodyText": "If this data were used in a SQL statement, it would treat the remainder of the statement as a comment. The comment could disable other security-related logic in the statement. In this case, encoding combined with input validation would be a more useful protection mechanism."
+            },
+            {
+              "BodyText": "Furthermore, an XSS (CWE-79) attack or SQL injection (CWE-89) are just a few of the potential consequences when input validation is not used. Depending on the context of the code, CRLF Injection (CWE-93), Argument Injection (CWE-88), or Command Injection (CWE-77) may also be possible."
+            }
+          ]
+        },
+        {
+          "ID": "DX-34",
+          "Entries": [
+            {
+              "IntroText": "The following example takes a user-supplied value to allocate an array of objects and then operates on the array."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "Java",
+              "ExampleCode": "```\n\tprivate void buildList ( int untrustedListSize ){\n\t\tif ( 0 > untrustedListSize ){\n\t\t\tdie(\"Negative value supplied for list size, die evil hacker!\");\n\t\t}\n\t\tWidget[] list = new Widget [ untrustedListSize ];\n\t\tlist[0] = new Widget();\n\t}\n```"
+            },
+            {
+              "BodyText": "This example attempts to build a list from a user-specified value, and even checks to ensure a non-negative value is supplied. If, however, a 0 value is provided, the code will build an array of size 0 and then try to store a new Widget in the first location, causing an exception to be thrown."
+            }
+          ]
+        },
+        {
+          "ID": "DX-110",
+          "Entries": [
+            {
+              "IntroText": "This Android application has registered to handle a URL when sent an intent:"
+            },
+            {
+              "Nature": "Bad",
+              "Language": "Java",
+              "ExampleCode": "```\n```\n...* \n\tIntentFilter filter = new IntentFilter(\"com.example.URLHandler.openURL\");\n\tMyReceiver receiver = new MyReceiver();\n\tregisterReceiver(receiver, filter);\n\t\n\t *...* \n\t\n\tpublic class UrlHandlerReceiver extends BroadcastReceiver {\n\t```\n\t\t\t@Override\n\t\t\tpublic void onReceive(Context context, Intent intent) {\n\t\t\t\t\tif(\"com.example.URLHandler.openURL\".equals(intent.getAction())) {\n\t\t\t\t\t\tString URL = intent.getStringExtra(\"URLToOpen\");\n\t\t\t\t\t\tint length = URL.length();\n```\n...* \n\t\t\t\t\t}}}"
+            },
+            {
+              "BodyText": "The application assumes the URL will always be included in the intent. When the URL is not present, the call to getStringExtra() will return null, thus causing a null pointer exception when length() is called."
+            }
+          ]
+        }
+      ],
+      "PotentialMitigations": [
+        {
+          "Phase": [
+            "Architecture and Design"
+          ],
+          "Strategy": "Attack Surface Reduction",
+          "Description": "Consider using language-theoretic security (LangSec) techniques that characterize inputs using a formal language and build \"recognizers\" for that language. This effectively requires parsing to be a distinct layer that effectively enforces a boundary between raw input and internal data representations, instead of allowing parser code to be scattered throughout the program, where it could be subject to errors or inconsistencies that create weaknesses. [REF-1109] [REF-1110] [REF-1111]"
+        },
+        {
+          "MitigationID": "MIT-7",
+          "Phase": [
+            "Architecture and Design"
+          ],
+          "Strategy": "Libraries or Frameworks",
+          "Description": "Use an input validation framework such as Struts or the OWASP ESAPI Validation API. Note that using a framework does not automatically address all input validation problems; be mindful of weaknesses that could arise from misusing the framework itself (CWE-1173)."
+        },
+        {
+          "MitigationID": "MIT-6",
+          "Phase": [
+            "Architecture and Design",
+            "Implementation"
+          ],
+          "Strategy": "Attack Surface Reduction",
+          "Description": "Understand all the potential areas where untrusted inputs can enter the product, including but not limited to: parameters or arguments, cookies, anything read from the network, environment variables, reverse DNS lookups, query results, request headers, URL components, e-mail, files, filenames, databases, and any external systems that provide data to the application. Remember that such inputs may be obtained indirectly through API calls."
+        },
+        {
+          "MitigationID": "MIT-5",
+          "Phase": [
+            "Implementation"
+          ],
+          "Strategy": "Input Validation",
+          "Description": "\n\nAssume all input is malicious. Use an \"accept known good\" input validation strategy, i.e., use a list of acceptable inputs that strictly conform to specifications. Reject any input that does not strictly conform to specifications, or transform it into something that does.\n\n\nWhen performing input validation, consider all potentially relevant properties, including length, type of input, the full range of acceptable values, missing or extra inputs, syntax, consistency across related fields, and conformance to business rules. As an example of business rule logic, \"boat\" may be syntactically valid because it only contains alphanumeric characters, but it is not valid if the input is only expected to contain colors such as \"red\" or \"blue.\"\n\n\nDo not rely exclusively on looking for malicious or malformed inputs. This is likely to miss at least one undesirable input, especially if the code's environment changes. This can give attackers enough room to bypass the intended validation. However, denylists can be useful for detecting potential attacks or determining which inputs are so malformed that they should be rejected outright.\n",
+          "Effectiveness": "High"
+        },
+        {
+          "Phase": [
+            "Architecture and Design"
+          ],
+          "Description": "\n\nFor any security checks that are performed on the client side, ensure that these checks are duplicated on the server side, in order to avoid CWE-602. Attackers can bypass the client-side checks by modifying values after the checks have been performed, or by changing the client to remove the client-side checks entirely. Then, these modified values would be submitted to the server.\n\n\nEven though client-side checks provide minimal benefits with respect to server-side security, they are still useful. First, they can support intrusion detection. If the server receives input that should have been rejected by the client, then it may be an indication of an attack. Second, client-side error-checking can provide helpful feedback to the user about the expectations for valid input. Third, there may be a reduction in server-side processing time for accidental input errors, although this is typically a small savings.\n"
+        },
+        {
+          "Phase": [
+            "Implementation"
+          ],
+          "Description": "When your application combines data from multiple sources, perform the validation after the sources have been combined. The individual data elements may pass the validation step but violate the intended restrictions after they have been combined."
+        },
+        {
+          "MitigationID": "MIT-35",
+          "Phase": [
+            "Implementation"
+          ],
+          "Description": "Be especially careful to validate all input when invoking code that crosses language boundaries, such as from an interpreted language to native code. This could create an unexpected interaction between the language boundaries. Ensure that you are not violating any of the expectations of the language with which you are interfacing. For example, even though Java may not be susceptible to buffer overflows, providing a large argument in a call to native code might trigger an overflow."
+        },
+        {
+          "Phase": [
+            "Implementation"
+          ],
+          "Description": "Directly convert your input type into the expected data type, such as using a conversion function that translates a string into a number. After converting to the expected data type, ensure that the input's values fall within the expected range of allowable values and that multi-field consistencies are maintained."
+        },
+        {
+          "Phase": [
+            "Implementation"
+          ],
+          "Description": "\n\nInputs should be decoded and canonicalized to the application's current internal representation before being validated (CWE-180, CWE-181). Make sure that your application does not inadvertently decode the same input twice (CWE-174). Such errors could be used to bypass allowlist schemes by introducing dangerous inputs after they have been checked. Use libraries such as the OWASP ESAPI Canonicalization control.\n\n\nConsider performing repeated canonicalization until your input does not change any more. This will avoid double-decoding and similar scenarios, but it might inadvertently modify inputs that are allowed to contain properly-encoded dangerous content.\n"
+        },
+        {
+          "Phase": [
+            "Implementation"
+          ],
+          "Description": "When exchanging data between components, ensure that both components are using the same character encoding. Ensure that the proper encoding is applied at each interface. Explicitly set the encoding you are using whenever the protocol allows you to do so."
+        }
+      ]
+    },
+    "/cwe/20/parents": {
+      "weakness_parents": [],
+      "category_parents": [
+        "1019",
+        "1163",
+        "1347",
+        "1382",
+        "1406",
+        "1005",
+        "722",
+        "738",
+        "742",
+        "746",
+        "747",
+        "751",
+        "872",
+        "876",
+        "883",
+        "994"
+      ]
+    },
+    "/cwe/20/children": {
+      "weakness_children": [
+        "102",
+        "103",
+        "104",
+        "105",
+        "106",
+        "107",
+        "108",
+        "109",
+        "110",
+        "111",
+        "112",
+        "113",
+        "114",
+        "117",
+        "1173",
+        "119",
+        "120",
+        "1284",
+        "1285",
+        "1286",
+        "1287",
+        "1288",
+        "1289",
+        "129",
+        "134",
+        "15",
+        "170",
+        "179",
+        "190",
+        "466",
+        "470",
+        "622",
+        "73",
+        "785"
+      ],
+      "category_children": []
+    }
+  }
+}

@@ -1,0 +1,86 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T23:44:44.527263",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "586",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/586": {
+      "ID": "586",
+      "Type": "base_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/586": {
+      "ID": "586",
+      "Name": "Explicit Call to Finalize()",
+      "Abstraction": "Base",
+      "Structure": "Simple",
+      "Status": "Draft",
+      "Description": "The product makes an explicit call to the finalize() method from outside the finalizer.",
+      "ExtendedDescription": "While the Java Language Specification allows an object's finalize() method to be called from outside the finalizer, doing so is usually a bad idea. For example, calling finalize() explicitly means that finalize() will be called more than once: the first time will be the explicit call and the last time will be the call that is made after the object is garbage collected.",
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Name": "Java",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Implementation"
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Integrity",
+            "Other"
+          ],
+          "Impact": [
+            "Unexpected State",
+            "Quality Degradation"
+          ]
+        }
+      ],
+      "DemonstrativeExamples": [
+        {
+          "Entries": [
+            {
+              "IntroText": "The following code fragment calls finalize() explicitly:"
+            },
+            {
+              "Nature": "Bad",
+              "Language": "Java",
+              "ExampleCode": "```\n```\n// time to clean up* \n\twidget.finalize();"
+            }
+          ]
+        }
+      ],
+      "PotentialMitigations": [
+        {
+          "Phase": [
+            "Implementation",
+            "Testing"
+          ],
+          "Description": "Do not make explicit calls to finalize(). Use static analysis tools to spot such instances."
+        }
+      ]
+    },
+    "/cwe/586/parents": {
+      "weakness_parents": [
+        "1076"
+      ],
+      "category_parents": [
+        "1140",
+        "1412",
+        "1006",
+        "850",
+        "1001"
+      ]
+    },
+    "/cwe/586/children": null
+  }
+}

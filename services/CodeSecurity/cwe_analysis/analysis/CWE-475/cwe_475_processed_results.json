@@ -1,0 +1,66 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T23:29:45.432224",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "475",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/475": {
+      "ID": "475",
+      "Type": "base_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/475": {
+      "ID": "475",
+      "Name": "Undefined Behavior for Input to API",
+      "Abstraction": "Base",
+      "Structure": "Simple",
+      "Status": "Incomplete",
+      "Description": "The behavior of this function is undefined unless its control parameter is set to a specific value.",
+      "ExtendedDescription": null,
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Class": "Not Language-Specific",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Architecture and Design"
+        },
+        {
+          "Phase": "Implementation"
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Other"
+          ],
+          "Impact": [
+            "Quality Degradation",
+            "Varies by Context"
+          ]
+        }
+      ],
+      "DemonstrativeExamples": null,
+      "PotentialMitigations": null
+    },
+    "/cwe/475/parents": {
+      "weakness_parents": [
+        "573"
+      ],
+      "category_parents": [
+        "1412",
+        "1228",
+        "398",
+        "998"
+      ]
+    },
+    "/cwe/475/children": null
+  }
+}

@@ -1,0 +1,42 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T22:20:23.121559",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "1121",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/1121": {
+      "ID": "1121",
+      "Type": "base_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/1121": {
+      "ID": "1121",
+      "Name": "Excessive McCabe Cyclomatic Complexity",
+      "Abstraction": "Base",
+      "Structure": "Simple",
+      "Status": "Incomplete",
+      "Description": "The code contains McCabe cyclomatic complexity that exceeds a\n\tdesirable maximum.",
+      "ExtendedDescription": "\n\nThis issue makes it more difficult to understand and/or maintain the product, which indirectly affects security by making it more difficult or time-consuming to find and/or fix vulnerabilities. It also might make it easier to introduce vulnerabilities.\n",
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": null,
+      "AlternateTerms": null,
+      "ModesOfIntroduction": null,
+      "CommonConsequences": null,
+      "DemonstrativeExamples": null,
+      "PotentialMitigations": null
+    },
+    "/cwe/1121/parents": {
+      "weakness_parents": [
+        "1120"
+      ],
+      "category_parents": [
+        "1130",
+        "1412",
+        "1226"
+      ]
+    },
+    "/cwe/1121/children": null
+  }
+}

@@ -1,0 +1,112 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T23:18:52.883729",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "391",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/391": {
+      "ID": "391",
+      "Type": "base_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/391": {
+      "ID": "391",
+      "Name": "Unchecked Error Condition",
+      "Abstraction": "Base",
+      "Structure": "Simple",
+      "Status": "Incomplete",
+      "Description": "[PLANNED FOR DEPRECATION. SEE MAINTENANCE NOTES AND CONSIDER CWE-252, CWE-248, OR CWE-1069.] Ignoring exceptions and other error conditions may allow an attacker to induce unexpected behavior unnoticed.",
+      "ExtendedDescription": null,
+      "LikelihoodOfExploit": "Medium",
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Class": "Not Language-Specific",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Implementation",
+          "Note": "REALIZATION: This weakness is caused during implementation of an architectural security tactic."
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Integrity",
+            "Other"
+          ],
+          "Impact": [
+            "Varies by Context",
+            "Unexpected State",
+            "Alter Execution Logic"
+          ]
+        }
+      ],
+      "DemonstrativeExamples": [
+        {
+          "Entries": [
+            {
+              "IntroText": "The following code excerpt ignores a rarely-thrown exception from doExchange()."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "Java",
+              "ExampleCode": "```\n\ttry {\n\t\tdoExchange();\n\t}\n\tcatch (RareException e) {\n```\n// this can never happen* \n\t\t\t}"
+            },
+            {
+              "BodyText": "If a RareException were to ever be thrown, the program would continue to execute as though nothing unusual had occurred. The program records no evidence indicating the special situation, potentially frustrating any later attempt to explain the program's behavior."
+            }
+          ]
+        }
+      ],
+      "PotentialMitigations": [
+        {
+          "Phase": [
+            "Requirements"
+          ],
+          "Description": "The choice between a language which has named or unnamed exceptions needs to be done. While unnamed exceptions exacerbate the chance of not properly dealing with an exception, named exceptions suffer from the up call version of the weak base class problem."
+        },
+        {
+          "Phase": [
+            "Requirements"
+          ],
+          "Description": "A language can be used which requires, at compile time, to catch all serious exceptions. However, one must make sure to use the most current version of the API as new exceptions could be added."
+        },
+        {
+          "Phase": [
+            "Implementation"
+          ],
+          "Description": "Catch all relevant exceptions. This is the recommended solution. Ensure that all exceptions are handled in such a way that you can be sure of the state of your system at any given moment."
+        }
+      ]
+    },
+    "/cwe/391/parents": {
+      "weakness_parents": [
+        "754"
+      ],
+      "category_parents": [
+        "1020",
+        "1159",
+        "1167",
+        "1171",
+        "1181",
+        "1405",
+        "389",
+        "388",
+        "728",
+        "743",
+        "746",
+        "876",
+        "877",
+        "880",
+        "962"
+      ]
+    },
+    "/cwe/391/children": null
+  }
+}

@@ -1,0 +1,73 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T22:18:09.203691",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "1105",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/1105": {
+      "ID": "1105",
+      "Type": "base_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/1105": {
+      "ID": "1105",
+      "Name": "Insufficient Encapsulation of Machine-Dependent Functionality",
+      "Abstraction": "Base",
+      "Structure": "Simple",
+      "Status": "Incomplete",
+      "Description": "The product or code uses machine-dependent functionality, but\n\t\t\t\t\tit does not sufficiently encapsulate or isolate this functionality from\n\t\t\t\t\tthe rest of the code.",
+      "ExtendedDescription": "\n\nThis issue makes it more difficult to port or maintain the product, which indirectly affects security by making it more difficult or time-consuming to find and/or fix vulnerabilities. It also might make it easier to introduce vulnerabilities.\n",
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": null,
+      "AlternateTerms": null,
+      "ModesOfIntroduction": null,
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Other"
+          ],
+          "Impact": [
+            "Reduce Maintainability"
+          ]
+        }
+      ],
+      "DemonstrativeExamples": [
+        {
+          "ID": "DX-216",
+          "Entries": [
+            {
+              "IntroText": "In this example function, the memory address of variable b is derived by adding 1 to the address of variable a. This derived address is then used to assign the value 0 to b."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "C",
+              "ExampleCode": "```\n\tvoid example() {\n\t\tchar a;\n\t\tchar b;\n\t\t*(&a + 1) = 0;\n\t}\n```"
+            },
+            {
+              "BodyText": "Here, b may not be one byte past a. It may be one byte in front of a. Or, they may have three bytes between them because they are aligned on 32-bit boundaries."
+            }
+          ]
+        }
+      ],
+      "PotentialMitigations": null
+    },
+    "/cwe/1105/parents": {
+      "weakness_parents": [
+        "1061",
+        "758"
+      ],
+      "category_parents": [
+        "1412",
+        "1227"
+      ]
+    },
+    "/cwe/1105/children": {
+      "weakness_children": [
+        "188"
+      ],
+      "category_children": []
+    }
+  }
+}

@@ -1,0 +1,67 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T22:54:22.809277",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "206",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/206": {
+      "ID": "206",
+      "Type": "variant_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/206": {
+      "ID": "206",
+      "Name": "Observable Internal Behavioral Discrepancy",
+      "Abstraction": "Variant",
+      "Structure": "Simple",
+      "Status": "Incomplete",
+      "Description": "The product performs multiple behaviors that are combined to produce a single result, but the individual behaviors are observable separately in a way that allows attackers to reveal internal state or internal decision points.",
+      "ExtendedDescription": "Ideally, a product should provide as little information as possible to an attacker. Any hints that the attacker may be making progress can then be used to simplify or optimize the attack. For example, in a login procedure that requires a username and password, ultimately there is only one decision: success or failure. However, internally, two separate actions are performed: determining if the username exists, and checking if the password is correct. If the product behaves differently based on whether the username exists or not, then the attacker only needs to concentrate on the password.",
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Class": "Not Language-Specific",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Architecture and Design"
+        },
+        {
+          "Phase": "Implementation"
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Confidentiality",
+            "Access Control"
+          ],
+          "Impact": [
+            "Read Application Data",
+            "Bypass Protection Mechanism"
+          ]
+        }
+      ],
+      "DemonstrativeExamples": null,
+      "PotentialMitigations": [
+        {
+          "Description": "Setup generic response pages for error conditions. The error page should not disclose information about the success or failure of a sensitive operation. For instance, the login page should not confirm that the login is correct and the password incorrect. The attacker who tries random account name may be able to guess some of them. Confirming that the account exists would make the login page more susceptible to brute force attack."
+        }
+      ]
+    },
+    "/cwe/206/parents": {
+      "weakness_parents": [],
+      "category_parents": [
+        "1417",
+        "967"
+      ]
+    },
+    "/cwe/206/children": null
+  }
+}

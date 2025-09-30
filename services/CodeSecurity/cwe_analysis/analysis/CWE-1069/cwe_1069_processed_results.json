@@ -1,0 +1,86 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T22:13:07.589614",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "1069",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/1069": {
+      "ID": "1069",
+      "Type": "variant_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/1069": {
+      "ID": "1069",
+      "Name": "Empty Exception Block",
+      "Abstraction": "Variant",
+      "Structure": "Simple",
+      "Status": "Incomplete",
+      "Description": "An invokable code block contains an exception handling block that does not contain any code, i.e. is empty.",
+      "ExtendedDescription": "\n\nWhen an exception handling block (such as a Catch and Finally block) is used, but that block is empty, this can prevent the product from running reliably. If the relevant code is reachable by an attacker, then this reliability problem might introduce a vulnerability.\n",
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Class": "Not Language-Specific",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": null,
+      "ModesOfIntroduction": null,
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Other"
+          ],
+          "Impact": [
+            "Reduce Reliability"
+          ]
+        }
+      ],
+      "DemonstrativeExamples": [
+        {
+          "ID": "DX-213",
+          "Entries": [
+            {
+              "IntroText": "In the following Java example, the code catches an ArithmeticException."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "Java",
+              "ExampleCode": "```\n\tpublic class Main {\n\t\tpublic static void main(String[] args) { \n\t\t\tint a = 1; \n\t\t\tint b = 0; \n\t\t\tint c = 0;\n\t\t\ttry { \n\t\t\t\tc = a / b;\n\t\t\t} catch(ArithmeticException ae) { \n\t\t\t}\n\t\t}\n\t}\n```"
+            },
+            {
+              "BodyText": "Since the exception block is empty, no action is taken."
+            },
+            {
+              "BodyText": "In the code below the exception has been logged and the bad execution has been handled in the desired way allowing the program to continue in an expected way."
+            },
+            {
+              "Nature": "Good",
+              "Language": "Java",
+              "ExampleCode": "```\n\tpublic class Main {\n\t\tpublic static void main(String[] args) { \n\t\t\tint a = 1; \n\t\t\tint b = 0; \n\t\t\tint c = 0;\n\t\t\ttry { \n\t\t\t\tc = a / b;\n\t\t\t} catch(ArithmeticException ae) { \n\t\t\t\tlog.error(\"Divided by zero detected, setting to -1.\"); \n\t\t\t\tc = -1;\n\t\t\t}\n\t\t}\n\t}\n```"
+            }
+          ]
+        }
+      ],
+      "PotentialMitigations": [
+        {
+          "Phase": [
+            "Implementation"
+          ],
+          "Description": "For every exception block add code that handles the specific exception in the way intended by the application."
+        }
+      ]
+    },
+    "/cwe/1069/parents": {
+      "weakness_parents": [],
+      "category_parents": [
+        "1129",
+        "1412"
+      ]
+    },
+    "/cwe/1069/children": null
+  }
+}

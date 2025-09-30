@@ -1,0 +1,83 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-30T00:13:08.683092",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "841",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/841": {
+      "ID": "841",
+      "Type": "base_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/841": {
+      "ID": "841",
+      "Name": "Improper Enforcement of Behavioral Workflow",
+      "Abstraction": "Base",
+      "Structure": "Simple",
+      "Status": "Incomplete",
+      "Description": "The product supports a session in which more than one behavior must be performed by an actor, but it does not properly ensure that the actor performs the behaviors in the required sequence.",
+      "ExtendedDescription": "\n\nBy performing actions in an unexpected order, or by omitting steps, an attacker could manipulate the business logic of the product or cause it to enter an invalid state. In some cases, this can also expose resultant weaknesses.\n\n\nFor example, a file-sharing protocol might require that an actor perform separate steps to provide a username, then a password, before being able to transfer files. If the file-sharing server accepts a password command followed by a transfer command, without any username being provided, the product might still perform the transfer.\n\n\nNote that this is different than CWE-696, which focuses on when the product performs actions in the wrong sequence; this entry is closely related, but it is focused on ensuring that the actor performs actions in the correct sequence.\n\n\nWorkflow-related behaviors include:\n\n\n  - Steps are performed in the expected order.\n\n  - Required steps are not omitted.\n\n  - Steps are not interrupted.\n\n  - Steps are performed in a timely fashion.\n\n",
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": null,
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Implementation",
+          "Note": "REALIZATION: This weakness is caused during implementation of an architectural security tactic."
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Other"
+          ],
+          "Impact": [
+            "Alter Execution Logic"
+          ],
+          "Note": "An attacker could cause the product to skip critical steps or perform them in the wrong order, bypassing its intended business logic. This can sometimes have security implications."
+        }
+      ],
+      "DemonstrativeExamples": [
+        {
+          "Entries": [
+            {
+              "IntroText": "This code is part of an FTP server and deals with various commands that could be sent by a user. It is intended that a user must successfully login before performing any other action such as retrieving or listing files."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "Python",
+              "ExampleCode": "```\n\tdef dispatchCommand(command, user, args):\n\t\t\tif command == 'Login':\n\t\t\t\tloginUser(args)\n\t\t\t\treturn\n```\n# user has requested a file* \n\t\t\tif command == 'Retrieve_file': \n\t\t\t```\n\t\t\t\t if authenticated(user) and ownsFile(user,args): \n\t\t\t\t\tsendFile(args)\n\t\t\t\t\treturn\n\t\t\tif command == 'List_files':\n\t\t\t\tlistFiles(args)\n\t\t\t\treturn\n```\n...*"
+            },
+            {
+              "BodyText": "The server correctly avoids sending files to a user that isn't logged in and doesn't own the file. However, the server will incorrectly list the files in any directory without confirming the command came from an authenticated user, and that the user is authorized to see the directory's contents."
+            },
+            {
+              "BodyText": "Here is a fixed version of the above example:"
+            },
+            {
+              "Nature": "Good",
+              "Language": "Python",
+              "ExampleCode": "```\n\tdef dispatchCommand(command, user, args):\n```\n...* \n\t\t\tif command == 'List_files':\n\t\t\t```\n\t\t\t\tif authenticated(user) and ownsDirectory(user,args):\n\t\t\t\t\tlistFiles(args)\n\t\t\t\t\treturn\n```\n...*"
+            }
+          ]
+        }
+      ],
+      "PotentialMitigations": null
+    },
+    "/cwe/841/parents": {
+      "weakness_parents": [],
+      "category_parents": [
+        "1018",
+        "1348",
+        "1410",
+        "1217",
+        "438",
+        "840",
+        "867"
+      ]
+    },
+    "/cwe/841/children": null
+  }
+}

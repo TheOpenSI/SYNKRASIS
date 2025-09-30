@@ -1,0 +1,76 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-30T00:03:36.762322",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "76",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/76": {
+      "ID": "76",
+      "Type": "base_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/76": {
+      "ID": "76",
+      "Name": "Improper Neutralization of Equivalent Special Elements",
+      "Abstraction": "Base",
+      "Structure": "Simple",
+      "Status": "Draft",
+      "Description": "The product correctly neutralizes certain special elements, but it improperly neutralizes equivalent special elements.",
+      "ExtendedDescription": "The product may have a fixed list of special characters it believes is complete. However, there may be alternate encodings, or representations that also have the same meaning. For example, the product may filter out a leading slash (/) to prevent absolute path names, but does not account for a tilde (~) followed by a user name, which on some *nix systems could be expanded to an absolute pathname. Alternately, the product might filter a dangerous \"-e\" command-line switch when calling an external program, but it might not account for \"--exec\" or other switches that have the same semantics.",
+      "LikelihoodOfExploit": "High",
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Class": "Not Language-Specific",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Implementation",
+          "Note": "REALIZATION: This weakness is caused during implementation of an architectural security tactic."
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Other"
+          ],
+          "Impact": [
+            "Other"
+          ]
+        }
+      ],
+      "DemonstrativeExamples": null,
+      "PotentialMitigations": [
+        {
+          "Phase": [
+            "Requirements"
+          ],
+          "Description": "Programming languages and supporting technologies might be chosen which are not subject to these issues."
+        },
+        {
+          "Phase": [
+            "Implementation"
+          ],
+          "Description": "Utilize an appropriate mix of allowlist and denylist parsing to filter equivalent special element syntax from all input."
+        }
+      ]
+    },
+    "/cwe/76/parents": {
+      "weakness_parents": [
+        "75"
+      ],
+      "category_parents": [
+        "1019",
+        "1409",
+        "137",
+        "990"
+      ]
+    },
+    "/cwe/76/children": null
+  }
+}

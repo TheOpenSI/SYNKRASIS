@@ -1,0 +1,70 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T23:13:31.945784",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "349",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/349": {
+      "ID": "349",
+      "Type": "base_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/349": {
+      "ID": "349",
+      "Name": "Acceptance of Extraneous Untrusted Data With Trusted Data",
+      "Abstraction": "Base",
+      "Structure": "Simple",
+      "Status": "Draft",
+      "Description": "The product, when processing trusted data, accepts any untrusted data that is also included with the trusted data, treating the untrusted data as if it were trusted.",
+      "ExtendedDescription": null,
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Class": "Not Language-Specific",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Implementation"
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Access Control",
+            "Integrity"
+          ],
+          "Impact": [
+            "Bypass Protection Mechanism",
+            "Modify Application Data"
+          ],
+          "Note": "An attacker could package untrusted data with trusted data to bypass protection mechanisms to gain access to and possibly modify sensitive data."
+        }
+      ],
+      "DemonstrativeExamples": null,
+      "PotentialMitigations": null
+    },
+    "/cwe/349/parents": {
+      "weakness_parents": [
+        "345"
+      ],
+      "category_parents": [
+        "1019",
+        "1150",
+        "1365",
+        "1366",
+        "1373",
+        "1411",
+        "1214",
+        "860",
+        "977"
+      ]
+    },
+    "/cwe/349/children": null
+  }
+}

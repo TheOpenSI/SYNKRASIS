@@ -1,0 +1,51 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T22:16:54.790960",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "1097",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/1097": {
+      "ID": "1097",
+      "Type": "base_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/1097": {
+      "ID": "1097",
+      "Name": "Persistent Storable Data Element without Associated Comparison Control Element",
+      "Abstraction": "Base",
+      "Structure": "Simple",
+      "Status": "Incomplete",
+      "Description": "The product uses a storable data element that does not have\n\t\t\t\t\tall of the associated functions or methods that are necessary to support\n\t\t\t\t\tcomparison.",
+      "ExtendedDescription": "\n\nFor example, with Java, a class that is made persistent requires both hashCode() and equals() methods to be defined.\n\n\nThis issue can prevent the product from running reliably, due to incorrect or unexpected comparison results. If the relevant code is reachable by an attacker, then this reliability problem might introduce a vulnerability.\n",
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": null,
+      "AlternateTerms": null,
+      "ModesOfIntroduction": null,
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Other"
+          ],
+          "Impact": [
+            "Reduce Reliability"
+          ]
+        }
+      ],
+      "DemonstrativeExamples": null,
+      "PotentialMitigations": null
+    },
+    "/cwe/1097/parents": {
+      "weakness_parents": [
+        "1076"
+      ],
+      "category_parents": [
+        "1129",
+        "1412",
+        "1006"
+      ]
+    },
+    "/cwe/1097/children": null
+  }
+}

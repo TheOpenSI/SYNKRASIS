@@ -1,0 +1,97 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T23:15:09.081594",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "360",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/360": {
+      "ID": "360",
+      "Type": "base_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/360": {
+      "ID": "360",
+      "Name": "Trust of System Event Data",
+      "Abstraction": "Base",
+      "Structure": "Simple",
+      "Status": "Incomplete",
+      "Description": "Security based on event locations are insecure and can be spoofed.",
+      "ExtendedDescription": "Events are a messaging system which may provide control data to programs listening for events. Events often do not have any type of authentication framework to allow them to be verified from a trusted source. Any application, in Windows, on a given desktop can send a message to any window on the same desktop. There is no authentication framework for these messages. Therefore, any message can be used to manipulate any process on the desktop if the process does not check the validity and safeness of those messages.",
+      "LikelihoodOfExploit": "High",
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Class": "Not Language-Specific",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Architecture and Design"
+        },
+        {
+          "Phase": "Implementation"
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Integrity",
+            "Confidentiality",
+            "Availability",
+            "Access Control"
+          ],
+          "Impact": [
+            "Gain Privileges or Assume Identity",
+            "Execute Unauthorized Code or Commands"
+          ],
+          "Note": "If one trusts the system-event information and executes commands based on it, one could potentially take actions based on a spoofed identity."
+        }
+      ],
+      "DemonstrativeExamples": [
+        {
+          "Entries": [
+            {
+              "IntroText": "This example code prints out secret information when an authorized user activates a button:"
+            },
+            {
+              "Nature": "Bad",
+              "Language": "Java",
+              "ExampleCode": "```\n\tpublic void actionPerformed(ActionEvent e) {\n\t\tif (e.getSource() == button) {\n\t\t\tSystem.out.println(\"print out secret information\");\n\t\t}\n\t}\n```"
+            },
+            {
+              "BodyText": "This code does not attempt to prevent unauthorized users from activating the button. Even if the button is rendered non-functional to unauthorized users in the application UI, an attacker can easily send a false button press event to the application window and expose the secret information."
+            }
+          ]
+        }
+      ],
+      "PotentialMitigations": [
+        {
+          "Phase": [
+            "Architecture and Design"
+          ],
+          "Description": "Never trust or rely any of the information in an Event for security."
+        }
+      ]
+    },
+    "/cwe/360/parents": {
+      "weakness_parents": [
+        "345"
+      ],
+      "category_parents": [
+        "1411",
+        "1006",
+        "949"
+      ]
+    },
+    "/cwe/360/children": {
+      "weakness_children": [
+        "422"
+      ],
+      "category_children": []
+    }
+  }
+}

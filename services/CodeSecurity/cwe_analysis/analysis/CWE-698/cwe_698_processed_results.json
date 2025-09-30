@@ -1,0 +1,82 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T23:59:41.092545",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "698",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/698": {
+      "ID": "698",
+      "Type": "base_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/698": {
+      "ID": "698",
+      "Name": "Execution After Redirect (EAR)",
+      "Abstraction": "Base",
+      "Structure": "Simple",
+      "Status": "Incomplete",
+      "Description": "The web application sends a redirect to another location, but instead of exiting, it executes additional code.",
+      "ExtendedDescription": null,
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": null,
+      "AlternateTerms": [
+        {
+          "Term": "Redirect Without Exit"
+        }
+      ],
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Implementation"
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Other",
+            "Confidentiality",
+            "Integrity",
+            "Availability"
+          ],
+          "Impact": [
+            "Alter Execution Logic",
+            "Execute Unauthorized Code or Commands"
+          ],
+          "Note": "This weakness could affect the control flow of the application and allow execution of untrusted code."
+        }
+      ],
+      "DemonstrativeExamples": [
+        {
+          "ID": "DX-180",
+          "Entries": [
+            {
+              "IntroText": "This code queries a server and displays its status when a request comes from an authorized IP address."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "PHP",
+              "ExampleCode": "```\n\t$requestingIP = $_SERVER['REMOTE_ADDR'];\n\tif(!in_array($requestingIP,$ipAllowList)){\n\t\techo \"You are not authorized to view this page\";\n\t\thttp_redirect($errorPageURL);\n\t}\n\t$status = getServerStatus();\n\techo $status;\n```\n...*"
+            },
+            {
+              "BodyText": "This code redirects unauthorized users, but continues to execute code after calling http_redirect(). This means even unauthorized users may be able to access the contents of the page or perform a DoS attack on the server being queried. Also, note that this code is vulnerable to an IP address spoofing attack (CWE-212)."
+            }
+          ]
+        }
+      ],
+      "PotentialMitigations": null
+    },
+    "/cwe/698/parents": {
+      "weakness_parents": [
+        "670",
+        "705"
+      ],
+      "category_parents": [
+        "1410",
+        "438",
+        "977"
+      ]
+    },
+    "/cwe/698/children": null
+  }
+}

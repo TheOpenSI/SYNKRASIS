@@ -1,0 +1,98 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T23:57:48.062932",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "684",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/684": {
+      "ID": "684",
+      "Type": "class_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/684": {
+      "ID": "684",
+      "Name": "Incorrect Provision of Specified Functionality",
+      "Abstraction": "Class",
+      "Structure": "Simple",
+      "Status": "Draft",
+      "Description": "The code does not function according to its published specifications, potentially leading to incorrect usage.",
+      "ExtendedDescription": "When providing functionality to an external party, it is important that the product behaves in accordance with the details specified. When requirements of nuances are not documented, the functionality may produce unintended behaviors for the caller, possibly leading to an exploitable state.",
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": null,
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Implementation"
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Other"
+          ],
+          "Impact": [
+            "Quality Degradation"
+          ]
+        }
+      ],
+      "DemonstrativeExamples": [
+        {
+          "ID": "DX-185",
+          "Entries": [
+            {
+              "IntroText": "In the following snippet from a doPost() servlet method, the server returns \"200 OK\" (default) even if an error occurs."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "Java",
+              "ExampleCode": "```\n\ttry {\n```\n// Something that may throw an exception.* \n\t\t\t...} catch (Throwable t) {\n\t```\n\t\tlogger.error(\"Caught: \" + t.toString());\n\t\treturn;\n\t}\n```"
+            }
+          ]
+        },
+        {
+          "ID": "DX-186",
+          "Entries": [
+            {
+              "IntroText": "In the following example, an HTTP 404 status code is returned in the event of an IOException encountered in a Java servlet. A 404 code is typically meant to indicate a non-existent resource and would be somewhat misleading in this case."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "Java",
+              "ExampleCode": "```\n\ttry {\n```\n// something that might throw IOException* \n\t\t\t...} catch (IOException ioe) {\n\t```\n\t\tresponse.sendError(SC_NOT_FOUND);\n\t}\n```"
+            }
+          ]
+        }
+      ],
+      "PotentialMitigations": [
+        {
+          "Phase": [
+            "Implementation"
+          ],
+          "Description": "Ensure that your code strictly conforms to specifications."
+        }
+      ]
+    },
+    "/cwe/684/parents": {
+      "weakness_parents": [],
+      "category_parents": [
+        "1412",
+        "735",
+        "1001"
+      ]
+    },
+    "/cwe/684/children": {
+      "weakness_children": [
+        "1245",
+        "392",
+        "393",
+        "440",
+        "446",
+        "451",
+        "912"
+      ],
+      "category_children": []
+    }
+  }
+}

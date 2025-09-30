@@ -1,0 +1,113 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T23:25:16.882741",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "440",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/440": {
+      "ID": "440",
+      "Type": "base_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/440": {
+      "ID": "440",
+      "Name": "Expected Behavior Violation",
+      "Abstraction": "Base",
+      "Structure": "Simple",
+      "Status": "Draft",
+      "Description": "A feature, API, or function does not perform according to its specification.",
+      "ExtendedDescription": null,
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Class": "Not Language-Specific",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Technology",
+          "Class": "ICS/OT",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Architecture and Design"
+        },
+        {
+          "Phase": "Implementation"
+        },
+        {
+          "Phase": "Operation"
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Other"
+          ],
+          "Impact": [
+            "Quality Degradation",
+            "Varies by Context"
+          ]
+        }
+      ],
+      "DemonstrativeExamples": [
+        {
+          "Entries": [
+            {
+              "IntroText": "The provided code is extracted from the Control and Status Register (CSR), csr_regfile, module within the Hack@DAC'21 OpenPiton System-on-Chip (SoC). This module is designed to implement CSR registers in accordance with the RISC-V specification. The mie (machine interrupt enable) register is a 64-bit register [REF-1384], where bits correspond to different interrupt sources. As the name suggests, mie is a machine-level register that determines which interrupts are enabled. Note that in the example below the mie_q and mie_d registers represent the conceptual mie reigster in the RISC-V specification. The mie_d register is the value to be stored in the mie register while the mie_q register holds the current value of the mie register [REF-1385]."
+            },
+            {
+              "BodyText": "The mideleg (machine interrupt delegation) register, also 64-bit wide, enables the delegation of specific interrupt sources from machine privilege mode to lower privilege levels. By setting specific bits in the mideleg register, the handling of certain interrupts can be delegated to lower privilege levels without engaging the machine-level privilege mode. For example, in supervisor mode, the mie register is limited to a specific register called the sie (supervisor interrupt enable) register. If delegated, an interrupt becomes visible in the sip (supervisor interrupt pending) register and can be enabled or blocked using the sie register. If no delegation occurs, the related bits in sip and sie are set to zero."
+            },
+            {
+              "BodyText": "The sie register value is computed based on the current value of mie register, i.e., mie_q, and the mideleg register."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "Verilog",
+              "ExampleCode": "module csr_regfile #(...)(...);\n ...\n // ---------------------------\n // CSR Write and update logic\n // ---------------------------\n ...\n\n```\n\t if (csr_we) begin\n\t\t unique case (csr_addr.address)\n\t\t ...\n\t\t\t riscv::CSR_SIE: begin\n\t\t\t\t // the mideleg makes sure only delegate-able register\n\t\t\t\t //(and therefore also only implemented registers) are written\n```\nmie_d = (mie_q & ~mideleg_q) | (csr_wdata & mideleg_q) | utval_q;** \n\t\t\t\t end\n\t\t\t ...\n\t\t\t endcase\n\t\t end\n\t endmodule"
+            },
+            {
+              "BodyText": "The above code snippet illustrates an instance of a vulnerable implementation of the sie register update logic, where users can tamper with the mie_d register value through the utval (user trap value) register. This behavior violates the RISC-V specification."
+            },
+            {
+              "BodyText": "The code shows that the value of utval, among other signals, is used in updating the mie_d value within the sie update logic. While utval is a register accessible to users, it should not influence or compromise the integrity of sie. Through manipulation of the utval register, it becomes feasible to manipulate the sie register's value. This opens the door for potential attacks, as an adversary can gain control over or corrupt the sie value. Consequently, such manipulation empowers an attacker to enable or disable critical supervisor-level interrupts, resulting in various security risks such as privilege escalation or denial-of-service attacks."
+            },
+            {
+              "BodyText": "A fix to this issue is to remove the utval from the right-hand side of the assignment. That is the value of the mie_d should be updated as shown in the good code example [REF-1386]."
+            },
+            {
+              "Nature": "Good",
+              "Language": "Verilog",
+              "ExampleCode": "module csr_regfile #(...)(...);\n ...\n // ---------------------------\n // CSR Write and update logic\n // ---------------------------\n ...\n\n```\n\t if (csr_we) begin\n\t\t unique case (csr_addr.address)\n\t\t ...\n\t\t\t riscv::CSR_SIE: begin\n\t\t\t\t // the mideleg makes sure only delegate-able register\n\t\t\t\t //(and therefore also only implemented registers) are written\n```\nmie_d = (mie_q & ~mideleg_q) | (csr_wdata & mideleg_q);** \n\t\t\t\t end\n\t\t\t ...\n\t\t\t endcase\n\t\t end\n\t endmodule"
+            }
+          ]
+        }
+      ],
+      "PotentialMitigations": null
+    },
+    "/cwe/440/parents": {
+      "weakness_parents": [
+        "684"
+      ],
+      "category_parents": [
+        "1208",
+        "1368",
+        "1412",
+        "438",
+        "1001"
+      ]
+    },
+    "/cwe/440/children": {
+      "weakness_children": [
+        "1434"
+      ],
+      "category_children": []
+    }
+  }
+}

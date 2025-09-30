@@ -1,0 +1,290 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T22:23:29.835340",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "119",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/119": {
+      "ID": "119",
+      "Type": "class_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/119": {
+      "ID": "119",
+      "Name": "Improper Restriction of Operations within the Bounds of a Memory Buffer",
+      "Abstraction": "Class",
+      "Structure": "Simple",
+      "Status": "Stable",
+      "Description": "The product performs operations on a memory buffer, but it reads from or writes to a memory location outside the buffer's intended boundary. This may result in read or write operations on unexpected memory locations that could be linked to other variables, data structures, or internal program data.",
+      "ExtendedDescription": null,
+      "LikelihoodOfExploit": "High",
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Name": "C",
+          "Prevalence": "Often"
+        },
+        {
+          "Type": "Language",
+          "Name": "C++",
+          "Prevalence": "Often"
+        },
+        {
+          "Type": "Language",
+          "Class": "Assembly",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": [
+        {
+          "Term": "Buffer Overflow",
+          "Description": "This term has many different meanings to different audiences. From a CWE mapping perspective, this term should be avoided where possible. Some researchers, developers, and tools intend for it to mean \"write past the end of a buffer,\" whereas others use the same term to mean \"any read or write outside the boundaries of a buffer, whether before the beginning of the buffer or after the end of the buffer.\" Others could mean \"any action after the end of a buffer, whether it is a read or write.\" Since the term is commonly used for exploitation and for vulnerabilities, it further confuses things."
+        },
+        {
+          "Term": "buffer overrun",
+          "Description": "Some prominent vendors and researchers use the term \"buffer overrun,\" but most people use \"buffer overflow.\" See the alternate term for \"buffer overflow\" for context."
+        },
+        {
+          "Term": "memory safety",
+          "Description": "Generally used for techniques that avoid weaknesses related to memory access, such as those identified by CWE-119 and its descendants. However, the term is not formal, and there is likely disagreement between practitioners as to which weaknesses are implicitly covered by the \"memory safety\" term."
+        }
+      ],
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Implementation"
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Integrity",
+            "Confidentiality",
+            "Availability"
+          ],
+          "Impact": [
+            "Execute Unauthorized Code or Commands",
+            "Modify Memory"
+          ],
+          "Note": "If the memory accessible by the attacker can be effectively controlled, it may be possible to execute arbitrary code, as with a standard buffer overflow. If the attacker can overwrite a pointer's worth of memory (usually 32 or 64 bits), they can alter the intended control flow by redirecting a function pointer to their own malicious code. Even when the attacker can only modify a single byte arbitrary code execution can be possible. Sometimes this is because the same problem can be exploited repeatedly to the same effect. Other times it is because the attacker can overwrite security-critical application-specific data -- such as a flag indicating whether the user is an administrator."
+        },
+        {
+          "Scope": [
+            "Availability",
+            "Confidentiality"
+          ],
+          "Impact": [
+            "Read Memory",
+            "DoS: Crash, Exit, or Restart",
+            "DoS: Resource Consumption (CPU)",
+            "DoS: Resource Consumption (Memory)"
+          ],
+          "Note": "Out of bounds memory access will very likely result in the corruption of relevant memory, and perhaps instructions, possibly leading to a crash. Other attacks leading to lack of availability are possible, including putting the program into an infinite loop."
+        },
+        {
+          "Scope": [
+            "Confidentiality"
+          ],
+          "Impact": [
+            "Read Memory"
+          ],
+          "Note": "In the case of an out-of-bounds read, the attacker may have access to sensitive information. If the sensitive information contains system details, such as the current buffer's position in memory, this knowledge can be used to craft further attacks, possibly with more severe consequences."
+        }
+      ],
+      "DemonstrativeExamples": [
+        {
+          "ID": "DX-1",
+          "Entries": [
+            {
+              "IntroText": "This example takes an IP address from a user, verifies that it is well formed and then looks up the hostname and copies it into a buffer."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "C",
+              "ExampleCode": "```\n\tvoid host_lookup(char *user_supplied_addr){\n\t\t\tstruct hostent *hp;\n\t\t\tin_addr_t *addr;\n\t\t\tchar hostname[64];\n\t\t\tin_addr_t inet_addr(const char *cp);\n```\n/*routine that ensures user_supplied_addr is in the right format for conversion */* \n\t\t\t\n\t\t\tvalidate_addr_form(user_supplied_addr);\n\t\t\taddr = inet_addr(user_supplied_addr);\n\t\t\thp = gethostbyaddr( addr, sizeof(struct in_addr), AF_INET);\n\t\t\tstrcpy(hostname, hp->h_name);}"
+            },
+            {
+              "BodyText": "This function allocates a buffer of 64 bytes to store the hostname, however there is no guarantee that the hostname will not be larger than 64 bytes. If an attacker specifies an address which resolves to a very large hostname, then the function may overwrite sensitive data or even relinquish control flow to the attacker."
+            },
+            {
+              "BodyText": "Note that this example also contains an unchecked return value (CWE-252) that can lead to a NULL pointer dereference (CWE-476)."
+            }
+          ]
+        },
+        {
+          "ID": "DX-19",
+          "Entries": [
+            {
+              "IntroText": "This example applies an encoding procedure to an input string and stores it into a buffer."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "C",
+              "ExampleCode": "```\n\tchar * copy_input(char *user_supplied_string){\n\t\t\tint i, dst_index;\n\t\t\tchar *dst_buf = (char*)malloc(4*sizeof(char) * MAX_SIZE);\n\t\t\tif ( MAX_SIZE <= strlen(user_supplied_string) ){\n\t\t\t\tdie(\"user string too long, die evil hacker!\");\n\t\t\t}\n\t\t\tdst_index = 0;\n\t\t\tfor ( i = 0; i < strlen(user_supplied_string); i++ ){\n\t\t\t\t\tif( '&' == user_supplied_string[i] ){\n\t\t\t\t\t\tdst_buf[dst_index++] = '&';\n\t\t\t\t\t\tdst_buf[dst_index++] = 'a';\n\t\t\t\t\t\tdst_buf[dst_index++] = 'm';\n\t\t\t\t\t\tdst_buf[dst_index++] = 'p';\n\t\t\t\t\t\tdst_buf[dst_index++] = ';';\n\t\t\t\t\t}\n\t\t\t\t\telse if ('<' == user_supplied_string[i] ){\n```\n/* encode to &lt; */* \n\t\t\t\t\t\t}\n\t\t\t\t\telse dst_buf[dst_index++] = user_supplied_string[i];}\n\t\t\treturn dst_buf;}"
+            },
+            {
+              "BodyText": "The programmer attempts to encode the ampersand character in the user-controlled string, however the length of the string is validated before the encoding procedure is applied. Furthermore, the programmer assumes encoding expansion will only expand a given character by a factor of 4, while the encoding of the ampersand expands by 5. As a result, when the encoding procedure expands the string it is possible to overflow the destination buffer if the attacker provides a string of many ampersands."
+            }
+          ]
+        },
+        {
+          "ID": "DX-90",
+          "Entries": [
+            {
+              "IntroText": "The following example asks a user for an offset into an array to select an item."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "C",
+              "ExampleCode": "```\n\tint main (int argc, char **argv) {\n\t\tchar *items[] = {\"boat\", \"car\", \"truck\", \"train\"};\n\t\tint index = GetUntrustedOffset();\n\t\tprintf(\"You selected %s\\n\", items[index-1]);\n\t}\n```"
+            },
+            {
+              "BodyText": "The programmer allows the user to specify which element in the list to select, however an attacker can provide an out-of-bounds offset, resulting in a buffer over-read (CWE-126)."
+            }
+          ]
+        },
+        {
+          "ID": "DX-100",
+          "Entries": [
+            {
+              "IntroText": "In the following code, the method retrieves a value from an array at a specific array index location that is given as an input parameter to the method"
+            },
+            {
+              "Nature": "Bad",
+              "Language": "C",
+              "ExampleCode": "```\n\tint getValueFromArray(int *array, int len, int index) {\n\t\t\tint value;\n```\n// check that the array index is less than the maximum* \n\t\t\t\n\t\t\t\n\t\t\t *// length of the array* \n\t\t\tif (index < len) {\n\t\t\t```\n```\n// get the value at the specified index of the array* \n\t\t\t\t\tvalue = array[index];}\n\t\t\t\n\t\t\t *// if array index is invalid then output error message* \n\t\t\t\n\t\t\t *// and return value indicating error* \n\t\t\telse {\n\t\t\t```\n\t\t\t\tprintf(\"Value is: %d\\n\", array[index]);\n\t\t\t\tvalue = -1;\n\t\t\t}\n\t\t\treturn value;\n\t}\n```"
+            },
+            {
+              "BodyText": "However, this method only verifies that the given array index is less than the maximum length of the array but does not check for the minimum value (CWE-839). This will allow a negative value to be accepted as the input array index, which will result in reading data before the beginning of the buffer (CWE-127) and may allow access to sensitive memory. The input array index should be checked to verify that is within the maximum and minimum range required for the array (CWE-129). In this example the if statement should be modified to include a minimum range check, as shown below."
+            },
+            {
+              "Nature": "Good",
+              "Language": "C",
+              "ExampleCode": "```\n\t...\n```\n// check that the array index is within the correct* \n\t\n\t\n\t *// range of values for the array* \n\tif (index >= 0 && index < len) {\n\t\n\t..."
+            }
+          ]
+        },
+        {
+          "Entries": [
+            {
+              "IntroText": "Windows provides the _mbs family of functions to perform various operations on multibyte strings. When these functions are passed a malformed multibyte string, such as a string containing a valid leading byte followed by a single null byte, they can read or write past the end of the string buffer causing a buffer overflow. The following functions all pose a risk of buffer overflow: _mbsinc _mbsdec _mbsncat _mbsncpy _mbsnextc _mbsnset _mbsrev _mbsset _mbsstr _mbstok _mbccpy _mbslen"
+            }
+          ]
+        }
+      ],
+      "PotentialMitigations": [
+        {
+          "MitigationID": "MIT-3",
+          "Phase": [
+            "Requirements"
+          ],
+          "Strategy": "Language Selection",
+          "Description": "\n\nUse a language that does not allow this weakness to occur or provides constructs that make this weakness easier to avoid.\n\n\nFor example, many languages that perform their own memory management, such as Java and Perl, are not subject to buffer overflows. Other languages, such as Ada and C#, typically provide overflow protection, but the protection can be disabled by the programmer.\n\n\nBe wary that a language's interface to native code may still be subject to overflows, even if the language itself is theoretically safe.\n"
+        },
+        {
+          "MitigationID": "MIT-4.1",
+          "Phase": [
+            "Architecture and Design"
+          ],
+          "Strategy": "Libraries or Frameworks",
+          "Description": "\n\nUse a vetted library or framework that does not allow this weakness to occur or provides constructs that make this weakness easier to avoid.\n\n\nExamples include the Safe C String Library (SafeStr) by Messier and Viega [REF-57], and the Strsafe.h library from Microsoft [REF-56]. These libraries provide safer versions of overflow-prone string-handling functions.\n",
+          "EffectivenessNotes": "This is not a complete solution, since many buffer overflows are not related to strings."
+        },
+        {
+          "MitigationID": "MIT-10",
+          "Phase": [
+            "Operation",
+            "Build and Compilation"
+          ],
+          "Strategy": "Environment Hardening",
+          "Description": "\n\nUse automatic buffer overflow detection mechanisms that are offered by certain compilers or compiler extensions. Examples include: the Microsoft Visual Studio /GS flag, Fedora/Red Hat FORTIFY_SOURCE GCC flag, StackGuard, and ProPolice, which provide various mechanisms including canary-based detection and range/index checking. \n\n\n D3-SFCV (Stack Frame Canary Validation) from D3FEND [REF-1334] discusses canary-based detection in detail. \n",
+          "Effectiveness": "Defense in Depth",
+          "EffectivenessNotes": "\n\n This is not necessarily a complete solution, since these mechanisms only detect certain types of overflows. In addition, the result is still a denial of service, since the typical response is to exit the application. \n"
+        },
+        {
+          "MitigationID": "MIT-9",
+          "Phase": [
+            "Implementation"
+          ],
+          "Description": "\n\nConsider adhering to the following rules when allocating and managing an application's memory:\n\n\n  - Double check that the buffer is as large as specified.\n\n  - When using functions that accept a number of bytes to copy, such as strncpy(), be aware that if the destination buffer size is equal to the source buffer size, it may not NULL-terminate the string.\n\n  - Check buffer boundaries if accessing the buffer in a loop and make sure there is no danger of writing past the allocated space.\n\n  - If necessary, truncate all input strings to a reasonable length before passing them to the copy and concatenation functions.\n\n"
+        },
+        {
+          "MitigationID": "MIT-11",
+          "Phase": [
+            "Operation",
+            "Build and Compilation"
+          ],
+          "Strategy": "Environment Hardening",
+          "Description": "\n\nRun or compile the software using features or extensions that randomly arrange the positions of a program's executable and libraries in memory. Because this makes the addresses unpredictable, it can prevent an attacker from reliably jumping to exploitable code. \n\n\n Examples include Address Space Layout Randomization (ASLR) [REF-58] [REF-60] and Position-Independent Executables (PIE) [REF-64]. Imported modules may be similarly realigned if their default memory addresses conflict with other modules, in a process known as \"rebasing\" (for Windows) and \"prelinking\" (for Linux) [REF-1332] using randomly generated addresses. ASLR for libraries cannot be used in conjunction with prelink since it would require relocating the libraries at run-time, defeating the whole purpose of prelinking. \n\n\n For more information on these techniques see D3-SAOR (Segment Address Offset Randomization) from D3FEND [REF-1335]. \n",
+          "Effectiveness": "Defense in Depth",
+          "EffectivenessNotes": "These techniques do not provide a complete solution. For instance, exploits frequently use a bug that discloses memory addresses in order to maximize reliability of code execution [REF-1337]. It has also been shown that a side-channel attack can bypass ASLR [REF-1333]"
+        },
+        {
+          "MitigationID": "MIT-12",
+          "Phase": [
+            "Operation"
+          ],
+          "Strategy": "Environment Hardening",
+          "Description": "\n\n Use a CPU and operating system that offers Data Execution Protection (using hardware NX or XD bits) or the equivalent techniques that simulate this feature in software, such as PaX [REF-60] [REF-61]. These techniques ensure that any instruction executed is exclusively at a memory address that is part of the code segment. \n\n\n For more information on these techniques see D3-PSEP (Process Segment Execution Prevention) from D3FEND [REF-1336]. \n",
+          "Effectiveness": "Defense in Depth",
+          "EffectivenessNotes": "This is not a complete solution, since buffer overflows could be used to overwrite nearby variables to modify the software's state in dangerous ways. In addition, it cannot be used in cases in which self-modifying code is required. Finally, an attack could still cause a denial of service, since the typical response is to exit the application."
+        },
+        {
+          "MitigationID": "MIT-13",
+          "Phase": [
+            "Implementation"
+          ],
+          "Description": "Replace unbounded copy functions with analogous functions that support length arguments, such as strcpy with strncpy. Create these if they are not available.",
+          "Effectiveness": "Moderate",
+          "EffectivenessNotes": "This approach is still susceptible to calculation errors, including issues such as off-by-one errors (CWE-193) and incorrectly calculating buffer lengths (CWE-131)."
+        }
+      ]
+    },
+    "/cwe/119/parents": {
+      "weakness_parents": [
+        "118",
+        "20"
+      ],
+      "category_parents": [
+        "1157",
+        "1160",
+        "1161",
+        "1306",
+        "1308",
+        "1399",
+        "726",
+        "740",
+        "741",
+        "742",
+        "743",
+        "744",
+        "752",
+        "874",
+        "875",
+        "876",
+        "877",
+        "878",
+        "970"
+      ]
+    },
+    "/cwe/119/children": {
+      "weakness_children": [
+        "120",
+        "123",
+        "125",
+        "130",
+        "466",
+        "786",
+        "787",
+        "788",
+        "805",
+        "822",
+        "823",
+        "824",
+        "825"
+      ],
+      "category_children": []
+    }
+  }
+}

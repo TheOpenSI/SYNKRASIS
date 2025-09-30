@@ -1,0 +1,163 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-30T00:14:31.206451",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "888",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/888": {
+      "endpoint": "/cwe/888",
+      "url": "https://cwe-api.mitre.org/api/v1/cwe/888",
+      "status_code": 200,
+      "success": true,
+      "error": null,
+      "data": [
+        {
+          "Type": "view",
+          "ID": "888"
+        }
+      ]
+    },
+    "/cwe/weakness/888": {
+      "endpoint": "/cwe/weakness/888",
+      "url": "https://cwe-api.mitre.org/api/v1/cwe/weakness/888",
+      "status_code": 404,
+      "success": false,
+      "error": "HTTP 404: \"for weakness: cwe (888) not found, use the view endpoint\"\n",
+      "data": null
+    },
+    "/cwe/888/parents": {
+      "endpoint": "/cwe/888/parents",
+      "url": "https://cwe-api.mitre.org/api/v1/cwe/888/parents",
+      "status_code": 200,
+      "success": true,
+      "error": null,
+      "data": []
+    },
+    "/cwe/888/children": {
+      "endpoint": "/cwe/888/children",
+      "url": "https://cwe-api.mitre.org/api/v1/cwe/888/children",
+      "status_code": 200,
+      "success": true,
+      "error": null,
+      "data": [
+        {
+          "Type": "category",
+          "ID": "1237",
+          "ViewID": "888"
+        },
+        {
+          "Type": "category",
+          "ID": "1238",
+          "ViewID": "888"
+        },
+        {
+          "Type": "category",
+          "ID": "885",
+          "ViewID": "888"
+        },
+        {
+          "Type": "category",
+          "ID": "886",
+          "ViewID": "888"
+        },
+        {
+          "Type": "category",
+          "ID": "887",
+          "ViewID": "888"
+        },
+        {
+          "Type": "category",
+          "ID": "889",
+          "ViewID": "888"
+        },
+        {
+          "Type": "category",
+          "ID": "890",
+          "ViewID": "888"
+        },
+        {
+          "Type": "category",
+          "ID": "891",
+          "ViewID": "888"
+        },
+        {
+          "Type": "category",
+          "ID": "892",
+          "ViewID": "888"
+        },
+        {
+          "Type": "category",
+          "ID": "893",
+          "ViewID": "888"
+        },
+        {
+          "Type": "category",
+          "ID": "894",
+          "ViewID": "888"
+        },
+        {
+          "Type": "category",
+          "ID": "895",
+          "ViewID": "888"
+        },
+        {
+          "Type": "category",
+          "ID": "896",
+          "ViewID": "888"
+        },
+        {
+          "Type": "category",
+          "ID": "897",
+          "ViewID": "888"
+        },
+        {
+          "Type": "category",
+          "ID": "898",
+          "ViewID": "888"
+        },
+        {
+          "Type": "category",
+          "ID": "899",
+          "ViewID": "888"
+        },
+        {
+          "Type": "category",
+          "ID": "901",
+          "ViewID": "888"
+        },
+        {
+          "Type": "category",
+          "ID": "902",
+          "ViewID": "888"
+        },
+        {
+          "Type": "category",
+          "ID": "903",
+          "ViewID": "888"
+        },
+        {
+          "Type": "category",
+          "ID": "904",
+          "ViewID": "888"
+        },
+        {
+          "Type": "category",
+          "ID": "905",
+          "ViewID": "888"
+        },
+        {
+          "Type": "category",
+          "ID": "906",
+          "ViewID": "888"
+        },
+        {
+          "Type": "category",
+          "ID": "907",
+          "ViewID": "888"
+        }
+      ]
+    }
+  }
+}

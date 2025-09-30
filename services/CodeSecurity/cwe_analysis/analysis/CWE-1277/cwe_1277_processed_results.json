@@ -1,0 +1,131 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T22:32:18.400754",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "1277",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/1277": {
+      "ID": "1277",
+      "Type": "base_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/1277": {
+      "ID": "1277",
+      "Name": "Firmware Not Updateable",
+      "Abstraction": "Base",
+      "Structure": "Simple",
+      "Status": "Draft",
+      "Description": "The product does not provide its\n\t\t\tusers with the ability to update or patch its\n\t\t\tfirmware to address any vulnerabilities or\n\t\t\tweaknesses that may be present.",
+      "ExtendedDescription": "Without the ability to patch or update firmware, consumers will be left vulnerable to exploitation of any known vulnerabilities, or any vulnerabilities that are discovered in the future. This can expose consumers to permanent risk throughout the entire lifetime of the device, which could be years or decades. Some external protective measures and mitigations might be employed to aid in preventing or reducing the risk of malicious attack, but the root weakness cannot be corrected.",
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Class": "Not Language-Specific",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Operating_System",
+          "Class": "Not OS-Specific",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Architecture",
+          "Class": "Not Architecture-Specific",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Technology",
+          "Class": "Not Technology-Specific",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Requirements",
+          "Note": "Requirements development might not consider the importance of updates over the lifetime of the product, or might not choose the ability due to concerns such as expense or speed to market."
+        },
+        {
+          "Phase": "Architecture and Design",
+          "Note": "Lack of planning during architecture development and design, or external pressures such as speed to market, could ignore the capability to update."
+        },
+        {
+          "Phase": "Implementation",
+          "Note": "The weakness can appear through oversight during implementation."
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Confidentiality",
+            "Integrity",
+            "Access Control",
+            "Authentication",
+            "Authorization"
+          ],
+          "Impact": [
+            "Gain Privileges or Assume Identity",
+            "Bypass Protection Mechanism",
+            "Execute Unauthorized Code or Commands",
+            "DoS: Crash, Exit, or Restart"
+          ],
+          "Likelihood": [
+            "Medium"
+          ],
+          "Note": "If an attacker can identify an exploitable vulnerability in one device that has no means of patching, the attack may be used against an entire class of devices."
+        }
+      ],
+      "DemonstrativeExamples": [
+        {
+          "ID": "DX-145",
+          "Entries": [
+            {
+              "IntroText": "A refrigerator has an Internet interface for the official purpose of alerting the manufacturer when that refrigerator detects a fault. Because the device is attached to the Internet, the refrigerator is a target for hackers who may wish to use the device other potentially more nefarious purposes."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "Other",
+              "ExampleCode": "The refrigerator has no means of patching and is hacked becoming a spewer of email spam."
+            },
+            {
+              "Nature": "Good",
+              "Language": "Other",
+              "ExampleCode": "The device automatically patches itself and provides considerable more protection against being hacked."
+            }
+          ]
+        }
+      ],
+      "PotentialMitigations": [
+        {
+          "Phase": [
+            "Requirements"
+          ],
+          "Description": "Specify requirements to include the ability to update the firmware. Include integrity checks and authentication to ensure that untrusted firmware cannot be installed."
+        },
+        {
+          "Phase": [
+            "Architecture and Design"
+          ],
+          "Description": "Design the device to allow for updating the firmware. Ensure that the design specifies how to distribute the updates and ensure their integrity and authentication."
+        },
+        {
+          "Phase": [
+            "Implementation"
+          ],
+          "Description": "Implement the necessary functionality to allow the firmware to be updated."
+        }
+      ]
+    },
+    "/cwe/1277/parents": {
+      "weakness_parents": [],
+      "category_parents": [
+        "1208",
+        "1415"
+      ]
+    },
+    "/cwe/1277/children": null
+  }
+}

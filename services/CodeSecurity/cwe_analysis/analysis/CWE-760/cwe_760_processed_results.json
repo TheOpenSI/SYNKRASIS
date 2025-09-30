@@ -1,0 +1,72 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-30T00:03:44.305308",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "760",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/760": {
+      "ID": "760",
+      "Type": "variant_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/760": {
+      "ID": "760",
+      "Name": "Use of a One-Way Hash with a Predictable Salt",
+      "Abstraction": "Variant",
+      "Structure": "Simple",
+      "Status": "Incomplete",
+      "Description": "The product uses a one-way cryptographic hash against an input that should not be reversible, such as a password, but the product uses a predictable salt as part of the input.",
+      "ExtendedDescription": "\n\nThis makes it easier for attackers to pre-compute the hash value using dictionary attack techniques such as rainbow tables, effectively disabling the protection that an unpredictable salt would provide.\n\n\nIt should be noted that, despite common perceptions, the use of a good salt with a hash does not sufficiently increase the effort for an attacker who is targeting an individual password, or who has a large amount of computing resources available, such as with cloud-based services or specialized, inexpensive hardware. Offline password cracking can still be effective if the hash function is not expensive to compute; many cryptographic functions are designed to be efficient and can be vulnerable to attacks using massive computing resources, even if the hash is cryptographically strong. The use of a salt only slightly increases the computing requirements for an attacker compared to other strategies such as adaptive hash functions. See CWE-916 for more details.\n",
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": null,
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Implementation",
+          "Note": "REALIZATION: This weakness is caused during implementation of an architectural security tactic."
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Access Control"
+          ],
+          "Impact": [
+            "Bypass Protection Mechanism"
+          ]
+        }
+      ],
+      "DemonstrativeExamples": null,
+      "PotentialMitigations": [
+        {
+          "MitigationID": "MIT-51",
+          "Phase": [
+            "Architecture and Design"
+          ],
+          "Description": "\n\nUse an adaptive hash function that can be configured to change the amount of computational effort needed to compute the hash, such as the number of iterations (\"stretching\") or the amount of memory required. Some hash functions perform salting automatically. These functions can significantly increase the overhead for a brute force attack compared to intentionally-fast functions such as MD5. For example, rainbow table attacks can become infeasible due to the high computing overhead. Finally, since computing power gets faster and cheaper over time, the technique can be reconfigured to increase the workload without forcing an entire replacement of the algorithm in use.\n\n\nSome hash functions that have one or more of these desired properties include bcrypt [REF-291], scrypt [REF-292], and PBKDF2 [REF-293]. While there is active debate about which of these is the most effective, they are all stronger than using salts with hash functions with very little computing overhead.\n\n\nNote that using these functions can have an impact on performance, so they require special consideration to avoid denial-of-service attacks. However, their configurability provides finer control over how much CPU and memory is used, so it could be adjusted to suit the environment's needs.\n",
+          "Effectiveness": "High"
+        },
+        {
+          "Phase": [
+            "Implementation"
+          ],
+          "Description": "If a technique that requires extra computational effort can not be implemented, then for each password that is processed, generate a new random salt using a strong random number generator with unpredictable seeds. Add the salt to the plaintext password before hashing it. When storing the hash, also store the salt. Do not use the same salt for every password.",
+          "Effectiveness": "Limited",
+          "EffectivenessNotes": "Be aware that salts will not reduce the workload of a targeted attack against an individual hash (such as the password for a critical person), and in general they are less effective than other hashing techniques such as increasing the computation time or memory overhead. Without a built-in workload, modern attacks can compute large numbers of hashes, or even exhaust the entire space of all possible passwords, within a very short amount of time, using massively-parallel computing and GPU, ASIC, or FPGA hardware."
+        }
+      ]
+    },
+    "/cwe/760/parents": {
+      "weakness_parents": [],
+      "category_parents": [
+        "1013",
+        "1346",
+        "1402",
+        "958"
+      ]
+    },
+    "/cwe/760/children": null
+  }
+}

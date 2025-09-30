@@ -1,0 +1,71 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T23:54:53.431279",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "66",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/66": {
+      "ID": "66",
+      "Type": "base_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/66": {
+      "ID": "66",
+      "Name": "Improper Handling of File Names that Identify Virtual Resources",
+      "Abstraction": "Base",
+      "Structure": "Simple",
+      "Status": "Draft",
+      "Description": "The product does not handle or incorrectly handles a file name that identifies a \"virtual\" resource that is not directly specified within the directory that is associated with the file name, causing the product to perform file-based operations on a resource that is not a file.",
+      "ExtendedDescription": "Virtual file names are represented like normal file names, but they are effectively aliases for other resources that do not behave like normal files. Depending on their functionality, they could be alternate entities. They are not necessarily listed in directories.",
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Class": "Not Language-Specific",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Implementation"
+        },
+        {
+          "Phase": "Operation"
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Other"
+          ],
+          "Impact": [
+            "Other"
+          ]
+        }
+      ],
+      "DemonstrativeExamples": null,
+      "PotentialMitigations": null
+    },
+    "/cwe/66/parents": {
+      "weakness_parents": [
+        "706"
+      ],
+      "category_parents": [
+        "1404",
+        "1219",
+        "981"
+      ]
+    },
+    "/cwe/66/children": {
+      "weakness_children": [
+        "67",
+        "69",
+        "72"
+      ],
+      "category_children": []
+    }
+  }
+}

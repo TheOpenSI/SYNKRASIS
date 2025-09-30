@@ -1,0 +1,99 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T23:26:53.919261",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "453",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/453": {
+      "ID": "453",
+      "Type": "variant_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/453": {
+      "ID": "453",
+      "Name": "Insecure Default Variable Initialization",
+      "Abstraction": "Variant",
+      "Structure": "Simple",
+      "Status": "Draft",
+      "Description": "The product, by default, initializes an internal variable with an insecure or less secure value than is possible.",
+      "ExtendedDescription": null,
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Name": "PHP",
+          "Prevalence": "Sometimes"
+        },
+        {
+          "Type": "Language",
+          "Class": "Not Language-Specific",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Implementation"
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Integrity"
+          ],
+          "Impact": [
+            "Modify Application Data"
+          ],
+          "Note": "An attacker could gain access to and modify sensitive data or system information."
+        }
+      ],
+      "DemonstrativeExamples": [
+        {
+          "ID": "DX-163",
+          "Entries": [
+            {
+              "IntroText": "This code attempts to login a user using credentials from a POST request:"
+            },
+            {
+              "Nature": "Bad",
+              "Language": "PHP",
+              "ExampleCode": "```\n```\n// $user and $pass automatically set from POST request* \n\tif (login_user($user,$pass)) {\n\t```\n\t\t$authorized = true;\n\t}\n```\n...* \n\t\n\tif ($authorized) {\n\t```\n\t\tgeneratePage();\n\t}\n```"
+            },
+            {
+              "BodyText": "Because the $authorized variable is never initialized, PHP will automatically set $authorized to any value included in the POST request if register_globals is enabled. An attacker can send a POST request with an unexpected third value 'authorized' set to 'true' and gain authorized status without supplying valid credentials."
+            },
+            {
+              "BodyText": "Here is a fixed version:"
+            },
+            {
+              "Nature": "Good",
+              "Language": "PHP",
+              "ExampleCode": "```\n\t$user = $_POST['user'];\n\t$pass = $_POST['pass'];\n\t$authorized = false;\n\tif (login_user($user,$pass)) {\n\t\t$authorized = true;\n\t}\n```\n...*"
+            },
+            {
+              "BodyText": "This code avoids the issue by initializing the $authorized variable to false and explicitly retrieving the login credentials from the $_POST variable. Regardless, register_globals should never be enabled and is disabled by default in current versions of PHP."
+            }
+          ]
+        }
+      ],
+      "PotentialMitigations": [
+        {
+          "Phase": [
+            "System Configuration"
+          ],
+          "Description": "Disable or change default settings when they can be used to abuse the system. Since those default settings are shipped with the product they are likely to be known by a potential attacker who is familiar with the product. For instance, default credentials should be changed or the associated accounts should be disabled."
+        }
+      ]
+    },
+    "/cwe/453/parents": {
+      "weakness_parents": [],
+      "category_parents": [
+        "1416",
+        "966"
+      ]
+    },
+    "/cwe/453/children": null
+  }
+}

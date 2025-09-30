@@ -1,0 +1,103 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T23:54:08.198174",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "653",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/653": {
+      "ID": "653",
+      "Type": "class_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/653": {
+      "ID": "653",
+      "Name": "Improper Isolation or Compartmentalization",
+      "Abstraction": "Class",
+      "Structure": "Simple",
+      "Status": "Draft",
+      "Description": "The product does not properly compartmentalize or isolate functionality, processes, or resources that require different privilege levels, rights, or permissions.",
+      "ExtendedDescription": "When a weakness occurs in functionality that is accessible by lower-privileged users, then without strong boundaries, an attack might extend the scope of the damage to higher-privileged users.",
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Class": "Not Language-Specific",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": [
+        {
+          "Term": "Separation of Privilege",
+          "Description": "Some people and publications use the term \"Separation of Privilege\" to describe this weakness, but this term has dual meanings in current usage. This node conflicts with the original definition of \"Separation of Privilege\" by Saltzer and Schroeder; that original definition is more closely associated with CWE-654. Because there are multiple interpretations, use of the \"Separation of Privilege\" term is discouraged."
+        }
+      ],
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Architecture and Design",
+          "Note": "COMMISSION: This weakness refers to an incorrect design related to an architectural security tactic."
+        },
+        {
+          "Phase": "Implementation"
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Access Control"
+          ],
+          "Impact": [
+            "Gain Privileges or Assume Identity",
+            "Bypass Protection Mechanism"
+          ],
+          "Note": "The exploitation of a weakness in low-privileged areas of the software can be leveraged to reach higher-privileged areas without having to overcome any additional obstacles."
+        }
+      ],
+      "DemonstrativeExamples": [
+        {
+          "ID": "DX-167",
+          "Entries": [
+            {
+              "IntroText": "Single sign-on technology is intended to make it easier for users to access multiple resources or domains without having to authenticate each time. While this is highly convenient for the user and attempts to address problems with psychological acceptability, it also means that a compromise of a user's credentials can provide immediate access to all other resources or domains."
+            }
+          ]
+        },
+        {
+          "Entries": [
+            {
+              "IntroText": "The traditional UNIX privilege model provides root with arbitrary access to all resources, but root is frequently the only user that has privileges. As a result, administrative tasks require root privileges, even if those tasks are limited to a small area, such as updating user manpages. Some UNIX flavors have a \"bin\" user that is the owner of system executables, but since root relies on executables owned by bin, a compromise of the bin account can be leveraged for root privileges by modifying a bin-owned executable, such as CVE-2007-4238."
+            }
+          ]
+        }
+      ],
+      "PotentialMitigations": [
+        {
+          "Phase": [
+            "Architecture and Design"
+          ],
+          "Description": "Break up privileges between different modules, objects, or entities. Minimize the interfaces between modules and require strong access control between them."
+        }
+      ]
+    },
+    "/cwe/653/parents": {
+      "weakness_parents": [
+        "657"
+      ],
+      "category_parents": [
+        "1011",
+        "1348",
+        "1418",
+        "1212",
+        "901"
+      ]
+    },
+    "/cwe/653/children": {
+      "weakness_children": [
+        "1189",
+        "1331"
+      ],
+      "category_children": []
+    }
+  }
+}

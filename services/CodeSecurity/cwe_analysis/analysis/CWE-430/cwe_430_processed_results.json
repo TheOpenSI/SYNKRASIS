@@ -1,0 +1,75 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T23:24:02.232185",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "430",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/430": {
+      "ID": "430",
+      "Type": "base_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/430": {
+      "ID": "430",
+      "Name": "Deployment of Wrong Handler",
+      "Abstraction": "Base",
+      "Structure": "Simple",
+      "Status": "Incomplete",
+      "Description": "The wrong \"handler\" is assigned to process an object.",
+      "ExtendedDescription": "An example of deploying the wrong handler would be calling a servlet to reveal source code of a .JSP file, or automatically \"determining\" type of the object even if it is contradictory to an explicitly specified type.",
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Class": "Not Language-Specific",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Implementation"
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Integrity",
+            "Other"
+          ],
+          "Impact": [
+            "Varies by Context",
+            "Unexpected State"
+          ]
+        }
+      ],
+      "DemonstrativeExamples": null,
+      "PotentialMitigations": [
+        {
+          "Phase": [
+            "Architecture and Design"
+          ],
+          "Description": "Perform a type check before interpreting an object."
+        },
+        {
+          "Phase": [
+            "Architecture and Design"
+          ],
+          "Description": "Reject any inconsistent types, such as a file with a .GIF extension that appears to consist of PHP code."
+        }
+      ]
+    },
+    "/cwe/430/parents": {
+      "weakness_parents": [],
+      "category_parents": [
+        "1348",
+        "1410",
+        "429",
+        "977"
+      ]
+    },
+    "/cwe/430/children": null
+  }
+}

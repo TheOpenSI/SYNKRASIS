@@ -1,0 +1,92 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T22:56:34.853283",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "221",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/221": {
+      "ID": "221",
+      "Type": "class_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/221": {
+      "ID": "221",
+      "Name": "Information Loss or Omission",
+      "Abstraction": "Class",
+      "Structure": "Simple",
+      "Status": "Incomplete",
+      "Description": "The product does not record, or improperly records, security-relevant information that leads to an incorrect decision or hampers later analysis.",
+      "ExtendedDescription": "This can be resultant, e.g. a buffer overflow might trigger a crash before the product can log the event.",
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Class": "Not Language-Specific",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Architecture and Design"
+        },
+        {
+          "Phase": "Implementation"
+        },
+        {
+          "Phase": "Operation"
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Non-Repudiation"
+          ],
+          "Impact": [
+            "Hide Activities"
+          ]
+        }
+      ],
+      "DemonstrativeExamples": [
+        {
+          "ID": "DX-174",
+          "Entries": [
+            {
+              "IntroText": "This code logs suspicious multiple login attempts."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "PHP",
+              "ExampleCode": "```\n\tfunction login($userName,$password){\n\t\t\tif(authenticate($userName,$password)){\n\t\t\t\treturn True;\n\t\t\t}\n\t\t\telse{\n\t\t\t\tincrementLoginAttempts($userName);\n\t\t\t\tif(recentLoginAttempts($userName) > 5){\n\t\t\t\t\twriteLog(\"Failed login attempt by User: \" . $userName . \" at \" + date('r') );\n\t\t\t\t}\n\t\t\t}\n\t}\n```"
+            },
+            {
+              "BodyText": "This code only logs failed login attempts when a certain limit is reached. If an attacker knows this limit, they can stop their attack from being discovered by avoiding the limit."
+            }
+          ]
+        }
+      ],
+      "PotentialMitigations": null
+    },
+    "/cwe/221/parents": {
+      "weakness_parents": [],
+      "category_parents": [
+        "1416",
+        "997"
+      ]
+    },
+    "/cwe/221/children": {
+      "weakness_children": [
+        "222",
+        "223",
+        "224",
+        "356",
+        "396",
+        "397",
+        "451"
+      ],
+      "category_children": []
+    }
+  }
+}

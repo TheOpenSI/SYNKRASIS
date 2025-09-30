@@ -1,0 +1,83 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T23:33:23.944136",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "501",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/501": {
+      "ID": "501",
+      "Type": "base_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/501": {
+      "ID": "501",
+      "Name": "Trust Boundary Violation",
+      "Abstraction": "Base",
+      "Structure": "Simple",
+      "Status": "Draft",
+      "Description": "The product mixes trusted and untrusted data in the same data structure or structured message.",
+      "ExtendedDescription": "A trust boundary can be thought of as line drawn through a program. On one side of the line, data is untrusted. On the other side of the line, data is assumed to be trustworthy. The purpose of validation logic is to allow data to safely cross the trust boundary - to move from untrusted to trusted. A trust boundary violation occurs when a program blurs the line between what is trusted and what is untrusted. By combining trusted and untrusted data in the same data structure, it becomes easier for programmers to mistakenly trust unvalidated data.",
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Class": "Not Language-Specific",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Architecture and Design"
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Access Control"
+          ],
+          "Impact": [
+            "Bypass Protection Mechanism"
+          ]
+        }
+      ],
+      "DemonstrativeExamples": [
+        {
+          "Entries": [
+            {
+              "IntroText": "The following code accepts an HTTP request and stores the username parameter in the HTTP session object before checking to ensure that the user has been authenticated."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "Java",
+              "ExampleCode": "```\n\tusrname = request.getParameter(\"usrname\");\n\tif (session.getAttribute(ATTR_USR) == null) {\n\t\tsession.setAttribute(ATTR_USR, usrname);\n\t}\n```"
+            },
+            {
+              "Nature": "Bad",
+              "Language": "C#",
+              "ExampleCode": "```\n\tusrname = request.Item(\"usrname\");\n\tif (session.Item(ATTR_USR) == null) {\n\t\tsession.Add(ATTR_USR, usrname);\n\t}\n```"
+            },
+            {
+              "BodyText": "Without well-established and maintained trust boundaries, programmers will inevitably lose track of which pieces of data have been validated and which have not. This confusion will eventually allow some data to be used without first being validated."
+            }
+          ]
+        }
+      ],
+      "PotentialMitigations": null
+    },
+    "/cwe/501/parents": {
+      "weakness_parents": [],
+      "category_parents": [
+        "1348",
+        "1364",
+        "1416",
+        "265",
+        "485",
+        "963"
+      ]
+    },
+    "/cwe/501/children": null
+  }
+}

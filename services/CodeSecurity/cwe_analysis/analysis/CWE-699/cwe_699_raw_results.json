@@ -1,0 +1,248 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T23:59:48.613689",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "699",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/699": {
+      "endpoint": "/cwe/699",
+      "url": "https://cwe-api.mitre.org/api/v1/cwe/699",
+      "status_code": 200,
+      "success": true,
+      "error": null,
+      "data": [
+        {
+          "Type": "view",
+          "ID": "699"
+        }
+      ]
+    },
+    "/cwe/weakness/699": {
+      "endpoint": "/cwe/weakness/699",
+      "url": "https://cwe-api.mitre.org/api/v1/cwe/weakness/699",
+      "status_code": 404,
+      "success": false,
+      "error": "HTTP 404: \"for weakness: cwe (699) not found, use the view endpoint\"\n",
+      "data": null
+    },
+    "/cwe/699/parents": {
+      "endpoint": "/cwe/699/parents",
+      "url": "https://cwe-api.mitre.org/api/v1/cwe/699/parents",
+      "status_code": 200,
+      "success": true,
+      "error": null,
+      "data": []
+    },
+    "/cwe/699/children": {
+      "endpoint": "/cwe/699/children",
+      "url": "https://cwe-api.mitre.org/api/v1/cwe/699/children",
+      "status_code": 200,
+      "success": true,
+      "error": null,
+      "data": [
+        {
+          "Type": "category",
+          "ID": "1006",
+          "ViewID": "699"
+        },
+        {
+          "Type": "category",
+          "ID": "1210",
+          "ViewID": "699"
+        },
+        {
+          "Type": "category",
+          "ID": "1211",
+          "ViewID": "699"
+        },
+        {
+          "Type": "category",
+          "ID": "1212",
+          "ViewID": "699"
+        },
+        {
+          "Type": "category",
+          "ID": "1213",
+          "ViewID": "699"
+        },
+        {
+          "Type": "category",
+          "ID": "1214",
+          "ViewID": "699"
+        },
+        {
+          "Type": "category",
+          "ID": "1215",
+          "ViewID": "699"
+        },
+        {
+          "Type": "category",
+          "ID": "1216",
+          "ViewID": "699"
+        },
+        {
+          "Type": "category",
+          "ID": "1217",
+          "ViewID": "699"
+        },
+        {
+          "Type": "category",
+          "ID": "1218",
+          "ViewID": "699"
+        },
+        {
+          "Type": "category",
+          "ID": "1219",
+          "ViewID": "699"
+        },
+        {
+          "Type": "category",
+          "ID": "1225",
+          "ViewID": "699"
+        },
+        {
+          "Type": "category",
+          "ID": "1226",
+          "ViewID": "699"
+        },
+        {
+          "Type": "category",
+          "ID": "1227",
+          "ViewID": "699"
+        },
+        {
+          "Type": "category",
+          "ID": "1228",
+          "ViewID": "699"
+        },
+        {
+          "Type": "category",
+          "ID": "133",
+          "ViewID": "699"
+        },
+        {
+          "Type": "category",
+          "ID": "136",
+          "ViewID": "699"
+        },
+        {
+          "Type": "category",
+          "ID": "137",
+          "ViewID": "699"
+        },
+        {
+          "Type": "category",
+          "ID": "189",
+          "ViewID": "699"
+        },
+        {
+          "Type": "category",
+          "ID": "19",
+          "ViewID": "699"
+        },
+        {
+          "Type": "category",
+          "ID": "199",
+          "ViewID": "699"
+        },
+        {
+          "Type": "category",
+          "ID": "255",
+          "ViewID": "699"
+        },
+        {
+          "Type": "category",
+          "ID": "265",
+          "ViewID": "699"
+        },
+        {
+          "Type": "category",
+          "ID": "275",
+          "ViewID": "699"
+        },
+        {
+          "Type": "category",
+          "ID": "310",
+          "ViewID": "699"
+        },
+        {
+          "Type": "category",
+          "ID": "320",
+          "ViewID": "699"
+        },
+        {
+          "Type": "category",
+          "ID": "355",
+          "ViewID": "699"
+        },
+        {
+          "Type": "category",
+          "ID": "371",
+          "ViewID": "699"
+        },
+        {
+          "Type": "category",
+          "ID": "387",
+          "ViewID": "699"
+        },
+        {
+          "Type": "category",
+          "ID": "389",
+          "ViewID": "699"
+        },
+        {
+          "Type": "category",
+          "ID": "399",
+          "ViewID": "699"
+        },
+        {
+          "Type": "category",
+          "ID": "411",
+          "ViewID": "699"
+        },
+        {
+          "Type": "category",
+          "ID": "417",
+          "ViewID": "699"
+        },
+        {
+          "Type": "category",
+          "ID": "429",
+          "ViewID": "699"
+        },
+        {
+          "Type": "category",
+          "ID": "438",
+          "ViewID": "699"
+        },
+        {
+          "Type": "category",
+          "ID": "452",
+          "ViewID": "699"
+        },
+        {
+          "Type": "category",
+          "ID": "465",
+          "ViewID": "699"
+        },
+        {
+          "Type": "category",
+          "ID": "557",
+          "ViewID": "699"
+        },
+        {
+          "Type": "category",
+          "ID": "569",
+          "ViewID": "699"
+        },
+        {
+          "Type": "category",
+          "ID": "840",
+          "ViewID": "699"
+        }
+      ]
+    }
+  }
+}

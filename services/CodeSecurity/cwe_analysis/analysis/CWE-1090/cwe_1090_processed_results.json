@@ -1,0 +1,52 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T22:16:00.857227",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "1090",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/1090": {
+      "ID": "1090",
+      "Type": "base_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/1090": {
+      "ID": "1090",
+      "Name": "Method Containing Access of a Member Element from Another Class",
+      "Abstraction": "Base",
+      "Structure": "Simple",
+      "Status": "Incomplete",
+      "Description": "A method for a class performs an operation that directly\n\t\t\t\t\taccesses a member element from another class.",
+      "ExtendedDescription": "\n\nThis issue suggests poor encapsulation and makes it more difficult to understand and maintain the product, which indirectly affects security by making it more difficult or time-consuming to find and/or fix vulnerabilities. It also might make it easier to introduce vulnerabilities.\n",
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": null,
+      "AlternateTerms": null,
+      "ModesOfIntroduction": null,
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Other"
+          ],
+          "Impact": [
+            "Reduce Maintainability"
+          ]
+        }
+      ],
+      "DemonstrativeExamples": null,
+      "PotentialMitigations": null
+    },
+    "/cwe/1090/parents": {
+      "weakness_parents": [
+        "1061"
+      ],
+      "category_parents": [
+        "1130",
+        "1307",
+        "1412",
+        "1227"
+      ]
+    },
+    "/cwe/1090/children": null
+  }
+}

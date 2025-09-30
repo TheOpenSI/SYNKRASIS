@@ -1,0 +1,140 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T22:37:29.767430",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "1317",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/1317": {
+      "ID": "1317",
+      "Type": "base_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/1317": {
+      "ID": "1317",
+      "Name": "Improper Access Control in Fabric Bridge",
+      "Abstraction": "Base",
+      "Structure": "Simple",
+      "Status": "Draft",
+      "Description": "The product uses a fabric bridge for transactions between two Intellectual Property (IP) blocks, but the bridge does not properly perform the expected privilege, identity, or other access control checks between those IP blocks.",
+      "ExtendedDescription": "\n\nIn hardware designs, different IP blocks are connected through interconnect-bus fabrics (e.g. AHB and OCP). Within a System on Chip (SoC), the IP block subsystems could be using different bus protocols. In such a case, the IP blocks are then linked to the central bus (and to other IP blocks) through a fabric bridge. Bridges are used as bus-interconnect-routing modules that link different protocols or separate, different segments of the overall SoC interconnect.\n\n\nFor overall system security, it is important that the access-control privileges associated with any fabric transaction are consistently maintained and applied, even when they are routed or translated by a fabric bridge. A bridge that is connected to a fabric without security features forwards transactions to the slave without checking the privilege level of the master and results in a weakness in SoC access-control security. The same weakness occurs if a bridge does not check the hardware identity of the transaction received from the slave interface of the bridge.\n",
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Class": "Not Language-Specific",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Operating_System",
+          "Class": "Not OS-Specific",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Architecture",
+          "Class": "Not Architecture-Specific",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Technology",
+          "Name": "Processor Hardware",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Technology",
+          "Class": "Not Technology-Specific",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Architecture and Design"
+        },
+        {
+          "Phase": "Implementation"
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Confidentiality",
+            "Integrity",
+            "Access Control",
+            "Availability"
+          ],
+          "Impact": [
+            "DoS: Crash, Exit, or Restart",
+            "Bypass Protection Mechanism",
+            "Read Memory",
+            "Modify Memory"
+          ],
+          "Likelihood": [
+            "Medium"
+          ]
+        }
+      ],
+      "DemonstrativeExamples": [
+        {
+          "Entries": [
+            {
+              "IntroText": "This example is from CVE-2019-6260 [REF-1138]. The iLPC2AHB bridge connects a CPU (with multiple, privilege levels, such as user, super user, debug, etc.) over AHB interface to an LPC bus. Several peripherals are connected to the LPC bus. The bridge is expected to check the privilege level of the transactions initiated in the core before forwarding them to the peripherals on the LPC bus."
+            },
+            {
+              "BodyText": "The bridge does not implement the checks and allows reads and writes from all privilege levels."
+            },
+            {
+              "BodyText": "To address this, designers should implement hardware-based checks that are either hardcoded to block untrusted agents from accessing secure peripherals or implement firmware flows that configure the bridge to block untrusted agents from making arbitrary reads or writes."
+            }
+          ]
+        },
+        {
+          "Entries": [
+            {
+              "IntroText": "The example code below is taken from the AES and core local interrupt (CLINT) peripherals of the HACK@DAC'21 buggy OpenPiton SoC. The access to all the peripherals for a given privilege level of the processor is controlled by an access control module in the SoC. This ensures that malicious users with insufficient privileges do not get access to sensitive data, such as the AES keys used by the operating system to encrypt and decrypt information. The security of the entire system will be compromised if the access controls are incorrectly enforced. The access controls are enforced through the interconnect-bus fabrics, where access requests with insufficient access control permissions will be rejected."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "Verilog",
+              "ExampleCode": "...\n module aes0_wrapper #(...)(...);\n ...\n\n```\n\t input logic acct_ctrl_i;\n ...\n\t axi_lite_interface #(...\n\t ) axi_lite_interface_i (\n\t ...\n```\n.en_o ( en_acct ),** \n\t\t ...\n ..);\n\n```\n```\nassign en = en_acct && acct_ctrl_i;** \n\t ...\n endmodule\n ...\n module clint #(...)(...);\n ...\n\n```\n\t axi_lite_interface #(...\n\t ) axi_lite_interface_i (\n\t ...\n```\n.en_o ( en ),** \n\t\t ...\n );\n ...\n endmodule"
+            },
+            {
+              "BodyText": "The previous code snippet [REF-1382] illustrates an instance of a vulnerable implementation of access control for the CLINT peripheral (see module clint). It also shows a correct implementation of access control for the AES peripheral (see module aes0_wrapper) [REF-1381]. An enable signal (en_o) from the fabric's AXI interface (present in both modules) is used to determine if an access request is made to the peripheral. In the case of the AES peripheral, this en_o signal is first received in a temporary signal en_acct. Then, the access request is enabled (by asserting the en signal) only if the request has sufficient access permissions (i.e., acct_ctrl_i signal should be enabled). However, in the case of the CLINT peripheral, the enable signal, en_o, from the AXI interface, is directly used to enable accesses. As a result, users with insufficient access permissions also get full access to the CLINT peripheral."
+            },
+            {
+              "BodyText": "To fix this, enable access requests to CLINT [REF-1383] only if the user has sufficient access as indicated by the acct_ctrl_i signal in the boolean && with en_acct."
+            },
+            {
+              "Nature": "Good",
+              "Language": "Verilog",
+              "ExampleCode": "module clint #(...\n ) (\n ... \n\n```\n```\ninput logic acct_ctrl_i,** \n\t ...\n );\n\n```\n\t logic en\n```\n, en_acct** ;\n\t ...\n\n```\n\t axi_lite_interface #(...\n\t ) axi_lite_interface_i (\n ...\n\t .en_o ( \n```\nen_acct**  ),\n\t ...\n\n```\n\t );\n```\nassign en = en_acct && acct_ctrl_i;** \n\t ...\n endmodule"
+            }
+          ]
+        }
+      ],
+      "PotentialMitigations": [
+        {
+          "Phase": [
+            "Architecture and Design"
+          ],
+          "Description": "Ensure that the design includes provisions for access-control checks in the bridge for both upstream and downstream transactions."
+        },
+        {
+          "Phase": [
+            "Implementation"
+          ],
+          "Description": "Implement access-control checks in the bridge for both upstream and downstream transactions."
+        }
+      ]
+    },
+    "/cwe/1317/parents": {
+      "weakness_parents": [],
+      "category_parents": [
+        "1203",
+        "1396"
+      ]
+    },
+    "/cwe/1317/children": null
+  }
+}

@@ -1,0 +1,85 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T23:35:10.351600",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "514",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/514": {
+      "ID": "514",
+      "Type": "class_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/514": {
+      "ID": "514",
+      "Name": "Covert Channel",
+      "Abstraction": "Class",
+      "Structure": "Simple",
+      "Status": "Incomplete",
+      "Description": "A covert channel is a path that can be used to transfer information in a way not intended by the system's designers.",
+      "ExtendedDescription": "Typically the system has not given authorization for the transmission and has no knowledge of its occurrence.",
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": null,
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Implementation"
+        },
+        {
+          "Phase": "Operation"
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Confidentiality",
+            "Access Control"
+          ],
+          "Impact": [
+            "Read Application Data",
+            "Bypass Protection Mechanism"
+          ]
+        }
+      ],
+      "DemonstrativeExamples": [
+        {
+          "ID": "DX-193",
+          "Entries": [
+            {
+              "IntroText": "In this example, the attacker observes how long an authentication takes when the user types in the correct password."
+            },
+            {
+              "BodyText": "When the attacker tries their own values, they can first try strings of various length. When they find a string of the right length, the computation will take a bit longer, because the for loop will run at least once. Additionally, with this code, the attacker can possibly learn one character of the password at a time, because when they guess the first character right, the computation will take longer than a wrong guesses. Such an attack can break even the most sophisticated password with a few hundred guesses."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "Python",
+              "ExampleCode": "```\n\tdef validate_password(actual_pw, typed_pw): \n\t\t\tif len(actual_pw) <> len(typed_pw): \n\t\t\t\treturn 0\n\t\t\tfor i in len(actual_pw): \n\t\t\t\tif actual_pw[i] <> typed_pw[i]: \n\t\t\t\t\treturn 0\n\t\t\treturn 1\n```"
+            },
+            {
+              "BodyText": "Note that in this example, the actual password must be handled in constant time as far as the attacker is concerned, even if the actual password is of an unusual length. This is one reason why it is good to use an algorithm that, among other things, stores a seeded cryptographic one-way hash of the password, then compare the hashes, which will always be of the same length."
+            }
+          ]
+        }
+      ],
+      "PotentialMitigations": null
+    },
+    "/cwe/514/parents": {
+      "weakness_parents": [
+        "1229"
+      ],
+      "category_parents": [
+        "1415",
+        "968"
+      ]
+    },
+    "/cwe/514/children": {
+      "weakness_children": [
+        "385",
+        "515"
+      ],
+      "category_children": []
+    }
+  }
+}

@@ -1,0 +1,108 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T23:35:25.244015",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "516",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/516": {
+      "endpoint": "/cwe/516",
+      "url": "https://cwe-api.mitre.org/api/v1/cwe/516",
+      "status_code": 200,
+      "success": true,
+      "error": null,
+      "data": [
+        {
+          "Type": "deprecated_weakness",
+          "ID": "516"
+        }
+      ]
+    },
+    "/cwe/weakness/516": {
+      "endpoint": "/cwe/weakness/516",
+      "url": "https://cwe-api.mitre.org/api/v1/cwe/weakness/516",
+      "status_code": 200,
+      "success": true,
+      "error": null,
+      "data": {
+        "Weaknesses": [
+          {
+            "ID": "516",
+            "Name": "DEPRECATED: Covert Timing Channel",
+            "Abstraction": "Base",
+            "Structure": "Simple",
+            "Status": "Deprecated",
+            "Description": "This weakness can be found at CWE-385.",
+            "MappingNotes": {
+              "Usage": "Prohibited",
+              "Rationale": "This CWE has been deprecated.",
+              "Comments": "See description and name for possible suggestions of other CWEs to consider.",
+              "Reasons": [
+                "Deprecated"
+              ]
+            },
+            "ContentHistory": [
+              {
+                "Type": "Submission",
+                "SubmissionName": "Landwehr",
+                "SubmissionDate": "2006-07-19",
+                "SubmissionVersion": "Draft 3",
+                "SubmissionReleaseDate": "2006-07-19"
+              },
+              {
+                "Type": "Modification",
+                "ModificationName": "CWE Content Team",
+                "ModificationOrganization": "MITRE",
+                "ModificationDate": "2008-09-08",
+                "ModificationComment": "updated Relationships"
+              },
+              {
+                "Type": "Modification",
+                "ModificationName": "CWE Content Team",
+                "ModificationOrganization": "MITRE",
+                "ModificationDate": "2009-10-29",
+                "ModificationComment": "updated Relationships"
+              },
+              {
+                "Type": "Modification",
+                "ModificationName": "CWE Content Team",
+                "ModificationOrganization": "MITRE",
+                "ModificationDate": "2021-07-20",
+                "ModificationComment": "updated Name"
+              },
+              {
+                "Type": "Modification",
+                "ModificationName": "CWE Content Team",
+                "ModificationOrganization": "MITRE",
+                "ModificationDate": "2023-06-29",
+                "ModificationComment": "updated Mapping_Notes"
+              },
+              {
+                "Type": "Rename",
+                "PreviousEntryName": "DEPRECATED (Duplicate): Covert Timing Channel",
+                "Date": "2021-07-20"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    "/cwe/516/parents": {
+      "endpoint": "/cwe/516/parents",
+      "url": "https://cwe-api.mitre.org/api/v1/cwe/516/parents",
+      "status_code": 200,
+      "success": true,
+      "error": null,
+      "data": []
+    },
+    "/cwe/516/children": {
+      "endpoint": "/cwe/516/children",
+      "url": "https://cwe-api.mitre.org/api/v1/cwe/516/children",
+      "status_code": 200,
+      "success": true,
+      "error": null,
+      "data": []
+    }
+  }
+}

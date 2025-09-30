@@ -1,0 +1,239 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T23:15:54.153441",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "367",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/367": {
+      "ID": "367",
+      "Type": "base_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/367": {
+      "ID": "367",
+      "Name": "Time-of-check Time-of-use (TOCTOU) Race Condition",
+      "Abstraction": "Base",
+      "Structure": "Simple",
+      "Status": "Incomplete",
+      "Description": "The product checks the state of a resource before using that resource, but the resource's state can change between the check and the use in a way that invalidates the results of the check.",
+      "ExtendedDescription": null,
+      "LikelihoodOfExploit": "Medium",
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Class": "Not Language-Specific",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": [
+        {
+          "Term": "TOCTTOU",
+          "Description": "The TOCTTOU acronym expands to \"Time Of Check To Time Of Use\"."
+        },
+        {
+          "Term": "TOCCTOU",
+          "Description": "The TOCCTOU acronym is most likely a typo of TOCTTOU, but it has been used in some influential documents, so the typo is repeated fairly frequently."
+        }
+      ],
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Implementation",
+          "Note": "This weakness can be security-relevant when an attacker can influence the state of the resource between check and use. This can happen with shared resources such as files, memory, or even variables in multithreaded programs."
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Integrity",
+            "Other"
+          ],
+          "Impact": [
+            "Alter Execution Logic",
+            "Unexpected State"
+          ],
+          "Note": "The attacker can gain access to otherwise unauthorized resources."
+        },
+        {
+          "Scope": [
+            "Integrity",
+            "Other"
+          ],
+          "Impact": [
+            "Modify Application Data",
+            "Modify Files or Directories",
+            "Modify Memory",
+            "Other"
+          ],
+          "Note": "Race conditions such as this kind may be employed to gain read or write access to resources which are not normally readable or writable by the user in question."
+        },
+        {
+          "Scope": [
+            "Integrity",
+            "Other"
+          ],
+          "Impact": [
+            "Other"
+          ],
+          "Note": "The resource in question, or other resources (through the corrupted one), may be changed in undesirable ways by a malicious user."
+        },
+        {
+          "Scope": [
+            "Non-Repudiation"
+          ],
+          "Impact": [
+            "Hide Activities"
+          ],
+          "Note": "If a file or other resource is written in this method, as opposed to in a valid way, logging of the activity may not occur."
+        },
+        {
+          "Scope": [
+            "Non-Repudiation",
+            "Other"
+          ],
+          "Impact": [
+            "Other"
+          ],
+          "Note": "In some cases it may be possible to delete files a malicious user might not otherwise have access to, such as log files."
+        },
+        {
+          "Scope": [
+            "Other"
+          ],
+          "Impact": [
+            "Unexpected State"
+          ],
+          "Note": "The product may perform invalid actions when the resource is in an unexpected state."
+        }
+      ],
+      "DemonstrativeExamples": [
+        {
+          "Entries": [
+            {
+              "IntroText": "The following code checks a file, then updates its contents."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "C",
+              "ExampleCode": "```\n\tstruct stat *sb;\n\t...\n\tlstat(\"...\",sb); // it has not been updated since the last time it was read\n\tprintf(\"stated file\\n\");\n\tif (sb->st_mtimespec==...){\n\t\tprint(\"Now updating things\\n\");\n\t\tupdateThings();\n\t}\n```"
+            },
+            {
+              "BodyText": "Potentially the file could have been updated between the time of the check and the lstat, especially since the printf has latency."
+            }
+          ]
+        },
+        {
+          "Entries": [
+            {
+              "IntroText": "The following code is from a program installed setuid root. The program performs certain file operations on behalf of non-privileged users, and uses access checks to ensure that it does not use its root privileges to perform operations that should otherwise be unavailable the current user. The program uses the access() system call to check if the person running the program has permission to access the specified file before it opens the file and performs the necessary operations."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "C",
+              "ExampleCode": "```\n\tif(!access(file,W_OK)) {\n\t\tf = fopen(file,\"w+\");\n\t\toperate(f);\n\t\t...\n\t}\n\telse {\n\t\t\tfprintf(stderr,\"Unable to open file %s.\\n\",file);\n\t}\n```"
+            },
+            {
+              "BodyText": "The call to access() behaves as expected, and returns 0 if the user running the program has the necessary permissions to write to the file, and -1 otherwise. However, because both access() and fopen() operate on filenames rather than on file handles, there is no guarantee that the file variable still refers to the same file on disk when it is passed to fopen() that it did when it was passed to access(). If an attacker replaces file after the call to access() with a symbolic link to a different file, the program will use its root privileges to operate on the file even if it is a file that the attacker would otherwise be unable to modify. By tricking the program into performing an operation that would otherwise be impermissible, the attacker has gained elevated privileges. This type of vulnerability is not limited to programs with root privileges. If the application is capable of performing any operation that the attacker would not otherwise be allowed perform, then it is a possible target."
+            }
+          ]
+        },
+        {
+          "ID": "DX-49",
+          "Entries": [
+            {
+              "IntroText": "This code prints the contents of a file if a user has permission."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "PHP",
+              "ExampleCode": "```\n\tfunction readFile($filename){\n\t\t\t$user = getCurrentUser();\n```\n//resolve file if its a symbolic link* \n\t\t\tif(is_link($filename)){\n\t\t\t```\n\t\t\t\t$filename = readlink($filename);\n\t\t\t}\n\t\t\tif(fileowner($filename) == $user){\n\t\t\t\techo file_get_contents($realFile);\n\t\t\t\treturn;\n\t\t\t}\n\t\t\telse{\n\t\t\t\techo 'Access denied';\n\t\t\t\treturn false;\n\t\t\t}\n\t}\n```"
+            },
+            {
+              "BodyText": "This code attempts to resolve symbolic links before checking the file and printing its contents. However, an attacker may be able to change the file from a real file to a symbolic link between the calls to is_link() and file_get_contents(), allowing the reading of arbitrary files. Note that this code fails to log the attempted access (CWE-778)."
+            }
+          ]
+        },
+        {
+          "Entries": [
+            {
+              "IntroText": "This example is adapted from [REF-18]. Assume that this code block is invoked from multiple threads. The switch statement will execute different code depending on the time when MYFILE.txt was last changed."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "C",
+              "ExampleCode": "```\n\t #include <sys/types.h>\n\t #include <sys/stat.h>\n\t ...\n\t struct stat sb;\n\t stat(\"MYFILE.txt\",&sb);\n\t printf(\"file change time: %d\\n\",sb->st_ctime);\n\t switch(sb->st_ctime % 2){\n\t\t case 0: printf(\"Option 1\\n\"); break;\n\t\t case 1: printf(\"Option 2\\n\"); break;\n\t\t default: printf(\"this should be unreachable?\\n\"); break;\n\t}\n```"
+            },
+            {
+              "BodyText": "If this code block were executed within multiple threads, and MYFILE.txt changed between the operation of one thread and another, then the switch could produce different, possibly unexpected results."
+            }
+          ]
+        }
+      ],
+      "PotentialMitigations": [
+        {
+          "Phase": [
+            "Implementation"
+          ],
+          "Description": "The most basic advice for TOCTOU vulnerabilities is to not perform a check before the use. This does not resolve the underlying issue of the execution of a function on a resource whose state and identity cannot be assured, but it does help to limit the false sense of security given by the check."
+        },
+        {
+          "Phase": [
+            "Implementation"
+          ],
+          "Description": "When the file being altered is owned by the current user and group, set the effective gid and uid to that of the current user and group when executing this statement."
+        },
+        {
+          "Phase": [
+            "Architecture and Design"
+          ],
+          "Description": "Limit the interleaving of operations on files from multiple processes."
+        },
+        {
+          "Phase": [
+            "Implementation",
+            "Architecture and Design"
+          ],
+          "Description": "If you cannot perform operations atomically and you must share access to the resource between multiple processes or threads, then try to limit the amount of time (CPU cycles) between the check and use of the resource. This will not fix the problem, but it could make it more difficult for an attack to succeed."
+        },
+        {
+          "Phase": [
+            "Implementation"
+          ],
+          "Description": "Recheck the resource after the use call to verify that the action was taken appropriately."
+        },
+        {
+          "Phase": [
+            "Architecture and Design"
+          ],
+          "Description": "Ensure that some environmental locking mechanism can be used to protect resources effectively."
+        },
+        {
+          "Phase": [
+            "Implementation"
+          ],
+          "Description": "Ensure that locking occurs before the check, as opposed to afterwards, such that the resource, as checked, is the same as it is when in use."
+        }
+      ]
+    },
+    "/cwe/367/parents": {
+      "weakness_parents": [
+        "362"
+      ],
+      "category_parents": [
+        "1401",
+        "557",
+        "361",
+        "743",
+        "877",
+        "988"
+      ]
+    },
+    "/cwe/367/children": {
+      "weakness_children": [
+        "363"
+      ],
+      "category_children": []
+    }
+  }
+}

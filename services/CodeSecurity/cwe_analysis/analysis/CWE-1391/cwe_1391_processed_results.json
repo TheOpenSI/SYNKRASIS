@@ -1,0 +1,98 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T22:42:46.784006",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "1391",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/1391": {
+      "ID": "1391",
+      "Type": "class_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/1391": {
+      "ID": "1391",
+      "Name": "Use of Weak Credentials",
+      "Abstraction": "Class",
+      "Structure": "Simple",
+      "Status": "Incomplete",
+      "Description": "The product uses weak credentials (such as a default key or hard-coded password) that can be calculated, derived, reused, or guessed by an attacker.",
+      "ExtendedDescription": "\n\nBy design, authentication protocols try to ensure that attackers must perform brute force attacks if they do not know the credentials such as a key or password. However, when these credentials are easily predictable or even fixed (as with default or hard-coded passwords and keys), then the attacker can defeat the mechanism without relying on brute force.\n\n\nCredentials may be weak for different reasons, such as:\n\n\n  - Hard-coded (i.e., static and unchangeable by the administrator)\n\n  - Default (i.e., the same static value across different deployments/installations, but able to be changed by the administrator)\n\n  - Predictable (i.e., generated in a way that produces unique credentials across deployments/installations, but can still be guessed with reasonable efficiency)\n\nEven if a new, unique credential is intended to be generated for each product installation, if the generation is predictable, then that may also simplify guessing attacks.",
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Class": "Not Language-Specific",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Operating_System",
+          "Class": "Not OS-Specific",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Architecture",
+          "Class": "Not Architecture-Specific",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Technology",
+          "Class": "ICS/OT",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Technology",
+          "Class": "Not Technology-Specific",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Requirements"
+        },
+        {
+          "Phase": "Architecture and Design"
+        },
+        {
+          "Phase": "Installation"
+        },
+        {
+          "Phase": "Operation"
+        }
+      ],
+      "CommonConsequences": null,
+      "DemonstrativeExamples": [
+        {
+          "ID": "DX-153",
+          "Entries": [
+            {
+              "IntroText": "In 2022, the OT:ICEFALL study examined products by 10 different Operational Technology (OT) vendors. The researchers reported 56 vulnerabilities and said that the products were \"insecure by design\" [REF-1283]. If exploited, these vulnerabilities often allowed adversaries to change how the products operated, ranging from denial of service to changing the code that the products executed. Since these products were often used in industries such as power, electrical, water, and others, there could even be safety implications."
+            },
+            {
+              "BodyText": "Multiple OT products used weak credentials."
+            }
+          ]
+        }
+      ],
+      "PotentialMitigations": null
+    },
+    "/cwe/1391/parents": {
+      "weakness_parents": [
+        "1390"
+      ],
+      "category_parents": [
+        "1396"
+      ]
+    },
+    "/cwe/1391/children": {
+      "weakness_children": [
+        "1392",
+        "521",
+        "798"
+      ],
+      "category_children": []
+    }
+  }
+}

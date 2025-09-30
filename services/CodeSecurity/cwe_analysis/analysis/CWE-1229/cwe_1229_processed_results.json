@@ -1,0 +1,59 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T22:25:52.503578",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "1229",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/1229": {
+      "ID": "1229",
+      "Type": "class_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/1229": {
+      "ID": "1229",
+      "Name": "Creation of Emergent Resource",
+      "Abstraction": "Class",
+      "Structure": "Simple",
+      "Status": "Incomplete",
+      "Description": "The product manages resources or behaves in a way that indirectly creates a new, distinct resource that can be used by attackers in violation of the intended policy.",
+      "ExtendedDescription": "\n\nA product is only expected to behave in a way that was specifically intended by the developer. Resource allocation and management is expected to be performed explicitly by the associated code. However, in systems with complex behavior, the product might indirectly produce new kinds of resources that were never intended in the original design. For example, a covert channel is a resource that was never explicitly intended by the developer, but it is useful to attackers. \"Parasitic computing,\" while not necessarily malicious in nature, effectively tricks a product into performing unintended computations on behalf of another party.\n",
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Class": "Not Language-Specific",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Operating_System",
+          "Class": "Not OS-Specific",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Architecture",
+          "Class": "Not Architecture-Specific",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": null,
+      "ModesOfIntroduction": null,
+      "CommonConsequences": null,
+      "DemonstrativeExamples": null,
+      "PotentialMitigations": null
+    },
+    "/cwe/1229/parents": {
+      "weakness_parents": [],
+      "category_parents": [
+        "1416"
+      ]
+    },
+    "/cwe/1229/children": {
+      "weakness_children": [
+        "514"
+      ],
+      "category_children": []
+    }
+  }
+}

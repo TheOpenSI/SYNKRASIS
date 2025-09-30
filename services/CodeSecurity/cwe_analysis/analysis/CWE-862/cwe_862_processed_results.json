@@ -1,0 +1,204 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-30T00:13:53.550251",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "862",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/862": {
+      "ID": "862",
+      "Type": "class_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/862": {
+      "ID": "862",
+      "Name": "Missing Authorization",
+      "Abstraction": "Class",
+      "Structure": "Simple",
+      "Status": "Incomplete",
+      "Description": "The product does not perform an authorization check when an actor attempts to access a resource or perform an action.",
+      "ExtendedDescription": null,
+      "LikelihoodOfExploit": "High",
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Class": "Not Language-Specific",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Technology",
+          "Name": "AI/ML",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Technology",
+          "Name": "Web Server",
+          "Prevalence": "Often"
+        },
+        {
+          "Type": "Technology",
+          "Name": "Database Server",
+          "Prevalence": "Often"
+        }
+      ],
+      "AlternateTerms": [
+        {
+          "Term": "AuthZ",
+          "Description": "\"AuthZ\" is typically used as an abbreviation of \"authorization\" within the web application security community. It is distinct from \"AuthN\" (or, sometimes, \"AuthC\") which is an abbreviation of \"authentication.\" The use of \"Auth\" as an abbreviation is discouraged, since it could be used for either authentication or authorization."
+        }
+      ],
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Architecture and Design",
+          "Note": "\n\nOMISSION: This weakness is caused by missing a security tactic during the architecture and design phase.\n\n\nAuthorization weaknesses may arise when a single-user application is ported to a multi-user environment.\n"
+        },
+        {
+          "Phase": "Implementation",
+          "Note": "A developer may introduce authorization weaknesses because of a lack of understanding about the underlying technologies. For example, a developer may assume that attackers cannot modify certain inputs such as headers or cookies."
+        },
+        {
+          "Phase": "Operation"
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Confidentiality"
+          ],
+          "Impact": [
+            "Read Application Data",
+            "Read Files or Directories"
+          ],
+          "Note": "An attacker could read sensitive data, either by reading the data directly from a data store that is not restricted, or by accessing insufficiently-protected, privileged functionality to read the data."
+        },
+        {
+          "Scope": [
+            "Integrity"
+          ],
+          "Impact": [
+            "Modify Application Data",
+            "Modify Files or Directories"
+          ],
+          "Note": "An attacker could modify sensitive data, either by writing the data directly to a data store that is not restricted, or by accessing insufficiently-protected, privileged functionality to write the data."
+        },
+        {
+          "Scope": [
+            "Access Control"
+          ],
+          "Impact": [
+            "Gain Privileges or Assume Identity",
+            "Bypass Protection Mechanism"
+          ],
+          "Note": "An attacker could gain privileges by modifying or reading critical data directly, or by accessing privileged functionality."
+        },
+        {
+          "Scope": [
+            "Availability"
+          ],
+          "Impact": [
+            "DoS: Crash, Exit, or Restart",
+            "DoS: Resource Consumption (CPU)",
+            "DoS: Resource Consumption (Memory)",
+            "DoS: Resource Consumption (Other)"
+          ],
+          "Note": "An attacker could gain unauthorized access to resources on the system and excessively consume those resources, leading to a denial of service."
+        }
+      ],
+      "DemonstrativeExamples": [
+        {
+          "ID": "DX-95",
+          "Entries": [
+            {
+              "IntroText": "This function runs an arbitrary SQL query on a given database, returning the result of the query."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "PHP",
+              "ExampleCode": "```\n\tfunction runEmployeeQuery($dbName, $name){\n\t\tmysql_select_db($dbName,$globalDbHandle) or die(\"Could not open Database\".$dbName);\n```\n//Use a prepared statement to avoid CWE-89* \n\t\t$preparedStatement = $globalDbHandle->prepare('SELECT * FROM employees WHERE name = :name');\n\t\t$preparedStatement->execute(array(':name' => $name));\n\t\treturn $preparedStatement->fetchAll();}\n\t\n\t */.../* \n\t\n\t$employeeRecord = runEmployeeQuery('EmployeeDB',$_GET['EmployeeName']);"
+            },
+            {
+              "BodyText": "While this code is careful to avoid SQL Injection, the function does not confirm the user sending the query is authorized to do so. An attacker may be able to obtain sensitive employee information from the database."
+            }
+          ]
+        },
+        {
+          "ID": "DX-96",
+          "Entries": [
+            {
+              "IntroText": "The following program could be part of a bulletin board system that allows users to send private messages to each other. This program intends to authenticate the user before deciding whether a private message should be displayed. Assume that LookupMessageObject() ensures that the $id argument is numeric, constructs a filename based on that id, and reads the message details from that file. Also assume that the program stores all private messages for all users in the same directory."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "Perl",
+              "ExampleCode": "```\n\tsub DisplayPrivateMessage {\n\t\tmy($id) = @_;\n\t\tmy $Message = LookupMessageObject($id);\n\t\tprint \"From: \" . encodeHTML($Message->{from}) . \"<br>\\n\";\n\t\tprint \"Subject: \" . encodeHTML($Message->{subject}) . \"\\n\";\n\t\tprint \"<hr>\\n\";\n\t\tprint \"Body: \" . encodeHTML($Message->{body}) . \"\\n\";\n\t}\n\tmy $q = new CGI;\n```\n# For purposes of this example, assume that CWE-309 and* \n\t\n\t\n\t\n\t *# CWE-523 do not apply.* \n\tif (! AuthenticateUser($q->param('username'), $q->param('password'))) {\n\t```\n\t\tExitError(\"invalid username or password\");\n\t}\n\tmy $id = $q->param('id');\n\tDisplayPrivateMessage($id);\n```"
+            },
+            {
+              "BodyText": "While the program properly exits if authentication fails, it does not ensure that the message is addressed to the user. As a result, an authenticated attacker could provide any arbitrary identifier and read private messages that were intended for other users."
+            },
+            {
+              "BodyText": "One way to avoid this problem would be to ensure that the \"to\" field in the message object matches the username of the authenticated user."
+            }
+          ]
+        }
+      ],
+      "PotentialMitigations": [
+        {
+          "Phase": [
+            "Architecture and Design"
+          ],
+          "Description": "\n\nDivide the product into anonymous, normal, privileged, and administrative areas. Reduce the attack surface by carefully mapping roles with data and functionality. Use role-based access control (RBAC) [REF-229] to enforce the roles at the appropriate boundaries.\n\n\nNote that this approach may not protect against horizontal authorization, i.e., it will not protect a user from attacking others with the same role.\n"
+        },
+        {
+          "Phase": [
+            "Architecture and Design"
+          ],
+          "Description": "Ensure that access control checks are performed related to the business logic. These checks may be different than the access control checks that are applied to more generic resources such as files, connections, processes, memory, and database records. For example, a database may restrict access for medical records to a specific database user, but each record might only be intended to be accessible to the patient and the patient's doctor [REF-7]."
+        },
+        {
+          "MitigationID": "MIT-4.4",
+          "Phase": [
+            "Architecture and Design"
+          ],
+          "Strategy": "Libraries or Frameworks",
+          "Description": "\n\nUse a vetted library or framework that does not allow this weakness to occur or provides constructs that make this weakness easier to avoid.\n\n\nFor example, consider using authorization frameworks such as the JAAS Authorization Framework [REF-233] and the OWASP ESAPI Access Control feature [REF-45].\n"
+        },
+        {
+          "Phase": [
+            "Architecture and Design"
+          ],
+          "Description": "\n\nFor web applications, make sure that the access control mechanism is enforced correctly at the server side on every page. Users should not be able to access any unauthorized functionality or information by simply requesting direct access to that page.\n\n\nOne way to do this is to ensure that all pages containing sensitive information are not cached, and that all such pages restrict access to requests that are accompanied by an active and authenticated session token associated with a user who has the required permissions to access that page.\n"
+        },
+        {
+          "Phase": [
+            "System Configuration",
+            "Installation"
+          ],
+          "Description": "Use the access control capabilities of your operating system and server environment and define your access control lists accordingly. Use a \"default deny\" policy when defining these ACLs."
+        }
+      ]
+    },
+    "/cwe/862/parents": {
+      "weakness_parents": [
+        "285"
+      ],
+      "category_parents": [
+        "1011",
+        "1345",
+        "1396",
+        "813",
+        "817",
+        "866"
+      ]
+    },
+    "/cwe/862/children": {
+      "weakness_children": [
+        "1314",
+        "425",
+        "638",
+        "939"
+      ],
+      "category_children": []
+    }
+  }
+}

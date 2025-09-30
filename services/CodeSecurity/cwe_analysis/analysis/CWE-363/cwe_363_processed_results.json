@@ -1,0 +1,82 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T23:15:24.171718",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "363",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/363": {
+      "ID": "363",
+      "Type": "base_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/363": {
+      "ID": "363",
+      "Name": "Race Condition Enabling Link Following",
+      "Abstraction": "Base",
+      "Structure": "Simple",
+      "Status": "Draft",
+      "Description": "The product checks the status of a file or directory before accessing it, which produces a race condition in which the file can be replaced with a link before the access is performed, causing the product to access the wrong file.",
+      "ExtendedDescription": "While developers might expect that there is a very narrow time window between the time of check and time of use, there is still a race condition. An attacker could cause the product to slow down (e.g. with memory consumption), causing the time window to become larger. Alternately, in some situations, the attacker could win the race by performing a large number of attacks.",
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Class": "Not Language-Specific",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Architecture and Design"
+        },
+        {
+          "Phase": "Implementation"
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Confidentiality",
+            "Integrity"
+          ],
+          "Impact": [
+            "Read Files or Directories",
+            "Modify Files or Directories"
+          ]
+        }
+      ],
+      "DemonstrativeExamples": [
+        {
+          "ID": "DX-49",
+          "Entries": [
+            {
+              "IntroText": "This code prints the contents of a file if a user has permission."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "PHP",
+              "ExampleCode": "```\n\tfunction readFile($filename){\n\t\t\t$user = getCurrentUser();\n```\n//resolve file if its a symbolic link* \n\t\t\tif(is_link($filename)){\n\t\t\t```\n\t\t\t\t$filename = readlink($filename);\n\t\t\t}\n\t\t\tif(fileowner($filename) == $user){\n\t\t\t\techo file_get_contents($realFile);\n\t\t\t\treturn;\n\t\t\t}\n\t\t\telse{\n\t\t\t\techo 'Access denied';\n\t\t\t\treturn false;\n\t\t\t}\n\t}\n```"
+            },
+            {
+              "BodyText": "This code attempts to resolve symbolic links before checking the file and printing its contents. However, an attacker may be able to change the file from a real file to a symbolic link between the calls to is_link() and file_get_contents(), allowing the reading of arbitrary files. Note that this code fails to log the attempted access (CWE-778)."
+            }
+          ]
+        }
+      ],
+      "PotentialMitigations": null
+    },
+    "/cwe/363/parents": {
+      "weakness_parents": [],
+      "category_parents": [
+        "1171",
+        "1401",
+        "748",
+        "988"
+      ]
+    },
+    "/cwe/363/children": null
+  }
+}

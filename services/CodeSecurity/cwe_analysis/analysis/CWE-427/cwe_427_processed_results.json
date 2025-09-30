@@ -1,0 +1,168 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T23:23:39.910724",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "427",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/427": {
+      "ID": "427",
+      "Type": "base_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/427": {
+      "ID": "427",
+      "Name": "Uncontrolled Search Path Element",
+      "Abstraction": "Base",
+      "Structure": "Simple",
+      "Status": "Draft",
+      "Description": "The product uses a fixed or controlled search path to find resources, but one or more locations in that path can be under the control of unintended actors.",
+      "ExtendedDescription": "\n\nAlthough this weakness can occur with any type of resource, it is frequently introduced when a product uses a directory search path to find executables or code libraries, but the path contains a directory that can be modified by an attacker, such as \"/tmp\" or the current working directory.\n\n\nIn Windows-based systems, when the LoadLibrary or LoadLibraryEx function is called with a DLL name that does not contain a fully qualified path, the function follows a search order that includes two path elements that might be uncontrolled:\n\n\n  - the directory from which the program has been loaded\n\n  - the current working directory\n\nIn some cases, the attack can be conducted remotely, such as when SMB or WebDAV network shares are used.\n\nOne or more locations in that path could include the Windows drive root or its subdirectories. This often exists in Linux-based code assuming the controlled nature of the root directory (/) or its subdirectories (/etc, etc), or a code that recursively accesses the parent directory. In Windows, the drive root and some of its subdirectories have weak permissions by default, which makes them uncontrolled.\n\n\nIn some Unix-based systems, a PATH might be created that contains an empty element, e.g. by splicing an empty variable into the PATH. This empty element can be interpreted as equivalent to the current working directory, which might be an untrusted search element.\n\n\nIn software package management frameworks (e.g., npm, RubyGems, or PyPi), the framework may identify dependencies on third-party libraries or other packages, then consult a repository that contains the desired package. The framework may search a public repository before a private repository. This could be exploited by attackers by placing a malicious package in the public repository that has the same name as a package from the private repository. The search path might not be directly under control of the developer relying on the framework, but this search order effectively contains an untrusted element.\n",
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Class": "Not Language-Specific",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Operating_System",
+          "Class": "Not OS-Specific",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": [
+        {
+          "Term": "DLL preloading",
+          "Description": "This term is one of several that are used to describe exploitation of untrusted search path elements in Windows systems, which received wide attention in August 2010. From a weakness perspective, the term is imprecise because it can apply to both CWE-426 and CWE-427."
+        },
+        {
+          "Term": "Binary planting",
+          "Description": "This term is one of several that are used to describe exploitation of untrusted search path elements in Windows systems, which received wide attention in August 2010. From a weakness perspective, the term is imprecise because it can apply to both CWE-426 and CWE-427."
+        },
+        {
+          "Term": "Insecure library loading",
+          "Description": "This term is one of several that are used to describe exploitation of untrusted search path elements in Windows systems, which received wide attention in August 2010. From a weakness perspective, the term is imprecise because it can apply to both CWE-426 and CWE-427."
+        },
+        {
+          "Term": "Dependency confusion",
+          "Description": "As of February 2021, this term is used to describe CWE-427 in the context of managing installation of software package dependencies, in which attackers release packages on public sites where the names are the same as package names used by private repositories, and the search for the dependent package tries the public site first, downloading untrusted code. It may also be referred to as a \"substitution attack.\""
+        }
+      ],
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Implementation"
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Confidentiality",
+            "Integrity",
+            "Availability"
+          ],
+          "Impact": [
+            "Execute Unauthorized Code or Commands"
+          ]
+        }
+      ],
+      "DemonstrativeExamples": [
+        {
+          "ID": "DX-29",
+          "Entries": [
+            {
+              "IntroText": "The following code is from a web application that allows users access to an interface through which they can update their password on the system. In this environment, user passwords can be managed using the Network Information System (NIS), which is commonly used on UNIX systems. When performing NIS updates, part of the process for updating passwords is to run a make command in the /var/yp directory. Performing NIS updates requires extra privileges."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "Java",
+              "ExampleCode": "```\n\t...\n\tSystem.Runtime.getRuntime().exec(\"make\");\n\t...\n```"
+            },
+            {
+              "BodyText": "The problem here is that the program does not specify an absolute path for make and does not clean its environment prior to executing the call to Runtime.exec(). If an attacker can modify the $PATH variable to point to a malicious binary called make and cause the program to be executed in their environment, then the malicious binary will be loaded instead of the one intended. Because of the nature of the application, it runs with the privileges necessary to perform system operations, which means the attacker's make will now be run with these privileges, possibly giving the attacker complete control of the system."
+            }
+          ]
+        },
+        {
+          "Entries": [
+            {
+              "IntroText": "In versions of Go prior to v1.19, the LookPath function would follow the conventions of the runtime OS and look for a program in the directiories listed in the current path [REF-1325]."
+            },
+            {
+              "BodyText": "Therefore, Go would prioritize searching the current directory when the provided command name does not contain a directory separator and continued to search for programs even when the specified program name is empty."
+            },
+            {
+              "BodyText": "Consider the following where an application executes a git command to run on the system."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "Go",
+              "ExampleCode": "```\n\tfunc ExecuteGitCommand(name string, arg []string) error { \n\t\t c := exec.Command(name, arg...)\n\t\t var err error\n\t\t c.Path, err = exec.LookPath(name)\n\t\t if err != nil {\n\t\t\t return err\n\t\t }\n\t }\n```"
+            },
+            {
+              "BodyText": "An attacker could create a malicious repository with a file named ..exe and another file named git.exe. If git.exe is not found in the system PATH, then ..exe would execute [REF-1326]."
+            }
+          ]
+        },
+        {
+          "Entries": [
+            {
+              "IntroText": "In February 2021 [REF-1169], a researcher was able to demonstrate the ability to breach major technology companies by using \"dependency confusion\" where the companies would download and execute untrusted packages."
+            },
+            {
+              "BodyText": "The researcher discovered the names of some internal, private packages by looking at dependency lists in public source code, such as package.json. The researcher then created new, untrusted packages with the same name as the internal packages, then uploaded them to package hosting services. These services included the npm registry for Node, PyPi for Python, and RubyGems. In affected companies, their dependency resolution would search the public hosting services first before consulting their internal service, causing the untrusted packages to be automatically downloaded and executed."
+            }
+          ]
+        }
+      ],
+      "PotentialMitigations": [
+        {
+          "Phase": [
+            "Architecture and Design",
+            "Implementation"
+          ],
+          "Strategy": "Attack Surface Reduction",
+          "Description": "Hard-code the search path to a set of known-safe values (such as system directories), or only allow them to be specified by the administrator in a configuration file. Do not allow these settings to be modified by an external party. Be careful to avoid related weaknesses such as CWE-426 and CWE-428."
+        },
+        {
+          "Phase": [
+            "Implementation"
+          ],
+          "Strategy": "Attack Surface Reduction",
+          "Description": "When invoking other programs, specify those programs using fully-qualified pathnames. While this is an effective approach, code that uses fully-qualified pathnames might not be portable to other systems that do not use the same pathnames. The portability can be improved by locating the full-qualified paths in a centralized, easily-modifiable location within the source code, and having the code refer to these paths."
+        },
+        {
+          "Phase": [
+            "Implementation"
+          ],
+          "Strategy": "Attack Surface Reduction",
+          "Description": "Remove or restrict all environment settings before invoking other programs. This includes the PATH environment variable, LD_LIBRARY_PATH, and other settings that identify the location of code libraries, and any application-specific search paths."
+        },
+        {
+          "Phase": [
+            "Implementation"
+          ],
+          "Description": "Check your search path before use and remove any elements that are likely to be unsafe, such as the current working directory or a temporary files directory. Since this is a denylist approach, it might not be a complete solution."
+        },
+        {
+          "Phase": [
+            "Implementation"
+          ],
+          "Description": "Use other functions that require explicit paths. Making use of any of the other readily available functions that require explicit paths is a safe way to avoid this problem. For example, system() in C does not require a full path since the shell can take care of finding the program using the PATH environment variable, while execl() and execv() require a full path."
+        }
+      ]
+    },
+    "/cwe/427/parents": {
+      "weakness_parents": [
+        "668"
+      ],
+      "category_parents": [
+        "1403",
+        "1219",
+        "991"
+      ]
+    },
+    "/cwe/427/children": null
+  }
+}

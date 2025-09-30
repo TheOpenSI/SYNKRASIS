@@ -1,0 +1,116 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T23:02:19.910239",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "268",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/268": {
+      "ID": "268",
+      "Type": "base_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/268": {
+      "ID": "268",
+      "Name": "Privilege Chaining",
+      "Abstraction": "Base",
+      "Structure": "Simple",
+      "Status": "Draft",
+      "Description": "Two distinct privileges, roles, capabilities, or rights can be combined in a way that allows an entity to perform unsafe actions that would not be allowed without that combination.",
+      "ExtendedDescription": null,
+      "LikelihoodOfExploit": "High",
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Class": "Not Language-Specific",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Architecture and Design"
+        },
+        {
+          "Phase": "Implementation",
+          "Note": "REALIZATION: This weakness is caused during implementation of an architectural security tactic."
+        },
+        {
+          "Phase": "Operation"
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Access Control"
+          ],
+          "Impact": [
+            "Gain Privileges or Assume Identity"
+          ],
+          "Note": "A user can be given or gain access rights of another user. This can give the user unauthorized access to sensitive information including the access information of another user."
+        }
+      ],
+      "DemonstrativeExamples": [
+        {
+          "ID": "DX-128",
+          "Entries": [
+            {
+              "IntroText": "This code allows someone with the role of \"ADMIN\" or \"OPERATOR\" to reset a user's password. The role of \"OPERATOR\" is intended to have less privileges than an \"ADMIN\", but still be able to help users with small issues such as forgotten passwords."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "Java",
+              "ExampleCode": "```\n\tpublic enum Roles {\n\t\tADMIN,OPERATOR,USER,GUEST\n\t}\n\tpublic void resetPassword(User requestingUser, User user, String password ){\n\t\t\tif(isAuthenticated(requestingUser)){\n\t\t\t\t\tswitch(requestingUser.role){\n\t\t\t\t\t\t\tcase GUEST:\n\t\t\t\t\t\t\t\tSystem.out.println(\"You are not authorized to perform this command\");\n\t\t\t\t\t\t\t\tbreak;\n\t\t\t\t\t\t\tcase USER:\n\t\t\t\t\t\t\t\tSystem.out.println(\"You are not authorized to perform this command\");\n\t\t\t\t\t\t\t\tbreak;\n\t\t\t\t\t\t\tdefault:\n\t\t\t\t\t\t\t\tsetPassword(user,password);\n\t\t\t\t\t\t\t\tbreak;\n\t\t\t\t\t\t\t}\n\t\t\t\t\t}\n\t\t\telse{\n\t\t\t\tSystem.out.println(\"You must be logged in to perform this command\");\n\t\t\t}\n\t}\n```"
+            },
+            {
+              "BodyText": "This code does not check the role of the user whose password is being reset. It is possible for an Operator to gain Admin privileges by resetting the password of an Admin account and taking control of that account."
+            }
+          ]
+        }
+      ],
+      "PotentialMitigations": [
+        {
+          "MitigationID": "MIT-49",
+          "Phase": [
+            "Architecture and Design"
+          ],
+          "Strategy": "Separation of Privilege",
+          "Description": "Consider following the principle of separation of privilege. Require multiple conditions to be met before permitting access to a system resource."
+        },
+        {
+          "MitigationID": "MIT-1",
+          "Phase": [
+            "Architecture and Design",
+            "Operation"
+          ],
+          "Description": "Very carefully manage the setting, management, and handling of privileges. Explicitly manage trust zones in the software."
+        },
+        {
+          "MitigationID": "MIT-17",
+          "Phase": [
+            "Architecture and Design",
+            "Operation"
+          ],
+          "Strategy": "Environment Hardening",
+          "Description": "Run your code using the lowest privileges that are required to accomplish the necessary tasks [REF-76]. If possible, create isolated accounts with limited privileges that are only used for a single task. That way, a successful attack will not immediately give the attacker access to the rest of the software or its environment. For example, database applications rarely need to run as the database administrator, especially in day-to-day operations."
+        }
+      ]
+    },
+    "/cwe/268/parents": {
+      "weakness_parents": [
+        "269"
+      ],
+      "category_parents": [
+        "1011",
+        "1364",
+        "1366",
+        "1396",
+        "265",
+        "723",
+        "901"
+      ]
+    },
+    "/cwe/268/children": null
+  }
+}

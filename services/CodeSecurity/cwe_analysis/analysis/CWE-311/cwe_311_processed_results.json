@@ -1,0 +1,193 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T23:08:24.617995",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "311",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/311": {
+      "ID": "311",
+      "Type": "class_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/311": {
+      "ID": "311",
+      "Name": "Missing Encryption of Sensitive Data",
+      "Abstraction": "Class",
+      "Structure": "Simple",
+      "Status": "Draft",
+      "Description": "The product does not encrypt sensitive or critical information before storage or transmission.",
+      "ExtendedDescription": null,
+      "LikelihoodOfExploit": "High",
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Class": "Not Language-Specific",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Architecture and Design",
+          "Note": "OMISSION: This weakness is caused by missing a security tactic during the architecture and design phase."
+        },
+        {
+          "Phase": "Operation"
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Confidentiality"
+          ],
+          "Impact": [
+            "Read Application Data"
+          ],
+          "Note": "If the application does not use a secure channel, such as SSL, to exchange sensitive information, it is possible for an attacker with access to the network traffic to sniff packets from the connection and uncover the data. This attack is not technically difficult, but does require physical access to some portion of the network over which the sensitive data travels. This access is usually somewhere near where the user is connected to the network (such as a colleague on the company network) but can be anywhere along the path from the user to the end server."
+        },
+        {
+          "Scope": [
+            "Confidentiality",
+            "Integrity"
+          ],
+          "Impact": [
+            "Modify Application Data"
+          ],
+          "Note": "Omitting the use of encryption in any program which transfers data over a network of any kind should be considered on par with delivering the data sent to each user on the local networks of both the sender and receiver. Worse, this omission allows for the injection of data into a stream of communication between two parties -- with no means for the victims to separate valid data from invalid. In this day of widespread network attacks and password collection sniffers, it is an unnecessary risk to omit encryption from the design of any system which might benefit from it."
+        }
+      ],
+      "DemonstrativeExamples": [
+        {
+          "ID": "DX-40",
+          "Entries": [
+            {
+              "IntroText": "This code writes a user's login information to a cookie so the user does not have to login again later."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "PHP",
+              "ExampleCode": "```\n\tfunction persistLogin($username, $password){\n\t\t$data = array(\"username\" => $username, \"password\"=> $password);\n\t\tsetcookie (\"userdata\", $data);\n\t}\n```"
+            },
+            {
+              "BodyText": "The code stores the user's username and password in plaintext in a cookie on the user's machine. This exposes the user's login information if their computer is compromised by an attacker. Even if the user's machine is not compromised, this weakness combined with cross-site scripting (CWE-79) could allow an attacker to remotely copy the cookie."
+            },
+            {
+              "BodyText": "Also note this example code also exhibits Plaintext Storage in a Cookie (CWE-315)."
+            }
+          ]
+        },
+        {
+          "ID": "DX-41",
+          "Entries": [
+            {
+              "IntroText": "The following code attempts to establish a connection, read in a password, then store it to a buffer."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "C",
+              "ExampleCode": "```\n\tserver.sin_family = AF_INET; hp = gethostbyname(argv[1]);\n\tif (hp==NULL) error(\"Unknown host\");\n\tmemcpy( (char *)&server.sin_addr,(char *)hp->h_addr,hp->h_length);\n\tif (argc < 3) port = 80;\n\telse port = (unsigned short)atoi(argv[3]);\n\tserver.sin_port = htons(port);\n\tif (connect(sock, (struct sockaddr *)&server, sizeof server) < 0) error(\"Connecting\");\n\t...\n\twhile ((n=read(sock,buffer,BUFSIZE-1))!=-1) {\n\t\t\twrite(dfd,password_buffer,n);\n\t\t\t...\n```"
+            },
+            {
+              "BodyText": "While successful, the program does not encrypt the data before writing it to a buffer, possibly exposing it to unauthorized actors."
+            }
+          ]
+        },
+        {
+          "ID": "DX-42",
+          "Entries": [
+            {
+              "IntroText": "The following code attempts to establish a connection to a site to communicate sensitive information."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "Java",
+              "ExampleCode": "```\n\ttry {\n\t\tURL u = new URL(\"http://www.secret.example.org/\");\n\t\tHttpURLConnection hu = (HttpURLConnection) u.openConnection();\n\t\thu.setRequestMethod(\"PUT\");\n\t\thu.connect();\n\t\tOutputStream os = hu.getOutputStream();\n\t\thu.disconnect();\n\t}\n\tcatch (IOException e) {\n```\n//...* \n\t\t\t}"
+            },
+            {
+              "BodyText": "Though a connection is successfully made, the connection is unencrypted and it is possible that all sensitive data sent to or received from the server will be read by unintended actors."
+            }
+          ]
+        }
+      ],
+      "PotentialMitigations": [
+        {
+          "Phase": [
+            "Requirements"
+          ],
+          "Description": "Clearly specify which data or resources are valuable enough that they should be protected by encryption. Require that any transmission or storage of this data/resource should use well-vetted encryption algorithms."
+        },
+        {
+          "Phase": [
+            "Architecture and Design"
+          ],
+          "Description": "\n\nEnsure that encryption is properly integrated into the system design, including but not necessarily limited to:\n\n\n  - Encryption that is needed to store or transmit private data of the users of the system\n\n  - Encryption that is needed to protect the system itself from unauthorized disclosure or tampering\n\nIdentify the separate needs and contexts for encryption:\n\n  - One-way (i.e., only the user or recipient needs to have the key). This can be achieved using public key cryptography, or other techniques in which the encrypting party (i.e., the product) does not need to have access to a private key.\n\n  - Two-way (i.e., the encryption can be automatically performed on behalf of a user, but the key must be available so that the plaintext can be automatically recoverable by that user). This requires storage of the private key in a format that is recoverable only by the user (or perhaps by the operating system) in a way that cannot be recovered by others.\n\nUsing threat modeling or other techniques, assume that data can be compromised through a separate vulnerability or weakness, and determine where encryption will be most effective. Ensure that data that should be private is not being inadvertently exposed using weaknesses such as insecure permissions (CWE-732). [REF-7]"
+        },
+        {
+          "MitigationID": "MIT-24",
+          "Phase": [
+            "Architecture and Design"
+          ],
+          "Strategy": "Libraries or Frameworks",
+          "Description": "\n\nWhen there is a need to store or transmit sensitive data, use strong, up-to-date cryptographic algorithms to encrypt that data. Select a well-vetted algorithm that is currently considered to be strong by experts in the field, and use well-tested implementations. As with all cryptographic mechanisms, the source code should be available for analysis.\n\n\nFor example, US government systems require FIPS 140-2 certification.\n\n\nDo not develop custom or private cryptographic algorithms. They will likely be exposed to attacks that are well-understood by cryptographers. Reverse engineering techniques are mature. If the algorithm can be compromised if attackers find out how it works, then it is especially weak.\n\n\nPeriodically ensure that the cryptography has not become obsolete. Some older algorithms, once thought to require a billion years of computing time, can now be broken in days or hours. This includes MD4, MD5, SHA1, DES, and other algorithms that were once regarded as strong. [REF-267]\n"
+        },
+        {
+          "MitigationID": "MIT-46",
+          "Phase": [
+            "Architecture and Design"
+          ],
+          "Strategy": "Separation of Privilege",
+          "Description": "\n\nCompartmentalize the system to have \"safe\" areas where trust boundaries can be unambiguously drawn. Do not allow sensitive data to go outside of the trust boundary and always be careful when interfacing with a compartment outside of the safe area.\n\n\nEnsure that appropriate compartmentalization is built into the system design, and the compartmentalization allows for and reinforces privilege separation functionality. Architects and designers should rely on the principle of least privilege to decide the appropriate time to use privileges and the time to drop privileges.\n"
+        },
+        {
+          "MitigationID": "MIT-25",
+          "Phase": [
+            "Implementation",
+            "Architecture and Design"
+          ],
+          "Description": "When using industry-approved techniques, use them correctly. Don't cut corners by skipping resource-intensive steps (CWE-325). These steps are often essential for preventing common attacks."
+        },
+        {
+          "MitigationID": "MIT-33",
+          "Phase": [
+            "Implementation"
+          ],
+          "Strategy": "Attack Surface Reduction",
+          "Description": "Use naming conventions and strong types to make it easier to spot when sensitive data is being used. When creating structures, objects, or other complex entities, separate the sensitive and non-sensitive data as much as possible.",
+          "Effectiveness": "Defense in Depth",
+          "EffectivenessNotes": "This makes it easier to spot places in the code where data is being used that is unencrypted."
+        }
+      ]
+    },
+    "/cwe/311/parents": {
+      "weakness_parents": [],
+      "category_parents": [
+        "1013",
+        "1029",
+        "1152",
+        "1348",
+        "1366",
+        "1402",
+        "719",
+        "720",
+        "729",
+        "803",
+        "816",
+        "818",
+        "861",
+        "963",
+        "866",
+        "930",
+        "934"
+      ]
+    },
+    "/cwe/311/children": {
+      "weakness_children": [
+        "312",
+        "319"
+      ],
+      "category_children": []
+    }
+  }
+}

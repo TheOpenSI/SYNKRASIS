@@ -1,0 +1,62 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T22:57:36.178832",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "229",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/229": {
+      "ID": "229",
+      "Type": "base_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/229": {
+      "ID": "229",
+      "Name": "Improper Handling of Values",
+      "Abstraction": "Base",
+      "Structure": "Simple",
+      "Status": "Incomplete",
+      "Description": "The product does not properly handle when the expected number of values for parameters, fields, or arguments is not provided in input, or if those values are undefined.",
+      "ExtendedDescription": null,
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": null,
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Implementation"
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Integrity"
+          ],
+          "Impact": [
+            "Unexpected State"
+          ]
+        }
+      ],
+      "DemonstrativeExamples": null,
+      "PotentialMitigations": null
+    },
+    "/cwe/229/parents": {
+      "weakness_parents": [
+        "228"
+      ],
+      "category_parents": [
+        "1407",
+        "19",
+        "993"
+      ]
+    },
+    "/cwe/229/children": {
+      "weakness_children": [
+        "230",
+        "231",
+        "232"
+      ],
+      "category_children": []
+    }
+  }
+}

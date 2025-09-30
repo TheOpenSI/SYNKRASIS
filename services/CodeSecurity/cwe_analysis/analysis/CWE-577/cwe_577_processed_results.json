@@ -1,0 +1,92 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T23:43:30.072036",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "577",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/577": {
+      "ID": "577",
+      "Type": "variant_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/577": {
+      "ID": "577",
+      "Name": "EJB Bad Practices: Use of Sockets",
+      "Abstraction": "Variant",
+      "Structure": "Simple",
+      "Status": "Draft",
+      "Description": "The product violates the Enterprise JavaBeans (EJB) specification by using sockets.",
+      "ExtendedDescription": "The Enterprise JavaBeans specification requires that every bean provider follow a set of programming guidelines designed to ensure that the bean will be portable and behave consistently in any EJB container. In this case, the product violates the following EJB guideline: \"An enterprise bean must not attempt to listen on a socket, accept connections on a socket, or use a socket for multicast.\" The specification justifies this requirement in the following way: \"The EJB architecture allows an enterprise bean instance to be a network socket client, but it does not allow it to be a network server. Allowing the instance to become a network server would conflict with the basic function of the enterprise bean-- to serve the EJB clients.\"",
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Name": "Java",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Implementation"
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Other"
+          ],
+          "Impact": [
+            "Quality Degradation"
+          ]
+        }
+      ],
+      "DemonstrativeExamples": [
+        {
+          "Entries": [
+            {
+              "IntroText": "The following Java example is a simple stateless Enterprise JavaBean that retrieves stock symbols and stock values. The Enterprise JavaBean creates a socket and listens for and accepts connections from clients on the socket."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "Java",
+              "ExampleCode": "```\n\t@Stateless\n\tpublic class StockSymbolBean implements StockSymbolRemote {\n\t\t\tServerSocket serverSocket = null;\n\t\t\tSocket clientSocket = null;\n\t\t\tpublic StockSymbolBean() {\n\t\t\t\t\ttry {\n\t\t\t\t\t\tserverSocket = new ServerSocket(Constants.SOCKET_PORT);\n\t\t\t\t\t} catch (IOException ex) {...}\n\t\t\t\t\ttry {\n\t\t\t\t\t\tclientSocket = serverSocket.accept();\n\t\t\t\t\t} catch (IOException e) {...}\n\t\t\t}\n\t\t\tpublic String getStockSymbol(String name) {...}\n\t\t\tpublic BigDecimal getStockValue(String symbol) {...}\n\t\t\tprivate void processClientInputFromSocket() {...}\n\t}\n```"
+            },
+            {
+              "BodyText": "And the following Java example is similar to the previous example but demonstrates the use of multicast socket connections within an Enterprise JavaBean."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "Java",
+              "ExampleCode": "```\n\t@Stateless\n\tpublic class StockSymbolBean extends Thread implements StockSymbolRemote {\n\t\t\tServerSocket serverSocket = null;\n\t\t\tSocket clientSocket = null;\n\t\t\tboolean listening = false;\n\t\t\tpublic StockSymbolBean() {\n\t\t\t\t\ttry {\n\t\t\t\t\t\tserverSocket = new ServerSocket(Constants.SOCKET_PORT);\n\t\t\t\t\t} catch (IOException ex) {...}\n\t\t\t\t\tlistening = true;\n\t\t\t\t\twhile(listening) {\n\t\t\t\t\t\tstart();\n\t\t\t\t\t}\n\t\t\t}\n\t\t\tpublic String getStockSymbol(String name) {...}\n\t\t\tpublic BigDecimal getStockValue(String symbol) {...}\n\t\t\tpublic void run() {\n\t\t\t\ttry {\n\t\t\t\t\tclientSocket = serverSocket.accept();\n\t\t\t\t} catch (IOException e) {...}\n\t\t\t\t...\n\t\t\t}\n\t}\n```"
+            },
+            {
+              "BodyText": "The previous two examples within any type of Enterprise JavaBean violate the EJB specification by attempting to listen on a socket, accepting connections on a socket, or using a socket for multicast."
+            }
+          ]
+        }
+      ],
+      "PotentialMitigations": [
+        {
+          "Phase": [
+            "Architecture and Design",
+            "Implementation"
+          ],
+          "Description": "Do not use Sockets when writing EJBs."
+        }
+      ]
+    },
+    "/cwe/577/parents": {
+      "weakness_parents": [
+        "573"
+      ],
+      "category_parents": [
+        "1412",
+        "1001"
+      ]
+    },
+    "/cwe/577/children": null
+  }
+}

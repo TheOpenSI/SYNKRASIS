@@ -1,0 +1,68 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T23:39:46.372570",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "548",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/548": {
+      "ID": "548",
+      "Type": "variant_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/548": {
+      "ID": "548",
+      "Name": "Exposure of Information Through Directory Listing",
+      "Abstraction": "Variant",
+      "Structure": "Simple",
+      "Status": "Draft",
+      "Description": "The product inappropriately exposes a directory listing with an index of all the resources located inside of the directory.",
+      "ExtendedDescription": null,
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": null,
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Implementation"
+        },
+        {
+          "Phase": "Operation"
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Confidentiality"
+          ],
+          "Impact": [
+            "Read Files or Directories"
+          ],
+          "Note": "Exposing the contents of a directory can lead to an attacker gaining access to source code or providing useful information for the attacker to devise exploits, such as creation times of files or any information that may be encoded in file names. The directory listing may also compromise private or confidential data."
+        }
+      ],
+      "DemonstrativeExamples": null,
+      "PotentialMitigations": [
+        {
+          "Phase": [
+            "Architecture and Design",
+            "System Configuration"
+          ],
+          "Description": "Recommendations include restricting access to important directories or files by adopting a need to know requirement for both the document and server root, and turning off features such as Automatic Directory Listings that could expose private files and provide information that could be utilized by an attacker when formulating or conducting an attack."
+        }
+      ]
+    },
+    "/cwe/548/parents": {
+      "weakness_parents": [],
+      "category_parents": [
+        "1032",
+        "1345",
+        "1417",
+        "731",
+        "963",
+        "933"
+      ]
+    },
+    "/cwe/548/children": null
+  }
+}

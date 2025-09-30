@@ -1,0 +1,30 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-30T00:00:11.241708",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "700",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/700": {
+      "ID": "700",
+      "Type": "view",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/700": null,
+    "/cwe/700/parents": null,
+    "/cwe/700/children": {
+      "weakness_children": [],
+      "category_children": [
+        "1005",
+        "2",
+        "227",
+        "254",
+        "361",
+        "388",
+        "398",
+        "485"
+      ]
+    }
+  }
+}

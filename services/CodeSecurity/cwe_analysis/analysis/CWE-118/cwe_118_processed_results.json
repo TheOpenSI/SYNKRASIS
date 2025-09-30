@@ -1,0 +1,68 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T22:22:59.845548",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "118",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/118": {
+      "ID": "118",
+      "Type": "class_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/118": {
+      "ID": "118",
+      "Name": "Incorrect Access of Indexable Resource ('Range Error')",
+      "Abstraction": "Class",
+      "Structure": "Simple",
+      "Status": "Incomplete",
+      "Description": "The product does not restrict or incorrectly restricts operations within the boundaries of a resource that is accessed using an index or pointer, such as memory or files.",
+      "ExtendedDescription": null,
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Class": "Not Language-Specific",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Technology",
+          "Class": "Not Technology-Specific",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Implementation"
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Other"
+          ],
+          "Impact": [
+            "Varies by Context"
+          ]
+        }
+      ],
+      "DemonstrativeExamples": null,
+      "PotentialMitigations": null
+    },
+    "/cwe/118/parents": {
+      "weakness_parents": [],
+      "category_parents": [
+        "1416",
+        "970"
+      ]
+    },
+    "/cwe/118/children": {
+      "weakness_children": [
+        "119"
+      ],
+      "category_children": []
+    }
+  }
+}

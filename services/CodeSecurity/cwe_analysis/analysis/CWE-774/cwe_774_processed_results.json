@@ -1,0 +1,70 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-30T00:05:37.801222",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "774",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/774": {
+      "ID": "774",
+      "Type": "variant_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/774": {
+      "ID": "774",
+      "Name": "Allocation of File Descriptors or Handles Without Limits or Throttling",
+      "Abstraction": "Variant",
+      "Structure": "Simple",
+      "Status": "Incomplete",
+      "Description": "The product allocates file descriptors or handles on behalf of an actor without imposing any restrictions on how many descriptors can be allocated, in violation of the intended security policy for that actor.",
+      "ExtendedDescription": "This can cause the product to consume all available file descriptors or handles, which can prevent other processes from performing critical file processing operations.",
+      "LikelihoodOfExploit": "Low",
+      "ApplicablePlatforms": null,
+      "AlternateTerms": [
+        {
+          "Term": "File Descriptor Exhaustion"
+        }
+      ],
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Architecture and Design"
+        },
+        {
+          "Phase": "Implementation"
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Availability"
+          ],
+          "Impact": [
+            "DoS: Resource Consumption (Other)"
+          ],
+          "Note": "When allocating resources without limits, an attacker could prevent all other processes from accessing the same type of resource."
+        }
+      ],
+      "DemonstrativeExamples": null,
+      "PotentialMitigations": [
+        {
+          "MitigationID": "MIT-47",
+          "Phase": [
+            "Operation",
+            "Architecture and Design"
+          ],
+          "Strategy": "Resource Limitation",
+          "Description": "\n\nUse resource-limiting settings provided by the operating system or environment. For example, when managing system resources in POSIX, setrlimit() can be used to set limits for certain types of resources, and getrlimit() can determine how many resources are available. However, these functions are not available on all operating systems.\n\n\nWhen the current levels get close to the maximum that is defined for the application (see CWE-770), then limit the allocation of further resources to privileged users; alternately, begin releasing resources for less-privileged users. While this mitigation may protect the system from attack, it will not necessarily stop attackers from adversely impacting other users.\n\n\nEnsure that the application performs the appropriate error checks and error handling in case resources become unavailable (CWE-703).\n"
+        }
+      ]
+    },
+    "/cwe/774/parents": {
+      "weakness_parents": [],
+      "category_parents": [
+        "1416",
+        "985"
+      ]
+    },
+    "/cwe/774/children": null
+  }
+}

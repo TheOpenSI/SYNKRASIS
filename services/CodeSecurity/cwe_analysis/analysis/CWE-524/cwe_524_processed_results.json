@@ -1,0 +1,79 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T23:36:32.181604",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "524",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/524": {
+      "ID": "524",
+      "Type": "base_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/524": {
+      "ID": "524",
+      "Name": "Use of Cache Containing Sensitive Information",
+      "Abstraction": "Base",
+      "Structure": "Simple",
+      "Status": "Incomplete",
+      "Description": "The code uses a cache that contains sensitive information, but the cache can be read by an actor outside of the intended control sphere.",
+      "ExtendedDescription": "Applications may use caches to improve efficiency when communicating with remote entities or performing intensive calculations. A cache maintains a pool of objects, threads, connections, pages, financial data, passwords, or other resources to minimize the time it takes to initialize and access these resources. If the cache is accessible to unauthorized actors, attackers can read the cache and obtain this sensitive information.",
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": null,
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Implementation"
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Confidentiality"
+          ],
+          "Impact": [
+            "Read Application Data"
+          ]
+        }
+      ],
+      "DemonstrativeExamples": null,
+      "PotentialMitigations": [
+        {
+          "Phase": [
+            "Architecture and Design"
+          ],
+          "Description": "Protect information stored in cache."
+        },
+        {
+          "Phase": [
+            "Architecture and Design"
+          ],
+          "Description": "Do not store unnecessarily sensitive information in the cache."
+        },
+        {
+          "Phase": [
+            "Architecture and Design"
+          ],
+          "Description": "Consider using encryption in the cache."
+        }
+      ]
+    },
+    "/cwe/524/parents": {
+      "weakness_parents": [
+        "668"
+      ],
+      "category_parents": [
+        "1403",
+        "199",
+        "965"
+      ]
+    },
+    "/cwe/524/children": {
+      "weakness_children": [
+        "525"
+      ],
+      "category_children": []
+    }
+  }
+}

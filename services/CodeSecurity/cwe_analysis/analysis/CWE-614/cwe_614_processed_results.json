@@ -1,0 +1,80 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T23:48:44.581149",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "614",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/614": {
+      "ID": "614",
+      "Type": "variant_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/614": {
+      "ID": "614",
+      "Name": "Sensitive Cookie in HTTPS Session Without 'Secure' Attribute",
+      "Abstraction": "Variant",
+      "Structure": "Simple",
+      "Status": "Draft",
+      "Description": "The Secure attribute for sensitive cookies in HTTPS sessions is not set.",
+      "ExtendedDescription": null,
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": [
+        {
+          "Type": "Technology",
+          "Class": "Web Based",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Implementation"
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Confidentiality"
+          ],
+          "Impact": [
+            "Read Application Data"
+          ],
+          "Note": "Omitting the secure flag makes it possible for the user agent to send the cookies in plaintext over an HTTP session."
+        }
+      ],
+      "DemonstrativeExamples": [
+        {
+          "Entries": [
+            {
+              "IntroText": "The snippet of code below, taken from a servlet doPost() method, sets an accountID cookie (sensitive) without calling setSecure(true)."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "Java",
+              "ExampleCode": "```\n\tCookie c = new Cookie(ACCOUNT_ID, acctID);\n\tresponse.addCookie(c);\n```"
+            }
+          ]
+        }
+      ],
+      "PotentialMitigations": [
+        {
+          "Phase": [
+            "Implementation"
+          ],
+          "Description": "Always set the secure attribute when the cookie should be sent via HTTPS only."
+        }
+      ]
+    },
+    "/cwe/614/parents": {
+      "weakness_parents": [],
+      "category_parents": [
+        "1349",
+        "1402",
+        "966"
+      ]
+    },
+    "/cwe/614/children": null
+  }
+}

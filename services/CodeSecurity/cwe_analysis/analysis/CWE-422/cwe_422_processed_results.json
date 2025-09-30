@@ -1,0 +1,66 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T23:23:02.269448",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "422",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/422": {
+      "ID": "422",
+      "Type": "variant_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/422": {
+      "ID": "422",
+      "Name": "Unprotected Windows Messaging Channel ('Shatter')",
+      "Abstraction": "Variant",
+      "Structure": "Simple",
+      "Status": "Draft",
+      "Description": "The product does not properly verify the source of a message in the Windows Messaging System while running at elevated privileges, creating an alternate channel through which an attacker can directly send a message to the product.",
+      "ExtendedDescription": null,
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Class": "Not Language-Specific",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Architecture and Design"
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Access Control"
+          ],
+          "Impact": [
+            "Gain Privileges or Assume Identity",
+            "Bypass Protection Mechanism"
+          ]
+        }
+      ],
+      "DemonstrativeExamples": null,
+      "PotentialMitigations": [
+        {
+          "Phase": [
+            "Architecture and Design"
+          ],
+          "Description": "Always verify and authenticate the source of the message."
+        }
+      ]
+    },
+    "/cwe/422/parents": {
+      "weakness_parents": [],
+      "category_parents": [
+        "1396",
+        "953"
+      ]
+    },
+    "/cwe/422/children": null
+  }
+}

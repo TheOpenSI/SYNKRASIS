@@ -1,0 +1,93 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-30T00:06:38.548359",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "781",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/781": {
+      "ID": "781",
+      "Type": "variant_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/781": {
+      "ID": "781",
+      "Name": "Improper Address Validation in IOCTL with METHOD_NEITHER I/O Control Code",
+      "Abstraction": "Variant",
+      "Structure": "Simple",
+      "Status": "Draft",
+      "Description": "The product defines an IOCTL that uses METHOD_NEITHER for I/O, but it does not validate or incorrectly validates the addresses that are provided.",
+      "ExtendedDescription": "When an IOCTL uses the METHOD_NEITHER option for I/O control, it is the responsibility of the IOCTL to validate the addresses that have been supplied to it. If validation is missing or incorrect, attackers can supply arbitrary memory addresses, leading to code execution or a denial of service.",
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Name": "C",
+          "Prevalence": "Often"
+        },
+        {
+          "Type": "Language",
+          "Name": "C++",
+          "Prevalence": "Often"
+        },
+        {
+          "Type": "Operating_System",
+          "Name": "Windows NT",
+          "Prevalence": "Sometimes"
+        }
+      ],
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Implementation"
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Integrity",
+            "Availability",
+            "Confidentiality"
+          ],
+          "Impact": [
+            "Modify Memory",
+            "Read Memory",
+            "Execute Unauthorized Code or Commands",
+            "DoS: Crash, Exit, or Restart"
+          ],
+          "Note": "An attacker may be able to access memory that belongs to another process or user. If the attacker can control the contents that the IOCTL writes, it may lead to code execution at high privilege levels. At the least, a crash can occur."
+        }
+      ],
+      "DemonstrativeExamples": null,
+      "PotentialMitigations": [
+        {
+          "Phase": [
+            "Implementation"
+          ],
+          "Description": "If METHOD_NEITHER is required for the IOCTL, then ensure that all user-space addresses are properly validated before they are first accessed. The ProbeForRead and ProbeForWrite routines are available for this task. Also properly protect and manage the user-supplied buffers, since the I/O Manager does not do this when METHOD_NEITHER is being used. See References."
+        },
+        {
+          "Phase": [
+            "Architecture and Design"
+          ],
+          "Description": "If possible, avoid using METHOD_NEITHER in the IOCTL and select methods that effectively control the buffer size, such as METHOD_BUFFERED, METHOD_IN_DIRECT, or METHOD_OUT_DIRECT."
+        },
+        {
+          "Phase": [
+            "Architecture and Design",
+            "Implementation"
+          ],
+          "Description": "If the IOCTL is part of a driver that is only intended to be accessed by trusted users, then use proper access control for the associated device or device namespace. See References."
+        }
+      ]
+    },
+    "/cwe/781/parents": {
+      "weakness_parents": [],
+      "category_parents": [
+        "1406"
+      ]
+    },
+    "/cwe/781/children": null
+  }
+}

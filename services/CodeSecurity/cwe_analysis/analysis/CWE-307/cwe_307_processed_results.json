@@ -1,0 +1,155 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T23:07:54.627266",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "307",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/307": {
+      "ID": "307",
+      "Type": "base_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/307": {
+      "ID": "307",
+      "Name": "Improper Restriction of Excessive Authentication Attempts",
+      "Abstraction": "Base",
+      "Structure": "Simple",
+      "Status": "Draft",
+      "Description": "The product does not implement sufficient measures to prevent multiple failed authentication attempts within a short time frame.",
+      "ExtendedDescription": null,
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Class": "Not Language-Specific",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Architecture and Design",
+          "Note": "COMMISSION: This weakness refers to an incorrect design related to an architectural security tactic."
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Access Control"
+          ],
+          "Impact": [
+            "Bypass Protection Mechanism"
+          ],
+          "Note": "An attacker could perform an arbitrary number of authentication attempts using different passwords, and eventually gain access to the targeted account using a brute force attack."
+        }
+      ],
+      "DemonstrativeExamples": [
+        {
+          "ID": "DX-117",
+          "Entries": [
+            {
+              "IntroText": "In January 2009, an attacker was able to gain administrator access to a Twitter server because the server did not restrict the number of login attempts [REF-236]. The attacker targeted a member of Twitter's support team and was able to successfully guess the member's password using a brute force attack by guessing a large number of common words. After gaining access as the member of the support staff, the attacker used the administrator panel to gain access to 33 accounts that belonged to celebrities and politicians. Ultimately, fake Twitter messages were sent that appeared to come from the compromised accounts."
+            },
+            {
+              "Reference": "REF-236"
+            }
+          ]
+        },
+        {
+          "Entries": [
+            {
+              "IntroText": "The following code, extracted from a servlet's doPost() method, performs an authentication lookup every time the servlet is invoked."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "Java",
+              "ExampleCode": "```\n\tString username = request.getParameter(\"username\");\n\tString password = request.getParameter(\"password\");\n\tint authResult = authenticateUser(username, password);\n```"
+            },
+            {
+              "BodyText": "However, the software makes no attempt to restrict excessive authentication attempts."
+            }
+          ]
+        },
+        {
+          "Entries": [
+            {
+              "IntroText": "This code attempts to limit the number of login attempts by causing the process to sleep before completing the authentication."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "PHP",
+              "ExampleCode": "```\n\t$username = $_POST['username'];\n\t$password = $_POST['password'];\n\tsleep(2000);\n\t$isAuthenticated = authenticateUser($username, $password);\n```"
+            },
+            {
+              "BodyText": "However, there is no limit on parallel connections, so this does not increase the amount of time an attacker needs to complete an attack."
+            }
+          ]
+        },
+        {
+          "Entries": [
+            {
+              "IntroText": "In the following C/C++ example the validateUser method opens a socket connection, reads a username and password from the socket and attempts to authenticate the username and password."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "C",
+              "ExampleCode": "```\n\tint validateUser(char *host, int port)\n\t{\n\t\t\tint socket = openSocketConnection(host, port);\n\t\t\tif (socket < 0) {\n\t\t\t\tprintf(\"Unable to open socket connection\");\n\t\t\t\treturn(FAIL);\n\t\t\t}\n\t\t\tint isValidUser = 0;\n\t\t\tchar username[USERNAME_SIZE];\n\t\t\tchar password[PASSWORD_SIZE];\n\t\t\twhile (isValidUser == 0) {\n\t\t\t\t\tif (getNextMessage(socket, username, USERNAME_SIZE) > 0) {\n\t\t\t\t\t\tif (getNextMessage(socket, password, PASSWORD_SIZE) > 0) {\n\t\t\t\t\t\t\tisValidUser = AuthenticateUser(username, password);\n\t\t\t\t\t\t}\n\t\t\t\t\t}\n\t\t\t}\n\t\t\treturn(SUCCESS);\n\t}\n```"
+            },
+            {
+              "BodyText": "The validateUser method will continuously check for a valid username and password without any restriction on the number of authentication attempts made. The method should limit the number of authentication attempts made to prevent brute force attacks as in the following example code."
+            },
+            {
+              "Nature": "Good",
+              "Language": "C",
+              "ExampleCode": "```\n\tint validateUser(char *host, int port)\n\t{\n\t\t\t...\n\t\t\tint count = 0;\n\t\t\twhile ((isValidUser == 0) && (count < MAX_ATTEMPTS)) {\n\t\t\t\t\tif (getNextMessage(socket, username, USERNAME_SIZE) > 0) {\n\t\t\t\t\t\tif (getNextMessage(socket, password, PASSWORD_SIZE) > 0) {\n\t\t\t\t\t\t\tisValidUser = AuthenticateUser(username, password);\n\t\t\t\t\t\t}\n\t\t\t\t\t}\n\t\t\t\t\tcount++;\n\t\t\t}\n\t\t\tif (isValidUser) {\n\t\t\t\treturn(SUCCESS);\n\t\t\t}\n\t\t\telse {\n\t\t\t\treturn(FAIL);\n\t\t\t}\n\t}\n```"
+            }
+          ]
+        },
+        {
+          "Entries": [
+            {
+              "IntroText": "Consider this example from a real-world attack against the iPhone [REF-1218]. An attacker can use brute force methods; each time there is a failed guess, the attacker quickly cuts the power before the failed entry is recorded, effectively bypassing the intended limit on the number of failed authentication attempts. Note that this attack requires removal of the cell phone battery and connecting directly to the phone's power source, and the brute force attack is still time-consuming."
+            }
+          ]
+        }
+      ],
+      "PotentialMitigations": [
+        {
+          "Phase": [
+            "Architecture and Design"
+          ],
+          "Description": "\n\nCommon protection mechanisms include:\n\n\n  - Disconnecting the user after a small number of failed attempts\n\n  - Implementing a timeout\n\n  - Locking out a targeted account\n\n  - Requiring a computational task on the user's part.\n\n"
+        },
+        {
+          "MitigationID": "MIT-4",
+          "Phase": [
+            "Architecture and Design"
+          ],
+          "Strategy": "Libraries or Frameworks",
+          "Description": "\n\nUse a vetted library or framework that does not allow this weakness to occur or provides constructs that make this weakness easier to avoid [REF-1482].\n\n\nConsider using libraries with authentication capabilities such as OpenSSL or the ESAPI Authenticator. [REF-45]\n"
+        }
+      ]
+    },
+    "/cwe/307/parents": {
+      "weakness_parents": [
+        "1390",
+        "799",
+        "287"
+      ],
+      "category_parents": [
+        "1010",
+        "1353",
+        "1396",
+        "1211",
+        "724",
+        "808",
+        "812",
+        "955",
+        "866"
+      ]
+    },
+    "/cwe/307/children": null
+  }
+}

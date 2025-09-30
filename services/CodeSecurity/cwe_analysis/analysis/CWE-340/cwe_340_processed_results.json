@@ -1,0 +1,85 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T23:12:24.926545",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "340",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/340": {
+      "ID": "340",
+      "Type": "class_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/340": {
+      "ID": "340",
+      "Name": "Generation of Predictable Numbers or Identifiers",
+      "Abstraction": "Class",
+      "Structure": "Simple",
+      "Status": "Incomplete",
+      "Description": "The product uses a scheme that generates numbers or identifiers that are more predictable than required.",
+      "ExtendedDescription": null,
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": null,
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Architecture and Design"
+        },
+        {
+          "Phase": "Implementation"
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Other"
+          ],
+          "Impact": [
+            "Varies by Context"
+          ]
+        }
+      ],
+      "DemonstrativeExamples": [
+        {
+          "ID": "DX-45",
+          "Entries": [
+            {
+              "IntroText": "This code generates a unique random identifier for a user's session."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "PHP",
+              "ExampleCode": "```\n\tfunction generateSessionID($userID){\n\t\tsrand($userID);\n\t\treturn rand();\n\t}\n```"
+            },
+            {
+              "BodyText": "Because the seed for the PRNG is always the user's ID, the session ID will always be the same. An attacker could thus predict any user's session ID and potentially hijack the session."
+            },
+            {
+              "BodyText": "This example also exhibits a Small Seed Space (CWE-339)."
+            }
+          ]
+        }
+      ],
+      "PotentialMitigations": null
+    },
+    "/cwe/340/parents": {
+      "weakness_parents": [
+        "330"
+      ],
+      "category_parents": [
+        "1346",
+        "1414",
+        "905"
+      ]
+    },
+    "/cwe/340/children": {
+      "weakness_children": [
+        "341",
+        "342",
+        "343"
+      ],
+      "category_children": []
+    }
+  }
+}

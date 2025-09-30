@@ -1,0 +1,96 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T23:41:38.388070",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "562",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/562": {
+      "ID": "562",
+      "Type": "base_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/562": {
+      "ID": "562",
+      "Name": "Return of Stack Variable Address",
+      "Abstraction": "Base",
+      "Structure": "Simple",
+      "Status": "Draft",
+      "Description": "A function returns the address of a stack variable, which will cause unintended program behavior, typically in the form of a crash.",
+      "ExtendedDescription": "Because local variables are allocated on the stack, when a program returns a pointer to a local variable, it is returning a stack address. A subsequent function call is likely to re-use this same stack address, thereby overwriting the value of the pointer, which no longer corresponds to the same variable since a function's stack frame is invalidated when it returns. At best this will cause the value of the pointer to change unexpectedly. In many cases it causes the program to crash the next time the pointer is dereferenced.",
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Name": "C",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Language",
+          "Name": "C++",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Implementation"
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Availability",
+            "Integrity",
+            "Confidentiality"
+          ],
+          "Impact": [
+            "Read Memory",
+            "Modify Memory",
+            "Execute Unauthorized Code or Commands",
+            "DoS: Crash, Exit, or Restart"
+          ],
+          "Note": "If the returned stack buffer address is dereferenced after the return, then an attacker may be able to modify or read memory, depending on how the address is used. If the address is used for reading, then the address itself may be exposed, or the contents that the address points to. If the address is used for writing, this can lead to a crash and possibly code execution."
+        }
+      ],
+      "DemonstrativeExamples": [
+        {
+          "ID": "DX-203",
+          "Entries": [
+            {
+              "IntroText": "The following function returns a stack address."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "C",
+              "ExampleCode": "```\n\tchar* getName() {\n\t\tchar name[STR_MAX];\n\t\tfillInName(name);\n\t\treturn name;\n\t}\n```"
+            }
+          ]
+        }
+      ],
+      "PotentialMitigations": [
+        {
+          "Phase": [
+            "Testing"
+          ],
+          "Description": "Use static analysis tools to spot return of the address of a stack variable."
+        }
+      ]
+    },
+    "/cwe/562/parents": {
+      "weakness_parents": [
+        "758"
+      ],
+      "category_parents": [
+        "1156",
+        "1306",
+        "1399",
+        "1006",
+        "748",
+        "998"
+      ]
+    },
+    "/cwe/562/children": null
+  }
+}

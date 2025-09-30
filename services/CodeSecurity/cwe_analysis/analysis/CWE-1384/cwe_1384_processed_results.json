@@ -1,0 +1,103 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T22:41:54.048304",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "1384",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/1384": {
+      "ID": "1384",
+      "Type": "class_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/1384": {
+      "ID": "1384",
+      "Name": "Improper Handling of Physical or Environmental Conditions",
+      "Abstraction": "Class",
+      "Structure": "Simple",
+      "Status": "Incomplete",
+      "Description": "The product does not properly handle unexpected physical or environmental conditions that occur naturally or are artificially induced.",
+      "ExtendedDescription": "\n\nHardware products are typically only guaranteed to behave correctly within certain physical limits or environmental conditions. Such products cannot necessarily control the physical or external conditions to which they are subjected. However, the inability to handle such conditions can undermine a product's security. For example, an unexpected physical or environmental condition may cause the flipping of a bit that is used for an authentication decision. This unexpected condition could occur naturally or be induced artificially by an adversary.\n\n\nPhysical or environmental conditions of concern are:\n\n\n  -  **Atmospheric characteristics: ** extreme temperature ranges, etc.\n\n  -  **Interference: ** electromagnetic interference (EMI), radio frequency interference (RFI), etc.\n\n  -  **Assorted light sources: ** white light, ultra-violet light (UV), lasers, infrared (IR), etc.\n\n  -  **Power variances: ** under-voltages, over-voltages, under-current, over-current, etc.\n\n  -  **Clock variances: ** glitching, overclocking, clock stretching, etc.\n\n  -  **Component aging and degradation** \n\n  -  **Materials manipulation: ** focused ion beams (FIB), etc.\n\n  -  **Exposure to radiation: ** x-rays, cosmic radiation, etc.\n\n",
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": [
+        {
+          "Type": "Technology",
+          "Class": "System on Chip",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Technology",
+          "Class": "ICS/OT",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Architecture and Design",
+          "Note": "The product's design might not consider checking and handling extreme conditions."
+        },
+        {
+          "Phase": "Manufacturing",
+          "Note": "For hardware manufacturing, sub-par components might be chosen that are not able to handle the expected environmental conditions."
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Confidentiality",
+            "Integrity",
+            "Availability"
+          ],
+          "Impact": [
+            "Varies by Context",
+            "Unexpected State"
+          ],
+          "Note": "Consequences of this weakness are highly dependent on the role of affected components within the larger product."
+        }
+      ],
+      "DemonstrativeExamples": null,
+      "PotentialMitigations": [
+        {
+          "Phase": [
+            "Requirements"
+          ],
+          "Description": "In requirements, be specific about expectations for how the product will perform when it exceeds physical and environmental boundary conditions, e.g., by shutting down."
+        },
+        {
+          "Phase": [
+            "Architecture and Design",
+            "Implementation"
+          ],
+          "Description": "Where possible, include independent components that can detect excess environmental conditions and have the capability to shut down the product."
+        },
+        {
+          "Phase": [
+            "Architecture and Design",
+            "Implementation"
+          ],
+          "Description": "Where possible, use shielding or other materials that can increase the adversary's workload and reduce the likelihood of being able to successfully trigger a security-related failure."
+        }
+      ]
+    },
+    "/cwe/1384/parents": {
+      "weakness_parents": [],
+      "category_parents": [
+        "1388",
+        "1365",
+        "1367",
+        "1405"
+      ]
+    },
+    "/cwe/1384/children": {
+      "weakness_children": [
+        "1247",
+        "1261",
+        "1332",
+        "1351"
+      ],
+      "category_children": []
+    }
+  }
+}

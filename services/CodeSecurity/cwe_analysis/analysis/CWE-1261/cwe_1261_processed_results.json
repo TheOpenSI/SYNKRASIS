@@ -1,0 +1,125 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T22:30:10.332984",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "1261",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/1261": {
+      "ID": "1261",
+      "Type": "base_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/1261": {
+      "ID": "1261",
+      "Name": "Improper Handling of Single Event Upsets",
+      "Abstraction": "Base",
+      "Structure": "Simple",
+      "Status": "Draft",
+      "Description": "The hardware logic does not effectively handle when single-event upsets (SEUs) occur.",
+      "ExtendedDescription": "\n\nTechnology trends such as CMOS-transistor down-sizing, use of new materials, and system-on-chip architectures continue to increase the sensitivity of systems to soft errors. These errors are random, and their causes might be internal (e.g., interconnect coupling) or external (e.g., cosmic radiation). These soft errors are not permanent in nature and cause temporary bit flips known as single-event upsets (SEUs). SEUs are induced errors in circuits caused when charged particles lose energy by ionizing the medium through which they pass, leaving behind a wake of electron-hole pairs that cause temporary failures. If these failures occur in security-sensitive modules in a chip, it might compromise the security guarantees of the chip. For instance, these temporary failures could be bit flips that change the privilege of a regular user to root.\n",
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Class": "Not Language-Specific",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Operating_System",
+          "Class": "Not OS-Specific",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Architecture",
+          "Class": "Not Architecture-Specific",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Technology",
+          "Class": "Not Technology-Specific",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Architecture and Design"
+        },
+        {
+          "Phase": "Implementation"
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Availability",
+            "Access Control"
+          ],
+          "Impact": [
+            "DoS: Crash, Exit, or Restart",
+            "DoS: Instability",
+            "Gain Privileges or Assume Identity",
+            "Bypass Protection Mechanism"
+          ]
+        }
+      ],
+      "DemonstrativeExamples": [
+        {
+          "Entries": [
+            {
+              "IntroText": "This is an example from [REF-1089]. See the reference for full details of this issue."
+            },
+            {
+              "BodyText": "Parity is error detecting but not error correcting."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "Other",
+              "ExampleCode": "Due to single-event upsets, bits are flipped in memories. As a result, memory-parity checks fail, which results in restart and a temporary denial of service of two to three minutes."
+            },
+            {
+              "Nature": "Good",
+              "Language": "Other",
+              "ExampleCode": "Using error-correcting codes could have avoided the restart caused by SEUs."
+            }
+          ]
+        },
+        {
+          "Entries": [
+            {
+              "IntroText": "In 2016, a security researcher, who was also a patient using a pacemaker, was on an airplane when a bit flip occurred in the pacemaker, likely due to the higher prevalence of cosmic radiation at such heights. The pacemaker was designed to account for bit flips and went into a default safe mode, which still forced the patient to go to a hospital to get it reset. The bit flip also inadvertently enabled the researcher to access the crash file, perform reverse engineering, and detect a hard-coded key. [REF-1101]"
+            }
+          ]
+        }
+      ],
+      "PotentialMitigations": [
+        {
+          "Phase": [
+            "Architecture and Design"
+          ],
+          "Description": "\n\nImplement triple-modular redundancy around security-sensitive modules.\n"
+        },
+        {
+          "Phase": [
+            "Architecture and Design"
+          ],
+          "Description": "\n\nSEUs mostly affect SRAMs. For SRAMs storing security-critical data, implement Error-Correcting-Codes (ECC) and Address Interleaving.\n"
+        }
+      ]
+    },
+    "/cwe/1261/parents": {
+      "weakness_parents": [
+        "1384"
+      ],
+      "category_parents": [
+        "1199",
+        "1388",
+        "1365",
+        "1405"
+      ]
+    },
+    "/cwe/1261/children": null
+  }
+}

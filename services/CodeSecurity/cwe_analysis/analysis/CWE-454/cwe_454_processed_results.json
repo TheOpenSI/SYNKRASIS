@@ -1,0 +1,119 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T23:27:01.365230",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "454",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/454": {
+      "ID": "454",
+      "Type": "base_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/454": {
+      "ID": "454",
+      "Name": "External Initialization of Trusted Variables or Data Stores",
+      "Abstraction": "Base",
+      "Structure": "Simple",
+      "Status": "Draft",
+      "Description": "The product initializes critical internal variables or data stores using inputs that can be modified by untrusted actors.",
+      "ExtendedDescription": "A product system should be reluctant to trust variables that have been initialized outside of its trust boundary, especially if they are initialized by users. The variables may have been initialized incorrectly. If an attacker can initialize the variable, then they can influence what the vulnerable system will do.",
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Name": "PHP",
+          "Prevalence": "Sometimes"
+        },
+        {
+          "Type": "Language",
+          "Class": "Not Language-Specific",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Architecture and Design"
+        },
+        {
+          "Phase": "Implementation"
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Integrity"
+          ],
+          "Impact": [
+            "Modify Application Data"
+          ],
+          "Note": "An attacker could gain access to and modify sensitive data or system information."
+        }
+      ],
+      "DemonstrativeExamples": [
+        {
+          "Entries": [
+            {
+              "IntroText": "In the Java example below, a system property controls the debug level of the application."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "Java",
+              "ExampleCode": "```\n\tint debugLevel = Integer.getInteger(\"com.domain.application.debugLevel\").intValue();\n```"
+            },
+            {
+              "BodyText": "If an attacker is able to modify the system property, then it may be possible to coax the application into divulging sensitive information by virtue of the fact that additional debug information is printed/exposed as the debug level increases."
+            }
+          ]
+        },
+        {
+          "Entries": [
+            {
+              "IntroText": "This code checks the HTTP POST request for a debug switch, and enables a debug mode if the switch is set."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "PHP",
+              "ExampleCode": "```\n\t$debugEnabled = false;\n\tif ($_POST[\"debug\"] == \"true\"){\n\t\t$debugEnabled = true;\n\t}\n```\n/.../* \n\t\n\tfunction login($username, $password){\n\t```\n\t\tif($debugEnabled){\n\t\t\techo 'Debug Activated';\n\t\t\tphpinfo();\n\t\t\t$isAdmin = True;\n\t\t\treturn True;\n\t\t}\n\t}\n```"
+            },
+            {
+              "BodyText": "Any user can activate the debug mode, gaining administrator privileges. An attacker may also use the information printed by the phpinfo() function to further exploit the system. ."
+            },
+            {
+              "BodyText": "This example also exhibits Information Exposure Through Debug Information (CWE-215)"
+            }
+          ]
+        }
+      ],
+      "PotentialMitigations": [
+        {
+          "Phase": [
+            "Implementation"
+          ],
+          "Strategy": "Input Validation",
+          "Description": "A product system should be reluctant to trust variables that have been initialized outside of its trust boundary. Ensure adequate checking (e.g. input validation) is performed when relying on input from outside a trust boundary."
+        },
+        {
+          "Phase": [
+            "Architecture and Design"
+          ],
+          "Description": "Avoid any external control of variables. If necessary, restrict the variables that can be modified using an allowlist, and use a different namespace or naming convention if possible."
+        }
+      ]
+    },
+    "/cwe/454/parents": {
+      "weakness_parents": [
+        "1419"
+      ],
+      "category_parents": [
+        "1416",
+        "452",
+        "808",
+        "994"
+      ]
+    },
+    "/cwe/454/children": null
+  }
+}

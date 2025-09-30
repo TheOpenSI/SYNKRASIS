@@ -1,0 +1,129 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T22:55:19.072321",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "212",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/212": {
+      "ID": "212",
+      "Type": "base_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/212": {
+      "ID": "212",
+      "Name": "Improper Removal of Sensitive Information Before Storage or Transfer",
+      "Abstraction": "Base",
+      "Structure": "Simple",
+      "Status": "Incomplete",
+      "Description": "The product stores, transfers, or shares a resource that contains sensitive information, but it does not properly remove that information before the product makes the resource available to unauthorized actors.",
+      "ExtendedDescription": "\n\nResources that may contain sensitive data include documents, packets, messages, databases, etc. While this data may be useful to an individual user or small set of users who share the resource, it may need to be removed before the resource can be shared outside of the trusted group. The process of removal is sometimes called cleansing or scrubbing.\n\n\nFor example, a product for editing documents might not remove sensitive data such as reviewer comments or the local pathname where the document is stored. Or, a proxy might not remove an internal IP address from headers before making an outgoing request to an Internet site.\n",
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Class": "Not Language-Specific",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Architecture and Design"
+        },
+        {
+          "Phase": "Implementation",
+          "Note": "REALIZATION: This weakness is caused during implementation of an architectural security tactic."
+        },
+        {
+          "Phase": "Operation"
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Confidentiality"
+          ],
+          "Impact": [
+            "Read Files or Directories",
+            "Read Application Data"
+          ],
+          "Note": "Sensitive data may be exposed to an unauthorized actor in another control sphere. This may have a wide range of secondary consequences which will depend on what data is exposed. One possibility is the exposure of system data allowing an attacker to craft a specific, more effective attack."
+        }
+      ],
+      "DemonstrativeExamples": [
+        {
+          "ID": "DX-220",
+          "Entries": [
+            {
+              "IntroText": "This code either generates a public HTML user information page or a JSON response containing the same user information."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "PHP",
+              "ExampleCode": "```\n```\n// API flag, output JSON if set* \n\t$json = $_GET['json']\n\t$username = $_GET['user']\n\tif(!$json)\n\t{\n\t```\n\t\t\t$record = getUserRecord($username);\n\t\t\tforeach($record as $fieldName => $fieldValue)\n\t\t\t{\n\t\t\t\t\tif($fieldName == \"email_address\") {\n```\n// skip displaying user emails* \n\t\t\t\t\t\t\tcontinue;}\n\t\t\t\t\telse{\n\t\t\t\t\t```\n\t\t\t\t\t\twriteToHtmlPage($fieldName,$fieldValue);\n\t\t\t\t\t}\n\t\t\t}\n\t}\n\telse\n\t{\n\t\t$record = getUserRecord($username);\n\t\techo json_encode($record);\n\t}\n```"
+            },
+            {
+              "BodyText": "The programmer is careful to not display the user's e-mail address when displaying the public HTML page. However, the e-mail address is not removed from the JSON response, exposing the user's e-mail address."
+            }
+          ]
+        }
+      ],
+      "PotentialMitigations": [
+        {
+          "Phase": [
+            "Requirements"
+          ],
+          "Description": "Clearly specify which information should be regarded as private or sensitive, and require that the product offers functionality that allows the user to cleanse the sensitive information from the resource before it is published or exported to other parties."
+        },
+        {
+          "MitigationID": "MIT-46",
+          "Phase": [
+            "Architecture and Design"
+          ],
+          "Strategy": "Separation of Privilege",
+          "Description": "\n\nCompartmentalize the system to have \"safe\" areas where trust boundaries can be unambiguously drawn. Do not allow sensitive data to go outside of the trust boundary and always be careful when interfacing with a compartment outside of the safe area.\n\n\nEnsure that appropriate compartmentalization is built into the system design, and the compartmentalization allows for and reinforces privilege separation functionality. Architects and designers should rely on the principle of least privilege to decide the appropriate time to use privileges and the time to drop privileges.\n"
+        },
+        {
+          "MitigationID": "MIT-33",
+          "Phase": [
+            "Implementation"
+          ],
+          "Strategy": "Attack Surface Reduction",
+          "Description": "Use naming conventions and strong types to make it easier to spot when sensitive data is being used. When creating structures, objects, or other complex entities, separate the sensitive and non-sensitive data as much as possible.",
+          "Effectiveness": "Defense in Depth",
+          "EffectivenessNotes": "This makes it easier to spot places in the code where data is being used that is unencrypted."
+        },
+        {
+          "Phase": [
+            "Implementation"
+          ],
+          "Description": "Avoid errors related to improper resource shutdown or release (CWE-404), which may leave the sensitive data within the resource if it is in an incomplete state."
+        }
+      ]
+    },
+    "/cwe/212/parents": {
+      "weakness_parents": [
+        "669"
+      ],
+      "category_parents": [
+        "1015",
+        "1364",
+        "1416",
+        "199",
+        "452",
+        "808",
+        "963",
+        "867"
+      ]
+    },
+    "/cwe/212/children": {
+      "weakness_children": [
+        "1258",
+        "226"
+      ],
+      "category_children": []
+    }
+  }
+}

@@ -1,0 +1,89 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T23:44:22.178511",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "583",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/583": {
+      "ID": "583",
+      "Type": "variant_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/583": {
+      "ID": "583",
+      "Name": "finalize() Method Declared Public",
+      "Abstraction": "Variant",
+      "Structure": "Simple",
+      "Status": "Incomplete",
+      "Description": "The product violates secure coding principles for mobile code by declaring a finalize() method public.",
+      "ExtendedDescription": "A product should never call finalize explicitly, except to call super.finalize() inside an implementation of finalize(). In mobile code situations, the otherwise error prone practice of manual garbage collection can become a security threat if an attacker can maliciously invoke a finalize() method because it is declared with public access.",
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Name": "Java",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Implementation"
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Confidentiality",
+            "Integrity",
+            "Availability"
+          ],
+          "Impact": [
+            "Alter Execution Logic",
+            "Execute Unauthorized Code or Commands",
+            "Modify Application Data"
+          ]
+        }
+      ],
+      "DemonstrativeExamples": [
+        {
+          "Entries": [
+            {
+              "IntroText": "The following Java Applet code mistakenly declares a public finalize() method."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "Java",
+              "ExampleCode": "```\n\tpublic final class urlTool extends Applet {\n\t\tpublic void finalize() {\n\t\t\t...\n\t\t}\n\t\t...\n\t}\n```"
+            },
+            {
+              "BodyText": "Mobile code, in this case a Java Applet, is code that is transmitted across a network and executed on a remote machine. Because mobile code developers have little if any control of the environment in which their code will execute, special security concerns become relevant. One of the biggest environmental threats results from the risk that the mobile code will run side-by-side with other, potentially malicious, mobile code. Because all of the popular web browsers execute code from multiple sources together in the same JVM, many of the security guidelines for mobile code are focused on preventing manipulation of your objects' state and behavior by adversaries who have access to the same virtual machine where your product is running."
+            }
+          ]
+        }
+      ],
+      "PotentialMitigations": [
+        {
+          "Phase": [
+            "Implementation"
+          ],
+          "Description": "If you are using finalize() as it was designed, there is no reason to declare finalize() with anything other than protected access."
+        }
+      ]
+    },
+    "/cwe/583/parents": {
+      "weakness_parents": [
+        "668"
+      ],
+      "category_parents": [
+        "1140",
+        "1403",
+        "850",
+        "1002"
+      ]
+    },
+    "/cwe/583/children": null
+  }
+}

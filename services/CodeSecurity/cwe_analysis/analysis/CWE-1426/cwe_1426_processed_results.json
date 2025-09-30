@@ -1,0 +1,104 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T22:44:47.938671",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "1426",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/1426": {
+      "ID": "1426",
+      "Type": "base_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/1426": {
+      "ID": "1426",
+      "Name": "Improper Validation of Generative AI Output",
+      "Abstraction": "Base",
+      "Structure": "Simple",
+      "Status": "Incomplete",
+      "Description": "The product invokes a generative AI/ML\n\t\t\tcomponent whose behaviors and outputs cannot be directly\n\t\t\tcontrolled, but the product does not validate or\n\t\t\tinsufficiently validates the outputs to ensure that they\n\t\t\talign with the intended security, content, or privacy\n\t\t\tpolicy.",
+      "ExtendedDescription": null,
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Class": "Not Language-Specific",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Architecture",
+          "Class": "Not Architecture-Specific",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Technology",
+          "Name": "AI/ML",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Technology",
+          "Class": "Not Technology-Specific",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Architecture and Design",
+          "Note": "\n\nDevelopers may rely heavily on protection mechanisms such as input filtering and model alignment, assuming they are more effective than they actually are.\n"
+        },
+        {
+          "Phase": "Implementation",
+          "Note": "\n\nDevelopers may rely heavily on protection mechanisms such as input filtering and model alignment, assuming they are more effective than they actually are.\n"
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Integrity"
+          ],
+          "Impact": [
+            "Execute Unauthorized Code or Commands",
+            "Varies by Context"
+          ],
+          "Note": "\n\nIn an agent-oriented setting, output could be used to cause unpredictable agent invocation, i.e., to control or influence agents that might be invoked from the output. The impact varies depending on the access that is granted to the tools, such as creating a database or writing files.\n"
+        }
+      ],
+      "DemonstrativeExamples": null,
+      "PotentialMitigations": [
+        {
+          "Phase": [
+            "Architecture and Design"
+          ],
+          "Description": "Since the output from a generative AI component (such as an LLM) cannot be trusted, ensure that it operates in an untrusted or non-privileged space."
+        },
+        {
+          "Phase": [
+            "Operation"
+          ],
+          "Description": "Use \"semantic comparators,\" which are mechanisms that provide semantic comparison to identify objects that might appear different but are semantically similar."
+        },
+        {
+          "Phase": [
+            "Operation"
+          ],
+          "Description": "\n\nUse components that operate externally to the system to monitor the output and act as a moderator. These components are called different terms, such as supervisors or guardrails.\n"
+        },
+        {
+          "Phase": [
+            "Build and Compilation"
+          ],
+          "Description": "\n\nDuring model training, use an appropriate variety of good and bad examples to guide preferred outputs.\n"
+        }
+      ]
+    },
+    "/cwe/1426/parents": {
+      "weakness_parents": [],
+      "category_parents": [
+        "1409"
+      ]
+    },
+    "/cwe/1426/children": null
+  }
+}

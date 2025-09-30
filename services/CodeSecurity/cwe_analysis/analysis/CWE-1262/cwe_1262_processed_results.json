@@ -1,0 +1,139 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T22:30:17.872801",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "1262",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/1262": {
+      "ID": "1262",
+      "Type": "base_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/1262": {
+      "ID": "1262",
+      "Name": "Improper Access Control for Register Interface",
+      "Abstraction": "Base",
+      "Structure": "Simple",
+      "Status": "Stable",
+      "Description": "The product uses memory-mapped I/O registers that act as an interface to hardware functionality from software, but there is improper access control to those registers.",
+      "ExtendedDescription": "\n\nSoftware commonly accesses peripherals in a System-on-Chip (SoC) or other device through a memory-mapped register interface. Malicious software could tamper with any security-critical hardware data that is accessible directly or indirectly through the register interface, which could lead to a loss of confidentiality and integrity.\n",
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Class": "Not Language-Specific",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Operating_System",
+          "Class": "Not OS-Specific",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Architecture",
+          "Class": "Not Architecture-Specific",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Technology",
+          "Class": "Not Technology-Specific",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Architecture and Design",
+          "Note": "This weakness may be exploited if the register interface design does not adequately protect hardware assets from software."
+        },
+        {
+          "Phase": "Implementation",
+          "Note": "Mis-implementation of access control policies may inadvertently allow access to hardware assets through the register interface."
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Confidentiality",
+            "Integrity"
+          ],
+          "Impact": [
+            "Read Memory",
+            "Read Application Data",
+            "Modify Memory",
+            "Modify Application Data",
+            "Gain Privileges or Assume Identity",
+            "Bypass Protection Mechanism",
+            "Unexpected State",
+            "Alter Execution Logic"
+          ],
+          "Note": "Confidentiality of hardware assets may be violated if the protected information can be read out by software through the register interface. Registers storing security state, settings, other security-critical data may be corruptible by software without correctly implemented protections."
+        }
+      ],
+      "DemonstrativeExamples": [
+        {
+          "Entries": [
+            {
+              "IntroText": "The register interface provides software access to hardware functionality. This functionality is an attack surface. This attack surface may be used to run untrusted code on the system through the register interface. As an example, cryptographic accelerators require a mechanism for software to select modes of operation and to provide plaintext or ciphertext data to be encrypted or decrypted as well as other functions. This functionality is commonly provided through registers."
+            },
+            {
+              "Nature": "Bad",
+              "ExampleCode": "Cryptographic key material stored in registers inside the cryptographic accelerator can be accessed by software."
+            },
+            {
+              "Nature": "Good",
+              "ExampleCode": "Key material stored in registers should never be accessible to software. Even if software can provide a key, all read-back paths to software should be disabled."
+            }
+          ]
+        },
+        {
+          "Entries": [
+            {
+              "IntroText": "The example code is taken from the Control/Status Register (CSR) module inside the processor core of the HACK@DAC'19 buggy CVA6 SoC [REF-1340]. In RISC-V ISA [REF-1341], the CSR file contains different sets of registers with different privilege levels, e.g., user mode (U), supervisor mode (S), hypervisor mode (H), machine mode (M), and debug mode (D), with different read-write policies, read-only (RO) and read-write (RW). For example, machine mode, which is the highest privilege mode in a RISC-V system, registers should not be accessible in user, supervisor, or hypervisor modes."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "Verilog",
+              "ExampleCode": "```\n\tif (csr_we || csr_read) begin \n```\nif ((riscv::priv_lvl_t'(priv_lvl_o & csr_addr.csr_decode.priv_lvl) != csr_addr.csr_decode.priv_lvl) && !(csr_addr.address==riscv::CSR_MEPC)) begin** \n\t\t\n\t\t```\n\t\t\t csr_exception_o.cause = riscv::ILLEGAL_INSTR;\n\t\t\t csr_exception_o.valid = 1'b1;\n\t\t end\n\t\t // check access to debug mode only CSRs\n\t\t if (csr_addr_i[11:4] == 8'h7b && !debug_mode_q) begin\n\t\t\t csr_exception_o.cause = riscv::ILLEGAL_INSTR;\n\t\t\t csr_exception_o.valid = 1'b1;\n\t\t end \n\t end \n```"
+            },
+            {
+              "BodyText": "The vulnerable example code allows the machine exception program counter (MEPC) register to be accessed from a user mode program by excluding the MEPC from the access control check. MEPC as per the RISC-V specification can be only written or read by machine mode code. Thus, the attacker in the user mode can run code in machine mode privilege (privilege escalation)."
+            },
+            {
+              "BodyText": "To mitigate the issue, fix the privilege check so that it throws an Illegal Instruction Exception for user mode accesses to the MEPC register. [REF-1345]"
+            },
+            {
+              "Nature": "Good",
+              "Language": "Verilog",
+              "ExampleCode": "```\n\tif (csr_we || csr_read) begin \n```\nif ((riscv::priv_lvl_t'(priv_lvl_o & csr_addr.csr_decode.priv_lvl) != csr_addr.csr_decode.priv_lvl)) begin** \n\t\t\n\t\t```\n\t\t\t csr_exception_o.cause = riscv::ILLEGAL_INSTR;\n\t\t\t csr_exception_o.valid = 1'b1;\n\t\t end\n\t\t // check access to debug mode only CSRs\n\t\t if (csr_addr_i[11:4] == 8'h7b && !debug_mode_q) begin\n\t\t\t csr_exception_o.cause = riscv::ILLEGAL_INSTR;\n\t\t\t csr_exception_o.valid = 1'b1;\n\t\t end \n\t end \n```"
+            }
+          ]
+        }
+      ],
+      "PotentialMitigations": [
+        {
+          "Phase": [
+            "Architecture and Design"
+          ],
+          "Description": "Design proper policies for hardware register access from software."
+        },
+        {
+          "Phase": [
+            "Implementation"
+          ],
+          "Description": "Ensure that access control policies for register access are implemented in accordance with the specified design."
+        }
+      ]
+    },
+    "/cwe/1262/parents": {
+      "weakness_parents": [],
+      "category_parents": [
+        "1198",
+        "1396"
+      ]
+    },
+    "/cwe/1262/children": null
+  }
+}

@@ -1,0 +1,81 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T23:42:52.862507",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "572",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/572": {
+      "ID": "572",
+      "Type": "variant_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/572": {
+      "ID": "572",
+      "Name": "Call to Thread run() instead of start()",
+      "Abstraction": "Variant",
+      "Structure": "Simple",
+      "Status": "Draft",
+      "Description": "The product calls a thread's run() method instead of calling start(), which causes the code to run in the thread of the caller instead of the callee.",
+      "ExtendedDescription": "In most cases a direct call to a Thread object's run() method is a bug. The programmer intended to begin a new thread of control, but accidentally called run() instead of start(), so the run() method will execute in the caller's thread of control.",
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Name": "Java",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Implementation"
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Other"
+          ],
+          "Impact": [
+            "Quality Degradation",
+            "Varies by Context"
+          ]
+        }
+      ],
+      "DemonstrativeExamples": [
+        {
+          "Entries": [
+            {
+              "IntroText": "The following excerpt from a Java program mistakenly calls run() instead of start()."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "Java",
+              "ExampleCode": "```\n\tThread thr = new Thread() {\n\t\tpublic void run() {\n\t\t\t...\n\t\t}\n\t};\n\tthr.run();\n```"
+            }
+          ]
+        }
+      ],
+      "PotentialMitigations": [
+        {
+          "Phase": [
+            "Implementation"
+          ],
+          "Description": "Use the start() method instead of the run() method."
+        }
+      ]
+    },
+    "/cwe/572/parents": {
+      "weakness_parents": [],
+      "category_parents": [
+        "1144",
+        "1401",
+        "854",
+        "1001"
+      ]
+    },
+    "/cwe/572/children": null
+  }
+}

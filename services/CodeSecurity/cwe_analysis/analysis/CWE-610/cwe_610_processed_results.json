@@ -1,0 +1,109 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T23:48:14.776284",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "610",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/610": {
+      "ID": "610",
+      "Type": "class_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/610": {
+      "ID": "610",
+      "Name": "Externally Controlled Reference to a Resource in Another Sphere",
+      "Abstraction": "Class",
+      "Structure": "Simple",
+      "Status": "Draft",
+      "Description": "The product uses an externally controlled name or reference that resolves to a resource that is outside of the intended control sphere.",
+      "ExtendedDescription": null,
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": null,
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Architecture and Design",
+          "Note": "COMMISSION: This weakness refers to an incorrect design related to an architectural security tactic."
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Confidentiality",
+            "Integrity"
+          ],
+          "Impact": [
+            "Read Application Data",
+            "Modify Application Data"
+          ],
+          "Note": "An adversary could read or modify data, depending on how the resource is intended to be used."
+        },
+        {
+          "Scope": [
+            "Access Control"
+          ],
+          "Impact": [
+            "Gain Privileges or Assume Identity"
+          ],
+          "Likelihood": [
+            "High"
+          ],
+          "Note": "An adversary that can supply a reference to an unintended resource can potentially access a resource that they do not have privileges for, thus bypassing existing access control mechanisms."
+        }
+      ],
+      "DemonstrativeExamples": [
+        {
+          "ID": "DX-194",
+          "Entries": [
+            {
+              "IntroText": "The following code is a Java servlet that will receive a GET request with a url parameter in the request to redirect the browser to the address specified in the url parameter. The servlet will retrieve the url parameter value from the request and send a response to redirect the browser to the url address."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "Java",
+              "ExampleCode": "```\n\tpublic class RedirectServlet extends HttpServlet {\n\t\t\tprotected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {\n\t\t\t\tString query = request.getQueryString();\n\t\t\t\tif (query.contains(\"url\")) {\n\t\t\t\t\tString url = request.getParameter(\"url\");\n\t\t\t\t\tresponse.sendRedirect(url);\n\t\t\t\t}\n\t\t\t}\n\t}\n```"
+            },
+            {
+              "BodyText": "The problem with this Java servlet code is that an attacker could use the RedirectServlet as part of an e-mail phishing scam to redirect users to a malicious site. An attacker could send an HTML formatted e-mail directing the user to log into their account by including in the e-mail the following link:"
+            },
+            {
+              "Nature": "Attack",
+              "Language": "HTML",
+              "ExampleCode": "```\n\t<a href=\"http://bank.example.com/redirect?url=http://attacker.example.net\">Click here to log in</a>\n```"
+            },
+            {
+              "BodyText": "The user may assume that the link is safe since the URL starts with their trusted bank, bank.example.com. However, the user will then be redirected to the attacker's web site (attacker.example.net) which the attacker may have made to appear very similar to bank.example.com. The user may then unwittingly enter credentials into the attacker's web page and compromise their bank account. A Java servlet should never redirect a user to a URL without verifying that the redirect address is a trusted site."
+            }
+          ]
+        }
+      ],
+      "PotentialMitigations": null
+    },
+    "/cwe/610/parents": {
+      "weakness_parents": [],
+      "category_parents": [
+        "1015",
+        "1347",
+        "1368",
+        "1416",
+        "980"
+      ]
+    },
+    "/cwe/610/children": {
+      "weakness_children": [
+        "1021",
+        "15",
+        "384",
+        "441",
+        "470",
+        "601",
+        "611",
+        "73",
+        "918"
+      ],
+      "category_children": []
+    }
+  }
+}

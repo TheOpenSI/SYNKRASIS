@@ -1,0 +1,33 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T23:45:36.834079",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "592",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/592": {
+      "ID": "592",
+      "Type": "deprecated_weakness",
+      "is_deprecated": true
+    },
+    "/cwe/weakness/592": {
+      "ID": "592",
+      "Name": "DEPRECATED: Authentication Bypass Issues",
+      "Abstraction": "Class",
+      "Structure": "Simple",
+      "Status": "Deprecated",
+      "Description": "This weakness has been deprecated because it covered redundant concepts already described in CWE-287.",
+      "ExtendedDescription": null,
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": null,
+      "AlternateTerms": null,
+      "ModesOfIntroduction": null,
+      "CommonConsequences": null,
+      "DemonstrativeExamples": null,
+      "PotentialMitigations": null
+    },
+    "/cwe/592/parents": null,
+    "/cwe/592/children": null
+  }
+}

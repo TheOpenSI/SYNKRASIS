@@ -1,0 +1,107 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T23:21:37.357105",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "412",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/412": {
+      "ID": "412",
+      "Type": "base_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/412": {
+      "ID": "412",
+      "Name": "Unrestricted Externally Accessible Lock",
+      "Abstraction": "Base",
+      "Structure": "Simple",
+      "Status": "Incomplete",
+      "Description": "The product properly checks for the existence of a lock, but the lock can be externally controlled or influenced by an actor that is outside of the intended sphere of control.",
+      "ExtendedDescription": "This prevents the product from acting on associated resources or performing other behaviors that are controlled by the presence of the lock. Relevant locks might include an exclusive lock or mutex, or modifying a shared resource that is treated as a lock. If the lock can be held for an indefinite period of time, then the denial of service could be permanent.",
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Class": "Not Language-Specific",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Architecture and Design"
+        },
+        {
+          "Phase": "Implementation"
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Availability"
+          ],
+          "Impact": [
+            "DoS: Resource Consumption (Other)"
+          ],
+          "Note": "When an attacker can control a lock, the program may wait indefinitely until the attacker releases the lock, causing a denial of service to other users of the program. This is especially problematic if there is a blocking operation on the lock."
+        }
+      ],
+      "DemonstrativeExamples": [
+        {
+          "ID": "DX-69",
+          "Entries": [
+            {
+              "IntroText": "This code tries to obtain a lock for a file, then writes to it."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "PHP",
+              "ExampleCode": "```\n\tfunction writeToLog($message){\n\t\t$logfile = fopen(\"logFile.log\", \"a\");\n```\n//attempt to get logfile lock* \n\t\tif (flock($logfile, LOCK_EX)) {\n\t\t```\n\t\t\tfwrite($logfile,$message);\n```\n// unlock logfile* \n\t\t\tflock($logfile, LOCK_UN);}\n\t\telse {\n\t\t```\n\t\t\tprint \"Could not obtain lock on logFile.log, message not recorded\\n\";\n\t\t}\n\t}\n\tfclose($logFile);\n```"
+            },
+            {
+              "BodyText": "PHP by default will wait indefinitely until a file lock is released. If an attacker is able to obtain the file lock, this code will pause execution, possibly leading to denial of service for other users. Note that in this case, if an attacker can perform an flock() on the file, they may already have privileges to destroy the log file. However, this still impacts the execution of other programs that depend on flock()."
+            }
+          ]
+        }
+      ],
+      "PotentialMitigations": [
+        {
+          "Phase": [
+            "Architecture and Design",
+            "Implementation"
+          ],
+          "Description": "Use any access control that is offered by the functionality that is offering the lock."
+        },
+        {
+          "Phase": [
+            "Architecture and Design",
+            "Implementation"
+          ],
+          "Description": "Use unpredictable names or identifiers for the locks. This might not always be possible or feasible."
+        },
+        {
+          "Phase": [
+            "Architecture and Design"
+          ],
+          "Description": "Consider modifying your code to use non-blocking synchronization methods."
+        }
+      ]
+    },
+    "/cwe/412/parents": {
+      "weakness_parents": [
+        "667"
+      ],
+      "category_parents": [
+        "1143",
+        "1401",
+        "411",
+        "361",
+        "730",
+        "853",
+        "989"
+      ]
+    },
+    "/cwe/412/children": null
+  }
+}

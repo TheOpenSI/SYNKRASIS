@@ -1,0 +1,68 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T22:26:07.391842",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "1230",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/1230": {
+      "ID": "1230",
+      "Type": "base_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/1230": {
+      "ID": "1230",
+      "Name": "Exposure of Sensitive Information Through Metadata",
+      "Abstraction": "Base",
+      "Structure": "Simple",
+      "Status": "Incomplete",
+      "Description": "The product prevents direct access to a resource containing sensitive information, but it does not sufficiently limit access to metadata that is derived from the original, sensitive information.",
+      "ExtendedDescription": "\n\nDevelopers might correctly prevent unauthorized access to a database or other resource containing sensitive information, but they might not consider that portions of the original information might also be recorded in metadata, search indices, statistical reports, or other resources. If these resources are not also restricted, then attackers might be able to extract some or all of the original information, or otherwise infer some details. For example, an attacker could specify search terms that are known to be unique to a particular person, or view metadata such as activity or creation dates in order to identify usage patterns.\n",
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Class": "Not Language-Specific",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Operating_System",
+          "Class": "Not OS-Specific",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Architecture",
+          "Class": "Not Architecture-Specific",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Architecture and Design"
+        }
+      ],
+      "CommonConsequences": null,
+      "DemonstrativeExamples": null,
+      "PotentialMitigations": null
+    },
+    "/cwe/1230/parents": {
+      "weakness_parents": [
+        "285"
+      ],
+      "category_parents": [
+        "1396",
+        "1212",
+        "199"
+      ]
+    },
+    "/cwe/1230/children": {
+      "weakness_children": [
+        "202",
+        "612"
+      ],
+      "category_children": []
+    }
+  }
+}

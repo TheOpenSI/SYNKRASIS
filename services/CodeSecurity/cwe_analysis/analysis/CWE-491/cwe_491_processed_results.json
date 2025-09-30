@@ -1,0 +1,97 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T23:31:52.251957",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "491",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/491": {
+      "ID": "491",
+      "Type": "variant_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/491": {
+      "ID": "491",
+      "Name": "Public cloneable() Method Without Final ('Object Hijack')",
+      "Abstraction": "Variant",
+      "Structure": "Simple",
+      "Status": "Draft",
+      "Description": "A class has a cloneable() method that is not declared final, which allows an object to be created without calling the constructor. This can cause the object to be in an unexpected state.",
+      "ExtendedDescription": null,
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Name": "Java",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Implementation"
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Integrity",
+            "Other"
+          ],
+          "Impact": [
+            "Unexpected State",
+            "Varies by Context"
+          ]
+        }
+      ],
+      "DemonstrativeExamples": [
+        {
+          "Entries": [
+            {
+              "IntroText": "In this example, a public class \"BankAccount\" implements the cloneable() method which declares \"Object clone(string accountnumber)\":"
+            },
+            {
+              "Nature": "Bad",
+              "Language": "Java",
+              "ExampleCode": "```\n\tpublic class BankAccount implements Cloneable{\n\t\t\tpublic Object clone(String accountnumber) throws\n\t\t\tCloneNotSupportedException\n\t\t\t{\n\t\t\t\t\tObject returnMe = new BankAccount(account number);\n\t\t\t\t\t...\n\t\t\t}\n\t}\n```"
+            }
+          ]
+        },
+        {
+          "Entries": [
+            {
+              "IntroText": "In the example below, a clone() method is defined without being declared final."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "Java",
+              "ExampleCode": "```\n\tprotected Object clone() throws CloneNotSupportedException {\n\t\t...\n\t}\n```"
+            }
+          ]
+        }
+      ],
+      "PotentialMitigations": [
+        {
+          "Phase": [
+            "Implementation"
+          ],
+          "Description": "Make the cloneable() method final."
+        }
+      ]
+    },
+    "/cwe/491/parents": {
+      "weakness_parents": [
+        "668"
+      ],
+      "category_parents": [
+        "1139",
+        "1403",
+        "485",
+        "849",
+        "1002"
+      ]
+    },
+    "/cwe/491/children": null
+  }
+}

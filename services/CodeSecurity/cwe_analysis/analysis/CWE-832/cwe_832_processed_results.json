@@ -1,0 +1,57 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-30T00:12:01.383939",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "832",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/832": {
+      "ID": "832",
+      "Type": "base_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/832": {
+      "ID": "832",
+      "Name": "Unlock of a Resource that is not Locked",
+      "Abstraction": "Base",
+      "Structure": "Simple",
+      "Status": "Incomplete",
+      "Description": "The product attempts to unlock a resource that is not locked.",
+      "ExtendedDescription": "Depending on the locking functionality, an unlock of a non-locked resource might cause memory corruption or other modification to the resource (or its associated metadata that is used for tracking locks).",
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": null,
+      "AlternateTerms": null,
+      "ModesOfIntroduction": null,
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Integrity",
+            "Confidentiality",
+            "Availability",
+            "Other"
+          ],
+          "Impact": [
+            "DoS: Crash, Exit, or Restart",
+            "Execute Unauthorized Code or Commands",
+            "Modify Memory",
+            "Other"
+          ],
+          "Note": "Depending on the locking being used, an unlock operation might not have any adverse effects. When effects exist, the most common consequence will be a corruption of the state of the product, possibly leading to a crash or exit; depending on the implementation of the unlocking, memory corruption or code execution could occur."
+        }
+      ],
+      "DemonstrativeExamples": null,
+      "PotentialMitigations": null
+    },
+    "/cwe/832/parents": {
+      "weakness_parents": [
+        "667"
+      ],
+      "category_parents": [
+        "1401",
+        "411"
+      ]
+    },
+    "/cwe/832/children": null
+  }
+}

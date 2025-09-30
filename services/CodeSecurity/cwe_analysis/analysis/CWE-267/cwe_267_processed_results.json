@@ -1,0 +1,110 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T23:02:12.473637",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "267",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/267": {
+      "ID": "267",
+      "Type": "base_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/267": {
+      "ID": "267",
+      "Name": "Privilege Defined With Unsafe Actions",
+      "Abstraction": "Base",
+      "Structure": "Simple",
+      "Status": "Incomplete",
+      "Description": "A particular privilege, role, capability, or right can be used to perform unsafe actions that were not intended, even when it is assigned to the correct entity.",
+      "ExtendedDescription": null,
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Class": "Not Language-Specific",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Architecture and Design"
+        },
+        {
+          "Phase": "Implementation",
+          "Note": "REALIZATION: This weakness is caused during implementation of an architectural security tactic."
+        },
+        {
+          "Phase": "Operation"
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Access Control"
+          ],
+          "Impact": [
+            "Gain Privileges or Assume Identity"
+          ],
+          "Note": "A user can access restricted functionality and/or sensitive information that may include administrative functionality and user accounts."
+        }
+      ],
+      "DemonstrativeExamples": [
+        {
+          "ID": "DX-127",
+          "Entries": [
+            {
+              "IntroText": "This code intends to allow only Administrators to print debug information about a system."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "Java",
+              "ExampleCode": "```\n\tpublic enum Roles {\n\t\tADMIN,USER,GUEST\n\t}\n\tpublic void printDebugInfo(User requestingUser){\n\t\t\tif(isAuthenticated(requestingUser)){\n\t\t\t\t\tswitch(requestingUser.role){\n\t\t\t\t\t\t\tcase GUEST:\n\t\t\t\t\t\t\t\tSystem.out.println(\"You are not authorized to perform this command\");\n\t\t\t\t\t\t\t\tbreak;\n\t\t\t\t\t\t\tdefault:\n\t\t\t\t\t\t\t\tSystem.out.println(currentDebugState());\n\t\t\t\t\t\t\t\tbreak;\n\t\t\t\t\t}\n\t\t\t}\n\t\t\telse{\n\t\t\t\tSystem.out.println(\"You must be logged in to perform this command\");\n\t\t\t}\n\t}\n```"
+            },
+            {
+              "BodyText": "While the intention was to only allow Administrators to print the debug information, the code as written only excludes those with the role of \"GUEST\". Someone with the role of \"ADMIN\" or \"USER\" will be allowed access, which goes against the original intent. An attacker may be able to use this debug information to craft an attack on the system."
+            }
+          ]
+        }
+      ],
+      "PotentialMitigations": [
+        {
+          "MitigationID": "MIT-1",
+          "Phase": [
+            "Architecture and Design",
+            "Operation"
+          ],
+          "Description": "Very carefully manage the setting, management, and handling of privileges. Explicitly manage trust zones in the software."
+        },
+        {
+          "MitigationID": "MIT-17",
+          "Phase": [
+            "Architecture and Design",
+            "Operation"
+          ],
+          "Strategy": "Environment Hardening",
+          "Description": "Run your code using the lowest privileges that are required to accomplish the necessary tasks [REF-76]. If possible, create isolated accounts with limited privileges that are only used for a single task. That way, a successful attack will not immediately give the attacker access to the rest of the software or its environment. For example, database applications rarely need to run as the database administrator, especially in day-to-day operations."
+        }
+      ]
+    },
+    "/cwe/267/parents": {
+      "weakness_parents": [
+        "269"
+      ],
+      "category_parents": [
+        "1011",
+        "1396",
+        "265",
+        "901"
+      ]
+    },
+    "/cwe/267/children": {
+      "weakness_children": [
+        "623"
+      ],
+      "category_children": []
+    }
+  }
+}

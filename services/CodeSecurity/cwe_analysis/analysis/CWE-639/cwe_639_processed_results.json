@@ -1,0 +1,144 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T23:52:05.617921",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "639",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/639": {
+      "ID": "639",
+      "Type": "base_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/639": {
+      "ID": "639",
+      "Name": "Authorization Bypass Through User-Controlled Key",
+      "Abstraction": "Base",
+      "Structure": "Simple",
+      "Status": "Incomplete",
+      "Description": "The system's authorization functionality does not prevent one user from gaining access to another user's data or record by modifying the key value identifying the data.",
+      "ExtendedDescription": "\n\nRetrieval of a user record occurs in the system based on some key value that is under user control. The key would typically identify a user-related record stored in the system and would be used to lookup that record for presentation to the user. It is likely that an attacker would have to be an authenticated user in the system. However, the authorization process would not properly check the data access operation to ensure that the authenticated user performing the operation has sufficient entitlements to perform the requested data access, hence bypassing any other authorization checks present in the system.\n\n\nFor example, attackers can look at places where user specific data is retrieved (e.g. search screens) and determine whether the key for the item being looked up is controllable externally. The key may be a hidden field in the HTML form field, might be passed as a URL parameter or as an unencrypted cookie variable, then in each of these cases it will be possible to tamper with the key value.\n\n\nOne manifestation of this weakness is when a system uses sequential or otherwise easily-guessable session IDs that would allow one user to easily switch to another user's session and read/modify their data.\n",
+      "LikelihoodOfExploit": "High",
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Class": "Not Language-Specific",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": [
+        {
+          "Term": "Insecure Direct Object Reference / IDOR",
+          "Description": "The \"Insecure Direct Object Reference\" term, as described in the OWASP Top Ten, is broader than this CWE because it also covers path traversal (CWE-22). Within the context of vulnerability theory, there is a similarity between the OWASP concept and CWE-706: Use of Incorrectly-Resolved Name or Reference."
+        },
+        {
+          "Term": "Broken Object Level Authorization / BOLA",
+          "Description": "BOLA is used in the 2019 OWASP API Security Top 10 and is said to be the same as IDOR."
+        },
+        {
+          "Term": "Horizontal Authorization",
+          "Description": "\"Horizontal Authorization\" is used to describe situations in which two users have the same privilege level, but must be prevented from accessing each other's resources. This is fairly common when using key-based access to resources in a multi-user context."
+        }
+      ],
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Architecture and Design",
+          "Note": "REALIZATION: This weakness is caused during implementation of an architectural security tactic."
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Access Control"
+          ],
+          "Impact": [
+            "Bypass Protection Mechanism"
+          ],
+          "Note": "Access control checks for specific user data or functionality can be bypassed."
+        },
+        {
+          "Scope": [
+            "Access Control"
+          ],
+          "Impact": [
+            "Gain Privileges or Assume Identity"
+          ],
+          "Note": "Horizontal escalation of privilege is possible (one user can view/modify information of another user)."
+        },
+        {
+          "Scope": [
+            "Access Control"
+          ],
+          "Impact": [
+            "Gain Privileges or Assume Identity"
+          ],
+          "Note": "Vertical escalation of privilege is possible if the user-controlled key is actually a flag that indicates administrator status, allowing the attacker to gain administrative access."
+        }
+      ],
+      "DemonstrativeExamples": [
+        {
+          "ID": "DX-195",
+          "Entries": [
+            {
+              "IntroText": "The following code uses a parameterized statement, which escapes metacharacters and prevents SQL injection vulnerabilities, to construct and execute a SQL query that searches for an invoice matching the specified identifier [1]. The identifier is selected from a list of all invoices associated with the current authenticated user."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "C#",
+              "ExampleCode": "```\n\t...\n\t conn = new SqlConnection(_ConnectionString);\n\t conn.Open();\n\t int16 id = System.Convert.ToInt16(invoiceID.Text);\n\t SqlCommand query = new SqlCommand( \"SELECT * FROM invoices WHERE id = @id\", conn);\n\t query.Parameters.AddWithValue(\"@id\", id);\n\t SqlDataReader objReader = objCommand.ExecuteReader();\n\t ... \n```"
+            },
+            {
+              "BodyText": "The problem is that the developer has not considered all of the possible values of id. Although the interface generates a list of invoice identifiers that belong to the current user, an attacker can bypass this interface to request any desired invoice. Because the code in this example does not check to ensure that the user has permission to access the requested invoice, it will display any invoice, even if it does not belong to the current user."
+            }
+          ]
+        }
+      ],
+      "PotentialMitigations": [
+        {
+          "Phase": [
+            "Architecture and Design"
+          ],
+          "Description": "For each and every data access, ensure that the user has sufficient privilege to access the record that is being requested."
+        },
+        {
+          "Phase": [
+            "Architecture and Design",
+            "Implementation"
+          ],
+          "Description": "Make sure that the key that is used in the lookup of a specific user's record is not controllable externally by the user or that any tampering can be detected."
+        },
+        {
+          "Phase": [
+            "Architecture and Design"
+          ],
+          "Description": "Use encryption in order to make it more difficult to guess other legitimate values of the key or associate a digital signature with the key so that the server can verify that there has been no tampering."
+        }
+      ]
+    },
+    "/cwe/639/parents": {
+      "weakness_parents": [
+        "863"
+      ],
+      "category_parents": [
+        "1011",
+        "1031",
+        "1345",
+        "1396",
+        "715",
+        "1212",
+        "840",
+        "723",
+        "813",
+        "945",
+        "932"
+      ]
+    },
+    "/cwe/639/children": {
+      "weakness_children": [
+        "566"
+      ],
+      "category_children": []
+    }
+  }
+}

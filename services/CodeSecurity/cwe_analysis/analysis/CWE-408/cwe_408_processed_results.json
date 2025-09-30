@@ -1,0 +1,86 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T23:21:07.338312",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "408",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/408": {
+      "ID": "408",
+      "Type": "base_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/408": {
+      "ID": "408",
+      "Name": "Incorrect Behavior Order: Early Amplification",
+      "Abstraction": "Base",
+      "Structure": "Simple",
+      "Status": "Draft",
+      "Description": "The product allows an entity to perform a legitimate but expensive operation before authentication or authorization has taken place.",
+      "ExtendedDescription": null,
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Class": "Not Language-Specific",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Architecture and Design"
+        },
+        {
+          "Phase": "Implementation"
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Availability"
+          ],
+          "Impact": [
+            "DoS: Amplification",
+            "DoS: Crash, Exit, or Restart",
+            "DoS: Resource Consumption (CPU)",
+            "DoS: Resource Consumption (Memory)"
+          ],
+          "Note": "System resources, CPU and memory, can be quickly consumed. This can lead to poor system performance or system crash."
+        }
+      ],
+      "DemonstrativeExamples": [
+        {
+          "ID": "DX-157",
+          "Entries": [
+            {
+              "IntroText": "This function prints the contents of a specified file requested by a user."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "PHP",
+              "ExampleCode": "```\n\tfunction printFile($username,$filename){\n```\n//read file into string* \n\t\t\t$file = file_get_contents($filename);\n\t\t\tif ($file && isOwnerOf($username,$filename)){\n\t\t\t```\n\t\t\t\techo $file;\n\t\t\t\treturn true;\n\t\t\t}\n\t\t\telse{\n\t\t\t\techo 'You are not authorized to view this file';\n\t\t\t}\n\t\t\treturn false;\n\t}\n```"
+            },
+            {
+              "BodyText": "This code first reads a specified file into memory, then prints the file if the user is authorized to see its contents. The read of the file into memory may be resource intensive and is unnecessary if the user is not allowed to see the file anyway."
+            }
+          ]
+        }
+      ],
+      "PotentialMitigations": null
+    },
+    "/cwe/408/parents": {
+      "weakness_parents": [
+        "405",
+        "696"
+      ],
+      "category_parents": [
+        "1410",
+        "438",
+        "977"
+      ]
+    },
+    "/cwe/408/children": null
+  }
+}

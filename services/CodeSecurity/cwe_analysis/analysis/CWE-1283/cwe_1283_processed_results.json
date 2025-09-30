@@ -1,0 +1,97 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T22:33:11.084490",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "1283",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/1283": {
+      "ID": "1283",
+      "Type": "base_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/1283": {
+      "ID": "1283",
+      "Name": "Mutable Attestation or Measurement Reporting Data",
+      "Abstraction": "Base",
+      "Structure": "Simple",
+      "Status": "Incomplete",
+      "Description": "The register contents used for attestation or measurement reporting data to verify boot flow are modifiable by an adversary.",
+      "ExtendedDescription": "\n\nA System-on-Chip (SoC) implements secure boot or verified boot. During this boot flow, the SoC often measures the code that it authenticates. The measurement is usually done by calculating the one-way hash of the code binary and extending it to the previous hash. The hashing algorithm should be a Secure One-Way hash function. The final hash, i.e., the value obtained after the completion of the boot flow, serves as the measurement data used in reporting or in attestation. The calculated hash is often stored in registers that can later be read by the party of interest to determine tampering of the boot flow. A common weakness is that the contents in these registers are modifiable by an adversary, thus spoofing the measurement.\n",
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Class": "Not Language-Specific",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Operating_System",
+          "Class": "Not OS-Specific",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Architecture",
+          "Class": "Not Architecture-Specific",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Technology",
+          "Class": "Not Technology-Specific",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Architecture and Design",
+          "Note": "Such issues can be introduced during hardware architecture or design and can be identified later during Testing or System Configuration phases."
+        },
+        {
+          "Phase": "Implementation",
+          "Note": "If the access-controls which protecting the reporting registers are misconfigured during implementation, this weakness can arise."
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Confidentiality"
+          ],
+          "Impact": [
+            "Read Memory",
+            "Read Application Data"
+          ]
+        }
+      ],
+      "DemonstrativeExamples": [
+        {
+          "Entries": [
+            {
+              "IntroText": "The SoC extends the hash and stores the results in registers. Without protection, an adversary can write their chosen hash values to these registers. Thus, the attacker controls the reported results."
+            },
+            {
+              "BodyText": "To prevent the above scenario, the registers should have one or more of the following properties:\n\n\n  - Should be Read-Only with respect to an adversary\n\n  - Cannot be extended or modifiable either directly or indirectly (using a trusted agent as proxy) by an adversary\n\n  - Should have appropriate access controls or protections"
+            }
+          ]
+        }
+      ],
+      "PotentialMitigations": [
+        {
+          "Phase": [
+            "Architecture and Design"
+          ],
+          "Description": "\n\nMeasurement data should be stored in registers that are read-only or otherwise have access controls that prevent modification by an untrusted agent.\n"
+        }
+      ]
+    },
+    "/cwe/1283/parents": {
+      "weakness_parents": [],
+      "category_parents": [
+        "1196",
+        "1396"
+      ]
+    },
+    "/cwe/1283/children": null
+  }
+}

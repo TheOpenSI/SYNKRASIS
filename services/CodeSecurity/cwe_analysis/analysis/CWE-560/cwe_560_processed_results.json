@@ -1,0 +1,75 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T23:41:23.506357",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "560",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/560": {
+      "ID": "560",
+      "Type": "variant_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/560": {
+      "ID": "560",
+      "Name": "Use of umask() with chmod-style Argument",
+      "Abstraction": "Variant",
+      "Structure": "Simple",
+      "Status": "Draft",
+      "Description": "The product calls umask() with an incorrect argument that is specified as if it is an argument to chmod().",
+      "ExtendedDescription": null,
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Name": "C",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Implementation"
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Confidentiality",
+            "Integrity",
+            "Access Control"
+          ],
+          "Impact": [
+            "Read Files or Directories",
+            "Modify Files or Directories",
+            "Bypass Protection Mechanism"
+          ]
+        }
+      ],
+      "DemonstrativeExamples": null,
+      "PotentialMitigations": [
+        {
+          "Phase": [
+            "Implementation"
+          ],
+          "Description": "Use umask() with the correct argument."
+        },
+        {
+          "Phase": [
+            "Testing"
+          ],
+          "Description": "If you suspect misuse of umask(), you can use grep to spot call instances of umask()."
+        }
+      ]
+    },
+    "/cwe/560/parents": {
+      "weakness_parents": [],
+      "category_parents": [
+        "1412",
+        "946"
+      ]
+    },
+    "/cwe/560/children": null
+  }
+}

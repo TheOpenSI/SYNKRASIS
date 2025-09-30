@@ -1,0 +1,64 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-30T00:05:30.272609",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "773",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/773": {
+      "ID": "773",
+      "Type": "variant_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/773": {
+      "ID": "773",
+      "Name": "Missing Reference to Active File Descriptor or Handle",
+      "Abstraction": "Variant",
+      "Structure": "Simple",
+      "Status": "Incomplete",
+      "Description": "The product does not properly maintain references to a file descriptor or handle, which prevents that file descriptor/handle from being reclaimed.",
+      "ExtendedDescription": "This can cause the product to consume all available file descriptors or handles, which can prevent other processes from performing critical file processing operations.",
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": null,
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Implementation"
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Availability"
+          ],
+          "Impact": [
+            "DoS: Resource Consumption (Other)"
+          ],
+          "Note": "An attacker that can influence the allocation of resources that are not properly maintained could deplete the available resource pool and prevent all other processes from accessing the same type of resource."
+        }
+      ],
+      "DemonstrativeExamples": null,
+      "PotentialMitigations": [
+        {
+          "MitigationID": "MIT-47",
+          "Phase": [
+            "Operation",
+            "Architecture and Design"
+          ],
+          "Strategy": "Resource Limitation",
+          "Description": "\n\nUse resource-limiting settings provided by the operating system or environment. For example, when managing system resources in POSIX, setrlimit() can be used to set limits for certain types of resources, and getrlimit() can determine how many resources are available. However, these functions are not available on all operating systems.\n\n\nWhen the current levels get close to the maximum that is defined for the application (see CWE-770), then limit the allocation of further resources to privileged users; alternately, begin releasing resources for less-privileged users. While this mitigation may protect the system from attack, it will not necessarily stop attackers from adversely impacting other users.\n\n\nEnsure that the application performs the appropriate error checks and error handling in case resources become unavailable (CWE-703).\n"
+        }
+      ]
+    },
+    "/cwe/773/parents": {
+      "weakness_parents": [],
+      "category_parents": [
+        "1163",
+        "1416",
+        "982"
+      ]
+    },
+    "/cwe/773/children": null
+  }
+}

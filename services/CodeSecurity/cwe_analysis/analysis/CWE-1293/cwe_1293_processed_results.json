@@ -1,0 +1,100 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T22:34:34.409462",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "1293",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/1293": {
+      "ID": "1293",
+      "Type": "base_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/1293": {
+      "ID": "1293",
+      "Name": "Missing Source Correlation of Multiple Independent Data",
+      "Abstraction": "Base",
+      "Structure": "Simple",
+      "Status": "Draft",
+      "Description": "The product relies on one source of data, preventing the ability to detect if an adversary has compromised a data source.",
+      "ExtendedDescription": "\n\nTo operate successfully, a product sometimes has to implicitly trust the integrity of an information source. When information is implicitly signed, one can ensure that the data was not tampered in transit. This does not ensure that the information source was not compromised when responding to a request. By requesting information from multiple sources, one can check if all of the data is the same. If they are not, the system should report the information sources that respond with a different or minority value as potentially compromised. If there are not enough answers to provide a majority or plurality of responses, the system should report all of the sources as potentially compromised. As the seriousness of the impact of incorrect integrity increases, so should the number of independent information sources that would need to be queried.\n",
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Class": "Not Language-Specific",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Operating_System",
+          "Class": "Not OS-Specific",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Architecture",
+          "Class": "Not Architecture-Specific",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Technology",
+          "Class": "Not Technology-Specific",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Architecture and Design",
+          "Note": "This flaw could be introduced during the design of the application or misconfiguration at run time by only specifying a single point of validation."
+        },
+        {
+          "Phase": "Implementation",
+          "Note": "Such issues could be introduced during hardware implementation, then identified later during Testing or System Configuration phases."
+        },
+        {
+          "Phase": "Operation",
+          "Note": "This weakness could be introduced by intentionally failing all but one of the devices used to retrieve the data or by failing the devices that validate the data."
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Confidentiality",
+            "Integrity"
+          ],
+          "Impact": [
+            "Read Application Data",
+            "Modify Application Data",
+            "Gain Privileges or Assume Identity"
+          ],
+          "Note": "An attacker that may be able to execute a single Person-in-the-Middle attack can subvert a check of an external oracle (e.g. the ACME protocol check for a file on a website), and thus inject an arbitrary reply to the single perspective request to the external oracle."
+        }
+      ],
+      "DemonstrativeExamples": null,
+      "PotentialMitigations": [
+        {
+          "Phase": [
+            "Requirements"
+          ],
+          "Description": "Design system to use a Practical Byzantine fault method, to request information from multiple sources to verify the data and report on potentially compromised information sources."
+        },
+        {
+          "Phase": [
+            "Implementation"
+          ],
+          "Description": "Failure to use a Practical Byzantine fault method when requesting data. Lack of place to report potentially compromised information sources. Relying on non-independent information sources for integrity checking. Failure to report information sources that respond in the minority to incident response procedures."
+        }
+      ]
+    },
+    "/cwe/1293/parents": {
+      "weakness_parents": [
+        "345"
+      ],
+      "category_parents": [
+        "1411"
+      ]
+    },
+    "/cwe/1293/children": null
+  }
+}

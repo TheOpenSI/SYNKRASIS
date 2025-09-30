@@ -1,0 +1,121 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T23:56:39.437781",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "674",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/674": {
+      "ID": "674",
+      "Type": "class_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/674": {
+      "ID": "674",
+      "Name": "Uncontrolled Recursion",
+      "Abstraction": "Class",
+      "Structure": "Simple",
+      "Status": "Draft",
+      "Description": "The product does not properly control the amount of recursion that takes place,  consuming excessive resources, such as allocated memory or the program stack.",
+      "ExtendedDescription": null,
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Class": "Not Language-Specific",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": [
+        {
+          "Term": "Stack Exhaustion"
+        }
+      ],
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Implementation",
+          "Note": "The uncontrolled recursion is often due to an improper or missing conditional"
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Availability"
+          ],
+          "Impact": [
+            "DoS: Resource Consumption (CPU)",
+            "DoS: Resource Consumption (Memory)"
+          ],
+          "Note": "Resources including CPU, memory, and stack memory could be rapidly consumed or exhausted, eventually leading to an exit or crash."
+        },
+        {
+          "Scope": [
+            "Confidentiality"
+          ],
+          "Impact": [
+            "Read Application Data"
+          ],
+          "Note": "In some cases, an application's interpreter might kill a process or thread that appears to be consuming too much resources, such as with PHP's memory_limit setting. When the interpreter kills the process/thread, it might report an error containing detailed information such as the application's installation path."
+        }
+      ],
+      "DemonstrativeExamples": [
+        {
+          "ID": "DX-204",
+          "Entries": [
+            {
+              "IntroText": "In this example a mistake exists in the code where the exit condition contained in flg is never called. This results in the function calling itself over and over again until the stack is exhausted."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "C",
+              "ExampleCode": "void do_something_recursive (int flg)\n {\n\n```\n\t ... // Do some real work here, but the value of flg is unmodified\n\t if (flg) { do_something_recursive (flg); } // flg is never modified so it is always TRUE - this call will continue until the stack explodes\n }\n int flag = 1; // Set to TRUE\n do_something_recursive (flag);\n```"
+            },
+            {
+              "BodyText": "Note that the only difference between the Good and Bad examples is that the recursion flag will change value and cause the recursive call to return."
+            },
+            {
+              "Nature": "Good",
+              "Language": "C",
+              "ExampleCode": "void do_something_recursive (int flg)\n {\n\n```\n\t ... // Do some real work here\n\t // Modify value of flg on done condition\n\t if (flg) { do_something_recursive (flg); } // returns when flg changes to 0\n }\n int flag = 1; // Set to TRUE\n do_something_recursive (flag);\n```"
+            }
+          ]
+        }
+      ],
+      "PotentialMitigations": [
+        {
+          "Phase": [
+            "Implementation"
+          ],
+          "Description": "Ensure an end condition will be reached under all logic conditions. The end condition may include testing against the depth of recursion and exiting with an error if the recursion goes too deep. The complexity of the end condition contributes to the effectiveness of this action.",
+          "Effectiveness": "Moderate"
+        },
+        {
+          "Phase": [
+            "Implementation"
+          ],
+          "Description": "Increase the stack size.",
+          "Effectiveness": "Limited",
+          "EffectivenessNotes": "Increasing the stack size might only be a temporary measure, since the stack typically is still not very large, and it might remain easy for attackers to cause an out-of-stack fault."
+        }
+      ]
+    },
+    "/cwe/674/parents": {
+      "weakness_parents": [
+        "834"
+      ],
+      "category_parents": [
+        "1129",
+        "1410",
+        "730",
+        "985"
+      ]
+    },
+    "/cwe/674/children": {
+      "weakness_children": [
+        "776"
+      ],
+      "category_children": []
+    }
+  }
+}

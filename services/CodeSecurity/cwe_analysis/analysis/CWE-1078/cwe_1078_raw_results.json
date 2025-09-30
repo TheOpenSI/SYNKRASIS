@@ -1,0 +1,210 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T22:14:22.918640",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "1078",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/1078": {
+      "endpoint": "/cwe/1078",
+      "url": "https://cwe-api.mitre.org/api/v1/cwe/1078",
+      "status_code": 200,
+      "success": true,
+      "error": null,
+      "data": [
+        {
+          "Type": "class_weakness",
+          "ID": "1078"
+        }
+      ]
+    },
+    "/cwe/weakness/1078": {
+      "endpoint": "/cwe/weakness/1078",
+      "url": "https://cwe-api.mitre.org/api/v1/cwe/weakness/1078",
+      "status_code": 200,
+      "success": true,
+      "error": null,
+      "data": {
+        "Weaknesses": [
+          {
+            "ID": "1078",
+            "Name": "Inappropriate Source Code Style or Formatting",
+            "Abstraction": "Class",
+            "Structure": "Simple",
+            "Status": "Incomplete",
+            "Description": "The source code does not follow\n\t\t\t\tdesired style or formatting for indentation, white\n\t\t\t\tspace, comments, etc.",
+            "RelatedWeaknesses": [
+              {
+                "Nature": "ChildOf",
+                "CweID": "1076",
+                "ViewID": "1000",
+                "Ordinal": "Primary"
+              }
+            ],
+            "WeaknessOrdinalities": [
+              {
+                "Ordinality": "Indirect"
+              }
+            ],
+            "DemonstrativeExamples": [
+              {
+                "ID": "DX-215",
+                "Entries": [
+                  {
+                    "IntroText": "The usage of symbolic names instead of hard-coded constants is preferred."
+                  },
+                  {
+                    "BodyText": "The following is an example of using a hard-coded constant instead of a symbolic name."
+                  },
+                  {
+                    "Nature": "Bad",
+                    "Language": "C",
+                    "ExampleCode": "```\n\tchar buffer[1024];\n\t...\n\tfgets(buffer, 1024, stdin);\n```"
+                  },
+                  {
+                    "BodyText": "If the buffer value needs to be changed, then it has to be altered in more than one place. If the developer forgets or does not find all occurrences, in this example it could lead to a buffer overflow."
+                  },
+                  {
+                    "Nature": "Good",
+                    "Language": "C",
+                    "ExampleCode": "```\n\tenum { MAX_BUFFER_SIZE = 1024 };\n\t...\n\tchar buffer[MAX_BUFFER_SIZE];\n\t...\n\tfgets(buffer, MAX_BUFFER_SIZE, stdin);\n```"
+                  },
+                  {
+                    "BodyText": "In this example the developer will only need to change one value and all references to the buffer size are updated, as a symbolic name is used instead of a hard-coded constant."
+                  }
+                ]
+              }
+            ],
+            "MappingNotes": {
+              "Usage": "Prohibited",
+              "Rationale": "This entry is primarily a quality issue with no direct security implications.",
+              "Comments": "Look for weaknesses that are focused specifically on insecure behaviors that have more direct security implications.",
+              "Reasons": [
+                "Other"
+              ]
+            },
+            "ContentHistory": [
+              {
+                "Type": "Submission",
+                "SubmissionName": "CWE Content Team",
+                "SubmissionOrganization": "MITRE",
+                "SubmissionDate": "2018-07-02",
+                "SubmissionComment": "Entry derived from Common Quality Enumeration (CQE) Draft 0.9.",
+                "SubmissionVersion": "3.2",
+                "SubmissionReleaseDate": "2019-01-03"
+              },
+              {
+                "Type": "Modification",
+                "ModificationName": "CWE Content Team",
+                "ModificationOrganization": "MITRE",
+                "ModificationDate": "2020-02-24",
+                "ModificationComment": "updated Relationships"
+              },
+              {
+                "Type": "Modification",
+                "ModificationName": "CWE Content Team",
+                "ModificationOrganization": "MITRE",
+                "ModificationDate": "2023-04-27",
+                "ModificationComment": "updated Relationships"
+              },
+              {
+                "Type": "Modification",
+                "ModificationName": "CWE Content Team",
+                "ModificationOrganization": "MITRE",
+                "ModificationDate": "2023-06-29",
+                "ModificationComment": "updated Mapping_Notes"
+              },
+              {
+                "Type": "Modification",
+                "ModificationName": "CWE Content Team",
+                "ModificationOrganization": "MITRE",
+                "ModificationDate": "2024-02-29",
+                "ModificationComment": "updated Demonstrative_Examples, Mapping_Notes",
+                "ModificationVersion": "4.14",
+                "ModificationReleaseDate": "2024-02-29"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    "/cwe/1078/parents": {
+      "endpoint": "/cwe/1078/parents",
+      "url": "https://cwe-api.mitre.org/api/v1/cwe/1078/parents",
+      "status_code": 200,
+      "success": true,
+      "error": null,
+      "data": [
+        {
+          "Type": "class_weakness",
+          "ID": "1076",
+          "ViewID": "1000",
+          "Primary_Parent": true
+        },
+        {
+          "Type": "category",
+          "ID": "1412",
+          "ViewID": "1400"
+        }
+      ]
+    },
+    "/cwe/1078/children": {
+      "endpoint": "/cwe/1078/children",
+      "url": "https://cwe-api.mitre.org/api/v1/cwe/1078/children",
+      "status_code": 200,
+      "success": true,
+      "error": null,
+      "data": [
+        {
+          "Type": "base_weakness",
+          "ID": "1085"
+        },
+        {
+          "Type": "base_weakness",
+          "ID": "1099"
+        },
+        {
+          "Type": "base_weakness",
+          "ID": "1106"
+        },
+        {
+          "Type": "base_weakness",
+          "ID": "1107"
+        },
+        {
+          "Type": "base_weakness",
+          "ID": "1109"
+        },
+        {
+          "Type": "base_weakness",
+          "ID": "1113"
+        },
+        {
+          "Type": "base_weakness",
+          "ID": "1114"
+        },
+        {
+          "Type": "base_weakness",
+          "ID": "1115"
+        },
+        {
+          "Type": "base_weakness",
+          "ID": "1116"
+        },
+        {
+          "Type": "base_weakness",
+          "ID": "1117"
+        },
+        {
+          "Type": "variant_weakness",
+          "ID": "546"
+        },
+        {
+          "Type": "base_weakness",
+          "ID": "547"
+        }
+      ]
+    }
+  }
+}

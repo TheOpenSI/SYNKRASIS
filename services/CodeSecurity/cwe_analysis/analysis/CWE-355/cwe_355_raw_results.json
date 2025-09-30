@@ -1,0 +1,94 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T23:14:24.250480",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "355",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/355": {
+      "endpoint": "/cwe/355",
+      "url": "https://cwe-api.mitre.org/api/v1/cwe/355",
+      "status_code": 200,
+      "success": true,
+      "error": null,
+      "data": [
+        {
+          "Type": "category",
+          "ID": "355"
+        }
+      ]
+    },
+    "/cwe/weakness/355": {
+      "endpoint": "/cwe/weakness/355",
+      "url": "https://cwe-api.mitre.org/api/v1/cwe/weakness/355",
+      "status_code": 404,
+      "success": false,
+      "error": "HTTP 404: \"for weakness: cwe (355) not found, use the category endpoint\"\n",
+      "data": null
+    },
+    "/cwe/355/parents": {
+      "endpoint": "/cwe/355/parents",
+      "url": "https://cwe-api.mitre.org/api/v1/cwe/355/parents",
+      "status_code": 200,
+      "success": true,
+      "error": null,
+      "data": [
+        {
+          "Type": "view",
+          "ID": "699",
+          "ViewID": "699"
+        }
+      ]
+    },
+    "/cwe/355/children": {
+      "endpoint": "/cwe/355/children",
+      "url": "https://cwe-api.mitre.org/api/v1/cwe/355/children",
+      "status_code": 200,
+      "success": true,
+      "error": null,
+      "data": [
+        {
+          "Type": "base_weakness",
+          "ID": "1007",
+          "ViewID": "699"
+        },
+        {
+          "Type": "base_weakness",
+          "ID": "1021",
+          "ViewID": "699"
+        },
+        {
+          "Type": "base_weakness",
+          "ID": "356",
+          "ViewID": "699"
+        },
+        {
+          "Type": "base_weakness",
+          "ID": "357",
+          "ViewID": "699"
+        },
+        {
+          "Type": "base_weakness",
+          "ID": "447",
+          "ViewID": "699"
+        },
+        {
+          "Type": "base_weakness",
+          "ID": "448",
+          "ViewID": "699"
+        },
+        {
+          "Type": "base_weakness",
+          "ID": "449",
+          "ViewID": "699"
+        },
+        {
+          "Type": "base_weakness",
+          "ID": "549",
+          "ViewID": "699"
+        }
+      ]
+    }
+  }
+}

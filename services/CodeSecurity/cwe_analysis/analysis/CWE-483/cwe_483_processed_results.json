@@ -1,0 +1,108 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T23:30:52.690536",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "483",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/483": {
+      "ID": "483",
+      "Type": "base_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/483": {
+      "ID": "483",
+      "Name": "Incorrect Block Delimitation",
+      "Abstraction": "Base",
+      "Structure": "Simple",
+      "Status": "Draft",
+      "Description": "The code does not explicitly delimit a block that is intended to contain 2 or more statements, creating a logic error.",
+      "ExtendedDescription": "In some languages, braces (or other delimiters) are optional for blocks. When the delimiter is omitted, it is possible to insert a logic error in which a statement is thought to be in a block but is not. In some cases, the logic error can have security implications.",
+      "LikelihoodOfExploit": "Low",
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Name": "C",
+          "Prevalence": "Sometimes"
+        },
+        {
+          "Type": "Language",
+          "Name": "C++",
+          "Prevalence": "Sometimes"
+        }
+      ],
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Implementation"
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Confidentiality",
+            "Integrity",
+            "Availability"
+          ],
+          "Impact": [
+            "Alter Execution Logic"
+          ],
+          "Note": "This is a general logic error which will often lead to obviously-incorrect behaviors that are quickly noticed and fixed. In lightly tested or untested code, this error may be introduced it into a production environment and provide additional attack vectors by creating a control flow path leading to an unexpected state in the application. The consequences will depend on the types of behaviors that are being incorrectly executed."
+        }
+      ],
+      "DemonstrativeExamples": [
+        {
+          "ID": "DX-181",
+          "Entries": [
+            {
+              "IntroText": "In this example, the programmer has indented the statements to call Do_X() and Do_Y(), as if the intention is that these functions are only called when the condition is true. However, because there are no braces to signify the block, Do_Y() will always be executed, even if the condition is false."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "C",
+              "ExampleCode": "```\n\tif (condition==true)\n\t\tDo_X();\n\t\tDo_Y();\n```"
+            },
+            {
+              "BodyText": "This might not be what the programmer intended. When the condition is critical for security, such as in making a security decision or detecting a critical error, this may produce a vulnerability."
+            }
+          ]
+        },
+        {
+          "Entries": [
+            {
+              "IntroText": "In this example, the programmer has indented the Do_Y() statement as if the intention is that the function should be associated with the preceding conditional and should only be called when the condition is true. However, because Do_X() was called on the same line as the conditional and there are no braces to signify the block, Do_Y() will always be executed, even if the condition is false."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "C",
+              "ExampleCode": "```\n\tif (condition==true) Do_X();\n\t\tDo_Y();\n```"
+            },
+            {
+              "BodyText": "This might not be what the programmer intended. When the condition is critical for security, such as in making a security decision or detecting a critical error, this may produce a vulnerability."
+            }
+          ]
+        }
+      ],
+      "PotentialMitigations": [
+        {
+          "Phase": [
+            "Implementation"
+          ],
+          "Description": "Always use explicit block delimitation and use static-analysis technologies to enforce this practice."
+        }
+      ]
+    },
+    "/cwe/483/parents": {
+      "weakness_parents": [
+        "670"
+      ],
+      "category_parents": [
+        "1410",
+        "438",
+        "977"
+      ]
+    },
+    "/cwe/483/children": null
+  }
+}

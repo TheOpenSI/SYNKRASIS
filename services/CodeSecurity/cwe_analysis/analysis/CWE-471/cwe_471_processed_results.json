@@ -1,0 +1,100 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T23:29:15.641564",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "471",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/471": {
+      "ID": "471",
+      "Type": "base_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/471": {
+      "ID": "471",
+      "Name": "Modification of Assumed-Immutable Data (MAID)",
+      "Abstraction": "Base",
+      "Structure": "Simple",
+      "Status": "Draft",
+      "Description": "The product does not properly protect an assumed-immutable element from being modified by an attacker.",
+      "ExtendedDescription": "This occurs when a particular input is critical enough to the functioning of the application that it should not be modifiable at all, but it is. Certain resources are often assumed to be immutable when they are not, such as hidden form fields in web applications, cookies, and reverse DNS lookups.",
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Class": "Not Language-Specific",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Implementation"
+        },
+        {
+          "Phase": "Architecture and Design"
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Integrity"
+          ],
+          "Impact": [
+            "Modify Application Data"
+          ],
+          "Note": "Common data types that are attacked are environment variables, web application parameters, and HTTP headers."
+        },
+        {
+          "Scope": [
+            "Integrity"
+          ],
+          "Impact": [
+            "Unexpected State"
+          ]
+        }
+      ],
+      "DemonstrativeExamples": [
+        {
+          "Entries": [
+            {
+              "IntroText": "In the code excerpt below, an array returned by a Java method is modified despite the fact that arrays are mutable."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "Java",
+              "ExampleCode": "```\n\tString[] colors = car.getAllPossibleColors();\n\tcolors[0] = \"Red\";\n```"
+            }
+          ]
+        }
+      ],
+      "PotentialMitigations": [
+        {
+          "Phase": [
+            "Architecture and Design",
+            "Operation",
+            "Implementation"
+          ],
+          "Description": "When the data is stored or transmitted through untrusted sources that could modify the data, implement integrity checks to detect unauthorized modification, or store/transmit the data in a trusted location that is free from external influence."
+        }
+      ]
+    },
+    "/cwe/471/parents": {
+      "weakness_parents": [],
+      "category_parents": [
+        "1347",
+        "1416",
+        "991"
+      ]
+    },
+    "/cwe/471/children": {
+      "weakness_children": [
+        "472",
+        "473",
+        "607"
+      ],
+      "category_children": []
+    }
+  }
+}

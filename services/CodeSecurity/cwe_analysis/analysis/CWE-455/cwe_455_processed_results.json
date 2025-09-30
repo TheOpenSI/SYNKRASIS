@@ -1,0 +1,90 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T23:27:08.816605",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "455",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/455": {
+      "ID": "455",
+      "Type": "base_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/455": {
+      "ID": "455",
+      "Name": "Non-exit on Failed Initialization",
+      "Abstraction": "Base",
+      "Structure": "Simple",
+      "Status": "Draft",
+      "Description": "The product does not exit or otherwise modify its operation when security-relevant errors occur during initialization, such as when a configuration file has a format error or a hardware security module (HSM) cannot be activated, which can cause the product to execute in a less secure fashion than intended by the administrator.",
+      "ExtendedDescription": null,
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Class": "Not Language-Specific",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Implementation"
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Integrity",
+            "Other"
+          ],
+          "Impact": [
+            "Modify Application Data",
+            "Alter Execution Logic"
+          ],
+          "Note": "The application could be placed in an insecure state that may allow an attacker to modify sensitive data or allow unintended logic to be executed."
+        }
+      ],
+      "DemonstrativeExamples": [
+        {
+          "ID": "DX-54",
+          "Entries": [
+            {
+              "IntroText": "The following code intends to limit certain operations to the administrator only."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "Perl",
+              "ExampleCode": "```\n\t$username = GetCurrentUser();\n\t$state = GetStateData($username);\n\tif (defined($state)) {\n\t\t$uid = ExtractUserID($state);\n\t}\n```\n# do stuff* \n\tif ($uid == 0) {\n\t```\n\t\tDoAdminThings();\n\t}\n```"
+            },
+            {
+              "BodyText": "If the application is unable to extract the state information - say, due to a database timeout - then the $uid variable will not be explicitly set by the programmer. This will cause $uid to be regarded as equivalent to \"0\" in the conditional, allowing the original user to perform administrator actions. Even if the attacker cannot directly influence the state data, unexpected errors could cause incorrect privileges to be assigned to a user just by accident."
+            }
+          ]
+        }
+      ],
+      "PotentialMitigations": [
+        {
+          "Phase": [
+            "Implementation"
+          ],
+          "Description": "Follow the principle of failing securely when an error occurs. The system should enter a state where it is not vulnerable and will not display sensitive error messages to a potential attacker."
+        }
+      ]
+    },
+    "/cwe/455/parents": {
+      "weakness_parents": [
+        "636",
+        "665",
+        "705"
+      ],
+      "category_parents": [
+        "1410",
+        "452",
+        "961"
+      ]
+    },
+    "/cwe/455/children": null
+  }
+}

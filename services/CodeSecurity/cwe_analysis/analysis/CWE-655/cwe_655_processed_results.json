@@ -1,0 +1,97 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T23:54:23.259619",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "655",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/655": {
+      "ID": "655",
+      "Type": "class_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/655": {
+      "ID": "655",
+      "Name": "Insufficient Psychological Acceptability",
+      "Abstraction": "Class",
+      "Structure": "Simple",
+      "Status": "Draft",
+      "Description": "The product has a protection mechanism that is too difficult or inconvenient to use, encouraging non-malicious users to disable or bypass the mechanism, whether by accident or on purpose.",
+      "ExtendedDescription": null,
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Class": "Not Language-Specific",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Architecture and Design"
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Access Control"
+          ],
+          "Impact": [
+            "Bypass Protection Mechanism"
+          ],
+          "Note": "By bypassing the security mechanism, a user might leave the system in a less secure state than intended by the administrator, making it more susceptible to compromise."
+        }
+      ],
+      "DemonstrativeExamples": [
+        {
+          "Entries": [
+            {
+              "IntroText": "In \"Usability of Security: A Case Study\" [REF-540], the authors consider human factors in a cryptography product. Some of the weakness relevant discoveries of this case study were: users accidentally leaked sensitive information, could not figure out how to perform some tasks, thought they were enabling a security option when they were not, and made improper trust decisions."
+            }
+          ]
+        },
+        {
+          "Entries": [
+            {
+              "IntroText": "Enforcing complex and difficult-to-remember passwords that need to be frequently changed for access to trivial resources, e.g., to use a black-and-white printer. Complex password requirements can also cause users to store the passwords in an unsafe manner so they don't have to remember them, such as using a sticky note or saving them in an unencrypted file."
+            }
+          ]
+        },
+        {
+          "Entries": [
+            {
+              "IntroText": "Some CAPTCHA utilities produce images that are too difficult for a human to read, causing user frustration."
+            }
+          ]
+        }
+      ],
+      "PotentialMitigations": [
+        {
+          "Phase": [
+            "Testing"
+          ],
+          "Description": "Where possible, perform human factors and usability studies to identify where your product's security mechanisms are difficult to use, and why."
+        },
+        {
+          "Phase": [
+            "Architecture and Design"
+          ],
+          "Description": "Make the security mechanism as seamless as possible, while also providing the user with sufficient details when a security decision produces unexpected results."
+        }
+      ]
+    },
+    "/cwe/655/parents": {
+      "weakness_parents": [
+        "657"
+      ],
+      "category_parents": [
+        "1379",
+        "1418",
+        "995"
+      ]
+    },
+    "/cwe/655/children": null
+  }
+}

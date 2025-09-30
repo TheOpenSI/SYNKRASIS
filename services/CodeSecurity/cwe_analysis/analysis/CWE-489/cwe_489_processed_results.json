@@ -1,0 +1,139 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T23:31:29.934385",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "489",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/489": {
+      "ID": "489",
+      "Type": "base_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/489": {
+      "ID": "489",
+      "Name": "Active Debug Code",
+      "Abstraction": "Base",
+      "Structure": "Simple",
+      "Status": "Draft",
+      "Description": "The product is released with debugging code still enabled or active.",
+      "ExtendedDescription": null,
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Class": "Not Language-Specific",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Technology",
+          "Class": "Not Technology-Specific",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Technology",
+          "Class": "ICS/OT",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": [
+        {
+          "Term": "Leftover debug code",
+          "Description": "This term originates from Seven Pernicious Kingdoms"
+        }
+      ],
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Implementation",
+          "Note": "In web-based applications, debug code is used to test and modify web application properties, configuration information, and functions. If a debug application is left on a production server, this oversight during the \"software process\" allows attackers access to debug functionality."
+        },
+        {
+          "Phase": "Implementation",
+          "Note": "A common development practice is to add \"back door\" code specifically designed for debugging or testing purposes that is not intended to be shipped or deployed with the product. These back door entry points create security risks because they are not considered during design or testing and fall outside of the expected operating conditions of the product."
+        },
+        {
+          "Phase": "Build and Compilation"
+        },
+        {
+          "Phase": "Operation"
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Confidentiality",
+            "Integrity",
+            "Availability",
+            "Access Control",
+            "Other"
+          ],
+          "Impact": [
+            "Bypass Protection Mechanism",
+            "Read Application Data",
+            "Gain Privileges or Assume Identity",
+            "Varies by Context"
+          ],
+          "Note": "Active debug code can create unintended entry points or expose sensitive information. The severity of the exposed debug code will depend on the particular instance. At the least, it will give an attacker sensitive information about the settings and mechanics of web applications on the server. At worst, as is often the case, the debug code will allow an attacker complete control over the web application and server, as well as confidential information that either of these access."
+        }
+      ],
+      "DemonstrativeExamples": [
+        {
+          "Entries": [
+            {
+              "IntroText": "Debug code can be used to bypass authentication. For example, suppose an application has a login script that receives a username and a password. Assume also that a third, optional, parameter, called \"debug\", is interpreted by the script as requesting a switch to debug mode, and that when this parameter is given the username and password are not checked. In such a case, it is very simple to bypass the authentication process if the special behavior of the application regarding the debug parameter is known. In a case where the form is:"
+            },
+            {
+              "Nature": "Bad",
+              "Language": "HTML",
+              "ExampleCode": "```\n\t<FORM ACTION=\"/authenticate_login.cgi\">\n\t\t<INPUT TYPE=TEXT name=username>\n\t\t<INPUT TYPE=PASSWORD name=password>\n\t\t<INPUT TYPE=SUBMIT>\n\t</FORM>\n```"
+            },
+            {
+              "BodyText": "Then a conforming link will look like:"
+            },
+            {
+              "Nature": "Informative",
+              "ExampleCode": "```\n\thttp://TARGET/authenticate_login.cgi?username=...&password=...\n```"
+            },
+            {
+              "BodyText": "An attacker can change this to:"
+            },
+            {
+              "Nature": "Attack",
+              "ExampleCode": "```\n\thttp://TARGET/authenticate_login.cgi?username=&password=&debug=1\n```"
+            },
+            {
+              "BodyText": "Which will grant the attacker access to the site, bypassing the authentication process."
+            }
+          ]
+        }
+      ],
+      "PotentialMitigations": [
+        {
+          "Phase": [
+            "Build and Compilation",
+            "Distribution"
+          ],
+          "Description": "Remove debug code before deploying the application."
+        }
+      ]
+    },
+    "/cwe/489/parents": {
+      "weakness_parents": [],
+      "category_parents": [
+        "1371",
+        "1412",
+        "1006",
+        "485",
+        "731",
+        "1002"
+      ]
+    },
+    "/cwe/489/children": {
+      "weakness_children": [
+        "11"
+      ],
+      "category_children": []
+    }
+  }
+}

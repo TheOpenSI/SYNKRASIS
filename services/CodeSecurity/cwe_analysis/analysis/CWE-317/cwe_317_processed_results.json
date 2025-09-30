@@ -1,0 +1,66 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T23:09:09.521692",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "317",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/317": {
+      "ID": "317",
+      "Type": "variant_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/317": {
+      "ID": "317",
+      "Name": "Cleartext Storage of Sensitive Information in GUI",
+      "Abstraction": "Variant",
+      "Structure": "Simple",
+      "Status": "Draft",
+      "Description": "The product stores sensitive information in cleartext within the GUI.",
+      "ExtendedDescription": "An attacker can often obtain data from a GUI, even if hidden, by using an API to directly access GUI objects such as windows and menus. Even if the information is encoded in a way that is not human-readable, certain techniques could determine which encoding is being used, then decode the information.",
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Class": "Not Language-Specific",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Operating_System",
+          "Class": "Windows",
+          "Prevalence": "Sometimes"
+        }
+      ],
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Architecture and Design",
+          "Note": "OMISSION: This weakness is caused by missing a security tactic during the architecture and design phase."
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Confidentiality"
+          ],
+          "Impact": [
+            "Read Memory",
+            "Read Application Data"
+          ]
+        }
+      ],
+      "DemonstrativeExamples": null,
+      "PotentialMitigations": null
+    },
+    "/cwe/317/parents": {
+      "weakness_parents": [],
+      "category_parents": [
+        "1013",
+        "1402",
+        "963"
+      ]
+    },
+    "/cwe/317/children": null
+  }
+}

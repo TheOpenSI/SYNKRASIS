@@ -1,0 +1,120 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T23:45:14.513624",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "59",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/59": {
+      "ID": "59",
+      "Type": "base_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/59": {
+      "ID": "59",
+      "Name": "Improper Link Resolution Before File Access ('Link Following')",
+      "Abstraction": "Base",
+      "Structure": "Simple",
+      "Status": "Draft",
+      "Description": "The product attempts to access a file based on the filename, but it does not properly prevent that filename from identifying a link or shortcut that resolves to an unintended resource.",
+      "ExtendedDescription": null,
+      "LikelihoodOfExploit": "Medium",
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Class": "Not Language-Specific",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Operating_System",
+          "Class": "Windows",
+          "Prevalence": "Sometimes"
+        },
+        {
+          "Type": "Operating_System",
+          "Class": "Unix",
+          "Prevalence": "Often"
+        }
+      ],
+      "AlternateTerms": [
+        {
+          "Term": "insecure temporary file",
+          "Description": "Some people use the phrase \"insecure temporary file\" when referring to a link following weakness, but other weaknesses can produce insecure temporary files without any symlink involvement at all."
+        },
+        {
+          "Term": "Zip Slip",
+          "Description": "\"Zip slip\" is an attack that uses file archives (e.g., ZIP, tar, rar, etc.) that contain filenames with path traversal sequences that cause the files to be written outside of the directory under which the archive is expected to be extracted [REF-1282]. It is most commonly used for relative path traversal (CWE-23) and link following (CWE-59)."
+        }
+      ],
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Implementation",
+          "Note": "REALIZATION: This weakness is caused during implementation of an architectural security tactic."
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Confidentiality",
+            "Integrity",
+            "Access Control"
+          ],
+          "Impact": [
+            "Read Files or Directories",
+            "Modify Files or Directories",
+            "Bypass Protection Mechanism"
+          ],
+          "Note": "An attacker may be able to traverse the file system to unintended locations and read or overwrite the contents of unexpected files. If the files are used for a security mechanism then an attacker may be able to bypass the mechanism."
+        },
+        {
+          "Scope": [
+            "Other"
+          ],
+          "Impact": [
+            "Execute Unauthorized Code or Commands"
+          ],
+          "Note": "Windows simple shortcuts, sometimes referred to as soft links, can be exploited remotely since a \".LNK\" file can be uploaded like a normal file. This can enable remote execution."
+        }
+      ],
+      "DemonstrativeExamples": null,
+      "PotentialMitigations": [
+        {
+          "MitigationID": "MIT-48.1",
+          "Phase": [
+            "Architecture and Design"
+          ],
+          "Strategy": "Separation of Privilege",
+          "Description": "\n\nFollow the principle of least privilege when assigning access rights to entities in a software system.\n\n\nDenying access to a file can prevent an attacker from replacing that file with a link to a sensitive file. Ensure good compartmentalization in the system to provide protected areas that can be trusted.\n"
+        }
+      ]
+    },
+    "/cwe/59/parents": {
+      "weakness_parents": [
+        "706"
+      ],
+      "category_parents": [
+        "1019",
+        "1185",
+        "1345",
+        "1404",
+        "1219",
+        "743",
+        "748",
+        "808",
+        "877",
+        "980"
+      ]
+    },
+    "/cwe/59/children": {
+      "weakness_children": [
+        "1386",
+        "61",
+        "62",
+        "64",
+        "65"
+      ],
+      "category_children": []
+    }
+  }
+}

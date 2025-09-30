@@ -1,0 +1,113 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T22:27:54.480920",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "1245",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/1245": {
+      "ID": "1245",
+      "Type": "base_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/1245": {
+      "ID": "1245",
+      "Name": "Improper Finite State Machines (FSMs) in Hardware Logic",
+      "Abstraction": "Base",
+      "Structure": "Simple",
+      "Status": "Incomplete",
+      "Description": "Faulty finite state machines (FSMs) in the hardware logic allow an attacker to put the system in an undefined state, to cause a denial of service (DoS) or gain privileges on the victim's system.",
+      "ExtendedDescription": "\n\nThe functionality and security of the system heavily depend on the implementation of FSMs. FSMs can be used to indicate the current security state of the system. Lots of secure data operations and data transfers rely on the state reported by the FSM. Faulty FSM designs that do not account for all states, either through undefined states (left as don't cares) or through incorrect implementation, might lead an attacker to drive the system into an unstable state from which the system cannot recover without a reset, thus causing a DoS. Depending on what the FSM is used for, an attacker might also gain additional privileges to launch further attacks and compromise the security guarantees.\n",
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Class": "Not Language-Specific",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Operating_System",
+          "Class": "Not OS-Specific",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Architecture",
+          "Class": "Not Architecture-Specific",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Technology",
+          "Class": "System on Chip",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Architecture and Design"
+        },
+        {
+          "Phase": "Implementation"
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Availability",
+            "Access Control"
+          ],
+          "Impact": [
+            "Unexpected State",
+            "DoS: Crash, Exit, or Restart",
+            "DoS: Instability",
+            "Gain Privileges or Assume Identity"
+          ]
+        }
+      ],
+      "DemonstrativeExamples": [
+        {
+          "ID": "DX-152",
+          "Entries": [
+            {
+              "IntroText": "The Finite State Machine (FSM) shown in the \"bad\" code snippet below assigns the output (\"out\") based on the value of state, which is determined based on the user provided input (\"user_input\")."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "Verilog",
+              "ExampleCode": "```\n\tmodule fsm_1(out, user_input, clk, rst_n); \n\tinput [2:0] user_input; \n\tinput clk, rst_n; \n\toutput reg [2:0] out; \n\treg [1:0] state; \n\talways @ (posedge clk or negedge rst_n ) \n\t\tbegin \n\t\t\t if (!rst_n)\n\t\t\t\t state = 3'h0; \n\t\t\t else\n\t\t\t case (user_input) \n\t\t\t\t 3'h0:\n\t\t\t\t 3'h1:\n\t\t\t\t 3'h2:\n\t\t\t\t 3'h3: state = 2'h3;\n\t\t\t\t 3'h4: state = 2'h2;\n\t\t\t\t 3'h5: state = 2'h1;\n\t\t\t endcase \n\t\t end\n\t\t out <= {1'h1, state};\n\t endmodule \n```"
+            },
+            {
+              "BodyText": "The case statement does not include a default to handle the scenario when the user provides inputs of 3'h6 and 3'h7. Those inputs push the system to an undefined state and might cause a crash (denial of service) or any other unanticipated outcome.\n\n\nAdding a default statement to handle undefined inputs mitigates this issue. This is shown in the \"Good\" code snippet below. The default statement is in bold."
+            },
+            {
+              "Nature": "Good",
+              "Language": "Verilog",
+              "ExampleCode": "```\n\tcase (user_input) \n\t\t3'h0: \n\t\t3'h1: \n\t\t3'h2: \n\t\t3'h3: state = 2'h3; \n\t\t3'h4: state = 2'h2; \n\t\t3'h5: state = 2'h1; \n```\ndefault: state = 2'h0;**  endcase"
+            }
+          ]
+        }
+      ],
+      "PotentialMitigations": [
+        {
+          "Phase": [
+            "Architecture and Design",
+            "Implementation"
+          ],
+          "Description": "Define all possible states and handle all unused states through default statements. Ensure that system defaults to a secure state.",
+          "Effectiveness": "High"
+        }
+      ]
+    },
+    "/cwe/1245/parents": {
+      "weakness_parents": [
+        "684"
+      ],
+      "category_parents": [
+        "1199",
+        "1412"
+      ]
+    },
+    "/cwe/1245/children": null
+  }
+}

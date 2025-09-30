@@ -1,0 +1,103 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T23:00:50.363624",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "253",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/253": {
+      "ID": "253",
+      "Type": "base_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/253": {
+      "ID": "253",
+      "Name": "Incorrect Check of Function Return Value",
+      "Abstraction": "Base",
+      "Structure": "Simple",
+      "Status": "Incomplete",
+      "Description": "The product incorrectly checks a return value from a function, which prevents it from detecting errors or exceptional conditions.",
+      "ExtendedDescription": "Important and common functions will return some value about the success of its actions. This will alert the program whether or not to handle any errors caused by that function.",
+      "LikelihoodOfExploit": "Low",
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Class": "Not Language-Specific",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Implementation"
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Availability",
+            "Integrity"
+          ],
+          "Impact": [
+            "Unexpected State",
+            "DoS: Crash, Exit, or Restart"
+          ],
+          "Note": "An unexpected return value could place the system in a state that could lead to a crash or other unintended behaviors."
+        }
+      ],
+      "DemonstrativeExamples": [
+        {
+          "Entries": [
+            {
+              "IntroText": "This code attempts to allocate memory for 4 integers and checks if the allocation succeeds."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "C",
+              "ExampleCode": "```\n\ttmp = malloc(sizeof(int) * 4);\n\tif (tmp < 0 ) {\n\t\t\tperror(\"Failure\");\n```\n//should have checked if the call returned 0* \n\t\t\t}"
+            },
+            {
+              "BodyText": "The code assumes that only a negative return value would indicate an error, but malloc() may return a null pointer when there is an error. The value of tmp could then be equal to 0, and the error would be missed."
+            }
+          ]
+        }
+      ],
+      "PotentialMitigations": [
+        {
+          "Phase": [
+            "Architecture and Design"
+          ],
+          "Strategy": "Language Selection",
+          "Description": "Use a language or compiler that uses exceptions and requires the catching of those exceptions."
+        },
+        {
+          "Phase": [
+            "Implementation"
+          ],
+          "Description": "Properly check all functions which return a value."
+        },
+        {
+          "Phase": [
+            "Implementation"
+          ],
+          "Description": "When designing any function make sure you return a value or throw an exception in case of an error."
+        }
+      ]
+    },
+    "/cwe/253/parents": {
+      "weakness_parents": [
+        "573",
+        "754"
+      ],
+      "category_parents": [
+        "1167",
+        "1171",
+        "1412",
+        "389",
+        "962"
+      ]
+    },
+    "/cwe/253/children": null
+  }
+}

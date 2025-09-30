@@ -1,0 +1,47 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T23:57:02.035958",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "679",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/679": {
+      "endpoint": "/cwe/679",
+      "url": "https://cwe-api.mitre.org/api/v1/cwe/679",
+      "status_code": 200,
+      "success": true,
+      "error": null,
+      "data": [
+        {
+          "Type": "deprecated_view",
+          "ID": "679"
+        }
+      ]
+    },
+    "/cwe/weakness/679": {
+      "endpoint": "/cwe/weakness/679",
+      "url": "https://cwe-api.mitre.org/api/v1/cwe/weakness/679",
+      "status_code": 404,
+      "success": false,
+      "error": "HTTP 404: \"for weakness: cwe (679) not found, use the view endpoint\"\n",
+      "data": null
+    },
+    "/cwe/679/parents": {
+      "endpoint": "/cwe/679/parents",
+      "url": "https://cwe-api.mitre.org/api/v1/cwe/679/parents",
+      "status_code": 200,
+      "success": true,
+      "error": null,
+      "data": []
+    },
+    "/cwe/679/children": {
+      "endpoint": "/cwe/679/children",
+      "url": "https://cwe-api.mitre.org/api/v1/cwe/679/children",
+      "status_code": 200,
+      "success": true,
+      "error": null,
+      "data": []
+    }
+  }
+}

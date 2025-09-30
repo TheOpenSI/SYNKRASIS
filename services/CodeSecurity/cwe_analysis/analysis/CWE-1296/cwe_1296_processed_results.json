@@ -1,0 +1,123 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T22:34:57.013678",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "1296",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/1296": {
+      "ID": "1296",
+      "Type": "base_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/1296": {
+      "ID": "1296",
+      "Name": "Incorrect Chaining or Granularity of Debug Components",
+      "Abstraction": "Base",
+      "Structure": "Simple",
+      "Status": "Incomplete",
+      "Description": "The product's debug components contain incorrect chaining or granularity of debug components.",
+      "ExtendedDescription": "\n\nFor debugging and troubleshooting a chip, several hardware design elements are often implemented, including:\n\n\n  - Various Test Access Ports (TAPs) allow boundary scan commands to be executed.\n\n  - For scanning the internal components of a chip, there are scan cells that allow the chip to be used as a \"stimulus and response\" mechanism.\n\n  - Chipmakers might create custom methods to observe the internal components of their chips by placing various tracing hubs within their chip and creating hierarchical or interconnected structures among those hubs.\n\nLogic errors during design or synthesis could misconfigure the interconnection of the debug components, which could allow unintended access permissions.",
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Name": "Verilog",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Language",
+          "Name": "VHDL",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Language",
+          "Class": "Not Language-Specific",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Operating_System",
+          "Class": "Not OS-Specific",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Architecture",
+          "Class": "Not Architecture-Specific",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Technology",
+          "Name": "Processor Hardware",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Technology",
+          "Class": "Not Technology-Specific",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Implementation"
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Confidentiality",
+            "Integrity",
+            "Access Control",
+            "Authentication",
+            "Authorization",
+            "Availability",
+            "Accountability"
+          ],
+          "Impact": [
+            "Gain Privileges or Assume Identity",
+            "Bypass Protection Mechanism",
+            "Execute Unauthorized Code or Commands",
+            "Modify Memory",
+            "Modify Files or Directories"
+          ],
+          "Likelihood": [
+            "Medium"
+          ],
+          "Note": "Depending on the access to debug component(s) erroneously granted, an attacker could use the debug component to gain additional understanding about the system to further an attack and/or execute other commands. This could compromise any security property, including the ones listed above."
+        }
+      ],
+      "DemonstrativeExamples": [
+        {
+          "Entries": [
+            {
+              "IntroText": "The following example shows how an attacker can take advantage of incorrect chaining or missing granularity of debug components."
+            },
+            {
+              "BodyText": "In a System-on-Chip (SoC), the user might be able to access the SoC-level TAP with a certain level of authorization. However, this access should not also grant access to all of the internal TAPs (e.g., Core). Separately, if any of the internal TAPs is also stitched to the TAP chain when it should not be because of a logic error, then an attacker can access the internal TAPs as well and execute commands there."
+            },
+            {
+              "BodyText": "As a related example, suppose there is a hierarchy of TAPs (TAP_A is connected to TAP_B and TAP_C, then TAP_B is connected to TAP_D and TAP_E, then TAP_C is connected to TAP_F and TAP_G, etc.). Architecture mandates that the user have one set of credentials for just accessing TAP_A, another set of credentials for accessing TAP_B and TAP_C, etc. However, if, during implementation, the designer mistakenly implements a daisy-chained TAP where all the TAPs are connected in a single TAP chain without the hierarchical structure, the correct granularity of debug components is not implemented and the attacker can gain unauthorized access."
+            }
+          ]
+        }
+      ],
+      "PotentialMitigations": [
+        {
+          "Phase": [
+            "Implementation"
+          ],
+          "Description": "Ensure that debug components are properly chained and their granularity is maintained at different authentication levels."
+        }
+      ]
+    },
+    "/cwe/1296/parents": {
+      "weakness_parents": [],
+      "category_parents": [
+        "1207",
+        "1396"
+      ]
+    },
+    "/cwe/1296/children": null
+  }
+}

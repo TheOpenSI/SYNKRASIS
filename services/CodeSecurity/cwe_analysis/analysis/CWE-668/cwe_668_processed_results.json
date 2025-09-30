@@ -1,0 +1,121 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T23:55:46.665238",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "668",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/668": {
+      "ID": "668",
+      "Type": "class_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/668": {
+      "ID": "668",
+      "Name": "Exposure of Resource to Wrong Sphere",
+      "Abstraction": "Class",
+      "Structure": "Simple",
+      "Status": "Draft",
+      "Description": "The product exposes a resource to the wrong control sphere, providing unintended actors with inappropriate access to the resource.",
+      "ExtendedDescription": "\n\nResources such as files and directories may be inadvertently exposed through mechanisms such as insecure permissions, or when a program accidentally operates on the wrong object. For example, a program may intend that private files can only be provided to a specific user. This effectively defines a control sphere that is intended to prevent attackers from accessing these private files. If the file permissions are insecure, then parties other than the user will be able to access those files.\n\n\nA separate control sphere might effectively require that the user can only access the private files, but not any other files on the system. If the program does not ensure that the user is only requesting private files, then the user might be able to access other files on the system.\n\n\nIn either case, the end result is that a resource has been exposed to the wrong party.\n",
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": null,
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Architecture and Design"
+        },
+        {
+          "Phase": "Implementation",
+          "Note": "REALIZATION: This weakness is caused during implementation of an architectural security tactic."
+        },
+        {
+          "Phase": "Operation"
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Confidentiality"
+          ],
+          "Impact": [
+            "Read Application Data"
+          ],
+          "Likelihood": [
+            "High"
+          ],
+          "Note": "An adversary that gains access to a resource exposed to a wrong sphere could potentially retrieve private data from that resource, thus breaking the intended confidentiality of that data."
+        },
+        {
+          "Scope": [
+            "Integrity"
+          ],
+          "Impact": [
+            "Modify Application Data"
+          ],
+          "Likelihood": [
+            "Medium"
+          ],
+          "Note": "An adversary that gains access to a resource exposed to a wrong sphere could potentially modify data held within that resource, thus breaking the intended integrity of that data and causing the system relying on that resource to make unintended decisions."
+        },
+        {
+          "Scope": [
+            "Other"
+          ],
+          "Impact": [
+            "Varies by Context"
+          ],
+          "Note": "The consequences may vary widely depending on how the product uses the affected resource."
+        }
+      ],
+      "DemonstrativeExamples": null,
+      "PotentialMitigations": null
+    },
+    "/cwe/668/parents": {
+      "weakness_parents": [],
+      "category_parents": [
+        "1011",
+        "1345",
+        "1364",
+        "1403",
+        "963"
+      ]
+    },
+    "/cwe/668/children": {
+      "weakness_children": [
+        "1189",
+        "1282",
+        "1327",
+        "1331",
+        "134",
+        "200",
+        "374",
+        "375",
+        "377",
+        "402",
+        "426",
+        "427",
+        "428",
+        "488",
+        "491",
+        "492",
+        "493",
+        "498",
+        "499",
+        "522",
+        "524",
+        "552",
+        "582",
+        "583",
+        "608",
+        "642",
+        "732",
+        "767",
+        "8",
+        "927"
+      ],
+      "category_children": []
+    }
+  }
+}

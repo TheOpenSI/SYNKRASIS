@@ -1,0 +1,63 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T22:14:07.883293",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "1076",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/1076": {
+      "ID": "1076",
+      "Type": "class_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/1076": {
+      "ID": "1076",
+      "Name": "Insufficient Adherence to Expected Conventions",
+      "Abstraction": "Class",
+      "Structure": "Simple",
+      "Status": "Incomplete",
+      "Description": "The product's architecture, source code, design, documentation,\n\t\t\t\t\tor other artifact does not follow required conventions.",
+      "ExtendedDescription": "\n\nThis issue makes it more difficult to maintain the product, which indirectly affects security by making it more difficult or time-consuming to find and/or fix vulnerabilities. It also might make it easier to introduce vulnerabilities.\n",
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": null,
+      "AlternateTerms": null,
+      "ModesOfIntroduction": null,
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Other"
+          ],
+          "Impact": [
+            "Reduce Maintainability"
+          ]
+        }
+      ],
+      "DemonstrativeExamples": null,
+      "PotentialMitigations": null
+    },
+    "/cwe/1076/parents": {
+      "weakness_parents": [],
+      "category_parents": [
+        "1412"
+      ]
+    },
+    "/cwe/1076/children": {
+      "weakness_children": [
+        "1045",
+        "1070",
+        "1078",
+        "1079",
+        "1082",
+        "1087",
+        "1091",
+        "1097",
+        "1098",
+        "1108",
+        "586",
+        "594"
+      ],
+      "category_children": []
+    }
+  }
+}

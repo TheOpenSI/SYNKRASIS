@@ -1,0 +1,100 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T23:43:37.538386",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "578",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/578": {
+      "ID": "578",
+      "Type": "variant_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/578": {
+      "ID": "578",
+      "Name": "EJB Bad Practices: Use of Class Loader",
+      "Abstraction": "Variant",
+      "Structure": "Simple",
+      "Status": "Draft",
+      "Description": "The product violates the Enterprise JavaBeans (EJB) specification by using the class loader.",
+      "ExtendedDescription": "The Enterprise JavaBeans specification requires that every bean provider follow a set of programming guidelines designed to ensure that the bean will be portable and behave consistently in any EJB container. In this case, the product violates the following EJB guideline: \"The enterprise bean must not attempt to create a class loader; obtain the current class loader; set the context class loader; set security manager; create a new security manager; stop the JVM; or change the input, output, and error streams.\" The specification justifies this requirement in the following way: \"These functions are reserved for the EJB container. Allowing the enterprise bean to use these functions could compromise security and decrease the container's ability to properly manage the runtime environment.\"",
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Name": "Java",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Implementation"
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Confidentiality",
+            "Integrity",
+            "Availability",
+            "Other"
+          ],
+          "Impact": [
+            "Execute Unauthorized Code or Commands",
+            "Varies by Context"
+          ]
+        }
+      ],
+      "DemonstrativeExamples": [
+        {
+          "Entries": [
+            {
+              "IntroText": "The following Java example is a simple stateless Enterprise JavaBean that retrieves the interest rate for the number of points for a mortgage. The interest rates for various points are retrieved from an XML document on the local file system, and the EJB uses the Class Loader for the EJB class to obtain the XML document from the local file system as an input stream."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "Java",
+              "ExampleCode": "```\n\t@Stateless\n\tpublic class InterestRateBean implements InterestRateRemote {\n\t\t\tprivate Document interestRateXMLDocument = null;\n\t\t\tpublic InterestRateBean() {\n\t\t\t\t\ttry {\n```\n// get XML document from the local filesystem as an input stream* \n\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t *// using the ClassLoader for this class* \n\t\t\t\t\t\t\tClassLoader loader = this.getClass().getClassLoader();\n\t\t\t\t\t\t\tInputStream in = loader.getResourceAsStream(Constants.INTEREST_RATE_FILE);\n\t\t\t\n\t\t\tDocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();\n\t\t\t```\n\t\t\t\tDocumentBuilder db = dbf.newDocumentBuilder();\n\t\t\t\tinterestRateXMLDocument = db.parse(interestRateFile);\n\t\t\t} catch (IOException ex) {...}\n\t}\n\t\t\tpublic BigDecimal getInterestRate(Integer points) {\n\t\t\t\treturn getInterestRateFromXML(points);\n\t\t\t}\n```\n/* member function to retrieve interest rate from XML document on the local file system */* \n\t\t\t\n\t\t\tprivate BigDecimal getInterestRateFromXML(Integer points) {...}}"
+            },
+            {
+              "BodyText": "This use of the Java Class Loader class within any kind of Enterprise JavaBean violates the restriction of the EJB specification against obtaining the current class loader as this could compromise the security of the application using the EJB."
+            }
+          ]
+        },
+        {
+          "Entries": [
+            {
+              "IntroText": "An EJB is also restricted from creating a custom class loader and creating a class and instance of a class from the class loader, as shown in the following example."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "Java",
+              "ExampleCode": "```\n\t@Stateless\n\tpublic class LoaderSessionBean implements LoaderSessionRemote {\n\t\t\tpublic LoaderSessionBean() {\n\t\t\t\ttry {\n\t\t\t\t\tClassLoader loader = new CustomClassLoader();\n\t\t\t\t\tClass c = loader.loadClass(\"someClass\");\n\t\t\t\t\tObject obj = c.newInstance();\n\t\t\t\t\t/* perform some task that uses the new class instance member variables or functions */\n\t\t\t\t\t...\n\t\t\t\t} catch (Exception ex) {...}\n\t\t\t}\n\t\t\tpublic class CustomClassLoader extends ClassLoader {\n\t\t\t}\n\t}\n```"
+            }
+          ]
+        }
+      ],
+      "PotentialMitigations": [
+        {
+          "Phase": [
+            "Architecture and Design",
+            "Implementation"
+          ],
+          "Description": "Do not use the Class Loader when writing EJBs."
+        }
+      ]
+    },
+    "/cwe/578/parents": {
+      "weakness_parents": [
+        "573"
+      ],
+      "category_parents": [
+        "1412",
+        "1001"
+      ]
+    },
+    "/cwe/578/children": null
+  }
+}

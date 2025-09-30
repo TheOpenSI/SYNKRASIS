@@ -1,0 +1,33 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T23:25:39.226199",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "443",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/443": {
+      "ID": "443",
+      "Type": "deprecated_weakness",
+      "is_deprecated": true
+    },
+    "/cwe/weakness/443": {
+      "ID": "443",
+      "Name": "DEPRECATED: HTTP response splitting",
+      "Abstraction": "Base",
+      "Structure": "Simple",
+      "Status": "Deprecated",
+      "Description": "This weakness can be found at CWE-113.",
+      "ExtendedDescription": null,
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": null,
+      "AlternateTerms": null,
+      "ModesOfIntroduction": null,
+      "CommonConsequences": null,
+      "DemonstrativeExamples": null,
+      "PotentialMitigations": null
+    },
+    "/cwe/443/parents": null,
+    "/cwe/443/children": null
+  }
+}

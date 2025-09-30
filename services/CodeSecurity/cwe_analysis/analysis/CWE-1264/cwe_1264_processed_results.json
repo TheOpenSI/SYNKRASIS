@@ -1,0 +1,103 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T22:30:32.925818",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "1264",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/1264": {
+      "ID": "1264",
+      "Type": "base_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/1264": {
+      "ID": "1264",
+      "Name": "Hardware Logic with Insecure De-Synchronization between Control and Data Channels",
+      "Abstraction": "Base",
+      "Structure": "Simple",
+      "Status": "Incomplete",
+      "Description": "The hardware logic for error handling and security checks can incorrectly forward data before the security check is complete.",
+      "ExtendedDescription": "\n\nMany high-performance on-chip bus protocols and processor data-paths employ separate channels for control and data to increase parallelism and maximize throughput. Bugs in the hardware logic that handle errors and security checks can make it possible for data to be forwarded before the completion of the security checks. If the data can propagate to a location in the hardware observable to an attacker, loss of data confidentiality can occur. 'Meltdown' is a concrete example of how de-synchronization between data and permissions checking logic can violate confidentiality requirements. Data loaded from a page marked as privileged was returned to the cpu regardless of current privilege level for performance reasons. The assumption was that the cpu could later remove all traces of this data during the handling of the illegal memory access exception, but this assumption was proven false as traces of the secret data were not removed from the microarchitectural state.\n",
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Class": "Not Language-Specific",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Operating_System",
+          "Class": "Not OS-Specific",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Architecture",
+          "Class": "Not Architecture-Specific",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Technology",
+          "Class": "Not Technology-Specific",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Architecture and Design",
+          "Note": "The weakness can be introduced in the data transfer or bus protocol itself or in the implementation."
+        },
+        {
+          "Phase": "Implementation"
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Confidentiality"
+          ],
+          "Impact": [
+            "Read Memory",
+            "Read Application Data"
+          ]
+        }
+      ],
+      "DemonstrativeExamples": [
+        {
+          "Entries": [
+            {
+              "IntroText": "There are several standard on-chip bus protocols used in modern SoCs to allow communication between components. There are a wide variety of commercially available hardware IP implementing the interconnect logic for these protocols. A bus connects components which initiate/request communications such as processors and DMA controllers (bus masters) with peripherals which respond to requests. In a typical system, the privilege level or security designation of the bus master along with the intended functionality of each peripheral determine the security policy specifying which specific bus masters can access specific peripherals. This security policy (commonly referred to as a bus firewall) can be enforced using separate IP/logic from the actual interconnect responsible for the data routing."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "Other",
+              "ExampleCode": "The firewall and data routing logic becomes de-synchronized due to a hardware logic bug allowing components that should not be allowed to communicate to share data. For example, consider an SoC with two processors. One is being used as a root of trust and can access a cryptographic key storage peripheral. The other processor (application cpu) may run potentially untrusted code and should not access the key store. If the application cpu can issue a read request to the key store which is not blocked due to de-synchronization of data routing and the bus firewall, disclosure of cryptographic keys is possible."
+            },
+            {
+              "Nature": "Good",
+              "Language": "Other",
+              "ExampleCode": "All data is correctly buffered inside the interconnect until the firewall has determined that the endpoint is allowed to receive the data."
+            }
+          ]
+        }
+      ],
+      "PotentialMitigations": [
+        {
+          "Phase": [
+            "Architecture and Design"
+          ],
+          "Description": "\n\nThoroughly verify the data routing logic to ensure that any error handling or security checks effectively block illegal dataflows.\n"
+        }
+      ]
+    },
+    "/cwe/1264/parents": {
+      "weakness_parents": [],
+      "category_parents": [
+        "1196",
+        "1401"
+      ]
+    },
+    "/cwe/1264/children": null
+  }
+}

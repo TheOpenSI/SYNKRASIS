@@ -1,0 +1,219 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T23:00:35.249477",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "250",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/250": {
+      "ID": "250",
+      "Type": "base_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/250": {
+      "ID": "250",
+      "Name": "Execution with Unnecessary Privileges",
+      "Abstraction": "Base",
+      "Structure": "Simple",
+      "Status": "Draft",
+      "Description": "The product performs an operation at a privilege level that is higher than the minimum level required, which creates new weaknesses or amplifies the consequences of other weaknesses.",
+      "ExtendedDescription": null,
+      "LikelihoodOfExploit": "Medium",
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Class": "Not Language-Specific",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Technology",
+          "Class": "Mobile",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Implementation",
+          "Note": "\n\nREALIZATION: This weakness is caused during implementation of an architectural security tactic.\n"
+        },
+        {
+          "Phase": "Installation"
+        },
+        {
+          "Phase": "Architecture and Design",
+          "Note": "\n\nIf an application has this design problem, then it can be easier for the developer to make implementation-related errors such as CWE-271 (Privilege Dropping / Lowering Errors). In addition, the consequences of Privilege Chaining (CWE-268) can become more severe.\n"
+        },
+        {
+          "Phase": "Operation"
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Confidentiality",
+            "Integrity",
+            "Availability",
+            "Access Control"
+          ],
+          "Impact": [
+            "Gain Privileges or Assume Identity",
+            "Execute Unauthorized Code or Commands",
+            "Read Application Data",
+            "DoS: Crash, Exit, or Restart"
+          ],
+          "Note": "An attacker will be able to gain access to any resources that are allowed by the extra privileges. Common results include executing code, disabling services, and reading restricted data. New weaknesses can be exposed because running with extra privileges, such as root or Administrator, can disable the normal security checks being performed by the operating system or surrounding environment. Other pre-existing weaknesses can turn into security vulnerabilities if they occur while operating at raised privileges."
+        }
+      ],
+      "DemonstrativeExamples": [
+        {
+          "ID": "DX-126",
+          "Entries": [
+            {
+              "IntroText": "This code temporarily raises the program's privileges to allow creation of a new user folder."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "Python",
+              "ExampleCode": "```\n\tdef makeNewUserDir(username):\n\t\t\tif invalidUsername(username):\n```\n#avoid CWE-22 and CWE-78* \n\t\t\t\t\tprint('Usernames cannot contain invalid characters')\n\t\t\t\t\treturn False\n\t\t\ttry:\n\t\t\t```\n\t\t\t\traisePrivileges()\n\t\t\t\tos.mkdir('/home/' + username)\n\t\t\t\tlowerPrivileges()\n\t\t\texcept OSError:\n\t\t\t\tprint('Unable to create new user directory for user:' + username)\n\t\t\t\treturn False\n\t\t\treturn True\n```"
+            },
+            {
+              "BodyText": "While the program only raises its privilege level to create the folder and immediately lowers it again, if the call to os.mkdir() throws an exception, the call to lowerPrivileges() will not occur. As a result, the program is indefinitely operating in a raised privilege state, possibly allowing further exploitation to occur."
+            }
+          ]
+        },
+        {
+          "Entries": [
+            {
+              "IntroText": "The following code calls chroot() to restrict the application to a subset of the filesystem below APP_HOME in order to prevent an attacker from using the program to gain unauthorized access to files located elsewhere. The code then opens a file specified by the user and processes the contents of the file."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "C",
+              "ExampleCode": "```\n\tchroot(APP_HOME);\n\tchdir(\"/\");\n\tFILE* data = fopen(argv[1], \"r+\");\n\t...\n```"
+            },
+            {
+              "BodyText": "Constraining the process inside the application's home directory before opening any files is a valuable security measure. However, the absence of a call to setuid() with some non-zero value means the application is continuing to operate with unnecessary root privileges. Any successful exploit carried out by an attacker against the application can now result in a privilege escalation attack because any malicious operations will be performed with the privileges of the superuser. If the application drops to the privilege level of a non-root user, the potential for damage is substantially reduced."
+            }
+          ]
+        },
+        {
+          "Entries": [
+            {
+              "IntroText": "This application intends to use a user's location to determine the timezone the user is in:"
+            },
+            {
+              "Nature": "Bad",
+              "Language": "Java",
+              "ExampleCode": "```\n\tlocationClient = new LocationClient(this, this, this);\n\tlocationClient.connect();\n\tLocation userCurrLocation;\n\tuserCurrLocation = locationClient.getLastLocation();\n\tsetTimeZone(userCurrLocation);\n```"
+            },
+            {
+              "BodyText": "This is unnecessary use of the location API, as this information is already available using the Android Time API. Always be sure there is not another way to obtain needed information before resorting to using the location API."
+            }
+          ]
+        },
+        {
+          "ID": "DX-111",
+          "Entries": [
+            {
+              "IntroText": "This code uses location to determine the user's current US State location."
+            },
+            {
+              "BodyText": "First the application must declare that it requires the ACCESS_FINE_LOCATION permission in the application's manifest.xml:"
+            },
+            {
+              "Nature": "Bad",
+              "Language": "XML",
+              "ExampleCode": "```\n\t<uses-permission android:name=\"android.permission.ACCESS_FINE_LOCATION\"/>\n```"
+            },
+            {
+              "BodyText": "During execution, a call to getLastLocation() will return a location based on the application's location permissions. In this case the application has permission for the most accurate location possible:"
+            },
+            {
+              "Nature": "Bad",
+              "Language": "Java",
+              "ExampleCode": "```\n\tlocationClient = new LocationClient(this, this, this);\n\tlocationClient.connect();\n\tLocation userCurrLocation;\n\tuserCurrLocation = locationClient.getLastLocation();\n\tderiveStateFromCoords(userCurrLocation);\n```"
+            },
+            {
+              "BodyText": "While the application needs this information, it does not need to use the ACCESS_FINE_LOCATION permission, as the ACCESS_COARSE_LOCATION permission will be sufficient to identify which US state the user is in."
+            }
+          ]
+        }
+      ],
+      "PotentialMitigations": [
+        {
+          "MitigationID": "MIT-17",
+          "Phase": [
+            "Architecture and Design",
+            "Operation"
+          ],
+          "Strategy": "Environment Hardening",
+          "Description": "Run your code using the lowest privileges that are required to accomplish the necessary tasks [REF-76]. If possible, create isolated accounts with limited privileges that are only used for a single task. That way, a successful attack will not immediately give the attacker access to the rest of the software or its environment. For example, database applications rarely need to run as the database administrator, especially in day-to-day operations."
+        },
+        {
+          "MitigationID": "MIT-18",
+          "Phase": [
+            "Architecture and Design"
+          ],
+          "Strategy": "Separation of Privilege",
+          "Description": "Identify the functionality that requires additional privileges, such as access to privileged operating system resources. Wrap and centralize this functionality if possible, and isolate the privileged code as much as possible from other code [REF-76]. Raise privileges as late as possible, and drop them as soon as possible to avoid CWE-271. Avoid weaknesses such as CWE-288 and CWE-420 by protecting all possible communication channels that could interact with the privileged code, such as a secondary socket that is only intended to be accessed by administrators."
+        },
+        {
+          "MitigationID": "MIT-18",
+          "Phase": [
+            "Architecture and Design"
+          ],
+          "Strategy": "Attack Surface Reduction",
+          "Description": "Identify the functionality that requires additional privileges, such as access to privileged operating system resources. Wrap and centralize this functionality if possible, and isolate the privileged code as much as possible from other code [REF-76]. Raise privileges as late as possible, and drop them as soon as possible to avoid CWE-271. Avoid weaknesses such as CWE-288 and CWE-420 by protecting all possible communication channels that could interact with the privileged code, such as a secondary socket that is only intended to be accessed by administrators."
+        },
+        {
+          "Phase": [
+            "Implementation"
+          ],
+          "Description": "Perform extensive input validation for any privileged code that must be exposed to the user and reject anything that does not fit your strict requirements."
+        },
+        {
+          "MitigationID": "MIT-19",
+          "Phase": [
+            "Implementation"
+          ],
+          "Description": "When dropping privileges, ensure that they have been dropped successfully to avoid CWE-273. As protection mechanisms in the environment get stronger, privilege-dropping calls may fail even if it seems like they would always succeed."
+        },
+        {
+          "Phase": [
+            "Implementation"
+          ],
+          "Description": "If circumstances force you to run with extra privileges, then determine the minimum access level necessary. First identify the different permissions that the software and its users will need to perform their actions, such as file read and write permissions, network socket permissions, and so forth. Then explicitly allow those actions while denying all else [REF-76]. Perform extensive input validation and canonicalization to minimize the chances of introducing a separate vulnerability. This mitigation is much more prone to error than dropping the privileges in the first place."
+        },
+        {
+          "MitigationID": "MIT-37",
+          "Phase": [
+            "Operation",
+            "System Configuration"
+          ],
+          "Strategy": "Environment Hardening",
+          "Description": "Ensure that the software runs properly under the United States Government Configuration Baseline (USGCB) [REF-199] or an equivalent hardening configuration guide, which many organizations use to limit the attack surface and potential risk of deployed software."
+        }
+      ]
+    },
+    "/cwe/250/parents": {
+      "weakness_parents": [
+        "269",
+        "657"
+      ],
+      "category_parents": [
+        "1015",
+        "1418",
+        "265",
+        "227",
+        "753",
+        "815",
+        "858",
+        "901",
+        "866"
+      ]
+    },
+    "/cwe/250/children": null
+  }
+}

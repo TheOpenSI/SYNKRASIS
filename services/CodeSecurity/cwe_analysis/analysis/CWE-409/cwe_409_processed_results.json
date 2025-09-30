@@ -1,0 +1,84 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T23:21:14.796988",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "409",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/409": {
+      "ID": "409",
+      "Type": "base_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/409": {
+      "ID": "409",
+      "Name": "Improper Handling of Highly Compressed Data (Data Amplification)",
+      "Abstraction": "Base",
+      "Structure": "Simple",
+      "Status": "Incomplete",
+      "Description": "The product does not handle or incorrectly handles a compressed input with a very high compression ratio that produces a large output.",
+      "ExtendedDescription": "An example of data amplification is a \"decompression bomb,\" a small ZIP file that can produce a large amount of data when it is decompressed.",
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Class": "Not Language-Specific",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Architecture and Design"
+        },
+        {
+          "Phase": "Implementation"
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Availability"
+          ],
+          "Impact": [
+            "DoS: Amplification",
+            "DoS: Crash, Exit, or Restart",
+            "DoS: Resource Consumption (CPU)",
+            "DoS: Resource Consumption (Memory)"
+          ],
+          "Note": "System resources, CPU and memory, can be quickly consumed. This can lead to poor system performance or system crash."
+        }
+      ],
+      "DemonstrativeExamples": [
+        {
+          "ID": "DX-53",
+          "Entries": [
+            {
+              "IntroText": "The DTD and the very brief XML below illustrate what is meant by an XML bomb. The ZERO entity contains one character, the letter A. The choice of entity name ZERO is being used to indicate length equivalent to that exponent on two, that is, the length of ZERO is 2^0. Similarly, ONE refers to ZERO twice, therefore the XML parser will expand ONE to a length of 2, or 2^1. Ultimately, we reach entity THIRTYTWO, which will expand to 2^32 characters in length, or 4 GB, probably consuming far more data than expected."
+            },
+            {
+              "Nature": "Attack",
+              "Language": "XML",
+              "ExampleCode": "```\n\t<?xml version=\"1.0\"?>\n\t<!DOCTYPE MaliciousDTD [\n\t<!ENTITY ZERO \"A\">\n\t<!ENTITY ONE \"&ZERO;&ZERO;\">\n\t<!ENTITY TWO \"&ONE;&ONE;\">\n\t...\n\t<!ENTITY THIRTYTWO \"&THIRTYONE;&THIRTYONE;\">\n\t]>\n\t<data>&THIRTYTWO;</data>\n```"
+            }
+          ]
+        }
+      ],
+      "PotentialMitigations": null
+    },
+    "/cwe/409/parents": {
+      "weakness_parents": [
+        "405"
+      ],
+      "category_parents": [
+        "1134",
+        "1416",
+        "19",
+        "845",
+        "977"
+      ]
+    },
+    "/cwe/409/children": null
+  }
+}

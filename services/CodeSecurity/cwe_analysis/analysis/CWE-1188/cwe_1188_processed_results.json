@@ -1,0 +1,76 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T22:23:14.720747",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "1188",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/1188": {
+      "ID": "1188",
+      "Type": "base_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/1188": {
+      "ID": "1188",
+      "Name": "Initialization of a Resource with an Insecure Default",
+      "Abstraction": "Base",
+      "Structure": "Simple",
+      "Status": "Incomplete",
+      "Description": "The product initializes or sets a resource with a default that is intended to be changed by the administrator, but the default is not secure.",
+      "ExtendedDescription": "\n\nDevelopers often choose default values that leave the product as open and easy to use as possible out-of-the-box, under the assumption that the administrator can (or should) change the default value. However, this ease-of-use comes at a cost when the default is insecure and the administrator does not change it.\n",
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": null,
+      "AlternateTerms": null,
+      "ModesOfIntroduction": null,
+      "CommonConsequences": null,
+      "DemonstrativeExamples": [
+        {
+          "ID": "DX-163",
+          "Entries": [
+            {
+              "IntroText": "This code attempts to login a user using credentials from a POST request:"
+            },
+            {
+              "Nature": "Bad",
+              "Language": "PHP",
+              "ExampleCode": "```\n```\n// $user and $pass automatically set from POST request* \n\tif (login_user($user,$pass)) {\n\t```\n\t\t$authorized = true;\n\t}\n```\n...* \n\t\n\tif ($authorized) {\n\t```\n\t\tgeneratePage();\n\t}\n```"
+            },
+            {
+              "BodyText": "Because the $authorized variable is never initialized, PHP will automatically set $authorized to any value included in the POST request if register_globals is enabled. An attacker can send a POST request with an unexpected third value 'authorized' set to 'true' and gain authorized status without supplying valid credentials."
+            },
+            {
+              "BodyText": "Here is a fixed version:"
+            },
+            {
+              "Nature": "Good",
+              "Language": "PHP",
+              "ExampleCode": "```\n\t$user = $_POST['user'];\n\t$pass = $_POST['pass'];\n\t$authorized = false;\n\tif (login_user($user,$pass)) {\n\t\t$authorized = true;\n\t}\n```\n...*"
+            },
+            {
+              "BodyText": "This code avoids the issue by initializing the $authorized variable to false and explicitly retrieving the login credentials from the $_POST variable. Regardless, register_globals should never be enabled and is disabled by default in current versions of PHP."
+            }
+          ]
+        }
+      ],
+      "PotentialMitigations": null
+    },
+    "/cwe/1188/parents": {
+      "weakness_parents": [
+        "1419",
+        "665"
+      ],
+      "category_parents": [
+        "1416",
+        "399",
+        "452"
+      ]
+    },
+    "/cwe/1188/children": {
+      "weakness_children": [
+        "453"
+      ],
+      "category_children": []
+    }
+  }
+}

@@ -1,0 +1,129 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T23:41:30.940478",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "561",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/561": {
+      "ID": "561",
+      "Type": "base_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/561": {
+      "ID": "561",
+      "Name": "Dead Code",
+      "Abstraction": "Base",
+      "Structure": "Simple",
+      "Status": "Draft",
+      "Description": "The product contains dead code, which can never be executed.",
+      "ExtendedDescription": "Dead code is code that can never be executed in a running program. The surrounding code makes it impossible for a section of code to ever be executed.",
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Class": "Not Language-Specific",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Implementation"
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Other"
+          ],
+          "Impact": [
+            "Quality Degradation"
+          ],
+          "Note": "Dead code that results from code that can never be executed is an indication of problems with the source code that needs to be fixed and is an indication of poor quality."
+        },
+        {
+          "Scope": [
+            "Other"
+          ],
+          "Impact": [
+            "Reduce Maintainability"
+          ]
+        }
+      ],
+      "DemonstrativeExamples": [
+        {
+          "ID": "DX-217",
+          "Entries": [
+            {
+              "IntroText": "The condition for the second if statement is impossible to satisfy. It requires that the variables be non-null. However, on the only path where s can be assigned a non-null value, there is a return statement."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "C++",
+              "ExampleCode": "```\n\tString s = null;\n\tif (b) {\n\t\ts = \"Yes\";\n\t\treturn;\n\t}\n\tif (s != null) {\n\t\tDead();\n\t}\n```"
+            }
+          ]
+        },
+        {
+          "Entries": [
+            {
+              "IntroText": "In the following class, two private methods call each other, but since neither one is ever invoked from anywhere else, they are both dead code."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "Java",
+              "ExampleCode": "```\n\tpublic class DoubleDead {\n\t\tprivate void doTweedledee() {\n\t\t\tdoTweedledumb();\n\t\t}\n\t\tprivate void doTweedledumb() {\n\t\t\tdoTweedledee();\n\t\t}\n\t\tpublic static void main(String[] args) {\n\t\t\tSystem.out.println(\"running DoubleDead\");\n\t\t}\n\t}\n```"
+            },
+            {
+              "BodyText": "(In this case it is a good thing that the methods are dead: invoking either one would cause an infinite loop.)"
+            }
+          ]
+        },
+        {
+          "Entries": [
+            {
+              "IntroText": "The field named glue is not used in the following class. The author of the class has accidentally put quotes around the field name, transforming it into a string constant."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "Java",
+              "ExampleCode": "```\n\tpublic class Dead {\n\t\t\tString glue;\n\t\t\tpublic String getGlue() {\n\t\t\t\treturn \"glue\";\n\t\t\t}\n\t}\n```"
+            }
+          ]
+        }
+      ],
+      "PotentialMitigations": [
+        {
+          "Phase": [
+            "Implementation"
+          ],
+          "Description": "Remove dead code before deploying the application."
+        },
+        {
+          "Phase": [
+            "Testing"
+          ],
+          "Description": "Use a static analysis tool to spot dead code."
+        }
+      ]
+    },
+    "/cwe/561/parents": {
+      "weakness_parents": [
+        "1164"
+      ],
+      "category_parents": [
+        "1130",
+        "1186",
+        "1307",
+        "1412",
+        "1006",
+        "747",
+        "883",
+        "886"
+      ]
+    },
+    "/cwe/561/children": null
+  }
+}

@@ -1,0 +1,94 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T23:39:38.914671",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "547",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/547": {
+      "ID": "547",
+      "Type": "base_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/547": {
+      "ID": "547",
+      "Name": "Use of Hard-coded, Security-relevant Constants",
+      "Abstraction": "Base",
+      "Structure": "Simple",
+      "Status": "Draft",
+      "Description": "The product uses hard-coded constants instead of symbolic names for security-critical values, which increases the likelihood of mistakes during code maintenance or security policy change.",
+      "ExtendedDescription": "If the developer does not find all occurrences of the hard-coded constants, an incorrect policy decision may be made if one of the constants is not changed. Making changes to these values will require code changes that may be difficult or impossible once the system is released to the field. In addition, these hard-coded values may become available to attackers if the code is ever disclosed.",
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": null,
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Implementation"
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Other"
+          ],
+          "Impact": [
+            "Varies by Context",
+            "Quality Degradation"
+          ],
+          "Note": "The existence of hardcoded constants could cause unexpected behavior and the introduction of weaknesses during code maintenance or when making changes to the code if all occurrences are not modified. The use of hardcoded constants is an indication of poor quality."
+        }
+      ],
+      "DemonstrativeExamples": [
+        {
+          "ID": "DX-215",
+          "Entries": [
+            {
+              "IntroText": "The usage of symbolic names instead of hard-coded constants is preferred."
+            },
+            {
+              "BodyText": "The following is an example of using a hard-coded constant instead of a symbolic name."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "C",
+              "ExampleCode": "```\n\tchar buffer[1024];\n\t...\n\tfgets(buffer, 1024, stdin);\n```"
+            },
+            {
+              "BodyText": "If the buffer value needs to be changed, then it has to be altered in more than one place. If the developer forgets or does not find all occurrences, in this example it could lead to a buffer overflow."
+            },
+            {
+              "Nature": "Good",
+              "Language": "C",
+              "ExampleCode": "```\n\tenum { MAX_BUFFER_SIZE = 1024 };\n\t...\n\tchar buffer[MAX_BUFFER_SIZE];\n\t...\n\tfgets(buffer, MAX_BUFFER_SIZE, stdin);\n```"
+            },
+            {
+              "BodyText": "In this example the developer will only need to change one value and all references to the buffer size are updated, as a symbolic name is used instead of a hard-coded constant."
+            }
+          ]
+        }
+      ],
+      "PotentialMitigations": [
+        {
+          "Phase": [
+            "Implementation"
+          ],
+          "Description": "Avoid using hard-coded constants. Configuration files offer a more flexible solution."
+        }
+      ]
+    },
+    "/cwe/547/parents": {
+      "weakness_parents": [
+        "1078"
+      ],
+      "category_parents": [
+        "1349",
+        "1412",
+        "1006",
+        "736",
+        "950"
+      ]
+    },
+    "/cwe/547/children": null
+  }
+}

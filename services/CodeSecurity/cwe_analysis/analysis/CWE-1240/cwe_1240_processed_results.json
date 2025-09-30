@@ -1,0 +1,192 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T22:27:16.818021",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "1240",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/1240": {
+      "ID": "1240",
+      "Type": "base_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/1240": {
+      "ID": "1240",
+      "Name": "Use of a Cryptographic Primitive with a Risky Implementation",
+      "Abstraction": "Base",
+      "Structure": "Simple",
+      "Status": "Draft",
+      "Description": "To fulfill the need for a cryptographic primitive, the product implements a cryptographic algorithm using a non-standard, unproven, or disallowed/non-compliant cryptographic implementation.",
+      "ExtendedDescription": "\n\nCryptographic protocols and systems depend on cryptographic primitives (and associated algorithms) as their basic building blocks. Some common examples of primitives are digital signatures, one-way hash functions, ciphers, and public key cryptography; however, the notion of \"primitive\" can vary depending on point of view. See \"Terminology Notes\" for further explanation of some concepts.\n\n\nCryptographic primitives are defined to accomplish one very specific task in a precisely defined and mathematically reliable fashion. For example, suppose that for a specific cryptographic primitive (such as an encryption routine), the consensus is that the primitive can only be broken after trying out N different inputs (where the larger the value of N, the stronger the cryptography). For an encryption scheme like AES-256, one would expect N to be so large as to be infeasible to execute in a reasonable amount of time.\n\n\nIf a vulnerability is ever found that shows that one can break a cryptographic primitive in significantly less than the expected number of attempts, then that primitive is considered weakened (or sometimes in extreme cases, colloquially it is \"broken\"). As a result, anything using this cryptographic primitive would now be considered insecure or risky. Thus, even breaking or weakening a seemingly small cryptographic primitive has the potential to render the whole system vulnerable, due to its reliance on the primitive. A historical example can be found in TLS when using DES. One would colloquially call DES the cryptographic primitive for transport encryption in this version of TLS. In the past, DES was considered strong, because no weaknesses were found in it; importantly, DES has a key length of 56 bits. Trying N=2^56 keys was considered impractical for most actors. Unfortunately, attacking a system with 56-bit keys is now practical via brute force, which makes defeating DES encryption practical. It is now practical for an adversary to read any information sent under this version of TLS and use this information to attack the system. As a result, it can be claimed that this use of TLS is weak, and that any system depending on TLS with DES could potentially render the entire system vulnerable to attack.\n\n\nCryptographic primitives and associated algorithms are only considered safe after extensive research and review from experienced cryptographers from academia, industry, and government entities looking for any possible flaws. Furthermore, cryptographic primitives and associated algorithms are frequently reevaluated for safety when new mathematical and attack techniques are discovered. As a result and over time, even well-known cryptographic primitives can lose their compliance status with the discovery of novel attacks that might either defeat the algorithm or reduce its robustness significantly.\n\n\nIf ad-hoc cryptographic primitives are implemented, it is almost certain that the implementation will be vulnerable to attacks that are well understood by cryptographers, resulting in the exposure of sensitive information and other consequences.\n\n\nThis weakness is even more difficult to manage for hardware-implemented deployment of cryptographic algorithms. First, because hardware is not patchable as easily as software, any flaw discovered after release and production typically cannot be fixed without a recall of the product. Secondly, the hardware product is often expected to work for years, during which time computation power available to the attacker only increases. Therefore, for hardware implementations of cryptographic primitives, it is absolutely essential that only strong, proven cryptographic primitives are used.\n",
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Class": "Not Language-Specific",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Operating_System",
+          "Class": "Not OS-Specific",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Architecture",
+          "Class": "Not Architecture-Specific",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Technology",
+          "Class": "System on Chip",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Architecture and Design",
+          "Note": "This weakness is primarily introduced during the architecture and design phase as risky primitives are included."
+        },
+        {
+          "Phase": "Implementation",
+          "Note": "Even in cases where the Architectural phase properly specifies a cryptographically secure design, the design may be changed during implementation due to unforeseen constraints."
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Confidentiality"
+          ],
+          "Impact": [
+            "Read Application Data"
+          ],
+          "Likelihood": [
+            "High"
+          ],
+          "Note": "Incorrect usage of crypto primitives could render the supposedly encrypted data as unencrypted plaintext in the worst case."
+        }
+      ],
+      "DemonstrativeExamples": [
+        {
+          "Entries": [
+            {
+              "IntroText": "Re-using random values may compromise security."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "Other",
+              "ExampleCode": "Suppose an Encryption algorithm needs a random value for a key. Instead of using a DRNG (Deterministic Random Number Generator), the designer uses a linear-feedback shift register (LFSR) to generate the value."
+            },
+            {
+              "BodyText": "While an LFSR may provide pseudo-random number generation service, the entropy (measure of randomness) of the resulting output may be less than that of an accepted DRNG (like that used in dev/urandom). Thus, using an LFSR weakens the strength of the cryptographic system, because it may be possible for an attacker to guess the LFSR output and subsequently the encryption key."
+            },
+            {
+              "Nature": "Good",
+              "Language": "Other",
+              "ExampleCode": "If a cryptographic algorithm expects a random number as its input, provide one. Do not provide a pseudo-random value."
+            }
+          ]
+        }
+      ],
+      "PotentialMitigations": [
+        {
+          "MitigationID": "MIT-55",
+          "Phase": [
+            "Requirements"
+          ],
+          "Description": "Require compliance with the strongest-available recommendations from trusted parties, and require that compliance must be kept up-to-date, since recommendations evolve over time. For example, US government systems require FIPS 140-3 certification, which supersedes FIPS 140-2 [REF-1192] [REF-267].",
+          "Effectiveness": "High"
+        },
+        {
+          "Phase": [
+            "Architecture and Design"
+          ],
+          "Description": "Ensure that the architecture/design uses the strongest-available primitives and algorithms from trusted parties. For example, US government systems require FIPS 140-3 certification, which supersedes FIPS 140-2 [REF-1192] [REF-267].",
+          "Effectiveness": "High"
+        },
+        {
+          "MitigationID": "MIT-54",
+          "Phase": [
+            "Architecture and Design"
+          ],
+          "Description": "Do not develop custom or private cryptographic algorithms. They will likely be exposed to attacks that are well-understood by cryptographers. As with all cryptographic mechanisms, the source code should be available for analysis. If the algorithm may be compromised when attackers find out how it works, then it is especially weak.",
+          "Effectiveness": "Discouraged Common Practice"
+        },
+        {
+          "Phase": [
+            "Architecture and Design"
+          ],
+          "Description": "Try not to use cryptographic algorithms in novel ways or with new modes of operation even when you \"know\" it is secure. For example, using SHA-2 chaining to create a 1-time pad for encryption might sound like a good idea, but one should not do this.",
+          "Effectiveness": "Discouraged Common Practice"
+        },
+        {
+          "MitigationID": "MIT-52",
+          "Phase": [
+            "Architecture and Design"
+          ],
+          "Description": "Ensure that the design can replace one cryptographic primitive or algorithm with another in the next generation (\"cryptographic agility\"). Where possible, use wrappers to make the interfaces uniform. This will make it easier to upgrade to stronger algorithms. This is especially important for hardware, which can be more difficult to upgrade quickly than software; design the hardware at a replaceable block level.",
+          "Effectiveness": "Defense in Depth"
+        },
+        {
+          "Phase": [
+            "Architecture and Design"
+          ],
+          "Description": "Do not use outdated or non-compliant cryptography algorithms. Some older algorithms, once thought to require a billion years of computing time, can now be broken in days or hours. This includes MD4, MD5, SHA1, DES, and other algorithms that were once regarded as strong [REF-267].",
+          "Effectiveness": "Discouraged Common Practice"
+        },
+        {
+          "Phase": [
+            "Architecture and Design",
+            "Implementation"
+          ],
+          "Description": "Do not use a linear-feedback shift register (LFSR) or other legacy methods as a substitute for an accepted and standard Random Number Generator.",
+          "Effectiveness": "Discouraged Common Practice"
+        },
+        {
+          "Phase": [
+            "Architecture and Design",
+            "Implementation"
+          ],
+          "Description": "Do not use a checksum as a substitute for a cryptographically generated hash.",
+          "Effectiveness": "Discouraged Common Practice"
+        },
+        {
+          "Phase": [
+            "Architecture and Design"
+          ],
+          "Strategy": "Libraries or Frameworks",
+          "Description": "Use a vetted cryptographic library or framework. Industry-standard implementations will save development time and are more likely to avoid errors that can occur during implementation of cryptographic algorithms. However, the library/framework could be used incorrectly during implementation.",
+          "Effectiveness": "High"
+        },
+        {
+          "Phase": [
+            "Architecture and Design",
+            "Implementation"
+          ],
+          "Description": "When using industry-approved techniques, use them correctly. Don't cut corners by skipping resource-intensive steps (CWE-325). These steps are often essential for the prevention of common attacks.",
+          "Effectiveness": "Moderate"
+        },
+        {
+          "Phase": [
+            "Architecture and Design",
+            "Implementation"
+          ],
+          "Description": "Do not store keys in areas accessible to untrusted agents. Carefully manage and protect the cryptographic keys (see CWE-320). If the keys can be guessed or stolen, then the strength of the cryptography algorithm is irrelevant.",
+          "Effectiveness": "Moderate"
+        }
+      ]
+    },
+    "/cwe/1240/parents": {
+      "weakness_parents": [
+        "327"
+      ],
+      "category_parents": [
+        "1205",
+        "1402",
+        "310"
+      ]
+    },
+    "/cwe/1240/children": null
+  }
+}

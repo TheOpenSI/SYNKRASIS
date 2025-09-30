@@ -1,0 +1,67 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T23:25:01.990706",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "439",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/439": {
+      "ID": "439",
+      "Type": "base_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/439": {
+      "ID": "439",
+      "Name": "Behavioral Change in New Version or Environment",
+      "Abstraction": "Base",
+      "Structure": "Simple",
+      "Status": "Draft",
+      "Description": "A's behavior or functionality changes with a new version of A, or a new environment, which is not known (or manageable) by B.",
+      "ExtendedDescription": null,
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Class": "Not Language-Specific",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": [
+        {
+          "Term": "Functional change"
+        }
+      ],
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Architecture and Design"
+        },
+        {
+          "Phase": "Implementation"
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Other"
+          ],
+          "Impact": [
+            "Quality Degradation",
+            "Varies by Context"
+          ]
+        }
+      ],
+      "DemonstrativeExamples": null,
+      "PotentialMitigations": null
+    },
+    "/cwe/439/parents": {
+      "weakness_parents": [],
+      "category_parents": [
+        "1398",
+        "438",
+        "1001"
+      ]
+    },
+    "/cwe/439/children": null
+  }
+}

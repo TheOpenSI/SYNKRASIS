@@ -1,0 +1,50 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T22:20:00.796736",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "1119",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/1119": {
+      "ID": "1119",
+      "Type": "base_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/1119": {
+      "ID": "1119",
+      "Name": "Excessive Use of Unconditional Branching",
+      "Abstraction": "Base",
+      "Structure": "Simple",
+      "Status": "Incomplete",
+      "Description": "The code uses too many unconditional branches (such as\n\t\t\t\t\t\"goto\").",
+      "ExtendedDescription": "\n\nThis issue makes it more difficult to understand and/or maintain the product, which indirectly affects security by making it more difficult or time-consuming to find and/or fix vulnerabilities. It also might make it easier to introduce vulnerabilities.\n",
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": null,
+      "AlternateTerms": null,
+      "ModesOfIntroduction": null,
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Other"
+          ],
+          "Impact": [
+            "Reduce Maintainability"
+          ]
+        }
+      ],
+      "DemonstrativeExamples": null,
+      "PotentialMitigations": null
+    },
+    "/cwe/1119/parents": {
+      "weakness_parents": [
+        "1120"
+      ],
+      "category_parents": [
+        "1412",
+        "1226"
+      ]
+    },
+    "/cwe/1119/children": null
+  }
+}

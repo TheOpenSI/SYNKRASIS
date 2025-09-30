@@ -1,0 +1,78 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T22:53:52.446803",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "202",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/202": {
+      "ID": "202",
+      "Type": "base_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/202": {
+      "ID": "202",
+      "Name": "Exposure of Sensitive Information Through Data Queries",
+      "Abstraction": "Base",
+      "Structure": "Simple",
+      "Status": "Draft",
+      "Description": "When trying to keep information confidential, an attacker can often infer some of the information by using statistics.",
+      "ExtendedDescription": "In situations where data should not be tied to individual users, but a large number of users should be able to make queries that \"scrub\" the identity of users, it may be possible to get information about a user -- e.g., by specifying search terms that are known to be unique to that user.",
+      "LikelihoodOfExploit": "Medium",
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Class": "Not Language-Specific",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Architecture and Design"
+        },
+        {
+          "Phase": "Implementation"
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Confidentiality"
+          ],
+          "Impact": [
+            "Read Files or Directories",
+            "Read Application Data"
+          ],
+          "Note": "Sensitive information may possibly be leaked through data queries accidentally."
+        }
+      ],
+      "DemonstrativeExamples": [
+        {
+          "Entries": [
+            {
+              "IntroText": "See the book Translucent Databases for examples."
+            }
+          ]
+        }
+      ],
+      "PotentialMitigations": [
+        {
+          "Phase": [
+            "Architecture and Design"
+          ],
+          "Description": "This is a complex topic. See the book Translucent Databases for a good discussion of best practices."
+        }
+      ]
+    },
+    "/cwe/202/parents": {
+      "weakness_parents": [],
+      "category_parents": [
+        "1396",
+        "967"
+      ]
+    },
+    "/cwe/202/children": null
+  }
+}

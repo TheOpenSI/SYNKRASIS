@@ -1,0 +1,121 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T23:11:09.525442",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "331",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/331": {
+      "ID": "331",
+      "Type": "base_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/331": {
+      "ID": "331",
+      "Name": "Insufficient Entropy",
+      "Abstraction": "Base",
+      "Structure": "Simple",
+      "Status": "Draft",
+      "Description": "The product uses an algorithm or scheme that produces insufficient entropy, leaving patterns or clusters of values that are more likely to occur than others.",
+      "ExtendedDescription": null,
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Class": "Not Language-Specific",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Architecture and Design"
+        },
+        {
+          "Phase": "Implementation",
+          "Note": "REALIZATION: This weakness is caused during implementation of an architectural security tactic."
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Access Control",
+            "Other"
+          ],
+          "Impact": [
+            "Bypass Protection Mechanism",
+            "Other"
+          ],
+          "Note": "An attacker could guess the random numbers generated and could gain unauthorized access to a system if the random numbers are used for authentication and authorization."
+        }
+      ],
+      "DemonstrativeExamples": [
+        {
+          "ID": "DX-45",
+          "Entries": [
+            {
+              "IntroText": "This code generates a unique random identifier for a user's session."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "PHP",
+              "ExampleCode": "```\n\tfunction generateSessionID($userID){\n\t\tsrand($userID);\n\t\treturn rand();\n\t}\n```"
+            },
+            {
+              "BodyText": "Because the seed for the PRNG is always the user's ID, the session ID will always be the same. An attacker could thus predict any user's session ID and potentially hijack the session."
+            },
+            {
+              "BodyText": "This example also exhibits a Small Seed Space (CWE-339)."
+            }
+          ]
+        },
+        {
+          "ID": "DX-46",
+          "Entries": [
+            {
+              "IntroText": "The following code uses a statistical PRNG to create a URL for a receipt that remains active for some period of time after a purchase."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "Java",
+              "ExampleCode": "```\n\tString GenerateReceiptURL(String baseUrl) {\n\t\tRandom ranGen = new Random();\n\t\tranGen.setSeed((new Date()).getTime());\n\t\treturn(baseUrl + ranGen.nextInt(400000000) + \".html\");\n\t}\n```"
+            },
+            {
+              "BodyText": "This code uses the Random.nextInt() function to generate \"unique\" identifiers for the receipt pages it generates. Because Random.nextInt() is a statistical PRNG, it is easy for an attacker to guess the strings it generates. Although the underlying design of the receipt system is also faulty, it would be more secure if it used a random number generator that did not produce predictable receipt identifiers, such as a cryptographic PRNG."
+            }
+          ]
+        }
+      ],
+      "PotentialMitigations": [
+        {
+          "Phase": [
+            "Implementation"
+          ],
+          "Description": "Determine the necessary entropy to adequately provide for randomness and predictability. This can be achieved by increasing the number of bits of objects such as keys and seeds."
+        }
+      ]
+    },
+    "/cwe/331/parents": {
+      "weakness_parents": [
+        "330"
+      ],
+      "category_parents": [
+        "1013",
+        "1170",
+        "1346",
+        "1414",
+        "1213",
+        "310",
+        "905"
+      ]
+    },
+    "/cwe/331/children": {
+      "weakness_children": [
+        "332",
+        "333"
+      ],
+      "category_children": []
+    }
+  }
+}

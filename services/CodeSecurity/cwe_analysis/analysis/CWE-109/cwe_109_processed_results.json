@@ -1,0 +1,84 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T22:15:53.335455",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "109",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/109": {
+      "ID": "109",
+      "Type": "variant_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/109": {
+      "ID": "109",
+      "Name": "Struts: Validator Turned Off",
+      "Abstraction": "Variant",
+      "Structure": "Simple",
+      "Status": "Draft",
+      "Description": "Automatic filtering via a Struts bean has been turned off, which disables the Struts Validator and custom validation logic. This exposes the application to other weaknesses related to insufficient input validation.",
+      "ExtendedDescription": null,
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Name": "Java",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Implementation"
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Access Control"
+          ],
+          "Impact": [
+            "Bypass Protection Mechanism"
+          ]
+        }
+      ],
+      "DemonstrativeExamples": [
+        {
+          "Entries": [
+            {
+              "IntroText": "This mapping defines an action for a download form:"
+            },
+            {
+              "Nature": "Bad",
+              "Language": "XML",
+              "ExampleCode": "```\n\t<action path=\"/download\"\n\ttype=\"com.website.d2.action.DownloadAction\"\n\tname=\"downloadForm\"\n\tscope=\"request\"\n\tinput=\".download\"\n\tvalidate=\"false\">\n\t</action>\n```"
+            },
+            {
+              "BodyText": "This mapping has disabled validation. Disabling validation exposes this action to numerous types of attacks."
+            }
+          ]
+        }
+      ],
+      "PotentialMitigations": [
+        {
+          "Phase": [
+            "Implementation"
+          ],
+          "Description": "Ensure that an action form mapping enables validation. Set the validate field to true."
+        }
+      ]
+    },
+    "/cwe/109/parents": {
+      "weakness_parents": [
+        "20"
+      ],
+      "category_parents": [
+        "1406",
+        "722",
+        "990"
+      ]
+    },
+    "/cwe/109/children": null
+  }
+}

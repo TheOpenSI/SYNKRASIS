@@ -1,0 +1,131 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T23:56:09.277896",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "670",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/670": {
+      "ID": "670",
+      "Type": "class_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/670": {
+      "ID": "670",
+      "Name": "Always-Incorrect Control Flow Implementation",
+      "Abstraction": "Class",
+      "Structure": "Simple",
+      "Status": "Draft",
+      "Description": "The code contains a control flow path that does not reflect the algorithm that the path is intended to implement, leading to incorrect behavior any time this path is navigated.",
+      "ExtendedDescription": "This weakness captures cases in which a particular code segment is always incorrect with respect to the algorithm that it is implementing. For example, if a C programmer intends to include multiple statements in a single block but does not include the enclosing braces (CWE-483), then the logic is always incorrect. This issue is in contrast to most weaknesses in which the code usually behaves correctly, except when it is externally manipulated in malicious ways.",
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": null,
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Implementation",
+          "Note": "This issue typically appears in rarely-tested code, since the \"always-incorrect\" nature will be detected as a bug during normal usage."
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Other"
+          ],
+          "Impact": [
+            "Other",
+            "Alter Execution Logic"
+          ]
+        }
+      ],
+      "DemonstrativeExamples": [
+        {
+          "ID": "DX-180",
+          "Entries": [
+            {
+              "IntroText": "This code queries a server and displays its status when a request comes from an authorized IP address."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "PHP",
+              "ExampleCode": "```\n\t$requestingIP = $_SERVER['REMOTE_ADDR'];\n\tif(!in_array($requestingIP,$ipAllowList)){\n\t\techo \"You are not authorized to view this page\";\n\t\thttp_redirect($errorPageURL);\n\t}\n\t$status = getServerStatus();\n\techo $status;\n```\n...*"
+            },
+            {
+              "BodyText": "This code redirects unauthorized users, but continues to execute code after calling http_redirect(). This means even unauthorized users may be able to access the contents of the page or perform a DoS attack on the server being queried. Also, note that this code is vulnerable to an IP address spoofing attack (CWE-212)."
+            }
+          ]
+        },
+        {
+          "ID": "DX-181",
+          "Entries": [
+            {
+              "IntroText": "In this example, the programmer has indented the statements to call Do_X() and Do_Y(), as if the intention is that these functions are only called when the condition is true. However, because there are no braces to signify the block, Do_Y() will always be executed, even if the condition is false."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "C",
+              "ExampleCode": "```\n\tif (condition==true)\n\t\tDo_X();\n\t\tDo_Y();\n```"
+            },
+            {
+              "BodyText": "This might not be what the programmer intended. When the condition is critical for security, such as in making a security decision or detecting a critical error, this may produce a vulnerability."
+            }
+          ]
+        },
+        {
+          "ID": "DX-182",
+          "Entries": [
+            {
+              "IntroText": "In both of these examples, a message is printed based on the month passed into the function:"
+            },
+            {
+              "Nature": "Bad",
+              "Language": "Java",
+              "ExampleCode": "```\n\tpublic void printMessage(int month){\n\t\t\tswitch (month) {\n\t\t\t\t\tcase 1: print(\"January\");\n\t\t\t\t\tcase 2: print(\"February\");\n\t\t\t\t\tcase 3: print(\"March\");\n\t\t\t\t\tcase 4: print(\"April\");\n\t\t\t\t\tcase 5: print(\"May\");\n\t\t\t\t\tcase 6: print(\"June\");\n\t\t\t\t\tcase 7: print(\"July\");\n\t\t\t\t\tcase 8: print(\"August\");\n\t\t\t\t\tcase 9: print(\"September\");\n\t\t\t\t\tcase 10: print(\"October\");\n\t\t\t\t\tcase 11: print(\"November\");\n\t\t\t\t\tcase 12: print(\"December\");\n\t\t\t}\n\t\t\tprintln(\" is a great month\");\n\t}\n```"
+            },
+            {
+              "Nature": "Bad",
+              "Language": "C",
+              "ExampleCode": "```\n\tvoid printMessage(int month){\n\t\t\tswitch (month) {\n\t\t\t\t\tcase 1: printf(\"January\");\n\t\t\t\t\tcase 2: printf(\"February\");\n\t\t\t\t\tcase 3: printf(\"March\");\n\t\t\t\t\tcase 4: printf(\"April\");\n\t\t\t\t\tcase 5: printff(\"May\");\n\t\t\t\t\tcase 6: printf(\"June\");\n\t\t\t\t\tcase 7: printf(\"July\");\n\t\t\t\t\tcase 8: printf(\"August\");\n\t\t\t\t\tcase 9: printf(\"September\");\n\t\t\t\t\tcase 10: printf(\"October\");\n\t\t\t\t\tcase 11: printf(\"November\");\n\t\t\t\t\tcase 12: printf(\"December\");\n\t\t\t}\n\t\t\tprintf(\" is a great month\");\n\t}\n```"
+            },
+            {
+              "BodyText": "Both examples do not use a break statement after each case, which leads to unintended fall-through behavior. For example, calling \"printMessage(10)\" will result in the text \"OctoberNovemberDecember is a great month\" being printed."
+            }
+          ]
+        },
+        {
+          "ID": "DX-183",
+          "Entries": [
+            {
+              "IntroText": "In the excerpt below, an AssertionError (an unchecked exception) is thrown if the user hasn't entered an email address in an HTML form."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "Java",
+              "ExampleCode": "```\n\tString email = request.getParameter(\"email_address\");\n\tassert email != null;\n```"
+            }
+          ]
+        }
+      ],
+      "PotentialMitigations": null
+    },
+    "/cwe/670/parents": {
+      "weakness_parents": [],
+      "category_parents": [
+        "1410",
+        "977"
+      ]
+    },
+    "/cwe/670/children": {
+      "weakness_children": [
+        "480",
+        "483",
+        "484",
+        "617",
+        "698",
+        "783"
+      ],
+      "category_children": []
+    }
+  }
+}

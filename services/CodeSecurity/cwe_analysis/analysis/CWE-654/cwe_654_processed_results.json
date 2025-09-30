@@ -1,0 +1,116 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T23:54:15.726144",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "654",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/654": {
+      "ID": "654",
+      "Type": "base_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/654": {
+      "ID": "654",
+      "Name": "Reliance on a Single Factor in a Security Decision",
+      "Abstraction": "Base",
+      "Structure": "Simple",
+      "Status": "Draft",
+      "Description": "A protection mechanism relies exclusively, or to a large extent, on the evaluation of a single condition or the integrity of a single object or entity in order to make a decision about granting access to restricted resources or functionality.",
+      "ExtendedDescription": null,
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Class": "Not Language-Specific",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": [
+        {
+          "Term": "Separation of Privilege",
+          "Description": "Some people and publications use the term \"Separation of Privilege\" to describe this weakness, but this term has dual meanings in current usage. While this entry is closely associated with the original definition of \"Separation of Privilege\" by Saltzer and Schroeder, others use the same term to describe poor compartmentalization (CWE-653). Because there are multiple interpretations, use of the \"Separation of Privilege\" term is discouraged."
+        }
+      ],
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Architecture and Design"
+        },
+        {
+          "Phase": "Implementation"
+        },
+        {
+          "Phase": "Operation"
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Access Control"
+          ],
+          "Impact": [
+            "Gain Privileges or Assume Identity"
+          ],
+          "Note": "If the single factor is compromised (e.g. by theft or spoofing), then the integrity of the entire security mechanism can be violated with respect to the user that is identified by that factor."
+        },
+        {
+          "Scope": [
+            "Non-Repudiation"
+          ],
+          "Impact": [
+            "Hide Activities"
+          ],
+          "Note": "It can become difficult or impossible for the product to be able to distinguish between legitimate activities by the entity who provided the factor, versus illegitimate activities by an attacker."
+        }
+      ],
+      "DemonstrativeExamples": [
+        {
+          "Entries": [
+            {
+              "IntroText": "Password-only authentication is perhaps the most well-known example of use of a single factor. Anybody who knows a user's password can impersonate that user."
+            }
+          ]
+        },
+        {
+          "Entries": [
+            {
+              "IntroText": "When authenticating, use multiple factors, such as \"something you know\" (such as a password) and \"something you have\" (such as a hardware-based one-time password generator, or a biometric device)."
+            }
+          ]
+        }
+      ],
+      "PotentialMitigations": [
+        {
+          "Phase": [
+            "Architecture and Design"
+          ],
+          "Description": "Use multiple simultaneous checks before granting access to critical operations or granting critical privileges. A weaker but helpful mitigation is to use several successive checks (multiple layers of security)."
+        },
+        {
+          "Phase": [
+            "Architecture and Design"
+          ],
+          "Description": "Use redundant access rules on different choke points (e.g., firewalls)."
+        }
+      ]
+    },
+    "/cwe/654/parents": {
+      "weakness_parents": [
+        "657"
+      ],
+      "category_parents": [
+        "1418",
+        "1006",
+        "975"
+      ]
+    },
+    "/cwe/654/children": {
+      "weakness_children": [
+        "308",
+        "309"
+      ],
+      "category_children": []
+    }
+  }
+}

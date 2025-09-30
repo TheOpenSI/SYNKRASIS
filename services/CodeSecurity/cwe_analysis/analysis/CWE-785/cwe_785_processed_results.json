@@ -1,0 +1,92 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-30T00:07:08.699605",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "785",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/785": {
+      "ID": "785",
+      "Type": "variant_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/785": {
+      "ID": "785",
+      "Name": "Use of Path Manipulation Function without Maximum-sized Buffer",
+      "Abstraction": "Variant",
+      "Structure": "Simple",
+      "Status": "Incomplete",
+      "Description": "The product invokes a function for normalizing paths or file names, but it provides an output buffer that is smaller than the maximum possible size, such as PATH_MAX.",
+      "ExtendedDescription": "Passing an inadequately-sized output buffer to a path manipulation function can result in a buffer overflow. Such functions include realpath(), readlink(), PathAppend(), and others.",
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Name": "C",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Language",
+          "Name": "C++",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Implementation"
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Integrity",
+            "Confidentiality",
+            "Availability"
+          ],
+          "Impact": [
+            "Modify Memory",
+            "Execute Unauthorized Code or Commands",
+            "DoS: Crash, Exit, or Restart"
+          ]
+        }
+      ],
+      "DemonstrativeExamples": [
+        {
+          "Entries": [
+            {
+              "IntroText": "In this example the function creates a directory named \"output\\<name>\" in the current directory and returns a heap-allocated copy of its name."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "C",
+              "ExampleCode": "```\n\tchar *createOutputDirectory(char *name) {\n\t\t\tchar outputDirectoryName[128];\n\t\t\tif (getCurrentDirectory(128, outputDirectoryName) == 0) {\n\t\t\t\treturn null;\n\t\t\t}\n\t\t\tif (!PathAppend(outputDirectoryName, \"output\")) {\n\t\t\t\treturn null;\n\t\t\t}\n\t\t\tif (!PathAppend(outputDirectoryName, name)) {\n\t\t\t\t\treturn null;\n\t\t\t}\n\t\t\tif (SHCreateDirectoryEx(NULL, outputDirectoryName, NULL) != ERROR_SUCCESS) {\n\t\t\t\t\treturn null;\n\t\t\t}\n\t\t\treturn StrDup(outputDirectoryName);\n\t}\n```"
+            },
+            {
+              "BodyText": "For most values of the current directory and the name parameter, this function will work properly. However, if the name parameter is particularly long, then the second call to PathAppend() could overflow the outputDirectoryName buffer, which is smaller than MAX_PATH bytes."
+            }
+          ]
+        }
+      ],
+      "PotentialMitigations": [
+        {
+          "Phase": [
+            "Implementation"
+          ],
+          "Description": "Always specify output buffers large enough to handle the maximum-size possible result from path manipulation functions."
+        }
+      ]
+    },
+    "/cwe/785/parents": {
+      "weakness_parents": [
+        "20"
+      ],
+      "category_parents": [
+        "1412",
+        "972"
+      ]
+    },
+    "/cwe/785/children": null
+  }
+}

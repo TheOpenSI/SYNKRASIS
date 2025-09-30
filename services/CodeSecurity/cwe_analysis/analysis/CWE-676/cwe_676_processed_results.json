@@ -1,0 +1,110 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T23:56:54.512991",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "676",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/676": {
+      "ID": "676",
+      "Type": "base_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/676": {
+      "ID": "676",
+      "Name": "Use of Potentially Dangerous Function",
+      "Abstraction": "Base",
+      "Structure": "Simple",
+      "Status": "Draft",
+      "Description": "The product invokes a potentially dangerous function that could introduce a vulnerability if it is used incorrectly, but the function can also be used safely.",
+      "ExtendedDescription": null,
+      "LikelihoodOfExploit": "High",
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Name": "C",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Language",
+          "Name": "C++",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Implementation"
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Other"
+          ],
+          "Impact": [
+            "Varies by Context",
+            "Quality Degradation",
+            "Unexpected State"
+          ],
+          "Note": "If the function is used incorrectly, then it could result in security problems."
+        }
+      ],
+      "DemonstrativeExamples": [
+        {
+          "ID": "DX-6",
+          "Entries": [
+            {
+              "IntroText": "The following code attempts to create a local copy of a buffer to perform some manipulations to the data."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "C",
+              "ExampleCode": "```\n\tvoid manipulate_string(char * string){\n\t\tchar buf[24];\n\t\tstrcpy(buf, string);\n\t\t...\n\t}\n```"
+            },
+            {
+              "BodyText": "However, the programmer does not ensure that the size of the data pointed to by string will fit in the local buffer and copies the data with the potentially dangerous strcpy() function. This may result in a buffer overflow condition if an attacker can influence the contents of the string parameter."
+            }
+          ]
+        }
+      ],
+      "PotentialMitigations": [
+        {
+          "Phase": [
+            "Build and Compilation",
+            "Implementation"
+          ],
+          "Description": "Identify a list of prohibited API functions and prohibit developers from using these functions, providing safer alternatives. In some cases, automatic code analysis tools or the compiler can be instructed to spot use of prohibited functions, such as the \"banned.h\" include file from Microsoft's SDL. [REF-554] [REF-7]"
+        }
+      ]
+    },
+    "/cwe/676/parents": {
+      "weakness_parents": [
+        "1177"
+      ],
+      "category_parents": [
+        "1161",
+        "1165",
+        "1167",
+        "1169",
+        "1170",
+        "1412",
+        "1228",
+        "738",
+        "743",
+        "746",
+        "872",
+        "877",
+        "1001",
+        "865"
+      ]
+    },
+    "/cwe/676/children": {
+      "weakness_children": [
+        "785"
+      ],
+      "category_children": []
+    }
+  }
+}

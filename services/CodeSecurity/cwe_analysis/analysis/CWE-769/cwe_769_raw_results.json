@@ -1,0 +1,142 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-30T00:04:52.153274",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "769",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/769": {
+      "endpoint": "/cwe/769",
+      "url": "https://cwe-api.mitre.org/api/v1/cwe/769",
+      "status_code": 200,
+      "success": true,
+      "error": null,
+      "data": [
+        {
+          "Type": "deprecated_weakness",
+          "ID": "769"
+        }
+      ]
+    },
+    "/cwe/weakness/769": {
+      "endpoint": "/cwe/weakness/769",
+      "url": "https://cwe-api.mitre.org/api/v1/cwe/weakness/769",
+      "status_code": 200,
+      "success": true,
+      "error": null,
+      "data": {
+        "Weaknesses": [
+          {
+            "ID": "769",
+            "Name": "DEPRECATED: Uncontrolled File Descriptor Consumption",
+            "Abstraction": "Base",
+            "Structure": "Simple",
+            "Status": "Deprecated",
+            "Description": "This entry has been deprecated because it was a duplicate of CWE-774. All content has been transferred to CWE-774.",
+            "MappingNotes": {
+              "Usage": "Prohibited",
+              "Rationale": "This CWE has been deprecated.",
+              "Comments": "See description and name for possible suggestions of other CWEs to consider.",
+              "Reasons": [
+                "Deprecated"
+              ]
+            },
+            "ContentHistory": [
+              {
+                "Type": "Submission",
+                "SubmissionName": "CWE Content Team",
+                "SubmissionOrganization": "MITRE",
+                "SubmissionDate": "2009-05-08",
+                "SubmissionVersion": "1.4",
+                "SubmissionReleaseDate": "2009-05-27"
+              },
+              {
+                "Type": "Modification",
+                "ModificationName": "CWE Content Team",
+                "ModificationOrganization": "MITRE",
+                "ModificationDate": "2010-04-05",
+                "ModificationComment": "updated Potential_Mitigations"
+              },
+              {
+                "Type": "Modification",
+                "ModificationName": "CWE Content Team",
+                "ModificationOrganization": "MITRE",
+                "ModificationDate": "2010-06-21",
+                "ModificationComment": "updated Description"
+              },
+              {
+                "Type": "Modification",
+                "ModificationName": "CWE Content Team",
+                "ModificationOrganization": "MITRE",
+                "ModificationDate": "2010-12-13",
+                "ModificationComment": "updated Description"
+              },
+              {
+                "Type": "Modification",
+                "ModificationName": "CWE Content Team",
+                "ModificationOrganization": "MITRE",
+                "ModificationDate": "2013-02-21",
+                "ModificationComment": "updated Maintenance_Notes"
+              },
+              {
+                "Type": "Modification",
+                "ModificationName": "CWE Content Team",
+                "ModificationOrganization": "MITRE",
+                "ModificationDate": "2015-12-07",
+                "ModificationComment": "updated Relationships"
+              },
+              {
+                "Type": "Modification",
+                "ModificationName": "CWE Content Team",
+                "ModificationOrganization": "MITRE",
+                "ModificationDate": "2017-11-08",
+                "ModificationComment": "updated Alternate_Terms, Description, Likelihood_of_Exploit, Name, Relationships, Type"
+              },
+              {
+                "Type": "Modification",
+                "ModificationName": "CWE Content Team",
+                "ModificationOrganization": "MITRE",
+                "ModificationDate": "2019-01-03",
+                "ModificationComment": "updated Alternate_Terms, Description, Likelihood_of_Exploit, Name, Potential_Mitigations, References, Relationships, Time_of_Introduction, Type"
+              },
+              {
+                "Type": "Modification",
+                "ModificationName": "CWE Content Team",
+                "ModificationOrganization": "MITRE",
+                "ModificationDate": "2023-06-29",
+                "ModificationComment": "updated Mapping_Notes"
+              },
+              {
+                "Type": "Rename",
+                "PreviousEntryName": "File Descriptor Exhaustion",
+                "Date": "2017-11-08"
+              },
+              {
+                "Type": "Rename",
+                "PreviousEntryName": "Uncontrolled File Descriptor Consumption",
+                "Date": "2019-01-03"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    "/cwe/769/parents": {
+      "endpoint": "/cwe/769/parents",
+      "url": "https://cwe-api.mitre.org/api/v1/cwe/769/parents",
+      "status_code": 200,
+      "success": true,
+      "error": null,
+      "data": []
+    },
+    "/cwe/769/children": {
+      "endpoint": "/cwe/769/children",
+      "url": "https://cwe-api.mitre.org/api/v1/cwe/769/children",
+      "status_code": 200,
+      "success": true,
+      "error": null,
+      "data": []
+    }
+  }
+}

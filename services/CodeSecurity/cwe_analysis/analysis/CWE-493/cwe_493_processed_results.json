@@ -1,0 +1,125 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T23:32:09.255992",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "493",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/493": {
+      "ID": "493",
+      "Type": "variant_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/493": {
+      "ID": "493",
+      "Name": "Critical Public Variable Without Final Modifier",
+      "Abstraction": "Variant",
+      "Structure": "Simple",
+      "Status": "Draft",
+      "Description": "The product has a critical public variable that is not final, which allows the variable to be modified to contain unexpected values.",
+      "ExtendedDescription": "If a field is non-final and public, it can be changed once the value is set by any function that has access to the class which contains the field. This could lead to a vulnerability if other parts of the program make assumptions about the contents of that field.",
+      "LikelihoodOfExploit": "High",
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Name": "Java",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Language",
+          "Name": "C++",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Implementation"
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Integrity"
+          ],
+          "Impact": [
+            "Modify Application Data"
+          ],
+          "Note": "The object could potentially be tampered with."
+        },
+        {
+          "Scope": [
+            "Confidentiality"
+          ],
+          "Impact": [
+            "Read Application Data"
+          ],
+          "Note": "The object could potentially allow the object to be read."
+        }
+      ],
+      "DemonstrativeExamples": [
+        {
+          "Entries": [
+            {
+              "IntroText": "Suppose this WidgetData class is used for an e-commerce web site. The programmer attempts to prevent price-tampering attacks by setting the price of the widget using the constructor."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "Java",
+              "ExampleCode": "```\n\tpublic final class WidgetData extends Applet {\n\t\tpublic float price;\n\t\t...\n\t\tpublic WidgetData(...) {\n\t\t\tthis.price = LookupPrice(\"MyWidgetType\");\n\t\t}\n\t}\n```"
+            },
+            {
+              "BodyText": "The price field is not final. Even though the value is set by the constructor, it could be modified by anybody that has access to an instance of WidgetData."
+            }
+          ]
+        },
+        {
+          "Entries": [
+            {
+              "IntroText": "Assume the following code is intended to provide the location of a configuration file that controls execution of the application."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "C++",
+              "ExampleCode": "```\n\tpublic string configPath = \"/etc/application/config.dat\";\n```"
+            },
+            {
+              "Nature": "Bad",
+              "Language": "Java",
+              "ExampleCode": "```\n\tpublic String configPath = new String(\"/etc/application/config.dat\");\n```"
+            },
+            {
+              "BodyText": "While this field is readable from any function, and thus might allow an information leak of a pathname, a more serious problem is that it can be changed by any function."
+            }
+          ]
+        }
+      ],
+      "PotentialMitigations": [
+        {
+          "Phase": [
+            "Implementation"
+          ],
+          "Description": "Declare all public fields as final when possible, especially if it is used to maintain internal state of an Applet or of classes used by an Applet. If a field must be public, then perform all appropriate sanity checks before accessing the field from your code."
+        }
+      ]
+    },
+    "/cwe/493/parents": {
+      "weakness_parents": [
+        "668"
+      ],
+      "category_parents": [
+        "1403",
+        "485",
+        "849",
+        "1002"
+      ]
+    },
+    "/cwe/493/children": {
+      "weakness_children": [
+        "500"
+      ],
+      "category_children": []
+    }
+  }
+}

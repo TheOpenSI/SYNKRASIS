@@ -1,0 +1,83 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T22:28:39.908083",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "1250",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/1250": {
+      "ID": "1250",
+      "Type": "base_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/1250": {
+      "ID": "1250",
+      "Name": "Improper Preservation of Consistency Between Independent Representations of Shared State",
+      "Abstraction": "Base",
+      "Structure": "Simple",
+      "Status": "Incomplete",
+      "Description": "The product has or supports multiple distributed components or sub-systems that are each required to keep their own local copy of shared data - such as state or cache - but the product does not ensure that all local copies remain consistent with each other.",
+      "ExtendedDescription": "\n\nIn highly distributed environments, or on systems with distinct physical components that operate independently, there is often a need for each component to store and update its own local copy of key data such as state or cache, so that all components have the same \"view\" of the overall system and operate in a coordinated fashion. For example, users of a social media service or a massively multiplayer online game might be using their own personal computers while also interacting with different physical hosts in a globally distributed service, but all participants must be able to have the same \"view\" of the world. Alternately, a processor's Memory Management Unit (MMU) might have \"shadow\" MMUs to distribute its workload, and all shadow MMUs are expected to have the same accessible ranges of memory.\n\n\nIn such environments, it becomes critical for the product to ensure that this \"shared state\" is consistently modified across all distributed systems. If state is not consistently maintained across all systems, then critical transactions might take place out of order, or some users might not get the same data as other users. When this inconsistency affects correctness of operations, it can introduce vulnerabilities in mechanisms that depend on consistent state.\n",
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Class": "Not Language-Specific",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Operating_System",
+          "Class": "Not OS-Specific",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Architecture",
+          "Class": "Not Architecture-Specific",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Technology",
+          "Class": "Cloud Computing",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Technology",
+          "Name": "Security Hardware",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": null,
+      "ModesOfIntroduction": null,
+      "CommonConsequences": null,
+      "DemonstrativeExamples": [
+        {
+          "ID": "DX-132",
+          "Entries": [
+            {
+              "IntroText": "Suppose a processor's Memory Management Unit (MMU) has 5 other shadow MMUs to distribute its workload for its various cores. Each MMU has the start address and end address of \"accessible\" memory. Any time this accessible range changes (as per the processor's boot status), the main MMU sends an update message to all the shadow MMUs."
+            },
+            {
+              "BodyText": "Suppose the interconnect fabric does not prioritize such \"update\" packets over other general traffic packets. This introduces a race condition. If an attacker can flood the target with enough messages so that some of those attack packets reach the target before the new access ranges gets updated, then the attacker can leverage this scenario."
+            }
+          ]
+        }
+      ],
+      "PotentialMitigations": null
+    },
+    "/cwe/1250/parents": {
+      "weakness_parents": [],
+      "category_parents": [
+        "1199",
+        "1416"
+      ]
+    },
+    "/cwe/1250/children": {
+      "weakness_children": [
+        "1249",
+        "1251"
+      ],
+      "category_children": []
+    }
+  }
+}

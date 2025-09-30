@@ -1,0 +1,100 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T23:47:59.901833",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "609",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/609": {
+      "ID": "609",
+      "Type": "base_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/609": {
+      "ID": "609",
+      "Name": "Double-Checked Locking",
+      "Abstraction": "Base",
+      "Structure": "Simple",
+      "Status": "Draft",
+      "Description": "The product uses double-checked locking to access a resource without the overhead of explicit synchronization, but the locking is insufficient.",
+      "ExtendedDescription": "Double-checked locking refers to the situation where a programmer checks to see if a resource has been initialized, grabs a lock, checks again to see if the resource has been initialized, and then performs the initialization if it has not occurred yet. This should not be done, as it is not guaranteed to work in all languages and on all architectures. In summary, other threads may not be operating inside the synchronous block and are not guaranteed to see the operations execute in the same order as they would appear inside the synchronous block.",
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Name": "Java",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Implementation"
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Integrity",
+            "Other"
+          ],
+          "Impact": [
+            "Modify Application Data",
+            "Alter Execution Logic"
+          ]
+        }
+      ],
+      "DemonstrativeExamples": [
+        {
+          "ID": "DX-70",
+          "Entries": [
+            {
+              "IntroText": "It may seem that the following bit of code achieves thread safety while avoiding unnecessary synchronization..."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "Java",
+              "ExampleCode": "```\n\tif (helper == null) {\n\t\t\tsynchronized (this) {\n\t\t\t\tif (helper == null) {\n\t\t\t\t\thelper = new Helper();\n\t\t\t\t}\n\t\t\t}\n\t}\n\treturn helper;\n```"
+            },
+            {
+              "BodyText": "The programmer wants to guarantee that only one Helper() object is ever allocated, but does not want to pay the cost of synchronization every time this code is called."
+            },
+            {
+              "BodyText": "Suppose that helper is not initialized. Then, thread A sees that helper==null and enters the synchronized block and begins to execute:"
+            },
+            {
+              "Nature": "Bad",
+              "Language": "Java",
+              "ExampleCode": "```\n\thelper = new Helper();\n```"
+            },
+            {
+              "BodyText": "If a second thread, thread B, takes over in the middle of this call and helper has not finished running the constructor, then thread B may make calls on helper while its fields hold incorrect values."
+            }
+          ]
+        }
+      ],
+      "PotentialMitigations": [
+        {
+          "Phase": [
+            "Implementation"
+          ],
+          "Description": "While double-checked locking can be achieved in some languages, it is inherently flawed in Java before 1.5, and cannot be achieved without compromising platform independence. Before Java 1.5, only use of the synchronized keyword is known to work. Beginning in Java 1.5, use of the \"volatile\" keyword allows double-checked locking to work successfully, although there is some debate as to whether it achieves sufficient performance gains. See references."
+        }
+      ]
+    },
+    "/cwe/609/parents": {
+      "weakness_parents": [
+        "667"
+      ],
+      "category_parents": [
+        "1143",
+        "1401",
+        "411",
+        "853",
+        "986"
+      ]
+    },
+    "/cwe/609/children": null
+  }
+}

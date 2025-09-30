@@ -1,0 +1,76 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T23:49:14.418906",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "618",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/618": {
+      "ID": "618",
+      "Type": "variant_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/618": {
+      "ID": "618",
+      "Name": "Exposed Unsafe ActiveX Method",
+      "Abstraction": "Variant",
+      "Structure": "Simple",
+      "Status": "Incomplete",
+      "Description": "An ActiveX control is intended for use in a web browser, but it exposes dangerous methods that perform actions that are outside of the browser's security model (e.g. the zone or domain).",
+      "ExtendedDescription": "ActiveX controls can exercise far greater control over the operating system than typical Java or javascript. Exposed methods can be subject to various vulnerabilities, depending on the implemented behaviors of those methods, and whether input validation is performed on the provided arguments. If there is no integrity checking or origin validation, this method could be invoked by attackers.",
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": null,
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Architecture and Design"
+        },
+        {
+          "Phase": "Implementation"
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Other"
+          ],
+          "Impact": [
+            "Other"
+          ]
+        }
+      ],
+      "DemonstrativeExamples": null,
+      "PotentialMitigations": [
+        {
+          "Phase": [
+            "Implementation"
+          ],
+          "Description": "If you must expose a method, make sure to perform input validation on all arguments, and protect against all possible vulnerabilities."
+        },
+        {
+          "Phase": [
+            "Architecture and Design"
+          ],
+          "Description": "Use code signing, although this does not protect against any weaknesses that are already in the control."
+        },
+        {
+          "Phase": [
+            "Architecture and Design",
+            "System Configuration"
+          ],
+          "Description": "Where possible, avoid marking the control as safe for scripting."
+        }
+      ]
+    },
+    "/cwe/618/parents": {
+      "weakness_parents": [],
+      "category_parents": [
+        "1416",
+        "275",
+        "977"
+      ]
+    },
+    "/cwe/618/children": null
+  }
+}

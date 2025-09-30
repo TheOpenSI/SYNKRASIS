@@ -1,0 +1,257 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T22:22:00.259370",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "116",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/116": {
+      "ID": "116",
+      "Type": "class_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/116": {
+      "ID": "116",
+      "Name": "Improper Encoding or Escaping of Output",
+      "Abstraction": "Class",
+      "Structure": "Simple",
+      "Status": "Draft",
+      "Description": "The product prepares a structured message for communication with another component, but encoding or escaping of the data is either missing or done incorrectly. As a result, the intended structure of the message is not preserved.",
+      "ExtendedDescription": "\n\nImproper encoding or escaping can allow attackers to change the commands that are sent to another component, inserting malicious commands instead.\n\n\nMost products follow a certain protocol that uses structured messages for communication between components, such as queries or commands. These structured messages can contain raw data interspersed with metadata or control information. For example, \"GET /index.html HTTP/1.1\" is a structured message containing a command (\"GET\") with a single argument (\"/index.html\") and metadata about which protocol version is being used (\"HTTP/1.1\").\n\n\nIf an application uses attacker-supplied inputs to construct a structured message without properly encoding or escaping, then the attacker could insert special characters that will cause the data to be interpreted as control information or metadata. Consequently, the component that receives the output will perform the wrong operations, or otherwise interpret the data incorrectly.\n",
+      "LikelihoodOfExploit": "High",
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Class": "Not Language-Specific",
+          "Prevalence": "Often"
+        },
+        {
+          "Type": "Technology",
+          "Name": "AI/ML",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Technology",
+          "Name": "Database Server",
+          "Prevalence": "Often"
+        },
+        {
+          "Type": "Technology",
+          "Name": "Web Server",
+          "Prevalence": "Often"
+        }
+      ],
+      "AlternateTerms": [
+        {
+          "Term": "Output Sanitization"
+        },
+        {
+          "Term": "Output Validation"
+        },
+        {
+          "Term": "Output Encoding"
+        }
+      ],
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Implementation"
+        },
+        {
+          "Phase": "Operation"
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Integrity"
+          ],
+          "Impact": [
+            "Modify Application Data"
+          ],
+          "Note": "The communications between components can be modified in unexpected ways. Unexpected commands can be executed, bypassing other security mechanisms. Incoming data can be misinterpreted."
+        },
+        {
+          "Scope": [
+            "Integrity",
+            "Confidentiality",
+            "Availability",
+            "Access Control"
+          ],
+          "Impact": [
+            "Execute Unauthorized Code or Commands"
+          ],
+          "Note": "The communications between components can be modified in unexpected ways. Unexpected commands can be executed, bypassing other security mechanisms. Incoming data can be misinterpreted."
+        },
+        {
+          "Scope": [
+            "Confidentiality"
+          ],
+          "Impact": [
+            "Bypass Protection Mechanism"
+          ],
+          "Note": "The communications between components can be modified in unexpected ways. Unexpected commands can be executed, bypassing other security mechanisms. Incoming data can be misinterpreted."
+        }
+      ],
+      "DemonstrativeExamples": [
+        {
+          "Entries": [
+            {
+              "IntroText": "This code displays an email address that was submitted as part of a form."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "JSP",
+              "ExampleCode": "```\n\t<% String email = request.getParameter(\"email\"); %>\n\t...\n\tEmail Address: <%= email %>\n```"
+            },
+            {
+              "BodyText": "The value read from the form parameter is reflected back to the client browser without having been encoded prior to output, allowing various XSS attacks (CWE-79)."
+            }
+          ]
+        },
+        {
+          "Entries": [
+            {
+              "IntroText": "Consider a chat application in which a front-end web application communicates with a back-end server. The back-end is legacy code that does not perform authentication or authorization, so the front-end must implement it. The chat protocol supports two commands, SAY and BAN, although only administrators can use the BAN command. Each argument must be separated by a single space. The raw inputs are URL-encoded. The messaging protocol allows multiple commands to be specified on the same line if they are separated by a \"|\" character."
+            },
+            {
+              "BodyText": "First let's look at the back end command processor code"
+            },
+            {
+              "Nature": "Bad",
+              "Language": "Perl",
+              "ExampleCode": "```\n\t$inputString = readLineFromFileHandle($serverFH);\n```\n# generate an array of strings separated by the \"|\" character.* \n\t@commands = split(/\\|/, $inputString);\n\t\n\tforeach $cmd (@commands) {\n\t```\n```\n# separate the operator from its arguments based on a single whitespace* \n\t\t($operator, $args) = split(/ /, $cmd, 2);\n\t\t\n\t\t$args = UrlDecode($args);\n\t\tif ($operator eq \"BAN\") {\n\t\t```\n\t\t\tExecuteBan($args);\n\t\t}\n\t\telsif ($operator eq \"SAY\") {\n\t\t\tExecuteSay($args);\n\t\t}\n\t}\n```"
+            },
+            {
+              "BodyText": "The front end web application receives a command, encodes it for sending to the server, performs the authorization check, and sends the command to the server."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "Perl",
+              "ExampleCode": "```\n\t$inputString = GetUntrustedArgument(\"command\");\n\t($cmd, $argstr) = split(/\\s+/, $inputString, 2);\n```\n# removes extra whitespace and also changes CRLF's to spaces* \n\t$argstr =~ s/\\s+/ /gs;\n\t\n\t$argstr = UrlEncode($argstr);\n\tif (($cmd eq \"BAN\") && (! IsAdministrator($username))) {\n\t```\n\t\tdie \"Error: you are not the admin.\\n\";\n\t}\n```\n# communicate with file server using a file handle* \n\t$fh = GetServerFileHandle(\"myserver\");\n\t\n\tprint $fh \"$cmd $argstr\\n\";"
+            },
+            {
+              "BodyText": "It is clear that, while the protocol and back-end allow multiple commands to be sent in a single request, the front end only intends to send a single command. However, the UrlEncode function could leave the \"|\" character intact. If an attacker provides:"
+            },
+            {
+              "Nature": "Attack",
+              "ExampleCode": "```\n\tSAY hello world|BAN user12\n```"
+            },
+            {
+              "BodyText": "then the front end will see this is a \"SAY\" command, and the $argstr will look like \"hello world | BAN user12\". Since the command is \"SAY\", the check for the \"BAN\" command will fail, and the front end will send the URL-encoded command to the back end:"
+            },
+            {
+              "Nature": "Result",
+              "ExampleCode": "```\n\tSAY hello%20world|BAN%20user12\n```"
+            },
+            {
+              "BodyText": "The back end, however, will treat these as two separate commands:"
+            },
+            {
+              "Nature": "Result",
+              "ExampleCode": "```\n\tSAY hello world\n\tBAN user12\n```"
+            },
+            {
+              "BodyText": "Notice, however, that if the front end properly encodes the \"|\" with \"%7C\", then the back end will only process a single command."
+            }
+          ]
+        },
+        {
+          "Entries": [
+            {
+              "IntroText": "This example takes user input, passes it through an encoding scheme and then creates a directory specified by the user."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "Perl",
+              "ExampleCode": "```\n\tsub GetUntrustedInput {\n\t\treturn($ARGV[0]);\n\t}\n\tsub encode {\n\t\tmy($str) = @_;\n\t\t$str =~ s/\\&/\\&amp;/gs;\n\t\t$str =~ s/\\\"/\\&quot;/gs;\n\t\t$str =~ s/\\'/\\&apos;/gs;\n\t\t$str =~ s/\\</\\&lt;/gs;\n\t\t$str =~ s/\\>/\\&gt;/gs;\n\t\treturn($str);\n\t}\n\tsub doit {\n\t\tmy $uname = encode(GetUntrustedInput(\"username\"));\n\t\tprint \"<b>Welcome, $uname!</b><p>\\n\";\n\t\tsystem(\"cd /home/$uname; /bin/ls -l\");\n\t}\n```"
+            },
+            {
+              "BodyText": "The programmer attempts to encode dangerous characters, however the denylist for encoding is incomplete (CWE-184) and an attacker can still pass a semicolon, resulting in a chain with command injection (CWE-77)."
+            },
+            {
+              "BodyText": "Additionally, the encoding routine is used inappropriately with command execution. An attacker doesn't even need to insert their own semicolon. The attacker can instead leverage the encoding routine to provide the semicolon to separate the commands. If an attacker supplies a string of the form:"
+            },
+            {
+              "Nature": "Attack",
+              "ExampleCode": "```\n\t' pwd\n```"
+            },
+            {
+              "BodyText": "then the program will encode the apostrophe and insert the semicolon, which functions as a command separator when passed to the system function. This allows the attacker to complete the command injection."
+            }
+          ]
+        }
+      ],
+      "PotentialMitigations": [
+        {
+          "MitigationID": "MIT-4.3",
+          "Phase": [
+            "Architecture and Design"
+          ],
+          "Strategy": "Libraries or Frameworks",
+          "Description": "\n\nUse a vetted library or framework that does not allow this weakness to occur or provides constructs that make this weakness easier to avoid.\n\n\nFor example, consider using the ESAPI Encoding control [REF-45] or a similar tool, library, or framework. These will help the programmer encode outputs in a manner less prone to error.\n\n\nAlternately, use built-in functions, but consider using wrappers in case those functions are discovered to have a vulnerability.\n"
+        },
+        {
+          "MitigationID": "MIT-27",
+          "Phase": [
+            "Architecture and Design"
+          ],
+          "Strategy": "Parameterization",
+          "Description": "\n\nIf available, use structured mechanisms that automatically enforce the separation between data and code. These mechanisms may be able to provide the relevant quoting, encoding, and validation automatically, instead of relying on the developer to provide this capability at every point where output is generated.\n\n\nFor example, stored procedures can enforce database query structure and reduce the likelihood of SQL injection.\n"
+        },
+        {
+          "Phase": [
+            "Architecture and Design",
+            "Implementation"
+          ],
+          "Description": "Understand the context in which your data will be used and the encoding that will be expected. This is especially important when transmitting data between different components, or when generating outputs that can contain multiple encodings at the same time, such as web pages or multi-part mail messages. Study all expected communication protocols and data representations to determine the required encoding strategies."
+        },
+        {
+          "Phase": [
+            "Architecture and Design"
+          ],
+          "Description": "In some cases, input validation may be an important strategy when output encoding is not a complete solution. For example, you may be providing the same output that will be processed by multiple consumers that use different encodings or representations. In other cases, you may be required to allow user-supplied input to contain control information, such as limited HTML tags that support formatting in a wiki or bulletin board. When this type of requirement must be met, use an extremely strict allowlist to limit which control sequences can be used. Verify that the resulting syntactic structure is what you expect. Use your normal encoding methods for the remainder of the input."
+        },
+        {
+          "Phase": [
+            "Architecture and Design"
+          ],
+          "Description": "Use input validation as a defense-in-depth measure to reduce the likelihood of output encoding errors (see CWE-20)."
+        },
+        {
+          "Phase": [
+            "Requirements"
+          ],
+          "Description": "Fully specify which encodings are required by components that will be communicating with each other."
+        },
+        {
+          "Phase": [
+            "Implementation"
+          ],
+          "Description": "When exchanging data between components, ensure that both components are using the same character encoding. Ensure that the proper encoding is applied at each interface. Explicitly set the encoding you are using whenever the protocol allows you to do so."
+        }
+      ]
+    },
+    "/cwe/116/parents": {
+      "weakness_parents": [],
+      "category_parents": [
+        "1134",
+        "1179",
+        "1347",
+        "1407",
+        "751",
+        "845",
+        "883",
+        "992"
+      ]
+    },
+    "/cwe/116/children": {
+      "weakness_children": [
+        "117",
+        "644",
+        "838"
+      ],
+      "category_children": []
+    }
+  }
+}

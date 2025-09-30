@@ -1,0 +1,123 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T23:20:15.007122",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "401",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/401": {
+      "ID": "401",
+      "Type": "variant_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/401": {
+      "ID": "401",
+      "Name": "Missing Release of Memory after Effective Lifetime",
+      "Abstraction": "Variant",
+      "Structure": "Simple",
+      "Status": "Draft",
+      "Description": "The product does not sufficiently track and release allocated memory after it has been used, making the memory unavailable for reallocation and reuse.",
+      "ExtendedDescription": null,
+      "LikelihoodOfExploit": "Medium",
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Name": "C",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Language",
+          "Name": "C++",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": [
+        {
+          "Term": "Memory Leak"
+        }
+      ],
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Implementation",
+          "Note": "\n\nMemory leaks have two common and sometimes overlapping causes:\n\n\n  - Error conditions and other exceptional circumstances often triggered by improper handling of malformed data or unexpectedly interrupted sessions.\n\n  - Confusion over which part of the program is responsible for freeing the memory, since in some languages, developers are responsible for tracking memory allocation and releasing the memory. If there are no more pointers or references to the memory, then it can no longer be tracked and identified for release.\n\n"
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Availability"
+          ],
+          "Impact": [
+            "DoS: Crash, Exit, or Restart",
+            "DoS: Instability",
+            "DoS: Resource Consumption (CPU)",
+            "DoS: Resource Consumption (Memory)"
+          ],
+          "Note": "Most memory leaks result in general product reliability problems, but if an attacker can intentionally trigger a memory leak, the attacker might be able to launch a denial of service attack (by crashing or hanging the program) or take advantage of other unexpected program behavior resulting from a low memory condition."
+        },
+        {
+          "Scope": [
+            "Other"
+          ],
+          "Impact": [
+            "Reduce Performance"
+          ]
+        }
+      ],
+      "DemonstrativeExamples": [
+        {
+          "Entries": [
+            {
+              "IntroText": "The following C function leaks a block of allocated memory if the call to read() does not return the expected number of bytes:"
+            },
+            {
+              "Nature": "Bad",
+              "Language": "C",
+              "ExampleCode": "```\n\tchar* getBlock(int fd) {\n\t\t\tchar* buf = (char*) malloc(BLOCK_SIZE);\n\t\t\tif (!buf) {\n\t\t\t\treturn NULL;\n\t\t\t}\n\t\t\tif (read(fd, buf, BLOCK_SIZE) != BLOCK_SIZE) {\n\t\t\t\t\treturn NULL;\n\t\t\t}\n\t\t\treturn buf;\n\t}\n```"
+            }
+          ]
+        }
+      ],
+      "PotentialMitigations": [
+        {
+          "MitigationID": "MIT-41",
+          "Phase": [
+            "Implementation"
+          ],
+          "Strategy": "Libraries or Frameworks",
+          "Description": "\n\nChoose a language or tool that provides automatic memory management, or makes manual memory management less error-prone.\n\n\nFor example, glibc in Linux provides protection against free of invalid pointers.\n\n\nWhen using Xcode to target OS X or iOS, enable automatic reference counting (ARC) [REF-391].\n\n\nTo help correctly and consistently manage memory when programming in C++, consider using a smart pointer class such as std::auto_ptr (defined by ISO/IEC ISO/IEC 14882:2003), std::shared_ptr and std::unique_ptr (specified by an upcoming revision of the C++ standard, informally referred to as C++ 1x), or equivalent solutions such as Boost.\n"
+        },
+        {
+          "Phase": [
+            "Architecture and Design"
+          ],
+          "Description": "Use an abstraction library to abstract away risky APIs. Not a complete solution."
+        },
+        {
+          "Phase": [
+            "Architecture and Design",
+            "Build and Compilation"
+          ],
+          "Description": "The Boehm-Demers-Weiser Garbage Collector or valgrind can be used to detect leaks in code.",
+          "EffectivenessNotes": "This is not a complete solution as it is not 100% effective."
+        }
+      ]
+    },
+    "/cwe/401/parents": {
+      "weakness_parents": [
+        "404"
+      ],
+      "category_parents": [
+        "1152",
+        "1162",
+        "1399",
+        "398",
+        "730",
+        "861",
+        "1238"
+      ]
+    },
+    "/cwe/401/children": null
+  }
+}

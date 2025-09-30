@@ -1,0 +1,91 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-30T00:00:48.919293",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "707",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/707": {
+      "ID": "707",
+      "Type": "pillar_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/707": {
+      "ID": "707",
+      "Name": "Improper Neutralization",
+      "Abstraction": "Pillar",
+      "Structure": "Simple",
+      "Status": "Incomplete",
+      "Description": "The product does not ensure or incorrectly ensures that structured messages or data are well-formed and that certain security properties are met before being read from an upstream component or sent to a downstream component.",
+      "ExtendedDescription": "\n\nIf a message is malformed, it may cause the message to be incorrectly interpreted.\n\n\nNeutralization is an abstract term for any technique that ensures that input (and output) conforms with expectations and is \"safe.\" This can be done by:\n\n\n  - checking that the input/output is already \"safe\" (e.g. validation)\n\n  - transformation of the input/output to be \"safe\" using techniques such as filtering, encoding/decoding, escaping/unescaping, quoting/unquoting, or canonicalization\n\n  - preventing the input/output from being directly provided by an attacker (e.g. \"indirect selection\" that maps externally-provided values to internally-controlled values)\n\n  - preventing the input/output from being processed at all\n\nThis weakness typically applies in cases where the product prepares a control message that another process must act on, such as a command or query, and malicious input that was intended as data, can enter the control plane instead. However, this weakness also applies to more general cases where there are not always control implications.",
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Class": "Not Language-Specific",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Operating_System",
+          "Class": "Not OS-Specific",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Architecture",
+          "Class": "Not Architecture-Specific",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Technology",
+          "Class": "Not Technology-Specific",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Implementation",
+          "Note": "REALIZATION: This weakness is caused during implementation of an architectural security tactic."
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Other"
+          ],
+          "Impact": [
+            "Other"
+          ]
+        }
+      ],
+      "DemonstrativeExamples": null,
+      "PotentialMitigations": null
+    },
+    "/cwe/707/parents": {
+      "weakness_parents": [],
+      "category_parents": [
+        "1020",
+        "1370",
+        "1407",
+        "990"
+      ]
+    },
+    "/cwe/707/children": {
+      "weakness_children": [
+        "116",
+        "138",
+        "1426",
+        "170",
+        "172",
+        "182",
+        "20",
+        "228",
+        "240",
+        "463",
+        "74"
+      ],
+      "category_children": []
+    }
+  }
+}

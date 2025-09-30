@@ -1,0 +1,119 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T22:53:44.900850",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "201",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/201": {
+      "ID": "201",
+      "Type": "base_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/201": {
+      "ID": "201",
+      "Name": "Insertion of Sensitive Information Into Sent Data",
+      "Abstraction": "Base",
+      "Structure": "Simple",
+      "Status": "Draft",
+      "Description": "The code transmits data to another actor, but a portion of the data includes sensitive information that should not be accessible to that actor.",
+      "ExtendedDescription": null,
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Class": "Not Language-Specific",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Architecture and Design"
+        },
+        {
+          "Phase": "Implementation",
+          "Note": "REALIZATION: This weakness is caused during implementation of an architectural security tactic."
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Confidentiality"
+          ],
+          "Impact": [
+            "Read Files or Directories",
+            "Read Memory",
+            "Read Application Data"
+          ],
+          "Note": "Sensitive data may be exposed to attackers."
+        }
+      ],
+      "DemonstrativeExamples": [
+        {
+          "ID": "DX-129",
+          "Entries": [
+            {
+              "IntroText": "The following is an actual MySQL error statement:"
+            },
+            {
+              "Nature": "Result",
+              "Language": "SQL",
+              "ExampleCode": "```\n\tWarning: mysql_pconnect(): Access denied for user: 'root@localhost' (Using password: N1nj4) in /usr/local/www/wi-data/includes/database.inc on line 4\n```"
+            },
+            {
+              "BodyText": "The error clearly exposes the database credentials."
+            }
+          ]
+        }
+      ],
+      "PotentialMitigations": [
+        {
+          "Phase": [
+            "Requirements"
+          ],
+          "Description": "Specify which data in the software should be regarded as sensitive. Consider which types of users should have access to which types of data."
+        },
+        {
+          "Phase": [
+            "Implementation"
+          ],
+          "Description": "Ensure that any possibly sensitive data specified in the requirements is verified with designers to ensure that it is either a calculated risk or mitigated elsewhere. Any information that is not necessary to the functionality should be removed in order to lower both the overhead and the possibility of security sensitive data being sent."
+        },
+        {
+          "Phase": [
+            "System Configuration"
+          ],
+          "Description": "Setup default error messages so that unexpected errors do not disclose sensitive information."
+        },
+        {
+          "MitigationID": "MIT-46",
+          "Phase": [
+            "Architecture and Design"
+          ],
+          "Strategy": "Separation of Privilege",
+          "Description": "\n\nCompartmentalize the system to have \"safe\" areas where trust boundaries can be unambiguously drawn. Do not allow sensitive data to go outside of the trust boundary and always be careful when interfacing with a compartment outside of the safe area.\n\n\nEnsure that appropriate compartmentalization is built into the system design, and the compartmentalization allows for and reinforces privilege separation functionality. Architects and designers should rely on the principle of least privilege to decide the appropriate time to use privileges and the time to drop privileges.\n"
+        }
+      ]
+    },
+    "/cwe/201/parents": {
+      "weakness_parents": [
+        "200"
+      ],
+      "category_parents": [
+        "1015",
+        "1345",
+        "1417",
+        "199",
+        "963"
+      ]
+    },
+    "/cwe/201/children": {
+      "weakness_children": [
+        "598"
+      ],
+      "category_children": []
+    }
+  }
+}

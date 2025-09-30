@@ -1,0 +1,87 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T23:42:45.405788",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "571",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/571": {
+      "ID": "571",
+      "Type": "base_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/571": {
+      "ID": "571",
+      "Name": "Expression is Always True",
+      "Abstraction": "Base",
+      "Structure": "Simple",
+      "Status": "Draft",
+      "Description": "The product contains an expression that will always evaluate to true.",
+      "ExtendedDescription": null,
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Class": "Not Language-Specific",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Implementation"
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Other"
+          ],
+          "Impact": [
+            "Quality Degradation",
+            "Varies by Context"
+          ]
+        }
+      ],
+      "DemonstrativeExamples": [
+        {
+          "Entries": [
+            {
+              "IntroText": "In the following Java example the updateInventory() method used within an e-business product ordering/inventory application will check if the input product number is in the store or in the warehouse. If the product is found, the method will update the store or warehouse database as well as the aggregate product database. If the product is not found, the method intends to do some special processing without updating any database."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "Java",
+              "ExampleCode": "```\n\tpublic void updateInventory(String productNumber) {\n\t\t\tboolean isProductAvailable = false;\n\t\t\tboolean isDelayed = false;\n\t\t\tif (productInStore(productNumber)) {\n\t\t\t\tisProductAvailable = true;\n\t\t\t\tupdateInStoreDatabase(productNumber);\n\t\t\t}\n\t\t\telse if (productInWarehouse(productNumber)) {\n\t\t\t\tisProductAvailable = true;\n\t\t\t\tupdateInWarehouseDatabase(productNumber);\n\t\t\t}\n\t\t\telse {\n\t\t\t\tisProductAvailable = true;\n\t\t\t}\n\t\t\tif ( isProductAvailable ) {\n\t\t\t\tupdateProductDatabase(productNumber);\n\t\t\t}\n\t\t\telse if ( isDelayed ) {\n```\n/* Warn customer about delay before order processing */* \n\t\t\t\t\t...}}"
+            },
+            {
+              "BodyText": "However, the method never sets the isDelayed variable and instead will always update the isProductAvailable variable to true. The result is that the predicate testing the isProductAvailable boolean will always evaluate to true and therefore always update the product database. Further, since the isDelayed variable is initialized to false and never changed, the expression always evaluates to false and the customer will never be warned of a delay on their product."
+            }
+          ]
+        }
+      ],
+      "PotentialMitigations": [
+        {
+          "Phase": [
+            "Testing"
+          ],
+          "Description": "Use Static Analysis tools to spot such conditions."
+        }
+      ]
+    },
+    "/cwe/571/parents": {
+      "weakness_parents": [],
+      "category_parents": [
+        "1307",
+        "1308",
+        "1412",
+        "569",
+        "747",
+        "883",
+        "998"
+      ]
+    },
+    "/cwe/571/children": null
+  }
+}

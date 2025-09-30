@@ -1,0 +1,73 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-30T00:01:26.599357",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "72",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/72": {
+      "ID": "72",
+      "Type": "variant_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/72": {
+      "ID": "72",
+      "Name": "Improper Handling of Apple HFS+ Alternate Data Stream Path",
+      "Abstraction": "Variant",
+      "Structure": "Simple",
+      "Status": "Incomplete",
+      "Description": "The product does not properly handle special paths that may identify the data or resource fork of a file on the HFS+ file system.",
+      "ExtendedDescription": "If the product chooses actions to take based on the file name, then if an attacker provides the data or resource fork, the product may take unexpected actions. Further, if the product intends to restrict access to a file, then an attacker might still be able to bypass intended access restrictions by requesting the data or resource fork for that file.",
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Class": "Not Language-Specific",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Operating_System",
+          "Class": "macOS",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Implementation"
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Confidentiality",
+            "Integrity"
+          ],
+          "Impact": [
+            "Read Files or Directories",
+            "Modify Files or Directories"
+          ]
+        }
+      ],
+      "DemonstrativeExamples": [
+        {
+          "Entries": [
+            {
+              "IntroText": "A web server that interprets FILE.cgi as processing instructions could disclose the source code for FILE.cgi by requesting FILE.cgi/..namedfork/data. This might occur because the web server invokes the default handler which may return the contents of the file."
+            }
+          ]
+        }
+      ],
+      "PotentialMitigations": null
+    },
+    "/cwe/72/parents": {
+      "weakness_parents": [],
+      "category_parents": [
+        "1404",
+        "981"
+      ]
+    },
+    "/cwe/72/children": null
+  }
+}

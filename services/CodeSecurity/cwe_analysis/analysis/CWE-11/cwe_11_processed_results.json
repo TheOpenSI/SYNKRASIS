@@ -1,0 +1,88 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T22:17:17.129921",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "11",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/11": {
+      "ID": "11",
+      "Type": "variant_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/11": {
+      "ID": "11",
+      "Name": "ASP.NET Misconfiguration: Creating Debug Binary",
+      "Abstraction": "Variant",
+      "Structure": "Simple",
+      "Status": "Draft",
+      "Description": "Debugging messages help attackers learn about the system and plan a form of attack.",
+      "ExtendedDescription": "ASP .NET applications can be configured to produce debug binaries. These binaries give detailed debugging messages and should not be used in production environments. Debug binaries are meant to be used in a development or testing environment and can pose a security risk if they are deployed to production.",
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Name": "ASP.NET",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Implementation"
+        },
+        {
+          "Phase": "Build and Compilation"
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Confidentiality"
+          ],
+          "Impact": [
+            "Read Application Data"
+          ],
+          "Note": "Attackers can leverage the additional information they gain from debugging output to mount attacks targeted on the framework, database, or other resources used by the application."
+        }
+      ],
+      "DemonstrativeExamples": [
+        {
+          "Entries": [
+            {
+              "IntroText": "The file web.config contains the debug mode setting. Setting debug to \"true\" will let the browser display debugging information."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "XML",
+              "ExampleCode": "```\n\t<?xml version=\"1.0\" encoding=\"utf-8\" ?>\n\t<configuration>\n\t\t<system.web>\n\t\t\t<compilation\n\t\t\tdefaultLanguage=\"c#\"\n\t\t\tdebug=\"true\"\n\t\t\t/>\n\t\t\t...\n\t\t</system.web>\n\t</configuration>\n```"
+            },
+            {
+              "BodyText": "Change the debug mode to false when the application is deployed into production."
+            }
+          ]
+        }
+      ],
+      "PotentialMitigations": [
+        {
+          "Phase": [
+            "System Configuration"
+          ],
+          "Description": "Avoid releasing debug binaries into the production environment. Change the debug mode to false when the application is deployed into production."
+        }
+      ]
+    },
+    "/cwe/11/parents": {
+      "weakness_parents": [],
+      "category_parents": [
+        "1349",
+        "1412",
+        "2",
+        "731",
+        "963"
+      ]
+    },
+    "/cwe/11/children": null
+  }
+}

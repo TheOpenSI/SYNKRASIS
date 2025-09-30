@@ -1,0 +1,89 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-30T00:15:45.896049",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "912",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/912": {
+      "ID": "912",
+      "Type": "class_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/912": {
+      "ID": "912",
+      "Name": "Hidden Functionality",
+      "Abstraction": "Class",
+      "Structure": "Simple",
+      "Status": "Incomplete",
+      "Description": "The product contains functionality that is not documented, not part of the specification, and not accessible through an interface or command sequence that is obvious to the product's users or administrators.",
+      "ExtendedDescription": "Hidden functionality can take many forms, such as intentionally malicious code, \"Easter Eggs\" that contain extraneous functionality such as games, developer-friendly shortcuts that reduce maintenance or support costs such as hard-coded accounts, etc. From a security perspective, even when the functionality is not intentionally malicious or damaging, it can increase the product's attack surface and expose additional weaknesses beyond what is already exposed by the intended functionality. Even if it is not easily accessible, the hidden functionality could be useful for attacks that modify the control flow of the application.",
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": [
+        {
+          "Type": "Technology",
+          "Class": "Not Technology-Specific",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Technology",
+          "Class": "ICS/OT",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Architecture and Design"
+        },
+        {
+          "Phase": "Implementation"
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Other",
+            "Integrity"
+          ],
+          "Impact": [
+            "Varies by Context",
+            "Alter Execution Logic"
+          ]
+        }
+      ],
+      "DemonstrativeExamples": null,
+      "PotentialMitigations": [
+        {
+          "Phase": [
+            "Installation"
+          ],
+          "Description": "Always verify the integrity of the product that is being installed."
+        },
+        {
+          "Phase": [
+            "Testing"
+          ],
+          "Description": "Conduct a code coverage analysis using live testing, then closely inspect any code that is not covered."
+        }
+      ]
+    },
+    "/cwe/912/parents": {
+      "weakness_parents": [
+        "684"
+      ],
+      "category_parents": [
+        "1371",
+        "1412"
+      ]
+    },
+    "/cwe/912/children": {
+      "weakness_children": [
+        "1242",
+        "506"
+      ],
+      "category_children": []
+    }
+  }
+}

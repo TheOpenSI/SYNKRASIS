@@ -1,0 +1,73 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T23:58:10.701895",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "687",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/687": {
+      "ID": "687",
+      "Type": "variant_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/687": {
+      "ID": "687",
+      "Name": "Function Call With Incorrectly Specified Argument Value",
+      "Abstraction": "Variant",
+      "Structure": "Simple",
+      "Status": "Draft",
+      "Description": "The product calls a function, procedure, or routine, but the caller specifies an argument that contains the wrong value, which may lead to resultant weaknesses.",
+      "ExtendedDescription": null,
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": null,
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Implementation"
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Other"
+          ],
+          "Impact": [
+            "Quality Degradation"
+          ]
+        }
+      ],
+      "DemonstrativeExamples": [
+        {
+          "ID": "DX-63",
+          "Entries": [
+            {
+              "IntroText": "This Perl code intends to record whether a user authenticated successfully or not, and to exit if the user fails to authenticate. However, when it calls ReportAuth(), the third argument is specified as 0 instead of 1, so it does not exit."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "Perl",
+              "ExampleCode": "```\n\tsub ReportAuth {\n\t\tmy ($username, $result, $fatal) = @_;\n\t\tPrintLog(\"auth: username=%s, result=%d\", $username, $result);\n\t\tif (($result ne \"success\") && $fatal) {\n\t\t\tdie \"Failed!\\n\";\n\t\t}\n\t}\n\tsub PrivilegedFunc\n\t{\n\t\tmy $result = CheckAuth($username);\n\t\tReportAuth($username, $result, 0);\n\t\tDoReallyImportantStuff();\n\t}\n```"
+            }
+          ]
+        }
+      ],
+      "PotentialMitigations": null
+    },
+    "/cwe/687/parents": {
+      "weakness_parents": [],
+      "category_parents": [
+        "1412",
+        "742",
+        "876",
+        "990"
+      ]
+    },
+    "/cwe/687/children": {
+      "weakness_children": [
+        "560"
+      ],
+      "category_children": []
+    }
+  }
+}

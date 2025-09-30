@@ -1,0 +1,146 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T22:29:25.130112",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "1256",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/1256": {
+      "ID": "1256",
+      "Type": "base_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/1256": {
+      "ID": "1256",
+      "Name": "Improper Restriction of Software Interfaces to Hardware Features",
+      "Abstraction": "Base",
+      "Structure": "Simple",
+      "Status": "Stable",
+      "Description": "The product provides software-controllable\n\t\t\tdevice functionality for capabilities such as power and\n\t\t\tclock management, but it does not properly limit\n\t\t\tfunctionality that can lead to modification of\n\t\t\thardware memory or register bits, or the ability to\n\t\t\tobserve physical side channels.",
+      "ExtendedDescription": "\n\nIt is frequently assumed that physical attacks such as fault injection and side-channel analysis require an attacker to have physical access to the target device. This assumption may be false if the device has improperly secured power management features, or similar features. For mobile devices, minimizing power consumption is critical, but these devices run a wide variety of applications with different performance requirements. Software-controllable mechanisms to dynamically scale device voltage and frequency and monitor power consumption are common features in today's chipsets, but they also enable attackers to mount fault injection and side-channel attacks without having physical access to the device.\n\n\nFault injection attacks involve strategic manipulation of bits in a device to achieve a desired effect such as skipping an authentication step, elevating privileges, or altering the output of a cryptographic operation. Manipulation of the device clock and voltage supply is a well-known technique to inject faults and is cheap to implement with physical device access. Poorly protected power management features allow these attacks to be performed from software. Other features, such as the ability to write repeatedly to DRAM at a rapid rate from unprivileged software, can result in bit flips in other memory locations (Rowhammer, [REF-1083]).\n\n\nSide channel analysis requires gathering measurement traces of physical quantities such as power consumption. Modern processors often include power metering capabilities in the hardware itself (e.g., Intel RAPL) which if not adequately protected enable attackers to gather measurements necessary for performing side-channel attacks from software.\n",
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Class": "Not Language-Specific",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Operating_System",
+          "Class": "Not OS-Specific",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Architecture",
+          "Class": "Not Architecture-Specific",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Technology",
+          "Class": "Not Technology-Specific",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Technology",
+          "Name": "Memory Hardware",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Technology",
+          "Name": "Power Management Hardware",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Technology",
+          "Name": "Clock/Counter Hardware",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Architecture and Design",
+          "Note": "An architect may initiate introduction of this weakness via exacting requirements for software accessible power/clock management requirements"
+        },
+        {
+          "Phase": "Implementation",
+          "Note": "An implementer may introduce this weakness by assuming there are no consequences to unbounded power and clock management for secure components from untrusted ones."
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Integrity"
+          ],
+          "Impact": [
+            "Modify Memory",
+            "Modify Application Data",
+            "Bypass Protection Mechanism"
+          ]
+        }
+      ],
+      "DemonstrativeExamples": [
+        {
+          "Entries": [
+            {
+              "IntroText": "This example considers the Rowhammer problem [REF-1083]. The Rowhammer issue was caused by a program in a tight loop writing repeatedly to a location to which the program was allowed to write but causing an adjacent memory location value to change."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "Other",
+              "ExampleCode": "Continuously writing the same value to the same address causes the value of an adjacent location to change value."
+            },
+            {
+              "BodyText": "Preventing the loop required to defeat the Rowhammer exploit is not always possible:"
+            },
+            {
+              "Nature": "Good",
+              "Language": "Other",
+              "ExampleCode": "Redesign the RAM devices to reduce inter capacitive coupling making the Rowhammer exploit impossible."
+            },
+            {
+              "BodyText": "While the redesign may be possible for new devices, a redesign is not possible in existing devices. There is also the possibility that reducing capacitance with a relayout would impact the density of the device resulting in a less capable, more costly device."
+            }
+          ]
+        },
+        {
+          "Entries": [
+            {
+              "IntroText": "Suppose a hardware design implements a set of software-accessible registers for scaling clock frequency and voltage but does not control access to these registers. Attackers may cause register and memory changes and race conditions by changing the clock or voltage of the device under their control."
+            }
+          ]
+        },
+        {
+          "Entries": [
+            {
+              "IntroText": "Consider the following SoC design. Security-critical settings for scaling clock frequency and voltage are available in a range of registers bounded by [PRIV_END_ADDR : PRIV_START_ADDR] in the tmcu.csr module in the HW Root of Trust. These values are writable based on the lock_bit register in the same module. The lock_bit is only writable by privileged software running on the tmcu."
+            },
+            {
+              "BodyText": "We assume that untrusted software running on any of the Core{0-N} processors has access to the input and output ports of the hrot_iface. If untrusted software can clear the lock_bit or write the clock frequency and voltage registers due to inadequate protection, a fault injection attack could be performed."
+            }
+          ]
+        }
+      ],
+      "PotentialMitigations": [
+        {
+          "Phase": [
+            "Architecture and Design",
+            "Implementation"
+          ],
+          "Description": "\n\nEnsure proper access control mechanisms protect software-controllable features altering physical operating conditions such as clock frequency and voltage.\n"
+        }
+      ]
+    },
+    "/cwe/1256/parents": {
+      "weakness_parents": [
+        "285"
+      ],
+      "category_parents": [
+        "1206",
+        "1396"
+      ]
+    },
+    "/cwe/1256/children": null
+  }
+}

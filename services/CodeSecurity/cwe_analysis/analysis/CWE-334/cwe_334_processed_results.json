@@ -1,0 +1,105 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T23:11:31.853126",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "334",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/334": {
+      "ID": "334",
+      "Type": "base_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/334": {
+      "ID": "334",
+      "Name": "Small Space of Random Values",
+      "Abstraction": "Base",
+      "Structure": "Simple",
+      "Status": "Draft",
+      "Description": "The number of possible random values is smaller than needed by the product, making it more susceptible to brute force attacks.",
+      "ExtendedDescription": null,
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Class": "Not Language-Specific",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Architecture and Design"
+        },
+        {
+          "Phase": "Implementation",
+          "Note": "REALIZATION: This weakness is caused during implementation of an architectural security tactic."
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Access Control",
+            "Other"
+          ],
+          "Impact": [
+            "Bypass Protection Mechanism",
+            "Other"
+          ],
+          "Note": "An attacker could easily guess the values used. This could lead to unauthorized access to a system if the seed is used for authentication and authorization."
+        }
+      ],
+      "DemonstrativeExamples": [
+        {
+          "ID": "DX-47",
+          "Entries": [
+            {
+              "IntroText": "The following XML example code is a deployment descriptor for a Java web application deployed on a Sun Java Application Server. This deployment descriptor includes a session configuration property for configuring the session ID length."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "XML",
+              "ExampleCode": "```\n\t<sun-web-app>\n\t\t\t...\n\t\t\t<session-config>\n\t\t\t\t\t<session-properties>\n\t\t\t\t\t\t<property name=\"idLengthBytes\" value=\"8\">\n\t\t\t\t\t\t\t<description>The number of bytes in this web module's session ID.</description>\n\t\t\t\t\t\t</property>\n\t\t\t\t\t</session-properties>\n\t\t\t</session-config>\n\t\t\t...\n\t</sun-web-app>\n```"
+            },
+            {
+              "BodyText": "This deployment descriptor has set the session ID length for this Java web application to 8 bytes (or 64 bits). The session ID length for Java web applications should be set to 16 bytes (128 bits) to prevent attackers from guessing and/or stealing a session ID and taking over a user's session."
+            },
+            {
+              "BodyText": "Note for most application servers including the Sun Java Application Server the session ID length is by default set to 128 bits and should not be changed. And for many application servers the session ID length cannot be changed from this default setting. Check your application server documentation for the session ID length default setting and configuration options to ensure that the session ID length is set to 128 bits."
+            }
+          ]
+        }
+      ],
+      "PotentialMitigations": [
+        {
+          "MitigationID": "MIT-2",
+          "Phase": [
+            "Architecture and Design",
+            "Requirements"
+          ],
+          "Strategy": "Libraries or Frameworks",
+          "Description": "Use products or modules that conform to FIPS 140-2 [REF-267] to avoid obvious entropy problems. Consult FIPS 140-2 Annex C (\"Approved Random Number Generators\")."
+        }
+      ]
+    },
+    "/cwe/334/parents": {
+      "weakness_parents": [
+        "330"
+      ],
+      "category_parents": [
+        "1013",
+        "1414",
+        "1213",
+        "310",
+        "905"
+      ]
+    },
+    "/cwe/334/children": {
+      "weakness_children": [
+        "6"
+      ],
+      "category_children": []
+    }
+  }
+}

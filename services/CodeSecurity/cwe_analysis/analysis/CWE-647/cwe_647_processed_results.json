@@ -1,0 +1,103 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T23:53:15.480014",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "647",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/647": {
+      "ID": "647",
+      "Type": "variant_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/647": {
+      "ID": "647",
+      "Name": "Use of Non-Canonical URL Paths for Authorization Decisions",
+      "Abstraction": "Variant",
+      "Structure": "Simple",
+      "Status": "Incomplete",
+      "Description": "The product defines policy namespaces and makes authorization decisions based on the assumption that a URL is canonical. This can allow a non-canonical URL to bypass the authorization.",
+      "ExtendedDescription": "\n\nIf an application defines policy namespaces and makes authorization decisions based on the URL, but it does not require or convert to a canonical URL before making the authorization decision, then it opens the application to attack. For example, if the application only wants to allow access to http://www.example.com/mypage, then the attacker might be able to bypass this restriction using equivalent URLs such as:\n\n\n  - http://WWW.EXAMPLE.COM/mypage\n\n  - http://www.example.com/%6Dypage (alternate encoding)\n\n  - http://192.168.1.1/mypage (IP address)\n\n  - http://www.example.com/mypage/ (trailing /)\n\n  - http://www.example.com:80/mypage\n\nTherefore it is important to specify access control policy that is based on the path information in some canonical form with all alternate encodings rejected (which can be accomplished by a default deny rule).",
+      "LikelihoodOfExploit": "High",
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Class": "Not Language-Specific",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Technology",
+          "Name": "Web Server",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Implementation",
+          "Note": "REALIZATION: This weakness is caused during implementation of an architectural security tactic."
+        },
+        {
+          "Phase": "Operation"
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Access Control"
+          ],
+          "Impact": [
+            "Bypass Protection Mechanism"
+          ],
+          "Note": "An attacker may be able to bypass the authorization mechanism to gain access to the otherwise-protected URL."
+        },
+        {
+          "Scope": [
+            "Confidentiality"
+          ],
+          "Impact": [
+            "Read Files or Directories"
+          ],
+          "Note": "If a non-canonical URL is used, the server may choose to return the contents of the file, instead of pre-processing the file (e.g. as a program)."
+        }
+      ],
+      "DemonstrativeExamples": [
+        {
+          "Entries": [
+            {
+              "IntroText": "Example from CAPEC (CAPEC ID: 4, \"Using Alternative IP Address Encodings\"). An attacker identifies an application server that applies a security policy based on the domain and application name, so the access control policy covers authentication and authorization for anyone accessing http://example.domain:8080/application. However, by putting in the IP address of the host the application authentication and authorization controls may be bypassed http://192.168.0.1:8080/application. The attacker relies on the victim applying policy to the namespace abstraction and not having a default deny policy in place to manage exceptions."
+            }
+          ]
+        }
+      ],
+      "PotentialMitigations": [
+        {
+          "Phase": [
+            "Architecture and Design"
+          ],
+          "Description": "Make access control policy based on path information in canonical form. Use very restrictive regular expressions to validate that the path is in the expected form."
+        },
+        {
+          "Phase": [
+            "Architecture and Design"
+          ],
+          "Description": "Reject all alternate path encodings that are not in the expected canonical form."
+        }
+      ]
+    },
+    "/cwe/647/parents": {
+      "weakness_parents": [
+        "863"
+      ],
+      "category_parents": [
+        "1011",
+        "1147",
+        "1396",
+        "845",
+        "949"
+      ]
+    },
+    "/cwe/647/children": null
+  }
+}

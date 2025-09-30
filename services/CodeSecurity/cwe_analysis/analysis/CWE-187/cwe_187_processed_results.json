@@ -1,0 +1,104 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T22:51:50.773590",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "187",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/187": {
+      "ID": "187",
+      "Type": "variant_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/187": {
+      "ID": "187",
+      "Name": "Partial String Comparison",
+      "Abstraction": "Variant",
+      "Structure": "Simple",
+      "Status": "Incomplete",
+      "Description": "The product performs a comparison that only examines a portion of a factor before determining whether there is a match, such as a substring, leading to resultant weaknesses.",
+      "ExtendedDescription": "For example, an attacker might succeed in authentication by providing a small password that matches the associated portion of the larger, correct password.",
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Class": "Not Language-Specific",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Implementation"
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Integrity",
+            "Access Control"
+          ],
+          "Impact": [
+            "Alter Execution Logic",
+            "Bypass Protection Mechanism"
+          ]
+        }
+      ],
+      "DemonstrativeExamples": [
+        {
+          "Entries": [
+            {
+              "IntroText": "This example defines a fixed username and password. The AuthenticateUser() function is intended to accept a username and a password from an untrusted user, and check to ensure that it matches the username and password. If the username and password match, AuthenticateUser() is intended to indicate that authentication succeeded."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "C",
+              "ExampleCode": "```\n```\n/* Ignore CWE-259 (hard-coded password) and CWE-309 (use of password system for authentication) for this example. */* \n\t\n\tchar *username = \"admin\";\n\tchar *pass = \"password\";\n\t\n\tint AuthenticateUser(char *inUser, char *inPass) {\n\t```\n\t\tif (strncmp(username, inUser, strlen(inUser))) {\n\t\t\tlogEvent(\"Auth failure of username using strlen of inUser\");\n\t\t\treturn(AUTH_FAIL);\n\t\t}\n\t\tif (! strncmp(pass, inPass, strlen(inPass))) {\n\t\t\tlogEvent(\"Auth success of password using strlen of inUser\");\n\t\t\treturn(AUTH_SUCCESS);\n\t\t}\n\t\telse {\n\t\t\tlogEvent(\"Auth fail of password using sizeof\");\n\t\t\treturn(AUTH_FAIL);\n\t\t}\n\t}\n\tint main (int argc, char **argv) {\n\t\t\tint authResult;\n\t\t\tif (argc < 3) {\n\t\t\t\tExitError(\"Usage: Provide a username and password\");\n\t\t\t}\n\t\t\tauthResult = AuthenticateUser(argv[1], argv[2]);\n\t\t\tif (authResult == AUTH_SUCCESS) {\n\t\t\t\tDoAuthenticatedTask(argv[1]);\n\t\t\t}\n\t\t\telse {\n\t\t\t\tExitError(\"Authentication failed\");\n\t\t\t}\n\t}\n```"
+            },
+            {
+              "BodyText": "In AuthenticateUser(), the strncmp() call uses the string length of an attacker-provided inPass parameter in order to determine how many characters to check in the password. So, if the attacker only provides a password of length 1, the check will only examine the first byte of the application's password before determining success."
+            },
+            {
+              "BodyText": "As a result, this partial comparison leads to improper authentication (CWE-287)."
+            },
+            {
+              "BodyText": "Any of these passwords would still cause authentication to succeed for the \"admin\" user:"
+            },
+            {
+              "Nature": "Attack",
+              "ExampleCode": "```\n\tp\n\tpa\n\tpas\n\tpass\n```"
+            },
+            {
+              "BodyText": "This significantly reduces the search space for an attacker, making brute force attacks more feasible."
+            },
+            {
+              "BodyText": "The same problem also applies to the username, so values such as \"a\" and \"adm\" will succeed for the username."
+            },
+            {
+              "BodyText": "While this demonstrative example may not seem realistic, see the Observed Examples for CVE entries that effectively reflect this same weakness."
+            }
+          ]
+        }
+      ],
+      "PotentialMitigations": [
+        {
+          "Phase": [
+            "Testing"
+          ],
+          "Description": "Thoroughly test the comparison scheme before deploying code into production. Perform positive testing as well as negative testing."
+        }
+      ]
+    },
+    "/cwe/187/parents": {
+      "weakness_parents": [
+        "1023"
+      ],
+      "category_parents": [
+        "1397",
+        "977"
+      ]
+    },
+    "/cwe/187/children": null
+  }
+}

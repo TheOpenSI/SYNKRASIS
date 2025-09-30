@@ -1,0 +1,101 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T23:49:36.727799",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "620",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/620": {
+      "ID": "620",
+      "Type": "base_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/620": {
+      "ID": "620",
+      "Name": "Unverified Password Change",
+      "Abstraction": "Base",
+      "Structure": "Simple",
+      "Status": "Draft",
+      "Description": "When setting a new password for a user, the product does not require knowledge of the original password, or using another form of authentication.",
+      "ExtendedDescription": "This could be used by an attacker to change passwords for another user, thus gaining the privileges associated with that user.",
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Class": "Not Language-Specific",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Architecture and Design"
+        },
+        {
+          "Phase": "Implementation",
+          "Note": "REALIZATION: This weakness is caused during implementation of an architectural security tactic."
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Access Control"
+          ],
+          "Impact": [
+            "Bypass Protection Mechanism",
+            "Gain Privileges or Assume Identity"
+          ]
+        }
+      ],
+      "DemonstrativeExamples": [
+        {
+          "ID": "DX-56",
+          "Entries": [
+            {
+              "IntroText": "This code changes a user's password."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "PHP",
+              "ExampleCode": "```\n\t$user = $_GET['user'];\n\t$pass = $_GET['pass'];\n\t$checkpass = $_GET['checkpass'];\n\tif ($pass == $checkpass) {\n\t\tSetUserPassword($user, $pass);\n\t}\n```"
+            },
+            {
+              "BodyText": "While the code confirms that the requesting user typed the same new password twice, it does not confirm that the user requesting the password change is the same user whose password will be changed. An attacker can request a change of another user's password and gain control of the victim's account."
+            }
+          ]
+        }
+      ],
+      "PotentialMitigations": [
+        {
+          "Phase": [
+            "Architecture and Design"
+          ],
+          "Description": "When prompting for a password change, force the user to provide the original password in addition to the new password."
+        },
+        {
+          "Phase": [
+            "Architecture and Design"
+          ],
+          "Description": "Do not use \"forgotten password\" functionality. But if you must, ensure that you are only providing information to the actual user, e.g. by using an email address or challenge question that the legitimate user already provided in the past; do not allow the current user to change this identity information until the correct password has been provided."
+        }
+      ]
+    },
+    "/cwe/620/parents": {
+      "weakness_parents": [
+        "1390"
+      ],
+      "category_parents": [
+        "1010",
+        "1028",
+        "1353",
+        "1396",
+        "255",
+        "724",
+        "952",
+        "930"
+      ]
+    },
+    "/cwe/620/children": null
+  }
+}

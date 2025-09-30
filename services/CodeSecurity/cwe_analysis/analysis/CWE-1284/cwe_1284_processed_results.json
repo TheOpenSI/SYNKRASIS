@@ -1,0 +1,110 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T22:33:18.619677",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "1284",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/1284": {
+      "ID": "1284",
+      "Type": "base_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/1284": {
+      "ID": "1284",
+      "Name": "Improper Validation of Specified Quantity in Input",
+      "Abstraction": "Base",
+      "Structure": "Simple",
+      "Status": "Incomplete",
+      "Description": "The product receives input that is expected to specify a quantity (such as size or length), but it does not validate or incorrectly validates that the quantity has the required properties.",
+      "ExtendedDescription": "\n\nSpecified quantities include size, length, frequency, price, rate, number of operations, time, and others. Code may rely on specified quantities to allocate resources, perform calculations, control iteration, etc. When the quantity is not properly validated, then attackers can specify malicious quantities to cause excessive resource allocation, trigger unexpected failures, enable buffer overflows, etc.\n",
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Class": "Not Language-Specific",
+          "Prevalence": "Often"
+        }
+      ],
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Implementation"
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Other"
+          ],
+          "Impact": [
+            "Varies by Context"
+          ],
+          "Note": "Since quantities are used so often to affect resource allocation or process financial data, they are often present in many places in the code."
+        }
+      ],
+      "DemonstrativeExamples": [
+        {
+          "ID": "DX-135",
+          "Entries": [
+            {
+              "IntroText": "This example demonstrates a shopping interaction in which the user is free to specify the quantity of items to be purchased and a total is calculated."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "Java",
+              "ExampleCode": "```\n\t...\n\tpublic static final double price = 20.00;\n\tint quantity = currentUser.getAttribute(\"quantity\");\n\tdouble total = price * quantity;\n\tchargeUser(total);\n\t...\n```"
+            },
+            {
+              "BodyText": "The user has no control over the price variable, however the code does not prevent a negative value from being specified for quantity. If an attacker were to provide a negative value, then the user would have their account credited instead of debited."
+            }
+          ]
+        },
+        {
+          "ID": "DX-136",
+          "Entries": [
+            {
+              "IntroText": "This example asks the user for a height and width of an m X n game board with a maximum dimension of 100 squares."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "C",
+              "ExampleCode": "```\n\t...\n\t#define MAX_DIM 100\n\t...\n```\n/* board dimensions */* \n\t\n\tint m,n, error;\n\tboard_square_t *board;\n\tprintf(\"Please specify the board height: \\n\");\n\terror = scanf(\"%d\", &m);\n\tif ( EOF == error ){\n\t```\n\t\tdie(\"No integer passed: Die evil hacker!\\n\");\n\t}\n\tprintf(\"Please specify the board width: \\n\");\n\terror = scanf(\"%d\", &n);\n\tif ( EOF == error ){\n\t\tdie(\"No integer passed: Die evil hacker!\\n\");\n\t}\n\tif ( m > MAX_DIM || n > MAX_DIM ) {\n\t\tdie(\"Value too large: Die evil hacker!\\n\");\n\t}\n\tboard = (board_square_t*) malloc( m * n * sizeof(board_square_t));\n\t...\n```"
+            },
+            {
+              "BodyText": "While this code checks to make sure the user cannot specify large, positive integers and consume too much memory, it does not check for negative values supplied by the user. As a result, an attacker can perform a resource consumption (CWE-400) attack against this program by specifying two, large negative values that will not overflow, resulting in a very large memory allocation (CWE-789) and possibly a system crash. Alternatively, an attacker can provide very large negative values which will cause an integer overflow (CWE-190) and unexpected behavior will follow depending on how the values are treated in the remainder of the program."
+            }
+          ]
+        }
+      ],
+      "PotentialMitigations": [
+        {
+          "MitigationID": "MIT-5",
+          "Phase": [
+            "Implementation"
+          ],
+          "Strategy": "Input Validation",
+          "Description": "\n\nAssume all input is malicious. Use an \"accept known good\" input validation strategy, i.e., use a list of acceptable inputs that strictly conform to specifications. Reject any input that does not strictly conform to specifications, or transform it into something that does.\n\n\nWhen performing input validation, consider all potentially relevant properties, including length, type of input, the full range of acceptable values, missing or extra inputs, syntax, consistency across related fields, and conformance to business rules. As an example of business rule logic, \"boat\" may be syntactically valid because it only contains alphanumeric characters, but it is not valid if the input is only expected to contain colors such as \"red\" or \"blue.\"\n\n\nDo not rely exclusively on looking for malicious or malformed inputs. This is likely to miss at least one undesirable input, especially if the code's environment changes. This can give attackers enough room to bypass the intended validation. However, denylists can be useful for detecting potential attacks or determining which inputs are so malformed that they should be rejected outright.\n",
+          "Effectiveness": "High"
+        }
+      ]
+    },
+    "/cwe/1284/parents": {
+      "weakness_parents": [
+        "20"
+      ],
+      "category_parents": [
+        "1406",
+        "1215",
+        "1218"
+      ]
+    },
+    "/cwe/1284/children": {
+      "weakness_children": [
+        "606"
+      ],
+      "category_children": []
+    }
+  }
+}

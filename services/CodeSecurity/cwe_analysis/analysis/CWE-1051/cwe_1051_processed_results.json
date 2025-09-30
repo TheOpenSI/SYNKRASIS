@@ -1,0 +1,53 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T22:10:44.420584",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "1051",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/1051": {
+      "ID": "1051",
+      "Type": "base_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/1051": {
+      "ID": "1051",
+      "Name": "Initialization with Hard-Coded Network Resource Configuration Data",
+      "Abstraction": "Base",
+      "Structure": "Simple",
+      "Status": "Incomplete",
+      "Description": "The product initializes data using hard-coded values that act as network resource identifiers.",
+      "ExtendedDescription": "\n\nThis issue can prevent the product from running reliably, e.g. if it runs in an environment does not use the hard-coded network resource identifiers. If the relevant code is reachable by an attacker, then this reliability problem might introduce a vulnerability.\n",
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": null,
+      "AlternateTerms": null,
+      "ModesOfIntroduction": null,
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Other"
+          ],
+          "Impact": [
+            "Reduce Reliability"
+          ]
+        }
+      ],
+      "DemonstrativeExamples": null,
+      "PotentialMitigations": null
+    },
+    "/cwe/1051/parents": {
+      "weakness_parents": [
+        "1419"
+      ],
+      "category_parents": [
+        "1129",
+        "1306",
+        "1307",
+        "1416",
+        "452"
+      ]
+    },
+    "/cwe/1051/children": null
+  }
+}

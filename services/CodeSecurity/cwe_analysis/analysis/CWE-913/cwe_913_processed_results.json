@@ -1,0 +1,91 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-30T00:15:53.327240",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "913",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/913": {
+      "ID": "913",
+      "Type": "class_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/913": {
+      "ID": "913",
+      "Name": "Improper Control of Dynamically-Managed Code Resources",
+      "Abstraction": "Class",
+      "Structure": "Simple",
+      "Status": "Incomplete",
+      "Description": "The product does not properly restrict reading from or writing to dynamically-managed code resources such as variables, objects, classes, attributes, functions, or executable instructions or statements.",
+      "ExtendedDescription": "Many languages offer powerful features that allow the programmer to dynamically create or modify existing code, or resources used by code such as variables and objects. While these features can offer significant flexibility and reduce development time, they can be extremely dangerous if attackers can directly influence these code resources in unexpected ways.",
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": null,
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Architecture and Design"
+        },
+        {
+          "Phase": "Implementation"
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Integrity"
+          ],
+          "Impact": [
+            "Execute Unauthorized Code or Commands"
+          ]
+        },
+        {
+          "Scope": [
+            "Other",
+            "Integrity"
+          ],
+          "Impact": [
+            "Varies by Context",
+            "Alter Execution Logic"
+          ]
+        }
+      ],
+      "DemonstrativeExamples": null,
+      "PotentialMitigations": [
+        {
+          "Phase": [
+            "Implementation"
+          ],
+          "Strategy": "Input Validation",
+          "Description": "For any externally-influenced input, check the input against an allowlist of acceptable values."
+        },
+        {
+          "Phase": [
+            "Implementation",
+            "Architecture and Design"
+          ],
+          "Strategy": "Refactoring",
+          "Description": "Refactor the code so that it does not need to be dynamically managed."
+        }
+      ]
+    },
+    "/cwe/913/parents": {
+      "weakness_parents": [],
+      "category_parents": [
+        "1345",
+        "1416"
+      ]
+    },
+    "/cwe/913/children": {
+      "weakness_children": [
+        "1321",
+        "470",
+        "502",
+        "914",
+        "915",
+        "94"
+      ],
+      "category_children": []
+    }
+  }
+}

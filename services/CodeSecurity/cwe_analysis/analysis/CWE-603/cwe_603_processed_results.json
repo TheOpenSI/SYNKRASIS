@@ -1,0 +1,93 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T23:47:15.225898",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "603",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/603": {
+      "ID": "603",
+      "Type": "base_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/603": {
+      "ID": "603",
+      "Name": "Use of Client-Side Authentication",
+      "Abstraction": "Base",
+      "Structure": "Simple",
+      "Status": "Draft",
+      "Description": "A client/server product performs authentication within client code but not in server code, allowing server-side authentication to be bypassed via a modified client that omits the authentication check.",
+      "ExtendedDescription": "Client-side authentication is extremely weak and may be breached easily. Any attacker may read the source code and reverse-engineer the authentication mechanism to access parts of the application which would otherwise be protected.",
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Class": "Not Language-Specific",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Technology",
+          "Class": "ICS/OT",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Architecture and Design",
+          "Note": "COMMISSION: This weakness refers to an incorrect design related to an architectural security tactic."
+        },
+        {
+          "Phase": "Implementation"
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Access Control"
+          ],
+          "Impact": [
+            "Bypass Protection Mechanism",
+            "Gain Privileges or Assume Identity"
+          ]
+        }
+      ],
+      "DemonstrativeExamples": [
+        {
+          "ID": "DX-153",
+          "Entries": [
+            {
+              "IntroText": "In 2022, the OT:ICEFALL study examined products by 10 different Operational Technology (OT) vendors. The researchers reported 56 vulnerabilities and said that the products were \"insecure by design\" [REF-1283]. If exploited, these vulnerabilities often allowed adversaries to change how the products operated, ranging from denial of service to changing the code that the products executed. Since these products were often used in industries such as power, electrical, water, and others, there could even be safety implications."
+            },
+            {
+              "BodyText": "Multiple vendors used client-side authentication in their OT products."
+            }
+          ]
+        }
+      ],
+      "PotentialMitigations": [
+        {
+          "Phase": [
+            "Architecture and Design"
+          ],
+          "Description": "Do not rely on client side data. Always perform server side authentication."
+        }
+      ]
+    },
+    "/cwe/603/parents": {
+      "weakness_parents": [
+        "1390",
+        "602"
+      ],
+      "category_parents": [
+        "1010",
+        "1368",
+        "1396",
+        "1211",
+        "947"
+      ]
+    },
+    "/cwe/603/children": null
+  }
+}

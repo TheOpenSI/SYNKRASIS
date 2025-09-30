@@ -1,0 +1,90 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T23:13:17.056335",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "347",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/347": {
+      "ID": "347",
+      "Type": "base_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/347": {
+      "ID": "347",
+      "Name": "Improper Verification of Cryptographic Signature",
+      "Abstraction": "Base",
+      "Structure": "Simple",
+      "Status": "Draft",
+      "Description": "The product does not verify, or incorrectly verifies, the cryptographic signature for data.",
+      "ExtendedDescription": null,
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Class": "Not Language-Specific",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Architecture and Design"
+        },
+        {
+          "Phase": "Implementation",
+          "Note": "REALIZATION: This weakness is caused during implementation of an architectural security tactic."
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Access Control",
+            "Integrity",
+            "Confidentiality"
+          ],
+          "Impact": [
+            "Gain Privileges or Assume Identity",
+            "Modify Application Data",
+            "Execute Unauthorized Code or Commands"
+          ],
+          "Note": "An attacker could gain access to sensitive data and possibly execute unauthorized code."
+        }
+      ],
+      "DemonstrativeExamples": [
+        {
+          "Entries": [
+            {
+              "IntroText": "In the following code, a JarFile object is created from a downloaded file."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "Java",
+              "ExampleCode": "```\n\tFile f = new File(downloadedFilePath);\n\tJarFile jf = new JarFile(f);\n```"
+            },
+            {
+              "BodyText": "The JAR file that was potentially downloaded from an untrusted source is created without verifying the signature (if present). An alternate constructor that accepts a boolean verify parameter should be used instead."
+            }
+          ]
+        }
+      ],
+      "PotentialMitigations": null
+    },
+    "/cwe/347/parents": {
+      "weakness_parents": [
+        "345"
+      ],
+      "category_parents": [
+        "1013",
+        "1346",
+        "1402",
+        "1214",
+        "310",
+        "859",
+        "959"
+      ]
+    },
+    "/cwe/347/children": null
+  }
+}

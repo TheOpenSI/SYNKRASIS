@@ -1,0 +1,81 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T23:43:07.756850",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "574",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/574": {
+      "ID": "574",
+      "Type": "variant_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/574": {
+      "ID": "574",
+      "Name": "EJB Bad Practices: Use of Synchronization Primitives",
+      "Abstraction": "Variant",
+      "Structure": "Simple",
+      "Status": "Draft",
+      "Description": "The product violates the Enterprise JavaBeans (EJB) specification by using thread synchronization primitives.",
+      "ExtendedDescription": "The Enterprise JavaBeans specification requires that every bean provider follow a set of programming guidelines designed to ensure that the bean will be portable and behave consistently in any EJB container. In this case, the product violates the following EJB guideline: \"An enterprise bean must not use thread synchronization primitives to synchronize execution of multiple instances.\" The specification justifies this requirement in the following way: \"This rule is required to ensure consistent runtime semantics because while some EJB containers may use a single JVM to execute all enterprise bean's instances, others may distribute the instances across multiple JVMs.\"",
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Name": "Java",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Implementation"
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Other"
+          ],
+          "Impact": [
+            "Quality Degradation"
+          ]
+        }
+      ],
+      "DemonstrativeExamples": [
+        {
+          "Entries": [
+            {
+              "IntroText": "In the following Java example a Customer Entity EJB provides access to customer information in a database for a business application."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "Java",
+              "ExampleCode": "```\n\t@Entity\n\tpublic class Customer implements Serializable {\n\t\t\tprivate String id;\n\t\t\tprivate String firstName;\n\t\t\tprivate String lastName;\n\t\t\tprivate Address address;\n\t\t\tpublic Customer() {...}\n\t\t\tpublic Customer(String id, String firstName, String lastName) {...}\n\t\t\t@Id\n\t\t\tpublic String getCustomerId() {...}\n\t\t\tpublic synchronized void setCustomerId(String id) {...}\n\t\t\tpublic String getFirstName() {...}\n\t\t\tpublic synchronized void setFirstName(String firstName) {...}\n\t\t\tpublic String getLastName() {...}\n\t\t\tpublic synchronized void setLastName(String lastName) {...}\n\t\t\t@OneToOne()\n\t\t\tpublic Address getAddress() {...}\n\t\t\tpublic synchronized void setAddress(Address address) {...}\n\t}\n```"
+            },
+            {
+              "BodyText": "However, the customer entity EJB uses the synchronized keyword for the set methods to attempt to provide thread safe synchronization for the member variables. The use of synchronized methods violate the restriction of the EJB specification against the use synchronization primitives within EJBs. Using synchronization primitives may cause inconsistent behavior of the EJB when used within different EJB containers."
+            }
+          ]
+        }
+      ],
+      "PotentialMitigations": [
+        {
+          "Phase": [
+            "Implementation"
+          ],
+          "Description": "Do not use Synchronization Primitives when writing EJBs."
+        }
+      ]
+    },
+    "/cwe/574/parents": {
+      "weakness_parents": [],
+      "category_parents": [
+        "1401",
+        "1001"
+      ]
+    },
+    "/cwe/574/children": null
+  }
+}

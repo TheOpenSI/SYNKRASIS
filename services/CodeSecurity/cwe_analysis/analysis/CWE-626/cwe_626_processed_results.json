@@ -1,0 +1,77 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T23:50:21.408640",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "626",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/626": {
+      "ID": "626",
+      "Type": "variant_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/626": {
+      "ID": "626",
+      "Name": "Null Byte Interaction Error (Poison Null Byte)",
+      "Abstraction": "Variant",
+      "Structure": "Simple",
+      "Status": "Draft",
+      "Description": "The product does not properly handle null bytes or NUL characters when passing data between different representations or components.",
+      "ExtendedDescription": "\n\nA null byte (NUL character) can have different meanings across representations or languages. For example, it is a string terminator in standard C libraries, but Perl and PHP strings do not treat it as a terminator. When two representations are crossed - such as when Perl or PHP invokes underlying C functionality - this can produce an interaction error with unexpected results. Similar issues have been reported for ASP. Other interpreters written in C might also be affected.\n\n\nThe poison null byte is frequently useful in path traversal attacks by terminating hard-coded extensions that are added to a filename. It can play a role in regular expression processing in PHP.\n",
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Name": "PHP",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Language",
+          "Name": "Perl",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Language",
+          "Name": "ASP.NET",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Implementation"
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Integrity"
+          ],
+          "Impact": [
+            "Unexpected State"
+          ]
+        }
+      ],
+      "DemonstrativeExamples": null,
+      "PotentialMitigations": [
+        {
+          "Phase": [
+            "Implementation"
+          ],
+          "Description": "Remove null bytes from all incoming strings."
+        }
+      ]
+    },
+    "/cwe/626/parents": {
+      "weakness_parents": [
+        "436"
+      ],
+      "category_parents": [
+        "1407",
+        "990"
+      ]
+    },
+    "/cwe/626/children": null
+  }
+}

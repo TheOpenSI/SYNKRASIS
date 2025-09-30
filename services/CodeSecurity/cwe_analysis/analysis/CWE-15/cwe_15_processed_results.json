@@ -1,0 +1,130 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T22:46:40.981299",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "15",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/15": {
+      "ID": "15",
+      "Type": "base_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/15": {
+      "ID": "15",
+      "Name": "External Control of System or Configuration Setting",
+      "Abstraction": "Base",
+      "Structure": "Simple",
+      "Status": "Incomplete",
+      "Description": "One or more system settings or configuration elements can be externally controlled by a user.",
+      "ExtendedDescription": "Allowing external control of system settings can disrupt service or cause an application to behave in unexpected, and potentially malicious ways.",
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": [
+        {
+          "Type": "Technology",
+          "Class": "Not Technology-Specific",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Technology",
+          "Class": "ICS/OT",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Implementation",
+          "Note": "Setting manipulation vulnerabilities occur when an attacker can control values that govern the behavior of the system, manage specific resources, or in some way affect the functionality of the application."
+        },
+        {
+          "Phase": "Implementation",
+          "Note": "REALIZATION: This weakness is caused during implementation of an architectural security tactic."
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Other"
+          ],
+          "Impact": [
+            "Varies by Context"
+          ]
+        }
+      ],
+      "DemonstrativeExamples": [
+        {
+          "Entries": [
+            {
+              "IntroText": "The following C code accepts a number as one of its command line parameters and sets it as the host ID of the current machine."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "C",
+              "ExampleCode": "```\n\t...\n\tsethostid(argv[1]);\n\t...\n```"
+            },
+            {
+              "BodyText": "Although a process must be privileged to successfully invoke sethostid(), unprivileged users may be able to invoke the program. The code in this example allows user input to directly control the value of a system setting. If an attacker provides a malicious value for host ID, the attacker can misidentify the affected machine on the network or cause other unintended behavior."
+            }
+          ]
+        },
+        {
+          "Entries": [
+            {
+              "IntroText": "The following Java code snippet reads a string from an HttpServletRequest and sets it as the active catalog for a database Connection."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "Java",
+              "ExampleCode": "```\n\t...\n\tconn.setCatalog(request.getParameter(\"catalog\"));\n\t...\n```"
+            },
+            {
+              "BodyText": "In this example, an attacker could cause an error by providing a nonexistent catalog name or connect to an unauthorized portion of the database."
+            }
+          ]
+        }
+      ],
+      "PotentialMitigations": [
+        {
+          "MitigationID": "MIT-46",
+          "Phase": [
+            "Architecture and Design"
+          ],
+          "Strategy": "Separation of Privilege",
+          "Description": "\n\nCompartmentalize the system to have \"safe\" areas where trust boundaries can be unambiguously drawn. Do not allow sensitive data to go outside of the trust boundary and always be careful when interfacing with a compartment outside of the safe area.\n\n\nEnsure that appropriate compartmentalization is built into the system design, and the compartmentalization allows for and reinforces privilege separation functionality. Architects and designers should rely on the principle of least privilege to decide the appropriate time to use privileges and the time to drop privileges.\n"
+        },
+        {
+          "Phase": [
+            "Implementation",
+            "Architecture and Design"
+          ],
+          "Description": "Because setting manipulation covers a diverse set of functions, any attempt at illustrating it will inevitably be incomplete. Rather than searching for a tight-knit relationship between the functions addressed in the setting manipulation category, take a step back and consider the sorts of system values that an attacker should not be allowed to control."
+        },
+        {
+          "Phase": [
+            "Implementation",
+            "Architecture and Design"
+          ],
+          "Description": "In general, do not allow user-provided or otherwise untrusted data to control sensitive values. The leverage that an attacker gains by controlling these values is not always immediately obvious, but do not underestimate the creativity of the attacker."
+        }
+      ]
+    },
+    "/cwe/15/parents": {
+      "weakness_parents": [
+        "610",
+        "642",
+        "20"
+      ],
+      "category_parents": [
+        "1011",
+        "1349",
+        "1368",
+        "1403",
+        "371",
+        "994"
+      ]
+    },
+    "/cwe/15/children": null
+  }
+}

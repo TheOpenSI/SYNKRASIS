@@ -1,0 +1,129 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T23:16:09.064252",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "369",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/369": {
+      "ID": "369",
+      "Type": "base_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/369": {
+      "ID": "369",
+      "Name": "Divide By Zero",
+      "Abstraction": "Base",
+      "Structure": "Simple",
+      "Status": "Draft",
+      "Description": "The product divides a value by zero.",
+      "ExtendedDescription": "This weakness typically occurs when an unexpected value is provided to the product, or if an error occurs that is not properly detected. It frequently occurs in calculations involving physical dimensions such as size, length, width, and height.",
+      "LikelihoodOfExploit": "Medium",
+      "ApplicablePlatforms": null,
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Implementation"
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Availability"
+          ],
+          "Impact": [
+            "DoS: Crash, Exit, or Restart"
+          ],
+          "Note": "A Divide by Zero results in a crash."
+        }
+      ],
+      "DemonstrativeExamples": [
+        {
+          "Entries": [
+            {
+              "IntroText": "The following Java example contains a function to compute an average but does not validate that the input value used as the denominator is not zero. This will create an exception for attempting to divide by zero. If this error is not handled by Java exception handling, unexpected results can occur."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "Java",
+              "ExampleCode": "```\n\tpublic int computeAverageResponseTime (int totalTime, int numRequests) {\n\t\treturn totalTime / numRequests;\n\t}\n```"
+            },
+            {
+              "BodyText": "By validating the input value used as the denominator the following code will ensure that a divide by zero error will not cause unexpected results. The following Java code example will validate the input value, output an error message, and throw an exception."
+            },
+            {
+              "Nature": "Good",
+              "Language": "Java",
+              "ExampleCode": "```\n\tpublic int computeAverageResponseTime (int totalTime, int numRequests) throws ArithmeticException {\n\t\tif (numRequests == 0) {\n\t\t\tSystem.out.println(\"Division by zero attempted!\");\n\t\t\tthrow ArithmeticException;\n\t\t}\n\t\treturn totalTime / numRequests;\n\t}\n```"
+            }
+          ]
+        },
+        {
+          "Entries": [
+            {
+              "IntroText": "The following C/C++ example contains a function that divides two numeric values without verifying that the input value used as the denominator is not zero. This will create an error for attempting to divide by zero, if this error is not caught by the error handling capabilities of the language, unexpected results can occur."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "C",
+              "ExampleCode": "```\n\tdouble divide(double x, double y){\n\t\treturn x/y;\n\t}\n```"
+            },
+            {
+              "BodyText": "By validating the input value used as the denominator the following code will ensure that a divide by zero error will not cause unexpected results. If the method is called and a zero is passed as the second argument a DivideByZero error will be thrown and should be caught by the calling block with an output message indicating the error."
+            },
+            {
+              "Nature": "Good",
+              "Language": "C",
+              "ExampleCode": "```\n\tconst int DivideByZero = 10;\n\tdouble divide(double x, double y){\n\t\tif ( 0 == y ){\n\t\t\tthrow DivideByZero;\n\t\t}\n\t\treturn x/y;\n\t}\n\t...\n\ttry{\n\t\tdivide(10, 0);\n\t}\n\tcatch( int i ){\n\t\tif(i==DivideByZero) {\n\t\t\tcerr<<\"Divide by zero error\";\n\t\t}\n\t}\n```"
+            },
+            {
+              "Reference": "REF-371"
+            }
+          ]
+        },
+        {
+          "Entries": [
+            {
+              "IntroText": "The following C# example contains a function that divides two numeric values without verifying that the input value used as the denominator is not zero. This will create an error for attempting to divide by zero, if this error is not caught by the error handling capabilities of the language, unexpected results can occur."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "C#",
+              "ExampleCode": "```\n\tint Division(int x, int y){\n\t\treturn (x / y);\n\t}\n```"
+            },
+            {
+              "BodyText": "The method can be modified to raise, catch and handle the DivideByZeroException if the input value used as the denominator is zero."
+            },
+            {
+              "Nature": "Good",
+              "Language": "C#",
+              "ExampleCode": "```\n\tint SafeDivision(int x, int y){\n\t\ttry{\n\t\t\treturn (x / y);\n\t\t}\n\t\tcatch (System.DivideByZeroException dbz){\n\t\t\tSystem.Console.WriteLine(\"Division by zero attempted!\");\n\t\t\treturn 0;\n\t\t}\n\t}\n```"
+            },
+            {
+              "Reference": "REF-372"
+            }
+          ]
+        }
+      ],
+      "PotentialMitigations": null
+    },
+    "/cwe/369/parents": {
+      "weakness_parents": [],
+      "category_parents": [
+        "1137",
+        "1158",
+        "1408",
+        "189",
+        "730",
+        "738",
+        "739",
+        "848",
+        "872",
+        "873",
+        "998"
+      ]
+    },
+    "/cwe/369/children": null
+  }
+}

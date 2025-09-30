@@ -1,0 +1,102 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T23:59:56.156667",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "7",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/7": {
+      "ID": "7",
+      "Type": "variant_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/7": {
+      "ID": "7",
+      "Name": "J2EE Misconfiguration: Missing Custom Error Page",
+      "Abstraction": "Variant",
+      "Structure": "Simple",
+      "Status": "Incomplete",
+      "Description": "The default error page of a web application should not display sensitive information about the product.",
+      "ExtendedDescription": "\n\nA Web application must define a default error page for 4xx errors (e.g. 404), 5xx (e.g. 500) errors and catch java.lang.Throwable exceptions to prevent attackers from mining information from the application container's built-in error response.\n\n\nWhen an attacker explores a web site looking for vulnerabilities, the amount of information that the site provides is crucial to the eventual success or failure of any attempted attacks.\n",
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Name": "Java",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Implementation"
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Confidentiality"
+          ],
+          "Impact": [
+            "Read Application Data"
+          ],
+          "Note": "A stack trace might show the attacker a malformed SQL query string, the type of database being used, and the version of the application container. This information enables the attacker to target known vulnerabilities in these components."
+        }
+      ],
+      "DemonstrativeExamples": [
+        {
+          "ID": "DX-76",
+          "Entries": [
+            {
+              "IntroText": "In the snippet below, an unchecked runtime exception thrown from within the try block may cause the container to display its default error page (which may contain a full stack trace, among other things)."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "Java",
+              "ExampleCode": "```\n\tPublic void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {\n\t\ttry {\n\t\t\t...\n\t\t} catch (ApplicationSpecificException ase) {\n\t\t\tlogger.error(\"Caught: \" + ase.toString());\n\t\t}\n\t}\n```"
+            }
+          ]
+        }
+      ],
+      "PotentialMitigations": [
+        {
+          "Phase": [
+            "Implementation"
+          ],
+          "Description": "Handle exceptions appropriately in source code."
+        },
+        {
+          "Phase": [
+            "Implementation",
+            "System Configuration"
+          ],
+          "Description": "Always define appropriate error pages. The application configuration should specify a default error page in order to guarantee that the application will never leak error messages to an attacker. Handling standard HTTP error codes is useful and user-friendly in addition to being a good security practice, and a good configuration will also define a last-chance error handler that catches any exception that could possibly be thrown by the application."
+        },
+        {
+          "Phase": [
+            "Implementation"
+          ],
+          "Description": "Do not attempt to process an error or attempt to mask it."
+        },
+        {
+          "Phase": [
+            "Implementation"
+          ],
+          "Description": "Verify return values are correct and do not supply sensitive information about the system."
+        }
+      ]
+    },
+    "/cwe/7/parents": {
+      "weakness_parents": [],
+      "category_parents": [
+        "1405",
+        "2",
+        "728",
+        "731",
+        "963"
+      ]
+    },
+    "/cwe/7/children": null
+  }
+}

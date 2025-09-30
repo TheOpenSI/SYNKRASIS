@@ -1,0 +1,138 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-30T00:04:29.557299",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "766",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/766": {
+      "ID": "766",
+      "Type": "base_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/766": {
+      "ID": "766",
+      "Name": "Critical Data Element Declared Public",
+      "Abstraction": "Base",
+      "Structure": "Simple",
+      "Status": "Incomplete",
+      "Description": "The product declares a critical variable, field, or member to be public when intended security policy requires it to be private.",
+      "ExtendedDescription": "\n\nThis issue makes it more difficult to maintain the product, which indirectly affects security by making it more difficult or time-consuming to find and/or fix vulnerabilities. It also might make it easier to introduce vulnerabilities.\n",
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Name": "C++",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Language",
+          "Name": "C#",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Language",
+          "Name": "Java",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Implementation"
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Integrity",
+            "Confidentiality"
+          ],
+          "Impact": [
+            "Read Application Data",
+            "Modify Application Data"
+          ],
+          "Note": "Making a critical variable public allows anyone with access to the object in which the variable is contained to alter or read the value."
+        },
+        {
+          "Scope": [
+            "Other"
+          ],
+          "Impact": [
+            "Reduce Maintainability"
+          ]
+        }
+      ],
+      "DemonstrativeExamples": [
+        {
+          "Entries": [
+            {
+              "IntroText": "The following example declares a critical variable public, making it accessible to anyone with access to the object in which it is contained."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "C++",
+              "ExampleCode": "```\n\tpublic: char* password;\n```"
+            },
+            {
+              "BodyText": "Instead, the critical data should be declared private."
+            },
+            {
+              "Nature": "Good",
+              "Language": "C++",
+              "ExampleCode": "```\n\tprivate: char* password;\n```"
+            },
+            {
+              "BodyText": "Even though this example declares the password to be private, there are other possible issues with this implementation, such as the possibility of recovering the password from process memory (CWE-257)."
+            }
+          ]
+        },
+        {
+          "ID": "DX-212",
+          "Entries": [
+            {
+              "IntroText": "The following example shows a basic user account class that includes member variables for the username and password as well as a public constructor for the class and a public method to authorize access to the user account."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "C++",
+              "ExampleCode": "```\n\t#define MAX_PASSWORD_LENGTH 15\n\t#define MAX_USERNAME_LENGTH 15\n\tclass UserAccount\n\t{\n\t\t\tpublic:\n\t\t\t\t\tUserAccount(char *username, char *password)\n\t\t\t\t\t{\n\t\t\t\t\t\tif ((strlen(username) > MAX_USERNAME_LENGTH) ||\n\t\t\t\t\t\t(strlen(password) > MAX_PASSWORD_LENGTH)) {\n\t\t\t\t\t\t\tExitError(\"Invalid username or password\");\n\t\t\t\t\t\t}\n\t\t\t\t\t\tstrcpy(this->username, username);\n\t\t\t\t\t\tstrcpy(this->password, password);\n\t\t\t\t\t}\n\t\t\tint authorizeAccess(char *username, char *password)\n\t\t\t{\n\t\t\t\t\tif ((strlen(username) > MAX_USERNAME_LENGTH) ||\n\t\t\t\t\t(strlen(password) > MAX_PASSWORD_LENGTH)) {\n\t\t\t\t\t\tExitError(\"Invalid username or password\");\n\t\t\t\t\t}\n```\n// if the username and password in the input parameters are equal to* \n\t\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\t *// the username and password of this account class then authorize access* \n\t\t\t\t\tif (strcmp(this->username, username) ||\n\t\t\t\t\tstrcmp(this->password, password))\n\t\t\t\t\t```\n\t\t\t\t\t\treturn 0;\n```\n// otherwise do not authorize access* \n\t\t\t\t\telse\n\t\t\t\t\t```\n\t\t\t\t\t\treturn 1;\n\t\t\t}\n\t\t\tchar username[MAX_USERNAME_LENGTH+1];\n\t\t\tchar password[MAX_PASSWORD_LENGTH+1];\n\t};\n```"
+            },
+            {
+              "BodyText": "However, the member variables username and password are declared public and therefore will allow access and changes to the member variables to anyone with access to the object. These member variables should be declared private as shown below to prevent unauthorized access and changes."
+            },
+            {
+              "Nature": "Good",
+              "Language": "C++",
+              "ExampleCode": "```\n\tclass UserAccount\n\t{\n\tpublic:\n\t\t...\n\tprivate:\n\t\tchar username[MAX_USERNAME_LENGTH+1];\n\t\tchar password[MAX_PASSWORD_LENGTH+1];\n\t};\n```"
+            }
+          ]
+        }
+      ],
+      "PotentialMitigations": [
+        {
+          "Phase": [
+            "Implementation"
+          ],
+          "Description": "Data should be private, static, and final whenever possible. This will assure that your code is protected by instantiating early, preventing access, and preventing tampering."
+        }
+      ]
+    },
+    "/cwe/766/parents": {
+      "weakness_parents": [
+        "1061",
+        "732"
+      ],
+      "category_parents": [
+        "1130",
+        "1139",
+        "1412",
+        "275",
+        "849",
+        "1002"
+      ]
+    },
+    "/cwe/766/children": null
+  }
+}

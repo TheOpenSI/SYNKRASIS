@@ -1,0 +1,87 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T22:19:38.463314",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "1116",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/1116": {
+      "ID": "1116",
+      "Type": "base_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/1116": {
+      "ID": "1116",
+      "Name": "Inaccurate Comments",
+      "Abstraction": "Base",
+      "Structure": "Simple",
+      "Status": "Incomplete",
+      "Description": "The source code contains comments that do not accurately\n\t\t\t\t\tdescribe or explain aspects of the portion of the code with which the comment is\n\t\t\t\t\tassociated.",
+      "ExtendedDescription": "\n\nWhen a comment does not accurately reflect the associated code elements, this can introduce confusion to a reviewer (due to inconsistencies) or make it more difficult and less efficient to validate that the code is implementing the intended behavior correctly.\n\n\nThis issue makes it more difficult to maintain the product, which indirectly affects security by making it more difficult or time-consuming to find and/or fix vulnerabilities. It also might make it easier to introduce vulnerabilities.\n",
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Class": "Not Language-Specific",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": null,
+      "ModesOfIntroduction": null,
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Other"
+          ],
+          "Impact": [
+            "Reduce Maintainability"
+          ]
+        }
+      ],
+      "DemonstrativeExamples": [
+        {
+          "Entries": [
+            {
+              "IntroText": "In the following Java example the code performs a calculation to determine how much medicine to administer. A comment is provided to give insight into what the calculation shoud be doing. Unfortunately the comment does not match the actual code and thus leaves the reader to wonder which is correct."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "Java",
+              "ExampleCode": "public class Main {\n\n```\n\t public static void main(String[] args) { \n\t\t int pt_weight = 83;\n\t\t int mg_per_kg = 3;\n\t\t int daily_dose = 0;\n\t\t // Add the patient weight and Mg/Kg to calculate the correct daily dose\n\t\t daily_dose = pt_weight * mg_per_kg;\n\t\t return dosage; \n\t } \n }\n```"
+            },
+            {
+              "BodyText": "In the correction below, the code functionality has been verified, and the comment has been corrected to reflect the proper calculation."
+            },
+            {
+              "Nature": "Good",
+              "Language": "Java",
+              "ExampleCode": "public class Main {\n\n```\n\t public static void main(String[] args) { \n\t\t int pt_weight = 83;\n\t\t int mg_per_kg = 3;\n\t\t int daily_dose = 0;\n\t\t // Multiply the patient weight and Mg/Kg to calculate the correct daily dose\n\t\t daily_dose = pt_weight * mg_per_kg;\n\t\t return dosage; \n\t } \n }\n```"
+            },
+            {
+              "BodyText": "Note that in real-world code, these values should be validated to disallow negative numbers, prevent integer overflow, etc."
+            }
+          ]
+        }
+      ],
+      "PotentialMitigations": [
+        {
+          "Phase": [
+            "Implementation"
+          ],
+          "Description": "Verify that each comment accurately reflects what is intended to happen during execution of the code."
+        }
+      ]
+    },
+    "/cwe/1116/parents": {
+      "weakness_parents": [
+        "1078"
+      ],
+      "category_parents": [
+        "1412",
+        "1006"
+      ]
+    },
+    "/cwe/1116/children": null
+  }
+}

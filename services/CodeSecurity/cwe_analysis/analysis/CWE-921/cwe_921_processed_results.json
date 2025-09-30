@@ -1,0 +1,79 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-30T00:16:52.873231",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "921",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/921": {
+      "ID": "921",
+      "Type": "base_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/921": {
+      "ID": "921",
+      "Name": "Storage of Sensitive Data in a Mechanism without Access Control",
+      "Abstraction": "Base",
+      "Structure": "Simple",
+      "Status": "Incomplete",
+      "Description": "The product stores sensitive information in a file system or device that does not have built-in access control.",
+      "ExtendedDescription": "\n\nWhile many modern file systems or devices utilize some form of access control in order to restrict access to data, not all storage mechanisms have this capability. For example, memory cards, floppy disks, CDs, and USB devices are typically made accessible to any user within the system. This can become a problem when sensitive data is stored in these mechanisms in a multi-user environment, because anybody on the system can read or write this data.\n\n\nOn Android devices, external storage is typically globally readable and writable by other applications on the device. External storage may also be easily accessible through the mobile device's USB connection or physically accessible through the device's memory card port.\n",
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Class": "Not Language-Specific",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Technology",
+          "Class": "Mobile",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Architecture and Design",
+          "Note": "OMISSION: This weakness is caused by missing a security tactic during the architecture and design phase."
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Confidentiality"
+          ],
+          "Impact": [
+            "Read Application Data",
+            "Read Files or Directories"
+          ],
+          "Note": "Attackers can read sensitive information by accessing the unrestricted storage mechanism."
+        },
+        {
+          "Scope": [
+            "Integrity"
+          ],
+          "Impact": [
+            "Modify Application Data",
+            "Modify Files or Directories"
+          ],
+          "Note": "Attackers can modify or delete sensitive information by accessing the unrestricted storage mechanism."
+        }
+      ],
+      "DemonstrativeExamples": null,
+      "PotentialMitigations": null
+    },
+    "/cwe/921/parents": {
+      "weakness_parents": [
+        "922"
+      ],
+      "category_parents": [
+        "1011",
+        "1396",
+        "199"
+      ]
+    },
+    "/cwe/921/children": null
+  }
+}

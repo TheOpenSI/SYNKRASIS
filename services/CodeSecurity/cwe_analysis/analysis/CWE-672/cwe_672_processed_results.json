@@ -1,0 +1,158 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T23:56:24.350129",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "672",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/672": {
+      "ID": "672",
+      "Type": "class_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/672": {
+      "ID": "672",
+      "Name": "Operation on a Resource after Expiration or Release",
+      "Abstraction": "Class",
+      "Structure": "Simple",
+      "Status": "Draft",
+      "Description": "The product uses, accesses, or otherwise operates on a resource after that resource has been expired, released, or revoked.",
+      "ExtendedDescription": null,
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Class": "Not Language-Specific",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Technology",
+          "Class": "Mobile",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Implementation"
+        },
+        {
+          "Phase": "Operation"
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Integrity",
+            "Confidentiality"
+          ],
+          "Impact": [
+            "Modify Application Data",
+            "Read Application Data"
+          ],
+          "Note": "If a released resource is subsequently reused or reallocated, then an attempt to use the original resource might allow access to sensitive data that is associated with a different user or entity."
+        },
+        {
+          "Scope": [
+            "Other",
+            "Availability"
+          ],
+          "Impact": [
+            "Other",
+            "DoS: Crash, Exit, or Restart"
+          ],
+          "Note": "When a resource is released it might not be in an expected state, later attempts to access the resource may lead to resultant errors that may lead to a crash."
+        }
+      ],
+      "DemonstrativeExamples": [
+        {
+          "ID": "DX-71",
+          "Entries": [
+            {
+              "IntroText": "The following code shows a simple example of a use after free error:"
+            },
+            {
+              "Nature": "Bad",
+              "Language": "C",
+              "ExampleCode": "```\n\tchar* ptr = (char*)malloc (SIZE);\n\tif (err) {\n\t\tabrt = 1;\n\t\tfree(ptr);\n\t}\n\t...\n\tif (abrt) {\n\t\tlogError(\"operation aborted before commit\", ptr);\n\t}\n```"
+            },
+            {
+              "BodyText": "When an error occurs, the pointer is immediately freed. However, this pointer is later incorrectly used in the logError function."
+            }
+          ]
+        },
+        {
+          "ID": "DX-72",
+          "Entries": [
+            {
+              "IntroText": "The following code shows a simple example of a double free error:"
+            },
+            {
+              "Nature": "Bad",
+              "Language": "C",
+              "ExampleCode": "```\n\tchar* ptr = (char*)malloc (SIZE);\n\t...\n\tif (abrt) {\n\t\tfree(ptr);\n\t}\n\t...\n\tfree(ptr);\n```"
+            },
+            {
+              "BodyText": "Double free vulnerabilities have two common (and sometimes overlapping) causes:"
+            },
+            {
+              "BodyText": "- Error conditions and other exceptional circumstances\n\n  - Confusion over which part of the program is responsible for freeing the memory"
+            },
+            {
+              "BodyText": "Although some double free vulnerabilities are not much more complicated than the previous example, most are spread out across hundreds of lines of code or even different files. Programmers seem particularly susceptible to freeing global variables more than once."
+            }
+          ]
+        },
+        {
+          "Entries": [
+            {
+              "IntroText": "In the following C/C++ example the method processMessage is used to process a message received in the input array of char arrays. The input message array contains two char arrays: the first is the length of the message and the second is the body of the message. The length of the message is retrieved and used to allocate enough memory for a local char array, messageBody, to be created for the message body. The messageBody is processed in the method processMessageBody that will return an error if an error occurs while processing. If an error occurs then the return result variable is set to indicate an error and the messageBody char array memory is released using the method free and an error message is sent to the logError method."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "C",
+              "ExampleCode": "```\n\t#define FAIL 0\n\t#define SUCCESS 1\n\t#define ERROR -1\n\t#define MAX_MESSAGE_SIZE 32\n\tint processMessage(char **message)\n\t{\n\t\t\tint result = SUCCESS;\n\t\t\tint length = getMessageLength(message[0]);\n\t\t\tchar *messageBody;\n\t\t\tif ((length > 0) && (length < MAX_MESSAGE_SIZE)) {\n\t\t\t\t\tmessageBody = (char*)malloc(length*sizeof(char));\n\t\t\t\t\tmessageBody = &message[1][0];\n\t\t\t\t\tint success = processMessageBody(messageBody);\n\t\t\t\t\tif (success == ERROR) {\n\t\t\t\t\t\tresult = ERROR;\n\t\t\t\t\t\tfree(messageBody);\n\t\t\t\t\t}\n\t\t\t}\n\t\t\telse {\n\t\t\t\tprintf(\"Unable to process message; invalid message length\");\n\t\t\t\tresult = FAIL;\n\t\t\t}\n\t\t\tif (result == ERROR) {\n\t\t\t\tlogError(\"Error processing message\", messageBody);\n\t\t\t}\n\t\t\treturn result;\n\t}\n```"
+            },
+            {
+              "BodyText": "However, the call to the method logError includes the messageBody after the memory for messageBody has been released using the free method. This can cause unexpected results and may lead to system crashes. A variable should never be used after its memory resources have been released."
+            },
+            {
+              "Nature": "Good",
+              "Language": "C",
+              "ExampleCode": "```\n\t...\n\tmessageBody = (char*)malloc(length*sizeof(char));\n\tmessageBody = &message[1][0];\n\tint success = processMessageBody(messageBody);\n\tif (success == ERROR) {\n\t\tresult = ERROR;\n\t\tlogError(\"Error processing message\", messageBody);\n\t\tfree(messageBody);\n\t}\n\t...\n```"
+            }
+          ]
+        }
+      ],
+      "PotentialMitigations": null
+    },
+    "/cwe/672/parents": {
+      "weakness_parents": [
+        "666"
+      ],
+      "category_parents": [
+        "1131",
+        "1162",
+        "1163",
+        "1306",
+        "1308",
+        "1415",
+        "808",
+        "983"
+      ]
+    },
+    "/cwe/672/children": {
+      "weakness_children": [
+        "298",
+        "324",
+        "415",
+        "416",
+        "613",
+        "825",
+        "910"
+      ],
+      "category_children": []
+    }
+  }
+}

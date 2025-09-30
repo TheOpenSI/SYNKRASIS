@@ -1,0 +1,105 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T23:52:52.894865",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "644",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/644": {
+      "ID": "644",
+      "Type": "variant_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/644": {
+      "ID": "644",
+      "Name": "Improper Neutralization of HTTP Headers for Scripting Syntax",
+      "Abstraction": "Variant",
+      "Structure": "Simple",
+      "Status": "Incomplete",
+      "Description": "The product does not neutralize or incorrectly neutralizes web scripting syntax in HTTP headers that can be used by web browser components that can process raw headers, such as Flash.",
+      "ExtendedDescription": "\n\nAn attacker may be able to conduct cross-site scripting and other attacks against users who have these components enabled.\n\n\nIf a product does not neutralize user controlled data being placed in the header of an HTTP response coming from the server, the header may contain a script that will get executed in the client's browser context, potentially resulting in a cross site scripting vulnerability or possibly an HTTP response splitting attack. It is important to carefully control data that is being placed both in HTTP response header and in the HTTP response body to ensure that no scripting syntax is present, taking various encodings into account.\n",
+      "LikelihoodOfExploit": "High",
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Class": "Not Language-Specific",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Technology",
+          "Class": "Web Based",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Implementation"
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Integrity",
+            "Confidentiality",
+            "Availability"
+          ],
+          "Impact": [
+            "Execute Unauthorized Code or Commands"
+          ],
+          "Note": "Run arbitrary code."
+        },
+        {
+          "Scope": [
+            "Confidentiality"
+          ],
+          "Impact": [
+            "Read Application Data"
+          ],
+          "Note": "Attackers may be able to obtain sensitive information."
+        }
+      ],
+      "DemonstrativeExamples": [
+        {
+          "Entries": [
+            {
+              "IntroText": "In the following Java example, user-controlled data is added to the HTTP headers and returned to the client. Given that the data is not subject to neutralization, a malicious user may be able to inject dangerous scripting tags that will lead to script execution in the client browser."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "Java",
+              "ExampleCode": "```\n\tresponse.addHeader(HEADER_NAME, untrustedRawInputData);\n```"
+            }
+          ]
+        }
+      ],
+      "PotentialMitigations": [
+        {
+          "Phase": [
+            "Architecture and Design"
+          ],
+          "Description": "Perform output validation in order to filter/escape/encode unsafe data that is being passed from the server in an HTTP response header."
+        },
+        {
+          "Phase": [
+            "Architecture and Design"
+          ],
+          "Description": "Disable script execution functionality in the clients' browser."
+        }
+      ]
+    },
+    "/cwe/644/parents": {
+      "weakness_parents": [
+        "116"
+      ],
+      "category_parents": [
+        "1347",
+        "1407",
+        "725",
+        "990"
+      ]
+    },
+    "/cwe/644/children": null
+  }
+}

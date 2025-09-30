@@ -1,0 +1,68 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T22:51:43.228536",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "186",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/186": {
+      "ID": "186",
+      "Type": "base_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/186": {
+      "ID": "186",
+      "Name": "Overly Restrictive Regular Expression",
+      "Abstraction": "Base",
+      "Structure": "Simple",
+      "Status": "Draft",
+      "Description": "A regular expression is overly restrictive, which prevents dangerous values from being detected.",
+      "ExtendedDescription": "This weakness is not about regular expression complexity. Rather, it is about a regular expression that does not match all values that are intended. Consider the use of a regexp to identify acceptable values or to spot unwanted terms. An overly restrictive regexp misses some potentially security-relevant values leading to either false positives *or* false negatives, depending on how the regexp is being used within the code. Consider the expression /[0-8]/ where the intention was /[0-9]/. This expression is not \"complex\" but the value \"9\" is not matched when maybe the programmer planned to check for it.",
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Class": "Not Language-Specific",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Implementation"
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Access Control"
+          ],
+          "Impact": [
+            "Bypass Protection Mechanism"
+          ]
+        }
+      ],
+      "DemonstrativeExamples": null,
+      "PotentialMitigations": [
+        {
+          "Phase": [
+            "Implementation"
+          ],
+          "Description": "Regular expressions can become error prone when defining a complex language even for those experienced in writing grammars. Determine if several smaller regular expressions simplify one large regular expression. Also, subject your regular expression to thorough testing techniques such as equivalence partitioning, boundary value analysis, and robustness. After testing and a reasonable confidence level is achieved, a regular expression may not be foolproof. If an exploit is allowed to slip through, then record the exploit and refactor your regular expression."
+        }
+      ]
+    },
+    "/cwe/186/parents": {
+      "weakness_parents": [
+        "185"
+      ],
+      "category_parents": [
+        "1397",
+        "19",
+        "990"
+      ]
+    },
+    "/cwe/186/children": null
+  }
+}

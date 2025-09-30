@@ -1,0 +1,166 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T22:40:30.989894",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "134",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/134": {
+      "ID": "134",
+      "Type": "base_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/134": {
+      "ID": "134",
+      "Name": "Use of Externally-Controlled Format String",
+      "Abstraction": "Base",
+      "Structure": "Simple",
+      "Status": "Draft",
+      "Description": "The product uses a function that accepts a format string as an argument, but the format string originates from an external source.",
+      "ExtendedDescription": null,
+      "LikelihoodOfExploit": "High",
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Name": "C",
+          "Prevalence": "Often"
+        },
+        {
+          "Type": "Language",
+          "Name": "C++",
+          "Prevalence": "Often"
+        },
+        {
+          "Type": "Language",
+          "Name": "Perl",
+          "Prevalence": "Rarely"
+        }
+      ],
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Implementation",
+          "Note": "The programmer rarely intends for a format string to be externally-controlled at all. This weakness is frequently introduced in code that constructs log messages, where a constant format string is omitted."
+        },
+        {
+          "Phase": "Implementation",
+          "Note": "In cases such as localization and internationalization, the language-specific message repositories could be an avenue for exploitation, but the format string issue would be resultant, since attacker control of those repositories would also allow modification of message length, format, and content."
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Confidentiality"
+          ],
+          "Impact": [
+            "Read Memory"
+          ],
+          "Note": "Format string problems allow for information disclosure which can severely simplify exploitation of the program."
+        },
+        {
+          "Scope": [
+            "Integrity",
+            "Confidentiality",
+            "Availability"
+          ],
+          "Impact": [
+            "Modify Memory",
+            "Execute Unauthorized Code or Commands"
+          ],
+          "Note": "Format string problems can result in the execution of arbitrary code, buffer overflows, denial of service, or incorrect data representation."
+        }
+      ],
+      "DemonstrativeExamples": [
+        {
+          "Entries": [
+            {
+              "IntroText": "The following program prints a string provided as an argument."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "C",
+              "ExampleCode": "```\n\t#include <stdio.h>\n\tvoid printWrapper(char *string) {\n\t\t\tprintf(string);\n\t}\n\tint main(int argc, char **argv) {\n\t\t\tchar buf[5012];\n\t\t\tmemcpy(buf, argv[1], 5012);\n\t\t\tprintWrapper(argv[1]);\n\t\t\treturn (0);\n\t}\n```"
+            },
+            {
+              "BodyText": "The example is exploitable, because of the call to printf() in the printWrapper() function. Note: The stack buffer was added to make exploitation more simple."
+            }
+          ]
+        },
+        {
+          "Entries": [
+            {
+              "IntroText": "The following code copies a command line argument into a buffer using snprintf()."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "C",
+              "ExampleCode": "```\n\tint main(int argc, char **argv){\n\t\tchar buf[128];\n\t\t...\n\t\tsnprintf(buf,128,argv[1]);\n\t}\n```"
+            },
+            {
+              "BodyText": "This code allows an attacker to view the contents of the stack and write to the stack using a command line argument containing a sequence of formatting directives. The attacker can read from the stack by providing more formatting directives, such as %x, than the function takes as arguments to be formatted. (In this example, the function takes no arguments to be formatted.) By using the %n formatting directive, the attacker can write to the stack, causing snprintf() to write the number of bytes output thus far to the specified argument (rather than reading a value from the argument, which is the intended behavior). A sophisticated version of this attack will use four staggered writes to completely control the value of a pointer on the stack."
+            }
+          ]
+        },
+        {
+          "Entries": [
+            {
+              "IntroText": "Certain implementations make more advanced attacks even easier by providing format directives that control the location in memory to read from or write to. An example of these directives is shown in the following code, written for glibc:"
+            },
+            {
+              "Nature": "Bad",
+              "Language": "C",
+              "ExampleCode": "```\n\tprintf(\"%d %d %1$d %1$d\\n\", 5, 9);\n```"
+            },
+            {
+              "BodyText": "This code produces the following output: 5 9 5 5 It is also possible to use half-writes (%hn) to accurately control arbitrary DWORDS in memory, which greatly reduces the complexity needed to execute an attack that would otherwise require four staggered writes, such as the one mentioned in a separate example."
+            }
+          ]
+        }
+      ],
+      "PotentialMitigations": [
+        {
+          "Phase": [
+            "Requirements"
+          ],
+          "Description": "Choose a language that is not subject to this flaw."
+        },
+        {
+          "Phase": [
+            "Implementation"
+          ],
+          "Description": "Ensure that all format string functions are passed a static string which cannot be controlled by the user, and that the proper number of arguments are always sent to that function as well. If at all possible, use functions that do not support the %n operator in format strings. [REF-116] [REF-117]"
+        },
+        {
+          "Phase": [
+            "Build and Compilation"
+          ],
+          "Description": "Run compilers and linkers with high warning levels, since they may detect incorrect usage."
+        }
+      ]
+    },
+    "/cwe/134/parents": {
+      "weakness_parents": [
+        "668",
+        "20"
+      ],
+      "category_parents": [
+        "1131",
+        "1134",
+        "1163",
+        "1179",
+        "1308",
+        "1399",
+        "133",
+        "726",
+        "743",
+        "808",
+        "845",
+        "877",
+        "990",
+        "865"
+      ]
+    },
+    "/cwe/134/children": null
+  }
+}

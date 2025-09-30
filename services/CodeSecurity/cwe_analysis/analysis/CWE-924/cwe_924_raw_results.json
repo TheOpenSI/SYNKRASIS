@@ -1,0 +1,204 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-30T00:17:15.217692",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "924",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/924": {
+      "endpoint": "/cwe/924",
+      "url": "https://cwe-api.mitre.org/api/v1/cwe/924",
+      "status_code": 200,
+      "success": true,
+      "error": null,
+      "data": [
+        {
+          "Type": "base_weakness",
+          "ID": "924"
+        }
+      ]
+    },
+    "/cwe/weakness/924": {
+      "endpoint": "/cwe/weakness/924",
+      "url": "https://cwe-api.mitre.org/api/v1/cwe/weakness/924",
+      "status_code": 200,
+      "success": true,
+      "error": null,
+      "data": {
+        "Weaknesses": [
+          {
+            "ID": "924",
+            "Name": "Improper Enforcement of Message Integrity During Transmission in a Communication Channel",
+            "Abstraction": "Base",
+            "Structure": "Simple",
+            "Status": "Incomplete",
+            "Description": "The product establishes a communication channel with an endpoint and receives a message from that endpoint, but it does not sufficiently ensure that the message was not modified during transmission.",
+            "ExtendedDescription": "Attackers might be able to modify the message and spoof the endpoint by interfering with the data as it crosses the network or by redirecting the connection to a system under their control.",
+            "RelatedWeaknesses": [
+              {
+                "Nature": "ChildOf",
+                "CweID": "345",
+                "ViewID": "1000",
+                "Ordinal": "Primary"
+              },
+              {
+                "Nature": "ChildOf",
+                "CweID": "345",
+                "ViewID": "1003",
+                "Ordinal": "Primary"
+              }
+            ],
+            "ApplicablePlatforms": [
+              {
+                "Type": "Language",
+                "Class": "Not Language-Specific",
+                "Prevalence": "Undetermined"
+              }
+            ],
+            "ModesOfIntroduction": [
+              {
+                "Phase": "Architecture and Design",
+                "Note": "REALIZATION: This weakness is caused during implementation of an architectural security tactic."
+              }
+            ],
+            "CommonConsequences": [
+              {
+                "Scope": [
+                  "Integrity",
+                  "Confidentiality"
+                ],
+                "Impact": [
+                  "Gain Privileges or Assume Identity"
+                ],
+                "Note": "If an attackers can spoof the endpoint, the attacker gains all the privileges that were intended for the original endpoint."
+              }
+            ],
+            "MappingNotes": {
+              "Usage": "Allowed",
+              "Rationale": "This CWE entry is at the Base level of abstraction, which is a preferred level of abstraction for mapping to the root causes of vulnerabilities.",
+              "Comments": "Carefully read both the name and description to ensure that this mapping is an appropriate fit. Do not try to 'force' a mapping to a lower-level Base/Variant simply to comply with this preferred level of abstraction.",
+              "Reasons": [
+                "Acceptable-Use"
+              ]
+            },
+            "Notes": [
+              {
+                "Type": "Maintenance",
+                "Note": "This entry should be made more comprehensive in later CWE versions, as it is likely an important design flaw that underlies (or chains to) other weaknesses."
+              }
+            ],
+            "ContentHistory": [
+              {
+                "Type": "Submission",
+                "SubmissionName": "CWE Content Team",
+                "SubmissionOrganization": "MITRE",
+                "SubmissionDate": "2013-06-23",
+                "SubmissionVersion": "2.5",
+                "SubmissionReleaseDate": "2013-07-17"
+              },
+              {
+                "Type": "Modification",
+                "ModificationName": "CWE Content Team",
+                "ModificationOrganization": "MITRE",
+                "ModificationDate": "2017-11-08",
+                "ModificationComment": "updated Modes_of_Introduction, Relationships"
+              },
+              {
+                "Type": "Modification",
+                "ModificationName": "CWE Content Team",
+                "ModificationOrganization": "MITRE",
+                "ModificationDate": "2019-06-20",
+                "ModificationComment": "updated Relationships, Type"
+              },
+              {
+                "Type": "Modification",
+                "ModificationName": "CWE Content Team",
+                "ModificationOrganization": "MITRE",
+                "ModificationDate": "2020-02-24",
+                "ModificationComment": "updated Description, Relationships"
+              },
+              {
+                "Type": "Modification",
+                "ModificationName": "CWE Content Team",
+                "ModificationOrganization": "MITRE",
+                "ModificationDate": "2021-03-15",
+                "ModificationComment": "updated Maintenance_Notes"
+              },
+              {
+                "Type": "Modification",
+                "ModificationName": "CWE Content Team",
+                "ModificationOrganization": "MITRE",
+                "ModificationDate": "2023-01-31",
+                "ModificationComment": "updated Description"
+              },
+              {
+                "Type": "Modification",
+                "ModificationName": "CWE Content Team",
+                "ModificationOrganization": "MITRE",
+                "ModificationDate": "2023-04-27",
+                "ModificationComment": "updated Relationships"
+              },
+              {
+                "Type": "Modification",
+                "ModificationName": "CWE Content Team",
+                "ModificationOrganization": "MITRE",
+                "ModificationDate": "2023-06-29",
+                "ModificationComment": "updated Mapping_Notes"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    "/cwe/924/parents": {
+      "endpoint": "/cwe/924/parents",
+      "url": "https://cwe-api.mitre.org/api/v1/cwe/924/parents",
+      "status_code": 200,
+      "success": true,
+      "error": null,
+      "data": [
+        {
+          "Type": "class_weakness",
+          "ID": "345",
+          "ViewID": "1000",
+          "Primary_Parent": true
+        },
+        {
+          "Type": "class_weakness",
+          "ID": "345",
+          "ViewID": "1003",
+          "Primary_Parent": true
+        },
+        {
+          "Type": "category",
+          "ID": "1020",
+          "ViewID": "1008"
+        },
+        {
+          "Type": "category",
+          "ID": "1411",
+          "ViewID": "1400"
+        },
+        {
+          "Type": "category",
+          "ID": "1214",
+          "ViewID": "699"
+        },
+        {
+          "Type": "category",
+          "ID": "417",
+          "ViewID": "699"
+        }
+      ]
+    },
+    "/cwe/924/children": {
+      "endpoint": "/cwe/924/children",
+      "url": "https://cwe-api.mitre.org/api/v1/cwe/924/children",
+      "status_code": 200,
+      "success": true,
+      "error": null,
+      "data": []
+    }
+  }
+}

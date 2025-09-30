@@ -1,0 +1,146 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-30T00:11:01.591251",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "825",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/825": {
+      "ID": "825",
+      "Type": "base_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/825": {
+      "ID": "825",
+      "Name": "Expired Pointer Dereference",
+      "Abstraction": "Base",
+      "Structure": "Simple",
+      "Status": "Incomplete",
+      "Description": "The product dereferences a pointer that contains a location for memory that was previously valid, but is no longer valid.",
+      "ExtendedDescription": "When a product releases memory, but it maintains a pointer to that memory, then the memory might be re-allocated at a later time. If the original pointer is accessed to read or write data, then this could cause the product to read or modify data that is in use by a different function or process. Depending on how the newly-allocated memory is used, this could lead to a denial of service, information exposure, or code execution.",
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Name": "C",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Language",
+          "Name": "C++",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": [
+        {
+          "Term": "Dangling pointer"
+        }
+      ],
+      "ModesOfIntroduction": null,
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Confidentiality"
+          ],
+          "Impact": [
+            "Read Memory"
+          ],
+          "Note": "If the expired pointer is used in a read operation, an attacker might be able to control data read in by the application."
+        },
+        {
+          "Scope": [
+            "Availability"
+          ],
+          "Impact": [
+            "DoS: Crash, Exit, or Restart"
+          ],
+          "Note": "If the expired pointer references a memory location that is not accessible to the product, or points to a location that is \"malformed\" (such as NULL) or larger than expected by a read or write operation, then a crash may occur."
+        },
+        {
+          "Scope": [
+            "Integrity",
+            "Confidentiality",
+            "Availability"
+          ],
+          "Impact": [
+            "Execute Unauthorized Code or Commands"
+          ],
+          "Note": "If the expired pointer is used in a function call, or points to unexpected data in a write operation, then code execution may be possible."
+        }
+      ],
+      "DemonstrativeExamples": [
+        {
+          "ID": "DX-71",
+          "Entries": [
+            {
+              "IntroText": "The following code shows a simple example of a use after free error:"
+            },
+            {
+              "Nature": "Bad",
+              "Language": "C",
+              "ExampleCode": "```\n\tchar* ptr = (char*)malloc (SIZE);\n\tif (err) {\n\t\tabrt = 1;\n\t\tfree(ptr);\n\t}\n\t...\n\tif (abrt) {\n\t\tlogError(\"operation aborted before commit\", ptr);\n\t}\n```"
+            },
+            {
+              "BodyText": "When an error occurs, the pointer is immediately freed. However, this pointer is later incorrectly used in the logError function."
+            }
+          ]
+        },
+        {
+          "ID": "DX-72",
+          "Entries": [
+            {
+              "IntroText": "The following code shows a simple example of a double free error:"
+            },
+            {
+              "Nature": "Bad",
+              "Language": "C",
+              "ExampleCode": "```\n\tchar* ptr = (char*)malloc (SIZE);\n\t...\n\tif (abrt) {\n\t\tfree(ptr);\n\t}\n\t...\n\tfree(ptr);\n```"
+            },
+            {
+              "BodyText": "Double free vulnerabilities have two common (and sometimes overlapping) causes:"
+            },
+            {
+              "BodyText": "- Error conditions and other exceptional circumstances\n\n  - Confusion over which part of the program is responsible for freeing the memory"
+            },
+            {
+              "BodyText": "Although some double free vulnerabilities are not much more complicated than the previous example, most are spread out across hundreds of lines of code or even different files. Programmers seem particularly susceptible to freeing global variables more than once."
+            }
+          ]
+        }
+      ],
+      "PotentialMitigations": [
+        {
+          "Phase": [
+            "Architecture and Design"
+          ],
+          "Description": "Choose a language that provides automatic memory management."
+        },
+        {
+          "Phase": [
+            "Implementation"
+          ],
+          "Description": "When freeing pointers, be sure to set them to NULL once they are freed. However, the utilization of multiple or complex data structures may lower the usefulness of this strategy."
+        }
+      ]
+    },
+    "/cwe/825/parents": {
+      "weakness_parents": [
+        "119",
+        "672"
+      ],
+      "category_parents": [
+        "1399",
+        "465",
+        "867"
+      ]
+    },
+    "/cwe/825/children": {
+      "weakness_children": [
+        "415",
+        "416"
+      ],
+      "category_children": []
+    }
+  }
+}

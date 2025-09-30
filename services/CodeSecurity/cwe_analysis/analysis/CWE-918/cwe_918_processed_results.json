@@ -1,0 +1,101 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-30T00:16:30.546327",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "918",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/918": {
+      "ID": "918",
+      "Type": "base_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/918": {
+      "ID": "918",
+      "Name": "Server-Side Request Forgery (SSRF)",
+      "Abstraction": "Base",
+      "Structure": "Simple",
+      "Status": "Incomplete",
+      "Description": "The web server receives a URL or similar request from an upstream component and retrieves the contents of this URL, but it does not sufficiently ensure that the request is being sent to the expected destination.",
+      "ExtendedDescription": null,
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Class": "Not Language-Specific",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Technology",
+          "Name": "AI/ML",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Technology",
+          "Name": "Web Server",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": [
+        {
+          "Term": "XSPA",
+          "Description": "Cross Site Port Attack"
+        },
+        {
+          "Term": "SSRF",
+          "Description": "Server-Side Request Forgery"
+        }
+      ],
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Architecture and Design"
+        },
+        {
+          "Phase": "Implementation"
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Confidentiality"
+          ],
+          "Impact": [
+            "Read Application Data"
+          ]
+        },
+        {
+          "Scope": [
+            "Integrity"
+          ],
+          "Impact": [
+            "Execute Unauthorized Code or Commands"
+          ]
+        },
+        {
+          "Scope": [
+            "Access Control"
+          ],
+          "Impact": [
+            "Bypass Protection Mechanism"
+          ],
+          "Note": "By providing URLs to unexpected hosts or ports, attackers can make it appear that the server is sending the request, possibly bypassing access controls such as firewalls that prevent the attackers from accessing the URLs directly. The server can be used as a proxy to conduct port scanning of hosts in internal networks, use other URLs such as that can access documents on the system (using file://), or use other protocols such as gopher:// or tftp://, which may provide greater control over the contents of requests."
+        }
+      ],
+      "DemonstrativeExamples": null,
+      "PotentialMitigations": null
+    },
+    "/cwe/918/parents": {
+      "weakness_parents": [
+        "441",
+        "610"
+      ],
+      "category_parents": [
+        "1356",
+        "1396",
+        "417"
+      ]
+    },
+    "/cwe/918/children": null
+  }
+}

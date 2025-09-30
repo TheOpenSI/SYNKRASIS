@@ -1,0 +1,65 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T23:24:17.110776",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "432",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/432": {
+      "ID": "432",
+      "Type": "base_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/432": {
+      "ID": "432",
+      "Name": "Dangerous Signal Handler not Disabled During Sensitive Operations",
+      "Abstraction": "Base",
+      "Structure": "Simple",
+      "Status": "Draft",
+      "Description": "The product uses a signal handler that shares state with other signal handlers, but it does not properly mask or prevent those signal handlers from being invoked while the original signal handler is still running.",
+      "ExtendedDescription": "During the execution of a signal handler, it can be interrupted by another handler when a different signal is sent. If the two handlers share state - such as global variables - then an attacker can corrupt the state by sending another signal before the first handler has completed execution.",
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Class": "Not Language-Specific",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Implementation"
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Integrity"
+          ],
+          "Impact": [
+            "Modify Application Data"
+          ]
+        }
+      ],
+      "DemonstrativeExamples": null,
+      "PotentialMitigations": [
+        {
+          "Phase": [
+            "Implementation"
+          ],
+          "Description": "Turn off dangerous handlers when performing sensitive operations."
+        }
+      ]
+    },
+    "/cwe/432/parents": {
+      "weakness_parents": [],
+      "category_parents": [
+        "1401",
+        "1001"
+      ]
+    },
+    "/cwe/432/children": null
+  }
+}

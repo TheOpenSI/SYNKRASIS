@@ -1,0 +1,107 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T22:11:44.701591",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "1059",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/1059": {
+      "ID": "1059",
+      "Type": "class_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/1059": {
+      "ID": "1059",
+      "Name": "Insufficient Technical Documentation",
+      "Abstraction": "Class",
+      "Structure": "Simple",
+      "Status": "Incomplete",
+      "Description": "The product does not contain sufficient\n         technical or engineering documentation (whether on paper or\n         in electronic form) that contains descriptions of all the\n         relevant software/hardware elements of the product, such as\n         its usage, structure, architectural components, interfaces, design, implementation,\n         configuration, operation, etc.",
+      "ExtendedDescription": "\n\nWhen technical documentation is limited or lacking, products are more difficult to maintain. This indirectly affects security by making it more difficult or time-consuming to find and/or fix vulnerabilities.\n\n\nWhen using time-limited or labor-limited third-party/in-house security consulting services (such as threat modeling, vulnerability discovery, or pentesting), insufficient documentation can force those consultants to invest unnecessary time in learning how the product is organized, instead of focusing their expertise on finding the flaws or suggesting effective mitigations.\n\n\nWith respect to hardware design, the lack of a formal, final manufacturer reference can make it difficult or impossible to evaluate the final product, including post-manufacture verification. One cannot ensure that design functionality or operation is within acceptable tolerances, conforms to specifications, and is free from unexpected behavior. Hardware-related documentation may include engineering artifacts such as hardware description language (HDLs), netlists, Gerber files, Bills of Materials, EDA (Electronic Design Automation) tool files, etc.\n",
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Class": "Not Language-Specific",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Operating_System",
+          "Class": "Not OS-Specific",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Architecture",
+          "Class": "Not Architecture-Specific",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Technology",
+          "Class": "Not Technology-Specific",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Technology",
+          "Class": "ICS/OT",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Architecture and Design"
+        },
+        {
+          "Phase": "Documentation"
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Other"
+          ],
+          "Impact": [
+            "Varies by Context",
+            "Hide Activities",
+            "Reduce Reliability",
+            "Quality Degradation",
+            "Reduce Maintainability"
+          ],
+          "Note": "Without a method of verification, one cannot be sure that everything only functions as expected."
+        }
+      ],
+      "DemonstrativeExamples": null,
+      "PotentialMitigations": [
+        {
+          "Phase": [
+            "Documentation",
+            "Architecture and Design"
+          ],
+          "Description": "Ensure that design documentation is detailed enough to allow for post-manufacturing verification."
+        }
+      ]
+    },
+    "/cwe/1059/parents": {
+      "weakness_parents": [],
+      "category_parents": [
+        "1195",
+        "1208",
+        "1368",
+        "1371",
+        "1375",
+        "1412"
+      ]
+    },
+    "/cwe/1059/children": {
+      "weakness_children": [
+        "1053",
+        "1110",
+        "1111",
+        "1112",
+        "1118"
+      ],
+      "category_children": []
+    }
+  }
+}

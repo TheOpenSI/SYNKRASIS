@@ -1,0 +1,91 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T23:34:48.037269",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "511",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/511": {
+      "ID": "511",
+      "Type": "base_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/511": {
+      "ID": "511",
+      "Name": "Logic/Time Bomb",
+      "Abstraction": "Base",
+      "Structure": "Simple",
+      "Status": "Incomplete",
+      "Description": "The product contains code that is designed to disrupt the legitimate operation of the product (or its environment) when a certain time passes, or when a certain logical condition is met.",
+      "ExtendedDescription": "When the time bomb or logic bomb is detonated, it may perform a denial of service such as crashing the system, deleting critical data, or degrading system response time. This bomb might be placed within either a replicating or non-replicating Trojan horse.",
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Class": "Not Language-Specific",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Technology",
+          "Class": "Mobile",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Architecture and Design"
+        },
+        {
+          "Phase": "Implementation"
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Other",
+            "Integrity"
+          ],
+          "Impact": [
+            "Varies by Context",
+            "Alter Execution Logic"
+          ]
+        }
+      ],
+      "DemonstrativeExamples": [
+        {
+          "Entries": [
+            {
+              "IntroText": "Typical examples of triggers include system date or time mechanisms, random number generators, and counters that wait for an opportunity to launch their payload. When triggered, a time-bomb may deny service by crashing the system, deleting files, or degrading system response-time."
+            }
+          ]
+        }
+      ],
+      "PotentialMitigations": [
+        {
+          "Phase": [
+            "Installation"
+          ],
+          "Description": "Always verify the integrity of the product that is being installed."
+        },
+        {
+          "Phase": [
+            "Testing"
+          ],
+          "Description": "Conduct a code coverage analysis using live testing, then closely inspect any code that is not covered."
+        }
+      ]
+    },
+    "/cwe/511/parents": {
+      "weakness_parents": [
+        "506"
+      ],
+      "category_parents": [
+        "1412",
+        "904"
+      ]
+    },
+    "/cwe/511/children": null
+  }
+}

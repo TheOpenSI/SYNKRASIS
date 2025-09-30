@@ -1,0 +1,109 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-30T00:04:37.104602",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "767",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/767": {
+      "ID": "767",
+      "Type": "base_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/767": {
+      "ID": "767",
+      "Name": "Access to Critical Private Variable via Public Method",
+      "Abstraction": "Base",
+      "Structure": "Simple",
+      "Status": "Incomplete",
+      "Description": "The product defines a public method that reads or modifies a private variable.",
+      "ExtendedDescription": "If an attacker modifies the variable to contain unexpected values, this could violate assumptions from other parts of the code. Additionally, if an attacker can read the private variable, it may expose sensitive information or make it easier to launch further attacks.",
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Name": "C++",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Language",
+          "Name": "C#",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Language",
+          "Name": "Java",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Implementation"
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Integrity",
+            "Other"
+          ],
+          "Impact": [
+            "Modify Application Data",
+            "Other"
+          ]
+        }
+      ],
+      "DemonstrativeExamples": [
+        {
+          "Entries": [
+            {
+              "IntroText": "The following example declares a critical variable to be private, and then allows the variable to be modified by public methods."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "C++",
+              "ExampleCode": "```\n\tprivate: float price;\n\tpublic: void changePrice(float newPrice) {\n\t\tprice = newPrice;\n\t}\n```"
+            }
+          ]
+        },
+        {
+          "Entries": [
+            {
+              "IntroText": "The following example could be used to implement a user forum where a single user (UID) can switch between multiple profiles (PID)."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "Java",
+              "ExampleCode": "```\n\tpublic class Client {\n\t\tprivate int UID;\n\t\tpublic int PID;\n\t\tprivate String userName;\n\t\tpublic Client(String userName){\n\t\t\tPID = getDefaultProfileID();\n\t\t\tUID = mapUserNametoUID( userName );\n\t\t\tthis.userName = userName;\n\t\t}\n\t\tpublic void setPID(int ID) {\n\t\t\tUID = ID;\n\t\t}\n\t}\n```"
+            },
+            {
+              "BodyText": "The programmer implemented setPID with the intention of modifying the PID variable, but due to a typo. accidentally specified the critical variable UID instead. If the program allows profile IDs to be between 1 and 10, but a UID of 1 means the user is treated as an admin, then a user could gain administrative privileges as a result of this typo."
+            }
+          ]
+        }
+      ],
+      "PotentialMitigations": [
+        {
+          "Phase": [
+            "Implementation"
+          ],
+          "Description": "Use class accessor and mutator methods appropriately. Perform validation when accepting data from a public method that is intended to modify a critical private variable. Also be sure that appropriate access controls are being applied when a public method interfaces with critical data."
+        }
+      ]
+    },
+    "/cwe/767/parents": {
+      "weakness_parents": [
+        "668"
+      ],
+      "category_parents": [
+        "1184",
+        "1403",
+        "275",
+        "963"
+      ]
+    },
+    "/cwe/767/children": null
+  }
+}

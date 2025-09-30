@@ -1,0 +1,155 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T22:39:37.897168",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "1333",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/1333": {
+      "ID": "1333",
+      "Type": "base_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/1333": {
+      "ID": "1333",
+      "Name": "Inefficient Regular Expression Complexity",
+      "Abstraction": "Base",
+      "Structure": "Simple",
+      "Status": "Draft",
+      "Description": "The product uses a regular expression with an inefficient, possibly exponential worst-case computational complexity that consumes excessive CPU cycles.",
+      "ExtendedDescription": "Some regular expression engines have a feature called \"backtracking\". If the token cannot match, the engine \"backtracks\" to a position that may result in a different token that can match.\n Backtracking becomes a weakness if all of these conditions are met:\n\n\n  - The number of possible backtracking attempts are exponential relative to the length of the input.\n\n  - The input can fail to match the regular expression.\n\n  - The input can be long enough.\n\n Attackers can create crafted inputs that intentionally cause the regular expression to use excessive backtracking in a way that causes the CPU consumption to spike. ",
+      "LikelihoodOfExploit": "High",
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Class": "Not Language-Specific",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": [
+        {
+          "Term": "ReDoS",
+          "Description": "ReDoS is an abbreviation of \"Regular expression Denial of Service\"."
+        },
+        {
+          "Term": "Regular Expression Denial of Service",
+          "Description": "While this term is attack-focused, this is commonly used to describe the weakness."
+        },
+        {
+          "Term": "Catastrophic backtracking",
+          "Description": "This term is used to describe the behavior of the regular expression as a negative technical impact."
+        }
+      ],
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Implementation",
+          "Note": "A RegEx can be easy to create and read using unbounded matching characters, but the programmer might not consider the risk of excessive backtracking."
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Availability"
+          ],
+          "Impact": [
+            "DoS: Resource Consumption (CPU)"
+          ],
+          "Likelihood": [
+            "High"
+          ]
+        }
+      ],
+      "DemonstrativeExamples": [
+        {
+          "ID": "DX-158",
+          "Entries": [
+            {
+              "IntroText": "This example attempts to check if an input string is a \"sentence\" [REF-1164]."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "JavaScript",
+              "ExampleCode": "var test_string = \"Bad characters: $@#\";\n var bad_pattern = /^(\\w+\\s?)*$/i;\n var result = test_string.search(bad_pattern);"
+            },
+            {
+              "BodyText": "The regular expression has a vulnerable backtracking clause inside (\\w+\\s?)*$ which can be triggered to cause a Denial of Service by processing particular phrases.\n\n\nTo fix the backtracking problem, backtracking is removed with the ?= portion of the expression which changes it to a lookahead and the \\2 which prevents the backtracking. The modified example is:"
+            },
+            {
+              "Nature": "Good",
+              "Language": "JavaScript",
+              "ExampleCode": "var test_string = \"Bad characters: $@#\";\n var good_pattern = /^((?=(\\w+))\\2\\s?)*$/i;\n var result = test_string.search(good_pattern);"
+            },
+            {
+              "BodyText": "Note that [REF-1164] has a more thorough (and lengthy) explanation of everything going on within the RegEx."
+            }
+          ]
+        },
+        {
+          "Entries": [
+            {
+              "IntroText": "This example attempts to check if an input string is a \"sentence\" and is modified for Perl [REF-1164]."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "Perl",
+              "ExampleCode": "my $test_string = \"Bad characters: \\$\\@\\#\";\n my $bdrslt = $test_string;\n $bdrslt =~ /^(\\w+\\s?)*$/i;"
+            },
+            {
+              "BodyText": "The regular expression has a vulnerable backtracking clause inside (\\w+\\s?)*$ which can be triggered to cause a Denial of Service by processing particular phrases.\n\n\nTo fix the backtracking problem, backtracking is removed with the ?= portion of the expression which changes it to a lookahead and the \\2 which prevents the backtracking. The modified example is:"
+            },
+            {
+              "Nature": "Good",
+              "Language": "Perl",
+              "ExampleCode": "my $test_string = \"Bad characters: \\$\\@\\#\";\n my $gdrslt = $test_string;\n $gdrslt =~ /^((?=(\\w+))\\2\\s?)*$/i;"
+            },
+            {
+              "BodyText": "Note that [REF-1164] has a more thorough (and lengthy) explanation of everything going on within the RegEx."
+            }
+          ]
+        }
+      ],
+      "PotentialMitigations": [
+        {
+          "Phase": [
+            "Architecture and Design"
+          ],
+          "Description": "Use regular expressions that do not support backtracking, e.g. by removing nested quantifiers.",
+          "Effectiveness": "High",
+          "EffectivenessNotes": "This is one of the few effective solutions when using user-provided regular expressions."
+        },
+        {
+          "Phase": [
+            "System Configuration"
+          ],
+          "Description": "Set backtracking limits in the configuration of the regular expression implementation, such as PHP's pcre.backtrack_limit. Also consider limits on execution time for the process.",
+          "Effectiveness": "Moderate"
+        },
+        {
+          "Phase": [
+            "Implementation"
+          ],
+          "Description": "Do not use regular expressions with untrusted input. If regular expressions must be used, avoid using backtracking in the expression.",
+          "Effectiveness": "High"
+        },
+        {
+          "Phase": [
+            "Implementation"
+          ],
+          "Description": "Limit the length of the input that the regular expression will process.",
+          "Effectiveness": "Moderate"
+        }
+      ]
+    },
+    "/cwe/1333/parents": {
+      "weakness_parents": [
+        "407"
+      ],
+      "category_parents": [
+        "1416",
+        "1226"
+      ]
+    },
+    "/cwe/1333/children": null
+  }
+}

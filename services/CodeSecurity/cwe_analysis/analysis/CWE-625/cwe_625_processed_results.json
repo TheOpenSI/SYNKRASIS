@@ -1,0 +1,113 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T23:50:13.945485",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "625",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/625": {
+      "ID": "625",
+      "Type": "base_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/625": {
+      "ID": "625",
+      "Name": "Permissive Regular Expression",
+      "Abstraction": "Base",
+      "Structure": "Simple",
+      "Status": "Draft",
+      "Description": "The product uses a regular expression that does not sufficiently restrict the set of allowed values.",
+      "ExtendedDescription": "\n\nThis effectively causes the regexp to accept substrings that match the pattern, which produces a partial comparison to the target. In some cases, this can lead to other weaknesses. Common errors include:\n\n\n  - not identifying the beginning and end of the target string\n\n  - using wildcards instead of acceptable character ranges\n\n  - others\n\n",
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Name": "Perl",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Language",
+          "Name": "PHP",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Implementation",
+          "Note": "This problem is frequently found when the regular expression is used in input validation or security features such as authentication."
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Access Control"
+          ],
+          "Impact": [
+            "Bypass Protection Mechanism"
+          ]
+        }
+      ],
+      "DemonstrativeExamples": [
+        {
+          "ID": "DX-37",
+          "Entries": [
+            {
+              "IntroText": "The following code takes phone numbers as input, and uses a regular expression to reject invalid phone numbers."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "Perl",
+              "ExampleCode": "```\n\t$phone = GetPhoneNumber();\n\tif ($phone =~ /\\d+-\\d+/) {\n```\n# looks like it only has hyphens and digits* \n\t\tsystem(\"lookup-phone $phone\");} \n\telse {\n\t```\n\t\terror(\"malformed number!\");\n\t}\n```"
+            },
+            {
+              "BodyText": "An attacker could provide an argument such as: \"; ls -l ; echo 123-456\" This would pass the check, since \"123-456\" is sufficient to match the \"\\d+-\\d+\" portion of the regular expression."
+            }
+          ]
+        },
+        {
+          "ID": "DX-154",
+          "Entries": [
+            {
+              "IntroText": "This code uses a regular expression to validate an IP string prior to using it in a call to the \"ping\" command."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "Python",
+              "ExampleCode": "```\n\t import subprocess\n\t import re\n\t def validate_ip_regex(ip: str):\n\t\t ip_validator = re.compile(r\"((25[0-5]|(2[0-4]|1\\d|[1-9]|)\\d)\\.?\\b){4}\")\n\t\t if ip_validator.match(ip):\n\t\t\t return ip\n\t\t else:\n\t\t\t raise ValueError(\"IP address does not match valid pattern.\")\n\t def run_ping_regex(ip: str):\n\t\t validated = validate_ip_regex(ip)\n```\n# The ping command treats zero-prepended IP addresses as octal* \n\t\t result = subprocess.call([\"ping\", validated])\n\t\t print(result)"
+            },
+            {
+              "BodyText": "Since the regular expression does not have anchors (CWE-777), i.e. is unbounded without ^ or $ characters, then prepending a 0 or 0x to the beginning of the IP address will still result in a matched regex pattern. Since the ping command supports octal and hex prepended IP addresses, it will use the unexpectedly valid IP address (CWE-1389). For example, \"0x63.63.63.63\" would be considered equivalent to \"99.63.63.63\". As a result, the attacker could potentially ping systems that the attacker cannot reach directly."
+            }
+          ]
+        }
+      ],
+      "PotentialMitigations": [
+        {
+          "Phase": [
+            "Implementation"
+          ],
+          "Description": "When applicable, ensure that the regular expression marks beginning and ending string patterns, such as \"/^string$/\" for Perl."
+        }
+      ]
+    },
+    "/cwe/625/parents": {
+      "weakness_parents": [
+        "185"
+      ],
+      "category_parents": [
+        "1397",
+        "19",
+        "845",
+        "990"
+      ]
+    },
+    "/cwe/625/children": {
+      "weakness_children": [
+        "777"
+      ],
+      "category_children": []
+    }
+  }
+}

@@ -1,0 +1,43 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T22:10:59.477162",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "1053",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/1053": {
+      "ID": "1053",
+      "Type": "base_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/1053": {
+      "ID": "1053",
+      "Name": "Missing Documentation for Design",
+      "Abstraction": "Base",
+      "Structure": "Simple",
+      "Status": "Incomplete",
+      "Description": "The product does not have documentation that represents how it is designed.",
+      "ExtendedDescription": "\n\nThis issue can make it more difficult to understand and maintain the product. It can make it more difficult and time-consuming to detect and/or fix vulnerabilities.\n",
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": null,
+      "AlternateTerms": null,
+      "ModesOfIntroduction": null,
+      "CommonConsequences": null,
+      "DemonstrativeExamples": null,
+      "PotentialMitigations": null
+    },
+    "/cwe/1053/parents": {
+      "weakness_parents": [
+        "1059"
+      ],
+      "category_parents": [
+        "1208",
+        "1375",
+        "1412",
+        "1225"
+      ]
+    },
+    "/cwe/1053/children": null
+  }
+}

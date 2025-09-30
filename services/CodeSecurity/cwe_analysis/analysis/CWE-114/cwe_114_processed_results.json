@@ -1,0 +1,118 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T22:21:37.729710",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "114",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/114": {
+      "ID": "114",
+      "Type": "class_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/114": {
+      "ID": "114",
+      "Name": "Process Control",
+      "Abstraction": "Class",
+      "Structure": "Simple",
+      "Status": "Incomplete",
+      "Description": "Executing commands or loading libraries from an untrusted source or in an untrusted environment can cause an application to execute malicious commands (and payloads) on behalf of an attacker.",
+      "ExtendedDescription": "Process control vulnerabilities take two forms: \n\n  - An attacker can change the command that the program executes: the attacker explicitly controls what the command is.\n\n  - An attacker can change the environment in which the command executes: the attacker implicitly controls what the command means.\n\nProcess control vulnerabilities of the first type occur when either data enters the application from an untrusted source and the data is used as part of a string representing a command that is executed by the application. By executing the command, the application gives an attacker a privilege or capability that the attacker would not otherwise have.",
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Class": "Not Language-Specific",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Implementation",
+          "Note": "REALIZATION: This weakness is caused during implementation of an architectural security tactic."
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Confidentiality",
+            "Integrity",
+            "Availability"
+          ],
+          "Impact": [
+            "Execute Unauthorized Code or Commands"
+          ]
+        }
+      ],
+      "DemonstrativeExamples": [
+        {
+          "Entries": [
+            {
+              "IntroText": "The following code uses System.loadLibrary() to load code from a native library named library.dll, which is normally found in a standard system directory."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "Java",
+              "ExampleCode": "```\n\t...\n\tSystem.loadLibrary(\"library.dll\");\n\t...\n```"
+            },
+            {
+              "BodyText": "The problem here is that System.loadLibrary() accepts a library name, not a path, for the library to be loaded. From the Java 1.4.2 API documentation this function behaves as follows [1]: A file containing native code is loaded from the local file system from a place where library files are conventionally obtained. The details of this process are implementation-dependent. The mapping from a library name to a specific filename is done in a system-specific manner. If an attacker is able to place a malicious copy of library.dll higher in the search order than file the application intends to load, then the application will load the malicious copy instead of the intended file. Because of the nature of the application, it runs with elevated privileges, which means the contents of the attacker's library.dll will now be run with elevated privileges, possibly giving them complete control of the system."
+            }
+          ]
+        },
+        {
+          "Entries": [
+            {
+              "IntroText": "The following code from a privileged application uses a registry entry to determine the directory in which it is installed and loads a library file based on a relative path from the specified directory."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "C",
+              "ExampleCode": "```\n\t...\n\tRegQueryValueEx(hkey, \"APPHOME\",\n\t0, 0, (BYTE*)home, &size);\n\tchar* lib=(char*)malloc(strlen(home)+strlen(INITLIB));\n\tif (lib) {\n\t\t\tstrcpy(lib,home);\n\t\t\tstrcat(lib,INITCMD);\n\t\t\tLoadLibrary(lib);\n\t}\n\t...\n```"
+            },
+            {
+              "BodyText": "The code in this example allows an attacker to load an arbitrary library, from which code will be executed with the elevated privilege of the application, by modifying a registry key to specify a different path containing a malicious version of INITLIB. Because the program does not validate the value read from the environment, if an attacker can control the value of APPHOME, they can fool the application into running malicious code."
+            }
+          ]
+        },
+        {
+          "Entries": [
+            {
+              "IntroText": "The following code is from a web-based administration utility that allows users access to an interface through which they can update their profile on the system. The utility makes use of a library named liberty.dll, which is normally found in a standard system directory."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "C",
+              "ExampleCode": "```\n\tLoadLibrary(\"liberty.dll\");\n```"
+            },
+            {
+              "BodyText": "The problem is that the program does not specify an absolute path for liberty.dll. If an attacker is able to place a malicious library named liberty.dll higher in the search order than file the application intends to load, then the application will load the malicious copy instead of the intended file. Because of the nature of the application, it runs with elevated privileges, which means the contents of the attacker's liberty.dll will now be run with elevated privileges, possibly giving the attacker complete control of the system. The type of attack seen in this example is made possible because of the search order used by LoadLibrary() when an absolute path is not specified. If the current directory is searched before system directories, as was the case up until the most recent versions of Windows, then this type of attack becomes trivial if the attacker can execute the program locally. The search order is operating system version dependent, and is controlled on newer operating systems by the value of the registry key: HKLM\\System\\CurrentControlSet\\Control\\Session Manager\\SafeDllSearchMode"
+            }
+          ]
+        }
+      ],
+      "PotentialMitigations": [
+        {
+          "Phase": [
+            "Architecture and Design"
+          ],
+          "Strategy": "Libraries or Frameworks",
+          "Description": "Libraries that are loaded should be well understood and come from a trusted source. The application can execute code contained in the native libraries, which often contain calls that are susceptible to other security problems, such as buffer overflows or command injection. All native libraries should be validated to determine if the application requires the use of the library. It is very difficult to determine what these native libraries actually do, and the potential for malicious code is high. In addition, the potential for an inadvertent mistake in these native libraries is also high, as many are written in C or C++ and may be susceptible to buffer overflow or race condition problems. To help prevent buffer overflow attacks, validate all input to native calls for content and length. If the native library does not come from a trusted source, review the source code of the library. The library should be built from the reviewed source before using it."
+        }
+      ]
+    },
+    "/cwe/114/parents": {
+      "weakness_parents": [
+        "20"
+      ],
+      "category_parents": [
+        "1011",
+        "1403",
+        "991"
+      ]
+    },
+    "/cwe/114/children": null
+  }
+}

@@ -1,0 +1,199 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-30T00:01:49.226021",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "73",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/73": {
+      "ID": "73",
+      "Type": "base_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/73": {
+      "ID": "73",
+      "Name": "External Control of File Name or Path",
+      "Abstraction": "Base",
+      "Structure": "Simple",
+      "Status": "Draft",
+      "Description": "The product allows user input to control or influence paths or file names that are used in filesystem operations.",
+      "ExtendedDescription": "\n\nThis could allow an attacker to access or modify system files or other files that are critical to the application.\n\n\nPath manipulation errors occur when the following two conditions are met:\n\n```\n\t\t1. An attacker can specify a path used in an operation on the filesystem.\n\t\t2. By specifying the resource, the attacker gains a capability that would not otherwise be permitted.\n```\nFor example, the program may give the attacker the ability to overwrite the specified file or run with a configuration controlled by the attacker.",
+      "LikelihoodOfExploit": "High",
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Class": "Not Language-Specific",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Operating_System",
+          "Class": "Unix",
+          "Prevalence": "Often"
+        },
+        {
+          "Type": "Operating_System",
+          "Class": "Windows",
+          "Prevalence": "Often"
+        },
+        {
+          "Type": "Operating_System",
+          "Class": "macOS",
+          "Prevalence": "Often"
+        }
+      ],
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Architecture and Design"
+        },
+        {
+          "Phase": "Implementation",
+          "Note": "REALIZATION: This weakness is caused during implementation of an architectural security tactic."
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Integrity",
+            "Confidentiality"
+          ],
+          "Impact": [
+            "Read Files or Directories",
+            "Modify Files or Directories"
+          ],
+          "Note": "The application can operate on unexpected files. Confidentiality is violated when the targeted filename is not directly readable by the attacker."
+        },
+        {
+          "Scope": [
+            "Integrity",
+            "Confidentiality",
+            "Availability"
+          ],
+          "Impact": [
+            "Modify Files or Directories",
+            "Execute Unauthorized Code or Commands"
+          ],
+          "Note": "The application can operate on unexpected files. This may violate integrity if the filename is written to, or if the filename is for a program or other form of executable code."
+        },
+        {
+          "Scope": [
+            "Availability"
+          ],
+          "Impact": [
+            "DoS: Crash, Exit, or Restart",
+            "DoS: Resource Consumption (Other)"
+          ],
+          "Note": "The application can operate on unexpected files. Availability can be violated if the attacker specifies an unexpected file that the application modifies. Availability can also be affected if the attacker specifies a filename for a large file, or points to a special device or a file that does not have the format that the application expects."
+        }
+      ],
+      "DemonstrativeExamples": [
+        {
+          "ID": "DX-65",
+          "Entries": [
+            {
+              "IntroText": "The following code uses input from an HTTP request to create a file name. The programmer has not considered the possibility that an attacker could provide a file name such as \"../../tomcat/conf/server.xml\", which causes the application to delete one of its own configuration files (CWE-22)."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "Java",
+              "ExampleCode": "```\n\tString rName = request.getParameter(\"reportName\");\n\tFile rFile = new File(\"/usr/local/apfr/reports/\" + rName);\n\t...\n\trFile.delete();\n```"
+            }
+          ]
+        },
+        {
+          "ID": "DX-66",
+          "Entries": [
+            {
+              "IntroText": "The following code uses input from a configuration file to determine which file to open and echo back to the user. If the program runs with privileges and malicious users can change the configuration file, they can use the program to read any file on the system that ends with the extension .txt."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "Java",
+              "ExampleCode": "```\n\tfis = new FileInputStream(cfg.getProperty(\"sub\")+\".txt\");\n\tamt = fis.read(arr);\n\tout.println(arr);\n```"
+            }
+          ]
+        }
+      ],
+      "PotentialMitigations": [
+        {
+          "Phase": [
+            "Architecture and Design"
+          ],
+          "Description": "When the set of filenames is limited or known, create a mapping from a set of fixed input values (such as numeric IDs) to the actual filenames, and reject all other inputs. For example, ID 1 could map to \"inbox.txt\" and ID 2 could map to \"profile.txt\". Features such as the ESAPI AccessReferenceMap provide this capability."
+        },
+        {
+          "Phase": [
+            "Architecture and Design",
+            "Operation"
+          ],
+          "Description": "\n\nRun your code in a \"jail\" or similar sandbox environment that enforces strict boundaries between the process and the operating system. This may effectively restrict all access to files within a particular directory.\n\n\nExamples include the Unix chroot jail and AppArmor. In general, managed code may provide some protection.\n\n\nThis may not be a feasible solution, and it only limits the impact to the operating system; the rest of your application may still be subject to compromise.\n\n\nBe careful to avoid CWE-243 and other weaknesses related to jails.\n"
+        },
+        {
+          "Phase": [
+            "Architecture and Design"
+          ],
+          "Description": "For any security checks that are performed on the client side, ensure that these checks are duplicated on the server side, in order to avoid CWE-602. Attackers can bypass the client-side checks by modifying values after the checks have been performed, or by changing the client to remove the client-side checks entirely. Then, these modified values would be submitted to the server."
+        },
+        {
+          "MitigationID": "MIT-5.1",
+          "Phase": [
+            "Implementation"
+          ],
+          "Strategy": "Input Validation",
+          "Description": "\n\nAssume all input is malicious. Use an \"accept known good\" input validation strategy, i.e., use a list of acceptable inputs that strictly conform to specifications. Reject any input that does not strictly conform to specifications, or transform it into something that does.\n\n\nWhen performing input validation, consider all potentially relevant properties, including length, type of input, the full range of acceptable values, missing or extra inputs, syntax, consistency across related fields, and conformance to business rules. As an example of business rule logic, \"boat\" may be syntactically valid because it only contains alphanumeric characters, but it is not valid if the input is only expected to contain colors such as \"red\" or \"blue.\"\n\n\nDo not rely exclusively on looking for malicious or malformed inputs. This is likely to miss at least one undesirable input, especially if the code's environment changes. This can give attackers enough room to bypass the intended validation. However, denylists can be useful for detecting potential attacks or determining which inputs are so malformed that they should be rejected outright.\n\n\nWhen validating filenames, use stringent allowlists that limit the character set to be used. If feasible, only allow a single \".\" character in the filename to avoid weaknesses such as CWE-23, and exclude directory separators such as \"/\" to avoid CWE-36. Use a list of allowable file extensions, which will help to avoid CWE-434.\n\n\nDo not rely exclusively on a filtering mechanism that removes potentially dangerous characters. This is equivalent to a denylist, which may be incomplete (CWE-184). For example, filtering \"/\" is insufficient protection if the filesystem also supports the use of \"\\\" as a directory separator. Another possible error could occur when the filtering is applied in a way that still produces dangerous data (CWE-182). For example, if \"../\" sequences are removed from the \".../...//\" string in a sequential fashion, two instances of \"../\" would be removed from the original string, but the remaining characters would still form the \"../\" string.\n",
+          "Effectiveness": "High"
+        },
+        {
+          "Phase": [
+            "Implementation"
+          ],
+          "Description": "Use a built-in path canonicalization function (such as realpath() in C) that produces the canonical version of the pathname, which effectively removes \"..\" sequences and symbolic links (CWE-23, CWE-59)."
+        },
+        {
+          "Phase": [
+            "Installation",
+            "Operation"
+          ],
+          "Description": "Use OS-level permissions and run as a low-privileged user to limit the scope of any successful attack."
+        },
+        {
+          "Phase": [
+            "Operation",
+            "Implementation"
+          ],
+          "Description": "If you are using PHP, configure your application so that it does not use register_globals. During implementation, develop your application so that it does not rely on this feature, but be wary of implementing a register_globals emulation that is subject to weaknesses such as CWE-95, CWE-621, and similar issues."
+        },
+        {
+          "Phase": [
+            "Testing"
+          ],
+          "Description": "Use tools and techniques that require manual (human) analysis, such as penetration testing, threat modeling, and interactive tools that allow the tester to record and modify an active session. These may be more effective than strictly automated techniques. This is especially the case with weaknesses that are related to design and business rules."
+        }
+      ]
+    },
+    "/cwe/73/parents": {
+      "weakness_parents": [
+        "610",
+        "642",
+        "20"
+      ],
+      "category_parents": [
+        "1015",
+        "1348",
+        "1403",
+        "399",
+        "723",
+        "752",
+        "877",
+        "981"
+      ]
+    },
+    "/cwe/73/children": {
+      "weakness_children": [
+        "114"
+      ],
+      "category_children": []
+    }
+  }
+}

@@ -1,0 +1,72 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T23:44:07.311684",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "581",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/581": {
+      "ID": "581",
+      "Type": "variant_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/581": {
+      "ID": "581",
+      "Name": "Object Model Violation: Just One of Equals and Hashcode Defined",
+      "Abstraction": "Variant",
+      "Structure": "Simple",
+      "Status": "Draft",
+      "Description": "The product does not maintain equal hashcodes for equal objects.",
+      "ExtendedDescription": "Java objects are expected to obey a number of invariants related to equality. One of these invariants is that equal objects must have equal hashcodes. In other words, if a.equals(b) == true then a.hashCode() == b.hashCode().",
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Name": "Java",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Implementation"
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Integrity",
+            "Other"
+          ],
+          "Impact": [
+            "Other"
+          ],
+          "Note": "If this invariant is not upheld, it is likely to cause trouble if objects of this class are stored in a collection. If the objects of the class in question are used as a key in a Hashtable or if they are inserted into a Map or Set, it is critical that equal objects have equal hashcodes."
+        }
+      ],
+      "DemonstrativeExamples": null,
+      "PotentialMitigations": [
+        {
+          "Phase": [
+            "Implementation"
+          ],
+          "Description": "Both Equals() and Hashcode() should be defined."
+        }
+      ]
+    },
+    "/cwe/581/parents": {
+      "weakness_parents": [
+        "573"
+      ],
+      "category_parents": [
+        "1140",
+        "1412",
+        "1006",
+        "850",
+        "977"
+      ]
+    },
+    "/cwe/581/children": null
+  }
+}

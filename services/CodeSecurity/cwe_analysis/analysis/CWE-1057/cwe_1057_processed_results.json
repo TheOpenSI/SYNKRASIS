@@ -1,0 +1,52 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T22:11:29.629742",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "1057",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/1057": {
+      "ID": "1057",
+      "Type": "base_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/1057": {
+      "ID": "1057",
+      "Name": "Data Access Operations Outside of Expected Data Manager Component",
+      "Abstraction": "Base",
+      "Structure": "Simple",
+      "Status": "Incomplete",
+      "Description": "The product uses a dedicated, central data manager component as required by design, but it contains code that performs data-access operations that do not use this data manager.",
+      "ExtendedDescription": "\n\nThis issue can make the product perform more slowly than intended, since the intended central data manager may have been explicitly optimized for performance or other quality characteristics. If the relevant code is reachable by an attacker, then this performance problem might introduce a vulnerability.\n",
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": null,
+      "AlternateTerms": null,
+      "ModesOfIntroduction": null,
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Other"
+          ],
+          "Impact": [
+            "Reduce Performance"
+          ]
+        }
+      ],
+      "DemonstrativeExamples": null,
+      "PotentialMitigations": null
+    },
+    "/cwe/1057/parents": {
+      "weakness_parents": [
+        "1061"
+      ],
+      "category_parents": [
+        "1132",
+        "1309",
+        "1412",
+        "1227"
+      ]
+    },
+    "/cwe/1057/children": null
+  }
+}

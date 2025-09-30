@@ -1,0 +1,51 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T22:09:29.061837",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "1042",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/1042": {
+      "ID": "1042",
+      "Type": "variant_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/1042": {
+      "ID": "1042",
+      "Name": "Static Member Data Element outside of a Singleton Class Element",
+      "Abstraction": "Variant",
+      "Structure": "Simple",
+      "Status": "Incomplete",
+      "Description": "The code contains a member element that is declared as static (but not final), in which\n\t\t\t\t\tits parent class element \n\t\t\t\t\tis not a singleton class - that is, a class element that can be used only once in\n\t\t\t\t\tthe 'to' association of a Create action.",
+      "ExtendedDescription": "\n\nThis issue can make the product perform more slowly. If the relevant code is reachable by an attacker, then this performance problem might introduce a vulnerability.\n",
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": null,
+      "AlternateTerms": null,
+      "ModesOfIntroduction": null,
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Other"
+          ],
+          "Impact": [
+            "Reduce Performance"
+          ]
+        }
+      ],
+      "DemonstrativeExamples": null,
+      "PotentialMitigations": null
+    },
+    "/cwe/1042/parents": {
+      "weakness_parents": [
+        "1176"
+      ],
+      "category_parents": [
+        "1132",
+        "1309",
+        "1416"
+      ]
+    },
+    "/cwe/1042/children": null
+  }
+}

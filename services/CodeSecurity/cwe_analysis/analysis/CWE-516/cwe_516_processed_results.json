@@ -1,0 +1,33 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T23:35:25.245272",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "516",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/516": {
+      "ID": "516",
+      "Type": "deprecated_weakness",
+      "is_deprecated": true
+    },
+    "/cwe/weakness/516": {
+      "ID": "516",
+      "Name": "DEPRECATED: Covert Timing Channel",
+      "Abstraction": "Base",
+      "Structure": "Simple",
+      "Status": "Deprecated",
+      "Description": "This weakness can be found at CWE-385.",
+      "ExtendedDescription": null,
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": null,
+      "AlternateTerms": null,
+      "ModesOfIntroduction": null,
+      "CommonConsequences": null,
+      "DemonstrativeExamples": null,
+      "PotentialMitigations": null
+    },
+    "/cwe/516/parents": null,
+    "/cwe/516/children": null
+  }
+}

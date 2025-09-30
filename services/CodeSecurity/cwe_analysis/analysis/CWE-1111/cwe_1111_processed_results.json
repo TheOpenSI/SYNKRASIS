@@ -1,0 +1,42 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T22:19:01.273919",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "1111",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/1111": {
+      "ID": "1111",
+      "Type": "base_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/1111": {
+      "ID": "1111",
+      "Name": "Incomplete I/O Documentation",
+      "Abstraction": "Base",
+      "Structure": "Simple",
+      "Status": "Incomplete",
+      "Description": "The product's documentation does not adequately define inputs,\n\t\t\t\t\toutputs, or system/software interfaces.",
+      "ExtendedDescription": null,
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": null,
+      "AlternateTerms": null,
+      "ModesOfIntroduction": null,
+      "CommonConsequences": null,
+      "DemonstrativeExamples": null,
+      "PotentialMitigations": null
+    },
+    "/cwe/1111/parents": {
+      "weakness_parents": [
+        "1059"
+      ],
+      "category_parents": [
+        "1375",
+        "1412",
+        "1225"
+      ]
+    },
+    "/cwe/1111/children": null
+  }
+}

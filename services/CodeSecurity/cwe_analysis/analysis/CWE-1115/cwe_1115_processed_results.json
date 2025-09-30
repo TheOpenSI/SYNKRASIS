@@ -1,0 +1,41 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T22:19:31.023160",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "1115",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/1115": {
+      "ID": "1115",
+      "Type": "base_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/1115": {
+      "ID": "1115",
+      "Name": "Source Code Element without Standard Prologue",
+      "Abstraction": "Base",
+      "Structure": "Simple",
+      "Status": "Incomplete",
+      "Description": "The source code contains elements such as source files \n\t\t\t\t\tthat do not consistently provide a prologue or header that has been\n\t\t\t\t\tstandardized for the project.",
+      "ExtendedDescription": "\n\nThe lack of a prologue can make it more difficult to accurately and quickly understand the associated code. Standard prologues or headers may contain information such as module name, version number, author, date, purpose, function, assumptions, limitations, accuracy considerations, etc.\n\n\nThis issue makes it more difficult to maintain the product due to insufficient analyzability, which indirectly affects security by making it more difficult or time-consuming to find and/or fix vulnerabilities. It also might make it easier to introduce vulnerabilities.\n",
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": null,
+      "AlternateTerms": null,
+      "ModesOfIntroduction": null,
+      "CommonConsequences": null,
+      "DemonstrativeExamples": null,
+      "PotentialMitigations": null
+    },
+    "/cwe/1115/parents": {
+      "weakness_parents": [
+        "1078"
+      ],
+      "category_parents": [
+        "1412",
+        "1006"
+      ]
+    },
+    "/cwe/1115/children": null
+  }
+}

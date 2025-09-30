@@ -1,0 +1,128 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T22:42:01.594537",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "1385",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/1385": {
+      "ID": "1385",
+      "Type": "variant_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/1385": {
+      "ID": "1385",
+      "Name": "Missing Origin Validation in WebSockets",
+      "Abstraction": "Variant",
+      "Structure": "Simple",
+      "Status": "Incomplete",
+      "Description": "The product uses a WebSocket, but it does not properly verify that the source of data or communication is valid.",
+      "ExtendedDescription": "\n\nWebSockets provide a bi-directional low latency communication (near real-time) between a client and a server. WebSockets are different than HTTP in that the connections are long-lived, as the channel will remain open until the client or the server is ready to send the message, whereas in HTTP, once the response occurs (which typically happens immediately), the transaction completes. \n\n\nA WebSocket can leverage the existing HTTP protocol over ports 80 and 443, but it is not limited to HTTP. WebSockets can make cross-origin requests that are not restricted by browser-based protection mechanisms such as the Same Origin Policy (SOP) or Cross-Origin Resource Sharing (CORS). Without explicit origin validation, this makes CSRF attacks more powerful.\n",
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Class": "Not Language-Specific",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Technology",
+          "Name": "Web Server",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": [
+        {
+          "Term": "Cross-Site WebSocket hijacking (CSWSH)",
+          "Description": "this term is used for attacks that exploit this weakness"
+        }
+      ],
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Architecture and Design"
+        },
+        {
+          "Phase": "Implementation"
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Confidentiality",
+            "Integrity",
+            "Availability",
+            "Non-Repudiation",
+            "Access Control"
+          ],
+          "Impact": [
+            "Varies by Context",
+            "Gain Privileges or Assume Identity",
+            "Bypass Protection Mechanism",
+            "Read Application Data",
+            "Modify Application Data",
+            "DoS: Crash, Exit, or Restart"
+          ],
+          "Note": "The consequences will vary depending on the nature of the functionality that is vulnerable to CSRF. An attacker could effectively perform any operations as the victim. If the victim is an administrator or privileged user, the consequences may include obtaining complete control over the web application - deleting or stealing data, uninstalling the product, or using it to launch other attacks against all of the product's users. Because the attacker has the identity of the victim, the scope of the CSRF is limited only by the victim's privileges."
+        }
+      ],
+      "DemonstrativeExamples": null,
+      "PotentialMitigations": [
+        {
+          "Phase": [
+            "Implementation"
+          ],
+          "Description": "Enable CORS-like access restrictions by verifying the 'Origin' header during the WebSocket handshake."
+        },
+        {
+          "Phase": [
+            "Implementation"
+          ],
+          "Description": "Use a randomized CSRF token to verify requests."
+        },
+        {
+          "Phase": [
+            "Implementation"
+          ],
+          "Description": "Use TLS to securely communicate using 'wss' (WebSocket Secure) instead of 'ws'."
+        },
+        {
+          "Phase": [
+            "Architecture and Design",
+            "Implementation"
+          ],
+          "Description": "Require user authentication prior to the WebSocket connection being established. For example, the WS library in Node has a 'verifyClient' function."
+        },
+        {
+          "Phase": [
+            "Implementation"
+          ],
+          "Description": "Leverage rate limiting to prevent against DoS. Use of the leaky bucket algorithm can help with this.",
+          "Effectiveness": "Defense in Depth"
+        },
+        {
+          "Phase": [
+            "Implementation"
+          ],
+          "Description": "Use a library that provides restriction of the payload size. For example, WS library for Node includes 'maxPayloadoption' that can be set.",
+          "Effectiveness": "Defense in Depth"
+        },
+        {
+          "Phase": [
+            "Implementation"
+          ],
+          "Description": "Treat data/input as untrusted in both directions and apply the same data/input sanitization as XSS, SQLi, etc."
+        }
+      ]
+    },
+    "/cwe/1385/parents": {
+      "weakness_parents": [
+        "346"
+      ],
+      "category_parents": [
+        "1411"
+      ]
+    },
+    "/cwe/1385/children": null
+  }
+}

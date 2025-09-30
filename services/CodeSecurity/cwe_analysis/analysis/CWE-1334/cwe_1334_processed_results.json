@@ -1,0 +1,110 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T22:39:45.423754",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "1334",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/1334": {
+      "ID": "1334",
+      "Type": "base_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/1334": {
+      "ID": "1334",
+      "Name": "Unauthorized Error Injection Can Degrade Hardware Redundancy",
+      "Abstraction": "Base",
+      "Structure": "Simple",
+      "Status": "Draft",
+      "Description": "An unauthorized agent can inject errors into a redundant block to deprive the system of redundancy or put the system in a degraded operating mode.",
+      "ExtendedDescription": "\n\nTo ensure the performance and functional reliability of certain components, hardware designers can implement hardware blocks for redundancy in the case that others fail. This redundant block can be prevented from performing as intended if the design allows unauthorized agents to inject errors into it. In this way, a path with injected errors may become unavailable to serve as a redundant channel. This may put the system into a degraded mode of operation which could be exploited by a subsequent attack.\n",
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Class": "Not Language-Specific",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Operating_System",
+          "Class": "Not OS-Specific",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Architecture",
+          "Class": "Not Architecture-Specific",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Technology",
+          "Class": "Not Technology-Specific",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Architecture and Design",
+          "Note": "Such issues could be introduced during hardware architecture and design and identified later during Testing or System Configuration phases."
+        },
+        {
+          "Phase": "Implementation",
+          "Note": "Such issues could be introduced during implementation and identified later during Testing or System Configuration phases."
+        },
+        {
+          "Phase": "Integration",
+          "Note": "Such issues could be introduced during integration and identified later during Testing or System Configuration phases."
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Integrity",
+            "Availability"
+          ],
+          "Impact": [
+            "DoS: Crash, Exit, or Restart",
+            "DoS: Instability",
+            "Quality Degradation",
+            "DoS: Resource Consumption (CPU)",
+            "DoS: Resource Consumption (Memory)",
+            "DoS: Resource Consumption (Other)",
+            "Reduce Performance",
+            "Reduce Reliability",
+            "Unexpected State"
+          ]
+        }
+      ],
+      "DemonstrativeExamples": null,
+      "PotentialMitigations": [
+        {
+          "Phase": [
+            "Architecture and Design"
+          ],
+          "Description": "Ensure the design does not allow error injection in modes intended for normal run-time operation. Provide access controls on interfaces for injecting errors."
+        },
+        {
+          "Phase": [
+            "Implementation"
+          ],
+          "Description": "Disallow error injection in modes which are expected to be used for normal run-time operation. Provide access controls on interfaces for injecting errors."
+        },
+        {
+          "Phase": [
+            "Integration"
+          ],
+          "Description": "Add an access control layer atop any unprotected interfaces for injecting errors."
+        }
+      ]
+    },
+    "/cwe/1334/parents": {
+      "weakness_parents": [],
+      "category_parents": [
+        "1198",
+        "1396"
+      ]
+    },
+    "/cwe/1334/children": null
+  }
+}

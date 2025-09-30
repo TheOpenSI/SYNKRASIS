@@ -1,0 +1,119 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T23:33:16.484981",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "500",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/500": {
+      "ID": "500",
+      "Type": "variant_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/500": {
+      "ID": "500",
+      "Name": "Public Static Field Not Marked Final",
+      "Abstraction": "Variant",
+      "Structure": "Simple",
+      "Status": "Draft",
+      "Description": "An object contains a public static field that is not marked final, which might allow it to be modified in unexpected ways.",
+      "ExtendedDescription": "Public static variables can be read without an accessor and changed without a mutator by any classes in the application.",
+      "LikelihoodOfExploit": "High",
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Name": "C++",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Language",
+          "Name": "Java",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Implementation"
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Integrity"
+          ],
+          "Impact": [
+            "Modify Application Data"
+          ],
+          "Note": "The object could potentially be tampered with."
+        },
+        {
+          "Scope": [
+            "Confidentiality"
+          ],
+          "Impact": [
+            "Read Application Data"
+          ],
+          "Note": "The object could potentially allow the object to be read."
+        }
+      ],
+      "DemonstrativeExamples": [
+        {
+          "Entries": [
+            {
+              "IntroText": "The following examples use of a public static String variable to contain the name of a property/configuration file for the application."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "C++",
+              "ExampleCode": "```\n\tclass SomeAppClass {\n\t\t\tpublic:\n\t\t\t\tstatic string appPropertiesConfigFile = \"app/properties.config\";\n\t\t\t...\n\t}\n```"
+            },
+            {
+              "Nature": "Bad",
+              "Language": "Java",
+              "ExampleCode": "```\n\tpublic class SomeAppClass {\n\t\t\tpublic static String appPropertiesFile = \"app/Application.properties\";\n\t\t\t...\n\t}\n```"
+            },
+            {
+              "BodyText": "Having a public static variable that is not marked final (constant) may allow the variable to the altered in a way not intended by the application. In this example the String variable can be modified to indicate a different on nonexistent properties file which could cause the application to crash or caused unexpected behavior."
+            },
+            {
+              "Nature": "Good",
+              "Language": "C++",
+              "ExampleCode": "```\n\tclass SomeAppClass {\n\t\t\tpublic:\n\t\t\t\tstatic const string appPropertiesConfigFile = \"app/properties.config\";\n\t\t\t...\n\t}\n```"
+            },
+            {
+              "Nature": "Good",
+              "Language": "Java",
+              "ExampleCode": "```\n\tpublic class SomeAppClass {\n\t\t\tpublic static final String appPropertiesFile = \"app/Application.properties\";\n\t\t\t...\n\t}\n```"
+            }
+          ]
+        }
+      ],
+      "PotentialMitigations": [
+        {
+          "Phase": [
+            "Architecture and Design"
+          ],
+          "Description": "Clearly identify the scope for all critical data elements, including whether they should be regarded as static."
+        },
+        {
+          "Phase": [
+            "Implementation"
+          ],
+          "Description": "\n\nMake any static fields private and constant.\n\n\nA constant field is denoted by the keyword 'const' in C/C++ and ' final' in Java\n"
+        }
+      ]
+    },
+    "/cwe/500/parents": {
+      "weakness_parents": [],
+      "category_parents": [
+        "1139",
+        "1403",
+        "849",
+        "1002"
+      ]
+    },
+    "/cwe/500/children": null
+  }
+}

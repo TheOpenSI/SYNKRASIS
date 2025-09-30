@@ -1,0 +1,41 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T22:19:53.347843",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "1118",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/1118": {
+      "ID": "1118",
+      "Type": "base_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/1118": {
+      "ID": "1118",
+      "Name": "Insufficient Documentation of Error Handling Techniques",
+      "Abstraction": "Base",
+      "Structure": "Simple",
+      "Status": "Incomplete",
+      "Description": "The documentation does not sufficiently describe the techniques\n\t\t\t\t\tthat are used for error handling, exception processing, or similar\n\t\t\t\t\tmechanisms.",
+      "ExtendedDescription": "\n\nDocumentation may need to cover error handling techniques at multiple layers, such as module, executable, compilable code unit, or callable.\n",
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": null,
+      "AlternateTerms": null,
+      "ModesOfIntroduction": null,
+      "CommonConsequences": null,
+      "DemonstrativeExamples": null,
+      "PotentialMitigations": null
+    },
+    "/cwe/1118/parents": {
+      "weakness_parents": [
+        "1059"
+      ],
+      "category_parents": [
+        "1412",
+        "1225"
+      ]
+    },
+    "/cwe/1118/children": null
+  }
+}

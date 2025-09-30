@@ -1,0 +1,122 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T22:37:22.237117",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "1316",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/1316": {
+      "ID": "1316",
+      "Type": "base_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/1316": {
+      "ID": "1316",
+      "Name": "Fabric-Address Map Allows Programming of Unwarranted Overlaps of Protected and Unprotected Ranges",
+      "Abstraction": "Base",
+      "Structure": "Simple",
+      "Status": "Draft",
+      "Description": "The address map of the on-chip fabric has protected and unprotected regions overlapping, allowing an attacker to bypass access control to the overlapping portion of the protected region.",
+      "ExtendedDescription": "\n\nVarious ranges can be defined in the system-address map, either in the memory or in Memory-Mapped-IO (MMIO) space. These ranges are usually defined using special range registers that contain information, such as base address and size. Address decoding is the process of determining for which range the incoming transaction is destined. To ensure isolation, ranges containing secret data are access-control protected.\n\n\nOccasionally, these ranges could overlap. The overlap could either be intentional (e.g. due to a limited number of range registers or limited choice in choosing size of the range) or unintentional (e.g. introduced by errors). Some hardware designs allow dynamic remapping of address ranges assigned to peripheral MMIO ranges. In such designs, intentional address overlaps can be created through misconfiguration by malicious software. When protected and unprotected ranges overlap, an attacker could send a transaction and potentially compromise the protections in place, violating the principle of least privilege. \n",
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Class": "Not Language-Specific",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Operating_System",
+          "Class": "Not OS-Specific",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Architecture",
+          "Class": "Not Architecture-Specific",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Technology",
+          "Name": "Bus/Interface Hardware",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Technology",
+          "Class": "Not Technology-Specific",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Architecture and Design"
+        },
+        {
+          "Phase": "Implementation"
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Confidentiality",
+            "Integrity",
+            "Access Control",
+            "Authorization"
+          ],
+          "Impact": [
+            "Bypass Protection Mechanism",
+            "Read Memory",
+            "Modify Memory"
+          ],
+          "Likelihood": [
+            "Medium"
+          ]
+        }
+      ],
+      "DemonstrativeExamples": [
+        {
+          "Entries": [
+            {
+              "IntroText": "An on-chip fabric supports a 64KB address space that is memory-mapped. The fabric has two range registers that support creation of two protected ranges with specific size constraints--4KB, 8KB, 16KB or 32KB. Assets that belong to user A require 4KB, and those of user B require 20KB. Registers and other assets that are not security-sensitive require 40KB. One range register is configured to program 4KB to protect user A's assets. Since a 20KB range cannot be created with the given size constraints, the range register for user B's assets is configured as 32KB. The rest of the address space is left as open. As a result, some part of untrusted and open-address space overlaps with user B range."
+            },
+            {
+              "BodyText": "The fabric does not support least privilege, and an attacker can send a transaction to the overlapping region to tamper with user B data."
+            },
+            {
+              "BodyText": "Since range B only requires 20KB but is allotted 32KB, there is 12KB of reserved space. Overlapping this region of user B data, where there are no assets, with the untrusted space will prevent an attacker from tampering with user B data."
+            }
+          ]
+        }
+      ],
+      "PotentialMitigations": [
+        {
+          "Phase": [
+            "Architecture and Design"
+          ],
+          "Description": "When architecting the address map of the chip, ensure that protected and unprotected ranges are isolated and do not overlap. When designing, ensure that ranges hardcoded in Register-Transfer Level (RTL) do not overlap."
+        },
+        {
+          "Phase": [
+            "Implementation"
+          ],
+          "Description": "Ranges configured by firmware should not overlap. If overlaps are mandatory because of constraints such as a limited number of registers, then ensure that no assets are present in the overlapped portion."
+        },
+        {
+          "Phase": [
+            "Testing"
+          ],
+          "Description": "Validate mitigation actions with robust testing."
+        }
+      ]
+    },
+    "/cwe/1316/parents": {
+      "weakness_parents": [],
+      "category_parents": [
+        "1203",
+        "1396"
+      ]
+    },
+    "/cwe/1316/children": null
+  }
+}

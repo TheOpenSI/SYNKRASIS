@@ -1,0 +1,106 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T23:59:10.966897",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "694",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/694": {
+      "ID": "694",
+      "Type": "base_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/694": {
+      "ID": "694",
+      "Name": "Use of Multiple Resources with Duplicate Identifier",
+      "Abstraction": "Base",
+      "Structure": "Simple",
+      "Status": "Incomplete",
+      "Description": "The product uses multiple resources that can have the same identifier, in a context in which unique identifiers are required.",
+      "ExtendedDescription": "If the product assumes that each resource has a unique identifier, the product could operate on the wrong resource if attackers can cause multiple resources to be associated with the same identifier.",
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Class": "Not Language-Specific",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Architecture and Design"
+        },
+        {
+          "Phase": "Implementation"
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Access Control"
+          ],
+          "Impact": [
+            "Bypass Protection Mechanism"
+          ],
+          "Note": "If unique identifiers are assumed when protecting sensitive resources, then duplicate identifiers might allow attackers to bypass the protection."
+        },
+        {
+          "Scope": [
+            "Other"
+          ],
+          "Impact": [
+            "Quality Degradation"
+          ]
+        }
+      ],
+      "DemonstrativeExamples": [
+        {
+          "ID": "DX-221",
+          "Entries": [
+            {
+              "IntroText": "These two Struts validation forms have the same name."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "XML",
+              "ExampleCode": "```\n\t <form-validation> \n\t\t <formset> \n\t\t\t <form name=\"ProjectForm\"> ... </form>\n\t\t\t <form name=\"ProjectForm\"> ... </form> \n\t\t </formset> \n\t </form-validation> \n```"
+            },
+            {
+              "BodyText": "It is not certain which form will be used by Struts. It is critically important that validation logic be maintained and kept in sync with the rest of the product."
+            }
+          ]
+        }
+      ],
+      "PotentialMitigations": [
+        {
+          "Phase": [
+            "Architecture and Design"
+          ],
+          "Description": "Where possible, use unique identifiers. If non-unique identifiers are detected, then do not operate any resource with a non-unique identifier and report the error appropriately."
+        }
+      ]
+    },
+    "/cwe/694/parents": {
+      "weakness_parents": [
+        "573",
+        "99"
+      ],
+      "category_parents": [
+        "1409",
+        "1006",
+        "137",
+        "399",
+        "984"
+      ]
+    },
+    "/cwe/694/children": {
+      "weakness_children": [
+        "102",
+        "462"
+      ],
+      "category_children": []
+    }
+  }
+}

@@ -1,0 +1,183 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T23:02:27.561567",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "269",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/269": {
+      "ID": "269",
+      "Type": "class_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/269": {
+      "ID": "269",
+      "Name": "Improper Privilege Management",
+      "Abstraction": "Class",
+      "Structure": "Simple",
+      "Status": "Draft",
+      "Description": "The product does not properly assign, modify, track, or check privileges for an actor, creating an unintended sphere of control for that actor.",
+      "ExtendedDescription": null,
+      "LikelihoodOfExploit": "Medium",
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Class": "Not Language-Specific",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Architecture and Design"
+        },
+        {
+          "Phase": "Implementation",
+          "Note": "REALIZATION: This weakness is caused during implementation of an architectural security tactic."
+        },
+        {
+          "Phase": "Operation"
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Access Control"
+          ],
+          "Impact": [
+            "Gain Privileges or Assume Identity"
+          ]
+        }
+      ],
+      "DemonstrativeExamples": [
+        {
+          "ID": "DX-126",
+          "Entries": [
+            {
+              "IntroText": "This code temporarily raises the program's privileges to allow creation of a new user folder."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "Python",
+              "ExampleCode": "```\n\tdef makeNewUserDir(username):\n\t\t\tif invalidUsername(username):\n```\n#avoid CWE-22 and CWE-78* \n\t\t\t\t\tprint('Usernames cannot contain invalid characters')\n\t\t\t\t\treturn False\n\t\t\ttry:\n\t\t\t```\n\t\t\t\traisePrivileges()\n\t\t\t\tos.mkdir('/home/' + username)\n\t\t\t\tlowerPrivileges()\n\t\t\texcept OSError:\n\t\t\t\tprint('Unable to create new user directory for user:' + username)\n\t\t\t\treturn False\n\t\t\treturn True\n```"
+            },
+            {
+              "BodyText": "While the program only raises its privilege level to create the folder and immediately lowers it again, if the call to os.mkdir() throws an exception, the call to lowerPrivileges() will not occur. As a result, the program is indefinitely operating in a raised privilege state, possibly allowing further exploitation to occur."
+            }
+          ]
+        },
+        {
+          "ID": "DX-97",
+          "Entries": [
+            {
+              "IntroText": "The following example demonstrates the weakness."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "C",
+              "ExampleCode": "```\n\tseteuid(0);\n```\n/* do some stuff */* \n\t\n\tseteuid(getuid());"
+            }
+          ]
+        },
+        {
+          "ID": "DX-142",
+          "Entries": [
+            {
+              "IntroText": "The following example demonstrates the weakness."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "Java",
+              "ExampleCode": "```\n\tAccessController.doPrivileged(new PrivilegedAction() {\n\t\t\tpublic Object run() {\n```\n// privileged code goes here, for example:* \n\t\t\t\tSystem.loadLibrary(\"awt\");\n\t\t\t\treturn null;\n\t\t\t\t\n\t\t\t\t *// nothing to return* \n\t\t\t\t}"
+            }
+          ]
+        },
+        {
+          "ID": "DX-127",
+          "Entries": [
+            {
+              "IntroText": "This code intends to allow only Administrators to print debug information about a system."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "Java",
+              "ExampleCode": "```\n\tpublic enum Roles {\n\t\tADMIN,USER,GUEST\n\t}\n\tpublic void printDebugInfo(User requestingUser){\n\t\t\tif(isAuthenticated(requestingUser)){\n\t\t\t\t\tswitch(requestingUser.role){\n\t\t\t\t\t\t\tcase GUEST:\n\t\t\t\t\t\t\t\tSystem.out.println(\"You are not authorized to perform this command\");\n\t\t\t\t\t\t\t\tbreak;\n\t\t\t\t\t\t\tdefault:\n\t\t\t\t\t\t\t\tSystem.out.println(currentDebugState());\n\t\t\t\t\t\t\t\tbreak;\n\t\t\t\t\t}\n\t\t\t}\n\t\t\telse{\n\t\t\t\tSystem.out.println(\"You must be logged in to perform this command\");\n\t\t\t}\n\t}\n```"
+            },
+            {
+              "BodyText": "While the intention was to only allow Administrators to print the debug information, the code as written only excludes those with the role of \"GUEST\". Someone with the role of \"ADMIN\" or \"USER\" will be allowed access, which goes against the original intent. An attacker may be able to use this debug information to craft an attack on the system."
+            }
+          ]
+        },
+        {
+          "ID": "DX-128",
+          "Entries": [
+            {
+              "IntroText": "This code allows someone with the role of \"ADMIN\" or \"OPERATOR\" to reset a user's password. The role of \"OPERATOR\" is intended to have less privileges than an \"ADMIN\", but still be able to help users with small issues such as forgotten passwords."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "Java",
+              "ExampleCode": "```\n\tpublic enum Roles {\n\t\tADMIN,OPERATOR,USER,GUEST\n\t}\n\tpublic void resetPassword(User requestingUser, User user, String password ){\n\t\t\tif(isAuthenticated(requestingUser)){\n\t\t\t\t\tswitch(requestingUser.role){\n\t\t\t\t\t\t\tcase GUEST:\n\t\t\t\t\t\t\t\tSystem.out.println(\"You are not authorized to perform this command\");\n\t\t\t\t\t\t\t\tbreak;\n\t\t\t\t\t\t\tcase USER:\n\t\t\t\t\t\t\t\tSystem.out.println(\"You are not authorized to perform this command\");\n\t\t\t\t\t\t\t\tbreak;\n\t\t\t\t\t\t\tdefault:\n\t\t\t\t\t\t\t\tsetPassword(user,password);\n\t\t\t\t\t\t\t\tbreak;\n\t\t\t\t\t\t\t}\n\t\t\t\t\t}\n\t\t\telse{\n\t\t\t\tSystem.out.println(\"You must be logged in to perform this command\");\n\t\t\t}\n\t}\n```"
+            },
+            {
+              "BodyText": "This code does not check the role of the user whose password is being reset. It is possible for an Operator to gain Admin privileges by resetting the password of an Admin account and taking control of that account."
+            }
+          ]
+        }
+      ],
+      "PotentialMitigations": [
+        {
+          "MitigationID": "MIT-1",
+          "Phase": [
+            "Architecture and Design",
+            "Operation"
+          ],
+          "Description": "Very carefully manage the setting, management, and handling of privileges. Explicitly manage trust zones in the software."
+        },
+        {
+          "MitigationID": "MIT-48",
+          "Phase": [
+            "Architecture and Design"
+          ],
+          "Strategy": "Separation of Privilege",
+          "Description": "Follow the principle of least privilege when assigning access rights to entities in a software system."
+        },
+        {
+          "MitigationID": "MIT-49",
+          "Phase": [
+            "Architecture and Design"
+          ],
+          "Strategy": "Separation of Privilege",
+          "Description": "Consider following the principle of separation of privilege. Require multiple conditions to be met before permitting access to a system resource."
+        }
+      ]
+    },
+    "/cwe/269/parents": {
+      "weakness_parents": [],
+      "category_parents": [
+        "1011",
+        "1348",
+        "1364",
+        "1365",
+        "1366",
+        "1373",
+        "1396",
+        "901"
+      ]
+    },
+    "/cwe/269/children": {
+      "weakness_children": [
+        "250",
+        "266",
+        "267",
+        "268",
+        "270",
+        "271",
+        "274",
+        "648"
+      ],
+      "category_children": []
+    }
+  }
+}

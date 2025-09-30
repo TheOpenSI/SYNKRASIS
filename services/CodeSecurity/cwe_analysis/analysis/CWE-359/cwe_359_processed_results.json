@@ -1,0 +1,152 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T23:14:53.990718",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "359",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/359": {
+      "ID": "359",
+      "Type": "base_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/359": {
+      "ID": "359",
+      "Name": "Exposure of Private Personal Information to an Unauthorized Actor",
+      "Abstraction": "Base",
+      "Structure": "Simple",
+      "Status": "Incomplete",
+      "Description": "The product does not properly prevent a person's private, personal information from being accessed by actors who either (1) are not explicitly authorized to access the information or (2) do not have the implicit consent of the person about whom the information is collected.",
+      "ExtendedDescription": null,
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Class": "Not Language-Specific",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Technology",
+          "Class": "Mobile",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": [
+        {
+          "Term": "Privacy violation"
+        },
+        {
+          "Term": "Privacy leak"
+        },
+        {
+          "Term": "Privacy leakage"
+        }
+      ],
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Architecture and Design",
+          "Note": "OMISSION: This weakness is caused by missing a security tactic during the architecture and design phase."
+        },
+        {
+          "Phase": "Implementation"
+        },
+        {
+          "Phase": "Operation"
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Confidentiality"
+          ],
+          "Impact": [
+            "Read Application Data"
+          ]
+        }
+      ],
+      "DemonstrativeExamples": [
+        {
+          "Entries": [
+            {
+              "IntroText": "The following code contains a logging statement that tracks the contents of records added to a database by storing them in a log file. Among other values that are stored, the getPassword() function returns the user-supplied plaintext password associated with the account."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "C#",
+              "ExampleCode": "```\n\tpass = GetPassword();\n\t...\n\tdbmsLog.WriteLine(id + \":\" + pass + \":\" + type + \":\" + tstamp);\n```"
+            },
+            {
+              "BodyText": "The code in the example above logs a plaintext password to the filesystem. Although many developers trust the filesystem as a safe storage location for data, it should not be trusted implicitly, particularly when privacy is a concern."
+            }
+          ]
+        },
+        {
+          "ID": "DX-111",
+          "Entries": [
+            {
+              "IntroText": "This code uses location to determine the user's current US State location."
+            },
+            {
+              "BodyText": "First the application must declare that it requires the ACCESS_FINE_LOCATION permission in the application's manifest.xml:"
+            },
+            {
+              "Nature": "Bad",
+              "Language": "XML",
+              "ExampleCode": "```\n\t<uses-permission android:name=\"android.permission.ACCESS_FINE_LOCATION\"/>\n```"
+            },
+            {
+              "BodyText": "During execution, a call to getLastLocation() will return a location based on the application's location permissions. In this case the application has permission for the most accurate location possible:"
+            },
+            {
+              "Nature": "Bad",
+              "Language": "Java",
+              "ExampleCode": "```\n\tlocationClient = new LocationClient(this, this, this);\n\tlocationClient.connect();\n\tLocation userCurrLocation;\n\tuserCurrLocation = locationClient.getLastLocation();\n\tderiveStateFromCoords(userCurrLocation);\n```"
+            },
+            {
+              "BodyText": "While the application needs this information, it does not need to use the ACCESS_FINE_LOCATION permission, as the ACCESS_COARSE_LOCATION permission will be sufficient to identify which US state the user is in."
+            }
+          ]
+        },
+        {
+          "Entries": [
+            {
+              "IntroText": "In 2004, an employee at AOL sold approximately 92 million private customer e-mail addresses to a spammer marketing an offshore gambling web site [REF-338]. In response to such high-profile exploits, the collection and management of private data is becoming increasingly regulated."
+            }
+          ]
+        }
+      ],
+      "PotentialMitigations": [
+        {
+          "Phase": [
+            "Requirements"
+          ],
+          "Description": "\n\nIdentify and consult all relevant regulations for personal privacy. An organization may be required to comply with certain federal and state regulations, depending on its location, the type of business it conducts, and the nature of any private data it handles. Regulations may include Safe Harbor Privacy Framework [REF-340], Gramm-Leach Bliley Act (GLBA) [REF-341], Health Insurance Portability and Accountability Act (HIPAA) [REF-342], General Data Protection Regulation (GDPR) [REF-1047], California Consumer Privacy Act (CCPA) [REF-1048], and others.\n"
+        },
+        {
+          "Phase": [
+            "Architecture and Design"
+          ],
+          "Description": "\n\nCarefully evaluate how secure design may interfere with privacy, and vice versa. Security and privacy concerns often seem to compete with each other. From a security perspective, all important operations should be recorded so that any anomalous activity can later be identified. However, when private data is involved, this practice can in fact create risk. Although there are many ways in which private data can be handled unsafely, a common risk stems from misplaced trust. Programmers often trust the operating environment in which a program runs, and therefore believe that it is acceptable store private information on the file system, in the registry, or in other locally-controlled resources. However, even if access to certain resources is restricted, this does not guarantee that the individuals who do have access can be trusted.\n"
+        }
+      ]
+    },
+    "/cwe/359/parents": {
+      "weakness_parents": [
+        "200"
+      ],
+      "category_parents": [
+        "1011",
+        "1029",
+        "1147",
+        "1345",
+        "1417",
+        "199",
+        "254",
+        "857",
+        "975"
+      ]
+    },
+    "/cwe/359/children": null
+  }
+}

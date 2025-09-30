@@ -1,0 +1,215 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T23:36:17.285281",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "522",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/522": {
+      "ID": "522",
+      "Type": "class_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/522": {
+      "ID": "522",
+      "Name": "Insufficiently Protected Credentials",
+      "Abstraction": "Class",
+      "Structure": "Simple",
+      "Status": "Incomplete",
+      "Description": "The product transmits or stores authentication credentials, but it uses an insecure method that is susceptible to unauthorized interception and/or retrieval.",
+      "ExtendedDescription": null,
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Class": "Not Language-Specific",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Technology",
+          "Class": "ICS/OT",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Architecture and Design",
+          "Note": "COMMISSION: This weakness refers to an incorrect design related to an architectural security tactic."
+        },
+        {
+          "Phase": "Implementation"
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Access Control"
+          ],
+          "Impact": [
+            "Gain Privileges or Assume Identity"
+          ],
+          "Note": "An attacker could gain access to user accounts and access sensitive data used by the user accounts."
+        }
+      ],
+      "DemonstrativeExamples": [
+        {
+          "ID": "DX-56",
+          "Entries": [
+            {
+              "IntroText": "This code changes a user's password."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "PHP",
+              "ExampleCode": "```\n\t$user = $_GET['user'];\n\t$pass = $_GET['pass'];\n\t$checkpass = $_GET['checkpass'];\n\tif ($pass == $checkpass) {\n\t\tSetUserPassword($user, $pass);\n\t}\n```"
+            },
+            {
+              "BodyText": "While the code confirms that the requesting user typed the same new password twice, it does not confirm that the user requesting the password change is the same user whose password will be changed. An attacker can request a change of another user's password and gain control of the victim's account."
+            }
+          ]
+        },
+        {
+          "ID": "DX-57",
+          "Entries": [
+            {
+              "IntroText": "The following code reads a password from a properties file and uses the password to connect to a database."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "Java",
+              "ExampleCode": "```\n\t...\n\tProperties prop = new Properties();\n\tprop.load(new FileInputStream(\"config.properties\"));\n\tString password = prop.getProperty(\"password\");\n\tDriverManager.getConnection(url, usr, password);\n\t...\n```"
+            },
+            {
+              "BodyText": "This code will run successfully, but anyone who has access to config.properties can read the value of password. If a devious employee has access to this information, they can use it to break into the system."
+            }
+          ]
+        },
+        {
+          "ID": "DX-58",
+          "Entries": [
+            {
+              "IntroText": "The following code reads a password from the registry and uses the password to create a new network credential."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "Java",
+              "ExampleCode": "```\n\t...\n\tString password = regKey.GetValue(passKey).toString();\n\tNetworkCredential netCred = new NetworkCredential(username,password,domain);\n\t...\n```"
+            },
+            {
+              "BodyText": "This code will run successfully, but anyone who has access to the registry key used to store the password can read the value of password. If a devious employee has access to this information, they can use it to break into the system"
+            }
+          ]
+        },
+        {
+          "ID": "DX-59",
+          "Entries": [
+            {
+              "IntroText": "Both of these examples verify a password by comparing it to a stored compressed version."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "C",
+              "ExampleCode": "```\n\tint VerifyAdmin(char *password) {\n\t\tif (strcmp(compress(password), compressed_password)) {\n\t\t\tprintf(\"Incorrect Password!\\n\");\n\t\t\treturn(0);\n\t\t}\n\t\tprintf(\"Entering Diagnostic Mode...\\n\");\n\t\treturn(1);\n\t}\n```"
+            },
+            {
+              "Nature": "Bad",
+              "Language": "Java",
+              "ExampleCode": "```\n\tint VerifyAdmin(String password) {\n\t\tif (passwd.Equals(compress(password), compressed_password)) {\n\t\t\treturn(0);\n\t\t}\n```\n//Diagnostic Mode* \n\t\treturn(1);}"
+            },
+            {
+              "BodyText": "Because a compression algorithm is used instead of a one way hashing algorithm, an attacker can recover compressed passwords stored in the database."
+            }
+          ]
+        },
+        {
+          "ID": "DX-43",
+          "Entries": [
+            {
+              "IntroText": "The following examples show a portion of properties and configuration files for Java and ASP.NET applications. The files include username and password information but they are stored in cleartext."
+            },
+            {
+              "BodyText": "This Java example shows a properties file with a cleartext username / password pair."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "Java",
+              "ExampleCode": "```\n```\n# Java Web App ResourceBundle properties file* \n\t...\n\twebapp.ldap.username=secretUsername\n\twebapp.ldap.password=secretPassword\n\t..."
+            },
+            {
+              "BodyText": "The following example shows a portion of a configuration file for an ASP.Net application. This configuration file includes username and password information for a connection to a database but the pair is stored in cleartext."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "ASP.NET",
+              "ExampleCode": "```\n\t...\n\t<connectionStrings>\n\t\t<add name=\"ud_DEV\" connectionString=\"connectDB=uDB; uid=db2admin; pwd=password; dbalias=uDB;\" providerName=\"System.Data.Odbc\" />\n\t</connectionStrings>\n\t...\n```"
+            },
+            {
+              "BodyText": "Username and password information should not be included in a configuration file or a properties file in cleartext as this will allow anyone who can read the file access to the resource. If possible, encrypt this information."
+            }
+          ]
+        },
+        {
+          "ID": "DX-153",
+          "Entries": [
+            {
+              "IntroText": "In 2022, the OT:ICEFALL study examined products by 10 different Operational Technology (OT) vendors. The researchers reported 56 vulnerabilities and said that the products were \"insecure by design\" [REF-1283]. If exploited, these vulnerabilities often allowed adversaries to change how the products operated, ranging from denial of service to changing the code that the products executed. Since these products were often used in industries such as power, electrical, water, and others, there could even be safety implications."
+            },
+            {
+              "BodyText": "Multiple vendors used cleartext transmission or storage of passwords in their OT products."
+            }
+          ]
+        }
+      ],
+      "PotentialMitigations": [
+        {
+          "Phase": [
+            "Architecture and Design"
+          ],
+          "Description": "Use an appropriate security mechanism to protect the credentials."
+        },
+        {
+          "Phase": [
+            "Architecture and Design"
+          ],
+          "Description": "Make appropriate use of cryptography to protect the credentials."
+        },
+        {
+          "Phase": [
+            "Implementation"
+          ],
+          "Description": "Use industry standards to protect the credentials (e.g. LDAP, keystore, etc.)."
+        }
+      ]
+    },
+    "/cwe/522/parents": {
+      "weakness_parents": [
+        "1390",
+        "668",
+        "287"
+      ],
+      "category_parents": [
+        "1013",
+        "1028",
+        "1348",
+        "1396",
+        "718",
+        "724",
+        "963",
+        "930"
+      ]
+    },
+    "/cwe/522/children": {
+      "weakness_children": [
+        "256",
+        "257",
+        "260",
+        "261",
+        "523",
+        "549"
+      ],
+      "category_children": []
+    }
+  }
+}

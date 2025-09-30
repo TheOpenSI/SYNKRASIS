@@ -1,0 +1,106 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T22:54:07.707748",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "204",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/204": {
+      "ID": "204",
+      "Type": "base_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/204": {
+      "ID": "204",
+      "Name": "Observable Response Discrepancy",
+      "Abstraction": "Base",
+      "Structure": "Simple",
+      "Status": "Incomplete",
+      "Description": "The product provides different responses to incoming requests in a way that reveals internal state information to an unauthorized actor outside of the intended control sphere.",
+      "ExtendedDescription": null,
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Class": "Not Language-Specific",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Architecture and Design",
+          "Note": "An observable response discrepancy frequently occurs during authentication, where a difference in failed-login messages could allow an attacker to determine if the username is valid or not. The discrepancy could be inadvertent (bug) or intentional (design)."
+        },
+        {
+          "Phase": "Implementation",
+          "Note": "An observable response discrepancy frequently occurs during authentication, where a difference in failed-login messages could allow an attacker to determine if the username is valid or not. The discrepancy could be inadvertent (bug) or intentional (design)."
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Confidentiality",
+            "Access Control"
+          ],
+          "Impact": [
+            "Read Application Data",
+            "Bypass Protection Mechanism"
+          ]
+        }
+      ],
+      "DemonstrativeExamples": [
+        {
+          "ID": "DX-38",
+          "Entries": [
+            {
+              "IntroText": "The following code checks validity of the supplied username and password and notifies the user of a successful or failed login."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "Perl",
+              "ExampleCode": "```\n\tmy $username=param('username'); \n\tmy $password=param('password'); \n\tif (IsValidUsername($username) == 1) \n\t{ \n\t\tif (IsValidPassword($username, $password) == 1) \n\t\t{ \n\t\t\tprint \"Login Successful\"; \n\t\t} \n\t\telse \n\t\t{ \n\t\t\tprint \"Login Failed - incorrect password\"; \n\t\t} \n\t} \n\telse \n\t{ \n\t\tprint \"Login Failed - unknown username\"; \n\t} \n```"
+            },
+            {
+              "BodyText": "In the above code, there are different messages for when an incorrect username is supplied, versus when the username is correct but the password is wrong. This difference enables a potential attacker to understand the state of the login function, and could allow an attacker to discover a valid username by trying different values until the incorrect password message is returned. In essence, this makes it easier for an attacker to obtain half of the necessary authentication credentials."
+            },
+            {
+              "BodyText": "While this type of information may be helpful to a user, it is also useful to a potential attacker. In the above example, the message for both failed cases should be the same, such as:"
+            },
+            {
+              "Nature": "Result",
+              "ExampleCode": "```\n\t\"Login Failed - incorrect username or password\"\n```"
+            }
+          ]
+        }
+      ],
+      "PotentialMitigations": [
+        {
+          "MitigationID": "MIT-46",
+          "Phase": [
+            "Architecture and Design"
+          ],
+          "Strategy": "Separation of Privilege",
+          "Description": "\n\nCompartmentalize the system to have \"safe\" areas where trust boundaries can be unambiguously drawn. Do not allow sensitive data to go outside of the trust boundary and always be careful when interfacing with a compartment outside of the safe area.\n\n\nEnsure that appropriate compartmentalization is built into the system design, and the compartmentalization allows for and reinforces privilege separation functionality. Architects and designers should rely on the principle of least privilege to decide the appropriate time to use privileges and the time to drop privileges.\n"
+        },
+        {
+          "MitigationID": "MIT-39",
+          "Phase": [
+            "Implementation"
+          ],
+          "Description": "\n\nEnsure that error messages only contain minimal details that are useful to the intended audience and no one else. The messages need to strike the balance between being too cryptic (which can confuse users) or being too detailed (which may reveal more than intended). The messages should not reveal the methods that were used to determine the error. Attackers can use detailed information to refine or optimize their original attack, thereby increasing their chances of success.\n\n\nIf errors must be captured in some detail, record them in log messages, but consider what could occur if the log messages can be viewed by attackers. Highly sensitive information such as passwords should never be saved to log files.\n\n\nAvoid inconsistent messaging that might accidentally tip off an attacker about internal state, such as whether a user account exists or not.\n"
+        }
+      ]
+    },
+    "/cwe/204/parents": {
+      "weakness_parents": [],
+      "category_parents": [
+        "1417",
+        "199",
+        "967"
+      ]
+    },
+    "/cwe/204/children": null
+  }
+}

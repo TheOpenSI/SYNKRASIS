@@ -1,0 +1,105 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T22:23:22.173738",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "1189",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/1189": {
+      "ID": "1189",
+      "Type": "base_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/1189": {
+      "ID": "1189",
+      "Name": "Improper Isolation of Shared Resources on System-on-a-Chip (SoC)",
+      "Abstraction": "Base",
+      "Structure": "Simple",
+      "Status": "Stable",
+      "Description": "The System-On-a-Chip (SoC) does not properly isolate shared resources between trusted and untrusted agents.",
+      "ExtendedDescription": "\n\nA System-On-a-Chip (SoC) has a lot of functionality, but it may have a limited number of pins or pads. A pin can only perform one function at a time. However, it can be configured to perform multiple different functions. This technique is called pin multiplexing. Similarly, several resources on the chip may be shared to multiplex and support different features or functions. When such resources are shared between trusted and untrusted agents, untrusted agents may be able to access the assets intended to be accessed only by the trusted agents.\n",
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Class": "Not Language-Specific",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Technology",
+          "Class": "System on Chip",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Architecture and Design"
+        },
+        {
+          "Phase": "Implementation"
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Access Control"
+          ],
+          "Impact": [
+            "Bypass Protection Mechanism"
+          ],
+          "Note": "If resources being used by a trusted user are shared with an untrusted user, the untrusted user may be able to modify the functionality of the shared resource of the trusted user."
+        },
+        {
+          "Scope": [
+            "Integrity"
+          ],
+          "Impact": [
+            "Quality Degradation"
+          ],
+          "Note": "The functionality of the shared resource may be intentionally degraded."
+        }
+      ],
+      "DemonstrativeExamples": [
+        {
+          "Entries": [
+            {
+              "IntroText": "Consider the following SoC design. The Hardware Root of Trust (HRoT) local SRAM is memory mapped in the core{0-N} address space. The HRoT allows or disallows access to private memory ranges, thus allowing the sram to function as a mailbox for communication between untrusted and trusted HRoT partitions."
+            },
+            {
+              "BodyText": "We assume that the threat is from malicious software in the untrusted domain. We assume this software has access to the core{0-N} memory map and can be running at any privilege level on the untrusted cores. The capability of this threat in this example is communication to and from the mailbox region of SRAM modulated by the hrot_iface. To address this threat, information must not enter or exit the shared region of SRAM through hrot_iface when in secure or privileged mode."
+            }
+          ]
+        }
+      ],
+      "PotentialMitigations": [
+        {
+          "Phase": [
+            "Architecture and Design"
+          ],
+          "Strategy": "Separation of Privilege",
+          "Description": "\n\nWhen sharing resources, avoid mixing agents of varying trust levels.\n\n\nUntrusted agents should not share resources with trusted agents.\n"
+        }
+      ]
+    },
+    "/cwe/1189/parents": {
+      "weakness_parents": [
+        "653",
+        "668"
+      ],
+      "category_parents": [
+        "1198",
+        "1364",
+        "1366",
+        "1418"
+      ]
+    },
+    "/cwe/1189/children": {
+      "weakness_children": [
+        "1303"
+      ],
+      "category_children": []
+    }
+  }
+}

@@ -1,0 +1,94 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T22:31:18.143260",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "127",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/127": {
+      "ID": "127",
+      "Type": "variant_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/127": {
+      "ID": "127",
+      "Name": "Buffer Under-read",
+      "Abstraction": "Variant",
+      "Structure": "Simple",
+      "Status": "Draft",
+      "Description": "The product reads from a buffer using buffer access mechanisms such as indexes or pointers that reference memory locations prior to the targeted buffer.",
+      "ExtendedDescription": "This typically occurs when the pointer or its index is decremented to a position before the buffer, when pointer arithmetic results in a position before the beginning of the valid memory location, or when a negative index is used. This may result in exposure of sensitive information or possibly a crash.",
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Name": "C",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Language",
+          "Name": "C++",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Implementation"
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Confidentiality"
+          ],
+          "Impact": [
+            "Read Memory"
+          ]
+        },
+        {
+          "Scope": [
+            "Confidentiality"
+          ],
+          "Impact": [
+            "Bypass Protection Mechanism"
+          ],
+          "Note": "By reading out-of-bounds memory, an attacker might be able to get secret values, such as memory addresses, which can bypass protection mechanisms such as ASLR in order to improve the reliability and likelihood of exploiting a separate weakness to achieve code execution instead of just denial of service."
+        }
+      ],
+      "DemonstrativeExamples": [
+        {
+          "ID": "DX-100",
+          "Entries": [
+            {
+              "IntroText": "In the following code, the method retrieves a value from an array at a specific array index location that is given as an input parameter to the method"
+            },
+            {
+              "Nature": "Bad",
+              "Language": "C",
+              "ExampleCode": "```\n\tint getValueFromArray(int *array, int len, int index) {\n\t\t\tint value;\n```\n// check that the array index is less than the maximum* \n\t\t\t\n\t\t\t\n\t\t\t *// length of the array* \n\t\t\tif (index < len) {\n\t\t\t```\n```\n// get the value at the specified index of the array* \n\t\t\t\t\tvalue = array[index];}\n\t\t\t\n\t\t\t *// if array index is invalid then output error message* \n\t\t\t\n\t\t\t\n\t\t\t *// and return value indicating error* \n\t\t\telse {\n\t\t\t```\n\t\t\t\tprintf(\"Value is: %d\\n\", array[index]);\n\t\t\t\tvalue = -1;\n\t\t\t}\n\t\t\treturn value;\n\t}\n```"
+            },
+            {
+              "BodyText": "However, this method only verifies that the given array index is less than the maximum length of the array but does not check for the minimum value (CWE-839). This will allow a negative value to be accepted as the input array index, which will result in reading data before the beginning of the buffer (CWE-127) and may allow access to sensitive memory. The input array index should be checked to verify that is within the maximum and minimum range required for the array (CWE-129). In this example the if statement should be modified to include a minimum range check, as shown below."
+            },
+            {
+              "Nature": "Good",
+              "Language": "C",
+              "ExampleCode": "```\n\t...\n```\n// check that the array index is within the correct* \n\t\n\t\n\t *// range of values for the array* \n\tif (index >= 0 && index < len) {\n\t\n\t..."
+            }
+          ]
+        }
+      ],
+      "PotentialMitigations": null
+    },
+    "/cwe/127/parents": {
+      "weakness_parents": [],
+      "category_parents": [
+        "1399",
+        "970"
+      ]
+    },
+    "/cwe/127/children": null
+  }
+}

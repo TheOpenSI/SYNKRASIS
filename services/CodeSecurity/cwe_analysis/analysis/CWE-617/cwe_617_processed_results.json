@@ -1,0 +1,90 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T23:49:06.957182",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "617",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/617": {
+      "ID": "617",
+      "Type": "base_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/617": {
+      "ID": "617",
+      "Name": "Reachable Assertion",
+      "Abstraction": "Base",
+      "Structure": "Simple",
+      "Status": "Draft",
+      "Description": "The product contains an assert() or similar statement that can be triggered by an attacker, which leads to an application exit or other behavior that is more severe than necessary.",
+      "ExtendedDescription": "\n\nWhile assertion is good for catching logic errors and reducing the chances of reaching more serious vulnerability conditions, it can still lead to a denial of service.\n\n\nFor example, if a server handles multiple simultaneous connections, and an assert() occurs in one single connection that causes all other connections to be dropped, this is a reachable assertion that leads to a denial of service.\n",
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": null,
+      "AlternateTerms": [
+        {
+          "Term": "assertion failure"
+        }
+      ],
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Implementation"
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Availability"
+          ],
+          "Impact": [
+            "DoS: Crash, Exit, or Restart"
+          ],
+          "Note": "An attacker that can trigger an assert statement can still lead to a denial of service if the relevant code can be triggered by an attacker, and if the scope of the assert() extends beyond the attacker's own session."
+        }
+      ],
+      "DemonstrativeExamples": [
+        {
+          "ID": "DX-183",
+          "Entries": [
+            {
+              "IntroText": "In the excerpt below, an AssertionError (an unchecked exception) is thrown if the user hasn't entered an email address in an HTML form."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "Java",
+              "ExampleCode": "```\n\tString email = request.getParameter(\"email_address\");\n\tassert email != null;\n```"
+            }
+          ]
+        }
+      ],
+      "PotentialMitigations": [
+        {
+          "Phase": [
+            "Implementation"
+          ],
+          "Description": "Make sensitive open/close operation non reachable by directly user-controlled data (e.g. open/close resources)"
+        },
+        {
+          "Phase": [
+            "Implementation"
+          ],
+          "Strategy": "Input Validation",
+          "Description": "Perform input validation on user data."
+        }
+      ]
+    },
+    "/cwe/617/parents": {
+      "weakness_parents": [
+        "670"
+      ],
+      "category_parents": [
+        "1140",
+        "1410",
+        "389",
+        "850",
+        "1001"
+      ]
+    },
+    "/cwe/617/children": null
+  }
+}

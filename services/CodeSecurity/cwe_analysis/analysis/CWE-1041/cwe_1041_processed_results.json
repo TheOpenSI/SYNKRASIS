@@ -1,0 +1,84 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T22:09:21.529625",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "1041",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/1041": {
+      "ID": "1041",
+      "Type": "base_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/1041": {
+      "ID": "1041",
+      "Name": "Use of Redundant Code",
+      "Abstraction": "Base",
+      "Structure": "Simple",
+      "Status": "Incomplete",
+      "Description": "The product has multiple functions, methods, procedures, macros, etc. that\n\t\t\t\t\tcontain the same code.",
+      "ExtendedDescription": "\n\nThis issue makes it more difficult to maintain the product, which indirectly affects security by making it more difficult or time-consuming to find and/or fix vulnerabilities. For example, if there are two copies of the same code, the programmer might fix a weakness in one copy while forgetting to fix the same weakness in another copy.\n",
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Class": "Not Language-Specific",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": null,
+      "ModesOfIntroduction": null,
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Other"
+          ],
+          "Impact": [
+            "Reduce Maintainability"
+          ]
+        }
+      ],
+      "DemonstrativeExamples": [
+        {
+          "Entries": [
+            {
+              "IntroText": "In the following Java example the code performs some complex math when specific test conditions are met. The math is the same in each case and the equations are repeated within the code. Unfortunately if a future change needs to be made then that change needs to be made in all locations. This opens the door to mistakes being made and the changes not being made in the same way in each instance."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "Java",
+              "ExampleCode": "```\n\tpublic class Main {\n\t\tpublic static void main(String[] args) { \n\t\t\tdouble s = 10.0; \n\t\t\tdouble r = 1.0; \n\t\t\tdouble pi = 3.14159; \n\t\t\tdouble surface_area;\n\t\t\tif(r > 0.0) { \n\t\t\t\t// complex math equations \n\t\t\t\tsurface_area = pi * r * s + pi * Math.pow(r, 2);\n\t\t\t}\n\t\t\tif(r > 1.0) { \n\t\t\t\t// a complex set of math \n\t\t\t\tsurface_area = pi * r * s + pi * Math.pow(r, 2);\n\t\t\t}\n\t\t}\n\t}\n```"
+            },
+            {
+              "BodyText": "It is recommended to place the complex math into its own function and then call that function whenever necessary."
+            },
+            {
+              "Nature": "Good",
+              "Language": "Java",
+              "ExampleCode": "```\n\tpublic class Main {\n\t\tprivate double ComplexMath(double r, double s) { \n\t\t\t//complex math equations \n\t\t\tdouble pi = Math.PI; \n\t\t\tdouble surface_area = pi * r * s + pi * Math.pow(r, 2); \n\t\t\treturn surface_area;\n\t\t}\n\t\tpublic static void main(String[] args) { \n\t\t\tdouble s = 10.0; \n\t\t\tdouble r = 1.0; \n\t\t\tdouble surface_area;\n\t\t\tif(r > 0.0) { \n\t\t\t\tsurface_area = ComplexMath(r, s);\n\t\t\t}\n\t\t\tif(r > 1.0) { \n\t\t\t\tsurface_area = ComplexMath(r, s);\n\t\t\t}\n\t\t}\n\t}\n```"
+            }
+          ]
+        }
+      ],
+      "PotentialMitigations": [
+        {
+          "Phase": [
+            "Implementation"
+          ],
+          "Description": "Merge common functionality into a single function and then call that function from across the entire code base."
+        }
+      ]
+    },
+    "/cwe/1041/parents": {
+      "weakness_parents": [],
+      "category_parents": [
+        "1130",
+        "1307",
+        "1412",
+        "1006"
+      ]
+    },
+    "/cwe/1041/children": null
+  }
+}

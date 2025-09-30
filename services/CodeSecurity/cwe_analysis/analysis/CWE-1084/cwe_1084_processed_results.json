@@ -1,0 +1,52 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T22:15:08.087741",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "1084",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/1084": {
+      "ID": "1084",
+      "Type": "base_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/1084": {
+      "ID": "1084",
+      "Name": "Invokable Control Element with Excessive File or Data Access Operations",
+      "Abstraction": "Base",
+      "Structure": "Simple",
+      "Status": "Incomplete",
+      "Description": "A function or method contains too many\n\t\t\t\t\toperations that utilize a data manager or file resource.",
+      "ExtendedDescription": "\n\nThis issue makes it more difficult to maintain the product, which indirectly affects security by making it more difficult or time-consuming to find and/or fix vulnerabilities. It also might make it easier to introduce vulnerabilities.\n\n\nWhile the interpretation of \"too many operations\" may vary for each product or developer, CISQ recommends a default maximum of 7 operations for the same data manager or file.\n",
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": null,
+      "AlternateTerms": null,
+      "ModesOfIntroduction": null,
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Other"
+          ],
+          "Impact": [
+            "Reduce Maintainability"
+          ]
+        }
+      ],
+      "DemonstrativeExamples": null,
+      "PotentialMitigations": null
+    },
+    "/cwe/1084/parents": {
+      "weakness_parents": [
+        "405"
+      ],
+      "category_parents": [
+        "1130",
+        "1307",
+        "1416",
+        "1006"
+      ]
+    },
+    "/cwe/1084/children": null
+  }
+}

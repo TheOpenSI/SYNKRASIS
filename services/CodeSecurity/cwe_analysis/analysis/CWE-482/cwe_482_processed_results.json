@@ -1,0 +1,107 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T23:30:45.244068",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "482",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/482": {
+      "ID": "482",
+      "Type": "variant_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/482": {
+      "ID": "482",
+      "Name": "Comparing instead of Assigning",
+      "Abstraction": "Variant",
+      "Structure": "Simple",
+      "Status": "Draft",
+      "Description": "The code uses an operator for comparison when the intention was to perform an assignment.",
+      "ExtendedDescription": "In many languages, the compare statement is very close in appearance to the assignment statement; they are often confused.",
+      "LikelihoodOfExploit": "Low",
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Name": "C",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Language",
+          "Name": "C++",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Implementation",
+          "Note": "This bug primarily originates from a typo."
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Availability",
+            "Integrity"
+          ],
+          "Impact": [
+            "Unexpected State"
+          ],
+          "Note": "The assignment will not take place, which should cause obvious program execution problems."
+        }
+      ],
+      "DemonstrativeExamples": [
+        {
+          "Entries": [
+            {
+              "IntroText": "The following example demonstrates the weakness."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "Java",
+              "ExampleCode": "```\n\tvoid called(int foo) {\n\t\tfoo==1;\n\t\tif (foo==1) System.out.println(\"foo\\n\");\n\t}\n\tint main() {\n\t\t\tcalled(2);\n\t\t\treturn 0;\n\t}\n```"
+            }
+          ]
+        },
+        {
+          "ID": "DX-103",
+          "Entries": [
+            {
+              "IntroText": "The following C/C++ example shows a simple implementation of a stack that includes methods for adding and removing integer values from the stack. The example uses pointers to add and remove integer values to the stack array variable."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "C",
+              "ExampleCode": "```\n\t#define SIZE 50\n\tint *tos, *p1, stack[SIZE];\n\tvoid push(int i) {\n\t\t\tp1++;\n\t\t\tif(p1==(tos+SIZE)) {\n```\n// Print stack overflow error message and exit* \n\t\t\t\t\t}\n\t\t\t*p1 == i;}\n\t\n\tint pop(void) {\n\t```\n\t\t\tif(p1==tos) {\n```\n// Print stack underflow error message and exit* \n\t\t\t\t\t}\n\t\t\tp1--;\n\t\t\treturn *(p1+1);}\n\t\n\tint main(int argc, char *argv[]) {\n\t```\n```\n// initialize tos and p1 to point to the top of stack* \n\t\t\ttos = stack;\n\t\t\tp1 = stack;\n\t\t\t\n\t\t\t *// code to add and remove items from stack* \n\t\t\t...\n\t\t\treturn 0;}"
+            },
+            {
+              "BodyText": "The push method includes an expression to assign the integer value to the location in the stack pointed to by the pointer variable."
+            },
+            {
+              "BodyText": "However, this expression uses the comparison operator \"==\" rather than the assignment operator \"=\". The result of using the comparison operator instead of the assignment operator causes erroneous values to be entered into the stack and can cause unexpected results."
+            }
+          ]
+        }
+      ],
+      "PotentialMitigations": [
+        {
+          "Phase": [
+            "Testing"
+          ],
+          "Description": "Many IDEs and static analysis products will detect this problem."
+        }
+      ]
+    },
+    "/cwe/482/parents": {
+      "weakness_parents": [],
+      "category_parents": [
+        "1410",
+        "747",
+        "883",
+        "886"
+      ]
+    },
+    "/cwe/482/children": null
+  }
+}

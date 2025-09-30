@@ -1,0 +1,186 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T22:54:00.184446",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "203",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/203": {
+      "ID": "203",
+      "Type": "base_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/203": {
+      "ID": "203",
+      "Name": "Observable Discrepancy",
+      "Abstraction": "Base",
+      "Structure": "Simple",
+      "Status": "Incomplete",
+      "Description": "The product behaves differently or sends different responses under different circumstances in a way that is observable to an unauthorized actor, which exposes security-relevant information about the state of the product, such as whether a particular operation was successful or not.",
+      "ExtendedDescription": "Discrepancies can take many forms, and variations may be detectable in timing, control flow, communications such as replies or requests, or general behavior. These discrepancies can reveal information about the product's operation or internal state to an unauthorized actor. In some cases, discrepancies can be used by attackers to form a side channel.",
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Class": "Not Language-Specific",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Technology",
+          "Class": "Not Technology-Specific",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": [
+        {
+          "Term": "Side Channel Attack",
+          "Description": "Observable Discrepancies are at the root of side channel attacks."
+        }
+      ],
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Architecture and Design"
+        },
+        {
+          "Phase": "Implementation"
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Confidentiality",
+            "Access Control"
+          ],
+          "Impact": [
+            "Read Application Data",
+            "Bypass Protection Mechanism"
+          ],
+          "Note": "An attacker can gain access to sensitive information about the system, including authentication information that may allow an attacker to gain access to the system."
+        },
+        {
+          "Scope": [
+            "Confidentiality"
+          ],
+          "Impact": [
+            "Read Application Data"
+          ],
+          "Note": "When cryptographic primitives are vulnerable to side-channel-attacks, this could be used to reveal unencrypted plaintext in the worst case."
+        }
+      ],
+      "DemonstrativeExamples": [
+        {
+          "ID": "DX-38",
+          "Entries": [
+            {
+              "IntroText": "The following code checks validity of the supplied username and password and notifies the user of a successful or failed login."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "Perl",
+              "ExampleCode": "```\n\tmy $username=param('username'); \n\tmy $password=param('password'); \n\tif (IsValidUsername($username) == 1) \n\t{ \n\t\tif (IsValidPassword($username, $password) == 1) \n\t\t{ \n\t\t\tprint \"Login Successful\"; \n\t\t} \n\t\telse \n\t\t{ \n\t\t\tprint \"Login Failed - incorrect password\"; \n\t\t} \n\t} \n\telse \n\t{ \n\t\tprint \"Login Failed - unknown username\"; \n\t} \n```"
+            },
+            {
+              "BodyText": "In the above code, there are different messages for when an incorrect username is supplied, versus when the username is correct but the password is wrong. This difference enables a potential attacker to understand the state of the login function, and could allow an attacker to discover a valid username by trying different values until the incorrect password message is returned. In essence, this makes it easier for an attacker to obtain half of the necessary authentication credentials."
+            },
+            {
+              "BodyText": "While this type of information may be helpful to a user, it is also useful to a potential attacker. In the above example, the message for both failed cases should be the same, such as:"
+            },
+            {
+              "Nature": "Result",
+              "ExampleCode": "```\n\t\"Login Failed - incorrect username or password\"\n```"
+            }
+          ]
+        },
+        {
+          "ID": "DX-193",
+          "Entries": [
+            {
+              "IntroText": "In this example, the attacker observes how long an authentication takes when the user types in the correct password."
+            },
+            {
+              "BodyText": "When the attacker tries their own values, they can first try strings of various length. When they find a string of the right length, the computation will take a bit longer, because the for loop will run at least once. Additionally, with this code, the attacker can possibly learn one character of the password at a time, because when they guess the first character right, the computation will take longer than a wrong guesses. Such an attack can break even the most sophisticated password with a few hundred guesses."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "Python",
+              "ExampleCode": "```\n\tdef validate_password(actual_pw, typed_pw): \n\t\t\tif len(actual_pw) <> len(typed_pw): \n\t\t\t\treturn 0\n\t\t\tfor i in len(actual_pw): \n\t\t\t\tif actual_pw[i] <> typed_pw[i]: \n\t\t\t\t\treturn 0\n\t\t\treturn 1\n```"
+            },
+            {
+              "BodyText": "Note that in this example, the actual password must be handled in constant time as far as the attacker is concerned, even if the actual password is of an unusual length. This is one reason why it is good to use an algorithm that, among other things, stores a seeded cryptographic one-way hash of the password, then compare the hashes, which will always be of the same length."
+            }
+          ]
+        },
+        {
+          "Entries": [
+            {
+              "IntroText": "Non-uniform processing time causes timing channel."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "Other",
+              "ExampleCode": "Suppose an algorithm for implementing an encryption routine works fine per se, but the time taken to output the result of the encryption routine depends on a relationship between the input plaintext and the key (e.g., suppose, if the plaintext is similar to the key, it would run very fast)."
+            },
+            {
+              "BodyText": "In the example above, an attacker may vary the inputs, then observe differences between processing times (since different plaintexts take different time). This could be used to infer information about the key."
+            },
+            {
+              "Nature": "Good",
+              "Language": "Other",
+              "ExampleCode": "Artificial delays may be added to ensure that all calculations take equal time to execute."
+            }
+          ]
+        },
+        {
+          "Entries": [
+            {
+              "IntroText": "Suppose memory access patterns for an encryption routine are dependent on the secret key."
+            },
+            {
+              "BodyText": "An attacker can recover the key by knowing if specific memory locations have been accessed or not. The value stored at those memory locations is irrelevant. The encryption routine's memory accesses will affect the state of the processor cache. If cache resources are shared across contexts, after the encryption routine completes, an attacker in different execution context can discover which memory locations the routine accessed by measuring the time it takes for their own memory accesses to complete."
+            }
+          ]
+        }
+      ],
+      "PotentialMitigations": [
+        {
+          "MitigationID": "MIT-46",
+          "Phase": [
+            "Architecture and Design"
+          ],
+          "Strategy": "Separation of Privilege",
+          "Description": "\n\nCompartmentalize the system to have \"safe\" areas where trust boundaries can be unambiguously drawn. Do not allow sensitive data to go outside of the trust boundary and always be careful when interfacing with a compartment outside of the safe area.\n\n\nEnsure that appropriate compartmentalization is built into the system design, and the compartmentalization allows for and reinforces privilege separation functionality. Architects and designers should rely on the principle of least privilege to decide the appropriate time to use privileges and the time to drop privileges.\n"
+        },
+        {
+          "MitigationID": "MIT-39",
+          "Phase": [
+            "Implementation"
+          ],
+          "Description": "\n\nEnsure that error messages only contain minimal details that are useful to the intended audience and no one else. The messages need to strike the balance between being too cryptic (which can confuse users) or being too detailed (which may reveal more than intended). The messages should not reveal the methods that were used to determine the error. Attackers can use detailed information to refine or optimize their original attack, thereby increasing their chances of success.\n\n\nIf errors must be captured in some detail, record them in log messages, but consider what could occur if the log messages can be viewed by attackers. Highly sensitive information such as passwords should never be saved to log files.\n\n\nAvoid inconsistent messaging that might accidentally tip off an attacker about internal state, such as whether a user account exists or not.\n"
+        }
+      ]
+    },
+    "/cwe/203/parents": {
+      "weakness_parents": [
+        "200"
+      ],
+      "category_parents": [
+        "1205",
+        "1417",
+        "717",
+        "728",
+        "967"
+      ]
+    },
+    "/cwe/203/children": {
+      "weakness_children": [
+        "1300",
+        "1303",
+        "204",
+        "205",
+        "208"
+      ],
+      "category_children": []
+    }
+  }
+}

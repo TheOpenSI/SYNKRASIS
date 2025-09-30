@@ -1,0 +1,273 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-30T00:09:02.039191",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "799",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/799": {
+      "endpoint": "/cwe/799",
+      "url": "https://cwe-api.mitre.org/api/v1/cwe/799",
+      "status_code": 200,
+      "success": true,
+      "error": null,
+      "data": [
+        {
+          "Type": "class_weakness",
+          "ID": "799"
+        }
+      ]
+    },
+    "/cwe/weakness/799": {
+      "endpoint": "/cwe/weakness/799",
+      "url": "https://cwe-api.mitre.org/api/v1/cwe/weakness/799",
+      "status_code": 200,
+      "success": true,
+      "error": null,
+      "data": {
+        "Weaknesses": [
+          {
+            "ID": "799",
+            "Name": "Improper Control of Interaction Frequency",
+            "Abstraction": "Class",
+            "Structure": "Simple",
+            "Status": "Incomplete",
+            "Description": "The product does not properly limit the number or frequency of interactions that it has with an actor, such as the number of incoming requests.",
+            "ExtendedDescription": "This can allow the actor to perform actions more frequently than expected. The actor could be a human or an automated process such as a virus or bot. This could be used to cause a denial of service, compromise program logic (such as limiting humans to a single vote), or other consequences. For example, an authentication routine might not limit the number of times an attacker can guess a password. Or, a web site might conduct a poll but only expect humans to vote a maximum of once a day.",
+            "RelatedWeaknesses": [
+              {
+                "Nature": "ChildOf",
+                "CweID": "691",
+                "ViewID": "1000",
+                "Ordinal": "Primary"
+              }
+            ],
+            "WeaknessOrdinalities": [
+              {
+                "Ordinality": "Primary"
+              }
+            ],
+            "ApplicablePlatforms": [
+              {
+                "Type": "Language",
+                "Class": "Not Language-Specific",
+                "Prevalence": "Undetermined"
+              }
+            ],
+            "AlternateTerms": [
+              {
+                "Term": "Insufficient anti-automation",
+                "Description": "The term \"insufficient anti-automation\" focuses primarly on non-human actors such as viruses or bots, but the scope of this CWE entry is broader."
+              },
+              {
+                "Term": "Brute force",
+                "Description": "Vulnerabilities that can be targeted using brute force attacks are often symptomatic of this weakness."
+              }
+            ],
+            "ModesOfIntroduction": [
+              {
+                "Phase": "Architecture and Design"
+              },
+              {
+                "Phase": "Implementation"
+              },
+              {
+                "Phase": "Operation"
+              }
+            ],
+            "CommonConsequences": [
+              {
+                "Scope": [
+                  "Availability",
+                  "Access Control",
+                  "Other"
+                ],
+                "Impact": [
+                  "DoS: Resource Consumption (Other)",
+                  "Bypass Protection Mechanism",
+                  "Other"
+                ]
+              }
+            ],
+            "DemonstrativeExamples": [
+              {
+                "Entries": [
+                  {
+                    "IntroText": "In the following code a username and password is read from a socket and an attempt is made to authenticate the username and password. The code will continuously checked the socket for a username and password until it has been authenticated."
+                  },
+                  {
+                    "Nature": "Bad",
+                    "Language": "C",
+                    "ExampleCode": "```\n\tchar username[USERNAME_SIZE];\n\tchar password[PASSWORD_SIZE];\n\twhile (isValidUser == 0) {\n\t\t\tif (getNextMessage(socket, username, USERNAME_SIZE) > 0) {\n\t\t\t\tif (getNextMessage(socket, password, PASSWORD_SIZE) > 0) {\n\t\t\t\t\tisValidUser = AuthenticateUser(username, password);\n\t\t\t\t}\n\t\t\t}\n\t}\n\treturn(SUCCESS);\n```"
+                  },
+                  {
+                    "BodyText": "This code does not place any restriction on the number of authentication attempts made. There should be a limit on the number of authentication attempts made to prevent brute force attacks as in the following example code."
+                  },
+                  {
+                    "Nature": "Good",
+                    "Language": "C",
+                    "ExampleCode": "```\n\tint count = 0;\n\twhile ((isValidUser == 0) && (count < MAX_ATTEMPTS)) {\n\t\t\tif (getNextMessage(socket, username, USERNAME_SIZE) > 0) {\n\t\t\t\tif (getNextMessage(socket, password, PASSWORD_SIZE) > 0) {\n\t\t\t\t\tisValidUser = AuthenticateUser(username, password);\n\t\t\t\t}\n\t\t\t}\n\t\t\tcount++;\n\t}\n\tif (isValidUser) {\n\t\treturn(SUCCESS);\n\t}\n\telse {\n\t\treturn(FAIL);\n\t}\n```"
+                  }
+                ]
+              }
+            ],
+            "ObservedExamples": [
+              {
+                "Reference": "CVE-2002-1876",
+                "Description": "Mail server allows attackers to prevent other users from accessing mail by sending large number of rapid requests.",
+                "Link": "https://www.cve.org/CVERecord?id=CVE-2002-1876"
+              }
+            ],
+            "TaxonomyMappings": [
+              {
+                "TaxonomyName": "WASC",
+                "EntryID": "21",
+                "EntryName": "Insufficient Anti-Automation"
+              }
+            ],
+            "References": [
+              {
+                "ExternalReferenceID": "REF-731",
+                "Authors": [
+                  "Web Application Security Consortium"
+                ],
+                "Title": "Insufficient Anti-automation",
+                "URL": "http://projects.webappsec.org/Insufficient+Anti-automation"
+              }
+            ],
+            "MappingNotes": {
+              "Usage": "Allowed-with-Review",
+              "Rationale": "This CWE entry is a Class and might have Base-level children that would be more appropriate",
+              "Comments": "Examine children of this entry to see if there is a better fit",
+              "Reasons": [
+                "Abstraction"
+              ]
+            },
+            "ContentHistory": [
+              {
+                "Type": "Submission",
+                "SubmissionName": "CWE Content Team",
+                "SubmissionOrganization": "MITRE",
+                "SubmissionDate": "2010-01-15",
+                "SubmissionComment": "New entry to handle anti-automation as identified in WASC.",
+                "SubmissionVersion": "1.8",
+                "SubmissionReleaseDate": "2010-02-16"
+              },
+              {
+                "Type": "Modification",
+                "ModificationName": "CWE Content Team",
+                "ModificationOrganization": "MITRE",
+                "ModificationDate": "2010-04-05",
+                "ModificationComment": "updated Demonstrative_Examples"
+              },
+              {
+                "Type": "Modification",
+                "ModificationName": "CWE Content Team",
+                "ModificationOrganization": "MITRE",
+                "ModificationDate": "2011-03-29",
+                "ModificationComment": "updated Observed_Examples, Relationships"
+              },
+              {
+                "Type": "Modification",
+                "ModificationName": "CWE Content Team",
+                "ModificationOrganization": "MITRE",
+                "ModificationDate": "2011-06-01",
+                "ModificationComment": "updated Common_Consequences"
+              },
+              {
+                "Type": "Modification",
+                "ModificationName": "CWE Content Team",
+                "ModificationOrganization": "MITRE",
+                "ModificationDate": "2017-11-08",
+                "ModificationComment": "updated Demonstrative_Examples"
+              },
+              {
+                "Type": "Modification",
+                "ModificationName": "CWE Content Team",
+                "ModificationOrganization": "MITRE",
+                "ModificationDate": "2020-02-24",
+                "ModificationComment": "updated Relationships"
+              },
+              {
+                "Type": "Modification",
+                "ModificationName": "CWE Content Team",
+                "ModificationOrganization": "MITRE",
+                "ModificationDate": "2021-10-28",
+                "ModificationComment": "updated Relationships"
+              },
+              {
+                "Type": "Modification",
+                "ModificationName": "CWE Content Team",
+                "ModificationOrganization": "MITRE",
+                "ModificationDate": "2023-01-31",
+                "ModificationComment": "updated Description"
+              },
+              {
+                "Type": "Modification",
+                "ModificationName": "CWE Content Team",
+                "ModificationOrganization": "MITRE",
+                "ModificationDate": "2023-04-27",
+                "ModificationComment": "updated Relationships"
+              },
+              {
+                "Type": "Modification",
+                "ModificationName": "CWE Content Team",
+                "ModificationOrganization": "MITRE",
+                "ModificationDate": "2023-06-29",
+                "ModificationComment": "updated Mapping_Notes"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    "/cwe/799/parents": {
+      "endpoint": "/cwe/799/parents",
+      "url": "https://cwe-api.mitre.org/api/v1/cwe/799/parents",
+      "status_code": 200,
+      "success": true,
+      "error": null,
+      "data": [
+        {
+          "Type": "pillar_weakness",
+          "ID": "691",
+          "ViewID": "1000",
+          "Primary_Parent": true
+        },
+        {
+          "Type": "category",
+          "ID": "1348",
+          "ViewID": "1344"
+        },
+        {
+          "Type": "category",
+          "ID": "1410",
+          "ViewID": "1400"
+        },
+        {
+          "Type": "category",
+          "ID": "808",
+          "ViewID": "800"
+        }
+      ]
+    },
+    "/cwe/799/children": {
+      "endpoint": "/cwe/799/children",
+      "url": "https://cwe-api.mitre.org/api/v1/cwe/799/children",
+      "status_code": 200,
+      "success": true,
+      "error": null,
+      "data": [
+        {
+          "Type": "base_weakness",
+          "ID": "307"
+        },
+        {
+          "Type": "base_weakness",
+          "ID": "837"
+        }
+      ]
+    }
+  }
+}

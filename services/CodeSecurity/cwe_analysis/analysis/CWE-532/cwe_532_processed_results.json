@@ -1,0 +1,139 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T23:37:39.826816",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "532",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/532": {
+      "ID": "532",
+      "Type": "base_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/532": {
+      "ID": "532",
+      "Name": "Insertion of Sensitive Information into Log File",
+      "Abstraction": "Base",
+      "Structure": "Simple",
+      "Status": "Incomplete",
+      "Description": "The product writes sensitive information to a log file.",
+      "ExtendedDescription": null,
+      "LikelihoodOfExploit": "Medium",
+      "ApplicablePlatforms": null,
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Architecture and Design",
+          "Note": "COMMISSION: This weakness refers to an incorrect design related to an architectural security tactic."
+        },
+        {
+          "Phase": "Implementation"
+        },
+        {
+          "Phase": "Operation"
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Confidentiality"
+          ],
+          "Impact": [
+            "Read Application Data"
+          ],
+          "Note": "Logging sensitive user data, full path names, or system information often provides attackers with an additional, less-protected path to acquiring the information."
+        }
+      ],
+      "DemonstrativeExamples": [
+        {
+          "ID": "DX-179",
+          "Entries": [
+            {
+              "IntroText": "In the following code snippet, a user's full name and credit card number are written to a log file."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "Java",
+              "ExampleCode": "```\n\tlogger.info(\"Username: \" + usernme + \", CCN: \" + ccn);\n```"
+            }
+          ]
+        },
+        {
+          "ID": "DX-120",
+          "Entries": [
+            {
+              "IntroText": "This code stores location information about the current user:"
+            },
+            {
+              "Nature": "Bad",
+              "Language": "Java",
+              "ExampleCode": "```\n\tlocationClient = new LocationClient(this, this, this);\n\tlocationClient.connect();\n\tcurrentUser.setLocation(locationClient.getLastLocation());\n```\n...* \n\t\n\tcatch (Exception e) {\n\t```\n\t\tAlertDialog.Builder builder = new AlertDialog.Builder(this);\n\t\tbuilder.setMessage(\"Sorry, this application has experienced an error.\");\n\t\tAlertDialog alert = builder.create();\n\t\talert.show();\n\t\tLog.e(\"ExampleActivity\", \"Caught exception: \" + e + \" While on User:\" + User.toString());\n\t}\n```"
+            },
+            {
+              "BodyText": "When the application encounters an exception it will write the user object to the log. Because the user object contains location information, the user's location is also written to the log."
+            }
+          ]
+        },
+        {
+          "ID": "DX-119",
+          "Entries": [
+            {
+              "IntroText": "In the example below, the method getUserBankAccount retrieves a bank account object from a database using the supplied username and account number to query the database. If an SQLException is raised when querying the database, an error message is created and output to a log file."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "Java",
+              "ExampleCode": "```\n\tpublic BankAccount getUserBankAccount(String username, String accountNumber) {\n\t\t\tBankAccount userAccount = null;\n\t\t\tString query = null;\n\t\t\ttry {\n\t\t\t\tif (isAuthorizedUser(username)) {\n\t\t\t\t\tquery = \"SELECT * FROM accounts WHERE owner = \"\n\t\t\t\t\t+ username + \" AND accountID = \" + accountNumber;\n\t\t\t\t\tDatabaseManager dbManager = new DatabaseManager();\n\t\t\t\t\tConnection conn = dbManager.getConnection();\n\t\t\t\t\tStatement stmt = conn.createStatement();\n\t\t\t\t\tResultSet queryResult = stmt.executeQuery(query);\n\t\t\t\t\tuserAccount = (BankAccount)queryResult.getObject(accountNumber);\n\t\t\t\t}\n\t\t\t} catch (SQLException ex) {\n\t\t\t\tString logMessage = \"Unable to retrieve account information from database,\\nquery: \" + query;\n\t\t\t\tLogger.getLogger(BankManager.class.getName()).log(Level.SEVERE, logMessage, ex);\n\t\t\t}\n\t\t\treturn userAccount;\n\t}\n```"
+            },
+            {
+              "BodyText": "The error message that is created includes information about the database query that may contain sensitive information about the database or query logic. In this case, the error message will expose the table name and column names used in the database. This data could be used to simplify other attacks, such as SQL injection (CWE-89) to directly access the database."
+            }
+          ]
+        }
+      ],
+      "PotentialMitigations": [
+        {
+          "Phase": [
+            "Architecture and Design",
+            "Implementation"
+          ],
+          "Description": "Consider seriously the sensitivity of the information written into log files. Do not write secrets into the log files."
+        },
+        {
+          "Phase": [
+            "Distribution"
+          ],
+          "Description": "Remove debug log files before deploying the application into production."
+        },
+        {
+          "Phase": [
+            "Operation"
+          ],
+          "Description": "Protect log files against unauthorized read/write."
+        },
+        {
+          "Phase": [
+            "Implementation"
+          ],
+          "Description": "Adjust configurations appropriately when software is transitioned from a debug state to production."
+        }
+      ]
+    },
+    "/cwe/532/parents": {
+      "weakness_parents": [
+        "200"
+      ],
+      "category_parents": [
+        "1009",
+        "1147",
+        "1355",
+        "1417",
+        "731",
+        "857",
+        "963"
+      ]
+    },
+    "/cwe/532/children": null
+  }
+}

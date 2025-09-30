@@ -1,0 +1,91 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T23:44:59.414756",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "588",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/588": {
+      "ID": "588",
+      "Type": "variant_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/588": {
+      "ID": "588",
+      "Name": "Attempt to Access Child of a Non-structure Pointer",
+      "Abstraction": "Variant",
+      "Structure": "Simple",
+      "Status": "Incomplete",
+      "Description": "Casting a non-structure type to a structure type and accessing a field can lead to memory access errors or data corruption.",
+      "ExtendedDescription": null,
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": null,
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Implementation"
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Integrity"
+          ],
+          "Impact": [
+            "Modify Memory"
+          ],
+          "Note": "Adjacent variables in memory may be corrupted by assignments performed on fields after the cast."
+        },
+        {
+          "Scope": [
+            "Availability"
+          ],
+          "Impact": [
+            "DoS: Crash, Exit, or Restart"
+          ],
+          "Note": "Execution may end due to a memory access error."
+        }
+      ],
+      "DemonstrativeExamples": [
+        {
+          "Entries": [
+            {
+              "IntroText": "The following example demonstrates the weakness."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "C",
+              "ExampleCode": "```\n\tstruct foo\n\t{\n\t\tint i;\n\t}\n\t...\n\tint main(int argc, char **argv)\n\t{\n\t\t*foo = (struct foo *)main;\n\t\tfoo->i = 2;\n\t\treturn foo->i;\n\t}\n```"
+            }
+          ]
+        }
+      ],
+      "PotentialMitigations": [
+        {
+          "Phase": [
+            "Requirements"
+          ],
+          "Description": "The choice could be made to use a language that is not susceptible to these issues."
+        },
+        {
+          "Phase": [
+            "Implementation"
+          ],
+          "Description": "Review of type casting operations can identify locations where incompatible types are cast."
+        }
+      ]
+    },
+    "/cwe/588/parents": {
+      "weakness_parents": [
+        "704",
+        "758"
+      ],
+      "category_parents": [
+        "1416",
+        "971"
+      ]
+    },
+    "/cwe/588/children": null
+  }
+}

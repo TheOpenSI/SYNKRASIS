@@ -1,0 +1,110 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T23:56:46.979781",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "675",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/675": {
+      "ID": "675",
+      "Type": "class_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/675": {
+      "ID": "675",
+      "Name": "Multiple Operations on Resource in Single-Operation Context",
+      "Abstraction": "Class",
+      "Structure": "Simple",
+      "Status": "Draft",
+      "Description": "The product performs the same operation on a resource two or more times, when the operation should only be applied once.",
+      "ExtendedDescription": null,
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Class": "Not Language-Specific",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Implementation"
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Other"
+          ],
+          "Impact": [
+            "Other"
+          ]
+        }
+      ],
+      "DemonstrativeExamples": [
+        {
+          "ID": "DX-149",
+          "Entries": [
+            {
+              "IntroText": "The following code shows a simple example of a double free vulnerability."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "C",
+              "ExampleCode": "```\n\tchar* ptr = (char*)malloc (SIZE);\n\t...\n\tif (abrt) {\n\t\tfree(ptr);\n\t}\n\t...\n\tfree(ptr);\n```"
+            },
+            {
+              "BodyText": "Double free vulnerabilities have two common (and sometimes overlapping) causes:"
+            },
+            {
+              "BodyText": "- Error conditions and other exceptional circumstances\n\n  - Confusion over which part of the program is responsible for freeing the memory"
+            },
+            {
+              "BodyText": "Although some double free vulnerabilities are not much more complicated than this example, most are spread out across hundreds of lines of code or even different files. Programmers seem particularly susceptible to freeing global variables more than once."
+            }
+          ]
+        },
+        {
+          "ID": "DX-184",
+          "Entries": [
+            {
+              "IntroText": "This code binds a server socket to port 21, allowing the server to listen for traffic on that port."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "C",
+              "ExampleCode": "```\n\tvoid bind_socket(void) {\n\t\t\tint server_sockfd;\n\t\t\tint server_len;\n\t\t\tstruct sockaddr_in server_address;\n```\n/*unlink the socket if already bound to avoid an error when bind() is called*/* \n\t\t\t\n\t\t\tunlink(\"server_socket\");\n\t\t\tserver_sockfd = socket(AF_INET, SOCK_STREAM, 0);\n\t\t\t\n\t\t\tserver_address.sin_family = AF_INET;\n\t\t\tserver_address.sin_port = 21;\n\t\t\tserver_address.sin_addr.s_addr = htonl(INADDR_ANY);\n\t\t\tserver_len = sizeof(struct sockaddr_in);\n\t\t\t\n\t\t\tbind(server_sockfd, (struct sockaddr *) &s1, server_len);}"
+            },
+            {
+              "BodyText": "This code may result in two servers binding a socket to same port, thus receiving each other's traffic. This could be used by an attacker to steal packets meant for another process, such as a secure FTP server."
+            }
+          ]
+        }
+      ],
+      "PotentialMitigations": null
+    },
+    "/cwe/675/parents": {
+      "weakness_parents": [
+        "573"
+      ],
+      "category_parents": [
+        "1412",
+        "743",
+        "877",
+        "984"
+      ]
+    },
+    "/cwe/675/children": {
+      "weakness_children": [
+        "1341",
+        "174",
+        "605",
+        "764",
+        "765"
+      ],
+      "category_children": []
+    }
+  }
+}

@@ -1,0 +1,169 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T23:55:39.115179",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "667",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/667": {
+      "ID": "667",
+      "Type": "class_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/667": {
+      "ID": "667",
+      "Name": "Improper Locking",
+      "Abstraction": "Class",
+      "Structure": "Simple",
+      "Status": "Draft",
+      "Description": "The product does not properly acquire or release a lock on a resource, leading to unexpected resource state changes and behaviors.",
+      "ExtendedDescription": "\n\nLocking is a type of synchronization behavior that ensures that multiple independently-operating processes or threads do not interfere with each other when accessing the same resource. All processes/threads are expected to follow the same steps for locking. If these steps are not followed precisely - or if no locking is done at all - then another process/thread could modify the shared resource in a way that is not visible or predictable to the original process. This can lead to data or memory corruption, denial of service, etc.\n",
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": null,
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Architecture and Design"
+        },
+        {
+          "Phase": "Implementation"
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Availability"
+          ],
+          "Impact": [
+            "DoS: Resource Consumption (CPU)"
+          ],
+          "Note": "Inconsistent locking discipline can lead to deadlock."
+        }
+      ],
+      "DemonstrativeExamples": [
+        {
+          "Entries": [
+            {
+              "IntroText": "In the following Java snippet, methods are defined to get and set a long field in an instance of a class that is shared across multiple threads. Because operations on double and long are nonatomic in Java, concurrent access may cause unexpected behavior. Thus, all operations on long and double fields should be synchronized."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "Java",
+              "ExampleCode": "```\n\tprivate long someLongValue;\n\tpublic long getLongValue() {\n\t\treturn someLongValue;\n\t}\n\tpublic void setLongValue(long l) {\n\t\tsomeLongValue = l;\n\t}\n```"
+            }
+          ]
+        },
+        {
+          "ID": "DX-69",
+          "Entries": [
+            {
+              "IntroText": "This code tries to obtain a lock for a file, then writes to it."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "PHP",
+              "ExampleCode": "```\n\tfunction writeToLog($message){\n\t\t$logfile = fopen(\"logFile.log\", \"a\");\n```\n//attempt to get logfile lock* \n\t\tif (flock($logfile, LOCK_EX)) {\n\t\t```\n\t\t\tfwrite($logfile,$message);\n```\n// unlock logfile* \n\t\t\tflock($logfile, LOCK_UN);}\n\t\telse {\n\t\t```\n\t\t\tprint \"Could not obtain lock on logFile.log, message not recorded\\n\";\n\t\t}\n\t}\n\tfclose($logFile);\n```"
+            },
+            {
+              "BodyText": "PHP by default will wait indefinitely until a file lock is released. If an attacker is able to obtain the file lock, this code will pause execution, possibly leading to denial of service for other users. Note that in this case, if an attacker can perform an flock() on the file, they may already have privileges to destroy the log file. However, this still impacts the execution of other programs that depend on flock()."
+            }
+          ]
+        },
+        {
+          "ID": "DX-24",
+          "Entries": [
+            {
+              "IntroText": "The following function attempts to acquire a lock in order to perform operations on a shared resource."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "C",
+              "ExampleCode": "```\n\tvoid f(pthread_mutex_t *mutex) {\n\t\t\tpthread_mutex_lock(mutex);\n```\n/* access shared resource */* \n\t\t\t\n\t\t\t\n\t\t\tpthread_mutex_unlock(mutex);}"
+            },
+            {
+              "BodyText": "However, the code does not check the value returned by pthread_mutex_lock() for errors. If pthread_mutex_lock() cannot acquire the mutex for any reason, the function may introduce a race condition into the program and result in undefined behavior."
+            },
+            {
+              "BodyText": "In order to avoid data races, correctly written programs must check the result of thread synchronization functions and appropriately handle all errors, either by attempting to recover from them or reporting them to higher levels."
+            },
+            {
+              "Nature": "Good",
+              "Language": "C",
+              "ExampleCode": "```\n\tint f(pthread_mutex_t *mutex) {\n\t\t\tint result;\n\t\t\tresult = pthread_mutex_lock(mutex);\n\t\t\tif (0 != result)\n\t\t\t\treturn result;\n```\n/* access shared resource */* \n\t\t\t\n\t\t\t\n\t\t\treturn pthread_mutex_unlock(mutex);}"
+            }
+          ]
+        },
+        {
+          "ID": "DX-70",
+          "Entries": [
+            {
+              "IntroText": "It may seem that the following bit of code achieves thread safety while avoiding unnecessary synchronization..."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "Java",
+              "ExampleCode": "```\n\tif (helper == null) {\n\t\t\tsynchronized (this) {\n\t\t\t\tif (helper == null) {\n\t\t\t\t\thelper = new Helper();\n\t\t\t\t}\n\t\t\t}\n\t}\n\treturn helper;\n```"
+            },
+            {
+              "BodyText": "The programmer wants to guarantee that only one Helper() object is ever allocated, but does not want to pay the cost of synchronization every time this code is called."
+            },
+            {
+              "BodyText": "Suppose that helper is not initialized. Then, thread A sees that helper==null and enters the synchronized block and begins to execute:"
+            },
+            {
+              "Nature": "Bad",
+              "Language": "Java",
+              "ExampleCode": "```\n\thelper = new Helper();\n```"
+            },
+            {
+              "BodyText": "If a second thread, thread B, takes over in the middle of this call and helper has not finished running the constructor, then thread B may make calls on helper while its fields hold incorrect values."
+            }
+          ]
+        }
+      ],
+      "PotentialMitigations": [
+        {
+          "Phase": [
+            "Implementation"
+          ],
+          "Strategy": "Libraries or Frameworks",
+          "Description": "Use industry standard APIs to implement locking mechanism."
+        }
+      ]
+    },
+    "/cwe/667/parents": {
+      "weakness_parents": [
+        "662"
+      ],
+      "category_parents": [
+        "1131",
+        "1142",
+        "1143",
+        "1169",
+        "1171",
+        "1401",
+        "748",
+        "852",
+        "853",
+        "986"
+      ]
+    },
+    "/cwe/667/children": {
+      "weakness_children": [
+        "1232",
+        "1233",
+        "1234",
+        "412",
+        "413",
+        "414",
+        "609",
+        "764",
+        "765",
+        "832",
+        "833"
+      ],
+      "category_children": []
+    }
+  }
+}

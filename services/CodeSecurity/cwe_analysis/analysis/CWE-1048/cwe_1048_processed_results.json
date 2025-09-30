@@ -1,0 +1,50 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T22:10:14.273486",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "1048",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/1048": {
+      "ID": "1048",
+      "Type": "base_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/1048": {
+      "ID": "1048",
+      "Name": "Invokable Control Element with Large Number of Outward Calls",
+      "Abstraction": "Base",
+      "Structure": "Simple",
+      "Status": "Incomplete",
+      "Description": "The code contains callable control elements that\n         contain an excessively large number of references to other\n         application objects external to the context of the callable,\n         i.e. a Fan-Out value that is excessively large.",
+      "ExtendedDescription": "\n\nWhile the interpretation of \"excessively large Fan-Out value\" may vary for each product or developer, CISQ recommends a default of 5 referenced objects.\n\n\nThis issue makes it more difficult to maintain the product, which indirectly affects security by making it more difficult or time-consuming to find and/or fix vulnerabilities. It also might make it easier to introduce vulnerabilities.\n",
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": null,
+      "AlternateTerms": null,
+      "ModesOfIntroduction": null,
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Other"
+          ],
+          "Impact": [
+            "Reduce Maintainability"
+          ]
+        }
+      ],
+      "DemonstrativeExamples": null,
+      "PotentialMitigations": null
+    },
+    "/cwe/1048/parents": {
+      "weakness_parents": [],
+      "category_parents": [
+        "1130",
+        "1307",
+        "1412",
+        "1006"
+      ]
+    },
+    "/cwe/1048/children": null
+  }
+}

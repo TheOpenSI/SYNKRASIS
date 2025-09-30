@@ -1,0 +1,86 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T23:29:37.984941",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "474",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/474": {
+      "ID": "474",
+      "Type": "base_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/474": {
+      "ID": "474",
+      "Name": "Use of Function with Inconsistent Implementations",
+      "Abstraction": "Base",
+      "Structure": "Simple",
+      "Status": "Draft",
+      "Description": "The code uses a function that has inconsistent implementations across operating systems and versions.",
+      "ExtendedDescription": "\n\nThe use of inconsistent implementations can cause changes in behavior when the code is ported or built under a different environment than the programmer expects, which can lead to security problems in some cases.\n\n\nThe implementation of many functions varies by platform, and at times, even by different versions of the same platform. Implementation differences can include:\n\n\n  - Slight differences in the way parameters are interpreted leading to inconsistent results.\n\n  - Some implementations of the function carry significant security risks.\n\n  - The function might not be defined on all platforms.\n\n  - The function might change which return codes it can provide, or change the meaning of its return codes.\n\n",
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Name": "C",
+          "Prevalence": "Often"
+        },
+        {
+          "Type": "Language",
+          "Name": "PHP",
+          "Prevalence": "Often"
+        },
+        {
+          "Type": "Language",
+          "Class": "Not Language-Specific",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Implementation"
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Other"
+          ],
+          "Impact": [
+            "Quality Degradation",
+            "Varies by Context"
+          ]
+        }
+      ],
+      "DemonstrativeExamples": null,
+      "PotentialMitigations": [
+        {
+          "Phase": [
+            "Architecture and Design",
+            "Requirements"
+          ],
+          "Description": "Do not accept inconsistent behavior from the API specifications when the deviant behavior increase the risk level."
+        }
+      ]
+    },
+    "/cwe/474/parents": {
+      "weakness_parents": [
+        "758"
+      ],
+      "category_parents": [
+        "1412",
+        "1228",
+        "398",
+        "1001"
+      ]
+    },
+    "/cwe/474/children": {
+      "weakness_children": [
+        "589"
+      ],
+      "category_children": []
+    }
+  }
+}

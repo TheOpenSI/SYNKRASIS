@@ -1,0 +1,204 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-30T00:07:39.091179",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "789",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/789": {
+      "ID": "789",
+      "Type": "variant_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/789": {
+      "ID": "789",
+      "Name": "Memory Allocation with Excessive Size Value",
+      "Abstraction": "Variant",
+      "Structure": "Simple",
+      "Status": "Draft",
+      "Description": "The product allocates memory based on an untrusted, large size value, but it does not ensure that the size is within expected limits, allowing arbitrary amounts of memory to be allocated.",
+      "ExtendedDescription": null,
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Name": "C",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Language",
+          "Name": "C++",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Language",
+          "Class": "Not Language-Specific",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": [
+        {
+          "Term": "Stack Exhaustion",
+          "Description": "When a weakness allocates excessive memory on the stack, it is often described as \"stack exhaustion,\" which is a technical impact of the weakness. This technical impact is often encountered as a consequence of CWE-789 and/or CWE-1325."
+        }
+      ],
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Implementation"
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Availability"
+          ],
+          "Impact": [
+            "DoS: Resource Consumption (Memory)"
+          ],
+          "Note": "Not controlling memory allocation can result in a request for too much system memory, possibly leading to a crash of the application due to out-of-memory conditions, or the consumption of a large amount of memory on the system."
+        }
+      ],
+      "DemonstrativeExamples": [
+        {
+          "Entries": [
+            {
+              "IntroText": "Consider the following code, which accepts an untrusted size value and allocates a buffer to contain a string of the given size."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "C",
+              "ExampleCode": "```\n\tunsigned int size = GetUntrustedInt();\n```\n/* ignore integer overflow (CWE-190) for this example */* \n\t\n\tunsigned int totBytes = size * sizeof(char);\n\tchar *string = (char *)malloc(totBytes);\n\tInitializeString(string);"
+            },
+            {
+              "BodyText": "Suppose an attacker provides a size value of:"
+            },
+            {
+              "BodyText": "```\n\t\t12345678\n```"
+            },
+            {
+              "BodyText": "This will cause 305,419,896 bytes (over 291 megabytes) to be allocated for the string."
+            }
+          ]
+        },
+        {
+          "Entries": [
+            {
+              "IntroText": "Consider the following code, which accepts an untrusted size value and uses the size as an initial capacity for a HashMap."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "Java",
+              "ExampleCode": "```\n\tunsigned int size = GetUntrustedInt();\n\tHashMap list = new HashMap(size);\n```"
+            },
+            {
+              "BodyText": "The HashMap constructor will verify that the initial capacity is not negative, however there is no check in place to verify that sufficient memory is present. If the attacker provides a large enough value, the application will run into an OutOfMemoryError."
+            }
+          ]
+        },
+        {
+          "ID": "DX-137",
+          "Entries": [
+            {
+              "IntroText": "This code performs a stack allocation based on a length calculation."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "C",
+              "ExampleCode": "```\n\t int a = 5, b = 6;\n\t size_t len = a - b;\n\t char buf[len]; // Just blows up the stack \n }\n```"
+            },
+            {
+              "BodyText": "Since a and b are declared as signed ints, the \"a - b\" subtraction gives a negative result (-1). However, since len is declared to be unsigned, len is cast to an extremely large positive number (on 32-bit systems - 4294967295). As a result, the buffer buf[len] declaration uses an extremely large size to allocate on the stack, very likely more than the entire computer's memory space."
+            },
+            {
+              "BodyText": "Miscalculations usually will not be so obvious. The calculation will either be complicated or the result of an attacker's input to attain the negative value."
+            }
+          ]
+        },
+        {
+          "ID": "DX-138",
+          "Entries": [
+            {
+              "IntroText": "This example shows a typical attempt to parse a string with an error resulting from a difference in assumptions between the caller to a function and the function's action."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "C",
+              "ExampleCode": "int proc_msg(char *s, int msg_len)\n {\n\n```\n```\n// Note space at the end of the string - assume all strings have preamble with space* \n\t int pre_len = sizeof(\"preamble: \");\n\t char buf[pre_len - msg_len];\n\t\n\t *... Do processing here if we get this far*  }\n char *s = \"preamble: message\\n\";\n char *sl = strchr(s, ':'); // Number of characters up to ':' (not including space)\n int jnklen = sl == NULL ? 0 : sl - s; // If undefined pointer, use zero length\n int ret_val = proc_msg (\"s\", jnklen); // Violate assumption of preamble length, end up with negative value, blow out stack"
+            },
+            {
+              "BodyText": "The buffer length ends up being -1, resulting in a blown out stack. The space character after the colon is included in the function calculation, but not in the caller's calculation. This, unfortunately, is not usually so obvious but exists in an obtuse series of calculations."
+            }
+          ]
+        },
+        {
+          "Entries": [
+            {
+              "IntroText": "The following code obtains an untrusted number that is used as an index into an array of messages."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "Perl",
+              "ExampleCode": "```\n\tmy $num = GetUntrustedNumber();\n\tmy @messages = ();\n\t$messages[$num] = \"Hello World\";\n```"
+            },
+            {
+              "BodyText": "The index is not validated at all (CWE-129), so it might be possible for an attacker to modify an element in @messages that was not intended. If an index is used that is larger than the current size of the array, the Perl interpreter automatically expands the array so that the large index works."
+            },
+            {
+              "BodyText": "If $num is a large value such as 2147483648 (1<<31), then the assignment to $messages[$num] would attempt to create a very large array, then eventually produce an error message such as:"
+            },
+            {
+              "BodyText": "Out of memory during array extend"
+            },
+            {
+              "BodyText": "This memory exhaustion will cause the Perl program to exit, possibly a denial of service. In addition, the lack of memory could also prevent many other programs from successfully running on the system."
+            }
+          ]
+        },
+        {
+          "Entries": [
+            {
+              "IntroText": "This example shows a typical attempt to parse a string with an error resulting from a difference in assumptions between the caller to a function and the function's action. The buffer length ends up being -1 resulting in a blown out stack. The space character after the colon is included in the function calculation, but not in the caller's calculation. This, unfortunately, is not usually so obvious but exists in an obtuse series of calculations."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "C",
+              "ExampleCode": "int proc_msg(char *s, int msg_len)\n {\n\n```\n\tint pre_len = sizeof(\"preamble: \"); // Note space at the end of the string - assume all strings have preamble with space\n\tchar buf[pre_len - msg_len];\n\t... Do processing here and set status\n\treturn status;\n } \n char *s = \"preamble: message\\n\";\n char *sl = strchr(s, ':'); // Number of characters up to ':' (not including space)\n int jnklen = sl == NULL ? 0 : sl - s; // If undefined pointer, use zero length\n int ret_val = proc_msg (\"s\", jnklen); // Violate assumption of preamble length, end up with negative value, blow out stack\n```"
+            },
+            {
+              "Nature": "Good",
+              "Language": "C",
+              "ExampleCode": "int proc_msg(char *s, int msg_len)\n {\n\n```\n\tint pre_len = sizeof(\"preamble: \"); // Note space at the end of the string - assume all strings have preamble with space\n\tif (pre_len <= msg_len) { // Log error; return error_code; }\n\tchar buf[pre_len - msg_len];\n\t... Do processing here and set status\n\treturn status;\n } \n char *s = \"preamble: message\\n\";\n char *sl = strchr(s, ':'); // Number of characters up to ':' (not including space)\n int jnklen = sl == NULL ? 0 : sl - s; // If undefined pointer, use zero length\n int ret_val = proc_msg (\"s\", jnklen); // Violate assumption of preamble length, end up with negative value, blow out stack\n```"
+            }
+          ]
+        }
+      ],
+      "PotentialMitigations": [
+        {
+          "Phase": [
+            "Implementation",
+            "Architecture and Design"
+          ],
+          "Description": "Perform adequate input validation against any value that influences the amount of memory that is allocated. Define an appropriate strategy for handling requests that exceed the limit, and consider supporting a configuration option so that the administrator can extend the amount of memory to be used if necessary."
+        },
+        {
+          "Phase": [
+            "Operation"
+          ],
+          "Description": "Run your program using system-provided resource limits for memory. This might still cause the program to crash or exit, but the impact to the rest of the system will be minimized."
+        }
+      ]
+    },
+    "/cwe/789/parents": {
+      "weakness_parents": [],
+      "category_parents": [
+        "1131",
+        "1162",
+        "1179",
+        "1308",
+        "1399"
+      ]
+    },
+    "/cwe/789/children": null
+  }
+}

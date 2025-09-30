@@ -1,0 +1,224 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T23:10:31.867330",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "327",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/327": {
+      "ID": "327",
+      "Type": "class_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/327": {
+      "ID": "327",
+      "Name": "Use of a Broken or Risky Cryptographic Algorithm",
+      "Abstraction": "Class",
+      "Structure": "Simple",
+      "Status": "Draft",
+      "Description": "The product uses a broken or risky cryptographic algorithm or protocol.",
+      "ExtendedDescription": "\n\nCryptographic algorithms are the methods by which data is scrambled to prevent observation or influence by unauthorized actors. Insecure cryptography can be exploited to expose sensitive information, modify data in unexpected ways, spoof identities of other users or devices, or other impacts.\n\n\nIt is very difficult to produce a secure algorithm, and even high-profile algorithms by accomplished cryptographic experts have been broken. Well-known techniques exist to break or weaken various kinds of cryptography. Accordingly, there are a small number of well-understood and heavily studied algorithms that should be used by most products. Using a non-standard or known-insecure algorithm is dangerous because a determined adversary may be able to break the algorithm and compromise whatever data has been protected.\n\n\nSince the state of cryptography advances so rapidly, it is common for an algorithm to be considered \"unsafe\" even if it was once thought to be strong. This can happen when new attacks are discovered, or if computing power increases so much that the cryptographic algorithm no longer provides the amount of protection that was originally thought.\n\n\nFor a number of reasons, this weakness is even more challenging to manage with hardware deployment of cryptographic algorithms as opposed to software implementation. First, if a flaw is discovered with hardware-implemented cryptography, the flaw cannot be fixed in most cases without a recall of the product, because hardware is not easily replaceable like software. Second, because the hardware product is expected to work for years, the adversary's computing power will only increase over time.\n",
+      "LikelihoodOfExploit": "High",
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Class": "Not Language-Specific",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Language",
+          "Name": "Verilog",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Language",
+          "Name": "VHDL",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Technology",
+          "Class": "Not Technology-Specific",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Technology",
+          "Class": "ICS/OT",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Architecture and Design",
+          "Note": "COMMISSION: This weakness refers to an incorrect design related to an architectural security tactic."
+        },
+        {
+          "Phase": "Implementation",
+          "Note": "With hardware, the Architecture or Design Phase might start with compliant cryptography, but it is replaced with a non-compliant crypto during the later Implementation phase due to implementation constraints (e.g., not enough entropy to make it function properly, or not enough silicon real estate available to implement). Or, in rare cases (especially for long projects that span over years), the Architecture specifications might start with cryptography that was originally compliant at the time the Architectural specs were written, but over the time it became non-compliant due to progress made in attacking the crypto."
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Confidentiality"
+          ],
+          "Impact": [
+            "Read Application Data"
+          ],
+          "Note": "The confidentiality of sensitive data may be compromised by the use of a broken or risky cryptographic algorithm."
+        },
+        {
+          "Scope": [
+            "Integrity"
+          ],
+          "Impact": [
+            "Modify Application Data"
+          ],
+          "Note": "The integrity of sensitive data may be compromised by the use of a broken or risky cryptographic algorithm."
+        },
+        {
+          "Scope": [
+            "Accountability",
+            "Non-Repudiation"
+          ],
+          "Impact": [
+            "Hide Activities"
+          ],
+          "Note": "If the cryptographic algorithm is used to ensure the identity of the source of the data (such as digital signatures), then a broken algorithm will compromise this scheme and the source of the data cannot be proven."
+        }
+      ],
+      "DemonstrativeExamples": [
+        {
+          "Entries": [
+            {
+              "IntroText": "These code examples use the Data Encryption Standard (DES)."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "C",
+              "ExampleCode": "```\n\tEVP_des_ecb();\n```"
+            },
+            {
+              "Nature": "Bad",
+              "Language": "Java",
+              "ExampleCode": "```\n\tCipher des=Cipher.getInstance(\"DES...\");\n\tdes.initEncrypt(key2);\n```"
+            },
+            {
+              "Nature": "Bad",
+              "Language": "PHP",
+              "ExampleCode": "```\n\tfunction encryptPassword($password){\n\t\t$iv_size = mcrypt_get_iv_size(MCRYPT_DES, MCRYPT_MODE_ECB);\n\t\t$iv = mcrypt_create_iv($iv_size, MCRYPT_RAND);\n\t\t$key = \"This is a password encryption key\";\n\t\t$encryptedPassword = mcrypt_encrypt(MCRYPT_DES, $key, $password, MCRYPT_MODE_ECB, $iv);\n\t\treturn $encryptedPassword;\n\t}\n```"
+            },
+            {
+              "BodyText": "Once considered a strong algorithm, DES now regarded as insufficient for many applications. It has been replaced by Advanced Encryption Standard (AES)."
+            }
+          ]
+        },
+        {
+          "Entries": [
+            {
+              "IntroText": "Suppose a chip manufacturer decides to implement a hashing scheme for verifying integrity property of certain bitstream, and it chooses to implement a SHA1 hardware accelerator for to implement the scheme."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "Other",
+              "ExampleCode": "```\n\tThe manufacturer chooses a SHA1 hardware accelerator for to implement the scheme because it already has a working SHA1 Intellectual Property (IP) that the manufacturer had created and used earlier, so this reuse of IP saves design cost.\n```"
+            },
+            {
+              "BodyText": "However, SHA1 was theoretically broken in 2005 and practically broken in 2017 at a cost of $110K. This means an attacker with access to cloud-rented computing power will now be able to provide a malicious bitstream with the same hash value, thereby defeating the purpose for which the hash was used."
+            },
+            {
+              "BodyText": "This issue could have been avoided with better design."
+            },
+            {
+              "Nature": "Good",
+              "Language": "Other",
+              "ExampleCode": "```\n\tThe manufacturer could have chosen a cryptographic solution that is recommended by the wide security community (including standard-setting bodies like NIST) and is not expected to be broken (or even better, weakened) within the reasonable life expectancy of the hardware product. In this case, the architects could have used SHA-2 or SHA-3, even if it meant that such choice would cost extra.\n```"
+            }
+          ]
+        },
+        {
+          "ID": "DX-153",
+          "Entries": [
+            {
+              "IntroText": "In 2022, the OT:ICEFALL study examined products by 10 different Operational Technology (OT) vendors. The researchers reported 56 vulnerabilities and said that the products were \"insecure by design\" [REF-1283]. If exploited, these vulnerabilities often allowed adversaries to change how the products operated, ranging from denial of service to changing the code that the products executed. Since these products were often used in industries such as power, electrical, water, and others, there could even be safety implications."
+            },
+            {
+              "BodyText": "Multiple OT products used weak cryptography."
+            }
+          ]
+        }
+      ],
+      "PotentialMitigations": [
+        {
+          "MitigationID": "MIT-24",
+          "Phase": [
+            "Architecture and Design"
+          ],
+          "Strategy": "Libraries or Frameworks",
+          "Description": "\n\nWhen there is a need to store or transmit sensitive data, use strong, up-to-date cryptographic algorithms to encrypt that data. Select a well-vetted algorithm that is currently considered to be strong by experts in the field, and use well-tested implementations. As with all cryptographic mechanisms, the source code should be available for analysis.\n\n\nFor example, US government systems require FIPS 140-2 certification [REF-1192].\n\n\nDo not develop custom or private cryptographic algorithms. They will likely be exposed to attacks that are well-understood by cryptographers. Reverse engineering techniques are mature. If the algorithm can be compromised if attackers find out how it works, then it is especially weak.\n\n\nPeriodically ensure that the cryptography has not become obsolete. Some older algorithms, once thought to require a billion years of computing time, can now be broken in days or hours. This includes MD4, MD5, SHA1, DES, and other algorithms that were once regarded as strong. [REF-267]\n"
+        },
+        {
+          "MitigationID": "MIT-52",
+          "Phase": [
+            "Architecture and Design"
+          ],
+          "Description": "Ensure that the design allows one cryptographic algorithm to be replaced with another in the next generation or version. Where possible, use wrappers to make the interfaces uniform. This will make it easier to upgrade to stronger algorithms. With hardware, design the product at the Intellectual Property (IP) level so that one cryptographic algorithm can be replaced with another in the next generation of the hardware product.",
+          "Effectiveness": "Defense in Depth"
+        },
+        {
+          "Phase": [
+            "Architecture and Design"
+          ],
+          "Description": "Carefully manage and protect cryptographic keys (see CWE-320). If the keys can be guessed or stolen, then the strength of the cryptography itself is irrelevant."
+        },
+        {
+          "MitigationID": "MIT-4",
+          "Phase": [
+            "Architecture and Design"
+          ],
+          "Strategy": "Libraries or Frameworks",
+          "Description": "\n\nUse a vetted library or framework that does not allow this weakness to occur or provides constructs that make this weakness easier to avoid [REF-1482].\n\n\nIndustry-standard implementations will save development time and may be more likely to avoid errors that can occur during implementation of cryptographic algorithms. Consider the ESAPI Encryption feature.\n"
+        },
+        {
+          "MitigationID": "MIT-25",
+          "Phase": [
+            "Implementation",
+            "Architecture and Design"
+          ],
+          "Description": "When using industry-approved techniques, use them correctly. Don't cut corners by skipping resource-intensive steps (CWE-325). These steps are often essential for preventing common attacks."
+        }
+      ]
+    },
+    "/cwe/327/parents": {
+      "weakness_parents": [],
+      "category_parents": [
+        "1013",
+        "1029",
+        "1131",
+        "1152",
+        "1170",
+        "1346",
+        "1366",
+        "1402",
+        "729",
+        "753",
+        "803",
+        "816",
+        "883",
+        "958",
+        "866",
+        "934"
+      ]
+    },
+    "/cwe/327/children": {
+      "weakness_children": [
+        "1240",
+        "328",
+        "780",
+        "916"
+      ],
+      "category_children": []
+    }
+  }
+}

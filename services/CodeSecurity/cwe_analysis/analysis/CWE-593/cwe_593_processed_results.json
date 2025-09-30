@@ -1,0 +1,99 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T23:45:44.288433",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "593",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/593": {
+      "ID": "593",
+      "Type": "variant_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/593": {
+      "ID": "593",
+      "Name": "Authentication Bypass: OpenSSL CTX Object Modified after SSL Objects are Created",
+      "Abstraction": "Variant",
+      "Structure": "Simple",
+      "Status": "Draft",
+      "Description": "The product modifies the SSL context after connection creation has begun.",
+      "ExtendedDescription": "If the program modifies the SSL_CTX object after creating SSL objects from it, there is the possibility that older SSL objects created from the original context could all be affected by that change.",
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": null,
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Implementation",
+          "Note": "REALIZATION: This weakness is caused during implementation of an architectural security tactic."
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Access Control"
+          ],
+          "Impact": [
+            "Bypass Protection Mechanism"
+          ],
+          "Note": "No authentication takes place in this process, bypassing an assumed protection of encryption."
+        },
+        {
+          "Scope": [
+            "Confidentiality"
+          ],
+          "Impact": [
+            "Read Application Data"
+          ],
+          "Note": "The encrypted communication between a user and a trusted host may be subject to a sniffing attack."
+        }
+      ],
+      "DemonstrativeExamples": [
+        {
+          "Entries": [
+            {
+              "IntroText": "The following example demonstrates the weakness."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "C",
+              "ExampleCode": "```\n\t#define CERT \"secret.pem\"\n\t#define CERT2 \"secret2.pem\"\n\tint main(){\n\t\t\tSSL_CTX *ctx;\n\t\t\tSSL *ssl;\n\t\t\tinit_OpenSSL();\n\t\t\tseed_prng();\n\t\t\tctx = SSL_CTX_new(SSLv23_method());\n\t\t\tif (SSL_CTX_use_certificate_chain_file(ctx, CERT) != 1)\n\t\t\t\tint_error(\"Error loading certificate from file\");\n\t\t\tif (SSL_CTX_use_PrivateKey_file(ctx, CERT, SSL_FILETYPE_PEM) != 1)\n\t\t\t\tint_error(\"Error loading private key from file\");\n\t\t\tif (!(ssl = SSL_new(ctx)))\n\t\t\t\tint_error(\"Error creating an SSL context\");\n\t\t\tif ( SSL_CTX_set_default_passwd_cb(ctx, \"new default password\" != 1))\n\t\t\t\tint_error(\"Doing something which is dangerous to do anyways\");\n\t\t\tif (!(ssl2 = SSL_new(ctx)))\n\t\t\t\tint_error(\"Error creating an SSL context\");\n\t}\n```"
+            }
+          ]
+        }
+      ],
+      "PotentialMitigations": [
+        {
+          "Phase": [
+            "Architecture and Design"
+          ],
+          "Description": "Use a language or a library that provides a cryptography framework at a higher level of abstraction."
+        },
+        {
+          "Phase": [
+            "Implementation"
+          ],
+          "Description": "Most SSL_CTX functions have SSL counterparts that act on SSL-type objects."
+        },
+        {
+          "Phase": [
+            "Implementation"
+          ],
+          "Description": "Applications should set up an SSL_CTX completely, before creating SSL objects from it."
+        }
+      ]
+    },
+    "/cwe/593/parents": {
+      "weakness_parents": [
+        "1390",
+        "666"
+      ],
+      "category_parents": [
+        "1010",
+        "1396",
+        "948"
+      ]
+    },
+    "/cwe/593/children": null
+  }
+}

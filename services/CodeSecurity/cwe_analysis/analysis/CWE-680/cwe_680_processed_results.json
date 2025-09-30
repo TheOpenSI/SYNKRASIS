@@ -1,0 +1,76 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T23:57:17.103169",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "680",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/680": {
+      "ID": "680",
+      "Type": "chain_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/680": {
+      "ID": "680",
+      "Name": "Integer Overflow to Buffer Overflow",
+      "Abstraction": "Compound",
+      "Structure": "Chain",
+      "Status": "Draft",
+      "Description": "The product performs a calculation to determine how much memory to allocate, but an integer overflow can occur that causes less memory to be allocated than expected, leading to a buffer overflow.",
+      "ExtendedDescription": null,
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Class": "Not Language-Specific",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": null,
+      "ModesOfIntroduction": null,
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Integrity",
+            "Availability",
+            "Confidentiality"
+          ],
+          "Impact": [
+            "Modify Memory",
+            "DoS: Crash, Exit, or Restart",
+            "Execute Unauthorized Code or Commands"
+          ]
+        }
+      ],
+      "DemonstrativeExamples": [
+        {
+          "ID": "DX-33",
+          "Entries": [
+            {
+              "IntroText": "The following image processing code allocates a table for images."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "C",
+              "ExampleCode": "```\n\timg_t table_ptr; /*struct containing img data, 10kB each*/\n\tint num_imgs;\n\t...\n\tnum_imgs = get_num_imgs();\n\ttable_ptr = (img_t*)malloc(sizeof(img_t)*num_imgs);\n\t...\n```"
+            },
+            {
+              "BodyText": "This code intends to allocate a table of size num_imgs, however as num_imgs grows large, the calculation determining the size of the list will eventually overflow (CWE-190). This will result in a very small list to be allocated instead. If the subsequent code operates on the list as if it were num_imgs long, it may result in many types of out-of-bounds problems (CWE-119)."
+            }
+          ]
+        }
+      ],
+      "PotentialMitigations": null
+    },
+    "/cwe/680/parents": {
+      "weakness_parents": [],
+      "category_parents": [
+        "1158",
+        "1162",
+        "1399"
+      ]
+    },
+    "/cwe/680/children": null
+  }
+}

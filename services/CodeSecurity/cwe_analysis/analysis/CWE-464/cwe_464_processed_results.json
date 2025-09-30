@@ -1,0 +1,111 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T23:28:23.491703",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "464",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/464": {
+      "ID": "464",
+      "Type": "base_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/464": {
+      "ID": "464",
+      "Name": "Addition of Data Structure Sentinel",
+      "Abstraction": "Base",
+      "Structure": "Simple",
+      "Status": "Incomplete",
+      "Description": "The accidental addition of a data-structure sentinel can cause serious programming logic problems.",
+      "ExtendedDescription": "Data-structure sentinels are often used to mark the structure of data. A common example of this is the null character at the end of strings or a special sentinel to mark the end of a linked list. It is dangerous to allow this type of control data to be easily accessible. Therefore, it is important to protect from the addition or modification of sentinels.",
+      "LikelihoodOfExploit": "High",
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Name": "C",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Language",
+          "Name": "C++",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Implementation"
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Integrity"
+          ],
+          "Impact": [
+            "Modify Application Data"
+          ],
+          "Note": "Generally this error will cause the data structure to not work properly by truncating the data."
+        }
+      ],
+      "DemonstrativeExamples": [
+        {
+          "Entries": [
+            {
+              "IntroText": "The following example assigns some character values to a list of characters and prints them each individually, and then as a string. The third character value is intended to be an integer taken from user input and converted to an int."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "C",
+              "ExampleCode": "```\n\tchar *foo;\n\tfoo=malloc(sizeof(char)*5);\n\tfoo[0]='a';\n\tfoo[1]='a';\n\tfoo[2]=fgetc(stdin);\n\tfoo[3]='c';\n\tfoo[4]='\\0';\n\tprintf(\"%c %c %c %c %c \\n\",foo[0],foo[1],foo[2],foo[3],foo[4]);\n\tprintf(\"%s\\n\",foo);\n```"
+            },
+            {
+              "BodyText": "The first print statement will print each character separated by a space. However, if a NULL byte is read from stdin by fgetc, then it will return 0. When foo is printed as a string, the 0 at character foo[2] will act as a NULL terminator and foo[3] will never be printed."
+            }
+          ]
+        }
+      ],
+      "PotentialMitigations": [
+        {
+          "Phase": [
+            "Implementation",
+            "Architecture and Design"
+          ],
+          "Description": "Encapsulate the user from interacting with data sentinels. Validate user input to verify that sentinels are not present."
+        },
+        {
+          "Phase": [
+            "Implementation"
+          ],
+          "Description": "Proper error checking can reduce the risk of inadvertently introducing sentinel values into data. For example, if a parsing function fails or encounters an error, it might return a value that is the same as the sentinel."
+        },
+        {
+          "Phase": [
+            "Architecture and Design"
+          ],
+          "Description": "Use an abstraction library to abstract away risky APIs. This is not a complete solution."
+        },
+        {
+          "Phase": [
+            "Operation"
+          ],
+          "Description": "Use OS-level preventative functionality. This is not a complete solution."
+        }
+      ]
+    },
+    "/cwe/464/parents": {
+      "weakness_parents": [
+        "138"
+      ],
+      "category_parents": [
+        "1407",
+        "137",
+        "741",
+        "875",
+        "977"
+      ]
+    },
+    "/cwe/464/children": null
+  }
+}

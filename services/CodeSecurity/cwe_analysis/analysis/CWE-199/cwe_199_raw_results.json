@@ -1,0 +1,139 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T22:53:14.100905",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "199",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/199": {
+      "endpoint": "/cwe/199",
+      "url": "https://cwe-api.mitre.org/api/v1/cwe/199",
+      "status_code": 200,
+      "success": true,
+      "error": null,
+      "data": [
+        {
+          "Type": "category",
+          "ID": "199"
+        }
+      ]
+    },
+    "/cwe/weakness/199": {
+      "endpoint": "/cwe/weakness/199",
+      "url": "https://cwe-api.mitre.org/api/v1/cwe/weakness/199",
+      "status_code": 404,
+      "success": false,
+      "error": "HTTP 404: \"for weakness: cwe (199) not found, use the category endpoint\"\n",
+      "data": null
+    },
+    "/cwe/199/parents": {
+      "endpoint": "/cwe/199/parents",
+      "url": "https://cwe-api.mitre.org/api/v1/cwe/199/parents",
+      "status_code": 200,
+      "success": true,
+      "error": null,
+      "data": [
+        {
+          "Type": "view",
+          "ID": "699",
+          "ViewID": "699"
+        }
+      ]
+    },
+    "/cwe/199/children": {
+      "endpoint": "/cwe/199/children",
+      "url": "https://cwe-api.mitre.org/api/v1/cwe/199/children",
+      "status_code": 200,
+      "success": true,
+      "error": null,
+      "data": [
+        {
+          "Type": "base_weakness",
+          "ID": "1230",
+          "ViewID": "699"
+        },
+        {
+          "Type": "base_weakness",
+          "ID": "201",
+          "ViewID": "699"
+        },
+        {
+          "Type": "base_weakness",
+          "ID": "204",
+          "ViewID": "699"
+        },
+        {
+          "Type": "base_weakness",
+          "ID": "205",
+          "ViewID": "699"
+        },
+        {
+          "Type": "base_weakness",
+          "ID": "208",
+          "ViewID": "699"
+        },
+        {
+          "Type": "base_weakness",
+          "ID": "209",
+          "ViewID": "699"
+        },
+        {
+          "Type": "base_weakness",
+          "ID": "212",
+          "ViewID": "699"
+        },
+        {
+          "Type": "base_weakness",
+          "ID": "213",
+          "ViewID": "699"
+        },
+        {
+          "Type": "base_weakness",
+          "ID": "214",
+          "ViewID": "699"
+        },
+        {
+          "Type": "base_weakness",
+          "ID": "215",
+          "ViewID": "699"
+        },
+        {
+          "Type": "base_weakness",
+          "ID": "312",
+          "ViewID": "699"
+        },
+        {
+          "Type": "base_weakness",
+          "ID": "319",
+          "ViewID": "699"
+        },
+        {
+          "Type": "base_weakness",
+          "ID": "359",
+          "ViewID": "699"
+        },
+        {
+          "Type": "base_weakness",
+          "ID": "497",
+          "ViewID": "699"
+        },
+        {
+          "Type": "base_weakness",
+          "ID": "524",
+          "ViewID": "699"
+        },
+        {
+          "Type": "base_weakness",
+          "ID": "538",
+          "ViewID": "699"
+        },
+        {
+          "Type": "base_weakness",
+          "ID": "921",
+          "ViewID": "699"
+        }
+      ]
+    }
+  }
+}

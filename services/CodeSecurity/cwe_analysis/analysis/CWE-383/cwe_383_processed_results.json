@@ -1,0 +1,79 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T23:18:00.754890",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "383",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/383": {
+      "ID": "383",
+      "Type": "variant_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/383": {
+      "ID": "383",
+      "Name": "J2EE Bad Practices: Direct Use of Threads",
+      "Abstraction": "Variant",
+      "Structure": "Simple",
+      "Status": "Draft",
+      "Description": "Thread management in a Web application is forbidden in some circumstances and is always highly error prone.",
+      "ExtendedDescription": "Thread management in a web application is forbidden by the J2EE standard in some circumstances and is always highly error prone. Managing threads is difficult and is likely to interfere in unpredictable ways with the behavior of the application container. Even without interfering with the container, thread management usually leads to bugs that are hard to detect and diagnose like deadlock, race conditions, and other synchronization errors.",
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Name": "Java",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Implementation"
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Other"
+          ],
+          "Impact": [
+            "Quality Degradation"
+          ]
+        }
+      ],
+      "DemonstrativeExamples": [
+        {
+          "Entries": [
+            {
+              "IntroText": "In the following example, a new Thread object is created and invoked directly from within the body of a doGet() method in a Java servlet."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "Java",
+              "ExampleCode": "```\n\tpublic void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {\n```\n// Perform servlet tasks.* \n\t\t\t...\n\t\t\t\n\t\t\t\n\t\t\t *// Create a new thread to handle background processing.* \n\t\t\tRunnable r = new Runnable() {\n\t\t\t```\n\t\t\t\t\tpublic void run() {\n```\n// Process and store request statistics.* \n\t\t\t\t\t\t\t...}};\n\t\t\t\n\t\t\tnew Thread(r).start();}"
+            }
+          ]
+        }
+      ],
+      "PotentialMitigations": [
+        {
+          "Phase": [
+            "Architecture and Design"
+          ],
+          "Description": "For EJB, use framework approaches for parallel execution, instead of using threads."
+        }
+      ]
+    },
+    "/cwe/383/parents": {
+      "weakness_parents": [],
+      "category_parents": [
+        "1412",
+        "361",
+        "1001"
+      ]
+    },
+    "/cwe/383/children": null
+  }
+}

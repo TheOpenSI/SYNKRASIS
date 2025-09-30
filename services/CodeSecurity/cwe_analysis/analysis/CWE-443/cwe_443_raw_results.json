@@ -1,0 +1,109 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T23:25:39.224995",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "443",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/443": {
+      "endpoint": "/cwe/443",
+      "url": "https://cwe-api.mitre.org/api/v1/cwe/443",
+      "status_code": 200,
+      "success": true,
+      "error": null,
+      "data": [
+        {
+          "Type": "deprecated_weakness",
+          "ID": "443"
+        }
+      ]
+    },
+    "/cwe/weakness/443": {
+      "endpoint": "/cwe/weakness/443",
+      "url": "https://cwe-api.mitre.org/api/v1/cwe/weakness/443",
+      "status_code": 200,
+      "success": true,
+      "error": null,
+      "data": {
+        "Weaknesses": [
+          {
+            "ID": "443",
+            "Name": "DEPRECATED: HTTP response splitting",
+            "Abstraction": "Base",
+            "Structure": "Simple",
+            "Status": "Deprecated",
+            "Description": "This weakness can be found at CWE-113.",
+            "MappingNotes": {
+              "Usage": "Prohibited",
+              "Rationale": "This CWE has been deprecated.",
+              "Comments": "See description and name for possible suggestions of other CWEs to consider.",
+              "Reasons": [
+                "Deprecated"
+              ]
+            },
+            "ContentHistory": [
+              {
+                "Type": "Submission",
+                "SubmissionName": "CWE Community",
+                "SubmissionDate": "2006-07-19",
+                "SubmissionComment": "Submitted by members of the CWE community to extend early CWE versions",
+                "SubmissionVersion": "Draft 3",
+                "SubmissionReleaseDate": "2006-07-19"
+              },
+              {
+                "Type": "Modification",
+                "ModificationName": "CWE Content Team",
+                "ModificationOrganization": "MITRE",
+                "ModificationDate": "2008-09-08",
+                "ModificationComment": "updated Relationships"
+              },
+              {
+                "Type": "Modification",
+                "ModificationName": "CWE Content Team",
+                "ModificationOrganization": "MITRE",
+                "ModificationDate": "2009-10-29",
+                "ModificationComment": "updated Relationships"
+              },
+              {
+                "Type": "Modification",
+                "ModificationName": "CWE Content Team",
+                "ModificationOrganization": "MITRE",
+                "ModificationDate": "2021-07-20",
+                "ModificationComment": "updated Name"
+              },
+              {
+                "Type": "Modification",
+                "ModificationName": "CWE Content Team",
+                "ModificationOrganization": "MITRE",
+                "ModificationDate": "2023-06-29",
+                "ModificationComment": "updated Mapping_Notes"
+              },
+              {
+                "Type": "Rename",
+                "PreviousEntryName": "DEPRECATED (Duplicate): HTTP response splitting",
+                "Date": "2021-07-20"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    "/cwe/443/parents": {
+      "endpoint": "/cwe/443/parents",
+      "url": "https://cwe-api.mitre.org/api/v1/cwe/443/parents",
+      "status_code": 200,
+      "success": true,
+      "error": null,
+      "data": []
+    },
+    "/cwe/443/children": {
+      "endpoint": "/cwe/443/children",
+      "url": "https://cwe-api.mitre.org/api/v1/cwe/443/children",
+      "status_code": 200,
+      "success": true,
+      "error": null,
+      "data": []
+    }
+  }
+}

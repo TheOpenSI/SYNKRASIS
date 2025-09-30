@@ -1,0 +1,106 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T22:09:14.013654",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "104",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/104": {
+      "ID": "104",
+      "Type": "variant_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/104": {
+      "ID": "104",
+      "Name": "Struts: Form Bean Does Not Extend Validation Class",
+      "Abstraction": "Variant",
+      "Structure": "Simple",
+      "Status": "Draft",
+      "Description": "If a form bean does not extend an ActionForm subclass of the Validator framework, it can expose the application to other weaknesses related to insufficient input validation.",
+      "ExtendedDescription": null,
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Name": "Java",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Implementation"
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Other"
+          ],
+          "Impact": [
+            "Other"
+          ],
+          "Note": "Bypassing the validation framework for a form exposes the application to numerous types of attacks. Unchecked input is an important component of vulnerabilities like cross-site scripting, process control, and SQL injection."
+        },
+        {
+          "Scope": [
+            "Confidentiality",
+            "Integrity",
+            "Availability",
+            "Other"
+          ],
+          "Impact": [
+            "Other"
+          ],
+          "Note": "Although J2EE applications are not generally susceptible to memory corruption attacks, if a J2EE application interfaces with native code that does not perform array bounds checking, an attacker may be able to use an input validation mistake in the J2EE application to launch a buffer overflow attack."
+        }
+      ],
+      "DemonstrativeExamples": [
+        {
+          "Entries": [
+            {
+              "IntroText": "In the following Java example the class RegistrationForm is a Struts framework ActionForm Bean that will maintain user information from a registration webpage for an online business site. The user will enter registration data and through the Struts framework the RegistrationForm bean will maintain the user data."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "Java",
+              "ExampleCode": "```\n\tpublic class RegistrationForm extends org.apache.struts.action.ActionForm {\n\t\t\t// private variables for registration form\n\t\t\tprivate String name;\n\t\t\tprivate String email;\n\t\t\t...\n\t\t\tpublic RegistrationForm() {\n\t\t\t\tsuper();\n\t\t\t}\n\t\t\t// getter and setter methods for private variables\n\t\t\t...\n\t}\n```"
+            },
+            {
+              "BodyText": "However, the RegistrationForm class extends the Struts ActionForm class which does not allow the RegistrationForm class to use the Struts validator capabilities. When using the Struts framework to maintain user data in an ActionForm Bean, the class should always extend one of the validator classes, ValidatorForm, ValidatorActionForm, DynaValidatorForm or DynaValidatorActionForm. These validator classes provide default validation and the validate method for custom validation for the Bean object to use for validating input data. The following Java example shows the RegistrationForm class extending the ValidatorForm class and implementing the validate method for validating input data."
+            },
+            {
+              "Nature": "Good",
+              "Language": "Java",
+              "ExampleCode": "```\n\tpublic class RegistrationForm extends org.apache.struts.validator.ValidatorForm {\n\t\t\t// private variables for registration form\n\t\t\tprivate String name;\n\t\t\tprivate String email;\n\t\t\t...\n\t\t\tpublic RegistrationForm() {\n\t\t\t\tsuper();\n\t\t\t}\n\t\t\tpublic ActionErrors validate(ActionMapping mapping, HttpServletRequest request) {...}\n\t\t\t// getter and setter methods for private variables\n\t\t\t...\n\t}\n```"
+            },
+            {
+              "BodyText": "Note that the ValidatorForm class itself extends the ActionForm class within the Struts framework API."
+            }
+          ]
+        }
+      ],
+      "PotentialMitigations": [
+        {
+          "Phase": [
+            "Implementation"
+          ],
+          "Description": "Ensure that all forms extend one of the Validation Classes."
+        }
+      ]
+    },
+    "/cwe/104/parents": {
+      "weakness_parents": [
+        "573",
+        "20"
+      ],
+      "category_parents": [
+        "1412",
+        "722",
+        "990"
+      ]
+    },
+    "/cwe/104/children": null
+  }
+}

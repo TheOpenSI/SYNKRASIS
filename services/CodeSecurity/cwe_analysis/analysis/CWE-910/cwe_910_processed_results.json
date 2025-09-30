@@ -1,0 +1,85 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-30T00:15:31.015517",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "910",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/910": {
+      "ID": "910",
+      "Type": "base_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/910": {
+      "ID": "910",
+      "Name": "Use of Expired File Descriptor",
+      "Abstraction": "Base",
+      "Structure": "Simple",
+      "Status": "Incomplete",
+      "Description": "The product uses or accesses a file descriptor after it has been closed.",
+      "ExtendedDescription": "After a file descriptor for a particular file or device has been released, it can be reused. The code might not write to the original file, since the reused file descriptor might reference a different file or device.",
+      "LikelihoodOfExploit": "Medium",
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Name": "C",
+          "Prevalence": "Sometimes"
+        },
+        {
+          "Type": "Language",
+          "Name": "C++",
+          "Prevalence": "Sometimes"
+        },
+        {
+          "Type": "Language",
+          "Class": "Not Language-Specific",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": [
+        {
+          "Term": "Stale file descriptor"
+        }
+      ],
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Implementation"
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Confidentiality"
+          ],
+          "Impact": [
+            "Read Files or Directories"
+          ],
+          "Note": "The program could read data from the wrong file."
+        },
+        {
+          "Scope": [
+            "Availability"
+          ],
+          "Impact": [
+            "DoS: Crash, Exit, or Restart"
+          ],
+          "Note": "Accessing a file descriptor that has been closed can cause a crash."
+        }
+      ],
+      "DemonstrativeExamples": null,
+      "PotentialMitigations": null
+    },
+    "/cwe/910/parents": {
+      "weakness_parents": [
+        "672"
+      ],
+      "category_parents": [
+        "1163",
+        "1415",
+        "399"
+      ]
+    },
+    "/cwe/910/children": null
+  }
+}

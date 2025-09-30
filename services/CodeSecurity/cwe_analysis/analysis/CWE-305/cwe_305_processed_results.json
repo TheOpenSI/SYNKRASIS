@@ -1,0 +1,63 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T23:07:39.532072",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "305",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/305": {
+      "ID": "305",
+      "Type": "base_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/305": {
+      "ID": "305",
+      "Name": "Authentication Bypass by Primary Weakness",
+      "Abstraction": "Base",
+      "Structure": "Simple",
+      "Status": "Draft",
+      "Description": "The authentication algorithm is sound, but the implemented mechanism can be bypassed as the result of a separate weakness that is primary to the authentication error.",
+      "ExtendedDescription": null,
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Class": "Not Language-Specific",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Implementation",
+          "Note": "REALIZATION: This weakness is caused during implementation of an architectural security tactic."
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Access Control"
+          ],
+          "Impact": [
+            "Bypass Protection Mechanism"
+          ]
+        }
+      ],
+      "DemonstrativeExamples": null,
+      "PotentialMitigations": null
+    },
+    "/cwe/305/parents": {
+      "weakness_parents": [
+        "1390"
+      ],
+      "category_parents": [
+        "1010",
+        "1396",
+        "1211",
+        "947"
+      ]
+    },
+    "/cwe/305/children": null
+  }
+}

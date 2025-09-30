@@ -1,0 +1,41 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T22:19:16.134634",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "1113",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/1113": {
+      "ID": "1113",
+      "Type": "base_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/1113": {
+      "ID": "1113",
+      "Name": "Inappropriate Comment Style",
+      "Abstraction": "Base",
+      "Structure": "Simple",
+      "Status": "Incomplete",
+      "Description": "The source code uses comment styles or formats that are\n\t\t\t\t\tinconsistent or do not follow expected standards for the\n\t\t\t\t\tproduct.",
+      "ExtendedDescription": "\n\nThis issue makes it more difficult to maintain the product due to insufficient legibility, which indirectly affects security by making it more difficult or time-consuming to find and/or fix vulnerabilities. It also might make it easier to introduce vulnerabilities.\n",
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": null,
+      "AlternateTerms": null,
+      "ModesOfIntroduction": null,
+      "CommonConsequences": null,
+      "DemonstrativeExamples": null,
+      "PotentialMitigations": null
+    },
+    "/cwe/1113/parents": {
+      "weakness_parents": [
+        "1078"
+      ],
+      "category_parents": [
+        "1412",
+        "1006"
+      ]
+    },
+    "/cwe/1113/children": null
+  }
+}

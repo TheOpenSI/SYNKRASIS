@@ -1,0 +1,111 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T22:18:46.408683",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "111",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/111": {
+      "ID": "111",
+      "Type": "variant_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/111": {
+      "ID": "111",
+      "Name": "Direct Use of Unsafe JNI",
+      "Abstraction": "Variant",
+      "Structure": "Simple",
+      "Status": "Draft",
+      "Description": "When a Java application uses the Java Native Interface (JNI) to call code written in another programming language, it can expose the application to weaknesses in that code, even if those weaknesses cannot occur in Java.",
+      "ExtendedDescription": "Many safety features that programmers may take for granted do not apply for native code, so you must carefully review all such code for potential problems. The languages used to implement native code may be more susceptible to buffer overflows and other attacks. Native code is unprotected by the security features enforced by the runtime environment, such as strong typing and array bounds checking.",
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Name": "Java",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Implementation"
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Access Control"
+          ],
+          "Impact": [
+            "Bypass Protection Mechanism"
+          ]
+        }
+      ],
+      "DemonstrativeExamples": [
+        {
+          "ID": "DX-196",
+          "Entries": [
+            {
+              "IntroText": "The following code defines a class named Echo. The class declares one native method (defined below), which uses C to echo commands entered on the console back to the user. The following C code defines the native method implemented in the Echo class:"
+            },
+            {
+              "Nature": "Bad",
+              "Language": "Java",
+              "ExampleCode": "```\n\tclass Echo {\n\t\t\tpublic native void runEcho();\n\t\t\tstatic {\n\t\t\t\t\tSystem.loadLibrary(\"echo\");\n\t\t\t}\n\t\t\tpublic static void main(String[] args) {\n\t\t\t\t\tnew Echo().runEcho();\n\t\t\t}\n\t}\n```"
+            },
+            {
+              "Nature": "Bad",
+              "Language": "C",
+              "ExampleCode": "```\n\t#include <jni.h>\n\t#include \"Echo.h\"//the java class above compiled with javah\n\t#include <stdio.h>\n\tJNIEXPORT void JNICALL\n\tJava_Echo_runEcho(JNIEnv *env, jobject obj)\n\t{\n\t\tchar buf[64];\n\t\tgets(buf);\n\t\tprintf(buf);\n\t}\n```"
+            },
+            {
+              "BodyText": "Because the example is implemented in Java, it may appear that it is immune to memory issues like buffer overflow vulnerabilities. Although Java does do a good job of making memory operations safe, this protection does not extend to vulnerabilities occurring in source code written in other languages that are accessed using the Java Native Interface. Despite the memory protections offered in Java, the C code in this example is vulnerable to a buffer overflow because it makes use of gets(), which does not check the length of its input."
+            },
+            {
+              "BodyText": "The Sun Java(TM) Tutorial provides the following description of JNI [See Reference]: The JNI framework lets your native method utilize Java objects in the same way that Java code uses these objects. A native method can create Java objects, including arrays and strings, and then inspect and use these objects to perform its tasks. A native method can also inspect and use objects created by Java application code. A native method can even update Java objects that it created or that were passed to it, and these updated objects are available to the Java application. Thus, both the native language side and the Java side of an application can create, update, and access Java objects and then share these objects between them."
+            },
+            {
+              "BodyText": "The vulnerability in the example above could easily be detected through a source code audit of the native method implementation. This may not be practical or possible depending on the availability of the C source code and the way the project is built, but in many cases it may suffice. However, the ability to share objects between Java and native methods expands the potential risk to much more insidious cases where improper data handling in Java may lead to unexpected vulnerabilities in native code or unsafe operations in native code corrupt data structures in Java. Vulnerabilities in native code accessed through a Java application are typically exploited in the same manner as they are in applications written in the native language. The only challenge to such an attack is for the attacker to identify that the Java application uses native code to perform certain operations. This can be accomplished in a variety of ways, including identifying specific behaviors that are often implemented with native code or by exploiting a system information exposure in the Java application that reveals its use of JNI [See Reference]."
+            }
+          ]
+        }
+      ],
+      "PotentialMitigations": [
+        {
+          "Phase": [
+            "Implementation"
+          ],
+          "Description": "Implement error handling around the JNI call."
+        },
+        {
+          "Phase": [
+            "Implementation"
+          ],
+          "Strategy": "Refactoring",
+          "Description": "Do not use JNI calls if you don't trust the native library."
+        },
+        {
+          "Phase": [
+            "Implementation"
+          ],
+          "Strategy": "Refactoring",
+          "Description": "Be reluctant to use JNI calls. A Java API equivalent may exist."
+        }
+      ]
+    },
+    "/cwe/111/parents": {
+      "weakness_parents": [
+        "20"
+      ],
+      "category_parents": [
+        "1151",
+        "1412",
+        "859",
+        "1001"
+      ]
+    },
+    "/cwe/111/children": null
+  }
+}

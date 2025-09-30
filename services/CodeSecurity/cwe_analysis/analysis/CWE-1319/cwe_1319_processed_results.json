@@ -1,0 +1,132 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T22:37:44.855401",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "1319",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/1319": {
+      "ID": "1319",
+      "Type": "base_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/1319": {
+      "ID": "1319",
+      "Name": "Improper Protection against Electromagnetic Fault Injection (EM-FI)",
+      "Abstraction": "Base",
+      "Structure": "Simple",
+      "Status": "Incomplete",
+      "Description": "The device is susceptible to electromagnetic fault injection attacks, causing device internal information to be compromised or security mechanisms to be bypassed.",
+      "ExtendedDescription": "\n\nElectromagnetic fault injection may allow an attacker to locally and dynamically modify the signals (both internal and external) of an integrated circuit. EM-FI attacks consist of producing a local, transient magnetic field near the device, inducing current in the device wires. A typical EMFI setup is made up of a pulse injection circuit that generates a high current transient in an EMI coil, producing an abrupt magnetic pulse which couples to the target producing faults in the device, which can lead to:\n\n\n  - Bypassing security mechanisms such as secure JTAG or Secure Boot\n\n  - Leaking device information\n\n  - Modifying program flow\n\n  - Perturbing secure hardware modules (e.g. random number generators)\n\n",
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Class": "Not Language-Specific",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Operating_System",
+          "Class": "Not OS-Specific",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Architecture",
+          "Class": "Not Architecture-Specific",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Technology",
+          "Class": "System on Chip",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Technology",
+          "Name": "Microcontroller Hardware",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Technology",
+          "Name": "Memory Hardware",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Technology",
+          "Name": "Power Management Hardware",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Technology",
+          "Name": "Processor Hardware",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Technology",
+          "Name": "Test/Debug Hardware",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Technology",
+          "Name": "Sensor Hardware",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Architecture and Design"
+        },
+        {
+          "Phase": "Implementation"
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Confidentiality",
+            "Integrity",
+            "Access Control",
+            "Availability"
+          ],
+          "Impact": [
+            "Modify Memory",
+            "Read Memory",
+            "Gain Privileges or Assume Identity",
+            "Bypass Protection Mechanism",
+            "Execute Unauthorized Code or Commands"
+          ]
+        }
+      ],
+      "DemonstrativeExamples": [
+        {
+          "Entries": [
+            {
+              "IntroText": "In many devices, security related information is stored in fuses. These fuses are loaded into shadow registers at boot time. Disturbing this transfer phase with EM-FI can lead to the shadow registers storing erroneous values potentially resulting in reduced security."
+            },
+            {
+              "BodyText": "Colin O'Flynn has demonstrated an attack scenario which uses electro-magnetic glitching during booting to bypass security and gain read access to flash, read and erase access to shadow memory area (where the private password is stored). Most devices in the MPC55xx and MPC56xx series that include the Boot Assist Module (BAM) (a serial or CAN bootloader mode) are susceptible to this attack. In this paper, a GM ECU was used as a real life target. While the success rate appears low (less than 2 percent), in practice a success can be found within 1-5 minutes once the EMFI tool is setup. In a practical scenario, the author showed that success can be achieved within 30-60 minutes from a cold start."
+            }
+          ]
+        }
+      ],
+      "PotentialMitigations": [
+        {
+          "Phase": [
+            "Architecture and Design",
+            "Implementation"
+          ],
+          "Description": "\n\n  - 1. Redundancy - By replicating critical operations and comparing the two outputs can help indicate whether a fault has been injected.\n\n  - 2. Error detection and correction codes - Gay, Mael, et al. proposed a new scheme that not only detects faults injected by a malicious adversary but also automatically corrects single nibble/byte errors introduced by low-multiplicity faults.\n\n  - 3. Fail by default coding - When checking conditions (switch or if) check all possible cases and fail by default because the default case in a switch (or the else part of a cascaded if-else-if construct) is used for dealing with the last possible (and valid) value without checking. This is prone to fault injection because this alternative is easily selected as a result of potential data manipulation [REF-1141].\n\n  - 4. Random Behavior - adding random delays before critical operations, so that timing is not predictable.\n\n  - 5. Program Flow Integrity Protection - The program flow can be secured by integrating run-time checking aiming at detecting control flow inconsistencies. One such example is tagging the source code to indicate the points not to be bypassed [REF-1147].\n\n  - 6. Sensors - Usage of sensors can detect variations in voltage and current.\n\n  - 7. Shields - physical barriers to protect the chips from malicious manipulation.\n\n"
+        }
+      ]
+    },
+    "/cwe/1319/parents": {
+      "weakness_parents": [],
+      "category_parents": [
+        "1388",
+        "1413"
+      ]
+    },
+    "/cwe/1319/children": null
+  }
+}

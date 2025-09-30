@@ -1,0 +1,90 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T22:42:09.135372",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "1386",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/1386": {
+      "ID": "1386",
+      "Type": "base_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/1386": {
+      "ID": "1386",
+      "Name": "Insecure Operation on Windows Junction / Mount Point",
+      "Abstraction": "Base",
+      "Structure": "Simple",
+      "Status": "Incomplete",
+      "Description": "The product opens a file or directory, but it does not properly prevent the name from being associated with a junction or mount point to a destination that is outside of the intended control sphere.",
+      "ExtendedDescription": "\n\nDepending on the intended action being performed, this could allow an attacker to cause the product to read, write, delete, or otherwise operate on unauthorized files.\n\n\nIn Windows, NTFS5 allows for file system objects called reparse points. Applications can create a hard link from one directory to another directory, called a junction point. They can also create a mapping from a directory to a drive letter, called a mount point. If a file is used by a privileged program, but it can be replaced with a hard link to a sensitive file (e.g., AUTOEXEC.BAT), an attacker could excalate privileges. When the process opens the file, the attacker can assume the privileges of that process, tricking the privileged process to read, modify, or delete the sensitive file, preventing the program from accurately processing data. Note that one can also point to registries and semaphores.\n",
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Class": "Not Language-Specific",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Operating_System",
+          "Class": "Windows",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Implementation",
+          "Note": "The developer might not consider that when a program in Windows operates with different permissions than the executing user, the use of links, mount points, and junctions might cause the program to access files or directories that are outside of the intended storage location."
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Confidentiality"
+          ],
+          "Impact": [
+            "Read Files or Directories"
+          ],
+          "Note": "Read arbitrary files by replacing a user-controlled folder with a mount point and additional hard links."
+        },
+        {
+          "Scope": [
+            "Integrity"
+          ],
+          "Impact": [
+            "Modify Files or Directories"
+          ],
+          "Note": "Modify an arbitrary file by replacing the rollback files in installer directories, as they can have the installer execute those rollbacks."
+        },
+        {
+          "Scope": [
+            "Availability"
+          ],
+          "Impact": [
+            "Modify Files or Directories"
+          ],
+          "Note": "Even if there is no control of contents, an arbitrary file delete or overwrite (when running as SYSTEM or admin) can be used for a permanent system denial-of-service, e.g. by deleting a startup configuration file that prevents the service from starting."
+        }
+      ],
+      "DemonstrativeExamples": null,
+      "PotentialMitigations": [
+        {
+          "Phase": [
+            "Architecture and Design"
+          ],
+          "Strategy": "Separation of Privilege",
+          "Description": "When designing software that will have different rights than the executer, the software should check that files that it is interacting with are not improper hard links or mount points. One way to do this in Windows is to use the functionality embedded in the following command: \"dir /al /s /b\" or, in PowerShell, use LinkType as a filter. In addition, some software uses authentication via signing to ensure that the file is the correct one to use. Make checks atomic with the file action, otherwise a TOCTOU weakness (CWE-367) can be introduced."
+        }
+      ]
+    },
+    "/cwe/1386/parents": {
+      "weakness_parents": [],
+      "category_parents": [
+        "1416"
+      ]
+    },
+    "/cwe/1386/children": null
+  }
+}

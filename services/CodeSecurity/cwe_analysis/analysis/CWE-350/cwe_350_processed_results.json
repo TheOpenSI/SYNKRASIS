@@ -1,0 +1,121 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T23:13:46.814880",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "350",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/350": {
+      "ID": "350",
+      "Type": "variant_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/350": {
+      "ID": "350",
+      "Name": "Reliance on Reverse DNS Resolution for a Security-Critical Action",
+      "Abstraction": "Variant",
+      "Structure": "Simple",
+      "Status": "Draft",
+      "Description": "The product performs reverse DNS resolution on an IP address to obtain the hostname and make a security decision, but it does not properly ensure that the IP address is truly associated with the hostname.",
+      "ExtendedDescription": "\n\nSince DNS names can be easily spoofed or misreported, and it may be difficult for the product to detect if a trusted DNS server has been compromised, DNS names do not constitute a valid authentication mechanism.\n\n\nWhen the product performs a reverse DNS resolution for an IP address, if an attacker controls the DNS server for that IP address, then the attacker can cause the server to return an arbitrary hostname. As a result, the attacker may be able to bypass authentication, cause the wrong hostname to be recorded in log files to hide activities, or perform other attacks.\n\n\nAttackers can spoof DNS names by either (1) compromising a DNS server and modifying its records (sometimes called DNS cache poisoning), or (2) having legitimate control over a DNS server associated with their IP address.\n",
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Class": "Not Language-Specific",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Architecture and Design"
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Access Control"
+          ],
+          "Impact": [
+            "Gain Privileges or Assume Identity",
+            "Bypass Protection Mechanism"
+          ],
+          "Note": "Malicious users can fake authentication information by providing false DNS information."
+        }
+      ],
+      "DemonstrativeExamples": [
+        {
+          "ID": "DX-93",
+          "Entries": [
+            {
+              "IntroText": "The following code samples use a DNS lookup in order to decide whether or not an inbound request is from a trusted host. If an attacker can poison the DNS cache, they can gain trusted status."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "C",
+              "ExampleCode": "```\n\tstruct hostent *hp;struct in_addr myaddr;\n\tchar* tHost = \"trustme.example.com\";\n\tmyaddr.s_addr=inet_addr(ip_addr_string);\n\thp = gethostbyaddr((char *) &myaddr, sizeof(struct in_addr), AF_INET);\n\tif (hp && !strncmp(hp->h_name, tHost, sizeof(tHost))) {\n\t\ttrusted = true;\n\t} else {\n\t\ttrusted = false;\n\t}\n```"
+            },
+            {
+              "Nature": "Bad",
+              "Language": "Java",
+              "ExampleCode": "```\n\tString ip = request.getRemoteAddr();\n\tInetAddress addr = InetAddress.getByName(ip);\n\tif (addr.getCanonicalHostName().endsWith(\"trustme.com\")) {\n\t\ttrusted = true;\n\t}\n```"
+            },
+            {
+              "Nature": "Bad",
+              "Language": "C#",
+              "ExampleCode": "```\n\tIPAddress hostIPAddress = IPAddress.Parse(RemoteIpAddress);\n\tIPHostEntry hostInfo = Dns.GetHostByAddress(hostIPAddress);\n\tif (hostInfo.HostName.EndsWith(\"trustme.com\")) {\n\t\ttrusted = true;\n\t}\n```"
+            },
+            {
+              "BodyText": "IP addresses are more reliable than DNS names, but they can also be spoofed. Attackers can easily forge the source IP address of the packets they send, but response packets will return to the forged IP address. To see the response packets, the attacker has to sniff the traffic between the victim machine and the forged IP address. In order to accomplish the required sniffing, attackers typically attempt to locate themselves on the same subnet as the victim machine. Attackers may be able to circumvent this requirement by using source routing, but source routing is disabled across much of the Internet today. In summary, IP address verification can be a useful part of an authentication scheme, but it should not be the single factor required for authentication."
+            }
+          ]
+        },
+        {
+          "Entries": [
+            {
+              "IntroText": "In these examples, a connection is established if a request is made by a trusted host."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "C",
+              "ExampleCode": "```\n\tsd = socket(AF_INET, SOCK_DGRAM, 0);\n\tserv.sin_family = AF_INET;\n\tserv.sin_addr.s_addr = htonl(INADDR_ANY);\n\tservr.sin_port = htons(1008);\n\tbind(sd, (struct sockaddr *) & serv, sizeof(serv));\n\twhile (1) {\n\t\t\tmemset(msg, 0x0, MAX_MSG);\n\t\t\tclilen = sizeof(cli);\n\t\t\th=gethostbyname(inet_ntoa(cliAddr.sin_addr));\n\t\t\tif (h->h_name==...) n = recvfrom(sd, msg, MAX_MSG, 0, (struct sockaddr *) & cli, &clilen);\n\t}\n```"
+            },
+            {
+              "Nature": "Bad",
+              "Language": "Java",
+              "ExampleCode": "```\n\twhile(true) {\n\t\t\tDatagramPacket rp=new DatagramPacket(rData,rData.length);\n\t\t\toutSock.receive(rp);\n\t\t\tString in = new String(p.getData(),0, rp.getLength());\n\t\t\tInetAddress IPAddress = rp.getAddress();\n\t\t\tint port = rp.getPort();\n\t\t\tif ((rp.getHostName()==...) & (in==...)) {\n\t\t\t\t\tout = secret.getBytes();\n\t\t\t\t\tDatagramPacket sp =new DatagramPacket(out,out.length, IPAddress, port);\n\t\t\t\t\toutSock.send(sp);\n\t\t\t}\n\t}\n```"
+            },
+            {
+              "BodyText": "These examples check if a request is from a trusted host before responding to a request, but the code only verifies the hostname as stored in the request packet. An attacker can spoof the hostname, thus impersonating a trusted client."
+            }
+          ]
+        }
+      ],
+      "PotentialMitigations": [
+        {
+          "Phase": [
+            "Architecture and Design"
+          ],
+          "Description": "Use other means of identity verification that cannot be simply spoofed. Possibilities include a username/password or certificate."
+        },
+        {
+          "MitigationID": "MIT-42",
+          "Phase": [
+            "Implementation"
+          ],
+          "Description": "Perform proper forward and reverse DNS lookups to detect DNS spoofing."
+        }
+      ]
+    },
+    "/cwe/350/parents": {
+      "weakness_parents": [],
+      "category_parents": [
+        "1396",
+        "949"
+      ]
+    },
+    "/cwe/350/children": null
+  }
+}

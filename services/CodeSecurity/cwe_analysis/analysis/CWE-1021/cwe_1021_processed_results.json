@@ -1,0 +1,97 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T22:07:58.698166",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "1021",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/1021": {
+      "ID": "1021",
+      "Type": "base_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/1021": {
+      "ID": "1021",
+      "Name": "Improper Restriction of Rendered UI Layers or Frames",
+      "Abstraction": "Base",
+      "Structure": "Simple",
+      "Status": "Incomplete",
+      "Description": "The web application does not restrict or incorrectly restricts frame objects or UI layers that belong to another application or domain, which can lead to user confusion about which interface the user is interacting with.",
+      "ExtendedDescription": "A web application is expected to place restrictions on whether it is allowed to be rendered within frames, iframes, objects, embed or applet elements. Without the restrictions, users can be tricked into interacting with the application when they were not intending to.",
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": [
+        {
+          "Type": "Technology",
+          "Class": "Web Based",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": [
+        {
+          "Term": "Clickjacking"
+        },
+        {
+          "Term": "UI Redress Attack"
+        },
+        {
+          "Term": "Tapjacking",
+          "Description": "\"Tapjacking\" is similar to clickjacking, except it is used for mobile applications in which the user \"taps\" the application instead of performing a mouse click."
+        }
+      ],
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Implementation"
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Access Control"
+          ],
+          "Impact": [
+            "Gain Privileges or Assume Identity",
+            "Bypass Protection Mechanism",
+            "Read Application Data",
+            "Modify Application Data"
+          ],
+          "Note": "An attacker can trick a user into performing actions that are masked and hidden from the user's view. The impact varies widely, depending on the functionality of the underlying application. For example, in a social media application, clickjacking could be used to trik the user into changing privacy settings."
+        }
+      ],
+      "DemonstrativeExamples": null,
+      "PotentialMitigations": [
+        {
+          "Phase": [
+            "Implementation"
+          ],
+          "Description": "\n\nThe use of X-Frame-Options allows developers of web content to restrict the usage of their application within the form of overlays, frames, or iFrames. The developer can indicate from which domains can frame the content.\n\n\nThe concept of X-Frame-Options is well documented, but implementation of this protection mechanism is in development to cover gaps. There is a need for allowing frames from multiple domains.\n"
+        },
+        {
+          "Phase": [
+            "Implementation"
+          ],
+          "Description": "\n\nA developer can use a \"frame-breaker\" script in each page that should not be framed. This is very helpful for legacy browsers that do not support X-Frame-Options security feature previously mentioned.\n\n\nIt is also important to note that this tactic has been circumvented or bypassed. Improper usage of frames can persist in the web application through nested frames. The \"frame-breaking\" script does not intuitively account for multiple nested frames that can be presented to the user.\n"
+        },
+        {
+          "Phase": [
+            "Implementation"
+          ],
+          "Description": "This defense-in-depth technique can be used to prevent the improper usage of frames in web applications. It prioritizes the valid sources of data to be loaded into the application through the usage of declarative policies. Based on which implementation of Content Security Policy is in use, the developer should use the \"frame-ancestors\" directive or the \"frame-src\" directive to mitigate this weakness. Both directives allow for the placement of restrictions when it comes to allowing embedded content."
+        }
+      ]
+    },
+    "/cwe/1021/parents": {
+      "weakness_parents": [
+        "441",
+        "451",
+        "610"
+      ],
+      "category_parents": [
+        "1348",
+        "1396",
+        "355"
+      ]
+    },
+    "/cwe/1021/children": null
+  }
+}

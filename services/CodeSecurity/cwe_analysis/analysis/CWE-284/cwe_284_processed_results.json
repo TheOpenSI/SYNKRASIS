@@ -1,0 +1,147 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T23:04:34.123237",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "284",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/284": {
+      "ID": "284",
+      "Type": "pillar_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/284": {
+      "ID": "284",
+      "Name": "Improper Access Control",
+      "Abstraction": "Pillar",
+      "Structure": "Simple",
+      "Status": "Incomplete",
+      "Description": "The product does not restrict or incorrectly restricts access to a resource from an unauthorized actor.",
+      "ExtendedDescription": "\n\nAccess control involves the use of several protection mechanisms such as:\n\n\n  - Authentication (proving the identity of an actor)\n\n  - Authorization (ensuring that a given actor can access a resource), and\n\n  - Accountability (tracking of activities that were performed)\n\nWhen any mechanism is not applied or otherwise fails, attackers can compromise the security of the product by gaining privileges, reading sensitive information, executing commands, evading detection, etc.\n\nThere are two distinct behaviors that can introduce access control weaknesses:\n\n\n  - Specification: incorrect privileges, permissions, ownership, etc. are explicitly specified for either the user or the resource (for example, setting a password file to be world-writable, or giving administrator capabilities to a guest user). This action could be performed by the program or the administrator.\n\n  - Enforcement: the mechanism contains errors that prevent it from properly enforcing the specified access control requirements (e.g., allowing the user to specify their own privileges, or allowing a syntactically-incorrect ACL to produce insecure settings). This problem occurs within the program itself, in that it does not actually enforce the intended security policy that the administrator specifies.\n\n",
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": [
+        {
+          "Type": "Technology",
+          "Class": "Not Technology-Specific",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Technology",
+          "Class": "ICS/OT",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": [
+        {
+          "Term": "Authorization",
+          "Description": "The terms \"access control\" and \"authorization\" are often used interchangeably, although many people have distinct definitions. The CWE usage of \"access control\" is intended as a general term for the various mechanisms that restrict which users can access which resources, and \"authorization\" is more narrowly defined. It is unlikely that there will be community consensus on the use of these terms."
+        }
+      ],
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Architecture and Design"
+        },
+        {
+          "Phase": "Implementation",
+          "Note": "REALIZATION: This weakness is caused during implementation of an architectural security tactic."
+        },
+        {
+          "Phase": "Operation"
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Other"
+          ],
+          "Impact": [
+            "Varies by Context"
+          ]
+        }
+      ],
+      "DemonstrativeExamples": null,
+      "PotentialMitigations": [
+        {
+          "MitigationID": "MIT-1",
+          "Phase": [
+            "Architecture and Design",
+            "Operation"
+          ],
+          "Description": "Very carefully manage the setting, management, and handling of privileges. Explicitly manage trust zones in the software."
+        },
+        {
+          "MitigationID": "MIT-46",
+          "Phase": [
+            "Architecture and Design"
+          ],
+          "Strategy": "Separation of Privilege",
+          "Description": "\n\nCompartmentalize the system to have \"safe\" areas where trust boundaries can be unambiguously drawn. Do not allow sensitive data to go outside of the trust boundary and always be careful when interfacing with a compartment outside of the safe area.\n\n\nEnsure that appropriate compartmentalization is built into the system design, and the compartmentalization allows for and reinforces privilege separation functionality. Architects and designers should rely on the principle of least privilege to decide the appropriate time to use privileges and the time to drop privileges.\n"
+        }
+      ]
+    },
+    "/cwe/284/parents": {
+      "weakness_parents": [],
+      "category_parents": [
+        "1011",
+        "1031",
+        "1345",
+        "1369",
+        "1372",
+        "1396",
+        "254",
+        "723",
+        "944"
+      ]
+    },
+    "/cwe/284/children": {
+      "weakness_children": [
+        "1191",
+        "1220",
+        "1224",
+        "1231",
+        "1233",
+        "1252",
+        "1257",
+        "1259",
+        "1260",
+        "1262",
+        "1263",
+        "1267",
+        "1268",
+        "1270",
+        "1274",
+        "1276",
+        "1280",
+        "1283",
+        "1290",
+        "1292",
+        "1294",
+        "1296",
+        "1304",
+        "1311",
+        "1312",
+        "1313",
+        "1315",
+        "1316",
+        "1317",
+        "1320",
+        "1323",
+        "1334",
+        "269",
+        "282",
+        "285",
+        "286",
+        "287",
+        "288",
+        "346",
+        "639",
+        "749",
+        "862",
+        "863",
+        "923"
+      ],
+      "category_children": []
+    }
+  }
+}

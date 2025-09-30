@@ -1,0 +1,133 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T22:25:59.947130",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "123",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/123": {
+      "ID": "123",
+      "Type": "base_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/123": {
+      "ID": "123",
+      "Name": "Write-what-where Condition",
+      "Abstraction": "Base",
+      "Structure": "Simple",
+      "Status": "Draft",
+      "Description": "Any condition where the attacker has the ability to write an arbitrary value to an arbitrary location, often as the result of a buffer overflow.",
+      "ExtendedDescription": null,
+      "LikelihoodOfExploit": "High",
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Name": "C",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Language",
+          "Name": "C++",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Implementation"
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Integrity",
+            "Confidentiality",
+            "Availability",
+            "Access Control"
+          ],
+          "Impact": [
+            "Modify Memory",
+            "Execute Unauthorized Code or Commands",
+            "Gain Privileges or Assume Identity",
+            "DoS: Crash, Exit, or Restart",
+            "Bypass Protection Mechanism"
+          ],
+          "Note": "Clearly, write-what-where conditions can be used to write data to areas of memory outside the scope of a policy. Also, they almost invariably can be used to execute arbitrary code, which is usually outside the scope of a program's implicit security policy. If the attacker can overwrite a pointer's worth of memory (usually 32 or 64 bits), they can redirect a function pointer to their own malicious code. Even when the attacker can only modify a single byte arbitrary code execution can be possible. Sometimes this is because the same problem can be exploited repeatedly to the same effect. Other times it is because the attacker can overwrite security-critical application-specific data -- such as a flag indicating whether the user is an administrator."
+        },
+        {
+          "Scope": [
+            "Integrity",
+            "Availability"
+          ],
+          "Impact": [
+            "DoS: Crash, Exit, or Restart",
+            "Modify Memory"
+          ],
+          "Note": "Many memory accesses can lead to program termination, such as when writing to addresses that are invalid for the current process."
+        },
+        {
+          "Scope": [
+            "Access Control",
+            "Other"
+          ],
+          "Impact": [
+            "Bypass Protection Mechanism",
+            "Other"
+          ],
+          "Note": "When the consequence is arbitrary code execution, this can often be used to subvert any other security service."
+        }
+      ],
+      "DemonstrativeExamples": [
+        {
+          "Entries": [
+            {
+              "IntroText": "The classic example of a write-what-where condition occurs when the accounting information for memory allocations is overwritten in a particular fashion. Here is an example of potentially vulnerable code:"
+            },
+            {
+              "Nature": "Bad",
+              "Language": "C",
+              "ExampleCode": "```\n\t#define BUFSIZE 256\n\tint main(int argc, char **argv) {\n\t\tchar *buf1 = (char *) malloc(BUFSIZE);\n\t\tchar *buf2 = (char *) malloc(BUFSIZE);\n\t\tstrcpy(buf1, argv[1]);\n\t\tfree(buf2);\n\t}\n```"
+            },
+            {
+              "BodyText": "Vulnerability in this case is dependent on memory layout. The call to strcpy() can be used to write past the end of buf1, and, with a typical layout, can overwrite the accounting information that the system keeps for buf2 when it is allocated. Note that if the allocation header for buf2 can be overwritten, buf2 itself can be overwritten as well."
+            },
+            {
+              "BodyText": "The allocation header will generally keep a linked list of memory \"chunks\". Particularly, there may be a \"previous\" chunk and a \"next\" chunk. Here, the previous chunk for buf2 will probably be buf1, and the next chunk may be null. When the free() occurs, most memory allocators will rewrite the linked list using data from buf2. Particularly, the \"next\" chunk for buf1 will be updated and the \"previous\" chunk for any subsequent chunk will be updated. The attacker can insert a memory address for the \"next\" chunk and a value to write into that memory address for the \"previous\" chunk."
+            },
+            {
+              "BodyText": "This could be used to overwrite a function pointer that gets dereferenced later, replacing it with a memory address that the attacker has legitimate access to, where they have placed malicious code, resulting in arbitrary code execution."
+            }
+          ]
+        }
+      ],
+      "PotentialMitigations": [
+        {
+          "Phase": [
+            "Architecture and Design"
+          ],
+          "Strategy": "Language Selection",
+          "Description": "Use a language that provides appropriate memory abstractions."
+        },
+        {
+          "Phase": [
+            "Operation"
+          ],
+          "Description": "Use OS-level preventative functionality integrated after the fact. Not a complete solution."
+        }
+      ]
+    },
+    "/cwe/123/parents": {
+      "weakness_parents": [
+        "119"
+      ],
+      "category_parents": [
+        "1160",
+        "1161",
+        "1399",
+        "970"
+      ]
+    },
+    "/cwe/123/children": null
+  }
+}

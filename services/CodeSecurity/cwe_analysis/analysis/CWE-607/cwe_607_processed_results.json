@@ -1,0 +1,78 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T23:47:45.011378",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "607",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/607": {
+      "ID": "607",
+      "Type": "variant_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/607": {
+      "ID": "607",
+      "Name": "Public Static Final Field References Mutable Object",
+      "Abstraction": "Variant",
+      "Structure": "Simple",
+      "Status": "Draft",
+      "Description": "A public or protected static final field references a mutable object, which allows the object to be changed by malicious code, or accidentally from another package.",
+      "ExtendedDescription": null,
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Name": "Java",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Implementation"
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Integrity"
+          ],
+          "Impact": [
+            "Modify Application Data"
+          ]
+        }
+      ],
+      "DemonstrativeExamples": [
+        {
+          "Entries": [
+            {
+              "IntroText": "Here, an array (which is inherently mutable) is labeled public static final."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "Java",
+              "ExampleCode": "```\n\tpublic static final String[] USER_ROLES;\n```"
+            }
+          ]
+        }
+      ],
+      "PotentialMitigations": [
+        {
+          "Phase": [
+            "Implementation"
+          ],
+          "Description": "Protect mutable objects by making them private. Restrict access to the getter and setter as well."
+        }
+      ]
+    },
+    "/cwe/607/parents": {
+      "weakness_parents": [],
+      "category_parents": [
+        "1416",
+        "963"
+      ]
+    },
+    "/cwe/607/children": null
+  }
+}

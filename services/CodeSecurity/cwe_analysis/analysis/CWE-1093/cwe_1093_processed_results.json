@@ -1,0 +1,63 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T22:16:23.464942",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "1093",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/1093": {
+      "ID": "1093",
+      "Type": "class_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/1093": {
+      "ID": "1093",
+      "Name": "Excessively Complex Data Representation",
+      "Abstraction": "Class",
+      "Structure": "Simple",
+      "Status": "Incomplete",
+      "Description": "The product uses an unnecessarily complex internal representation for its data structures or interrelationships between those structures.",
+      "ExtendedDescription": "\n\nThis issue makes it more difficult to understand or maintain the product, which indirectly affects security by making it more difficult or time-consuming to find and/or fix vulnerabilities. It also might make it easier to introduce vulnerabilities.\n",
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": null,
+      "AlternateTerms": null,
+      "ModesOfIntroduction": null,
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Other"
+          ],
+          "Impact": [
+            "Reduce Maintainability"
+          ]
+        },
+        {
+          "Scope": [
+            "Other"
+          ],
+          "Impact": [
+            "Reduce Performance"
+          ]
+        }
+      ],
+      "DemonstrativeExamples": null,
+      "PotentialMitigations": null
+    },
+    "/cwe/1093/parents": {
+      "weakness_parents": [],
+      "category_parents": [
+        "1412"
+      ]
+    },
+    "/cwe/1093/children": {
+      "weakness_children": [
+        "1043",
+        "1055",
+        "1074",
+        "1086"
+      ],
+      "category_children": []
+    }
+  }
+}

@@ -1,0 +1,91 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T22:59:35.494415",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "243",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/243": {
+      "ID": "243",
+      "Type": "variant_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/243": {
+      "ID": "243",
+      "Name": "Creation of chroot Jail Without Changing Working Directory",
+      "Abstraction": "Variant",
+      "Structure": "Simple",
+      "Status": "Draft",
+      "Description": "The product uses the chroot() system call to create a jail, but does not change the working directory afterward. This does not prevent access to files outside of the jail.",
+      "ExtendedDescription": "Improper use of chroot() may allow attackers to escape from the chroot jail. The chroot() function call does not change the process's current working directory, so relative paths may still refer to file system resources outside of the chroot jail after chroot() has been called.",
+      "LikelihoodOfExploit": "High",
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Name": "C",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Language",
+          "Name": "C++",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Operating_System",
+          "Class": "Unix",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Implementation",
+          "Note": "REALIZATION: This weakness is caused during implementation of an architectural security tactic."
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Confidentiality"
+          ],
+          "Impact": [
+            "Read Files or Directories"
+          ]
+        }
+      ],
+      "DemonstrativeExamples": [
+        {
+          "Entries": [
+            {
+              "IntroText": "Consider the following source code from a (hypothetical) FTP server:"
+            },
+            {
+              "Nature": "Bad",
+              "Language": "C",
+              "ExampleCode": "```\n\tchroot(\"/var/ftproot\");\n\t...\n\tfgets(filename, sizeof(filename), network);\n\tlocalfile = fopen(filename, \"r\");\n\twhile ((len = fread(buf, 1, sizeof(buf), localfile)) != EOF) {\n\t\tfwrite(buf, 1, sizeof(buf), network);\n\t}\n\tfclose(localfile);\n```"
+            },
+            {
+              "BodyText": "This code is responsible for reading a filename from the network, opening the corresponding file on the local machine, and sending the contents over the network. This code could be used to implement the FTP GET command. The FTP server calls chroot() in its initialization routines in an attempt to prevent access to files outside of /var/ftproot. But because the server does not change the current working directory by calling chdir(\"/\"), an attacker could request the file \"../../../../../etc/passwd\" and obtain a copy of the system password file."
+            }
+          ]
+        }
+      ],
+      "PotentialMitigations": null
+    },
+    "/cwe/243/parents": {
+      "weakness_parents": [
+        "573",
+        "669"
+      ],
+      "category_parents": [
+        "1015",
+        "1416",
+        "265",
+        "227",
+        "979"
+      ]
+    },
+    "/cwe/243/children": null
+  }
+}

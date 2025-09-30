@@ -1,0 +1,82 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T23:40:46.252603",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "555",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/555": {
+      "ID": "555",
+      "Type": "variant_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/555": {
+      "ID": "555",
+      "Name": "J2EE Misconfiguration: Plaintext Password in Configuration File",
+      "Abstraction": "Variant",
+      "Structure": "Simple",
+      "Status": "Draft",
+      "Description": "The J2EE application stores a plaintext password in a configuration file.",
+      "ExtendedDescription": "Storing a plaintext password in a configuration file allows anyone who can read the file to access the password-protected resource, making it an easy target for attackers.",
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": null,
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Architecture and Design"
+        },
+        {
+          "Phase": "Implementation"
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Access Control"
+          ],
+          "Impact": [
+            "Bypass Protection Mechanism"
+          ]
+        }
+      ],
+      "DemonstrativeExamples": [
+        {
+          "Entries": [
+            {
+              "IntroText": "Below is a snippet from a Java properties file in which the LDAP server password is stored in plaintext."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "Java",
+              "ExampleCode": "```\n\twebapp.ldap.username=secretUsername\n\twebapp.ldap.password=secretPassword\n```"
+            }
+          ]
+        }
+      ],
+      "PotentialMitigations": [
+        {
+          "Phase": [
+            "Architecture and Design"
+          ],
+          "Description": "Do not hardwire passwords into your software."
+        },
+        {
+          "Phase": [
+            "Architecture and Design"
+          ],
+          "Description": "Use industry standard libraries to encrypt passwords before storage in configuration files."
+        }
+      ]
+    },
+    "/cwe/555/parents": {
+      "weakness_parents": [],
+      "category_parents": [
+        "1396",
+        "731",
+        "963"
+      ]
+    },
+    "/cwe/555/children": null
+  }
+}

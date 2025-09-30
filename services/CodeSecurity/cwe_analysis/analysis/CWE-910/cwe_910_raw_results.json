@@ -1,0 +1,214 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-30T00:15:31.013722",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "910",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/910": {
+      "endpoint": "/cwe/910",
+      "url": "https://cwe-api.mitre.org/api/v1/cwe/910",
+      "status_code": 200,
+      "success": true,
+      "error": null,
+      "data": [
+        {
+          "Type": "base_weakness",
+          "ID": "910"
+        }
+      ]
+    },
+    "/cwe/weakness/910": {
+      "endpoint": "/cwe/weakness/910",
+      "url": "https://cwe-api.mitre.org/api/v1/cwe/weakness/910",
+      "status_code": 200,
+      "success": true,
+      "error": null,
+      "data": {
+        "Weaknesses": [
+          {
+            "ID": "910",
+            "Name": "Use of Expired File Descriptor",
+            "Abstraction": "Base",
+            "Structure": "Simple",
+            "Status": "Incomplete",
+            "Description": "The product uses or accesses a file descriptor after it has been closed.",
+            "ExtendedDescription": "After a file descriptor for a particular file or device has been released, it can be reused. The code might not write to the original file, since the reused file descriptor might reference a different file or device.",
+            "LikelihoodOfExploit": "Medium",
+            "RelatedWeaknesses": [
+              {
+                "Nature": "ChildOf",
+                "CweID": "672",
+                "ViewID": "1000",
+                "Ordinal": "Primary"
+              }
+            ],
+            "WeaknessOrdinalities": [
+              {
+                "Ordinality": "Primary"
+              },
+              {
+                "Ordinality": "Resultant"
+              }
+            ],
+            "ApplicablePlatforms": [
+              {
+                "Type": "Language",
+                "Name": "C",
+                "Prevalence": "Sometimes"
+              },
+              {
+                "Type": "Language",
+                "Name": "C++",
+                "Prevalence": "Sometimes"
+              },
+              {
+                "Type": "Language",
+                "Class": "Not Language-Specific",
+                "Prevalence": "Undetermined"
+              }
+            ],
+            "AlternateTerms": [
+              {
+                "Term": "Stale file descriptor"
+              }
+            ],
+            "ModesOfIntroduction": [
+              {
+                "Phase": "Implementation"
+              }
+            ],
+            "CommonConsequences": [
+              {
+                "Scope": [
+                  "Confidentiality"
+                ],
+                "Impact": [
+                  "Read Files or Directories"
+                ],
+                "Note": "The program could read data from the wrong file."
+              },
+              {
+                "Scope": [
+                  "Availability"
+                ],
+                "Impact": [
+                  "DoS: Crash, Exit, or Restart"
+                ],
+                "Note": "Accessing a file descriptor that has been closed can cause a crash."
+              }
+            ],
+            "TaxonomyMappings": [
+              {
+                "TaxonomyName": "CERT C Secure Coding",
+                "EntryID": "FIO46-C",
+                "EntryName": "Do not access a closed file",
+                "MappingFit": "Exact"
+              }
+            ],
+            "MappingNotes": {
+              "Usage": "Allowed",
+              "Rationale": "This CWE entry is at the Base level of abstraction, which is a preferred level of abstraction for mapping to the root causes of vulnerabilities.",
+              "Comments": "Carefully read both the name and description to ensure that this mapping is an appropriate fit. Do not try to 'force' a mapping to a lower-level Base/Variant simply to comply with this preferred level of abstraction.",
+              "Reasons": [
+                "Acceptable-Use"
+              ]
+            },
+            "ContentHistory": [
+              {
+                "Type": "Submission",
+                "SubmissionName": "CWE Content Team",
+                "SubmissionOrganization": "MITRE",
+                "SubmissionDate": "2012-12-21",
+                "SubmissionComment": "New weakness based on discussion on the CWE research list in December 2012.",
+                "SubmissionVersion": "2.4",
+                "SubmissionReleaseDate": "2013-02-21"
+              },
+              {
+                "Type": "Modification",
+                "ModificationName": "CWE Content Team",
+                "ModificationOrganization": "MITRE",
+                "ModificationDate": "2017-11-08",
+                "ModificationComment": "updated Taxonomy_Mappings"
+              },
+              {
+                "Type": "Modification",
+                "ModificationName": "CWE Content Team",
+                "ModificationOrganization": "MITRE",
+                "ModificationDate": "2019-01-03",
+                "ModificationComment": "updated Relationships"
+              },
+              {
+                "Type": "Modification",
+                "ModificationName": "CWE Content Team",
+                "ModificationOrganization": "MITRE",
+                "ModificationDate": "2020-02-24",
+                "ModificationComment": "updated Relationships"
+              },
+              {
+                "Type": "Modification",
+                "ModificationName": "CWE Content Team",
+                "ModificationOrganization": "MITRE",
+                "ModificationDate": "2023-01-31",
+                "ModificationComment": "updated Description"
+              },
+              {
+                "Type": "Modification",
+                "ModificationName": "CWE Content Team",
+                "ModificationOrganization": "MITRE",
+                "ModificationDate": "2023-04-27",
+                "ModificationComment": "updated Relationships"
+              },
+              {
+                "Type": "Modification",
+                "ModificationName": "CWE Content Team",
+                "ModificationOrganization": "MITRE",
+                "ModificationDate": "2023-06-29",
+                "ModificationComment": "updated Mapping_Notes"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    "/cwe/910/parents": {
+      "endpoint": "/cwe/910/parents",
+      "url": "https://cwe-api.mitre.org/api/v1/cwe/910/parents",
+      "status_code": 200,
+      "success": true,
+      "error": null,
+      "data": [
+        {
+          "Type": "class_weakness",
+          "ID": "672",
+          "ViewID": "1000",
+          "Primary_Parent": true
+        },
+        {
+          "Type": "category",
+          "ID": "1163",
+          "ViewID": "1154"
+        },
+        {
+          "Type": "category",
+          "ID": "1415",
+          "ViewID": "1400"
+        },
+        {
+          "Type": "category",
+          "ID": "399",
+          "ViewID": "699"
+        }
+      ]
+    },
+    "/cwe/910/children": {
+      "endpoint": "/cwe/910/children",
+      "url": "https://cwe-api.mitre.org/api/v1/cwe/910/children",
+      "status_code": 200,
+      "success": true,
+      "error": null,
+      "data": []
+    }
+  }
+}

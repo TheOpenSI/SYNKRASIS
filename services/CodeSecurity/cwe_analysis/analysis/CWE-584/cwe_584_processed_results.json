@@ -1,0 +1,77 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T23:44:29.623477",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "584",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/584": {
+      "ID": "584",
+      "Type": "base_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/584": {
+      "ID": "584",
+      "Name": "Return Inside Finally Block",
+      "Abstraction": "Base",
+      "Structure": "Simple",
+      "Status": "Draft",
+      "Description": "The code has a return statement inside a finally block, which will cause any thrown exception in the try block to be discarded.",
+      "ExtendedDescription": null,
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": null,
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Implementation"
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Other"
+          ],
+          "Impact": [
+            "Alter Execution Logic"
+          ]
+        }
+      ],
+      "DemonstrativeExamples": [
+        {
+          "Entries": [
+            {
+              "IntroText": "In the following code excerpt, the IllegalArgumentException will never be delivered to the caller. The finally block will cause the exception to be discarded."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "Java",
+              "ExampleCode": "```\n\ttry {\n\t\t...\n\t\tthrow IllegalArgumentException();\n\t}\n\tfinally {\n\t\treturn r;\n\t}\n```"
+            }
+          ]
+        }
+      ],
+      "PotentialMitigations": [
+        {
+          "Phase": [
+            "Implementation"
+          ],
+          "Description": "Do not use a return statement inside the finally block. The finally block should have \"cleanup\" code."
+        }
+      ]
+    },
+    "/cwe/584/parents": {
+      "weakness_parents": [
+        "705"
+      ],
+      "category_parents": [
+        "1141",
+        "1410",
+        "389",
+        "851",
+        "961"
+      ]
+    },
+    "/cwe/584/children": null
+  }
+}

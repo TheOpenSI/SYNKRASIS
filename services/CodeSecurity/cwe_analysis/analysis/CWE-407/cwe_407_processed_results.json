@@ -1,0 +1,102 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T23:20:59.890635",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "407",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/407": {
+      "ID": "407",
+      "Type": "class_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/407": {
+      "ID": "407",
+      "Name": "Inefficient Algorithmic Complexity",
+      "Abstraction": "Class",
+      "Structure": "Simple",
+      "Status": "Incomplete",
+      "Description": "An algorithm in a product has an inefficient worst-case computational complexity that may be detrimental to system performance and can be triggered by an attacker, typically using crafted manipulations that ensure that the worst case is being reached.",
+      "ExtendedDescription": null,
+      "LikelihoodOfExploit": "Low",
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Class": "Not Language-Specific",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": [
+        {
+          "Term": "Quadratic Complexity",
+          "Description": "Used when the algorithmic complexity is related to the square of the number of inputs (N^2)"
+        }
+      ],
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Architecture and Design"
+        },
+        {
+          "Phase": "Implementation"
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Availability"
+          ],
+          "Impact": [
+            "DoS: Resource Consumption (CPU)",
+            "DoS: Resource Consumption (Memory)",
+            "DoS: Resource Consumption (Other)"
+          ],
+          "Note": "The typical consequence is CPU consumption, but memory consumption and consumption of other resources can also occur."
+        }
+      ],
+      "DemonstrativeExamples": [
+        {
+          "ID": "DX-158",
+          "Entries": [
+            {
+              "IntroText": "This example attempts to check if an input string is a \"sentence\" [REF-1164]."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "JavaScript",
+              "ExampleCode": "var test_string = \"Bad characters: $@#\";\n var bad_pattern = /^(\\w+\\s?)*$/i;\n var result = test_string.search(bad_pattern);"
+            },
+            {
+              "BodyText": "The regular expression has a vulnerable backtracking clause inside (\\w+\\s?)*$ which can be triggered to cause a Denial of Service by processing particular phrases.\n\n\nTo fix the backtracking problem, backtracking is removed with the ?= portion of the expression which changes it to a lookahead and the \\2 which prevents the backtracking. The modified example is:"
+            },
+            {
+              "Nature": "Good",
+              "Language": "JavaScript",
+              "ExampleCode": "var test_string = \"Bad characters: $@#\";\n var good_pattern = /^((?=(\\w+))\\2\\s?)*$/i;\n var result = test_string.search(good_pattern);"
+            },
+            {
+              "BodyText": "Note that [REF-1164] has a more thorough (and lengthy) explanation of everything going on within the RegEx."
+            }
+          ]
+        }
+      ],
+      "PotentialMitigations": null
+    },
+    "/cwe/407/parents": {
+      "weakness_parents": [
+        "405"
+      ],
+      "category_parents": [
+        "1307",
+        "1416",
+        "977"
+      ]
+    },
+    "/cwe/407/children": {
+      "weakness_children": [
+        "1333"
+      ],
+      "category_children": []
+    }
+  }
+}

@@ -1,0 +1,260 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T22:52:06.058728",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "190",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/190": {
+      "ID": "190",
+      "Type": "base_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/190": {
+      "ID": "190",
+      "Name": "Integer Overflow or Wraparound",
+      "Abstraction": "Base",
+      "Structure": "Simple",
+      "Status": "Stable",
+      "Description": "The product performs a calculation that can\n         produce an integer overflow or wraparound when the logic\n         assumes that the resulting value will always be larger than\n         the original value. This occurs when an integer value is\n         incremented to a value that is too large to store in the\n         associated representation. When this occurs, the value may\n         become a very small or negative number.",
+      "ExtendedDescription": null,
+      "LikelihoodOfExploit": "Medium",
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Name": "C",
+          "Prevalence": "Often"
+        },
+        {
+          "Type": "Language",
+          "Class": "Not Language-Specific",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": [
+        {
+          "Term": "Overflow",
+          "Description": "The terms \"overflow\" and \"wraparound\" are used interchangeably by some people, but they can have more precise distinctions by others. See Terminology Notes."
+        },
+        {
+          "Term": "Wraparound",
+          "Description": "The terms \"overflow\" and \"wraparound\" are used interchangeably by some people, but they can have more precise distinctions by others. See Terminology Notes."
+        },
+        {
+          "Term": "wrap, wrap-around, wrap around",
+          "Description": "Alternate spellings of \"wraparound\""
+        }
+      ],
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Implementation",
+          "Note": "This weakness may become security critical when determining the offset or size in behaviors such as memory allocation, copying, and concatenation."
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Availability"
+          ],
+          "Impact": [
+            "DoS: Crash, Exit, or Restart",
+            "DoS: Resource Consumption (Memory)",
+            "DoS: Instability"
+          ],
+          "Note": "This weakness can generally lead to undefined behavior and therefore crashes. When the calculated result is used for resource allocation, this weakness can cause too many (or too few) resources to be allocated, possibly enabling crashes if the product requests more resources than can be provided."
+        },
+        {
+          "Scope": [
+            "Integrity"
+          ],
+          "Impact": [
+            "Modify Memory"
+          ],
+          "Note": "If the value in question is important to data (as opposed to flow), simple data corruption has occurred. Also, if the overflow/wraparound results in other conditions such as buffer overflows, further memory corruption may occur."
+        },
+        {
+          "Scope": [
+            "Confidentiality",
+            "Availability",
+            "Access Control"
+          ],
+          "Impact": [
+            "Execute Unauthorized Code or Commands",
+            "Bypass Protection Mechanism"
+          ],
+          "Note": "This weakness can sometimes trigger buffer overflows, which can be used to execute arbitrary code. This is usually outside the scope of the product's implicit security policy."
+        },
+        {
+          "Scope": [
+            "Availability",
+            "Other"
+          ],
+          "Impact": [
+            "Alter Execution Logic",
+            "DoS: Crash, Exit, or Restart",
+            "DoS: Resource Consumption (CPU)"
+          ],
+          "Note": "If the overflow/wraparound occurs in a loop index variable, this could cause the loop to terminate at the wrong time - too early, too late, or not at all (i.e., infinite loops). With too many iterations, some loops could consume too many resources such as memory, file handles, etc., possibly leading to a crash or other DoS."
+        },
+        {
+          "Scope": [
+            "Access Control"
+          ],
+          "Impact": [
+            "Bypass Protection Mechanism"
+          ],
+          "Note": "If integer values are used in security-critical decisions, such as calculating quotas or allocation limits, integer overflows can be used to cause an incorrect security decision."
+        }
+      ],
+      "DemonstrativeExamples": [
+        {
+          "ID": "DX-33",
+          "Entries": [
+            {
+              "IntroText": "The following image processing code allocates a table for images."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "C",
+              "ExampleCode": "```\n\timg_t table_ptr; /*struct containing img data, 10kB each*/\n\tint num_imgs;\n\t...\n\tnum_imgs = get_num_imgs();\n\ttable_ptr = (img_t*)malloc(sizeof(img_t)*num_imgs);\n\t...\n```"
+            },
+            {
+              "BodyText": "This code intends to allocate a table of size num_imgs, however as num_imgs grows large, the calculation determining the size of the list will eventually overflow (CWE-190). This will result in a very small list to be allocated instead. If the subsequent code operates on the list as if it were num_imgs long, it may result in many types of out-of-bounds problems (CWE-119)."
+            }
+          ]
+        },
+        {
+          "Entries": [
+            {
+              "IntroText": "The following code excerpt from OpenSSH 3.3 demonstrates a classic case of integer overflow:"
+            },
+            {
+              "Nature": "Bad",
+              "Language": "C",
+              "ExampleCode": "```\n\tnresp = packet_get_int();\n\tif (nresp > 0) {\n\t\tresponse = xmalloc(nresp*sizeof(char*));\n\t\tfor (i = 0; i < nresp; i++) response[i] = packet_get_string(NULL);\n\t}\n```"
+            },
+            {
+              "BodyText": "If nresp has the value 1073741824 and sizeof(char*) has its typical value of 4, then the result of the operation nresp*sizeof(char*) overflows, and the argument to xmalloc() will be 0. Most malloc() implementations will happily allocate a 0-byte buffer, causing the subsequent loop iterations to overflow the heap buffer response."
+            }
+          ]
+        },
+        {
+          "Entries": [
+            {
+              "IntroText": "Integer overflows can be complicated and difficult to detect. The following example is an attempt to show how an integer overflow may lead to undefined looping behavior:"
+            },
+            {
+              "Nature": "Bad",
+              "Language": "C",
+              "ExampleCode": "```\n\tshort int bytesRec = 0;\n\tchar buf[SOMEBIGNUM];\n\twhile(bytesRec < MAXGET) {\n\t\tbytesRec += getFromInput(buf+bytesRec);\n\t}\n```"
+            },
+            {
+              "BodyText": "In the above case, it is entirely possible that bytesRec may overflow, continuously creating a lower number than MAXGET and also overwriting the first MAXGET-1 bytes of buf."
+            }
+          ]
+        },
+        {
+          "Entries": [
+            {
+              "IntroText": "In this example the method determineFirstQuarterRevenue is used to determine the first quarter revenue for an accounting/business application. The method retrieves the monthly sales totals for the first three months of the year, calculates the first quarter sales totals from the monthly sales totals, calculates the first quarter revenue based on the first quarter sales, and finally saves the first quarter revenue results to the database."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "C",
+              "ExampleCode": "```\n\t#define JAN 1\n\t#define FEB 2\n\t#define MAR 3\n\tshort getMonthlySales(int month) {...}\n\tfloat calculateRevenueForQuarter(short quarterSold) {...}\n\tint determineFirstQuarterRevenue() {\n```\n// Variable for sales revenue for the quarter* \n\t\t\tfloat quarterRevenue = 0.0f;\n\t\t\t\n\t\t\tshort JanSold = getMonthlySales(JAN); /* Get sales in January */\n\t\t\tshort FebSold = getMonthlySales(FEB); /* Get sales in February */\n\t\t\tshort MarSold = getMonthlySales(MAR); /* Get sales in March */\n\t\t\t\n\t\t\t\n\t\t\t *// Calculate quarterly total* \n\t\t\tshort quarterSold = JanSold + FebSold + MarSold;\n\t\t\t\n\t\t\t\n\t\t\t *// Calculate the total revenue for the quarter* \n\t\t\tquarterRevenue = calculateRevenueForQuarter(quarterSold);\n\t\t\t\n\t\t\tsaveFirstQuarterRevenue(quarterRevenue);\n\t\t\t\n\t\t\treturn 0;}"
+            },
+            {
+              "BodyText": "However, in this example the primitive type short int is used for both the monthly and the quarterly sales variables. In C the short int primitive type has a maximum value of 32768. This creates a potential integer overflow if the value for the three monthly sales adds up to more than the maximum value for the short int primitive type. An integer overflow can lead to data corruption, unexpected behavior, infinite loops and system crashes. To correct the situation the appropriate primitive type should be used, as in the example below, and/or provide some validation mechanism to ensure that the maximum value for the primitive type is not exceeded."
+            },
+            {
+              "Nature": "Good",
+              "Language": "C",
+              "ExampleCode": "```\n\t...\n\tfloat calculateRevenueForQuarter(long quarterSold) {...}\n\tint determineFirstQuarterRevenue() {\n\t\t\t...\n```\n// Calculate quarterly total* \n\t\t\tlong quarterSold = JanSold + FebSold + MarSold;\n\t\t\t\n\t\t\t\n\t\t\t *// Calculate the total revenue for the quarter* \n\t\t\tquarterRevenue = calculateRevenueForQuarter(quarterSold);\n\t\t\t\n\t\t\t...}"
+            },
+            {
+              "BodyText": "Note that an integer overflow could also occur if the quarterSold variable has a primitive type long but the method calculateRevenueForQuarter has a parameter of type short."
+            }
+          ]
+        }
+      ],
+      "PotentialMitigations": [
+        {
+          "Phase": [
+            "Requirements"
+          ],
+          "Description": "Ensure that all protocols are strictly defined, such that all out-of-bounds behavior can be identified simply, and require strict conformance to the protocol."
+        },
+        {
+          "MitigationID": "MIT-3",
+          "Phase": [
+            "Requirements"
+          ],
+          "Strategy": "Language Selection",
+          "Description": "\n\nUse a language that does not allow this weakness to occur or provides constructs that make this weakness easier to avoid.\n\n\nIf possible, choose a language or compiler that performs automatic bounds checking.\n"
+        },
+        {
+          "MitigationID": "MIT-4",
+          "Phase": [
+            "Architecture and Design"
+          ],
+          "Strategy": "Libraries or Frameworks",
+          "Description": "\n\nUse a vetted library or framework that does not allow this weakness to occur or provides constructs that make this weakness easier to avoid [REF-1482].\n\n\nUse libraries or frameworks that make it easier to handle numbers without unexpected consequences.\n\n\nExamples include safe integer handling packages such as SafeInt (C++) or IntegerLib (C or C++). [REF-106]\n"
+        },
+        {
+          "MitigationID": "MIT-8",
+          "Phase": [
+            "Implementation"
+          ],
+          "Strategy": "Input Validation",
+          "Description": "\n\nPerform input validation on any numeric input by ensuring that it is within the expected range. Enforce that the input meets both the minimum and maximum requirements for the expected range.\n\n\nUse unsigned integers where possible. This makes it easier to perform validation for integer overflows. When signed integers are required, ensure that the range check includes minimum values as well as maximum values.\n"
+        },
+        {
+          "MitigationID": "MIT-36",
+          "Phase": [
+            "Implementation"
+          ],
+          "Description": "\n\nUnderstand the programming language's underlying representation and how it interacts with numeric calculation (CWE-681). Pay close attention to byte size discrepancies, precision, signed/unsigned distinctions, truncation, conversion and casting between types, \"not-a-number\" calculations, and how the language handles numbers that are too large or too small for its underlying representation. [REF-7]\n\n\nAlso be careful to account for 32-bit, 64-bit, and other potential differences that may affect the numeric representation.\n"
+        },
+        {
+          "MitigationID": "MIT-15",
+          "Phase": [
+            "Architecture and Design"
+          ],
+          "Description": "For any security checks that are performed on the client side, ensure that these checks are duplicated on the server side, in order to avoid CWE-602. Attackers can bypass the client-side checks by modifying values after the checks have been performed, or by changing the client to remove the client-side checks entirely. Then, these modified values would be submitted to the server."
+        },
+        {
+          "MitigationID": "MIT-26",
+          "Phase": [
+            "Implementation"
+          ],
+          "Strategy": "Compilation or Build Hardening",
+          "Description": "Examine compiler warnings closely and eliminate problems with potential security implications, such as signed / unsigned mismatch in memory operations, or use of uninitialized variables. Even if the weakness is rarely exploitable, a single failure may lead to the compromise of the entire system."
+        }
+      ]
+    },
+    "/cwe/190/parents": {
+      "weakness_parents": [
+        "20"
+      ],
+      "category_parents": [
+        "1137",
+        "1158",
+        "1162",
+        "1408",
+        "189",
+        "738",
+        "742",
+        "802",
+        "872",
+        "876",
+        "998",
+        "865"
+      ]
+    },
+    "/cwe/190/children": {
+      "weakness_children": [],
+      "category_children": []
+    }
+  }
+}

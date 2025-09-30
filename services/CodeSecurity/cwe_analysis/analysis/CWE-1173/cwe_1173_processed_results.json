@@ -1,0 +1,85 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T22:22:22.617693",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "1173",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/1173": {
+      "ID": "1173",
+      "Type": "base_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/1173": {
+      "ID": "1173",
+      "Name": "Improper Use of Validation Framework",
+      "Abstraction": "Base",
+      "Structure": "Simple",
+      "Status": "Draft",
+      "Description": "The product does not use, or incorrectly uses, an input validation framework that is provided by the source language or an independent library.",
+      "ExtendedDescription": "Many modern coding languages provide developers with input validation frameworks to make the task of input validation easier and less error-prone. These frameworks will automatically check all input against specified criteria and direct execution to error handlers when invalid input is received. The improper use (i.e., an incorrect implementation or missing altogether) of these frameworks is not directly exploitable, but can lead to an exploitable condition if proper input validation is not performed later in the product. Not using provided input validation frameworks can also hurt the maintainability of code as future developers may not recognize the downstream input validation being used in the place of the validation framework.",
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Class": "Not Language-Specific",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Architecture and Design",
+          "Note": "This weakness may occur when software designers choose to not leverage input validation frameworks provided by the source language."
+        },
+        {
+          "Phase": "Implementation",
+          "Note": "This weakness may occur when developers do not correctly use a provided input validation framework."
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Integrity"
+          ],
+          "Impact": [
+            "Unexpected State"
+          ],
+          "Note": "Unchecked input leads to cross-site scripting, process control, and SQL injection vulnerabilities, among others."
+        }
+      ],
+      "DemonstrativeExamples": null,
+      "PotentialMitigations": [
+        {
+          "Phase": [
+            "Implementation"
+          ],
+          "Description": "Properly use provided input validation frameworks."
+        }
+      ]
+    },
+    "/cwe/1173/parents": {
+      "weakness_parents": [
+        "20"
+      ],
+      "category_parents": [
+        "1348",
+        "1406",
+        "1215"
+      ]
+    },
+    "/cwe/1173/children": {
+      "weakness_children": [
+        "102",
+        "105",
+        "106",
+        "108",
+        "109",
+        "1174",
+        "554"
+      ],
+      "category_children": []
+    }
+  }
+}

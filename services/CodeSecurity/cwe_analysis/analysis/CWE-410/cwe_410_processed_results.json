@@ -1,0 +1,116 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T23:21:29.912338",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "410",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/410": {
+      "ID": "410",
+      "Type": "class_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/410": {
+      "ID": "410",
+      "Name": "Insufficient Resource Pool",
+      "Abstraction": "Class",
+      "Structure": "Simple",
+      "Status": "Incomplete",
+      "Description": "The product's resource pool is not large enough to handle peak demand, which allows an attacker to prevent others from accessing the resource by using a (relatively) large number of requests for resources.",
+      "ExtendedDescription": "Frequently the consequence is a \"flood\" of connection or sessions.",
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Class": "Not Language-Specific",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Architecture and Design"
+        },
+        {
+          "Phase": "Implementation"
+        },
+        {
+          "Phase": "Operation"
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Availability",
+            "Integrity",
+            "Other"
+          ],
+          "Impact": [
+            "DoS: Crash, Exit, or Restart",
+            "Other"
+          ],
+          "Note": "Floods often cause a crash or other problem besides denial of the resource itself; these are likely examples of *other* vulnerabilities, not an insufficient resource pool."
+        }
+      ],
+      "DemonstrativeExamples": [
+        {
+          "Entries": [
+            {
+              "IntroText": "In the following snippet from a Tomcat configuration file, a JDBC connection pool is defined with a maximum of 5 simultaneous connections (with a 60 second timeout). In this case, it may be trivial for an attacker to instigate a denial of service (DoS) by using up all of the available connections in the pool."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "XML",
+              "ExampleCode": "```\n\t<Resource name=\"jdbc/exampledb\"\n\tauth=\"Container\"\n\ttype=\"javax.sql.DataSource\"\n\tremoveAbandoned=\"true\"\n\tremoveAbandonedTimeout=\"30\"\n\tmaxActive=\"5\"\n\tmaxIdle=\"5\"\n\tmaxWait=\"60000\"\n\tusername=\"testuser\"\n\tpassword=\"testpass\"\n\tdriverClassName=\"com.mysql.jdbc.Driver\"\n\turl=\"jdbc:mysql://localhost/exampledb\"/>\n```"
+            }
+          ]
+        }
+      ],
+      "PotentialMitigations": [
+        {
+          "Phase": [
+            "Architecture and Design"
+          ],
+          "Description": "Do not perform resource-intensive transactions for unauthenticated users and/or invalid requests."
+        },
+        {
+          "Phase": [
+            "Architecture and Design"
+          ],
+          "Description": "Consider implementing a velocity check mechanism which would detect abusive behavior."
+        },
+        {
+          "Phase": [
+            "Operation"
+          ],
+          "Description": "Consider load balancing as an option to handle heavy loads."
+        },
+        {
+          "Phase": [
+            "Implementation"
+          ],
+          "Description": "Make sure that resource handles are properly closed when no longer needed."
+        },
+        {
+          "Phase": [
+            "Architecture and Design"
+          ],
+          "Description": "Identify the system's resource intensive operations and consider protecting them from abuse (e.g. malicious automated script which runs the resources out)."
+        }
+      ]
+    },
+    "/cwe/410/parents": {
+      "weakness_parents": [],
+      "category_parents": [
+        "1145",
+        "1416",
+        "399",
+        "730",
+        "855",
+        "977"
+      ]
+    },
+    "/cwe/410/children": null
+  }
+}

@@ -1,0 +1,76 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T23:49:21.843273",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "619",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/619": {
+      "ID": "619",
+      "Type": "base_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/619": {
+      "ID": "619",
+      "Name": "Dangling Database Cursor ('Cursor Injection')",
+      "Abstraction": "Base",
+      "Structure": "Simple",
+      "Status": "Incomplete",
+      "Description": "If a database cursor is not closed properly, then it could become accessible to other users while retaining the same privileges that were originally assigned, leaving the cursor \"dangling.\"",
+      "ExtendedDescription": "For example, an improper dangling cursor could arise from unhandled exceptions. The impact of the issue depends on the cursor's role, but SQL injection attacks are commonly possible.",
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Name": "SQL",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Technology",
+          "Name": "Database Server",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Implementation",
+          "Note": "This issue is currently reported for unhandled exceptions, but it is theoretically possible any time the programmer does not close the cursor at the proper time."
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Confidentiality",
+            "Integrity"
+          ],
+          "Impact": [
+            "Read Application Data",
+            "Modify Application Data"
+          ]
+        }
+      ],
+      "DemonstrativeExamples": null,
+      "PotentialMitigations": [
+        {
+          "Phase": [
+            "Implementation"
+          ],
+          "Description": "Close cursors immediately after access to them is complete. Ensure that you close cursors if exceptions occur."
+        }
+      ]
+    },
+    "/cwe/619/parents": {
+      "weakness_parents": [
+        "402"
+      ],
+      "category_parents": [
+        "1403",
+        "399",
+        "990"
+      ]
+    },
+    "/cwe/619/children": null
+  }
+}

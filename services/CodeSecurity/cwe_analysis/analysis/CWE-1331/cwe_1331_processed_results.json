@@ -1,0 +1,125 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T22:39:22.800094",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "1331",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/1331": {
+      "ID": "1331",
+      "Type": "base_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/1331": {
+      "ID": "1331",
+      "Name": "Improper Isolation of Shared Resources in Network On Chip (NoC)",
+      "Abstraction": "Base",
+      "Structure": "Simple",
+      "Status": "Stable",
+      "Description": "The Network On Chip (NoC) does not isolate or incorrectly isolates its on-chip-fabric and internal resources such that they are shared between trusted and untrusted agents, creating timing channels.",
+      "ExtendedDescription": "\n\nTypically, network on chips (NoC) have many internal resources that are shared between packets from different trust domains. These resources include internal buffers, crossbars and switches, individual ports, and channels. The sharing of resources causes contention and introduces interference between differently trusted domains, which poses a security threat via a timing channel, allowing attackers to infer data that belongs to a trusted agent. This may also result in introducing network interference, resulting in degraded throughput and latency.\n",
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Class": "Not Language-Specific",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Operating_System",
+          "Class": "Not OS-Specific",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Architecture",
+          "Class": "Not Architecture-Specific",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Technology",
+          "Name": "Security Hardware",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Technology",
+          "Class": "Not Technology-Specific",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Architecture and Design"
+        },
+        {
+          "Phase": "Implementation"
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Confidentiality",
+            "Availability"
+          ],
+          "Impact": [
+            "DoS: Resource Consumption (Other)",
+            "Varies by Context",
+            "Other"
+          ],
+          "Likelihood": [
+            "Medium"
+          ],
+          "Note": "Attackers may infer data that belongs to a trusted agent. The methods used to perform this attack may result in noticeably increased resource consumption."
+        }
+      ],
+      "DemonstrativeExamples": [
+        {
+          "Entries": [
+            {
+              "IntroText": "Consider a NoC that implements a one-dimensional mesh network with four nodes. This supports two flows: Flow A from node 0 to node 3 (via node 1 and node 2) and Flow B from node 1 to node 2. Flows A and B share a common link between Node 1 and Node 2. Only one flow can use the link in each cycle."
+            },
+            {
+              "BodyText": "One of the masters to this NoC implements a cryptographic algorithm (RSA), and another master to the NoC is a core that can be exercised by an attacker. The RSA algorithm performs a modulo multiplication of two large numbers and depends on each bit of the secret key. The algorithm examines each bit in the secret key and only performs multiplication if the bit is 1. This algorithm is known to be prone to timing attacks. Whenever RSA performs multiplication, there is additional network traffic to the memory controller. One of the reasons for this is cache conflicts."
+            },
+            {
+              "BodyText": "Since this is a one-dimensional mesh, only one flow can use the link in each cycle. Also, packets from the attack program and the RSA program share the output port of the network-on-chip. This contention results in network interference, and the throughput and latency of one flow can be affected by the other flow's demand."
+            },
+            {
+              "Nature": "Attack",
+              "ExampleCode": "The attacker runs a loop program on the core they control, and this causes a cache miss in every iteration for the RSA algorithm. Thus, by observing network-traffic bandwidth and timing, the attack program can determine when the RSA algorithm is doing a multiply operation (i.e., when the secret key bit is 1) and eventually extract the entire, secret key."
+            },
+            {
+              "BodyText": "There may be different ways to fix this particular weakness."
+            },
+            {
+              "Nature": "Good",
+              "Language": "Other",
+              "ExampleCode": "Implement priority-based arbitration inside the NoC and have dedicated buffers or virtual channels for routing secret data from trusted agents."
+            }
+          ]
+        }
+      ],
+      "PotentialMitigations": [
+        {
+          "Phase": [
+            "Architecture and Design",
+            "Implementation"
+          ],
+          "Description": "Implement priority-based arbitration inside the NoC and have dedicated buffers or virtual channels for routing secret data from trusted agents."
+        }
+      ]
+    },
+    "/cwe/1331/parents": {
+      "weakness_parents": [
+        "653",
+        "668"
+      ],
+      "category_parents": [
+        "1203",
+        "1418"
+      ]
+    },
+    "/cwe/1331/children": null
+  }
+}

@@ -1,0 +1,53 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T22:09:44.120898",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "1044",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/1044": {
+      "ID": "1044",
+      "Type": "base_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/1044": {
+      "ID": "1044",
+      "Name": "Architecture with Number of Horizontal Layers Outside of Expected Range",
+      "Abstraction": "Base",
+      "Structure": "Simple",
+      "Status": "Incomplete",
+      "Description": "The product's architecture contains too many - or too few -\n\t\t\t\t\thorizontal layers.",
+      "ExtendedDescription": "\n\nThis issue makes it more difficult to maintain the product, which indirectly affects security by making it more difficult or time-consuming to find and/or fix vulnerabilities. It also might make it easier to introduce vulnerabilities.\n\n\nWhile the interpretation of \"expected range\" may vary for each product or developer, CISQ recommends a default minimum of 4 layers and maximum of 8 layers.\n",
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": null,
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Architecture and Design"
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Other"
+          ],
+          "Impact": [
+            "Reduce Maintainability"
+          ]
+        }
+      ],
+      "DemonstrativeExamples": null,
+      "PotentialMitigations": null
+    },
+    "/cwe/1044/parents": {
+      "weakness_parents": [],
+      "category_parents": [
+        "1130",
+        "1412",
+        "1006"
+      ]
+    },
+    "/cwe/1044/children": null
+  }
+}

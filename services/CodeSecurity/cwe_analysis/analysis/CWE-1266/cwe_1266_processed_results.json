@@ -1,0 +1,100 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T22:30:47.995182",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "1266",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/1266": {
+      "ID": "1266",
+      "Type": "base_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/1266": {
+      "ID": "1266",
+      "Name": "Improper Scrubbing of Sensitive Data from Decommissioned Device",
+      "Abstraction": "Base",
+      "Structure": "Simple",
+      "Status": "Incomplete",
+      "Description": "The product does not properly provide a capability for the product administrator to remove sensitive data at the time the product is decommissioned.  A scrubbing capability could be missing, insufficient, or incorrect.",
+      "ExtendedDescription": "\n\nWhen a product is decommissioned - i.e., taken out of service - best practices or regulatory requirements may require the administrator to remove or overwrite sensitive data first, i.e. \"scrubbing.\" Improper scrubbing of sensitive data from a decommissioned device leaves that data vulnerable to acquisition by a malicious actor. Sensitive data may include, but is not limited to, device/manufacturer proprietary information, user/device credentials, network configurations, and other forms of sensitive data.\n",
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Class": "Not Language-Specific",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Operating_System",
+          "Class": "Not OS-Specific",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Architecture",
+          "Class": "Not Architecture-Specific",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Technology",
+          "Class": "Not Technology-Specific",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Architecture and Design"
+        },
+        {
+          "Phase": "Policy"
+        },
+        {
+          "Phase": "Implementation"
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Confidentiality"
+          ],
+          "Impact": [
+            "Read Memory"
+          ]
+        }
+      ],
+      "DemonstrativeExamples": null,
+      "PotentialMitigations": [
+        {
+          "Phase": [
+            "Architecture and Design"
+          ],
+          "Description": "\n\nFunctionality to completely scrub data from a product at the conclusion of its lifecycle should be part of the design phase. Trying to add this function on top of an existing architecture could lead to incomplete removal of sensitive information/data.\n"
+        },
+        {
+          "Phase": [
+            "Policy"
+          ],
+          "Description": "\n\nThe manufacturer should describe the location(s) where sensitive data is stored and the policies and procedures for its removal. This information may be conveyed, for example, in an Administrators Guide or a Statement of Volatility.\n"
+        },
+        {
+          "Phase": [
+            "Implementation"
+          ],
+          "Description": "\n\nIf the capability to wipe sensitive data isn't built-in, the manufacturer may need to provide a utility to scrub sensitive data from storage if that data is located in a place which is non-accessible by the administrator. One example of this could be when sensitive data is stored on an EEPROM for which there is no user/admin interface provided by the system.\n"
+        }
+      ]
+    },
+    "/cwe/1266/parents": {
+      "weakness_parents": [
+        "404"
+      ],
+      "category_parents": [
+        "1195",
+        "1416"
+      ]
+    },
+    "/cwe/1266/children": null
+  }
+}

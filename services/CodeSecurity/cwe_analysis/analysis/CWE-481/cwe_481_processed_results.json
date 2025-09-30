@@ -1,0 +1,161 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T23:30:37.790797",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "481",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/481": {
+      "ID": "481",
+      "Type": "variant_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/481": {
+      "ID": "481",
+      "Name": "Assigning instead of Comparing",
+      "Abstraction": "Variant",
+      "Structure": "Simple",
+      "Status": "Draft",
+      "Description": "The code uses an operator for assignment when the intention was to perform a comparison.",
+      "ExtendedDescription": "In many languages the compare statement is very close in appearance to the assignment statement and are often confused. This bug is generally the result of a typo and usually causes obvious problems with program execution. If the comparison is in an if statement, the if statement will usually evaluate the value of the right-hand side of the predicate.",
+      "LikelihoodOfExploit": "Low",
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Name": "C",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Language",
+          "Name": "C++",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Language",
+          "Name": "Java",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Language",
+          "Name": "C#",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Implementation"
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Other"
+          ],
+          "Impact": [
+            "Alter Execution Logic"
+          ]
+        }
+      ],
+      "DemonstrativeExamples": [
+        {
+          "ID": "DX-140",
+          "Entries": [
+            {
+              "IntroText": "The following C/C++ and C# examples attempt to validate an int input parameter against the integer value 100."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "C",
+              "ExampleCode": "```\n\tint isValid(int value) {\n\t\tif (value=100) {\n\t\t\tprintf(\"Value is valid\\n\");\n\t\t\treturn(1);\n\t\t}\n\t\tprintf(\"Value is not valid\\n\");\n\t\treturn(0);\n\t}\n```"
+            },
+            {
+              "Nature": "Bad",
+              "Language": "C#",
+              "ExampleCode": "```\n\tbool isValid(int value) {\n\t\tif (value=100) {\n\t\t\tConsole.WriteLine(\"Value is valid.\");\n\t\t\treturn true;\n\t\t}\n\t\tConsole.WriteLine(\"Value is not valid.\");\n\t\treturn false;\n\t}\n```"
+            },
+            {
+              "BodyText": "However, the expression to be evaluated in the if statement uses the assignment operator \"=\" rather than the comparison operator \"==\". The result of using the assignment operator instead of the comparison operator causes the int variable to be reassigned locally and the expression in the if statement will always evaluate to the value on the right hand side of the expression. This will result in the input value not being properly validated, which can cause unexpected results."
+            }
+          ]
+        },
+        {
+          "Entries": [
+            {
+              "IntroText": "In this example, we show how assigning instead of comparing can impact code when values are being passed by reference instead of by value. Consider a scenario in which a string is being processed from user input. Assume the string has already been formatted such that different user inputs are concatenated with the colon character. When the processString function is called, the test for the colon character will result in an insertion of the colon character instead, adding new input separators. Since the string was passed by reference, the data sentinels will be inserted in the original string (CWE-464), and further processing of the inputs will be altered, possibly malformed.."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "C",
+              "ExampleCode": "```\n\tvoid processString (char *str) {\n\t\t\tint i;\n\t\t\tfor(i=0; i<strlen(str); i++) {\n\t\t\t\tif (isalnum(str[i])){\n\t\t\t\t\tprocessChar(str[i]);\n\t\t\t\t}\n\t\t\t\telse if (str[i] = ':') {\n\t\t\t\t\tmovingToNewInput();}\n\t\t\t\t}\n\t\t\t}\n\t}\n```"
+            }
+          ]
+        },
+        {
+          "Entries": [
+            {
+              "IntroText": "The following Java example attempts to perform some processing based on the boolean value of the input parameter. However, the expression to be evaluated in the if statement uses the assignment operator \"=\" rather than the comparison operator \"==\". As with the previous examples, the variable will be reassigned locally and the expression in the if statement will evaluate to true and unintended processing may occur."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "Java",
+              "ExampleCode": "```\n\tpublic void checkValid(boolean isValid) {\n\t\tif (isValid = true) {\n\t\t\tSystem.out.println(\"Performing processing\");\n\t\t\tdoSomethingImportant();\n\t\t}\n\t\telse {\n\t\t\tSystem.out.println(\"Not Valid, do not perform processing\");\n\t\t\treturn;\n\t\t}\n\t}\n```"
+            },
+            {
+              "BodyText": "While most Java compilers will catch the use of an assignment operator when a comparison operator is required, for boolean variables in Java the use of the assignment operator within an expression is allowed. If possible, try to avoid using comparison operators on boolean variables in java. Instead, let the values of the variables stand for themselves, as in the following code."
+            },
+            {
+              "Nature": "Good",
+              "Language": "Java",
+              "ExampleCode": "```\n\tpublic void checkValid(boolean isValid) {\n\t\tif (isValid) {\n\t\t\tSystem.out.println(\"Performing processing\");\n\t\t\tdoSomethingImportant();\n\t\t}\n\t\telse {\n\t\t\tSystem.out.println(\"Not Valid, do not perform processing\");\n\t\t\treturn;\n\t\t}\n\t}\n```"
+            },
+            {
+              "BodyText": "Alternatively, to test for false, just use the boolean NOT operator."
+            },
+            {
+              "Nature": "Good",
+              "Language": "Java",
+              "ExampleCode": "```\n\tpublic void checkValid(boolean isValid) {\n\t\tif (!isValid) {\n\t\t\tSystem.out.println(\"Not Valid, do not perform processing\");\n\t\t\treturn;\n\t\t}\n\t\tSystem.out.println(\"Performing processing\");\n\t\tdoSomethingImportant();\n\t}\n```"
+            }
+          ]
+        },
+        {
+          "Entries": [
+            {
+              "IntroText": "The following example demonstrates the weakness."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "C",
+              "ExampleCode": "```\n\tvoid called(int foo){\n\t\tif (foo=1) printf(\"foo\\n\");\n\t}\n\tint main() {\n\t\t\tcalled(2);\n\t\t\treturn 0;\n\t}\n```"
+            }
+          ]
+        }
+      ],
+      "PotentialMitigations": [
+        {
+          "Phase": [
+            "Testing"
+          ],
+          "Description": "Many IDEs and static analysis products will detect this problem."
+        },
+        {
+          "Phase": [
+            "Implementation"
+          ],
+          "Description": "Place constants on the left. If one attempts to assign a constant with a variable, the compiler will produce an error."
+        }
+      ]
+    },
+    "/cwe/481/parents": {
+      "weakness_parents": [],
+      "category_parents": [
+        "1157",
+        "1410",
+        "998"
+      ]
+    },
+    "/cwe/481/children": null
+  }
+}

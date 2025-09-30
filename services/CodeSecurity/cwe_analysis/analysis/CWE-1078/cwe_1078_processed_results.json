@@ -1,0 +1,84 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T22:14:22.920264",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "1078",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/1078": {
+      "ID": "1078",
+      "Type": "class_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/1078": {
+      "ID": "1078",
+      "Name": "Inappropriate Source Code Style or Formatting",
+      "Abstraction": "Class",
+      "Structure": "Simple",
+      "Status": "Incomplete",
+      "Description": "The source code does not follow\n\t\t\t\tdesired style or formatting for indentation, white\n\t\t\t\tspace, comments, etc.",
+      "ExtendedDescription": null,
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": null,
+      "AlternateTerms": null,
+      "ModesOfIntroduction": null,
+      "CommonConsequences": null,
+      "DemonstrativeExamples": [
+        {
+          "ID": "DX-215",
+          "Entries": [
+            {
+              "IntroText": "The usage of symbolic names instead of hard-coded constants is preferred."
+            },
+            {
+              "BodyText": "The following is an example of using a hard-coded constant instead of a symbolic name."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "C",
+              "ExampleCode": "```\n\tchar buffer[1024];\n\t...\n\tfgets(buffer, 1024, stdin);\n```"
+            },
+            {
+              "BodyText": "If the buffer value needs to be changed, then it has to be altered in more than one place. If the developer forgets or does not find all occurrences, in this example it could lead to a buffer overflow."
+            },
+            {
+              "Nature": "Good",
+              "Language": "C",
+              "ExampleCode": "```\n\tenum { MAX_BUFFER_SIZE = 1024 };\n\t...\n\tchar buffer[MAX_BUFFER_SIZE];\n\t...\n\tfgets(buffer, MAX_BUFFER_SIZE, stdin);\n```"
+            },
+            {
+              "BodyText": "In this example the developer will only need to change one value and all references to the buffer size are updated, as a symbolic name is used instead of a hard-coded constant."
+            }
+          ]
+        }
+      ],
+      "PotentialMitigations": null
+    },
+    "/cwe/1078/parents": {
+      "weakness_parents": [
+        "1076"
+      ],
+      "category_parents": [
+        "1412"
+      ]
+    },
+    "/cwe/1078/children": {
+      "weakness_children": [
+        "1085",
+        "1099",
+        "1106",
+        "1107",
+        "1109",
+        "1113",
+        "1114",
+        "1115",
+        "1116",
+        "1117",
+        "546",
+        "547"
+      ],
+      "category_children": []
+    }
+  }
+}

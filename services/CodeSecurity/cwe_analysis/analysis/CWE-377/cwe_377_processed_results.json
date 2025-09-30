@@ -1,0 +1,90 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T23:17:08.656849",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "377",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/377": {
+      "ID": "377",
+      "Type": "class_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/377": {
+      "ID": "377",
+      "Name": "Insecure Temporary File",
+      "Abstraction": "Class",
+      "Structure": "Simple",
+      "Status": "Incomplete",
+      "Description": "Creating and using insecure temporary files can leave application and system data vulnerable to attack.",
+      "ExtendedDescription": null,
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Class": "Not Language-Specific",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Implementation"
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Confidentiality",
+            "Integrity"
+          ],
+          "Impact": [
+            "Read Files or Directories",
+            "Modify Files or Directories"
+          ]
+        }
+      ],
+      "DemonstrativeExamples": [
+        {
+          "Entries": [
+            {
+              "IntroText": "The following code uses a temporary file for storing intermediate data gathered from the network before it is processed."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "C",
+              "ExampleCode": "```\n\tif (tmpnam_r(filename)) {\n\t\t\tFILE* tmp = fopen(filename,\"wb+\");\n\t\t\twhile((recv(sock,recvbuf,DATA_SIZE, 0) > 0)&(amt!=0)) amt = fwrite(recvbuf,1,DATA_SIZE,tmp);\n\t}\n\t...\n```"
+            },
+            {
+              "BodyText": "This otherwise unremarkable code is vulnerable to a number of different attacks because it relies on an insecure method for creating temporary files. The vulnerabilities introduced by this function and others are described in the following sections. The most egregious security problems related to temporary file creation have occurred on Unix-based operating systems, but Windows applications have parallel risks. This section includes a discussion of temporary file creation on both Unix and Windows systems. Methods and behaviors can vary between systems, but the fundamental risks introduced by each are reasonably constant."
+            }
+          ]
+        }
+      ],
+      "PotentialMitigations": null
+    },
+    "/cwe/377/parents": {
+      "weakness_parents": [
+        "668"
+      ],
+      "category_parents": [
+        "1147",
+        "1169",
+        "1345",
+        "1366",
+        "1403",
+        "361",
+        "857",
+        "964"
+      ]
+    },
+    "/cwe/377/children": {
+      "weakness_children": [
+        "378",
+        "379"
+      ],
+      "category_children": []
+    }
+  }
+}

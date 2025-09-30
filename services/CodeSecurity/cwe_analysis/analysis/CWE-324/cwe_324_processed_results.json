@@ -1,0 +1,91 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T23:10:09.305838",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "324",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/324": {
+      "ID": "324",
+      "Type": "base_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/324": {
+      "ID": "324",
+      "Name": "Use of a Key Past its Expiration Date",
+      "Abstraction": "Base",
+      "Structure": "Simple",
+      "Status": "Draft",
+      "Description": "The product uses a cryptographic key or password past its expiration date, which diminishes its safety significantly by increasing the timing window for cracking attacks against that key.",
+      "ExtendedDescription": "While the expiration of keys does not necessarily ensure that they are compromised, it is a significant concern that keys which remain in use for prolonged periods of time have a decreasing probability of integrity. For this reason, it is important to replace keys within a period of time proportional to their strength.",
+      "LikelihoodOfExploit": "Low",
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Class": "Not Language-Specific",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Architecture and Design",
+          "Note": "REALIZATION: This weakness is caused during implementation of an architectural security tactic."
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Access Control"
+          ],
+          "Impact": [
+            "Bypass Protection Mechanism",
+            "Gain Privileges or Assume Identity"
+          ],
+          "Note": "The cryptographic key in question may be compromised, providing a malicious user with a method for authenticating as the victim."
+        }
+      ],
+      "DemonstrativeExamples": [
+        {
+          "Entries": [
+            {
+              "IntroText": "The following code attempts to verify that a certificate is valid."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "C",
+              "ExampleCode": "```\n\tif (cert = SSL_get_peer_certificate(ssl)) {\n\t\t\tfoo=SSL_get_verify_result(ssl);\n\t\t\tif ((X509_V_OK==foo) || (X509_V_ERRCERT_NOT_YET_VALID==foo))\n```\n//do stuff* \n\t\t\t\t\t}"
+            },
+            {
+              "BodyText": "The code checks if the certificate is not yet valid, but it fails to check if a certificate is past its expiration date, thus treating expired certificates as valid."
+            }
+          ]
+        }
+      ],
+      "PotentialMitigations": [
+        {
+          "Phase": [
+            "Architecture and Design"
+          ],
+          "Description": "Adequate consideration should be put in to the user interface in order to notify users previous to the key's expiration, to explain the importance of new key generation and to walk users through the process as painlessly as possible."
+        }
+      ]
+    },
+    "/cwe/324/parents": {
+      "weakness_parents": [
+        "672"
+      ],
+      "category_parents": [
+        "1013",
+        "1346",
+        "1402",
+        "255",
+        "310",
+        "320",
+        "959"
+      ]
+    },
+    "/cwe/324/children": null
+  }
+}

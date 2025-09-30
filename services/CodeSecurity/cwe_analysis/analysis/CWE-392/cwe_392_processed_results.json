@@ -1,0 +1,82 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T23:19:00.320341",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "392",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/392": {
+      "ID": "392",
+      "Type": "base_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/392": {
+      "ID": "392",
+      "Name": "Missing Report of Error Condition",
+      "Abstraction": "Base",
+      "Structure": "Simple",
+      "Status": "Draft",
+      "Description": "The product encounters an error but does not provide a status code or return value to indicate that an error has occurred.",
+      "ExtendedDescription": null,
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Class": "Not Language-Specific",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Implementation"
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Integrity",
+            "Other"
+          ],
+          "Impact": [
+            "Varies by Context",
+            "Unexpected State"
+          ],
+          "Note": "Errors that are not properly reported could place the system in an unexpected state that could lead to unintended behaviors."
+        }
+      ],
+      "DemonstrativeExamples": [
+        {
+          "ID": "DX-185",
+          "Entries": [
+            {
+              "IntroText": "In the following snippet from a doPost() servlet method, the server returns \"200 OK\" (default) even if an error occurs."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "Java",
+              "ExampleCode": "```\n\ttry {\n```\n// Something that may throw an exception.* \n\t\t\t...} catch (Throwable t) {\n\t```\n\t\tlogger.error(\"Caught: \" + t.toString());\n\t\treturn;\n\t}\n```"
+            }
+          ]
+        }
+      ],
+      "PotentialMitigations": null
+    },
+    "/cwe/392/parents": {
+      "weakness_parents": [
+        "684",
+        "755"
+      ],
+      "category_parents": [
+        "1012",
+        "1145",
+        "1412",
+        "389",
+        "855",
+        "961"
+      ]
+    },
+    "/cwe/392/children": null
+  }
+}

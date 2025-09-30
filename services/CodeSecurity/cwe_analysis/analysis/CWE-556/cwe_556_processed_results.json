@@ -1,0 +1,64 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T23:40:53.690951",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "556",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/556": {
+      "ID": "556",
+      "Type": "variant_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/556": {
+      "ID": "556",
+      "Name": "ASP.NET Misconfiguration: Use of Identity Impersonation",
+      "Abstraction": "Variant",
+      "Structure": "Simple",
+      "Status": "Incomplete",
+      "Description": "Configuring an ASP.NET application to run with impersonated credentials may give the application unnecessary privileges.",
+      "ExtendedDescription": "The use of impersonated credentials allows an ASP.NET application to run with either the privileges of the client on whose behalf it is executing or with arbitrary privileges granted in its configuration.",
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": null,
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Implementation"
+        },
+        {
+          "Phase": "Operation"
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Access Control"
+          ],
+          "Impact": [
+            "Gain Privileges or Assume Identity"
+          ]
+        }
+      ],
+      "DemonstrativeExamples": null,
+      "PotentialMitigations": [
+        {
+          "Phase": [
+            "Architecture and Design"
+          ],
+          "Description": "Use the least privilege principle."
+        }
+      ]
+    },
+    "/cwe/556/parents": {
+      "weakness_parents": [],
+      "category_parents": [
+        "1396",
+        "723",
+        "731",
+        "951"
+      ]
+    },
+    "/cwe/556/children": null
+  }
+}

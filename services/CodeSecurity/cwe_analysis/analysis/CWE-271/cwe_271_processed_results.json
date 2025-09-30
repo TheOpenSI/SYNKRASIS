@@ -1,0 +1,128 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T23:02:49.888734",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "271",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/271": {
+      "ID": "271",
+      "Type": "class_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/271": {
+      "ID": "271",
+      "Name": "Privilege Dropping / Lowering Errors",
+      "Abstraction": "Class",
+      "Structure": "Simple",
+      "Status": "Incomplete",
+      "Description": "The product does not drop privileges before passing control of a resource to an actor that does not have those privileges.",
+      "ExtendedDescription": "In some contexts, a system executing with elevated permissions will hand off a process/file/etc. to another process or user. If the privileges of an entity are not reduced, then elevated privileges are spread throughout a system and possibly to an attacker.",
+      "LikelihoodOfExploit": "High",
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Class": "Not Language-Specific",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Architecture and Design"
+        },
+        {
+          "Phase": "Implementation",
+          "Note": "REALIZATION: This weakness is caused during implementation of an architectural security tactic."
+        },
+        {
+          "Phase": "Operation"
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Access Control"
+          ],
+          "Impact": [
+            "Gain Privileges or Assume Identity"
+          ],
+          "Note": "If privileges are not dropped, neither are access rights of the user. Often these rights can be prevented from being dropped."
+        },
+        {
+          "Scope": [
+            "Access Control",
+            "Non-Repudiation"
+          ],
+          "Impact": [
+            "Gain Privileges or Assume Identity",
+            "Hide Activities"
+          ],
+          "Note": "If privileges are not dropped, in some cases the system may record actions as the user which is being impersonated rather than the impersonator."
+        }
+      ],
+      "DemonstrativeExamples": [
+        {
+          "ID": "DX-98",
+          "Entries": [
+            {
+              "IntroText": "The following code calls chroot() to restrict the application to a subset of the filesystem below APP_HOME in order to prevent an attacker from using the program to gain unauthorized access to files located elsewhere. The code then opens a file specified by the user and processes the contents of the file."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "C",
+              "ExampleCode": "```\n\tchroot(APP_HOME);\n\tchdir(\"/\");\n\tFILE* data = fopen(argv[1], \"r+\");\n\t...\n```"
+            },
+            {
+              "BodyText": "Constraining the process inside the application's home directory before opening any files is a valuable security measure. However, the absence of a call to setuid() with some non-zero value means the application is continuing to operate with unnecessary root privileges. Any successful exploit carried out by an attacker against the application can now result in a privilege escalation attack because any malicious operations will be performed with the privileges of the superuser. If the application drops to the privilege level of a non-root user, the potential for damage is substantially reduced."
+            }
+          ]
+        }
+      ],
+      "PotentialMitigations": [
+        {
+          "MitigationID": "MIT-46",
+          "Phase": [
+            "Architecture and Design"
+          ],
+          "Strategy": "Separation of Privilege",
+          "Description": "\n\nCompartmentalize the system to have \"safe\" areas where trust boundaries can be unambiguously drawn. Do not allow sensitive data to go outside of the trust boundary and always be careful when interfacing with a compartment outside of the safe area.\n\n\nEnsure that appropriate compartmentalization is built into the system design, and the compartmentalization allows for and reinforces privilege separation functionality. Architects and designers should rely on the principle of least privilege to decide the appropriate time to use privileges and the time to drop privileges.\n"
+        },
+        {
+          "MitigationID": "MIT-1",
+          "Phase": [
+            "Architecture and Design",
+            "Operation"
+          ],
+          "Description": "Very carefully manage the setting, management, and handling of privileges. Explicitly manage trust zones in the software."
+        },
+        {
+          "MitigationID": "MIT-49",
+          "Phase": [
+            "Architecture and Design"
+          ],
+          "Strategy": "Separation of Privilege",
+          "Description": "Consider following the principle of separation of privilege. Require multiple conditions to be met before permitting access to a system resource."
+        }
+      ]
+    },
+    "/cwe/271/parents": {
+      "weakness_parents": [
+        "269"
+      ],
+      "category_parents": [
+        "1011",
+        "1396",
+        "901"
+      ]
+    },
+    "/cwe/271/children": {
+      "weakness_children": [
+        "272",
+        "273"
+      ],
+      "category_children": []
+    }
+  }
+}

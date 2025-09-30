@@ -1,0 +1,132 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T23:07:02.266399",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "300",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/300": {
+      "ID": "300",
+      "Type": "class_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/300": {
+      "ID": "300",
+      "Name": "Channel Accessible by Non-Endpoint",
+      "Abstraction": "Class",
+      "Structure": "Simple",
+      "Status": "Draft",
+      "Description": "The product does not adequately verify the identity of actors at both ends of a communication channel, or does not adequately ensure the integrity of the channel, in a way that allows the channel to be accessed or influenced by an actor that is not an endpoint.",
+      "ExtendedDescription": "In order to establish secure communication between two parties, it is often important to adequately verify the identity of entities at each end of the communication channel. Inadequate or inconsistent verification may result in insufficient or incorrect identification of either communicating entity. This can have negative consequences such as misplaced trust in the entity at the other end of the channel. An attacker can leverage this by interposing between the communicating entities and masquerading as the original entity. In the absence of sufficient verification of identity, such an attacker can eavesdrop and potentially modify the communication between the original entities.",
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Class": "Not Language-Specific",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": [
+        {
+          "Term": "Adversary-in-the-Middle / AITM"
+        },
+        {
+          "Term": "Attacker-in-the-Middle / AITM"
+        },
+        {
+          "Term": "Man-in-the-Middle / MITM"
+        },
+        {
+          "Term": "Person-in-the-Middle / PITM"
+        },
+        {
+          "Term": "Monkey-in-the-Middle"
+        },
+        {
+          "Term": "Monster-in-the-Middle"
+        },
+        {
+          "Term": "Manipulator-in-the-Middle"
+        },
+        {
+          "Term": "On-path attack"
+        },
+        {
+          "Term": "Interception attack"
+        }
+      ],
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Architecture and Design",
+          "Note": "REALIZATION: This weakness is caused during implementation of an architectural security tactic."
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Confidentiality",
+            "Integrity",
+            "Access Control"
+          ],
+          "Impact": [
+            "Read Application Data",
+            "Modify Application Data",
+            "Gain Privileges or Assume Identity"
+          ],
+          "Note": "An attacker could pose as one of the entities and read or possibly modify the communication."
+        }
+      ],
+      "DemonstrativeExamples": [
+        {
+          "Entries": [
+            {
+              "IntroText": "In the Java snippet below, data is sent over an unencrypted channel to a remote server."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "Java",
+              "ExampleCode": "```\n\tSocket sock;\n\tPrintWriter out;\n\ttry {\n\t\t\tsock = new Socket(REMOTE_HOST, REMOTE_PORT);\n\t\t\tout = new PrintWriter(echoSocket.getOutputStream(), true);\n```\n// Write data to remote host via socket output stream.* \n\t\t\t...}"
+            },
+            {
+              "BodyText": "By eavesdropping on the communication channel or posing as the endpoint, an attacker would be able to read all of the transmitted data."
+            }
+          ]
+        }
+      ],
+      "PotentialMitigations": [
+        {
+          "Phase": [
+            "Implementation"
+          ],
+          "Description": "Always fully authenticate both ends of any communications channel."
+        },
+        {
+          "Phase": [
+            "Architecture and Design"
+          ],
+          "Description": "Adhere to the principle of complete mediation."
+        },
+        {
+          "Phase": [
+            "Implementation"
+          ],
+          "Description": "A certificate binds an identity to a cryptographic key to authenticate a communicating party. Often, the certificate takes the encrypted form of the hash of the identity of the subject, the public key, and information such as time of issue or expiration using the issuer's private key. The certificate can be validated by deciphering the certificate with the issuer's public key. See also X.509 certificate signature chains and the PGP certification structure."
+        }
+      ]
+    },
+    "/cwe/300/parents": {
+      "weakness_parents": [
+        "923"
+      ],
+      "category_parents": [
+        "1011",
+        "1353",
+        "1396",
+        "859",
+        "956"
+      ]
+    },
+    "/cwe/300/children": null
+  }
+}

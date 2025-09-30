@@ -1,0 +1,101 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-30T00:12:16.276929",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "834",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/834": {
+      "ID": "834",
+      "Type": "class_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/834": {
+      "ID": "834",
+      "Name": "Excessive Iteration",
+      "Abstraction": "Class",
+      "Structure": "Simple",
+      "Status": "Incomplete",
+      "Description": "The product performs an iteration or loop without sufficiently limiting the number of times that the loop is executed.",
+      "ExtendedDescription": "If the iteration can be influenced by an attacker, this weakness could allow attackers to consume excessive resources such as CPU or memory. In many cases, a loop does not need to be infinite in order to cause enough resource consumption to adversely affect the product or its host system; it depends on the amount of resources consumed per iteration.",
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": null,
+      "AlternateTerms": null,
+      "ModesOfIntroduction": null,
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Availability"
+          ],
+          "Impact": [
+            "DoS: Resource Consumption (CPU)",
+            "DoS: Resource Consumption (Memory)",
+            "DoS: Amplification",
+            "DoS: Crash, Exit, or Restart"
+          ],
+          "Note": "Excessive looping will cause unexpected consumption of resources, such as CPU cycles or memory. The product's operation may slow down, or cause a long time to respond. If limited resources such as memory are consumed for each iteration, the loop may eventually cause a crash or program exit due to exhaustion of resources, such as an out-of-memory error."
+        }
+      ],
+      "DemonstrativeExamples": [
+        {
+          "ID": "DX-204",
+          "Entries": [
+            {
+              "IntroText": "In this example a mistake exists in the code where the exit condition contained in flg is never called. This results in the function calling itself over and over again until the stack is exhausted."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "C",
+              "ExampleCode": "void do_something_recursive (int flg)\n {\n\n```\n\t ... // Do some real work here, but the value of flg is unmodified\n\t if (flg) { do_something_recursive (flg); } // flg is never modified so it is always TRUE - this call will continue until the stack explodes\n }\n int flag = 1; // Set to TRUE\n do_something_recursive (flag);\n```"
+            },
+            {
+              "BodyText": "Note that the only difference between the Good and Bad examples is that the recursion flag will change value and cause the recursive call to return."
+            },
+            {
+              "Nature": "Good",
+              "Language": "C",
+              "ExampleCode": "void do_something_recursive (int flg)\n {\n\n```\n\t ... // Do some real work here\n\t // Modify value of flg on done condition\n\t if (flg) { do_something_recursive (flg); } // returns when flg changes to 0\n }\n int flag = 1; // Set to TRUE\n do_something_recursive (flag);\n```"
+            }
+          ]
+        },
+        {
+          "ID": "DX-205",
+          "Entries": [
+            {
+              "IntroText": "For this example, the method isReorderNeeded is part of a bookstore application that determines if a particular book needs to be reordered based on the current inventory count and the rate at which the book is being sold."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "Java",
+              "ExampleCode": "```\n\tpublic boolean isReorderNeeded(String bookISBN, int rateSold) {\n\t\t\tboolean isReorder = false;\n\t\t\tint minimumCount = 10;\n\t\t\tint days = 0;\n```\n// get inventory count for book* \n\t\t\tint inventoryCount = inventory.getIventoryCount(bookISBN);\n\t\t\t\n\t\t\t\n\t\t\t *// find number of days until inventory count reaches minimum* \n\t\t\twhile (inventoryCount > minimumCount) {\n\t\t\t```\n\t\t\t\t\tinventoryCount = inventoryCount - rateSold;\n\t\t\t\t\tdays++;\n\t\t\t}\n```\n// if number of days within reorder timeframe* \n\t\t\t\n\t\t\t\n\t\t\t *// set reorder return boolean to true* \n\t\t\tif (days > 0 && days < 5) {\n\t\t\t```\n\t\t\t\tisReorder = true;\n\t\t\t}\n\t\t\treturn isReorder;\n\t}\n```"
+            },
+            {
+              "BodyText": "However, the while loop will become an infinite loop if the rateSold input parameter has a value of zero since the inventoryCount will never fall below the minimumCount. In this case the input parameter should be validated to ensure that a value of zero does not cause an infinite loop, as in the following code."
+            },
+            {
+              "Nature": "Good",
+              "Language": "Java",
+              "ExampleCode": "```\n\tpublic boolean isReorderNeeded(String bookISBN, int rateSold) {\n\t\t\t...\n```\n// validate rateSold variable* \n\t\t\tif (rateSold < 1) {\n\t\t\t```\n\t\t\t\treturn isReorder;\n\t\t\t}\n\t\t\t...\n\t}\n```"
+            }
+          ]
+        }
+      ],
+      "PotentialMitigations": null
+    },
+    "/cwe/834/parents": {
+      "weakness_parents": [],
+      "category_parents": [
+        "1410"
+      ]
+    },
+    "/cwe/834/children": {
+      "weakness_children": [
+        "1322",
+        "674",
+        "835"
+      ],
+      "category_children": []
+    }
+  }
+}

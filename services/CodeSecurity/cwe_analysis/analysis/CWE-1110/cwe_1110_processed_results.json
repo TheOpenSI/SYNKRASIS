@@ -1,0 +1,53 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T22:18:53.843824",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "1110",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/1110": {
+      "ID": "1110",
+      "Type": "base_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/1110": {
+      "ID": "1110",
+      "Name": "Incomplete Design Documentation",
+      "Abstraction": "Base",
+      "Structure": "Simple",
+      "Status": "Incomplete",
+      "Description": "The product's design documentation does not adequately describe\n\t\t\t\t\tcontrol flow, data flow, system initialization, relationships between tasks,\n\t\t\t\t\tcomponents, rationales, or other important aspects of the\n\t\t\t\t\tdesign.",
+      "ExtendedDescription": null,
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": [
+        {
+          "Type": "Technology",
+          "Class": "Not Technology-Specific",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Technology",
+          "Class": "ICS/OT",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": null,
+      "ModesOfIntroduction": null,
+      "CommonConsequences": null,
+      "DemonstrativeExamples": null,
+      "PotentialMitigations": null
+    },
+    "/cwe/1110/parents": {
+      "weakness_parents": [
+        "1059"
+      ],
+      "category_parents": [
+        "1375",
+        "1412",
+        "1225"
+      ]
+    },
+    "/cwe/1110/children": null
+  }
+}

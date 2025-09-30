@@ -1,0 +1,105 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T22:10:29.343576",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "105",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/105": {
+      "ID": "105",
+      "Type": "variant_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/105": {
+      "ID": "105",
+      "Name": "Struts: Form Field Without Validator",
+      "Abstraction": "Variant",
+      "Structure": "Simple",
+      "Status": "Draft",
+      "Description": "The product has a form field that is not validated by a corresponding validation form, which can introduce other weaknesses related to insufficient input validation.",
+      "ExtendedDescription": "Omitting validation for even a single input field may give attackers the leeway they need to compromise the product. Although J2EE applications are not generally susceptible to memory corruption attacks, if a J2EE application interfaces with native code that does not perform array bounds checking, an attacker may be able to use an input validation mistake in the J2EE application to launch a buffer overflow attack.",
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Name": "Java",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Implementation",
+          "Note": "Some products use the same ActionForm for more than one purpose. In situations like this, some fields may go unused under some action mappings."
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Integrity"
+          ],
+          "Impact": [
+            "Unexpected State"
+          ]
+        },
+        {
+          "Scope": [
+            "Integrity"
+          ],
+          "Impact": [
+            "Bypass Protection Mechanism"
+          ],
+          "Note": "If unused fields are not validated, shared business logic in an action may allow attackers to bypass the validation checks that are performed for other uses of the form."
+        }
+      ],
+      "DemonstrativeExamples": [
+        {
+          "Entries": [
+            {
+              "IntroText": "In the following example the Java class RegistrationForm is a Struts framework ActionForm Bean that will maintain user input data from a registration webpage for an online business site. The user will enter registration data and, through the Struts framework, the RegistrationForm bean will maintain the user data in the form fields using the private member variables. The RegistrationForm class uses the Struts validation capability by extending the ValidatorForm class and including the validation for the form fields within the validator XML file, validator.xml."
+            },
+            {
+              "Nature": "Result",
+              "ExampleCode": "```\n\tpublic class RegistrationForm extends org.apache.struts.validator.ValidatorForm {\n```\n// private variables for registration form* \n\t\tprivate String name;\n\t\tprivate String address;\n\t\tprivate String city;\n\t\tprivate String state;\n\t\tprivate String zipcode;\n\t\tprivate String phone;\n\t\tprivate String email;\n\t\t\n\t\tpublic RegistrationForm() {\n\t\t```\n\t\t\tsuper();\n\t\t}\n```\n// getter and setter methods for private variables* \n\t\t...\n\t\t}"
+            },
+            {
+              "BodyText": "The validator XML file, validator.xml, provides the validation for the form fields of the RegistrationForm."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "XML",
+              "ExampleCode": "```\n\t<form-validation>\n\t\t<formset>\n\t\t\t<form name=\"RegistrationForm\">\n\t\t\t\t<field property=\"name\" depends=\"required\">\n\t\t\t\t\t<arg position=\"0\" key=\"prompt.name\"/>\n\t\t\t\t</field>\n\t\t\t\t<field property=\"address\" depends=\"required\">\n\t\t\t\t\t<arg position=\"0\" key=\"prompt.address\"/>\n\t\t\t\t</field>\n\t\t\t\t<field property=\"city\" depends=\"required\">\n\t\t\t\t\t<arg position=\"0\" key=\"prompt.city\"/>\n\t\t\t\t</field>\n\t\t\t\t<field property=\"state\" depends=\"required,mask\">\n\t\t\t\t\t<arg position=\"0\" key=\"prompt.state\"/>\n\t\t\t\t\t<var>\n\t\t\t\t\t\t<var-name>mask</var-name>\n\t\t\t\t\t\t<var-value>[a-zA-Z]{2}</var-value>\n\t\t\t\t\t</var>\n\t\t\t\t</field>\n\t\t\t\t<field property=\"zipcode\" depends=\"required,mask\">\n\t\t\t\t\t<arg position=\"0\" key=\"prompt.zipcode\"/>\n\t\t\t\t\t<var>\n\t\t\t\t\t\t<var-name>mask</var-name>\n\t\t\t\t\t\t<var-value>\\d{5}</var-value>\n\t\t\t\t\t</var>\n\t\t\t\t</field>\n\t\t\t</form>\n\t\t</formset>\n\t</form-validation>\n```"
+            },
+            {
+              "BodyText": "However, in the previous example the validator XML file, validator.xml, does not provide validators for all of the form fields in the RegistrationForm. Validator forms are only provided for the first five of the seven form fields. The validator XML file should contain validator forms for all of the form fields for a Struts ActionForm bean. The following validator.xml file for the RegistrationForm class contains validator forms for all of the form fields."
+            },
+            {
+              "Nature": "Good",
+              "Language": "XML",
+              "ExampleCode": "```\n\t<form-validation>\n\t\t<formset>\n\t\t\t<form name=\"RegistrationForm\">\n\t\t\t\t<field property=\"name\" depends=\"required\">\n\t\t\t\t\t<arg position=\"0\" key=\"prompt.name\"/>\n\t\t\t\t</field>\n\t\t\t\t<field property=\"address\" depends=\"required\">\n\t\t\t\t\t<arg position=\"0\" key=\"prompt.address\"/>\n\t\t\t\t</field>\n\t\t\t\t<field property=\"city\" depends=\"required\">\n\t\t\t\t\t<arg position=\"0\" key=\"prompt.city\"/>\n\t\t\t\t</field>\n\t\t\t\t<field property=\"state\" depends=\"required,mask\">\n\t\t\t\t\t<arg position=\"0\" key=\"prompt.state\"/>\n\t\t\t\t\t<var>\n\t\t\t\t\t\t<var-name>mask</var-name>\n\t\t\t\t\t\t<var-value>[a-zA-Z]{2}</var-value>\n\t\t\t\t\t</var>\n\t\t\t\t</field>\n\t\t\t\t<field property=\"zipcode\" depends=\"required,mask\">\n\t\t\t\t\t<arg position=\"0\" key=\"prompt.zipcode\"/>\n\t\t\t\t\t<var>\n\t\t\t\t\t\t<var-name>mask</var-name>\n\t\t\t\t\t\t<var-value>\\d{5}</var-value>\n\t\t\t\t\t</var>\n\t\t\t\t</field>\n\t\t\t\t<field property=\"phone\" depends=\"required,mask\">\n\t\t\t\t\t<arg position=\"0\" key=\"prompt.phone\"/>\n\t\t\t\t\t<var>\n\t\t\t\t\t\t<var-name>mask</var-name>\n\t\t\t\t\t\t<var-value>^([0-9]{3})(-)([0-9]{4}|[0-9]{4})$</var-value>\n\t\t\t\t\t</var>\n\t\t\t\t</field>\n\t\t\t\t<field property=\"email\" depends=\"required,email\">\n\t\t\t\t\t<arg position=\"0\" key=\"prompt.email\"/>\n\t\t\t\t</field>\n\t\t\t</form>\n\t\t</formset>\n\t</form-validation>\n```"
+            }
+          ]
+        }
+      ],
+      "PotentialMitigations": [
+        {
+          "Phase": [
+            "Implementation"
+          ],
+          "Description": "Validate all form fields. If a field is unused, it is still important to constrain it so that it is empty or undefined."
+        }
+      ]
+    },
+    "/cwe/105/parents": {
+      "weakness_parents": [
+        "20"
+      ],
+      "category_parents": [
+        "1406",
+        "990"
+      ]
+    },
+    "/cwe/105/children": null
+  }
+}

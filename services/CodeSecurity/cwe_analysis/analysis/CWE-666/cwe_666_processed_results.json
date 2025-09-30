@@ -1,0 +1,93 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T23:55:31.370958",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "666",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/666": {
+      "ID": "666",
+      "Type": "class_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/666": {
+      "ID": "666",
+      "Name": "Operation on Resource in Wrong Phase of Lifetime",
+      "Abstraction": "Class",
+      "Structure": "Simple",
+      "Status": "Draft",
+      "Description": "The product performs an operation on a resource at the wrong phase of the resource's lifecycle, which can lead to unexpected behaviors.",
+      "ExtendedDescription": "A resource's lifecycle includes several phases: initialization, use, and release. For each phase, it is important to follow the specifications outlined for how to operate on the resource and to ensure that the resource is in the expected phase. Otherwise, if a resource is in one phase but the operation is not valid for that phase (i.e., an incorrect phase of the resource's lifetime), then this can produce resultant weaknesses. For example, using a resource before it has been fully initialized could cause corruption or incorrect data to be used.",
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": null,
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Implementation"
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Other"
+          ],
+          "Impact": [
+            "Other"
+          ]
+        }
+      ],
+      "DemonstrativeExamples": [
+        {
+          "ID": "DX-149",
+          "Entries": [
+            {
+              "IntroText": "The following code shows a simple example of a double free vulnerability."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "C",
+              "ExampleCode": "```\n\t char* ptr = (char*)malloc (SIZE);\n\t ...\n\t if (abrt) { \n\t\t free(ptr); \n\t }\n\t ...\n\t free(ptr); \n```"
+            },
+            {
+              "BodyText": "Double free vulnerabilities have two common (and sometimes overlapping) causes:"
+            },
+            {
+              "BodyText": "- Error conditions and other exceptional circumstances\n\n  - Confusion over which part of the program is responsible for freeing the memory"
+            },
+            {
+              "BodyText": "Although some double free vulnerabilities are not much more complicated than this example, most are spread out across hundreds of lines of code or even different files. Programmers seem particularly susceptible to freeing global variables more than once."
+            }
+          ]
+        }
+      ],
+      "PotentialMitigations": [
+        {
+          "Phase": [
+            "Architecture and Design"
+          ],
+          "Description": "Follow the resource's lifecycle from creation to release."
+        }
+      ]
+    },
+    "/cwe/666/parents": {
+      "weakness_parents": [],
+      "category_parents": [
+        "1162",
+        "1163",
+        "1416",
+        "984"
+      ]
+    },
+    "/cwe/666/children": {
+      "weakness_children": [
+        "415",
+        "593",
+        "605",
+        "672",
+        "826"
+      ],
+      "category_children": []
+    }
+  }
+}

@@ -1,0 +1,368 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T23:47:22.667596",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "604",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/604": {
+      "endpoint": "/cwe/604",
+      "url": "https://cwe-api.mitre.org/api/v1/cwe/604",
+      "status_code": 200,
+      "success": true,
+      "error": null,
+      "data": [
+        {
+          "Type": "view",
+          "ID": "604"
+        }
+      ]
+    },
+    "/cwe/weakness/604": {
+      "endpoint": "/cwe/weakness/604",
+      "url": "https://cwe-api.mitre.org/api/v1/cwe/weakness/604",
+      "status_code": 404,
+      "success": false,
+      "error": "HTTP 404: \"for weakness: cwe (604) not found, use the view endpoint\"\n",
+      "data": null
+    },
+    "/cwe/604/parents": {
+      "endpoint": "/cwe/604/parents",
+      "url": "https://cwe-api.mitre.org/api/v1/cwe/604/parents",
+      "status_code": 200,
+      "success": true,
+      "error": null,
+      "data": []
+    },
+    "/cwe/604/children": {
+      "endpoint": "/cwe/604/children",
+      "url": "https://cwe-api.mitre.org/api/v1/cwe/604/children",
+      "status_code": 200,
+      "success": true,
+      "error": null,
+      "data": [
+        {
+          "Type": "deprecated_category",
+          "ID": "1",
+          "ViewID": "604"
+        },
+        {
+          "Type": "deprecated_category",
+          "ID": "10",
+          "ViewID": "604"
+        },
+        {
+          "Type": "deprecated_category",
+          "ID": "100",
+          "ViewID": "604"
+        },
+        {
+          "Type": "deprecated_category",
+          "ID": "101",
+          "ViewID": "604"
+        },
+        {
+          "Type": "deprecated_weakness",
+          "ID": "1187",
+          "ViewID": "604"
+        },
+        {
+          "Type": "deprecated_weakness",
+          "ID": "132",
+          "ViewID": "604"
+        },
+        {
+          "Type": "deprecated_weakness",
+          "ID": "1324",
+          "ViewID": "604"
+        },
+        {
+          "Type": "deprecated_category",
+          "ID": "139",
+          "ViewID": "604"
+        },
+        {
+          "Type": "deprecated_category",
+          "ID": "169",
+          "ViewID": "604"
+        },
+        {
+          "Type": "deprecated_category",
+          "ID": "17",
+          "ViewID": "604"
+        },
+        {
+          "Type": "deprecated_category",
+          "ID": "171",
+          "ViewID": "604"
+        },
+        {
+          "Type": "deprecated_category",
+          "ID": "18",
+          "ViewID": "604"
+        },
+        {
+          "Type": "deprecated_category",
+          "ID": "21",
+          "ViewID": "604"
+        },
+        {
+          "Type": "deprecated_weakness",
+          "ID": "216",
+          "ViewID": "604"
+        },
+        {
+          "Type": "deprecated_weakness",
+          "ID": "217",
+          "ViewID": "604"
+        },
+        {
+          "Type": "deprecated_weakness",
+          "ID": "218",
+          "ViewID": "604"
+        },
+        {
+          "Type": "deprecated_weakness",
+          "ID": "225",
+          "ViewID": "604"
+        },
+        {
+          "Type": "deprecated_weakness",
+          "ID": "247",
+          "ViewID": "604"
+        },
+        {
+          "Type": "deprecated_weakness",
+          "ID": "249",
+          "ViewID": "604"
+        },
+        {
+          "Type": "deprecated_weakness",
+          "ID": "292",
+          "ViewID": "604"
+        },
+        {
+          "Type": "deprecated_category",
+          "ID": "3",
+          "ViewID": "604"
+        },
+        {
+          "Type": "deprecated_weakness",
+          "ID": "365",
+          "ViewID": "604"
+        },
+        {
+          "Type": "deprecated_weakness",
+          "ID": "373",
+          "ViewID": "604"
+        },
+        {
+          "Type": "deprecated_category",
+          "ID": "376",
+          "ViewID": "604"
+        },
+        {
+          "Type": "deprecated_category",
+          "ID": "380",
+          "ViewID": "604"
+        },
+        {
+          "Type": "deprecated_category",
+          "ID": "381",
+          "ViewID": "604"
+        },
+        {
+          "Type": "deprecated_category",
+          "ID": "4",
+          "ViewID": "604"
+        },
+        {
+          "Type": "deprecated_category",
+          "ID": "418",
+          "ViewID": "604"
+        },
+        {
+          "Type": "deprecated_weakness",
+          "ID": "423",
+          "ViewID": "604"
+        },
+        {
+          "Type": "deprecated_category",
+          "ID": "442",
+          "ViewID": "604"
+        },
+        {
+          "Type": "deprecated_weakness",
+          "ID": "443",
+          "ViewID": "604"
+        },
+        {
+          "Type": "deprecated_category",
+          "ID": "445",
+          "ViewID": "604"
+        },
+        {
+          "Type": "deprecated_weakness",
+          "ID": "458",
+          "ViewID": "604"
+        },
+        {
+          "Type": "deprecated_category",
+          "ID": "461",
+          "ViewID": "604"
+        },
+        {
+          "Type": "deprecated_category",
+          "ID": "490",
+          "ViewID": "604"
+        },
+        {
+          "Type": "deprecated_category",
+          "ID": "503",
+          "ViewID": "604"
+        },
+        {
+          "Type": "deprecated_category",
+          "ID": "504",
+          "ViewID": "604"
+        },
+        {
+          "Type": "deprecated_category",
+          "ID": "505",
+          "ViewID": "604"
+        },
+        {
+          "Type": "deprecated_category",
+          "ID": "513",
+          "ViewID": "604"
+        },
+        {
+          "Type": "deprecated_weakness",
+          "ID": "516",
+          "ViewID": "604"
+        },
+        {
+          "Type": "deprecated_category",
+          "ID": "517",
+          "ViewID": "604"
+        },
+        {
+          "Type": "deprecated_category",
+          "ID": "518",
+          "ViewID": "604"
+        },
+        {
+          "Type": "deprecated_category",
+          "ID": "519",
+          "ViewID": "604"
+        },
+        {
+          "Type": "deprecated_weakness",
+          "ID": "533",
+          "ViewID": "604"
+        },
+        {
+          "Type": "deprecated_weakness",
+          "ID": "534",
+          "ViewID": "604"
+        },
+        {
+          "Type": "deprecated_weakness",
+          "ID": "542",
+          "ViewID": "604"
+        },
+        {
+          "Type": "deprecated_weakness",
+          "ID": "545",
+          "ViewID": "604"
+        },
+        {
+          "Type": "deprecated_category",
+          "ID": "559",
+          "ViewID": "604"
+        },
+        {
+          "Type": "deprecated_weakness",
+          "ID": "592",
+          "ViewID": "604"
+        },
+        {
+          "Type": "deprecated_weakness",
+          "ID": "596",
+          "ViewID": "604"
+        },
+        {
+          "Type": "deprecated_category",
+          "ID": "60",
+          "ViewID": "604"
+        },
+        {
+          "Type": "deprecated_category",
+          "ID": "63",
+          "ViewID": "604"
+        },
+        {
+          "Type": "deprecated_view",
+          "ID": "630",
+          "ViewID": "604"
+        },
+        {
+          "Type": "deprecated_view",
+          "ID": "631",
+          "ViewID": "604"
+        },
+        {
+          "Type": "deprecated_category",
+          "ID": "632",
+          "ViewID": "604"
+        },
+        {
+          "Type": "deprecated_category",
+          "ID": "633",
+          "ViewID": "604"
+        },
+        {
+          "Type": "deprecated_category",
+          "ID": "634",
+          "ViewID": "604"
+        },
+        {
+          "Type": "deprecated_view",
+          "ID": "679",
+          "ViewID": "604"
+        },
+        {
+          "Type": "deprecated_category",
+          "ID": "68",
+          "ViewID": "604"
+        },
+        {
+          "Type": "deprecated_category",
+          "ID": "70",
+          "ViewID": "604"
+        },
+        {
+          "Type": "deprecated_weakness",
+          "ID": "71",
+          "ViewID": "604"
+        },
+        {
+          "Type": "deprecated_weakness",
+          "ID": "769",
+          "ViewID": "604"
+        },
+        {
+          "Type": "deprecated_weakness",
+          "ID": "92",
+          "ViewID": "604"
+        },
+        {
+          "Type": "deprecated_view",
+          "ID": "999",
+          "ViewID": "604"
+        }
+      ]
+    }
+  }
+}

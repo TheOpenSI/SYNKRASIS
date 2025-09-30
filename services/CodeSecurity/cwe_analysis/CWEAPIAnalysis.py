@@ -340,13 +340,10 @@ class CWEAPIAnalysis:
         
 
 if __name__ == "__main__":
-    count = 0
     with open("/home/s448780/workspace_hcc4/SYNKRASIS/services/CodeSecurity/data/cwe/unique_cwes.txt", "r") as f:
         cwes = f.readlines()
         
-    for i, cwe in enumerate(cwes):
-        if count >= 10:
-            break
+    for cwe in tqdm(cwes):
         test_cwe_id = cwe.strip().split("-")[-1]
         analysis = CWEAPIAnalysis()
         analysis.run_analysis(test_cwe_id)

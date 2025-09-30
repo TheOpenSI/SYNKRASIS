@@ -1,0 +1,102 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T23:28:53.305497",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "469",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/469": {
+      "ID": "469",
+      "Type": "base_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/469": {
+      "ID": "469",
+      "Name": "Use of Pointer Subtraction to Determine Size",
+      "Abstraction": "Base",
+      "Structure": "Simple",
+      "Status": "Draft",
+      "Description": "The product subtracts one pointer from another in order to determine size, but this calculation can be incorrect if the pointers do not exist in the same memory chunk.",
+      "ExtendedDescription": null,
+      "LikelihoodOfExploit": "Medium",
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Name": "C",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Language",
+          "Name": "C++",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Implementation"
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Access Control",
+            "Integrity",
+            "Confidentiality",
+            "Availability"
+          ],
+          "Impact": [
+            "Modify Memory",
+            "Read Memory",
+            "Execute Unauthorized Code or Commands",
+            "Gain Privileges or Assume Identity"
+          ],
+          "Note": "There is the potential for arbitrary code execution with privileges of the vulnerable program."
+        }
+      ],
+      "DemonstrativeExamples": [
+        {
+          "Entries": [
+            {
+              "IntroText": "The following example contains the method size that is used to determine the number of nodes in a linked list. The method is passed a pointer to the head of the linked list."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "C",
+              "ExampleCode": "```\n\tstruct node {\n\t\tint data;\n\t\tstruct node* next;\n\t};\n```\n// Returns the number of nodes in a linked list from* \n\t\n\t\n\t *// the given pointer to the head of the list.* \n\tint size(struct node* head) {\n\t```\n\t\tstruct node* current = head;\n\t\tstruct node* tail;\n\t\twhile (current != NULL) {\n\t\t\ttail = current;\n\t\t\tcurrent = current->next;\n\t\t}\n\t\treturn tail - head;\n\t}\n```\n// other methods for manipulating the list* \n\t..."
+            },
+            {
+              "BodyText": "However, the method creates a pointer that points to the end of the list and uses pointer subtraction to determine the number of nodes in the list by subtracting the tail pointer from the head pointer. There no guarantee that the pointers exist in the same memory area, therefore using pointer subtraction in this way could return incorrect results and allow other unintended behavior. In this example a counter should be used to determine the number of nodes in the list, as shown in the following code."
+            },
+            {
+              "Nature": "Good",
+              "Language": "C",
+              "ExampleCode": "```\n\t...\n\tint size(struct node* head) {\n\t\tstruct node* current = head;\n\t\tint count = 0;\n\t\twhile (current != NULL) {\n\t\t\tcount++;\n\t\t\tcurrent = current->next;\n\t\t}\n\t\treturn count;\n\t}\n```"
+            }
+          ]
+        }
+      ],
+      "PotentialMitigations": [
+        {
+          "Phase": [
+            "Implementation"
+          ],
+          "Description": "Save an index variable. This is the recommended solution. Rather than subtract pointers from one another, use an index variable of the same size as the pointers in question. Use this variable to \"walk\" from one pointer to the other and calculate the difference. Always validate this number."
+        }
+      ]
+    },
+    "/cwe/469/parents": {
+      "weakness_parents": [],
+      "category_parents": [
+        "1160",
+        "1408",
+        "465",
+        "740",
+        "874",
+        "971"
+      ]
+    },
+    "/cwe/469/children": null
+  }
+}

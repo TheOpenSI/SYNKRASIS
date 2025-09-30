@@ -1,0 +1,250 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T23:20:07.565209",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "400",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/400": {
+      "ID": "400",
+      "Type": "class_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/400": {
+      "ID": "400",
+      "Name": "Uncontrolled Resource Consumption",
+      "Abstraction": "Class",
+      "Structure": "Simple",
+      "Status": "Draft",
+      "Description": "The product does not properly control the allocation and maintenance of a limited resource.",
+      "ExtendedDescription": null,
+      "LikelihoodOfExploit": "High",
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Class": "Not Language-Specific",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": [
+        {
+          "Term": "Resource Exhaustion"
+        }
+      ],
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Operation",
+          "Note": "The product could be operated in a system or environment with lower resource limits than expected, which might make it easier for attackers to consume all available resources."
+        },
+        {
+          "Phase": "System Configuration",
+          "Note": "The product could be configured with lower resource limits than expected, which might make it easier for attackers to consume all available resources."
+        },
+        {
+          "Phase": "Architecture and Design",
+          "Note": "The designer might not consider how to handle and throttle excessive resource requests, which typically requires careful planning to handle more gracefully than a crash or exit."
+        },
+        {
+          "Phase": "Implementation",
+          "Note": "\n\nThere are at least three distinct scenarios that can commonly lead to resource exhaustion:\n\n\n  - Lack of throttling for the number of allocated resources.\n\n  - Losing all references to a resource before reaching the shutdown stage.\n\n  - Not closing/returning a resource after processing.\n\nResource exhaustion problems often occur due to an incorrect implementation of the following situations:\n\n  - Error conditions and other exceptional circumstances.\n\n  - Confusion over which part of the program is responsible for releasing the resource.\n\n"
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Availability"
+          ],
+          "Impact": [
+            "DoS: Crash, Exit, or Restart",
+            "DoS: Resource Consumption (CPU)",
+            "DoS: Resource Consumption (Memory)",
+            "DoS: Resource Consumption (Other)"
+          ],
+          "Note": "If an attacker can trigger the allocation of the limited resources, but the number or size of the resources is not controlled, then the most common result is denial of service. This would prevent valid users from accessing the product, and it could potentially have an impact on the surrounding environment, i.e., the product may slow down, crash due to unhandled errors, or lock out legitimate users. For example, a memory exhaustion attack against an application could slow down the application as well as its host operating system."
+        },
+        {
+          "Scope": [
+            "Access Control",
+            "Other"
+          ],
+          "Impact": [
+            "Bypass Protection Mechanism",
+            "Other"
+          ],
+          "Note": "In some cases it may be possible to force the product to \"fail open\" in the event of resource exhaustion. The state of the product -- and possibly the security functionality - may then be compromised."
+        }
+      ],
+      "DemonstrativeExamples": [
+        {
+          "Entries": [
+            {
+              "IntroText": "The following example demonstrates the weakness."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "Java",
+              "ExampleCode": "```\n\tclass Worker implements Executor {\n\t\t\t...\n\t\t\tpublic void execute(Runnable r) {\n\t\t\t\t\ttry {\n\t\t\t\t\t\t...\n\t\t\t\t\t}\n\t\t\t\t\tcatch (InterruptedException ie) {\n```\n// postpone response* \n\t\t\t\t\t\t\tThread.currentThread().interrupt();}}\n\t\t\t\n\t\t\tpublic Worker(Channel ch, int nworkers) {\n\t\t\t```\n\t\t\t\t...\n\t\t\t}\n\t\t\tprotected void activate() {\n\t\t\t\t\tRunnable loop = new Runnable() {\n\t\t\t\t\t\t\tpublic void run() {\n\t\t\t\t\t\t\t\t\ttry {\n\t\t\t\t\t\t\t\t\t\tfor (;;) {\n\t\t\t\t\t\t\t\t\t\t\tRunnable r = ...;\n\t\t\t\t\t\t\t\t\t\t\tr.run();\n\t\t\t\t\t\t\t\t\t\t}\n\t\t\t\t\t\t\t\t\t}\n\t\t\t\t\t\t\t\t\tcatch (InterruptedException ie) {\n\t\t\t\t\t\t\t\t\t\t...\n\t\t\t\t\t\t\t\t\t}\n\t\t\t\t\t\t\t}\n\t\t\t\t\t};\n\t\t\t\t\tnew Thread(loop).start();\n\t\t\t}\n\t}\n```"
+            },
+            {
+              "BodyText": "There are no limits to runnables. Potentially an attacker could cause resource problems very quickly."
+            }
+          ]
+        },
+        {
+          "ID": "DX-25",
+          "Entries": [
+            {
+              "IntroText": "This code allocates a socket and forks each time it receives a new connection."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "C",
+              "ExampleCode": "```\n\tsock=socket(AF_INET, SOCK_STREAM, 0);\n\twhile (1) {\n\t\tnewsock=accept(sock, ...);\n\t\tprintf(\"A connection has been accepted\\n\");\n\t\tpid = fork();\n\t}\n```"
+            },
+            {
+              "BodyText": "The program does not track how many connections have been made, and it does not limit the number of connections. Because forking is a relatively expensive operation, an attacker would be able to cause the system to run out of CPU, processes, or memory by making a large number of connections. Alternatively, an attacker could consume all available connections, preventing others from accessing the system remotely."
+            }
+          ]
+        },
+        {
+          "ID": "DX-50",
+          "Entries": [
+            {
+              "IntroText": "In the following example a server socket connection is used to accept a request to store data on the local file system using a specified filename. The method openSocketConnection establishes a server socket to accept requests from a client. When a client establishes a connection to this service the getNextMessage method is first used to retrieve from the socket the name of the file to store the data, the openFileToWrite method will validate the filename and open a file to write to on the local file system. The getNextMessage is then used within a while loop to continuously read data from the socket and output the data to the file until there is no longer any data from the socket."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "C",
+              "ExampleCode": "```\n\tint writeDataFromSocketToFile(char *host, int port)\n\t{\n\t\t\tchar filename[FILENAME_SIZE];\n\t\t\tchar buffer[BUFFER_SIZE];\n\t\t\tint socket = openSocketConnection(host, port);\n\t\t\tif (socket < 0) {\n\t\t\t\tprintf(\"Unable to open socket connection\");\n\t\t\t\treturn(FAIL);\n\t\t\t}\n\t\t\tif (getNextMessage(socket, filename, FILENAME_SIZE) > 0) {\n\t\t\t\t\tif (openFileToWrite(filename) > 0) {\n\t\t\t\t\t\t\twhile (getNextMessage(socket, buffer, BUFFER_SIZE) > 0){\n\t\t\t\t\t\t\t\tif (!(writeToFile(buffer) > 0))\n\t\t\t\t\t\t\t\t\tbreak;\n\t\t\t\t\t\t\t}\n\t\t\t\t\t}\n\t\t\t\t\tcloseFile();\n\t\t\t}\n\t\t\tcloseSocket(socket);\n\t}\n```"
+            },
+            {
+              "BodyText": "This example creates a situation where data can be dumped to a file on the local file system without any limits on the size of the file. This could potentially exhaust file or disk resources and/or limit other clients' ability to access the service."
+            }
+          ]
+        },
+        {
+          "ID": "DX-51",
+          "Entries": [
+            {
+              "IntroText": "In the following example, the processMessage method receives a two dimensional character array containing the message to be processed. The two-dimensional character array contains the length of the message in the first character array and the message body in the second character array. The getMessageLength method retrieves the integer value of the length from the first character array. After validating that the message length is greater than zero, the body character array pointer points to the start of the second character array of the two-dimensional character array and memory is allocated for the new body character array."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "C",
+              "ExampleCode": "```\n```\n/* process message accepts a two-dimensional character array of the form [length][body] containing the message to be processed */* \n\tint processMessage(char **message)\n\t{\n\t```\n\t\t\tchar *body;\n\t\t\tint length = getMessageLength(message[0]);\n\t\t\tif (length > 0) {\n\t\t\t\tbody = &message[1][0];\n\t\t\t\tprocessMessageBody(body);\n\t\t\t\treturn(SUCCESS);\n\t\t\t}\n\t\t\telse {\n\t\t\t\tprintf(\"Unable to process message; invalid message length\");\n\t\t\t\treturn(FAIL);\n\t\t\t}\n\t}\n```"
+            },
+            {
+              "BodyText": "This example creates a situation where the length of the body character array can be very large and will consume excessive memory, exhausting system resources. This can be avoided by restricting the length of the second character array with a maximum length check"
+            },
+            {
+              "BodyText": "Also, consider changing the type from 'int' to 'unsigned int', so that you are always guaranteed that the number is positive. This might not be possible if the protocol specifically requires allowing negative values, or if you cannot control the return value from getMessageLength(), but it could simplify the check to ensure the input is positive, and eliminate other errors such as signed-to-unsigned conversion errors (CWE-195) that may occur elsewhere in the code."
+            },
+            {
+              "Nature": "Good",
+              "Language": "C",
+              "ExampleCode": "```\n\tunsigned int length = getMessageLength(message[0]);\n\tif ((length > 0) && (length < MAX_LENGTH)) {...}\n```"
+            }
+          ]
+        },
+        {
+          "ID": "DX-52",
+          "Entries": [
+            {
+              "IntroText": "In the following example, a server object creates a server socket and accepts client connections to the socket. For every client connection to the socket a separate thread object is generated using the ClientSocketThread class that handles request made by the client through the socket."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "Java",
+              "ExampleCode": "```\n\tpublic void acceptConnections() {\n\t\t\ttry {\n\t\t\t\tServerSocket serverSocket = new ServerSocket(SERVER_PORT);\n\t\t\t\tint counter = 0;\n\t\t\t\tboolean hasConnections = true;\n\t\t\t\twhile (hasConnections) {\n\t\t\t\t\tSocket client = serverSocket.accept();\n\t\t\t\t\tThread t = new Thread(new ClientSocketThread(client));\n\t\t\t\t\tt.setName(client.getInetAddress().getHostName() + \":\" + counter++);\n\t\t\t\t\tt.start();\n\t\t\t\t}\n\t\t\t\tserverSocket.close();\n\t\t\t} catch (IOException ex) {...}\n\t}\n```"
+            },
+            {
+              "BodyText": "In this example there is no limit to the number of client connections and client threads that are created. Allowing an unlimited number of client connections and threads could potentially overwhelm the system and system resources."
+            },
+            {
+              "BodyText": "The server should limit the number of client connections and the client threads that are created. This can be easily done by creating a thread pool object that limits the number of threads that are generated."
+            },
+            {
+              "Nature": "Good",
+              "Language": "Java",
+              "ExampleCode": "```\n\tpublic static final int SERVER_PORT = 4444;\n\tpublic static final int MAX_CONNECTIONS = 10;\n\t...\n\tpublic void acceptConnections() {\n\t\t\ttry {\n\t\t\t\tServerSocket serverSocket = new ServerSocket(SERVER_PORT);\n\t\t\t\tint counter = 0;\n\t\t\t\tboolean hasConnections = true;\n\t\t\t\twhile (hasConnections) {\n\t\t\t\t\thasConnections = checkForMoreConnections();\n\t\t\t\t\tSocket client = serverSocket.accept();\n\t\t\t\t\tThread t = new Thread(new ClientSocketThread(client));\n\t\t\t\t\tt.setName(client.getInetAddress().getHostName() + \":\" + counter++);\n\t\t\t\t\tExecutorService pool = Executors.newFixedThreadPool(MAX_CONNECTIONS);\n\t\t\t\t\tpool.execute(t);\n\t\t\t\t}\n\t\t\t\tserverSocket.close();\n\t\t\t} catch (IOException ex) {...}\n\t}\n```"
+            }
+          ]
+        },
+        {
+          "Entries": [
+            {
+              "IntroText": "In the following example, the serve function receives an http request and an http response writer. It reads the entire request body."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "Go",
+              "ExampleCode": "```\n\tfunc serve(w http.ResponseWriter, r *http.Request) { \n\t\t var body []byte\n\t\t if r.Body != nil {\n\t\t\t if data, err := io.ReadAll(r.Body); err == nil {\n\t\t\t\t body = data\n\t\t\t }\n\t\t }\n\t }\n```"
+            },
+            {
+              "BodyText": "Because ReadAll is defined to read from src until EOF, it does not treat an EOF from Read as an error to be reported. This example creates a situation where the length of the body supplied can be very large and will consume excessive memory, exhausting system resources. This can be avoided by ensuring the body does not exceed a predetermined length of bytes."
+            },
+            {
+              "BodyText": "MaxBytesReader prevents clients from accidentally or maliciously sending a large request and wasting server resources. If possible, the code could be changed to tell ResponseWriter to close the connection after the limit has been reached."
+            },
+            {
+              "Nature": "Good",
+              "Language": "Go",
+              "ExampleCode": "```\n\tfunc serve(w http.ResponseWriter, r *http.Request) { \n\t\t var body []byte\n\t\t const MaxRespBodyLength = 1e6\n\t\t if r.Body != nil {\n\t\t\t r.Body = http.MaxBytesReader(w, r.Body, MaxRespBodyLength)\n\t\t\t if data, err := io.ReadAll(r.Body); err == nil {\n\t\t\t\t body = data\n\t\t\t }\n\t\t }\n\t }\n```"
+            }
+          ]
+        }
+      ],
+      "PotentialMitigations": [
+        {
+          "Phase": [
+            "Architecture and Design"
+          ],
+          "Description": "Design throttling mechanisms into the system architecture. The best protection is to limit the amount of resources that an unauthorized user can cause to be expended. A strong authentication and access control model will help prevent such attacks from occurring in the first place. The login application should be protected against DoS attacks as much as possible. Limiting the database access, perhaps by caching result sets, can help minimize the resources expended. To further limit the potential for a DoS attack, consider tracking the rate of requests received from users and blocking requests that exceed a defined rate threshold."
+        },
+        {
+          "Phase": [
+            "Architecture and Design"
+          ],
+          "Description": "\n\nMitigation of resource exhaustion attacks requires that the target system either:\n\n\n  - recognizes the attack and denies that user further access for a given amount of time, or\n\n  - uniformly throttles all requests in order to make it more difficult to consume resources more quickly than they can again be freed.\n\nThe first of these solutions is an issue in itself though, since it may allow attackers to prevent the use of the system by a particular valid user. If the attacker impersonates the valid user, they may be able to prevent the user from accessing the server in question.\n\nThe second solution is simply difficult to effectively institute -- and even when properly done, it does not provide a full solution. It simply makes the attack require more resources on the part of the attacker.\n"
+        },
+        {
+          "Phase": [
+            "Architecture and Design"
+          ],
+          "Description": "Ensure that protocols have specific limits of scale placed on them."
+        },
+        {
+          "Phase": [
+            "Implementation"
+          ],
+          "Description": "Ensure that all failures in resource allocation place the system into a safe posture."
+        }
+      ]
+    },
+    "/cwe/400/parents": {
+      "weakness_parents": [],
+      "category_parents": [
+        "1148",
+        "1152",
+        "1416",
+        "730",
+        "858",
+        "861",
+        "985"
+      ]
+    },
+    "/cwe/400/children": {
+      "weakness_children": [
+        "1235",
+        "1246",
+        "405",
+        "770",
+        "771",
+        "779",
+        "920"
+      ],
+      "category_children": []
+    }
+  }
+}

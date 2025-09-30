@@ -1,0 +1,73 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T23:57:55.612729",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "685",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/685": {
+      "ID": "685",
+      "Type": "variant_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/685": {
+      "ID": "685",
+      "Name": "Function Call With Incorrect Number of Arguments",
+      "Abstraction": "Variant",
+      "Structure": "Simple",
+      "Status": "Draft",
+      "Description": "The product calls a function, procedure, or routine, but the caller specifies too many arguments, or too few arguments, which may lead to undefined behavior and resultant weaknesses.",
+      "ExtendedDescription": null,
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Name": "C",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Language",
+          "Name": "Perl",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Implementation",
+          "Note": "This problem typically occurs when the programmer makes a typo, or copy and paste errors."
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Other"
+          ],
+          "Impact": [
+            "Quality Degradation"
+          ]
+        }
+      ],
+      "DemonstrativeExamples": null,
+      "PotentialMitigations": [
+        {
+          "Phase": [
+            "Testing"
+          ],
+          "Description": "Because this function call often produces incorrect behavior it will usually be detected during testing or normal operation of the product. During testing exercise all possible control paths will typically expose this weakness except in rare cases when the incorrect function call accidentally produces the correct results or if the provided argument type is very similar to the expected argument type."
+        }
+      ]
+    },
+    "/cwe/685/parents": {
+      "weakness_parents": [],
+      "category_parents": [
+        "1157",
+        "1163",
+        "1412",
+        "998"
+      ]
+    },
+    "/cwe/685/children": null
+  }
+}

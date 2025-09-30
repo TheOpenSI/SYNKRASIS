@@ -1,0 +1,204 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T22:09:51.648015",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "1045",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/1045": {
+      "endpoint": "/cwe/1045",
+      "url": "https://cwe-api.mitre.org/api/v1/cwe/1045",
+      "status_code": 200,
+      "success": true,
+      "error": null,
+      "data": [
+        {
+          "Type": "base_weakness",
+          "ID": "1045"
+        }
+      ]
+    },
+    "/cwe/weakness/1045": {
+      "endpoint": "/cwe/weakness/1045",
+      "url": "https://cwe-api.mitre.org/api/v1/cwe/weakness/1045",
+      "status_code": 200,
+      "success": true,
+      "error": null,
+      "data": {
+        "Weaknesses": [
+          {
+            "ID": "1045",
+            "Name": "Parent Class with a Virtual Destructor and a Child Class without a Virtual Destructor",
+            "Abstraction": "Base",
+            "Structure": "Simple",
+            "Status": "Incomplete",
+            "Description": "A parent class has a virtual destructor method, but the parent has a child class that does not have a virtual destructor.",
+            "ExtendedDescription": "\n\nThis issue can prevent the product from running reliably, since the child might not perform essential destruction operations. If the relevant code is reachable by an attacker, then this reliability problem might introduce a vulnerability, such as a memory leak (CWE-401).\n",
+            "RelatedWeaknesses": [
+              {
+                "Nature": "ChildOf",
+                "CweID": "1076",
+                "ViewID": "1000",
+                "Ordinal": "Primary"
+              }
+            ],
+            "WeaknessOrdinalities": [
+              {
+                "Ordinality": "Indirect"
+              }
+            ],
+            "CommonConsequences": [
+              {
+                "Scope": [
+                  "Other"
+                ],
+                "Impact": [
+                  "Reduce Reliability"
+                ]
+              }
+            ],
+            "TaxonomyMappings": [
+              {
+                "TaxonomyName": "OMG ASCRM",
+                "EntryID": "ASCRM-RLB-17"
+              }
+            ],
+            "References": [
+              {
+                "ExternalReferenceID": "REF-961",
+                "Section": "ASCRM-RLB-17",
+                "Authors": [
+                  "Object Management Group (OMG)"
+                ],
+                "Title": "Automated Source Code Reliability Measure (ASCRM)",
+                "PublicationYear": "2016",
+                "PublicationMonth": "01",
+                "URL": "http://www.omg.org/spec/ASCRM/1.0/"
+              },
+              {
+                "ExternalReferenceID": "REF-977",
+                "Authors": [
+                  "QuantStart"
+                ],
+                "Title": "C++ Virtual Destructors: How to Avoid Memory Leaks",
+                "URL": "https://www.quantstart.com/articles/C-Virtual-Destructors-How-to-Avoid-Memory-Leaks/",
+                "URLDate": "2023-04-07"
+              },
+              {
+                "ExternalReferenceID": "REF-978",
+                "Authors": [
+                  "GeeksforGeeks"
+                ],
+                "Title": "Virtual Destructor",
+                "URL": "https://www.geeksforgeeks.org/virtual-destructor/"
+              }
+            ],
+            "MappingNotes": {
+              "Usage": "Allowed",
+              "Rationale": "This CWE entry is at the Base level of abstraction, which is a preferred level of abstraction for mapping to the root causes of vulnerabilities.",
+              "Comments": "Carefully read both the name and description to ensure that this mapping is an appropriate fit. Do not try to 'force' a mapping to a lower-level Base/Variant simply to comply with this preferred level of abstraction.",
+              "Reasons": [
+                "Acceptable-Use"
+              ]
+            },
+            "ContentHistory": [
+              {
+                "Type": "Submission",
+                "SubmissionName": "CWE Content Team",
+                "SubmissionOrganization": "MITRE",
+                "SubmissionDate": "2018-07-02",
+                "SubmissionComment": "Entry derived from Common Quality Enumeration (CQE) Draft 0.9.",
+                "SubmissionVersion": "3.2",
+                "SubmissionReleaseDate": "2019-01-03"
+              },
+              {
+                "Type": "Modification",
+                "ModificationName": "CWE Content Team",
+                "ModificationOrganization": "MITRE",
+                "ModificationDate": "2020-02-24",
+                "ModificationComment": "updated Relationships"
+              },
+              {
+                "Type": "Modification",
+                "ModificationName": "CWE Content Team",
+                "ModificationOrganization": "MITRE",
+                "ModificationDate": "2020-08-20",
+                "ModificationComment": "updated Relationships"
+              },
+              {
+                "Type": "Modification",
+                "ModificationName": "CWE Content Team",
+                "ModificationOrganization": "MITRE",
+                "ModificationDate": "2023-01-31",
+                "ModificationComment": "updated Description"
+              },
+              {
+                "Type": "Modification",
+                "ModificationName": "CWE Content Team",
+                "ModificationOrganization": "MITRE",
+                "ModificationDate": "2023-04-27",
+                "ModificationComment": "updated References, Relationships, Type"
+              },
+              {
+                "Type": "Modification",
+                "ModificationName": "CWE Content Team",
+                "ModificationOrganization": "MITRE",
+                "ModificationDate": "2023-06-29",
+                "ModificationComment": "updated Mapping_Notes"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    "/cwe/1045/parents": {
+      "endpoint": "/cwe/1045/parents",
+      "url": "https://cwe-api.mitre.org/api/v1/cwe/1045/parents",
+      "status_code": 200,
+      "success": true,
+      "error": null,
+      "data": [
+        {
+          "Type": "class_weakness",
+          "ID": "1076",
+          "ViewID": "1000",
+          "Primary_Parent": true
+        },
+        {
+          "Type": "category",
+          "ID": "1129",
+          "ViewID": "1128"
+        },
+        {
+          "Type": "category",
+          "ID": "1306",
+          "ViewID": "1305"
+        },
+        {
+          "Type": "category",
+          "ID": "1307",
+          "ViewID": "1305"
+        },
+        {
+          "Type": "category",
+          "ID": "1412",
+          "ViewID": "1400"
+        },
+        {
+          "Type": "category",
+          "ID": "1006",
+          "ViewID": "699"
+        }
+      ]
+    },
+    "/cwe/1045/children": {
+      "endpoint": "/cwe/1045/children",
+      "url": "https://cwe-api.mitre.org/api/v1/cwe/1045/children",
+      "status_code": 200,
+      "success": true,
+      "error": null,
+      "data": []
+    }
+  }
+}

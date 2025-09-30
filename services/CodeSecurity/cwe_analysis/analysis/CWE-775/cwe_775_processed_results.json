@@ -1,0 +1,66 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-30T00:05:45.349340",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "775",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/775": {
+      "ID": "775",
+      "Type": "variant_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/775": {
+      "ID": "775",
+      "Name": "Missing Release of File Descriptor or Handle after Effective Lifetime",
+      "Abstraction": "Variant",
+      "Structure": "Simple",
+      "Status": "Incomplete",
+      "Description": "The product does not release a file descriptor or handle after its effective lifetime has ended, i.e., after the file descriptor/handle is no longer needed.",
+      "ExtendedDescription": "When a file descriptor or handle is not released after use (typically by explicitly closing it), attackers can cause a denial of service by consuming all available file descriptors/handles, or otherwise preventing other system processes from obtaining their own file descriptors/handles.",
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": null,
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Implementation"
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Availability"
+          ],
+          "Impact": [
+            "DoS: Resource Consumption (Other)"
+          ],
+          "Note": "An attacker that can influence the allocation of resources that are not properly released could deplete the available resource pool and prevent all other processes from accessing the same type of resource."
+        }
+      ],
+      "DemonstrativeExamples": null,
+      "PotentialMitigations": [
+        {
+          "MitigationID": "MIT-47",
+          "Phase": [
+            "Operation",
+            "Architecture and Design"
+          ],
+          "Strategy": "Resource Limitation",
+          "Description": "\n\nUse resource-limiting settings provided by the operating system or environment. For example, when managing system resources in POSIX, setrlimit() can be used to set limits for certain types of resources, and getrlimit() can determine how many resources are available. However, these functions are not available on all operating systems.\n\n\nWhen the current levels get close to the maximum that is defined for the application (see CWE-770), then limit the allocation of further resources to privileged users; alternately, begin releasing resources for less-privileged users. While this mitigation may protect the system from attack, it will not necessarily stop attackers from adversely impacting other users.\n\n\nEnsure that the application performs the appropriate error checks and error handling in case resources become unavailable (CWE-703).\n"
+        }
+      ]
+    },
+    "/cwe/775/parents": {
+      "weakness_parents": [
+        "404"
+      ],
+      "category_parents": [
+        "1163",
+        "1416",
+        "982"
+      ]
+    },
+    "/cwe/775/children": null
+  }
+}

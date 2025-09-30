@@ -1,0 +1,185 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T23:06:04.022135",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "295",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/295": {
+      "ID": "295",
+      "Type": "base_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/295": {
+      "ID": "295",
+      "Name": "Improper Certificate Validation",
+      "Abstraction": "Base",
+      "Structure": "Simple",
+      "Status": "Draft",
+      "Description": "The product does not validate, or incorrectly validates, a certificate.",
+      "ExtendedDescription": null,
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Class": "Not Language-Specific",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Technology",
+          "Class": "Mobile",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Architecture and Design"
+        },
+        {
+          "Phase": "Implementation",
+          "Note": "REALIZATION: This weakness is caused during implementation of an architectural security tactic."
+        },
+        {
+          "Phase": "Implementation",
+          "Note": "When the product uses certificate pinning, the developer might not properly validate all relevant components of the certificate before pinning the certificate. This can make it difficult or expensive to test after the pinning is complete."
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Integrity",
+            "Authentication"
+          ],
+          "Impact": [
+            "Bypass Protection Mechanism",
+            "Gain Privileges or Assume Identity"
+          ],
+          "Note": "When a certificate is invalid or malicious, it might allow an attacker to spoof a trusted entity by interfering in the communication path between the host and client. The product might connect to a malicious host while believing it is a trusted host, or the product might be deceived into accepting spoofed data that appears to originate from a trusted host."
+        }
+      ],
+      "DemonstrativeExamples": [
+        {
+          "ID": "DX-121",
+          "Entries": [
+            {
+              "IntroText": "This code checks the certificate of a connected peer."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "C",
+              "ExampleCode": "```\n\tif ((cert = SSL_get_peer_certificate(ssl)) && host)\n\t\tfoo=SSL_get_verify_result(ssl);\n\tif ((X509_V_OK==foo) || X509_V_ERR_SELF_SIGNED_CERT_IN_CHAIN==foo))\n```\n// certificate looks good, host can be trusted*"
+            },
+            {
+              "BodyText": "In this case, because the certificate is self-signed, there was no external authority that could prove the identity of the host. The program could be communicating with a different system that is spoofing the host, e.g. by poisoning the DNS cache or using an Adversary-in-the-Middle (AITM) attack to modify the traffic from server to client."
+            }
+          ]
+        },
+        {
+          "ID": "DX-122",
+          "Entries": [
+            {
+              "IntroText": "The following OpenSSL code obtains a certificate and verifies it."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "C",
+              "ExampleCode": "```\n\tcert = SSL_get_peer_certificate(ssl);\n\tif (cert && (SSL_get_verify_result(ssl)==X509_V_OK)) {\n```\n// do secret things* \n\t\t\t}"
+            },
+            {
+              "BodyText": "Even though the \"verify\" step returns X509_V_OK, this step does not include checking the Common Name against the name of the host. That is, there is no guarantee that the certificate is for the desired host. The SSL connection could have been established with a malicious host that provided a valid certificate."
+            }
+          ]
+        },
+        {
+          "ID": "DX-123",
+          "Entries": [
+            {
+              "IntroText": "The following OpenSSL code ensures that there is a certificate and allows the use of expired certificates."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "C",
+              "ExampleCode": "```\n\tif (cert = SSL_get_peer(certificate(ssl)) {\n\t\t\tfoo=SSL_get_verify_result(ssl);\n\t\t\tif ((X509_V_OK==foo) || (X509_V_ERR_CERT_HAS_EXPIRED==foo))\n```\n//do stuff*"
+            },
+            {
+              "BodyText": "If the call to SSL_get_verify_result() returns X509_V_ERR_CERT_HAS_EXPIRED, this means that the certificate has expired. As time goes on, there is an increasing chance for attackers to compromise the certificate."
+            }
+          ]
+        },
+        {
+          "ID": "DX-124",
+          "Entries": [
+            {
+              "IntroText": "The following OpenSSL code ensures that there is a certificate before continuing execution."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "C",
+              "ExampleCode": "```\n\tif (cert = SSL_get_peer_certificate(ssl)) {\n```\n// got a certificate, do secret things*"
+            },
+            {
+              "BodyText": "Because this code does not use SSL_get_verify_results() to check the certificate, it could accept certificates that have been revoked (X509_V_ERR_CERT_REVOKED). The software could be communicating with a malicious host."
+            }
+          ]
+        },
+        {
+          "ID": "DX-125",
+          "Entries": [
+            {
+              "IntroText": "The following OpenSSL code ensures that the host has a certificate."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "C",
+              "ExampleCode": "```\n\tif (cert = SSL_get_peer_certificate(ssl)) {\n```\n// got certificate, host can be trusted* \n\t\t\t\n\t\t\t\n\t\t\t *//foo=SSL_get_verify_result(ssl);* \n\t\t\t\n\t\t\t\n\t\t\t *//if (X509_V_OK==foo) ...* \n\t\t\t}"
+            },
+            {
+              "BodyText": "Note that the code does not call SSL_get_verify_result(ssl), which effectively disables the validation step that checks the certificate."
+            }
+          ]
+        }
+      ],
+      "PotentialMitigations": [
+        {
+          "Phase": [
+            "Architecture and Design",
+            "Implementation"
+          ],
+          "Description": "Certificates should be carefully managed and checked to assure that data are encrypted with the intended owner's public key."
+        },
+        {
+          "Phase": [
+            "Implementation"
+          ],
+          "Description": "If certificate pinning is being used, ensure that all relevant properties of the certificate are fully validated before the certificate is pinned, including the hostname."
+        }
+      ]
+    },
+    "/cwe/295/parents": {
+      "weakness_parents": [
+        "287"
+      ],
+      "category_parents": [
+        "1014",
+        "1029",
+        "1353",
+        "1382",
+        "1396",
+        "1211",
+        "731"
+      ]
+    },
+    "/cwe/295/children": {
+      "weakness_children": [
+        "296",
+        "297",
+        "298",
+        "299",
+        "599"
+      ],
+      "category_children": []
+    }
+  }
+}

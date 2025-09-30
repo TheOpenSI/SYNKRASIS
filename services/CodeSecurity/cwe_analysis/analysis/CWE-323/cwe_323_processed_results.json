@@ -1,0 +1,108 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T23:10:01.869001",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "323",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/323": {
+      "ID": "323",
+      "Type": "base_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/323": {
+      "ID": "323",
+      "Name": "Reusing a Nonce, Key Pair in Encryption",
+      "Abstraction": "Base",
+      "Structure": "Simple",
+      "Status": "Incomplete",
+      "Description": "Nonces should be used for the present occasion and only once.",
+      "ExtendedDescription": null,
+      "LikelihoodOfExploit": "High",
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Class": "Not Language-Specific",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Architecture and Design",
+          "Note": "REALIZATION: This weakness is caused during implementation of an architectural security tactic."
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Access Control"
+          ],
+          "Impact": [
+            "Bypass Protection Mechanism",
+            "Gain Privileges or Assume Identity"
+          ],
+          "Note": "Potentially a replay attack, in which an attacker could send the same data twice, could be crafted if nonces are allowed to be reused. This could allow a user to send a message which masquerades as a valid message from a valid user."
+        }
+      ],
+      "DemonstrativeExamples": [
+        {
+          "Entries": [
+            {
+              "IntroText": "This code takes a password, concatenates it with a nonce, then encrypts it before sending over a network:"
+            },
+            {
+              "Nature": "Bad",
+              "Language": "C",
+              "ExampleCode": "```\n\tvoid encryptAndSendPassword(char *password){\n\t\tchar *nonce = \"bad\";\n\t\t...\n\t\tchar *data = (unsigned char*)malloc(20);\n\t\tint para_size = strlen(nonce) + strlen(password);\n\t\tchar *paragraph = (char*)malloc(para_size);\n\t\tSHA1((const unsigned char*)paragraph,parsize,(unsigned char*)data);\n\t\tsendEncryptedData(data)\n\t}\n```"
+            },
+            {
+              "BodyText": "Because the nonce used is always the same, an attacker can impersonate a trusted party by intercepting and resending the encrypted password. This attack avoids the need to learn the unencrypted password."
+            }
+          ]
+        },
+        {
+          "Entries": [
+            {
+              "IntroText": "This code sends a command to a remote server, using an encrypted password and nonce to prove the command is from a trusted party:"
+            },
+            {
+              "Nature": "Bad",
+              "Language": "C++",
+              "ExampleCode": "```\n\tString command = new String(\"some command to execute\");\n\tMessageDigest nonce = MessageDigest.getInstance(\"SHA\");\n\tnonce.update(String.valueOf(\"bad nonce\"));\n\tbyte[] nonce = nonce.digest();\n\tMessageDigest password = MessageDigest.getInstance(\"SHA\");\n\tpassword.update(nonce + \"secretPassword\");\n\tbyte[] digest = password.digest();\n\tsendCommand(digest, command)\n```"
+            },
+            {
+              "BodyText": "Once again the nonce used is always the same. An attacker may be able to replay previous legitimate commands or execute new arbitrary commands."
+            }
+          ]
+        }
+      ],
+      "PotentialMitigations": [
+        {
+          "Phase": [
+            "Implementation"
+          ],
+          "Description": "Refuse to reuse nonce values."
+        },
+        {
+          "Phase": [
+            "Implementation"
+          ],
+          "Description": "Use techniques such as requiring incrementing, time based and/or challenge response to assure uniqueness of nonces."
+        }
+      ]
+    },
+    "/cwe/323/parents": {
+      "weakness_parents": [],
+      "category_parents": [
+        "1013",
+        "1346",
+        "1414",
+        "320",
+        "959"
+      ]
+    },
+    "/cwe/323/children": null
+  }
+}

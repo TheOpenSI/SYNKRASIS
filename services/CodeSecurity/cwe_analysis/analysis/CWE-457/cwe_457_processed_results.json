@@ -1,0 +1,192 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T23:27:23.901953",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "457",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/457": {
+      "ID": "457",
+      "Type": "variant_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/457": {
+      "ID": "457",
+      "Name": "Use of Uninitialized Variable",
+      "Abstraction": "Variant",
+      "Structure": "Simple",
+      "Status": "Draft",
+      "Description": "The code uses a variable that has not been initialized, leading to unpredictable or unintended results.",
+      "ExtendedDescription": "In some languages such as C and C++, stack variables are not initialized by default. They generally contain junk data with the contents of stack memory before the function was invoked. An attacker can sometimes control or read these contents. In other languages or conditions, a variable that is not explicitly initialized can be given a default value that has security implications, depending on the logic of the program. The presence of an uninitialized variable can sometimes indicate a typographic error in the code.",
+      "LikelihoodOfExploit": "High",
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Name": "C",
+          "Prevalence": "Sometimes"
+        },
+        {
+          "Type": "Language",
+          "Name": "C++",
+          "Prevalence": "Sometimes"
+        },
+        {
+          "Type": "Language",
+          "Name": "Perl",
+          "Prevalence": "Often"
+        },
+        {
+          "Type": "Language",
+          "Name": "PHP",
+          "Prevalence": "Often"
+        },
+        {
+          "Type": "Language",
+          "Class": "Not Language-Specific",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Implementation",
+          "Note": "In C, using an uninitialized char * in some string libraries will return incorrect results, as the libraries expect the null terminator to always be at the end of a string, even if the string is empty."
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Availability",
+            "Integrity",
+            "Other"
+          ],
+          "Impact": [
+            "Other"
+          ],
+          "Note": "Initial variables usually contain junk, which can not be trusted for consistency. This can lead to denial of service conditions, or modify control flow in unexpected ways. In some cases, an attacker can \"pre-initialize\" the variable using previous actions, which might enable code execution. This can cause a race condition if a lock variable check passes when it should not."
+        },
+        {
+          "Scope": [
+            "Authorization",
+            "Other"
+          ],
+          "Impact": [
+            "Other"
+          ],
+          "Note": "Strings that are not initialized are especially dangerous, since many functions expect a null at the end -- and only at the end -- of a string."
+        }
+      ],
+      "DemonstrativeExamples": [
+        {
+          "Entries": [
+            {
+              "IntroText": "This code prints a greeting using information stored in a POST request:"
+            },
+            {
+              "Nature": "Bad",
+              "Language": "PHP",
+              "ExampleCode": "```\n\tif (isset($_POST['names'])) {\n\t\t$nameArray = $_POST['names'];\n\t}\n\techo \"Hello \" . $nameArray['first'];\n```"
+            },
+            {
+              "BodyText": "This code checks if the POST array 'names' is set before assigning it to the $nameArray variable. However, if the array is not in the POST request, $nameArray will remain uninitialized. This will cause an error when the array is accessed to print the greeting message, which could lead to further exploit."
+            }
+          ]
+        },
+        {
+          "Entries": [
+            {
+              "IntroText": "The following switch statement is intended to set the values of the variables aN and bN before they are used:"
+            },
+            {
+              "Nature": "Bad",
+              "Language": "C",
+              "ExampleCode": "```\n\tint aN, Bn;\n\tswitch (ctl) {\n\t\t\tcase -1:\n\t\t\t\taN = 0;\n\t\t\t\tbN = 0;\n\t\t\t\tbreak;\n\t\t\tcase 0:\n\t\t\t\taN = i;\n\t\t\t\tbN = -i;\n\t\t\t\tbreak;\n\t\t\tcase 1:\n\t\t\t\taN = i + NEXT_SZ;\n\t\t\t\tbN = i - NEXT_SZ;\n\t\t\t\tbreak;\n\t\t\tdefault:\n\t\t\t\taN = -1;\n\t\t\t\taN = -1;\n\t\t\t\tbreak;\n\t}\n\trepaint(aN, bN);\n```"
+            },
+            {
+              "BodyText": "In the default case of the switch statement, the programmer has accidentally set the value of aN twice. As a result, bN will have an undefined value. Most uninitialized variable issues result in general software reliability problems, but if attackers can intentionally trigger the use of an uninitialized variable, they might be able to launch a denial of service attack by crashing the program. Under the right circumstances, an attacker may be able to control the value of an uninitialized variable by affecting the values on the stack prior to the invocation of the function."
+            }
+          ]
+        },
+        {
+          "ID": "DX-144",
+          "Entries": [
+            {
+              "IntroText": "This example will leave test_string in an unknown condition when i is the same value as err_val, because test_string is not initialized (CWE-456). Depending on where this code segment appears (e.g. within a function body), test_string might be random if it is stored on the heap or stack. If the variable is declared in static memory, it might be zero or NULL. Compiler optimization might contribute to the unpredictability of this address."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "C",
+              "ExampleCode": "char *test_string;\n if (i != err_val)\n {\n\n```\n\ttest_string = \"Hello World!\";\n }\n printf(\"%s\", test_string);\n```"
+            },
+            {
+              "BodyText": "When the printf() is reached, test_string might be an unexpected address, so the printf might print junk strings (CWE-457).\n\n\n To fix this code, there are a couple approaches to making sure that test_string has been properly set once it reaches the printf().\n\n\nOne solution would be to set test_string to an acceptable default before the conditional:"
+            },
+            {
+              "Nature": "Good",
+              "Language": "C",
+              "ExampleCode": "char *test_string = \"Done at the beginning\";\n if (i != err_val)\n {\n\n```\n\ttest_string = \"Hello World!\";\n }\n printf(\"%s\", test_string);\n```"
+            },
+            {
+              "BodyText": "Another solution is to ensure that each branch of the conditional - including the default/else branch - could ensure that test_string is set:"
+            },
+            {
+              "Nature": "Good",
+              "Language": "C",
+              "ExampleCode": "char *test_string;\n if (i != err_val)\n {\n\n```\n\ttest_string = \"Hello World!\";\n }\n else {\n\ttest_string = \"Done on the other side!\";\n }\n printf(\"%s\", test_string);\n```"
+            }
+          ]
+        }
+      ],
+      "PotentialMitigations": [
+        {
+          "MitigationID": "MIT-57",
+          "Phase": [
+            "Implementation"
+          ],
+          "Strategy": "Attack Surface Reduction",
+          "Description": "Ensure that critical variables are initialized before first use [REF-1485]."
+        },
+        {
+          "Phase": [
+            "Build and Compilation"
+          ],
+          "Strategy": "Compilation or Build Hardening",
+          "Description": "Most compilers will complain about the use of uninitialized variables if warnings are turned on."
+        },
+        {
+          "Phase": [
+            "Implementation",
+            "Operation"
+          ],
+          "Description": "When using a language that does not require explicit declaration of variables, run or compile the software in a mode that reports undeclared or unknown variables. This may indicate the presence of a typographic error in the variable's name."
+        },
+        {
+          "Phase": [
+            "Requirements"
+          ],
+          "Strategy": "Language Selection",
+          "Description": "Choose a language that is not susceptible to these issues."
+        },
+        {
+          "Phase": [
+            "Architecture and Design"
+          ],
+          "Description": "Mitigating technologies such as safe string libraries and container abstractions could be introduced."
+        }
+      ]
+    },
+    "/cwe/457/parents": {
+      "weakness_parents": [
+        "665"
+      ],
+      "category_parents": [
+        "1180",
+        "1416",
+        "398",
+        "998"
+      ]
+    },
+    "/cwe/457/children": null
+  }
+}

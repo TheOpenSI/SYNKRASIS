@@ -1,0 +1,52 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T22:09:59.195437",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "1046",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/1046": {
+      "ID": "1046",
+      "Type": "base_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/1046": {
+      "ID": "1046",
+      "Name": "Creation of Immutable Text Using String Concatenation",
+      "Abstraction": "Base",
+      "Structure": "Simple",
+      "Status": "Incomplete",
+      "Description": "The product creates an immutable text string using string concatenation operations.",
+      "ExtendedDescription": "\n\nWhen building a string via a looping feature (e.g., a FOR or WHILE loop), the use of += to append to the existing string will result in the creation of a new object with each iteration. This programming pattern can be inefficient in comparison with use of text buffer data elements. This issue can make the product perform more slowly. If the relevant code is reachable by an attacker, then this could be influenced to create performance problem.\n",
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": null,
+      "AlternateTerms": null,
+      "ModesOfIntroduction": null,
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Other"
+          ],
+          "Impact": [
+            "Reduce Performance"
+          ]
+        }
+      ],
+      "DemonstrativeExamples": null,
+      "PotentialMitigations": null
+    },
+    "/cwe/1046/parents": {
+      "weakness_parents": [
+        "1176"
+      ],
+      "category_parents": [
+        "1132",
+        "1309",
+        "1416",
+        "1006"
+      ]
+    },
+    "/cwe/1046/children": null
+  }
+}

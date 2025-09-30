@@ -1,0 +1,65 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-30T00:17:15.219449",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "924",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/924": {
+      "ID": "924",
+      "Type": "base_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/924": {
+      "ID": "924",
+      "Name": "Improper Enforcement of Message Integrity During Transmission in a Communication Channel",
+      "Abstraction": "Base",
+      "Structure": "Simple",
+      "Status": "Incomplete",
+      "Description": "The product establishes a communication channel with an endpoint and receives a message from that endpoint, but it does not sufficiently ensure that the message was not modified during transmission.",
+      "ExtendedDescription": "Attackers might be able to modify the message and spoof the endpoint by interfering with the data as it crosses the network or by redirecting the connection to a system under their control.",
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Class": "Not Language-Specific",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Architecture and Design",
+          "Note": "REALIZATION: This weakness is caused during implementation of an architectural security tactic."
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Integrity",
+            "Confidentiality"
+          ],
+          "Impact": [
+            "Gain Privileges or Assume Identity"
+          ],
+          "Note": "If an attackers can spoof the endpoint, the attacker gains all the privileges that were intended for the original endpoint."
+        }
+      ],
+      "DemonstrativeExamples": null,
+      "PotentialMitigations": null
+    },
+    "/cwe/924/parents": {
+      "weakness_parents": [
+        "345"
+      ],
+      "category_parents": [
+        "1020",
+        "1411",
+        "1214",
+        "417"
+      ]
+    },
+    "/cwe/924/children": null
+  }
+}

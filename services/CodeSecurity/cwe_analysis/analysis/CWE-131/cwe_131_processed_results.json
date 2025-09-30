@@ -1,0 +1,294 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T22:36:27.942166",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "131",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/131": {
+      "ID": "131",
+      "Type": "base_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/131": {
+      "ID": "131",
+      "Name": "Incorrect Calculation of Buffer Size",
+      "Abstraction": "Base",
+      "Structure": "Simple",
+      "Status": "Draft",
+      "Description": "The product does not correctly calculate the size to be used when allocating a buffer, which could lead to a buffer overflow.",
+      "ExtendedDescription": null,
+      "LikelihoodOfExploit": "High",
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Name": "C",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Language",
+          "Name": "C++",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Implementation"
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Integrity",
+            "Availability",
+            "Confidentiality"
+          ],
+          "Impact": [
+            "DoS: Crash, Exit, or Restart",
+            "Execute Unauthorized Code or Commands",
+            "Read Memory",
+            "Modify Memory"
+          ],
+          "Note": "If the incorrect calculation is used in the context of memory allocation, then the software may create a buffer that is smaller or larger than expected. If the allocated buffer is smaller than expected, this could lead to an out-of-bounds read or write (CWE-119), possibly causing a crash, allowing arbitrary code execution, or exposing sensitive data."
+        }
+      ],
+      "DemonstrativeExamples": [
+        {
+          "ID": "DX-20",
+          "Entries": [
+            {
+              "IntroText": "The following code allocates memory for a maximum number of widgets. It then gets a user-specified number of widgets, making sure that the user does not request too many. It then initializes the elements of the array using InitializeWidget(). Because the number of widgets can vary for each request, the code inserts a NULL pointer to signify the location of the last widget."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "C",
+              "ExampleCode": "```\n\tint i;\n\tunsigned int numWidgets;\n\tWidget **WidgetList;\n\tnumWidgets = GetUntrustedSizeValue();\n\tif ((numWidgets == 0) || (numWidgets > MAX_NUM_WIDGETS)) {\n\t\tExitError(\"Incorrect number of widgets requested!\");\n\t}\n\tWidgetList = (Widget **)malloc(numWidgets * sizeof(Widget *));\n\tprintf(\"WidgetList ptr=%p\\n\", WidgetList);\n\tfor(i=0; i<numWidgets; i++) {\n\t\tWidgetList[i] = InitializeWidget();\n\t}\n\tWidgetList[numWidgets] = NULL;\n\tshowWidgets(WidgetList);\n```"
+            },
+            {
+              "BodyText": "However, this code contains an off-by-one calculation error (CWE-193). It allocates exactly enough space to contain the specified number of widgets, but it does not include the space for the NULL pointer. As a result, the allocated buffer is smaller than it is supposed to be (CWE-131). So if the user ever requests MAX_NUM_WIDGETS, there is an out-of-bounds write (CWE-787) when the NULL is assigned. Depending on the environment and compilation settings, this could cause memory corruption."
+            }
+          ]
+        },
+        {
+          "ID": "DX-33",
+          "Entries": [
+            {
+              "IntroText": "The following image processing code allocates a table for images."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "C",
+              "ExampleCode": "```\n\timg_t table_ptr; /*struct containing img data, 10kB each*/\n\tint num_imgs;\n\t...\n\tnum_imgs = get_num_imgs();\n\ttable_ptr = (img_t*)malloc(sizeof(img_t)*num_imgs);\n\t...\n```"
+            },
+            {
+              "BodyText": "This code intends to allocate a table of size num_imgs, however as num_imgs grows large, the calculation determining the size of the list will eventually overflow (CWE-190). This will result in a very small list to be allocated instead. If the subsequent code operates on the list as if it were num_imgs long, it may result in many types of out-of-bounds problems (CWE-119)."
+            }
+          ]
+        },
+        {
+          "ID": "DX-19",
+          "Entries": [
+            {
+              "IntroText": "This example applies an encoding procedure to an input string and stores it into a buffer."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "C",
+              "ExampleCode": "```\n\tchar * copy_input(char *user_supplied_string){\n\t\t\tint i, dst_index;\n\t\t\tchar *dst_buf = (char*)malloc(4*sizeof(char) * MAX_SIZE);\n\t\t\tif ( MAX_SIZE <= strlen(user_supplied_string) ){\n\t\t\t\tdie(\"user string too long, die evil hacker!\");\n\t\t\t}\n\t\t\tdst_index = 0;\n\t\t\tfor ( i = 0; i < strlen(user_supplied_string); i++ ){\n\t\t\t\t\tif( '&' == user_supplied_string[i] ){\n\t\t\t\t\t\tdst_buf[dst_index++] = '&';\n\t\t\t\t\t\tdst_buf[dst_index++] = 'a';\n\t\t\t\t\t\tdst_buf[dst_index++] = 'm';\n\t\t\t\t\t\tdst_buf[dst_index++] = 'p';\n\t\t\t\t\t\tdst_buf[dst_index++] = ';';\n\t\t\t\t\t}\n\t\t\t\t\telse if ('<' == user_supplied_string[i] ){\n```\n/* encode to &lt; */* \n\t\t\t\t\t\t\t}\n\t\t\t\t\telse dst_buf[dst_index++] = user_supplied_string[i];}\n\t\t\treturn dst_buf;}"
+            },
+            {
+              "BodyText": "The programmer attempts to encode the ampersand character in the user-controlled string, however the length of the string is validated before the encoding procedure is applied. Furthermore, the programmer assumes encoding expansion will only expand a given character by a factor of 4, while the encoding of the ampersand expands by 5. As a result, when the encoding procedure expands the string it is possible to overflow the destination buffer if the attacker provides a string of many ampersands."
+            }
+          ]
+        },
+        {
+          "ID": "DX-21",
+          "Entries": [
+            {
+              "IntroText": "The following code is intended to read an incoming packet from a socket and extract one or more headers."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "C",
+              "ExampleCode": "```\n\tDataPacket *packet;\n\tint numHeaders;\n\tPacketHeader *headers;\n\tsock=AcceptSocketConnection();\n\tReadPacket(packet, sock);\n\tnumHeaders =packet->headers;\n\tif (numHeaders > 100) {\n\t\tExitError(\"too many headers!\");\n\t}\n\theaders = malloc(numHeaders * sizeof(PacketHeader);\n\tParsePacketHeaders(packet, headers);\n```"
+            },
+            {
+              "BodyText": "The code performs a check to make sure that the packet does not contain too many headers. However, numHeaders is defined as a signed int, so it could be negative. If the incoming packet specifies a value such as -3, then the malloc calculation will generate a negative number (say, -300 if each header can be a maximum of 100 bytes). When this result is provided to malloc(), it is first converted to a size_t type. This conversion then produces a large value such as 4294966996, which may cause malloc() to fail or to allocate an extremely large amount of memory (CWE-195). With the appropriate negative numbers, an attacker could trick malloc() into using a very small positive number, which then allocates a buffer that is much smaller than expected, potentially leading to a buffer overflow."
+            }
+          ]
+        },
+        {
+          "Entries": [
+            {
+              "IntroText": "The following code attempts to save three different identification numbers into an array. The array is allocated from memory using a call to malloc()."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "C",
+              "ExampleCode": "```\n\tint *id_sequence;\n```\n/* Allocate space for an array of three ids. */* \n\t\n\t\n\tid_sequence = (int*) malloc(3);\n\tif (id_sequence == NULL) exit(1);\n\t\n\t\n\t */* Populate the id array. */* \n\t\n\t\n\tid_sequence[0] = 13579;\n\tid_sequence[1] = 24680;\n\tid_sequence[2] = 97531;"
+            },
+            {
+              "BodyText": "The problem with the code above is the value of the size parameter used during the malloc() call. It uses a value of '3' which by definition results in a buffer of three bytes to be created. However the intention was to create a buffer that holds three ints, and in C, each int requires 4 bytes worth of memory, so an array of 12 bytes is needed, 4 bytes for each int. Executing the above code could result in a buffer overflow as 12 bytes of data is being saved into 3 bytes worth of allocated space. The overflow would occur during the assignment of id_sequence[0] and would continue with the assignment of id_sequence[1] and id_sequence[2]."
+            },
+            {
+              "BodyText": "The malloc() call could have used '3*sizeof(int)' as the value for the size parameter in order to allocate the correct amount of space required to store the three ints."
+            }
+          ]
+        }
+      ],
+      "PotentialMitigations": [
+        {
+          "Phase": [
+            "Implementation"
+          ],
+          "Description": "When allocating a buffer for the purpose of transforming, converting, or encoding an input, allocate enough memory to handle the largest possible encoding. For example, in a routine that converts \"&\" characters to \"&amp;\" for HTML entity encoding, the output buffer needs to be at least 5 times as large as the input buffer."
+        },
+        {
+          "MitigationID": "MIT-36",
+          "Phase": [
+            "Implementation"
+          ],
+          "Description": "\n\nUnderstand the programming language's underlying representation and how it interacts with numeric calculation (CWE-681). Pay close attention to byte size discrepancies, precision, signed/unsigned distinctions, truncation, conversion and casting between types, \"not-a-number\" calculations, and how the language handles numbers that are too large or too small for its underlying representation. [REF-7]\n\n\nAlso be careful to account for 32-bit, 64-bit, and other potential differences that may affect the numeric representation.\n"
+        },
+        {
+          "MitigationID": "MIT-8",
+          "Phase": [
+            "Implementation"
+          ],
+          "Strategy": "Input Validation",
+          "Description": "Perform input validation on any numeric input by ensuring that it is within the expected range. Enforce that the input meets both the minimum and maximum requirements for the expected range."
+        },
+        {
+          "MitigationID": "MIT-15",
+          "Phase": [
+            "Architecture and Design"
+          ],
+          "Description": "For any security checks that are performed on the client side, ensure that these checks are duplicated on the server side, in order to avoid CWE-602. Attackers can bypass the client-side checks by modifying values after the checks have been performed, or by changing the client to remove the client-side checks entirely. Then, these modified values would be submitted to the server."
+        },
+        {
+          "Phase": [
+            "Implementation"
+          ],
+          "Description": "When processing structured incoming data containing a size field followed by raw data, identify and resolve any inconsistencies between the size field and the actual size of the data (CWE-130)."
+        },
+        {
+          "Phase": [
+            "Implementation"
+          ],
+          "Description": "When allocating memory that uses sentinels to mark the end of a data structure - such as NUL bytes in strings - make sure you also include the sentinel in your calculation of the total amount of memory that must be allocated."
+        },
+        {
+          "MitigationID": "MIT-13",
+          "Phase": [
+            "Implementation"
+          ],
+          "Description": "Replace unbounded copy functions with analogous functions that support length arguments, such as strcpy with strncpy. Create these if they are not available.",
+          "Effectiveness": "Moderate",
+          "EffectivenessNotes": "This approach is still susceptible to calculation errors, including issues such as off-by-one errors (CWE-193) and incorrectly calculating buffer lengths (CWE-131). Additionally, this only addresses potential overflow issues. Resource consumption / exhaustion issues are still possible."
+        },
+        {
+          "Phase": [
+            "Implementation"
+          ],
+          "Description": "Use sizeof() on the appropriate data type to avoid CWE-467."
+        },
+        {
+          "Phase": [
+            "Implementation"
+          ],
+          "Description": "Use the appropriate type for the desired action. For example, in C/C++, only use unsigned types for values that could never be negative, such as height, width, or other numbers related to quantity. This will simplify validation and will reduce surprises related to unexpected casting."
+        },
+        {
+          "MitigationID": "MIT-4",
+          "Phase": [
+            "Architecture and Design"
+          ],
+          "Strategy": "Libraries or Frameworks",
+          "Description": "\n\nUse a vetted library or framework that does not allow this weakness to occur or provides constructs that make this weakness easier to avoid [REF-1482].\n\n\nUse libraries or frameworks that make it easier to handle numbers without unexpected consequences, or buffer allocation routines that automatically track buffer size.\n\n\nExamples include safe integer handling packages such as SafeInt (C++) or IntegerLib (C or C++). [REF-106]\n"
+        },
+        {
+          "MitigationID": "MIT-10",
+          "Phase": [
+            "Operation",
+            "Build and Compilation"
+          ],
+          "Strategy": "Environment Hardening",
+          "Description": "\n\nUse automatic buffer overflow detection mechanisms that are offered by certain compilers or compiler extensions. Examples include: the Microsoft Visual Studio /GS flag, Fedora/Red Hat FORTIFY_SOURCE GCC flag, StackGuard, and ProPolice, which provide various mechanisms including canary-based detection and range/index checking. \n\n\n D3-SFCV (Stack Frame Canary Validation) from D3FEND [REF-1334] discusses canary-based detection in detail. \n",
+          "Effectiveness": "Defense in Depth",
+          "EffectivenessNotes": "\n\n This is not necessarily a complete solution, since these mechanisms only detect certain types of overflows. In addition, the result is still a denial of service, since the typical response is to exit the application. \n"
+        },
+        {
+          "MitigationID": "MIT-11",
+          "Phase": [
+            "Operation",
+            "Build and Compilation"
+          ],
+          "Strategy": "Environment Hardening",
+          "Description": "\n\nRun or compile the software using features or extensions that randomly arrange the positions of a program's executable and libraries in memory. Because this makes the addresses unpredictable, it can prevent an attacker from reliably jumping to exploitable code. \n\n\n Examples include Address Space Layout Randomization (ASLR) [REF-58] [REF-60] and Position-Independent Executables (PIE) [REF-64]. Imported modules may be similarly realigned if their default memory addresses conflict with other modules, in a process known as \"rebasing\" (for Windows) and \"prelinking\" (for Linux) [REF-1332] using randomly generated addresses. ASLR for libraries cannot be used in conjunction with prelink since it would require relocating the libraries at run-time, defeating the whole purpose of prelinking. \n\n\n For more information on these techniques see D3-SAOR (Segment Address Offset Randomization) from D3FEND [REF-1335]. \n",
+          "Effectiveness": "Defense in Depth",
+          "EffectivenessNotes": "These techniques do not provide a complete solution. For instance, exploits frequently use a bug that discloses memory addresses in order to maximize reliability of code execution [REF-1337]. It has also been shown that a side-channel attack can bypass ASLR [REF-1333]"
+        },
+        {
+          "MitigationID": "MIT-12",
+          "Phase": [
+            "Operation"
+          ],
+          "Strategy": "Environment Hardening",
+          "Description": "\n\n Use a CPU and operating system that offers Data Execution Protection (using hardware NX or XD bits) or the equivalent techniques that simulate this feature in software, such as PaX [REF-60] [REF-61]. These techniques ensure that any instruction executed is exclusively at a memory address that is part of the code segment. \n\n\n For more information on these techniques see D3-PSEP (Process Segment Execution Prevention) from D3FEND [REF-1336]. \n",
+          "Effectiveness": "Defense in Depth",
+          "EffectivenessNotes": "This is not a complete solution, since buffer overflows could be used to overwrite nearby variables to modify the software's state in dangerous ways. In addition, it cannot be used in cases in which self-modifying code is required. Finally, an attack could still cause a denial of service, since the typical response is to exit the application."
+        },
+        {
+          "MitigationID": "MIT-26",
+          "Phase": [
+            "Implementation"
+          ],
+          "Strategy": "Compilation or Build Hardening",
+          "Description": "Examine compiler warnings closely and eliminate problems with potential security implications, such as signed / unsigned mismatch in memory operations, or use of uninitialized variables. Even if the weakness is rarely exploitable, a single failure may lead to the compromise of the entire system."
+        },
+        {
+          "MitigationID": "MIT-17",
+          "Phase": [
+            "Architecture and Design",
+            "Operation"
+          ],
+          "Strategy": "Environment Hardening",
+          "Description": "Run your code using the lowest privileges that are required to accomplish the necessary tasks [REF-76]. If possible, create isolated accounts with limited privileges that are only used for a single task. That way, a successful attack will not immediately give the attacker access to the rest of the software or its environment. For example, database applications rarely need to run as the database administrator, especially in day-to-day operations."
+        },
+        {
+          "MitigationID": "MIT-22",
+          "Phase": [
+            "Architecture and Design",
+            "Operation"
+          ],
+          "Strategy": "Sandbox or Jail",
+          "Description": "\n\nRun the code in a \"jail\" or similar sandbox environment that enforces strict boundaries between the process and the operating system. This may effectively restrict which files can be accessed in a particular directory or which commands can be executed by the software.\n\n\nOS-level examples include the Unix chroot jail, AppArmor, and SELinux. In general, managed code may provide some protection. For example, java.io.FilePermission in the Java SecurityManager allows the software to specify restrictions on file operations.\n\n\nThis may not be a feasible solution, and it only limits the impact to the operating system; the rest of the application may still be subject to compromise.\n\n\nBe careful to avoid CWE-243 and other weaknesses related to jails.\n",
+          "Effectiveness": "Limited",
+          "EffectivenessNotes": "The effectiveness of this mitigation depends on the prevention capabilities of the specific sandbox or jail being used and might only help to reduce the scope of an attack, such as restricting the attacker to certain system calls or limiting the portion of the file system that can be accessed."
+        }
+      ]
+    },
+    "/cwe/131/parents": {
+      "weakness_parents": [],
+      "category_parents": [
+        "1158",
+        "1162",
+        "1399",
+        "1218",
+        "742",
+        "802",
+        "876",
+        "974",
+        "865"
+      ]
+    },
+    "/cwe/131/children": {
+      "weakness_children": [
+        "467"
+      ],
+      "category_children": []
+    }
+  }
+}

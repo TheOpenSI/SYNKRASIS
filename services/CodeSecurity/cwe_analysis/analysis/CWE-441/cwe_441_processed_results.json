@@ -1,0 +1,127 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T23:25:24.328359",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "441",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/441": {
+      "ID": "441",
+      "Type": "class_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/441": {
+      "ID": "441",
+      "Name": "Unintended Proxy or Intermediary ('Confused Deputy')",
+      "Abstraction": "Class",
+      "Structure": "Simple",
+      "Status": "Draft",
+      "Description": "The product receives a request, message, or directive from an upstream component, but the product does not sufficiently preserve the original source of the request before forwarding the request to an external actor that is outside of the product's control sphere. This causes the product to appear to be the source of the request, leading it to act as a proxy or other intermediary between the upstream component and the external actor.",
+      "ExtendedDescription": "\n\nIf an attacker cannot directly contact a target, but the product has access to the target, then the attacker can send a request to the product and have it be forwarded to the target. The request would appear to be coming from the product's system, not the attacker's system. As a result, the attacker can bypass access controls (such as firewalls) or hide the source of malicious requests, since the requests would not be coming directly from the attacker.\n\n\nSince proxy functionality and message-forwarding often serve a legitimate purpose, this issue only becomes a vulnerability when:\n\n\n  - The product runs with different privileges or on a different system, or otherwise has different levels of access than the upstream component;\n\n  - The attacker is prevented from making the request directly to the target; and\n\n  - The attacker can create a request that the proxy does not explicitly intend to be forwarded on the behalf of the requester. Such a request might point to an unexpected hostname, port number, hardware IP, or service. Or, the request might be sent to an allowed service, but the request could contain disallowed directives, commands, or resources.\n\n",
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Class": "Not Language-Specific",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Operating_System",
+          "Class": "Not OS-Specific",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Architecture",
+          "Class": "Not Architecture-Specific",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Technology",
+          "Class": "Not Technology-Specific",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": [
+        {
+          "Term": "Confused Deputy",
+          "Description": "This weakness is sometimes referred to as the \"Confused deputy\" problem, in which an attacker misused the authority of one victim (the \"confused deputy\") when targeting another victim."
+        }
+      ],
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Architecture and Design",
+          "Note": "REALIZATION: This weakness is caused during implementation of an architectural security tactic."
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Non-Repudiation",
+            "Access Control"
+          ],
+          "Impact": [
+            "Gain Privileges or Assume Identity",
+            "Hide Activities",
+            "Execute Unauthorized Code or Commands"
+          ]
+        }
+      ],
+      "DemonstrativeExamples": [
+        {
+          "Entries": [
+            {
+              "IntroText": "A SoC contains a microcontroller (running ring-3 (least trusted ring) code), a Memory Mapped Input Output (MMIO) mapped IP core (containing design-house secrets), and a Direct Memory Access (DMA) controller, among several other compute elements and peripherals. The SoC implements access control to protect the registers in the IP core (which registers store the design-house secrets) from malicious, ring-3 (least trusted ring) code executing on the microcontroller. The DMA controller, however, is not blocked off from accessing the IP core for functional reasons."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "Other",
+              "ExampleCode": "The code in ring-3 (least trusted ring) of the microcontroller attempts to directly read the protected registers in IP core through MMIO transactions. However, this attempt is blocked due to the implemented access control. Now, the microcontroller configures the DMA core to transfer data from the protected registers to a memory region that it has access to. The DMA core, which is acting as an intermediary in this transaction, does not preserve the identity of the microcontroller and, instead, initiates a new transaction with its own identity. Since the DMA core has access, the transaction (and hence, the attack) is successful."
+            },
+            {
+              "BodyText": "The weakness here is that the intermediary or the proxy agent did not ensure the immutability of the identity of the microcontroller initiating the transaction."
+            },
+            {
+              "Nature": "Good",
+              "Language": "Other",
+              "ExampleCode": "The DMA core forwards this transaction with the identity of the code executing on the microcontroller, which is the original initiator of the end-to-end transaction. Now the transaction is blocked, as a result of forwarding the identity of the true initiator which lacks the permission to access the confidential MMIO mapped IP core."
+            }
+          ]
+        }
+      ],
+      "PotentialMitigations": [
+        {
+          "Phase": [
+            "Architecture and Design"
+          ],
+          "Description": "Enforce the use of strong mutual authentication mechanism between the two parties."
+        },
+        {
+          "Phase": [
+            "Architecture and Design"
+          ],
+          "Description": "Whenever a product is an intermediary or proxy for transactions between two other components, the proxy core should not drop the identity of the initiator of the transaction. The immutability of the identity of the initiator must be maintained and should be forwarded all the way to the target."
+        }
+      ]
+    },
+    "/cwe/441/parents": {
+      "weakness_parents": [
+        "610"
+      ],
+      "category_parents": [
+        "1014",
+        "1198",
+        "1345",
+        "1396",
+        "956"
+      ]
+    },
+    "/cwe/441/children": {
+      "weakness_children": [
+        "1021",
+        "918"
+      ],
+      "category_children": []
+    }
+  }
+}

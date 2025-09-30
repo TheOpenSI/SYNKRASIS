@@ -1,0 +1,131 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T22:29:40.197039",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "1258",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/1258": {
+      "ID": "1258",
+      "Type": "base_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/1258": {
+      "ID": "1258",
+      "Name": "Exposure of Sensitive System Information Due to Uncleared Debug Information",
+      "Abstraction": "Base",
+      "Structure": "Simple",
+      "Status": "Draft",
+      "Description": "The hardware does not fully clear security-sensitive values, such as keys and intermediate values in cryptographic operations, when debug mode is entered.",
+      "ExtendedDescription": "\n\nSecurity sensitive values, keys, intermediate steps of cryptographic operations, etc. are stored in temporary registers in the hardware. If these values are not cleared when debug mode is entered they may be accessed by a debugger allowing sensitive information to be accessible by untrusted parties.\n",
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Class": "Not Language-Specific",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Operating_System",
+          "Class": "Not OS-Specific",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Architecture",
+          "Class": "Not Architecture-Specific",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Technology",
+          "Class": "Not Technology-Specific",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Architecture and Design"
+        },
+        {
+          "Phase": "Implementation"
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Confidentiality"
+          ],
+          "Impact": [
+            "Read Memory"
+          ]
+        },
+        {
+          "Scope": [
+            "Access Control"
+          ],
+          "Impact": [
+            "Bypass Protection Mechanism"
+          ]
+        }
+      ],
+      "DemonstrativeExamples": [
+        {
+          "Entries": [
+            {
+              "IntroText": "A cryptographic core in a System-On-a-Chip (SoC) is used for cryptographic acceleration and implements several cryptographic operations (e.g., computation of AES encryption and decryption, SHA-256, HMAC, etc.). The keys for these operations or the intermediate values are stored in registers internal to the cryptographic core. These internal registers are in the Memory Mapped Input Output (MMIO) space and are blocked from access by software and other untrusted agents on the SoC. These registers are accessible through the debug and test interface."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "Other",
+              "ExampleCode": "In the above scenario, registers that store keys and intermediate values of cryptographic operations are not cleared when system enters debug mode. An untrusted actor running a debugger may read the contents of these registers and gain access to secret keys and other sensitive cryptographic information."
+            },
+            {
+              "Nature": "Good",
+              "Language": "Other",
+              "ExampleCode": "Whenever the chip enters debug mode, all registers containing security-sensitive data are be cleared rendering them unreadable."
+            }
+          ]
+        },
+        {
+          "Entries": [
+            {
+              "IntroText": "The following code example is extracted from the AES wrapper module, aes1_wrapper, of the Hack@DAC'21 buggy OpenPiton System-on-Chip (SoC). Within this wrapper module are four memory-mapped registers: core_key, core_key0, core_key1, and core_key2. Core_key0, core_key1, and core_key2 hold encryption/decryption keys. The core_key register selects a key and sends it to the underlying AES module to execute encryption/decryption operations.\n\n\nDebug mode in processors and SoCs facilitates design debugging by granting access to internal signal/register values, including physical pin values of peripherals/core, fabric bus data transactions, and inter-peripheral registers. Debug mode allows users to gather detailed, low-level information about the design to diagnose potential issues. While debug mode is beneficial for diagnosing processors or SoCs, it also introduces a new attack surface for potential attackers. For instance, if an attacker gains access to debug mode, they could potentially read any content transmitted through the fabric bus or access encryption/decryption keys stored in cryptographic peripherals.\n\n\nTherefore, it is crucial to clear the contents of secret registers upon entering debug mode. In the provided example of flawed code below, when debug_mode_i is activated, the register core_key0 is set to zero to prevent AES key leakage during debugging. However, this protective measure is not applied to the core_key1 register [REF-1435], leaving its contents uncleared during debug mode. This oversight enables a debugger to access sensitive information. Failing to clear sensitive data during debug mode may lead to unauthorized access to secret keys and compromise system security."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "Verilog",
+              "ExampleCode": "module aes1_wrapper #(\n ...\n\n```\n\t assign core_key0 = debug_mode_i ? 'b0 : { \n\t\t key_reg0[7],\n\t\t key_reg0[6],\n\t\t key_reg0[5],\n\t\t key_reg0[4],\n\t\t key_reg0[3],\n\t\t key_reg0[2],\n\t\t key_reg0[1],\n\t\t key_reg0[0]};\n```\nassign core_key1 = { ** \n\t\n\t```\n```\nkey_reg1[7],** \n\t\t\n\t\t **key_reg1[6],** \n\t\t\n\t\t **key_reg1[5],** \n\t\t\n\t\t **key_reg1[4],** \n\t\t\n\t\t **key_reg1[3],** \n\t\t\n\t\t **key_reg1[2],** \n\t\t\n\t\t **key_reg1[1],** \n\t\t\n\t\t **key_reg1[0]};** \n\t\t ...\n endmodule"
+            },
+            {
+              "BodyText": "To address the issue, it is essential to ensure that the register is cleared and zeroized after activating debug mode on the SoC. In the correct implementation illustrated in the good code below, core_keyx registers are set to zero when debug mode is activated [REF-1436]."
+            },
+            {
+              "Nature": "Good",
+              "Language": "Verilog",
+              "ExampleCode": "module aes1_wrapper #(\n ...\n\n```\n\t assign core_key0 = debug_mode_i ? 'b0 : { \n\t\t key_reg0[7],\n\t\t key_reg0[6],\n\t\t key_reg0[5],\n\t\t key_reg0[4],\n\t\t key_reg0[3],\n\t\t key_reg0[2],\n\t\t key_reg0[1],\n\t\t key_reg0[0]};\n\t assign core_key1 = \n```\ndebug_mode_i ? 'b0 :**  { \n\t\n\t```\n\t\t key_reg1[7],\n\t\t key_reg1[6],\n\t\t key_reg1[5],\n\t\t key_reg1[4],\n\t\t key_reg1[3],\n\t\t key_reg1[2],\n\t\t key_reg1[1],\n\t\t key_reg1[0]};\n ...\n endmodule\n```"
+            }
+          ]
+        }
+      ],
+      "PotentialMitigations": [
+        {
+          "Phase": [
+            "Architecture and Design"
+          ],
+          "Description": "\n\nWhenever debug mode is enabled, all registers containing sensitive assets must be cleared.\n"
+        }
+      ]
+    },
+    "/cwe/1258/parents": {
+      "weakness_parents": [
+        "200"
+      ],
+      "category_parents": [
+        "1207",
+        "1416"
+      ]
+    },
+    "/cwe/1258/children": null
+  }
+}

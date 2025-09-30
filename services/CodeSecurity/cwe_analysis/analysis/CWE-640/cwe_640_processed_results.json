@@ -1,0 +1,137 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T23:52:22.113727",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "640",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/640": {
+      "ID": "640",
+      "Type": "base_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/640": {
+      "ID": "640",
+      "Name": "Weak Password Recovery Mechanism for Forgotten Password",
+      "Abstraction": "Base",
+      "Structure": "Simple",
+      "Status": "Incomplete",
+      "Description": "The product contains a mechanism for users to recover or change their passwords without knowing the original password, but the mechanism is weak.",
+      "ExtendedDescription": "\n\nIt is common for an application to have a mechanism that provides a means for a user to gain access to their account in the event they forget their password. Very often the password recovery mechanism is weak, which has the effect of making it more likely that it would be possible for a person other than the legitimate system user to gain access to that user's account. Weak password recovery schemes completely undermine a strong password authentication scheme.\n\n\nThis weakness may be that the security question is too easy to guess or find an answer to (e.g. because the question is too common, or the answers can be found using social media). Or there might be an implementation weakness in the password recovery mechanism code that may for instance trick the system into e-mailing the new password to an e-mail account other than that of the user. There might be no throttling done on the rate of password resets so that a legitimate user can be denied service by an attacker if an attacker tries to recover their password in a rapid succession. The system may send the original password to the user rather than generating a new temporary password. In summary, password recovery functionality, if not carefully designed and implemented can often become the system's weakest link that can be misused in a way that would allow an attacker to gain unauthorized access to the system.\n",
+      "LikelihoodOfExploit": "High",
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Class": "Not Language-Specific",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Architecture and Design",
+          "Note": "COMMISSION: This weakness refers to an incorrect design related to an architectural security tactic."
+        },
+        {
+          "Phase": "Implementation"
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Access Control"
+          ],
+          "Impact": [
+            "Gain Privileges or Assume Identity"
+          ],
+          "Note": "An attacker could gain unauthorized access to the system by retrieving legitimate user's authentication credentials."
+        },
+        {
+          "Scope": [
+            "Availability"
+          ],
+          "Impact": [
+            "DoS: Resource Consumption (Other)"
+          ],
+          "Note": "An attacker could deny service to legitimate system users by launching a brute force attack on the password recovery mechanism using user ids of legitimate users."
+        },
+        {
+          "Scope": [
+            "Integrity",
+            "Other"
+          ],
+          "Impact": [
+            "Other"
+          ],
+          "Note": "The system's security functionality is turned against the system by the attacker."
+        }
+      ],
+      "DemonstrativeExamples": [
+        {
+          "Entries": [
+            {
+              "IntroText": "A famous example of this type of weakness being exploited is the eBay attack. eBay always displays the user id of the highest bidder. In the final minutes of the auction, one of the bidders could try to log in as the highest bidder three times. After three incorrect log in attempts, eBay password throttling would kick in and lock out the highest bidder's account for some time. An attacker could then make their own bid and their victim would not have a chance to place the counter bid because they would be locked out. Thus an attacker could win the auction."
+            }
+          ]
+        }
+      ],
+      "PotentialMitigations": [
+        {
+          "Phase": [
+            "Architecture and Design"
+          ],
+          "Description": "Make sure that all input supplied by the user to the password recovery mechanism is thoroughly filtered and validated."
+        },
+        {
+          "Phase": [
+            "Architecture and Design"
+          ],
+          "Description": "Do not use standard weak security questions and use several security questions."
+        },
+        {
+          "Phase": [
+            "Architecture and Design"
+          ],
+          "Description": "Make sure that there is throttling on the number of incorrect answers to a security question. Disable the password recovery functionality after a certain (small) number of incorrect guesses."
+        },
+        {
+          "Phase": [
+            "Architecture and Design"
+          ],
+          "Description": "Require that the user properly answers the security question prior to resetting their password and sending the new password to the e-mail address of record."
+        },
+        {
+          "Phase": [
+            "Architecture and Design"
+          ],
+          "Description": "Never allow the user to control what e-mail address the new password will be sent to in the password recovery mechanism."
+        },
+        {
+          "Phase": [
+            "Architecture and Design"
+          ],
+          "Description": "Assign a new temporary password rather than revealing the original password."
+        }
+      ]
+    },
+    "/cwe/640/parents": {
+      "weakness_parents": [
+        "1390",
+        "287"
+      ],
+      "category_parents": [
+        "1010",
+        "1028",
+        "1353",
+        "1396",
+        "255",
+        "840",
+        "724",
+        "959",
+        "930"
+      ]
+    },
+    "/cwe/640/children": null
+  }
+}

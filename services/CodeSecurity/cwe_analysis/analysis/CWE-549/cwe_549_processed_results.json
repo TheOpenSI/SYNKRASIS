@@ -1,0 +1,64 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T23:39:53.822719",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "549",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/549": {
+      "ID": "549",
+      "Type": "base_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/549": {
+      "ID": "549",
+      "Name": "Missing Password Field Masking",
+      "Abstraction": "Base",
+      "Structure": "Simple",
+      "Status": "Draft",
+      "Description": "The product does not mask passwords during entry, increasing the potential for attackers to observe and capture passwords.",
+      "ExtendedDescription": null,
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": null,
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Implementation"
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Access Control"
+          ],
+          "Impact": [
+            "Bypass Protection Mechanism"
+          ]
+        }
+      ],
+      "DemonstrativeExamples": null,
+      "PotentialMitigations": [
+        {
+          "Phase": [
+            "Implementation",
+            "Requirements"
+          ],
+          "Description": "Recommendations include requiring all password fields in your web application be masked to prevent other users from seeing this information."
+        }
+      ]
+    },
+    "/cwe/549/parents": {
+      "weakness_parents": [
+        "522"
+      ],
+      "category_parents": [
+        "1396",
+        "255",
+        "355",
+        "995"
+      ]
+    },
+    "/cwe/549/children": null
+  }
+}

@@ -1,0 +1,91 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T22:22:07.714175",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "1164",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/1164": {
+      "ID": "1164",
+      "Type": "class_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/1164": {
+      "ID": "1164",
+      "Name": "Irrelevant Code",
+      "Abstraction": "Class",
+      "Structure": "Simple",
+      "Status": "Incomplete",
+      "Description": "The product contains code that is not essential for execution,\n\t     i.e. makes no state changes and has no side effects that alter\n\t     data or control flow, such that removal of the code would have no impact\n\t     to functionality or correctness.",
+      "ExtendedDescription": "\n\nIrrelevant code could include dead code, initialization that is not used, empty blocks, code that could be entirely removed due to optimization, etc.\n",
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": null,
+      "AlternateTerms": null,
+      "ModesOfIntroduction": null,
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Other"
+          ],
+          "Impact": [
+            "Reduce Reliability"
+          ]
+        },
+        {
+          "Scope": [
+            "Other"
+          ],
+          "Impact": [
+            "Reduce Performance"
+          ]
+        }
+      ],
+      "DemonstrativeExamples": [
+        {
+          "ID": "DX-217",
+          "Entries": [
+            {
+              "IntroText": "The condition for the second if statement is impossible to satisfy. It requires that the variables be non-null. However, on the only path where s can be assigned a non-null value, there is a return statement."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "C++",
+              "ExampleCode": "```\n\tString s = null;\n\tif (b) {\n\t\ts = \"Yes\";\n\t\treturn;\n\t}\n\tif (s != null) {\n\t\tDead();\n\t}\n```"
+            }
+          ]
+        },
+        {
+          "ID": "DX-218",
+          "Entries": [
+            {
+              "IntroText": "The following code excerpt assigns to the variable r and then overwrites the value without using it."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "C",
+              "ExampleCode": "```\n\tr = getName();\n\tr = getNewBuffer(buf);\n```"
+            }
+          ]
+        }
+      ],
+      "PotentialMitigations": null
+    },
+    "/cwe/1164/parents": {
+      "weakness_parents": [],
+      "category_parents": [
+        "1412"
+      ]
+    },
+    "/cwe/1164/children": {
+      "weakness_children": [
+        "107",
+        "1071",
+        "110",
+        "561",
+        "563"
+      ],
+      "category_children": []
+    }
+  }
+}

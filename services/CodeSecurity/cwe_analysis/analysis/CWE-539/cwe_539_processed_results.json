@@ -1,0 +1,64 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T23:38:31.907066",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "539",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/539": {
+      "ID": "539",
+      "Type": "variant_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/539": {
+      "ID": "539",
+      "Name": "Use of Persistent Cookies Containing Sensitive Information",
+      "Abstraction": "Variant",
+      "Structure": "Simple",
+      "Status": "Incomplete",
+      "Description": "The web application uses persistent cookies, but the cookies contain sensitive information.",
+      "ExtendedDescription": "Cookies are small bits of data that are sent by the web application but stored locally in the browser. This lets the application use the cookie to pass information between pages and store variable information. The web application controls what information is stored in a cookie and how it is used. Typical types of information stored in cookies are session identifiers, personalization and customization information, and in rare cases even usernames to enable automated logins. There are two different types of cookies: session cookies and persistent cookies. Session cookies just live in the browser's memory and are not stored anywhere, but persistent cookies are stored on the browser's hard drive. This can cause security and privacy issues depending on the information stored in the cookie and how it is accessed.",
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": null,
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Architecture and Design"
+        },
+        {
+          "Phase": "Implementation"
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Confidentiality"
+          ],
+          "Impact": [
+            "Read Application Data"
+          ]
+        }
+      ],
+      "DemonstrativeExamples": null,
+      "PotentialMitigations": [
+        {
+          "Phase": [
+            "Architecture and Design"
+          ],
+          "Description": "Do not store sensitive information in persistent cookies."
+        }
+      ]
+    },
+    "/cwe/539/parents": {
+      "weakness_parents": [],
+      "category_parents": [
+        "1348",
+        "1403",
+        "729",
+        "963"
+      ]
+    },
+    "/cwe/539/children": null
+  }
+}

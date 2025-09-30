@@ -1,0 +1,53 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T22:15:30.726095",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "1087",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/1087": {
+      "ID": "1087",
+      "Type": "base_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/1087": {
+      "ID": "1087",
+      "Name": "Class with Virtual Method without a Virtual Destructor",
+      "Abstraction": "Base",
+      "Structure": "Simple",
+      "Status": "Incomplete",
+      "Description": "A class contains a virtual method, but the method does not have an associated virtual destructor.",
+      "ExtendedDescription": "\n\nThis issue can prevent the product from running reliably, e.g. due to undefined behavior. If the relevant code is reachable by an attacker, then this reliability problem might introduce a vulnerability.\n",
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": null,
+      "AlternateTerms": null,
+      "ModesOfIntroduction": null,
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Other"
+          ],
+          "Impact": [
+            "Reduce Reliability"
+          ]
+        }
+      ],
+      "DemonstrativeExamples": null,
+      "PotentialMitigations": null
+    },
+    "/cwe/1087/parents": {
+      "weakness_parents": [
+        "1076"
+      ],
+      "category_parents": [
+        "1129",
+        "1306",
+        "1307",
+        "1412",
+        "1006"
+      ]
+    },
+    "/cwe/1087/children": null
+  }
+}

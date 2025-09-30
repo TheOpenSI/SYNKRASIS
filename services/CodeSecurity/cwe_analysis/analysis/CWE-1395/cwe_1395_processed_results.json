@@ -1,0 +1,139 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T22:43:16.927206",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "1395",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/1395": {
+      "ID": "1395",
+      "Type": "class_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/1395": {
+      "ID": "1395",
+      "Name": "Dependency on Vulnerable Third-Party Component",
+      "Abstraction": "Class",
+      "Structure": "Simple",
+      "Status": "Incomplete",
+      "Description": "The product has a dependency on a third-party component that contains one or more known vulnerabilities.",
+      "ExtendedDescription": "\n\nMany products are large enough or complex enough that part of their functionality uses libraries, modules, or other intellectual property developed by third parties who are not the product creator. For example, even an entire operating system might be from a third-party supplier in some hardware products. Whether open or closed source, these components may contain publicly known vulnerabilities that could be exploited by adversaries to compromise the product.\n",
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Class": "Not Language-Specific",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Operating_System",
+          "Class": "Not OS-Specific",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Architecture",
+          "Class": "Not Architecture-Specific",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Technology",
+          "Class": "Not Technology-Specific",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Architecture and Design",
+          "Note": "The product architect or designer might choose a component that is already known to contain vulnerabilities or has a high likelihood of containing vulnerabilities in the future."
+        },
+        {
+          "Phase": "Implementation",
+          "Note": "For reasons of compatibility or stability, developers might choose a third-party component, such as a library, that is already known to contain vulnerabilities."
+        },
+        {
+          "Phase": "Patching and Maintenance",
+          "Note": "Since all products contain vulnerabilities, over time, a third-party component will be discovered to have a vulnerability."
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Confidentiality",
+            "Integrity",
+            "Availability"
+          ],
+          "Impact": [
+            "Varies by Context"
+          ],
+          "Note": "The consequences vary widely, depending on the vulnerabilities that exist in the component; how those vulnerabilities can be \"reached\" by adversaries, as the exploitation paths and attack surface will vary depending on how the component is used; and the criticality of the privilege levels and features for which the product relies on the component."
+        }
+      ],
+      "DemonstrativeExamples": [
+        {
+          "ID": "DX-169",
+          "Entries": [
+            {
+              "IntroText": "The \"SweynTooth\" vulnerabilities in Bluetooth Low Energy (BLE) software development kits (SDK) were found to affect multiple Bluetooth System-on-Chip (SoC) manufacturers. These SoCs were used by many products such as medical devices, Smart Home devices, wearables, and other IoT devices. [REF-1314] [REF-1315]"
+            }
+          ]
+        },
+        {
+          "Entries": [
+            {
+              "IntroText": "log4j, a Java-based logging framework, is used in a large number of products, with estimates in the range of 3 billion affected devices [REF-1317]. When the \"log4shell\" (CVE-2021-44228) vulnerability was initially announced, it was actively exploited for remote code execution, requiring urgent mitigation in many organizations. However, it was unclear how many products were affected, as Log4j would sometimes be part of a long sequence of transitive dependencies. [REF-1316]"
+            }
+          ]
+        }
+      ],
+      "PotentialMitigations": [
+        {
+          "Phase": [
+            "Requirements",
+            "Policy"
+          ],
+          "Description": "In some industries such as healthcare [REF-1320] [REF-1322] or technologies such as the cloud [REF-1321], it might be unclear about who is responsible for applying patches for third-party vulnerabilities: the vendor, the operator/customer, or a separate service. Clarifying roles and responsibilities can be important to minimize confusion or unnecessary delay when third-party vulnerabilities are disclosed."
+        },
+        {
+          "Phase": [
+            "Requirements"
+          ],
+          "Description": "Require a Bill of Materials for all components and sub-components of the product. For software, require a Software Bill of Materials (SBOM) [REF-1247] [REF-1311]."
+        },
+        {
+          "Phase": [
+            "Architecture and Design",
+            "Implementation",
+            "Integration",
+            "Manufacturing"
+          ],
+          "Description": "Maintain a Bill of Materials for all components and sub-components of the product. For software, maintain a Software Bill of Materials (SBOM). According to [REF-1247], \"An SBOM is a formal, machine-readable inventory of software components and dependencies, information about those components, and their hierarchical relationships.\""
+        },
+        {
+          "Phase": [
+            "Operation",
+            "Patching and Maintenance"
+          ],
+          "Description": "Actively monitor when a third-party component vendor announces vulnerability patches; fix the third-party component as soon as possible; and make it easy for operators/customers to obtain and apply the patch."
+        },
+        {
+          "Phase": [
+            "Operation",
+            "Patching and Maintenance"
+          ],
+          "Description": "Continuously monitor changes in each of the product's components, especially when the changes indicate new vulnerabilities, end-of-life (EOL) plans, etc."
+        }
+      ]
+    },
+    "/cwe/1395/parents": {
+      "weakness_parents": [
+        "657"
+      ],
+      "category_parents": [
+        "1418"
+      ]
+    },
+    "/cwe/1395/children": null
+  }
+}

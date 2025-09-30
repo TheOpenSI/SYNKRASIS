@@ -1,0 +1,288 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T23:00:42.917513",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "252",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/252": {
+      "ID": "252",
+      "Type": "base_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/252": {
+      "ID": "252",
+      "Name": "Unchecked Return Value",
+      "Abstraction": "Base",
+      "Structure": "Simple",
+      "Status": "Draft",
+      "Description": "The product does not check the return value from a method or function, which can prevent it from detecting unexpected states and conditions.",
+      "ExtendedDescription": "Two common programmer assumptions are \"this function call can never fail\" and \"it doesn't matter if this function call fails\". If an attacker can force the function to fail or otherwise return a value that is not expected, then the subsequent program logic could lead to a vulnerability, because the product is not in a state that the programmer assumes. For example, if the program calls a function to drop privileges but does not check the return code to ensure that privileges were successfully dropped, then the program will continue to operate with the higher privileges.",
+      "LikelihoodOfExploit": "Low",
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Class": "Not Language-Specific",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Implementation"
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Availability",
+            "Integrity"
+          ],
+          "Impact": [
+            "Unexpected State",
+            "DoS: Crash, Exit, or Restart"
+          ],
+          "Note": "An unexpected return value could place the system in a state that could lead to a crash or other unintended behaviors."
+        }
+      ],
+      "DemonstrativeExamples": [
+        {
+          "ID": "DX-7",
+          "Entries": [
+            {
+              "IntroText": "Consider the following code segment:"
+            },
+            {
+              "Nature": "Bad",
+              "Language": "C",
+              "ExampleCode": "```\n\tchar buf[10], cp_buf[10];\n\tfgets(buf, 10, stdin);\n\tstrcpy(cp_buf, buf);\n```"
+            },
+            {
+              "BodyText": "The programmer expects that when fgets() returns, buf will contain a null-terminated string of length 9 or less. But if an I/O error occurs, fgets() will not null-terminate buf. Furthermore, if the end of the file is reached before any characters are read, fgets() returns without writing anything to buf. In both of these situations, fgets() signals that something unusual has happened by returning NULL, but in this code, the warning will not be noticed. The lack of a null terminator in buf can result in a buffer overflow in the subsequent call to strcpy()."
+            }
+          ]
+        },
+        {
+          "ID": "DX-114",
+          "Entries": [
+            {
+              "IntroText": "In the following example, it is possible to request that memcpy move a much larger segment of memory than assumed:"
+            },
+            {
+              "Nature": "Bad",
+              "Language": "C",
+              "ExampleCode": "```\n\tint returnChunkSize(void *) {\n```\n/* if chunk info is valid, return the size of usable memory,* \n\t\t\t\n\t\t\t\n\t\t\t ** else, return -1 to indicate an error* \n\t\t\t\n\t\t\t\n\t\t\t **/* \n\t\t\t...}\n\tint main() {\n\t```\n\t\t...\n\t\tmemcpy(destBuf, srcBuf, (returnChunkSize(destBuf)-1));\n\t\t...\n\t}\n```"
+            },
+            {
+              "BodyText": "If returnChunkSize() happens to encounter an error it will return -1. Notice that the return value is not checked before the memcpy operation (CWE-252), so -1 can be passed as the size argument to memcpy() (CWE-805). Because memcpy() assumes that the value is unsigned, it will be interpreted as MAXINT-1 (CWE-195), and therefore will copy far more memory than is likely available to the destination buffer (CWE-787, CWE-788)."
+            }
+          ]
+        },
+        {
+          "ID": "DX-8",
+          "Entries": [
+            {
+              "IntroText": "The following code does not check to see if memory allocation succeeded before attempting to use the pointer returned by malloc()."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "C",
+              "ExampleCode": "```\n\tbuf = (char*) malloc(req_size);\n\tstrncpy(buf, xfer, req_size);\n```"
+            },
+            {
+              "BodyText": "The traditional defense of this coding error is: \"If my program runs out of memory, it will fail. It doesn't matter whether I handle the error or allow the program to die with a segmentation fault when it tries to dereference the null pointer.\" This argument ignores three important considerations:"
+            },
+            {
+              "BodyText": "- Depending upon the type and size of the application, it may be possible to free memory that is being used elsewhere so that execution can continue.\n\n  - It is impossible for the program to perform a graceful exit if required. If the program is performing an atomic operation, it can leave the system in an inconsistent state.\n\n  - The programmer has lost the opportunity to record diagnostic information. Did the call to malloc() fail because req_size was too large or because there were too many requests being handled at the same time? Or was it caused by a memory leak that has built up over time? Without handling the error, there is no way to know."
+            }
+          ]
+        },
+        {
+          "ID": "DX-9",
+          "Entries": [
+            {
+              "IntroText": "The following examples read a file into a byte array."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "C#",
+              "ExampleCode": "```\n\tchar[] byteArray = new char[1024];\n\tfor (IEnumerator i=users.GetEnumerator(); i.MoveNext() ;i.Current()) {\n\t\tString userName = (String) i.Current();\n\t\tString pFileName = PFILE_ROOT + \"/\" + userName;\n\t\tStreamReader sr = new StreamReader(pFileName);\n\t\tsr.Read(byteArray,0,1024);//the file is always 1k bytes\n\t\tsr.Close();\n\t\tprocessPFile(userName, byteArray);\n\t}\n```"
+            },
+            {
+              "Nature": "Bad",
+              "Language": "Java",
+              "ExampleCode": "```\n\tFileInputStream fis;\n\tbyte[] byteArray = new byte[1024];\n\tfor (Iterator i=users.iterator(); i.hasNext();) {\n\t\t\tString userName = (String) i.next();\n\t\t\tString pFileName = PFILE_ROOT + \"/\" + userName;\n\t\t\tFileInputStream fis = new FileInputStream(pFileName);\n\t\t\tfis.read(byteArray); // the file is always 1k bytes\n\t\t\tfis.close();\n\t\t\tprocessPFile(userName, byteArray);\n```"
+            },
+            {
+              "BodyText": "The code loops through a set of users, reading a private data file for each user. The programmer assumes that the files are always 1 kilobyte in size and therefore ignores the return value from Read(). If an attacker can create a smaller file, the program will recycle the remainder of the data from the previous user and treat it as though it belongs to the attacker."
+            }
+          ]
+        },
+        {
+          "ID": "DX-10",
+          "Entries": [
+            {
+              "IntroText": "The following code does not check to see if the string returned by getParameter() is null before calling the member function compareTo(), potentially causing a NULL dereference."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "Java",
+              "ExampleCode": "```\n\tString itemName = request.getParameter(ITEM_NAME);\n\tif (itemName.compareTo(IMPORTANT_ITEM) == 0) {\n\t\t...\n\t}\n\t...\n```"
+            },
+            {
+              "BodyText": "The following code does not check to see if the string returned by the Item property is null before calling the member function Equals(), potentially causing a NULL dereference."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "Java",
+              "ExampleCode": "```\n\tString itemName = request.Item(ITEM_NAME);\n\tif (itemName.Equals(IMPORTANT_ITEM)) {\n\t\t...\n\t}\n\t...\n```"
+            },
+            {
+              "BodyText": "The traditional defense of this coding error is: \"I know the requested value will always exist because.... If it does not exist, the program cannot perform the desired behavior so it doesn't matter whether I handle the error or allow the program to die dereferencing a null value.\" But attackers are skilled at finding unexpected paths through programs, particularly when exceptions are involved."
+            }
+          ]
+        },
+        {
+          "ID": "DX-11",
+          "Entries": [
+            {
+              "IntroText": "The following code shows a system property that is set to null and later dereferenced by a programmer who mistakenly assumes it will always be defined."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "Java",
+              "ExampleCode": "```\n\tSystem.clearProperty(\"os.name\");\n\t...\n\tString os = System.getProperty(\"os.name\");\n\tif (os.equalsIgnoreCase(\"Windows 95\")) System.out.println(\"Not supported\");\n```"
+            },
+            {
+              "BodyText": "The traditional defense of this coding error is: \"I know the requested value will always exist because.... If it does not exist, the program cannot perform the desired behavior so it doesn't matter whether I handle the error or allow the program to die dereferencing a null value.\" But attackers are skilled at finding unexpected paths through programs, particularly when exceptions are involved."
+            }
+          ]
+        },
+        {
+          "ID": "DX-12",
+          "Entries": [
+            {
+              "IntroText": "The following VB.NET code does not check to make sure that it has read 50 bytes from myfile.txt. This can cause DoDangerousOperation() to operate on an unexpected value."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "C#",
+              "ExampleCode": "```\n\tDim MyFile As New FileStream(\"myfile.txt\", FileMode.Open, FileAccess.Read, FileShare.Read)\n\tDim MyArray(50) As Byte\n\tMyFile.Read(MyArray, 0, 50)\n\tDoDangerousOperation(MyArray(20))\n```"
+            },
+            {
+              "BodyText": "In .NET, it is not uncommon for programmers to misunderstand Read() and related methods that are part of many System.IO classes. The stream and reader classes do not consider it to be unusual or exceptional if only a small amount of data becomes available. These classes simply add the small amount of data to the return buffer, and set the return value to the number of bytes or characters read. There is no guarantee that the amount of data returned is equal to the amount of data requested."
+            }
+          ]
+        },
+        {
+          "Entries": [
+            {
+              "IntroText": "It is not uncommon for Java programmers to misunderstand read() and related methods that are part of many java.io classes. Most errors and unusual events in Java result in an exception being thrown. But the stream and reader classes do not consider it unusual or exceptional if only a small amount of data becomes available. These classes simply add the small amount of data to the return buffer, and set the return value to the number of bytes or characters read. There is no guarantee that the amount of data returned is equal to the amount of data requested. This behavior makes it important for programmers to examine the return value from read() and other IO methods to ensure that they receive the amount of data they expect."
+            }
+          ]
+        },
+        {
+          "ID": "DX-1",
+          "Entries": [
+            {
+              "IntroText": "This example takes an IP address from a user, verifies that it is well formed and then looks up the hostname and copies it into a buffer."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "C",
+              "ExampleCode": "```\n\tvoid host_lookup(char *user_supplied_addr){\n\t\t\tstruct hostent *hp;\n\t\t\tin_addr_t *addr;\n\t\t\tchar hostname[64];\n\t\t\tin_addr_t inet_addr(const char *cp);\n```\n/*routine that ensures user_supplied_addr is in the right format for conversion */* \n\t\t\t\n\t\t\tvalidate_addr_form(user_supplied_addr);\n\t\t\taddr = inet_addr(user_supplied_addr);\n\t\t\thp = gethostbyaddr( addr, sizeof(struct in_addr), AF_INET);\n\t\t\tstrcpy(hostname, hp->h_name);}"
+            },
+            {
+              "BodyText": "If an attacker provides an address that appears to be well-formed, but the address does not resolve to a hostname, then the call to gethostbyaddr() will return NULL. Since the code does not check the return value from gethostbyaddr (CWE-252), a NULL pointer dereference (CWE-476) would then occur in the call to strcpy()."
+            },
+            {
+              "BodyText": "Note that this code is also vulnerable to a buffer overflow (CWE-119)."
+            }
+          ]
+        },
+        {
+          "ID": "DX-24",
+          "Entries": [
+            {
+              "IntroText": "The following function attempts to acquire a lock in order to perform operations on a shared resource."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "C",
+              "ExampleCode": "```\n\tvoid f(pthread_mutex_t *mutex) {\n\t\t\tpthread_mutex_lock(mutex);\n```\n/* access shared resource */* \n\t\t\t\n\t\t\t\n\t\t\tpthread_mutex_unlock(mutex);}"
+            },
+            {
+              "BodyText": "However, the code does not check the value returned by pthread_mutex_lock() for errors. If pthread_mutex_lock() cannot acquire the mutex for any reason, the function may introduce a race condition into the program and result in undefined behavior."
+            },
+            {
+              "BodyText": "In order to avoid data races, correctly written programs must check the result of thread synchronization functions and appropriately handle all errors, either by attempting to recover from them or reporting them to higher levels."
+            },
+            {
+              "Nature": "Good",
+              "Language": "C",
+              "ExampleCode": "```\n\tint f(pthread_mutex_t *mutex) {\n\t\t\tint result;\n\t\t\tresult = pthread_mutex_lock(mutex);\n\t\t\tif (0 != result)\n\t\t\t\treturn result;\n```\n/* access shared resource */* \n\t\t\t\n\t\t\t\n\t\t\treturn pthread_mutex_unlock(mutex);}"
+            }
+          ]
+        }
+      ],
+      "PotentialMitigations": [
+        {
+          "MitigationID": "MIT-53",
+          "Phase": [
+            "Implementation"
+          ],
+          "Description": "Check the results of all functions that return a value and verify that the value is expected.",
+          "Effectiveness": "High",
+          "EffectivenessNotes": "Checking the return value of the function will typically be sufficient, however beware of race conditions (CWE-362) in a concurrent environment."
+        },
+        {
+          "MitigationID": "MIT-56",
+          "Phase": [
+            "Implementation"
+          ],
+          "Description": "For any pointers that could have been modified or provided from a function that can return NULL, check the pointer for NULL before use. When working with a multithreaded or otherwise asynchronous environment, ensure that proper locking APIs are used to lock before the check, and unlock when it has finished [REF-1484]."
+        },
+        {
+          "Phase": [
+            "Implementation"
+          ],
+          "Description": "Ensure that you account for all possible return values from the function."
+        },
+        {
+          "Phase": [
+            "Implementation"
+          ],
+          "Description": "When designing a function, make sure you return a value or throw an exception in case of an error."
+        }
+      ]
+    },
+    "/cwe/252/parents": {
+      "weakness_parents": [
+        "754"
+      ],
+      "category_parents": [
+        "1129",
+        "1131",
+        "1136",
+        "1167",
+        "1171",
+        "1181",
+        "1306",
+        "1308",
+        "1405",
+        "389",
+        "227",
+        "728",
+        "742",
+        "847",
+        "876",
+        "962"
+      ]
+    },
+    "/cwe/252/children": {
+      "weakness_children": [],
+      "category_children": []
+    }
+  }
+}

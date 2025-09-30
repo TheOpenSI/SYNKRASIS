@@ -1,0 +1,137 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T22:26:54.008820",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "1236",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/1236": {
+      "ID": "1236",
+      "Type": "base_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/1236": {
+      "ID": "1236",
+      "Name": "Improper Neutralization of Formula Elements in a CSV File",
+      "Abstraction": "Base",
+      "Structure": "Simple",
+      "Status": "Incomplete",
+      "Description": "The product saves user-provided information into a Comma-Separated Value (CSV) file, but it does not neutralize or incorrectly neutralizes special elements that could be interpreted as a command when the file is opened by a spreadsheet product.",
+      "ExtendedDescription": "User-provided data is often saved to traditional databases. This data can be exported to a CSV file, which allows users to read the data using spreadsheet software such as Excel, Numbers, or Calc. This software interprets entries beginning with '=' as formulas, which are then executed by the spreadsheet software. The software's formula language often allows methods to access hyperlinks or the local command line, and frequently allows enough characters to invoke an entire script. Attackers can populate data fields which, when saved to a CSV file, may attempt information exfiltration or other malicious activity when automatically executed by the spreadsheet software.",
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Class": "Not Language-Specific",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Operating_System",
+          "Class": "Not OS-Specific",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Architecture",
+          "Class": "Not Architecture-Specific",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Technology",
+          "Name": "Other",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": [
+        {
+          "Term": "CSV Injection"
+        },
+        {
+          "Term": "Formula Injection"
+        },
+        {
+          "Term": "Excel Macro Injection"
+        }
+      ],
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Implementation",
+          "Note": "The weakness is in the implementation of a software's CSV export feature, in particular how it formats formula entries as the output gets flattened into a text file."
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Confidentiality"
+          ],
+          "Impact": [
+            "Read Application Data",
+            "Execute Unauthorized Code or Commands"
+          ],
+          "Likelihood": [
+            "Low"
+          ],
+          "Note": "Current versions of Excel warn users of untrusted content."
+        }
+      ],
+      "DemonstrativeExamples": [
+        {
+          "Entries": [
+            {
+              "IntroText": "Hyperlinks or other commands can be executed when a cell begins with the formula identifier, '='"
+            },
+            {
+              "Nature": "Attack",
+              "Language": "Other",
+              "ExampleCode": "=HYPERLINK(link_location, [friendly_name])"
+            },
+            {
+              "BodyText": "Stripping the leading equals sign, or simply not executing formulas from untrusted sources, impedes malicious activity."
+            },
+            {
+              "Nature": "Good",
+              "Language": "Other",
+              "ExampleCode": "HYPERLINK(link_location, [friendly_name])"
+            }
+          ]
+        }
+      ],
+      "PotentialMitigations": [
+        {
+          "Phase": [
+            "Implementation"
+          ],
+          "Description": "When generating CSV output, ensure that formula-sensitive metacharacters are effectively escaped or removed from all data before storage in the resultant CSV. Risky characters include '=' (equal), '+' (plus), '-' (minus), and '@' (at).",
+          "Effectiveness": "Moderate",
+          "EffectivenessNotes": "Unfortunately, there is no perfect solution, since different spreadsheet products act differently."
+        },
+        {
+          "Phase": [
+            "Implementation"
+          ],
+          "Description": "If a field starts with a formula character, prepend it with a ' (single apostrophe), which prevents Excel from executing the formula.",
+          "Effectiveness": "Moderate",
+          "EffectivenessNotes": "It is not clear how effective this mitigation is with other spreadsheet software."
+        },
+        {
+          "Phase": [
+            "Architecture and Design"
+          ],
+          "Description": "Certain implementations of spreadsheet software might disallow formulas from executing if the file is untrusted, or if the file is not authored by the current user.",
+          "Effectiveness": "Limited",
+          "EffectivenessNotes": "This mitigation has limited effectiveness because it often depends on end users opening spreadsheet software safely."
+        }
+      ]
+    },
+    "/cwe/1236/parents": {
+      "weakness_parents": [
+        "74"
+      ],
+      "category_parents": [
+        "1409",
+        "137"
+      ]
+    },
+    "/cwe/1236/children": null
+  }
+}

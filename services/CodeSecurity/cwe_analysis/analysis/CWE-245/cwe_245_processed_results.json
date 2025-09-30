@@ -1,0 +1,80 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T22:59:50.386469",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "245",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/245": {
+      "ID": "245",
+      "Type": "variant_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/245": {
+      "ID": "245",
+      "Name": "J2EE Bad Practices: Direct Management of Connections",
+      "Abstraction": "Variant",
+      "Structure": "Simple",
+      "Status": "Draft",
+      "Description": "The J2EE application directly manages connections, instead of using the container's connection management facilities.",
+      "ExtendedDescription": "The J2EE standard forbids the direct management of connections. It requires that applications use the container's resource management facilities to obtain connections to resources. Every major web application container provides pooled database connection management as part of its resource management framework. Duplicating this functionality in an application is difficult and error prone, which is part of the reason it is forbidden under the J2EE standard.",
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Name": "Java",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Implementation"
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Other"
+          ],
+          "Impact": [
+            "Quality Degradation"
+          ]
+        }
+      ],
+      "DemonstrativeExamples": [
+        {
+          "Entries": [
+            {
+              "IntroText": "In the following example, the class DatabaseConnection opens and manages a connection to a database for a J2EE application. The method openDatabaseConnection opens a connection to the database using a DriverManager to create the Connection object conn to the database specified in the string constant CONNECT_STRING."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "Java",
+              "ExampleCode": "```\n\tpublic class DatabaseConnection {\n\t\t\tprivate static final String CONNECT_STRING = \"jdbc:mysql://localhost:3306/mysqldb\";\n\t\t\tprivate Connection conn = null;\n\t\t\tpublic DatabaseConnection() {\n\t\t\t}\n\t\t\tpublic void openDatabaseConnection() {\n\t\t\t\ttry {\n\t\t\t\t\tconn = DriverManager.getConnection(CONNECT_STRING);\n\t\t\t\t} catch (SQLException ex) {...}\n\t\t\t}\n\t\t\t// Member functions for retrieving database connection and accessing database\n\t\t\t...\n\t}\n```"
+            },
+            {
+              "BodyText": "The use of the DriverManager class to directly manage the connection to the database violates the J2EE restriction against the direct management of connections. The J2EE application should use the web application container's resource management facilities to obtain a connection to the database as shown in the following example."
+            },
+            {
+              "Nature": "Good",
+              "Language": "Java",
+              "ExampleCode": "```\n\tpublic class DatabaseConnection {\n\t\t\tprivate static final String DB_DATASRC_REF = \"jdbc:mysql://localhost:3306/mysqldb\";\n\t\t\tprivate Connection conn = null;\n\t\t\tpublic DatabaseConnection() {\n\t\t\t}\n\t\t\tpublic void openDatabaseConnection() {\n\t\t\t\t\ttry {\n\t\t\t\t\t\t\tInitialContext ctx = new InitialContext();\n\t\t\t\t\t\t\tDataSource datasource = (DataSource) ctx.lookup(DB_DATASRC_REF);\n\t\t\t\t\t\t\tconn = datasource.getConnection();\n\t\t\t\t\t} catch (NamingException ex) {...}\n\t\t\t\t\t} catch (SQLException ex) {...}\n\t\t\t}\n\t\t\t// Member functions for retrieving database connection and accessing database\n\t\t\t...\n\t}\n```"
+            }
+          ]
+        }
+      ],
+      "PotentialMitigations": null
+    },
+    "/cwe/245/parents": {
+      "weakness_parents": [],
+      "category_parents": [
+        "1412",
+        "227",
+        "1001"
+      ]
+    },
+    "/cwe/245/children": null
+  }
+}

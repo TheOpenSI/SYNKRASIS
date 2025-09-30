@@ -1,0 +1,133 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T22:28:09.544682",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "1247",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/1247": {
+      "ID": "1247",
+      "Type": "base_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/1247": {
+      "ID": "1247",
+      "Name": "Improper Protection Against Voltage and Clock Glitches",
+      "Abstraction": "Base",
+      "Structure": "Simple",
+      "Status": "Stable",
+      "Description": "The device does not contain or contains incorrectly implemented circuitry or sensors to detect and mitigate voltage and clock glitches and protect sensitive information or software contained on the device.",
+      "ExtendedDescription": "\n\nA device might support features such as secure boot which are supplemented with hardware and firmware support. This involves establishing a chain of trust, starting with an immutable root of trust by checking the signature of the next stage (culminating with the OS and runtime software) against a golden value before transferring control. The intermediate stages typically set up the system in a secure state by configuring several access control settings. Similarly, security logic for exercising a debug or testing interface may be implemented in hardware, firmware, or both. A device needs to guard against fault attacks such as voltage glitches and clock glitches that an attacker may employ in an attempt to compromise the system.\n",
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Class": "Not Language-Specific",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Operating_System",
+          "Class": "Not OS-Specific",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Architecture",
+          "Class": "Not Architecture-Specific",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Technology",
+          "Class": "ICS/OT",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Technology",
+          "Class": "System on Chip",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Technology",
+          "Name": "Power Management Hardware",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Technology",
+          "Name": "Clock/Counter Hardware",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Technology",
+          "Name": "Sensor Hardware",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Operation"
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Confidentiality",
+            "Integrity",
+            "Availability",
+            "Access Control"
+          ],
+          "Impact": [
+            "Gain Privileges or Assume Identity",
+            "Bypass Protection Mechanism",
+            "Read Memory",
+            "Modify Memory",
+            "Execute Unauthorized Code or Commands"
+          ]
+        }
+      ],
+      "DemonstrativeExamples": [
+        {
+          "Entries": [
+            {
+              "IntroText": "Below is a representative snippet of C code that is part of the secure-boot flow. A signature of the runtime-firmware image is calculated and compared against a golden value. If the signatures match, the bootloader loads runtime firmware. If there is no match, an error halt occurs. If the underlying hardware executing this code does not contain any circuitry or sensors to detect voltage or clock glitches, an attacker might launch a fault-injection attack right when the signature check is happening (at the location marked with the comment), causing a bypass of the signature-checking process."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "C",
+              "ExampleCode": "...\n if (signature_matches) // <-Glitch Here\n {\n\n```\n\t load_runtime_firmware();\n }\n else\n {\n\t do_not_load_runtime_firmware();\n }\n ...\n```"
+            },
+            {
+              "BodyText": "After bypassing secure boot, an attacker can gain access to system assets to which the attacker should not have access."
+            },
+            {
+              "Nature": "Good",
+              "ExampleCode": "```\n\tIf the underlying hardware detects a voltage or clock glitch, the information can be used to prevent the glitch from being successful.\n```"
+            }
+          ]
+        }
+      ],
+      "PotentialMitigations": [
+        {
+          "Phase": [
+            "Architecture and Design",
+            "Implementation"
+          ],
+          "Description": "\n\nAt the circuit-level, using Tunable Replica Circuits (TRCs) or special flip-flops such as Razor flip-flops helps mitigate glitch attacks. Working at the SoC or platform base, level sensors may be implemented to detect glitches. Implementing redundancy in security-sensitive code (e.g., where checks are performed)also can help with mitigation of glitch attacks.\n"
+        }
+      ]
+    },
+    "/cwe/1247/parents": {
+      "weakness_parents": [
+        "1384"
+      ],
+      "category_parents": [
+        "1206",
+        "1388",
+        "1365",
+        "1367",
+        "1405"
+      ]
+    },
+    "/cwe/1247/children": null
+  }
+}

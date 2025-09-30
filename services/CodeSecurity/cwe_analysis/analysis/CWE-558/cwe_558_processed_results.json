@@ -1,0 +1,95 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T23:41:01.134550",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "558",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/558": {
+      "ID": "558",
+      "Type": "variant_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/558": {
+      "ID": "558",
+      "Name": "Use of getlogin() in Multithreaded Application",
+      "Abstraction": "Variant",
+      "Structure": "Simple",
+      "Status": "Draft",
+      "Description": "The product uses the getlogin() function in a multithreaded context, potentially causing it to return incorrect values.",
+      "ExtendedDescription": "The getlogin() function returns a pointer to a string that contains the name of the user associated with the calling process. The function is not reentrant, meaning that if it is called from another process, the contents are not locked out and the value of the string can be changed by another process. This makes it very risky to use because the username can be changed by other processes, so the results of the function cannot be trusted.",
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Name": "C",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Language",
+          "Name": "C++",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Implementation"
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Integrity",
+            "Access Control",
+            "Other"
+          ],
+          "Impact": [
+            "Modify Application Data",
+            "Bypass Protection Mechanism",
+            "Other"
+          ]
+        }
+      ],
+      "DemonstrativeExamples": [
+        {
+          "ID": "DX-172",
+          "Entries": [
+            {
+              "IntroText": "The following code relies on getlogin() to determine whether or not a user is trusted. It is easily subverted."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "C",
+              "ExampleCode": "```\n\tpwd = getpwnam(getlogin());\n\tif (isTrustedGroup(pwd->pw_gid)) {\n\t\tallow();\n\t} else {\n\t\tdeny();\n\t}\n```"
+            }
+          ]
+        }
+      ],
+      "PotentialMitigations": [
+        {
+          "Phase": [
+            "Architecture and Design"
+          ],
+          "Description": "Using names for security purposes is not advised. Names are easy to forge and can have overlapping user IDs, potentially causing confusion or impersonation."
+        },
+        {
+          "Phase": [
+            "Implementation"
+          ],
+          "Description": "Use getlogin_r() instead, which is reentrant, meaning that other processes are locked out from changing the username."
+        }
+      ]
+    },
+    "/cwe/558/parents": {
+      "weakness_parents": [],
+      "category_parents": [
+        "1401",
+        "227",
+        "1001"
+      ]
+    },
+    "/cwe/558/children": null
+  }
+}

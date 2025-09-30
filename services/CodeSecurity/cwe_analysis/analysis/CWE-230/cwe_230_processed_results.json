@@ -1,0 +1,76 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T22:57:51.272779",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "230",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/230": {
+      "ID": "230",
+      "Type": "variant_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/230": {
+      "ID": "230",
+      "Name": "Improper Handling of Missing Values",
+      "Abstraction": "Variant",
+      "Structure": "Simple",
+      "Status": "Draft",
+      "Description": "The product does not handle or incorrectly handles when a parameter, field, or argument name is specified, but the associated value is missing, i.e. it is empty, blank, or null.",
+      "ExtendedDescription": null,
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Class": "Not Language-Specific",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Implementation"
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Integrity"
+          ],
+          "Impact": [
+            "Unexpected State"
+          ]
+        }
+      ],
+      "DemonstrativeExamples": [
+        {
+          "ID": "DX-110",
+          "Entries": [
+            {
+              "IntroText": "This Android application has registered to handle a URL when sent an intent:"
+            },
+            {
+              "Nature": "Bad",
+              "Language": "Java",
+              "ExampleCode": "```\n```\n...* \n\tIntentFilter filter = new IntentFilter(\"com.example.URLHandler.openURL\");\n\tMyReceiver receiver = new MyReceiver();\n\tregisterReceiver(receiver, filter);\n\t\n\t *...* \n\t\n\tpublic class UrlHandlerReceiver extends BroadcastReceiver {\n\t```\n\t\t\t@Override\n\t\t\tpublic void onReceive(Context context, Intent intent) {\n\t\t\t\t\tif(\"com.example.URLHandler.openURL\".equals(intent.getAction())) {\n\t\t\t\t\t\tString URL = intent.getStringExtra(\"URLToOpen\");\n\t\t\t\t\t\tint length = URL.length();\n```\n...* \n\t\t\t\t\t}}}"
+            },
+            {
+              "BodyText": "The application assumes the URL will always be included in the intent. When the URL is not present, the call to getStringExtra() will return null, thus causing a null pointer exception when length() is called."
+            }
+          ]
+        }
+      ],
+      "PotentialMitigations": null
+    },
+    "/cwe/230/parents": {
+      "weakness_parents": [],
+      "category_parents": [
+        "1407",
+        "851",
+        "993"
+      ]
+    },
+    "/cwe/230/children": null
+  }
+}

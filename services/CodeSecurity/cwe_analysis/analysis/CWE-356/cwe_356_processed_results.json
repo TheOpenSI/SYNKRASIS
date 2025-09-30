@@ -1,0 +1,64 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T23:14:31.686779",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "356",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/356": {
+      "ID": "356",
+      "Type": "base_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/356": {
+      "ID": "356",
+      "Name": "Product UI does not Warn User of Unsafe Actions",
+      "Abstraction": "Base",
+      "Structure": "Simple",
+      "Status": "Incomplete",
+      "Description": "The product's user interface does not warn the user before undertaking an unsafe action on behalf of that user. This makes it easier for attackers to trick users into inflicting damage to their system.",
+      "ExtendedDescription": "Product systems should warn users that a potentially dangerous action may occur if the user proceeds. For example, if the user downloads a file from an unknown source and attempts to execute the file on their machine, then the application's GUI can indicate that the file is unsafe.",
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Class": "Not Language-Specific",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Architecture and Design"
+        },
+        {
+          "Phase": "Implementation"
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Non-Repudiation"
+          ],
+          "Impact": [
+            "Hide Activities"
+          ]
+        }
+      ],
+      "DemonstrativeExamples": null,
+      "PotentialMitigations": null
+    },
+    "/cwe/356/parents": {
+      "weakness_parents": [
+        "221"
+      ],
+      "category_parents": [
+        "1413",
+        "355",
+        "996"
+      ]
+    },
+    "/cwe/356/children": null
+  }
+}

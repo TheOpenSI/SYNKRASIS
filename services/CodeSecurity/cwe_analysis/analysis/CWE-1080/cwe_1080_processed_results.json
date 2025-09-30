@@ -1,0 +1,52 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T22:14:45.514382",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "1080",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/1080": {
+      "ID": "1080",
+      "Type": "base_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/1080": {
+      "ID": "1080",
+      "Name": "Source Code File with Excessive Number of Lines of Code",
+      "Abstraction": "Base",
+      "Structure": "Simple",
+      "Status": "Incomplete",
+      "Description": "A source code file has too many lines of\n\t\t\t\t\tcode.",
+      "ExtendedDescription": "\n\nThis issue makes it more difficult to understand and/or maintain the product, which indirectly affects security by making it more difficult or time-consuming to find and/or fix vulnerabilities. It also might make it easier to introduce vulnerabilities.\n\n\nWhile the interpretation of \"too many lines of code\" may vary for each product or developer, CISQ recommends a default threshold value of 1000.\n",
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": null,
+      "AlternateTerms": null,
+      "ModesOfIntroduction": null,
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Other"
+          ],
+          "Impact": [
+            "Reduce Maintainability"
+          ]
+        }
+      ],
+      "DemonstrativeExamples": null,
+      "PotentialMitigations": null
+    },
+    "/cwe/1080/parents": {
+      "weakness_parents": [
+        "1120"
+      ],
+      "category_parents": [
+        "1130",
+        "1307",
+        "1412",
+        "1226"
+      ]
+    },
+    "/cwe/1080/children": null
+  }
+}

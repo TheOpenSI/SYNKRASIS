@@ -1,0 +1,101 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-30T00:06:15.506806",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "779",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/779": {
+      "ID": "779",
+      "Type": "base_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/779": {
+      "ID": "779",
+      "Name": "Logging of Excessive Data",
+      "Abstraction": "Base",
+      "Structure": "Simple",
+      "Status": "Draft",
+      "Description": "The product logs too much information, making log files hard to process and possibly hindering recovery efforts or forensic analysis after an attack.",
+      "ExtendedDescription": "While logging is a good practice in general, and very high levels of logging are appropriate for debugging stages of development, too much logging in a production environment might hinder a system administrator's ability to detect anomalous conditions. This can provide cover for an attacker while attempting to penetrate a system, clutter the audit trail for forensic analysis, or make it more difficult to debug problems in a production environment.",
+      "LikelihoodOfExploit": "Low",
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Class": "Not Language-Specific",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Operation",
+          "Note": "REALIZATION: This weakness is caused during implementation of an architectural security tactic."
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Availability"
+          ],
+          "Impact": [
+            "DoS: Resource Consumption (CPU)",
+            "DoS: Resource Consumption (Other)"
+          ],
+          "Note": "Log files can become so large that they consume excessive resources, such as disk and CPU, which can hinder the performance of the system."
+        },
+        {
+          "Scope": [
+            "Non-Repudiation"
+          ],
+          "Impact": [
+            "Hide Activities"
+          ],
+          "Note": "Logging too much information can make the log files of less use to forensics analysts and developers when trying to diagnose a problem or recover from an attack."
+        },
+        {
+          "Scope": [
+            "Non-Repudiation"
+          ],
+          "Impact": [
+            "Hide Activities"
+          ],
+          "Note": "If system administrators are unable to effectively process log files, attempted attacks may go undetected, possibly leading to eventual system compromise."
+        }
+      ],
+      "DemonstrativeExamples": null,
+      "PotentialMitigations": [
+        {
+          "Phase": [
+            "Architecture and Design"
+          ],
+          "Description": "Suppress large numbers of duplicate log messages and replace them with periodic summaries. For example, syslog may include an entry that states \"last message repeated X times\" when recording repeated events."
+        },
+        {
+          "Phase": [
+            "Architecture and Design"
+          ],
+          "Description": "Support a maximum size for the log file that can be controlled by the administrator. If the maximum size is reached, the admin should be notified. Also, consider reducing functionality of the product. This may result in a denial-of-service to legitimate product users, but it will prevent the product from adversely impacting the entire system."
+        },
+        {
+          "Phase": [
+            "Implementation"
+          ],
+          "Description": "Adjust configurations appropriately when the product is transitioned from a debug state to production."
+        }
+      ]
+    },
+    "/cwe/779/parents": {
+      "weakness_parents": [
+        "400"
+      ],
+      "category_parents": [
+        "1009",
+        "1416",
+        "1210"
+      ]
+    },
+    "/cwe/779/children": null
+  }
+}

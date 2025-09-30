@@ -1,0 +1,77 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T23:45:06.867482",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "589",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/589": {
+      "ID": "589",
+      "Type": "variant_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/589": {
+      "ID": "589",
+      "Name": "Call to Non-ubiquitous API",
+      "Abstraction": "Variant",
+      "Structure": "Simple",
+      "Status": "Incomplete",
+      "Description": "The product uses an API function that does not exist on all versions of the target platform. This could cause portability problems or inconsistencies that allow denial of service or other consequences.",
+      "ExtendedDescription": "Some functions that offer security features supported by the OS are not available on all versions of the OS in common use. Likewise, functions are often deprecated or made obsolete for security reasons and should not be used.",
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": null,
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Architecture and Design"
+        },
+        {
+          "Phase": "Implementation"
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Other"
+          ],
+          "Impact": [
+            "Quality Degradation"
+          ]
+        }
+      ],
+      "DemonstrativeExamples": null,
+      "PotentialMitigations": [
+        {
+          "Phase": [
+            "Implementation"
+          ],
+          "Description": "Always test your code on any platform on which it is targeted to run on."
+        },
+        {
+          "Phase": [
+            "Testing"
+          ],
+          "Description": "Test your code on the newest and oldest platform on which it is targeted to run on."
+        },
+        {
+          "Phase": [
+            "Testing"
+          ],
+          "Description": "Develop a system to test for API functions that are not portable."
+        }
+      ]
+    },
+    "/cwe/589/parents": {
+      "weakness_parents": [],
+      "category_parents": [
+        "1140",
+        "1412",
+        "850",
+        "858",
+        "1001"
+      ]
+    },
+    "/cwe/589/children": null
+  }
+}

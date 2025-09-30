@@ -1,0 +1,106 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-30T00:05:52.891274",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "776",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/776": {
+      "ID": "776",
+      "Type": "base_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/776": {
+      "ID": "776",
+      "Name": "Improper Restriction of Recursive Entity References in DTDs ('XML Entity Expansion')",
+      "Abstraction": "Base",
+      "Structure": "Simple",
+      "Status": "Draft",
+      "Description": "The product uses XML documents and allows their structure to be defined with a Document Type Definition (DTD), but it does not properly control the number of recursive definitions of entities.",
+      "ExtendedDescription": "If the DTD contains a large number of nested or recursive entities, this can lead to explosive growth of data when parsed, causing a denial of service.",
+      "LikelihoodOfExploit": "Medium",
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Name": "XML",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": [
+        {
+          "Term": "XEE",
+          "Description": "XEE is the acronym commonly used for XML Entity Expansion."
+        },
+        {
+          "Term": "Billion Laughs Attack"
+        },
+        {
+          "Term": "XML Bomb",
+          "Description": "While the \"XML Bomb\" term was used in the early years of knowledge of this issue, the XEE term seems to be more commonly used."
+        }
+      ],
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Implementation"
+        },
+        {
+          "Phase": "Operation"
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Availability"
+          ],
+          "Impact": [
+            "DoS: Resource Consumption (Other)"
+          ],
+          "Note": "If parsed, recursive entity references allow the attacker to expand data exponentially, quickly consuming all system resources."
+        }
+      ],
+      "DemonstrativeExamples": [
+        {
+          "ID": "DX-53",
+          "Entries": [
+            {
+              "IntroText": "The DTD and the very brief XML below illustrate what is meant by an XML bomb. The ZERO entity contains one character, the letter A. The choice of entity name ZERO is being used to indicate length equivalent to that exponent on two, that is, the length of ZERO is 2^0. Similarly, ONE refers to ZERO twice, therefore the XML parser will expand ONE to a length of 2, or 2^1. Ultimately, we reach entity THIRTYTWO, which will expand to 2^32 characters in length, or 4 GB, probably consuming far more data than expected."
+            },
+            {
+              "Nature": "Attack",
+              "Language": "XML",
+              "ExampleCode": "```\n\t<?xml version=\"1.0\"?>\n\t<!DOCTYPE MaliciousDTD [\n\t<!ENTITY ZERO \"A\">\n\t<!ENTITY ONE \"&ZERO;&ZERO;\">\n\t<!ENTITY TWO \"&ONE;&ONE;\">\n\t...\n\t<!ENTITY THIRTYTWO \"&THIRTYONE;&THIRTYONE;\">\n\t]>\n\t<data>&THIRTYTWO;</data>\n```"
+            }
+          ]
+        }
+      ],
+      "PotentialMitigations": [
+        {
+          "Phase": [
+            "Operation"
+          ],
+          "Description": "If possible, prohibit the use of DTDs or use an XML parser that limits the expansion of recursive DTD entities."
+        },
+        {
+          "Phase": [
+            "Implementation"
+          ],
+          "Description": "Before parsing XML files with associated DTDs, scan for recursive entity declarations and do not continue parsing potentially explosive content."
+        }
+      ]
+    },
+    "/cwe/776/parents": {
+      "weakness_parents": [
+        "405",
+        "674"
+      ],
+      "category_parents": [
+        "1030",
+        "1349",
+        "1416",
+        "19"
+      ]
+    },
+    "/cwe/776/children": null
+  }
+}

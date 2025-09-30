@@ -1,0 +1,82 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T23:56:01.740017",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "67",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/67": {
+      "ID": "67",
+      "Type": "variant_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/67": {
+      "ID": "67",
+      "Name": "Improper Handling of Windows Device Names",
+      "Abstraction": "Variant",
+      "Structure": "Simple",
+      "Status": "Incomplete",
+      "Description": "The product constructs pathnames from user input, but it does not handle or incorrectly handles a pathname containing a Windows device name such as AUX or CON. This typically leads to denial of service or an information exposure when the application attempts to process the pathname as a regular file.",
+      "ExtendedDescription": "Not properly handling virtual filenames (e.g. AUX, CON, PRN, COM1, LPT1) can result in different types of vulnerabilities. In some cases an attacker can request a device via injection of a virtual filename in a URL, which may cause an error that leads to a denial of service or an error page that reveals sensitive information. A product that allows device names to bypass filtering runs the risk of an attacker injecting malicious code in a file with the name of a device.",
+      "LikelihoodOfExploit": "High",
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Class": "Not Language-Specific",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Operating_System",
+          "Class": "Windows",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Implementation"
+        },
+        {
+          "Phase": "Operation"
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Availability",
+            "Confidentiality",
+            "Other"
+          ],
+          "Impact": [
+            "DoS: Crash, Exit, or Restart",
+            "Read Application Data",
+            "Other"
+          ]
+        }
+      ],
+      "DemonstrativeExamples": null,
+      "PotentialMitigations": [
+        {
+          "Phase": [
+            "Implementation"
+          ],
+          "Description": "Be familiar with the device names in the operating system where your system is deployed. Check input for these device names."
+        }
+      ]
+    },
+    "/cwe/67/parents": {
+      "weakness_parents": [],
+      "category_parents": [
+        "1147",
+        "1163",
+        "1404",
+        "743",
+        "857",
+        "877",
+        "981"
+      ]
+    },
+    "/cwe/67/children": null
+  }
+}

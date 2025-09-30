@@ -1,0 +1,219 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T23:27:16.462644",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "456",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/456": {
+      "ID": "456",
+      "Type": "variant_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/456": {
+      "ID": "456",
+      "Name": "Missing Initialization of a Variable",
+      "Abstraction": "Variant",
+      "Structure": "Simple",
+      "Status": "Draft",
+      "Description": "The product does not initialize critical variables, which causes the execution environment to use unexpected values.",
+      "ExtendedDescription": null,
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Class": "Not Language-Specific",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Implementation"
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Integrity",
+            "Other"
+          ],
+          "Impact": [
+            "Unexpected State",
+            "Quality Degradation",
+            "Varies by Context"
+          ],
+          "Note": "The uninitialized data may be invalid, causing logic errors within the program. In some cases, this could result in a security problem."
+        }
+      ],
+      "DemonstrativeExamples": [
+        {
+          "Entries": [
+            {
+              "IntroText": "This function attempts to extract a pair of numbers from a user-supplied string."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "C",
+              "ExampleCode": "```\n\tvoid parse_data(char *untrusted_input){\n\t\t\tint m, n, error;\n\t\t\terror = sscanf(untrusted_input, \"%d:%d\", &m, &n);\n\t\t\tif ( EOF == error ){\n\t\t\t\tdie(\"Did not specify integer value. Die evil hacker!\\n\");\n\t\t\t}\n```\n/* proceed assuming n and m are initialized correctly */* \n\t\t\t}"
+            },
+            {
+              "BodyText": "This code attempts to extract two integer values out of a formatted, user-supplied input. However, if an attacker were to provide an input of the form:"
+            },
+            {
+              "Nature": "Attack",
+              "ExampleCode": "```\n\t123:\n```"
+            },
+            {
+              "BodyText": "then only the m variable will be initialized. Subsequent use of n may result in the use of an uninitialized variable (CWE-457)."
+            }
+          ]
+        },
+        {
+          "Entries": [
+            {
+              "IntroText": "Here, an uninitialized field in a Java class is used in a seldom-called method, which would cause a NullPointerException to be thrown."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "Java",
+              "ExampleCode": "```\n\tprivate User user;\n\tpublic void someMethod() {\n```\n// Do something interesting.* \n\t\t\t...\n\t\t\t\n\t\t\t\n\t\t\t *// Throws NPE if user hasn't been properly initialized.* \n\t\t\tString username = user.getName();}"
+            }
+          ]
+        },
+        {
+          "Entries": [
+            {
+              "IntroText": "This code first authenticates a user, then allows a delete command if the user is an administrator."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "PHP",
+              "ExampleCode": "```\n\tif (authenticate($username,$password) && setAdmin($username)){\n\t\t$isAdmin = true;\n\t}\n```\n/.../* \n\t\n\tif ($isAdmin){\n\t```\n\t\tdeleteUser($userToDelete);\n\t}\n```"
+            },
+            {
+              "BodyText": "The $isAdmin variable is set to true if the user is an admin, but is uninitialized otherwise. If PHP's register_globals feature is enabled, an attacker can set uninitialized variables like $isAdmin to arbitrary values, in this case gaining administrator privileges by setting $isAdmin to true."
+            }
+          ]
+        },
+        {
+          "Entries": [
+            {
+              "IntroText": "In the following Java code the BankManager class uses the user variable of the class User to allow authorized users to perform bank manager tasks. The user variable is initialized within the method setUser that retrieves the User from the User database. The user is then authenticated as unauthorized user through the method authenticateUser."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "Java",
+              "ExampleCode": "```\n\tpublic class BankManager {\n```\n// user allowed to perform bank manager tasks* \n\t\t\tprivate User user = null;\n\t\t\tprivate boolean isUserAuthentic = false;\n\t\t\t\n\t\t\t\n\t\t\t *// constructor for BankManager class* \n\t\t\tpublic BankManager() {\n\t\t\t```\n\t\t\t\t...\n\t\t\t}\n```\n// retrieve user from database of users* \n\t\t\tpublic User getUserFromUserDatabase(String username){\n\t\t\t```\n\t\t\t\t...\n\t\t\t}\n```\n// set user variable using username* \n\t\t\tpublic void setUser(String username) {\n\t\t\t```\n\t\t\t\tthis.user = getUserFromUserDatabase(username);\n\t\t\t}\n```\n// authenticate user* \n\t\t\tpublic boolean authenticateUser(String username, String password) {\n\t\t\t```\n\t\t\t\tif (username.equals(user.getUsername()) && password.equals(user.getPassword())) {\n\t\t\t\t\tisUserAuthentic = true;\n\t\t\t\t}\n\t\t\t\treturn isUserAuthentic;\n\t\t\t}\n```\n// methods for performing bank manager tasks* \n\t\t\t...}"
+            },
+            {
+              "BodyText": "However, if the method setUser is not called before authenticateUser then the user variable will not have been initialized and will result in a NullPointerException. The code should verify that the user variable has been initialized before it is used, as in the following code."
+            },
+            {
+              "Nature": "Good",
+              "Language": "Java",
+              "ExampleCode": "```\n\tpublic class BankManager {\n```\n// user allowed to perform bank manager tasks* \n\t\t\tprivate User user = null;\n\t\t\tprivate boolean isUserAuthentic = false;\n\t\t\t\n\t\t\t\n\t\t\t *// constructor for BankManager class* \n\t\t\tpublic BankManager(String username) {\n\t\t\t```\n\t\t\t\tuser = getUserFromUserDatabase(username);\n\t\t\t}\n```\n// retrieve user from database of users* \n\t\t\tpublic User getUserFromUserDatabase(String username) {...}\n\t\t\t\n\t\t\t\n\t\t\t *// authenticate user* \n\t\t\tpublic boolean authenticateUser(String username, String password) {\n\t\t\t```\n\t\t\t\t\tif (user == null) {\n\t\t\t\t\t\tSystem.out.println(\"Cannot find user \" + username);\n\t\t\t\t\t}\n\t\t\t\t\telse {\n\t\t\t\t\t\tif (password.equals(user.getPassword())) {\n\t\t\t\t\t\t\tisUserAuthentic = true;\n\t\t\t\t\t\t}\n\t\t\t\t\t}\n\t\t\t\t\treturn isUserAuthentic;\n\t\t\t}\n```\n// methods for performing bank manager tasks* \n\t\t\t\t\t...\n\t\t\t}"
+            }
+          ]
+        },
+        {
+          "ID": "DX-144",
+          "Entries": [
+            {
+              "IntroText": "This example will leave test_string in an unknown condition when i is the same value as err_val, because test_string is not initialized (CWE-456). Depending on where this code segment appears (e.g. within a function body), test_string might be random if it is stored on the heap or stack. If the variable is declared in static memory, it might be zero or NULL. Compiler optimization might contribute to the unpredictability of this address."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "C",
+              "ExampleCode": "char *test_string;\n if (i != err_val)\n {\n\n```\n\ttest_string = \"Hello World!\";\n }\n printf(\"%s\", test_string);\n```"
+            },
+            {
+              "BodyText": "When the printf() is reached, test_string might be an unexpected address, so the printf might print junk strings (CWE-457).\n\n\n To fix this code, there are a couple approaches to making sure that test_string has been properly set once it reaches the printf().\n\n\nOne solution would be to set test_string to an acceptable default before the conditional:"
+            },
+            {
+              "Nature": "Good",
+              "Language": "C",
+              "ExampleCode": "char *test_string = \"Done at the beginning\";\n if (i != err_val)\n {\n\n```\n\ttest_string = \"Hello World!\";\n }\n printf(\"%s\", test_string);\n```"
+            },
+            {
+              "BodyText": "Another solution is to ensure that each branch of the conditional - including the default/else branch - could ensure that test_string is set:"
+            },
+            {
+              "Nature": "Good",
+              "Language": "C",
+              "ExampleCode": "char *test_string;\n if (i != err_val)\n {\n\n```\n\ttest_string = \"Hello World!\";\n }\n else {\n\ttest_string = \"Done on the other side!\";\n }\n printf(\"%s\", test_string);\n```"
+            }
+          ]
+        },
+        {
+          "Entries": [
+            {
+              "IntroText": "Consider the following merchant server application as implemented in [REF-1475]. It receives card payment information (orderPgData instance in OrderPgData.java) from the payment gateway (such as PayPal). The next step is to complete the payment (finalizeOrder() in Main.java). The merchant server validates the amount (validateAmount() in OrderPgData.java), and if the validation is successful, then the payment is completed."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "Java",
+              "ExampleCode": "File: OrderPgData.java\n\n public class OrderPgData {\n\n```\n\t String PgType;\n\t int productPrice;\n\t int paymentAmount;\n\t private boolean isPaymentAmountTampered;\n\t\t public boolean getIsPaymentAmountTampered() {\n\t\t\t return this.isPaymentAmountTampered;\n\t\t }\n\t ...\n public void validateAmount() {\n\t ... [sets this.setIsPaymentAmountTampered to true or false depending on whether the product price matches the payment amount]\n }\n```"
+            },
+            {
+              "Nature": "Bad",
+              "Language": "Java",
+              "ExampleCode": "File: PgServiceResolver.java\n\n public class PgServiceResolver {\n\n```\n\t public OrderPgData getOrderPgDataByPgType(String pgType, int productPrice, int paymentAmount) {\n\t\t ...\n\t\t switch(pgType) {\n\t\t\t case \"card\":\n\t\t\t\t System.out.println(\"In \"+pgType+\" payment logic, orderPgData does not verify whether the product amount and payment amount have been tampered with.\");\n\t\t\t\t break;\n\t\t\t case \"paypal\":\n\t\t\t\t System.out.println(\"In \"+pgType+\" payment logic, orderPgData verifies whether the product amount and payment amount have been tampered with.\");\n\t\t\t\t orderPgData.validateAmount();\n\t\t\t\t break;\n\t\t\t }\n\t\t\t ...\n```"
+            },
+            {
+              "Nature": "Bad",
+              "Language": "Java",
+              "ExampleCode": "File: Main.java\n\n public class Main {\n\n```\n\t public static void main(String[] args) { \n\t\t String pgType = \"card\"; // or paypal\n\t\t int productPrice = 100;\n\t\t int paymentAmount = 10;\n\t\t PgServiceResolver pgServiceResolver = new PgServiceResolver();\n\t\t OrderPgData orderPgData = pgServiceResolver.getOrderPgDataByPgType(pgType, productPrice, paymentAmount);\n\t\t finalizeOrder(orderPgData);\n\t }\n\t private static void finalizeOrder(OrderPgData orderPgData) {\n\t\t if (orderPgData.getIsPaymentAmountTampered()) {\n\t\t\t System.out.println(\"The attacker tampered with the payment amount, but product payment is canceled.\");\n\t\t } else {\n\t\t\t ... /* the product payment is completed */\n\t\t } \n\t } \n }\n```"
+            },
+            {
+              "BodyText": "In PgServiceResolver.java, when pgType is \"card\" indicating a card payment, orderPgData.validateAmount() is not called - that is, the amount is not validated to be the same as the expected price.\n\n\nSince isPaymentAmountTampered is declared as a private boolean, but it is not initialized, it is forcibly initialized to false by the Java compiler [REF-1476].\n\n\nIf the adversary modifies the price, e.g., changing paymentAmount from 100 to 10, then no validation is performed. Since isPaymentAmountTampered is \"false\" because of the default initialization, the code finishes processing the payment because it does not believe that the amount has been changed."
+            },
+            {
+              "BodyText": "This weakness could be addressed by setting the value of isPaymentAmountTampered to true. This is a \"secure-by-default\" value that reflects a \"default deny\" policy - i.e., it's assumed that the payment amount is tampered, and only a special validation step can change this assumption."
+            },
+            {
+              "Nature": "Good",
+              "Language": "Java",
+              "ExampleCode": "File: OrderPgData.java\n ...\n\n```\n\t private boolean isPaymentAmountTampered = true; \n```"
+            }
+          ]
+        }
+      ],
+      "PotentialMitigations": [
+        {
+          "MitigationID": "MIT-57",
+          "Phase": [
+            "Implementation"
+          ],
+          "Strategy": "Attack Surface Reduction",
+          "Description": "Ensure that critical variables are initialized before first use [REF-1485]."
+        },
+        {
+          "Phase": [
+            "Requirements"
+          ],
+          "Strategy": "Language Selection",
+          "Description": "Choose a language that is not susceptible to these issues."
+        }
+      ]
+    },
+    "/cwe/456/parents": {
+      "weakness_parents": [
+        "909",
+        "665"
+      ],
+      "category_parents": [
+        "1129",
+        "1131",
+        "1167",
+        "1180",
+        "1416",
+        "808",
+        "998",
+        "867"
+      ]
+    },
+    "/cwe/456/children": null
+  }
+}

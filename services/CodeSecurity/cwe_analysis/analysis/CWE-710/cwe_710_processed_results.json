@@ -1,0 +1,116 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-30T00:01:11.522452",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "710",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/710": {
+      "ID": "710",
+      "Type": "pillar_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/710": {
+      "ID": "710",
+      "Name": "Improper Adherence to Coding Standards",
+      "Abstraction": "Pillar",
+      "Structure": "Simple",
+      "Status": "Incomplete",
+      "Description": "The product does not follow certain coding rules for development, which can lead to resultant weaknesses or increase the severity of the associated vulnerabilities.",
+      "ExtendedDescription": null,
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Class": "Not Language-Specific",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Technology",
+          "Class": "Not Technology-Specific",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Architecture and Design"
+        },
+        {
+          "Phase": "Implementation"
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Other"
+          ],
+          "Impact": [
+            "Other"
+          ]
+        }
+      ],
+      "DemonstrativeExamples": null,
+      "PotentialMitigations": [
+        {
+          "Phase": [
+            "Implementation"
+          ],
+          "Description": "Document and closely follow coding standards."
+        },
+        {
+          "Phase": [
+            "Testing",
+            "Implementation"
+          ],
+          "Description": "Where possible, use automated tools to enforce the standards."
+        }
+      ]
+    },
+    "/cwe/710/parents": {
+      "weakness_parents": [],
+      "category_parents": [
+        "1370",
+        "1375",
+        "1383",
+        "1412",
+        "978"
+      ]
+    },
+    "/cwe/710/children": {
+      "weakness_children": [
+        "1041",
+        "1044",
+        "1048",
+        "1059",
+        "1061",
+        "1065",
+        "1066",
+        "1068",
+        "1076",
+        "1092",
+        "1093",
+        "1101",
+        "1120",
+        "1126",
+        "1127",
+        "1164",
+        "1177",
+        "1209",
+        "1357",
+        "476",
+        "477",
+        "484",
+        "489",
+        "570",
+        "571",
+        "573",
+        "657",
+        "684",
+        "758"
+      ],
+      "category_children": []
+    }
+  }
+}

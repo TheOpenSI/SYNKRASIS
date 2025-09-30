@@ -1,0 +1,49 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T22:15:38.246444",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "1088",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/1088": {
+      "ID": "1088",
+      "Type": "base_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/1088": {
+      "ID": "1088",
+      "Name": "Synchronous Access of Remote Resource without Timeout",
+      "Abstraction": "Base",
+      "Structure": "Simple",
+      "Status": "Incomplete",
+      "Description": "The code has a synchronous call to a remote resource, but there is no timeout for the call, or the timeout is set to infinite.",
+      "ExtendedDescription": "\n\nThis issue can prevent the product from running reliably, since an outage for the remote resource can cause the product to hang. If the relevant code is reachable by an attacker, then this reliability problem might introduce a vulnerability.\n",
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": null,
+      "AlternateTerms": null,
+      "ModesOfIntroduction": null,
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Other"
+          ],
+          "Impact": [
+            "Reduce Reliability"
+          ]
+        }
+      ],
+      "DemonstrativeExamples": null,
+      "PotentialMitigations": null
+    },
+    "/cwe/1088/parents": {
+      "weakness_parents": [],
+      "category_parents": [
+        "1129",
+        "1306",
+        "1401"
+      ]
+    },
+    "/cwe/1088/children": null
+  }
+}

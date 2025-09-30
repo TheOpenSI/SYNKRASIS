@@ -1,0 +1,131 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T22:52:59.046849",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "197",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/197": {
+      "ID": "197",
+      "Type": "base_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/197": {
+      "ID": "197",
+      "Name": "Numeric Truncation Error",
+      "Abstraction": "Base",
+      "Structure": "Simple",
+      "Status": "Incomplete",
+      "Description": "Truncation errors occur when a primitive is cast to a primitive of a smaller size and data is lost in the conversion.",
+      "ExtendedDescription": "When a primitive is cast to a smaller primitive, the high order bits of the large value are lost in the conversion, potentially resulting in an unexpected value that is not equal to the original value. This value may be required as an index into a buffer, a loop iterator, or simply necessary state data. In any case, the value cannot be trusted and the system will be in an undefined state. While this method may be employed viably to isolate the low bits of a value, this usage is rare, and truncation usually implies that an implementation error has occurred.",
+      "LikelihoodOfExploit": "Low",
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Name": "C",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Language",
+          "Name": "C++",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Language",
+          "Name": "Java",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Language",
+          "Name": "C#",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Implementation"
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Integrity"
+          ],
+          "Impact": [
+            "Modify Memory"
+          ],
+          "Note": "The true value of the data is lost and corrupted data is used."
+        }
+      ],
+      "DemonstrativeExamples": [
+        {
+          "Entries": [
+            {
+              "IntroText": "This example, while not exploitable, shows the possible mangling of values associated with truncation errors:"
+            },
+            {
+              "Nature": "Bad",
+              "Language": "C",
+              "ExampleCode": "```\n\tint intPrimitive;\n\tshort shortPrimitive;\n\tintPrimitive = (int)(~((int)0) ^ (1 << (sizeof(int)*8-1)));\n\tshortPrimitive = intPrimitive;\n\tprintf(\"Int MAXINT: %d\\nShort MAXINT: %d\\n\", intPrimitive, shortPrimitive);\n```"
+            },
+            {
+              "BodyText": "The above code, when compiled and run on certain systems, returns the following output:"
+            },
+            {
+              "Nature": "Result",
+              "ExampleCode": "```\n\tInt MAXINT: 2147483647\n\tShort MAXINT: -1\n```"
+            },
+            {
+              "BodyText": "This problem may be exploitable when the truncated value is used as an array index, which can happen implicitly when 64-bit values are used as indexes, as they are truncated to 32 bits."
+            }
+          ]
+        },
+        {
+          "Entries": [
+            {
+              "IntroText": "In the following Java example, the method updateSalesForProduct is part of a business application class that updates the sales information for a particular product. The method receives as arguments the product ID and the integer amount sold. The product ID is used to retrieve the total product count from an inventory object which returns the count as an integer. Before calling the method of the sales object to update the sales count the integer values are converted to The primitive type short since the method requires short type for the method arguments."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "Java",
+              "ExampleCode": "```\n\t...\n```\n// update sales database for number of product sold with product ID* \n\tpublic void updateSalesForProduct(String productID, int amountSold) {\n\t```\n```\n// get the total number of products in inventory database* \n\t\t\tint productCount = inventory.getProductCount(productID);\n\t\t\t\n\t\t\t *// convert integer values to short, the method for the* \n\t\t\t\n\t\t\t\n\t\t\t *// sales object requires the parameters to be of type short* \n\t\t\tshort count = (short) productCount;\n\t\t\tshort sold = (short) amountSold;\n\t\t\t\n\t\t\t *// update sales database for product* \n\t\t\tsales.updateSalesCount(productID, count, sold);}\n\t..."
+            },
+            {
+              "BodyText": "However, a numeric truncation error can occur if the integer values are higher than the maximum value allowed for the primitive type short. This can cause unexpected results or loss or corruption of data. In this case the sales database may be corrupted with incorrect data. Explicit casting from a from a larger size primitive type to a smaller size primitive type should be prevented. The following example an if statement is added to validate that the integer values less than the maximum value for the primitive type short before the explicit cast and the call to the sales method."
+            },
+            {
+              "Nature": "Good",
+              "Language": "Java",
+              "ExampleCode": "```\n\t...\n```\n// update sales database for number of product sold with product ID* \n\tpublic void updateSalesForProduct(String productID, int amountSold) {\n\t```\n```\n// get the total number of products in inventory database* \n\t\t\tint productCount = inventory.getProductCount(productID);\n\t\t\t\n\t\t\t *// make sure that integer numbers are not greater than* \n\t\t\t\n\t\t\t\n\t\t\t *// maximum value for type short before converting* \n\t\t\tif ((productCount < Short.MAX_VALUE) && (amountSold < Short.MAX_VALUE)) {\n\t\t\t```\n```\n// convert integer values to short, the method for the* \n\t\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t\t *// sales object requires the parameters to be of type short* \n\t\t\t\t\tshort count = (short) productCount;\n\t\t\t\t\tshort sold = (short) amountSold;\n\t\t\t\t\t\n\t\t\t\t\t *// update sales database for product* \n\t\t\t\t\tsales.updateSalesCount(productID, count, sold);\n\t\t\telse {\n\t\t\t\n\t\t\t *// throw exception or perform other processing* \n\t\t\t\n\t\t\t```\n\t\t\t\t...\n\t\t\t}\n\t}\n\t...\n```"
+            }
+          ]
+        }
+      ],
+      "PotentialMitigations": [
+        {
+          "Phase": [
+            "Implementation"
+          ],
+          "Description": "Ensure that no casts, implicit or explicit, take place that move from a larger size primitive or a smaller size primitive."
+        }
+      ]
+    },
+    "/cwe/197/parents": {
+      "weakness_parents": [],
+      "category_parents": [
+        "1137",
+        "1158",
+        "1159",
+        "1163",
+        "1416",
+        "738",
+        "848",
+        "872",
+        "998"
+      ]
+    },
+    "/cwe/197/children": null
+  }
+}

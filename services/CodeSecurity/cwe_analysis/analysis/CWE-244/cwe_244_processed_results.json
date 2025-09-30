@@ -1,0 +1,86 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T22:59:42.935835",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "244",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/244": {
+      "ID": "244",
+      "Type": "variant_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/244": {
+      "ID": "244",
+      "Name": "Improper Clearing of Heap Memory Before Release ('Heap Inspection')",
+      "Abstraction": "Variant",
+      "Structure": "Simple",
+      "Status": "Draft",
+      "Description": "Using realloc() to resize buffers that store sensitive information can leave the sensitive information exposed to attack, because it is not removed from memory.",
+      "ExtendedDescription": "When sensitive data such as a password or an encryption key is not removed from memory, it could be exposed to an attacker using a \"heap inspection\" attack that reads the sensitive data using memory dumps or other methods. The realloc() function is commonly used to increase the size of a block of allocated memory. This operation often requires copying the contents of the old memory block into a new and larger block. This operation leaves the contents of the original block intact but inaccessible to the program, preventing the program from being able to scrub sensitive data from memory. If an attacker can later examine the contents of a memory dump, the sensitive data could be exposed.",
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Name": "C",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Language",
+          "Name": "C++",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Implementation"
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Confidentiality",
+            "Other"
+          ],
+          "Impact": [
+            "Read Memory",
+            "Other"
+          ],
+          "Note": "Be careful using vfork() and fork() in security sensitive code. The process state will not be cleaned up and will contain traces of data from past use."
+        }
+      ],
+      "DemonstrativeExamples": [
+        {
+          "ID": "DX-148",
+          "Entries": [
+            {
+              "IntroText": "The following code calls realloc() on a buffer containing sensitive data:"
+            },
+            {
+              "Nature": "Bad",
+              "Language": "C",
+              "ExampleCode": "```\n\tcleartext_buffer = get_secret();...\n\tcleartext_buffer = realloc(cleartext_buffer, 1024);\n\t...\n\tscrub_memory(cleartext_buffer, 1024);\n```"
+            },
+            {
+              "BodyText": "There is an attempt to scrub the sensitive data from memory, but realloc() is used, so it could return a pointer to a different part of memory. The memory that was originally allocated for cleartext_buffer could still contain an uncleared copy of the data."
+            }
+          ]
+        }
+      ],
+      "PotentialMitigations": null
+    },
+    "/cwe/244/parents": {
+      "weakness_parents": [],
+      "category_parents": [
+        "1399",
+        "227",
+        "742",
+        "876",
+        "963"
+      ]
+    },
+    "/cwe/244/children": null
+  }
+}

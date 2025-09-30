@@ -1,0 +1,106 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T23:27:38.791412",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "459",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/459": {
+      "ID": "459",
+      "Type": "base_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/459": {
+      "ID": "459",
+      "Name": "Incomplete Cleanup",
+      "Abstraction": "Base",
+      "Structure": "Simple",
+      "Status": "Draft",
+      "Description": "The product does not properly \"clean up\" and remove temporary or supporting resources after they have been used.",
+      "ExtendedDescription": null,
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Class": "Not Language-Specific",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": [
+        {
+          "Term": "Insufficient Cleanup"
+        }
+      ],
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Implementation"
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Other",
+            "Confidentiality",
+            "Integrity"
+          ],
+          "Impact": [
+            "Other",
+            "Read Application Data",
+            "Modify Application Data",
+            "DoS: Resource Consumption (Other)"
+          ],
+          "Note": "It is possible to overflow the number of temporary files because directories typically have limits on the number of files allowed. This could create a denial of service problem."
+        }
+      ],
+      "DemonstrativeExamples": [
+        {
+          "Entries": [
+            {
+              "IntroText": "Stream resources in a Java application should be released in a finally block, otherwise an exception thrown before the call to close() would result in an unreleased I/O resource. In the example below, the close() method is called in the try block (incorrect)."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "Java",
+              "ExampleCode": "```\n\ttry {\n\t\tInputStream is = new FileInputStream(path);\n\t\tbyte b[] = new byte[is.available()];\n\t\tis.read(b);\n\t\tis.close();\n\t} catch (Throwable t) {\n\t\tlog.error(\"Something bad happened: \" + t.getMessage());\n\t}\n```"
+            }
+          ]
+        }
+      ],
+      "PotentialMitigations": [
+        {
+          "Phase": [
+            "Architecture and Design",
+            "Implementation"
+          ],
+          "Description": "Temporary files and other supporting resources should be deleted/released immediately after they are no longer needed."
+        }
+      ]
+    },
+    "/cwe/459/parents": {
+      "weakness_parents": [
+        "404"
+      ],
+      "category_parents": [
+        "1141",
+        "1147",
+        "1162",
+        "1163",
+        "1306",
+        "1416",
+        "452",
+        "731",
+        "857",
+        "982"
+      ]
+    },
+    "/cwe/459/children": {
+      "weakness_children": [
+        "226",
+        "460",
+        "568"
+      ],
+      "category_children": []
+    }
+  }
+}

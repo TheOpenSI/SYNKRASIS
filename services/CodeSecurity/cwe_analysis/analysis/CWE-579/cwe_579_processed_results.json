@@ -1,0 +1,83 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T23:43:44.984893",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "579",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/579": {
+      "ID": "579",
+      "Type": "variant_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/579": {
+      "ID": "579",
+      "Name": "J2EE Bad Practices: Non-serializable Object Stored in Session",
+      "Abstraction": "Variant",
+      "Structure": "Simple",
+      "Status": "Draft",
+      "Description": "The product stores a non-serializable object as an HttpSession attribute, which can hurt reliability.",
+      "ExtendedDescription": "A J2EE application can make use of multiple JVMs in order to improve application reliability and performance. In order to make the multiple JVMs appear as a single application to the end user, the J2EE container can replicate an HttpSession object across multiple JVMs so that if one JVM becomes unavailable another can step in and take its place without disrupting the flow of the application. This is only possible if all session data is serializable, allowing the session to be duplicated between the JVMs.",
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Name": "Java",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Implementation",
+          "Note": "REALIZATION: This weakness is caused during implementation of an architectural security tactic."
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Other"
+          ],
+          "Impact": [
+            "Quality Degradation"
+          ]
+        }
+      ],
+      "DemonstrativeExamples": [
+        {
+          "Entries": [
+            {
+              "IntroText": "The following class adds itself to the session, but because it is not serializable, the session can no longer be replicated."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "Java",
+              "ExampleCode": "```\n\tpublic class DataGlob {\n\t\t\tString globName;\n\t\t\tString globValue;\n\t\t\tpublic void addToSession(HttpSession session) {\n\t\t\t\tsession.setAttribute(\"glob\", this);\n\t\t\t}\n\t}\n```"
+            }
+          ]
+        }
+      ],
+      "PotentialMitigations": [
+        {
+          "Phase": [
+            "Implementation"
+          ],
+          "Description": "In order for session replication to work, the values the product stores as attributes in the session must implement the Serializable interface."
+        }
+      ]
+    },
+    "/cwe/579/parents": {
+      "weakness_parents": [
+        "573"
+      ],
+      "category_parents": [
+        "1018",
+        "1348",
+        "1412",
+        "998"
+      ]
+    },
+    "/cwe/579/children": null
+  }
+}

@@ -1,0 +1,126 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T23:54:38.347726",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "657",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/657": {
+      "ID": "657",
+      "Type": "class_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/657": {
+      "ID": "657",
+      "Name": "Violation of Secure Design Principles",
+      "Abstraction": "Class",
+      "Structure": "Simple",
+      "Status": "Draft",
+      "Description": "The product violates well-established principles for secure design.",
+      "ExtendedDescription": "This can introduce resultant weaknesses or make it easier for developers to introduce related weaknesses during implementation. Because code is centered around design, it can be resource-intensive to fix design problems.",
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": null,
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Architecture and Design"
+        },
+        {
+          "Phase": "Implementation"
+        },
+        {
+          "Phase": "Operation"
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Other"
+          ],
+          "Impact": [
+            "Other"
+          ]
+        }
+      ],
+      "DemonstrativeExamples": [
+        {
+          "ID": "DX-164",
+          "Entries": [
+            {
+              "IntroText": "Switches may revert their functionality to that of hubs when the table used to map ARP information to the switch interface overflows, such as when under a spoofing attack. This results in traffic being broadcast to an eavesdropper, instead of being sent only on the relevant switch interface. To mitigate this type of problem, the developer could limit the number of ARP entries that can be recorded for a given switch interface, while other interfaces may keep functioning normally. Configuration options can be provided on the appropriate actions to be taken in case of a detected failure, but safe defaults should be used."
+            }
+          ]
+        },
+        {
+          "ID": "DX-165",
+          "Entries": [
+            {
+              "IntroText": "The IPSEC specification is complex, which resulted in bugs, partial implementations, and incompatibilities between vendors."
+            }
+          ]
+        },
+        {
+          "ID": "DX-166",
+          "Entries": [
+            {
+              "IntroText": "When executable library files are used on web servers, which is common in PHP applications, the developer might perform an access check in any user-facing executable, and omit the access check from the library file itself. By directly requesting the library file (CWE-425), an attacker can bypass this access check."
+            }
+          ]
+        },
+        {
+          "ID": "DX-167",
+          "Entries": [
+            {
+              "IntroText": "Single sign-on technology is intended to make it easier for users to access multiple resources or domains without having to authenticate each time. While this is highly convenient for the user and attempts to address problems with psychological acceptability, it also means that a compromise of a user's credentials can provide immediate access to all other resources or domains."
+            }
+          ]
+        },
+        {
+          "ID": "DX-168",
+          "Entries": [
+            {
+              "IntroText": "The design of TCP relies on the secrecy of Initial Sequence Numbers (ISNs), as originally covered in CVE-1999-0077 [REF-542]. If ISNs can be guessed (due to predictability, CWE-330) or sniffed (due to lack of encryption during transmission, CWE-312), then an attacker can hijack or spoof connections. Many TCP implementations have had variations of this problem over the years, including CVE-2004-0641, CVE-2002-1463, CVE-2001-0751, CVE-2001-0328, CVE-2001-0288, CVE-2001-0163, CVE-2001-0162, CVE-2000-0916, and CVE-2000-0328."
+            },
+            {
+              "Reference": "REF-542"
+            }
+          ]
+        },
+        {
+          "ID": "DX-169",
+          "Entries": [
+            {
+              "IntroText": "The \"SweynTooth\" vulnerabilities in Bluetooth Low Energy (BLE) software development kits (SDK) were found to affect multiple Bluetooth System-on-Chip (SoC) manufacturers. These SoCs were used by many products such as medical devices, Smart Home devices, wearables, and other IoT devices. [REF-1314] [REF-1315]"
+            }
+          ]
+        }
+      ],
+      "PotentialMitigations": null
+    },
+    "/cwe/657/parents": {
+      "weakness_parents": [],
+      "category_parents": [
+        "1348",
+        "1418",
+        "975"
+      ]
+    },
+    "/cwe/657/children": {
+      "weakness_children": [
+        "1192",
+        "1395",
+        "250",
+        "636",
+        "637",
+        "638",
+        "653",
+        "654",
+        "655",
+        "656",
+        "671"
+      ],
+      "category_children": []
+    }
+  }
+}

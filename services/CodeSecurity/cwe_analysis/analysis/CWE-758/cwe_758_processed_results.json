@@ -1,0 +1,98 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-30T00:03:21.485334",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "758",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/758": {
+      "ID": "758",
+      "Type": "class_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/758": {
+      "ID": "758",
+      "Name": "Reliance on Undefined, Unspecified, or Implementation-Defined Behavior",
+      "Abstraction": "Class",
+      "Structure": "Simple",
+      "Status": "Incomplete",
+      "Description": "The product uses an API function, data structure, or other entity in a way that relies on properties that are not always guaranteed to hold for that entity.",
+      "ExtendedDescription": "This can lead to resultant weaknesses when the required properties change, such as when the product is ported to a different platform or if an interaction error (CWE-435) occurs.",
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": null,
+      "AlternateTerms": null,
+      "ModesOfIntroduction": null,
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Other"
+          ],
+          "Impact": [
+            "Other"
+          ]
+        }
+      ],
+      "DemonstrativeExamples": [
+        {
+          "ID": "DX-192",
+          "Entries": [
+            {
+              "IntroText": "This code assumes a particular function will always be found at a particular address. It assigns a pointer to that address and calls the function."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "C",
+              "ExampleCode": "```\n\tint (*pt2Function) (float, char, char)=0x08040000;\n\tint result2 = (*pt2Function) (12, 'a', 'b');\n```\n// Here we can inject code to execute.*"
+            },
+            {
+              "BodyText": "The same function may not always be found at the same memory address. This could lead to a crash, or an attacker may alter the memory at the expected address, leading to arbitrary code execution."
+            }
+          ]
+        },
+        {
+          "ID": "DX-203",
+          "Entries": [
+            {
+              "IntroText": "The following function returns a stack address."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "C",
+              "ExampleCode": "```\n\tchar* getName() {\n\t\tchar name[STR_MAX];\n\t\tfillInName(name);\n\t\treturn name;\n\t}\n```"
+            }
+          ]
+        }
+      ],
+      "PotentialMitigations": null
+    },
+    "/cwe/758/parents": {
+      "weakness_parents": [],
+      "category_parents": [
+        "1157",
+        "1158",
+        "1160",
+        "1162",
+        "1163",
+        "1167",
+        "1170",
+        "1306",
+        "1412",
+        "1001"
+      ]
+    },
+    "/cwe/758/children": {
+      "weakness_children": [
+        "1038",
+        "1102",
+        "1103",
+        "1105",
+        "474",
+        "562",
+        "587",
+        "588"
+      ],
+      "category_children": []
+    }
+  }
+}

@@ -1,0 +1,102 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T22:24:37.646895",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "1204",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/1204": {
+      "ID": "1204",
+      "Type": "base_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/1204": {
+      "ID": "1204",
+      "Name": "Generation of Weak Initialization Vector (IV)",
+      "Abstraction": "Base",
+      "Structure": "Simple",
+      "Status": "Incomplete",
+      "Description": "The product uses a cryptographic primitive that uses an Initialization\n\t\t\tVector (IV), but the product does not generate IVs that are\n\t\t\tsufficiently unpredictable or unique according to the expected\n\t\t\tcryptographic requirements for that primitive.\n\t\t\t",
+      "ExtendedDescription": "By design, some cryptographic primitives (such as block ciphers) require that IVs must have certain properties for the uniqueness and/or unpredictability of an IV. Primitives may vary in how important these properties are. If these properties are not maintained, e.g. by a bug in the code, then the cryptography may be weakened or broken by attacking the IVs themselves.",
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Class": "Not Language-Specific",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Implementation"
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Confidentiality"
+          ],
+          "Impact": [
+            "Read Application Data"
+          ],
+          "Note": "If the IV is not properly initialized, data that is encrypted can be compromised and information about the data can be leaked. See [REF-1179]."
+        }
+      ],
+      "DemonstrativeExamples": [
+        {
+          "ID": "DX-143",
+          "Entries": [
+            {
+              "IntroText": "In the following examples, CBC mode is used when encrypting data:"
+            },
+            {
+              "Nature": "Bad",
+              "Language": "C",
+              "ExampleCode": "```\n\tEVP_CIPHER_CTX ctx;\n\tchar key[EVP_MAX_KEY_LENGTH];\n\tchar iv[EVP_MAX_IV_LENGTH];\n\tRAND_bytes(key, b);\n\tmemset(iv,0,EVP_MAX_IV_LENGTH);\n\tEVP_EncryptInit(&ctx,EVP_bf_cbc(), key,iv);\n```"
+            },
+            {
+              "Nature": "Bad",
+              "Language": "Java",
+              "ExampleCode": "```\n\tpublic class SymmetricCipherTest {\n\t\t\tpublic static void main() {\n\t\t\t\t\tbyte[] text =\"Secret\".getBytes();\n\t\t\t\t\tbyte[] iv ={\n\t\t\t\t\t\t0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00\n\t\t\t\t\t};\n\t\t\t\t\tKeyGenerator kg = KeyGenerator.getInstance(\"DES\");\n\t\t\t\t\tkg.init(56);\n\t\t\t\t\tSecretKey key = kg.generateKey();\n\t\t\t\t\tCipher cipher = Cipher.getInstance(\"DES/CBC/PKCS5Padding\");\n\t\t\t\t\tIvParameterSpec ips = new IvParameterSpec(iv);\n\t\t\t\t\tcipher.init(Cipher.ENCRYPT_MODE, key, ips);\n\t\t\t\t\treturn cipher.doFinal(inpBytes);\n\t\t\t}\n\t}\n```"
+            },
+            {
+              "BodyText": "In both of these examples, the initialization vector (IV) is always a block of zeros. This makes the resulting cipher text much more predictable and susceptible to a dictionary attack."
+            }
+          ]
+        },
+        {
+          "Entries": [
+            {
+              "IntroText": "The Wired Equivalent Privacy (WEP) protocol used in the 802.11 wireless standard only supported 40-bit keys, and the IVs were only 24 bits, increasing the chances that the same IV would be reused for multiple messages. The IV was included in plaintext as part of the packet, making it directly observable to attackers. Only 5000 messages are needed before a collision occurs due to the \"birthday paradox\" [REF-1176]. Some implementations would reuse the same IV for each packet. This IV reuse made it much easier for attackers to recover plaintext from two packets with the same IV, using well-understood attacks, especially if the plaintext was known for one of the packets [REF-1175]."
+            }
+          ]
+        }
+      ],
+      "PotentialMitigations": [
+        {
+          "Phase": [
+            "Implementation"
+          ],
+          "Description": "\n\nDifferent cipher modes have different requirements for their IVs. When choosing and implementing a mode, it is important to understand those requirements in order to keep security guarantees intact. Generally, it is safest to generate a random IV, since it will be both unpredictable and have a very low chance of being non-unique. IVs do not have to be kept secret, so if generating duplicate IVs is a concern, a list of already-used IVs can be kept and checked against. \n\n\n NIST offers recommendations on generation of IVs for modes of which they have approved. These include options for when random IVs are not practical. For CBC, CFB, and OFB, see [REF-1175]; for GCM, see [REF-1178]. \n"
+        }
+      ]
+    },
+    "/cwe/1204/parents": {
+      "weakness_parents": [
+        "330"
+      ],
+      "category_parents": [
+        "1414",
+        "310"
+      ]
+    },
+    "/cwe/1204/children": {
+      "weakness_children": [
+        "329"
+      ],
+      "category_children": []
+    }
+  }
+}

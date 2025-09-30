@@ -1,0 +1,55 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T22:13:00.036223",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "1068",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/1068": {
+      "ID": "1068",
+      "Type": "base_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/1068": {
+      "ID": "1068",
+      "Name": "Inconsistency Between Implementation and Documented Design",
+      "Abstraction": "Base",
+      "Structure": "Simple",
+      "Status": "Incomplete",
+      "Description": "The implementation of the product is not consistent with the\n\t\t\t\t\tdesign as described within the relevant documentation.",
+      "ExtendedDescription": "\n\nThis issue makes it more difficult to maintain the product due to inconsistencies, which indirectly affects security by making it more difficult or time-consuming to find and/or fix vulnerabilities. It also might make it easier to introduce vulnerabilities.\n",
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": [
+        {
+          "Type": "Technology",
+          "Class": "Not Technology-Specific",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Technology",
+          "Class": "ICS/OT",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Implementation"
+        }
+      ],
+      "CommonConsequences": null,
+      "DemonstrativeExamples": null,
+      "PotentialMitigations": null
+    },
+    "/cwe/1068/parents": {
+      "weakness_parents": [],
+      "category_parents": [
+        "1368",
+        "1412",
+        "1225"
+      ]
+    },
+    "/cwe/1068/children": null
+  }
+}

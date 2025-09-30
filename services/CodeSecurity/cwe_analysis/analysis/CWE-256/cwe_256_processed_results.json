@@ -1,0 +1,165 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T23:00:57.797976",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "256",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/256": {
+      "ID": "256",
+      "Type": "base_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/256": {
+      "ID": "256",
+      "Name": "Plaintext Storage of a Password",
+      "Abstraction": "Base",
+      "Structure": "Simple",
+      "Status": "Incomplete",
+      "Description": "The product stores a password in plaintext within resources such as memory or files.",
+      "ExtendedDescription": null,
+      "LikelihoodOfExploit": "High",
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Class": "Not Language-Specific",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Technology",
+          "Class": "ICS/OT",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Architecture and Design",
+          "Note": "OMISSION: This weakness is caused by missing a security tactic during the architecture and design phase."
+        },
+        {
+          "Phase": "Architecture and Design",
+          "Note": "Developers sometimes believe that they cannot defend the application from someone who has access to the configuration, but this belief makes an attacker's job easier."
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Access Control"
+          ],
+          "Impact": [
+            "Gain Privileges or Assume Identity"
+          ],
+          "Note": "Storing a plaintext password in a configuration file allows anyone who can read the file to access the password-protected resource. In some contexts, even storage of a plaintext password in memory is considered a security risk if the password is not cleared immediately after it is used."
+        }
+      ],
+      "DemonstrativeExamples": [
+        {
+          "ID": "DX-57",
+          "Entries": [
+            {
+              "IntroText": "The following code reads a password from a properties file and uses the password to connect to a database."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "Java",
+              "ExampleCode": "```\n\t...\n\tProperties prop = new Properties();\n\tprop.load(new FileInputStream(\"config.properties\"));\n\tString password = prop.getProperty(\"password\");\n\tDriverManager.getConnection(url, usr, password);\n\t...\n```"
+            },
+            {
+              "BodyText": "This code will run successfully, but anyone who has access to config.properties can read the value of password. If a devious employee has access to this information, they can use it to break into the system."
+            }
+          ]
+        },
+        {
+          "ID": "DX-58",
+          "Entries": [
+            {
+              "IntroText": "The following code reads a password from the registry and uses the password to create a new network credential."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "Java",
+              "ExampleCode": "```\n\t...\n\tString password = regKey.GetValue(passKey).toString();\n\tNetworkCredential netCred = new NetworkCredential(username,password,domain);\n\t...\n```"
+            },
+            {
+              "BodyText": "This code will run successfully, but anyone who has access to the registry key used to store the password can read the value of password. If a devious employee has access to this information, they can use it to break into the system"
+            }
+          ]
+        },
+        {
+          "ID": "DX-43",
+          "Entries": [
+            {
+              "IntroText": "The following examples show a portion of properties and configuration files for Java and ASP.NET applications. The files include username and password information but they are stored in cleartext."
+            },
+            {
+              "BodyText": "This Java example shows a properties file with a cleartext username / password pair."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "Java",
+              "ExampleCode": "```\n```\n# Java Web App ResourceBundle properties file* \n\t...\n\twebapp.ldap.username=secretUsername\n\twebapp.ldap.password=secretPassword\n\t..."
+            },
+            {
+              "BodyText": "The following example shows a portion of a configuration file for an ASP.Net application. This configuration file includes username and password information for a connection to a database but the pair is stored in cleartext."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "ASP.NET",
+              "ExampleCode": "```\n\t...\n\t<connectionStrings>\n\t\t<add name=\"ud_DEV\" connectionString=\"connectDB=uDB; uid=db2admin; pwd=password; dbalias=uDB;\" providerName=\"System.Data.Odbc\" />\n\t</connectionStrings>\n\t...\n```"
+            },
+            {
+              "BodyText": "Username and password information should not be included in a configuration file or a properties file in cleartext as this will allow anyone who can read the file access to the resource. If possible, encrypt this information."
+            }
+          ]
+        },
+        {
+          "ID": "DX-153",
+          "Entries": [
+            {
+              "IntroText": "In 2022, the OT:ICEFALL study examined products by 10 different Operational Technology (OT) vendors. The researchers reported 56 vulnerabilities and said that the products were \"insecure by design\" [REF-1283]. If exploited, these vulnerabilities often allowed adversaries to change how the products operated, ranging from denial of service to changing the code that the products executed. Since these products were often used in industries such as power, electrical, water, and others, there could even be safety implications."
+            },
+            {
+              "BodyText": "At least one OT product stored a password in plaintext."
+            }
+          ]
+        }
+      ],
+      "PotentialMitigations": [
+        {
+          "Phase": [
+            "Architecture and Design"
+          ],
+          "Description": "Avoid storing passwords in easily accessible locations."
+        },
+        {
+          "Phase": [
+            "Architecture and Design"
+          ],
+          "Description": "Consider storing cryptographic hashes of passwords as an alternative to storing in plaintext."
+        },
+        {
+          "Description": "A programmer might attempt to remedy the password management problem by obscuring the password with an encoding function, such as base 64 encoding, but this effort does not adequately protect the password because the encoding can be detected and decoded easily.",
+          "Effectiveness": "None"
+        }
+      ]
+    },
+    "/cwe/256/parents": {
+      "weakness_parents": [
+        "522"
+      ],
+      "category_parents": [
+        "1013",
+        "1028",
+        "1348",
+        "1396",
+        "255",
+        "254",
+        "963",
+        "930"
+      ]
+    },
+    "/cwe/256/children": null
+  }
+}

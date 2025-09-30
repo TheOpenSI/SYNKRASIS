@@ -1,0 +1,73 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T23:49:51.610558",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "622",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/622": {
+      "ID": "622",
+      "Type": "variant_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/622": {
+      "ID": "622",
+      "Name": "Improper Validation of Function Hook Arguments",
+      "Abstraction": "Variant",
+      "Structure": "Simple",
+      "Status": "Draft",
+      "Description": "The product adds hooks to user-accessible API functions, but it does not properly validate the arguments. This could lead to resultant vulnerabilities.",
+      "ExtendedDescription": "Such hooks can be used in defensive software that runs with privileges, such as anti-virus or firewall, which hooks kernel calls. When the arguments are not validated, they could be used to bypass the protection scheme or attack the product itself.",
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Class": "Not Language-Specific",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Implementation"
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Integrity"
+          ],
+          "Impact": [
+            "Unexpected State"
+          ]
+        }
+      ],
+      "DemonstrativeExamples": null,
+      "PotentialMitigations": [
+        {
+          "Phase": [
+            "Architecture and Design"
+          ],
+          "Description": "Ensure that all arguments are verified, as defined by the API you are protecting."
+        },
+        {
+          "Phase": [
+            "Architecture and Design"
+          ],
+          "Description": "Drop privileges before invoking such functions, if possible."
+        }
+      ]
+    },
+    "/cwe/622/parents": {
+      "weakness_parents": [
+        "20"
+      ],
+      "category_parents": [
+        "1406",
+        "991"
+      ]
+    },
+    "/cwe/622/children": null
+  }
+}

@@ -1,0 +1,129 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T22:27:39.408590",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "1243",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/1243": {
+      "ID": "1243",
+      "Type": "base_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/1243": {
+      "ID": "1243",
+      "Name": "Sensitive Non-Volatile Information Not Protected During Debug",
+      "Abstraction": "Base",
+      "Structure": "Simple",
+      "Status": "Incomplete",
+      "Description": "Access to security-sensitive information stored in fuses is not limited during debug.",
+      "ExtendedDescription": "\n\nSeveral security-sensitive values are programmed into fuses to be used during early-boot flows or later at runtime. Examples of these security-sensitive values include root keys, encryption keys, manufacturing-specific information, chip-manufacturer-specific information, and original-equipment-manufacturer (OEM) data. After the chip is powered on, these values are sensed from fuses and stored in temporary locations such as registers and local memories. These locations are typically access-control protected from untrusted agents capable of accessing them. Even to trusted agents, only read-access is provided. However, these locations are not blocked during debug operations, allowing a user to access this sensitive information.\n",
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Class": "Not Language-Specific",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Operating_System",
+          "Class": "Not OS-Specific",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Architecture",
+          "Class": "Not Architecture-Specific",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Technology",
+          "Class": "Not Technology-Specific",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Architecture and Design"
+        },
+        {
+          "Phase": "Implementation"
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Confidentiality",
+            "Access Control"
+          ],
+          "Impact": [
+            "Modify Memory",
+            "Bypass Protection Mechanism"
+          ]
+        }
+      ],
+      "DemonstrativeExamples": [
+        {
+          "Entries": [
+            {
+              "IntroText": "Sensitive manufacturing data (such as die information) are stored in fuses. When the chip powers on, these values are read from the fuses and stored in microarchitectural registers. These registers are only given read access to trusted software running on the core. Untrusted software running on the core is not allowed to access these registers."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "Other",
+              "ExampleCode": "```\n\tAll microarchitectural registers in this chip can be accessed through the debug interface. As a result, even an untrusted debugger can access this data and retrieve sensitive manufacturing data.\n```"
+            },
+            {
+              "Nature": "Good",
+              "Language": "Other",
+              "ExampleCode": "```\n\tRegisters used to store sensitive values read from fuses should be blocked during debug. These registers should be disconnected from the debug interface.\n```"
+            }
+          ]
+        },
+        {
+          "Entries": [
+            {
+              "IntroText": "The example code below is taken from one of the AES cryptographic accelerators of the HACK@DAC'21 buggy OpenPiton SoC [REF-1366]. The operating system (OS) uses three AES keys to encrypt and decrypt sensitive data using this accelerator. These keys are sensitive data stored in fuses. The security of the OS will be compromised if any of these AES keys are leaked. During system bootup, these AES keys are sensed from fuses and stored in temporary hardware registers of the AES peripheral. Access to these temporary registers is disconnected during the debug state to prevent them from leaking through debug access. In this example (see the vulnerable code source), the registers key0, key1, and key2 are used to store the three AES keys (which are accessed through key_big0, key_big1, and key_big2 signals). The OS selects one of these three keys through the key_big signal, which is used by the AES engine."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "Verilog",
+              "ExampleCode": "...\n assign key_big0 = debug_mode_i ? 192'b0 : {key0[0],\n key0[1], key0[2], key0[3], key0[4], key0[5]};\n\n assign key_big1 = debug_mode_i ? 192'b0 : {key1[0],\n key1[1], key1[2], key1[3], key1[4], key1[5]};\n\n\n **assign key_big2 = {key2[0], key2[1], key2[2],** \n\n **key2[3], key2[4], key2[5]};** \n ...\n\n **assign key_big = key_sel[1] ? key_big2 : ( key_sel[0] ?** \n\n **key_big1 : key_big0 );** \n ..."
+            },
+            {
+              "BodyText": "The above code illustrates an instance of a vulnerable implementation for blocking AES key mechanism when the system is in debug mode (i.e., when debug_mode_i is asserted). During debug mode, key accesses through key_big0 and key_big1 are effectively disconnected, as their values are set to zero. However, the key accessed via the key_big2 signal remains accessible, creating a potential pathway for sensitive fuse data leakage, specifically AES key2, during debug mode. Furthermore, even though it is not strictly necessary to disconnect the key_big signal when entering debug mode (since disconnecting key_big0, key_big1, and key_big2 will inherently disconnect key_big), it is advisable, in line with the defense-in-depth strategy, to also sever the connection to key_big. This additional security measure adds an extra layer of protection and safeguards the AES keys against potential future modifications to the key_big logic."
+            },
+            {
+              "BodyText": "To mitigate this, disconnect access through key_big2 and key_big during debug mode [REF-1367]."
+            },
+            {
+              "Nature": "Good",
+              "Language": "Verilog",
+              "ExampleCode": "...\n assign key_big0 = debug_mode_i ? 192'b0 : {key0[0],\n key0[1], key0[2], key0[3], key0[4], key0[5]};\n\n assign key_big1 = debug_mode_i ? 192'b0 : {key1[0],\n key1[1], key1[2], key1[3], key1[4], key1[5]}; \n\n assign key_big2 = \n **debug_mode_i ? 192'b0 :**  {key2[0],\n key2[1], key2[2], key2[3], key2[4], key2[5]};\n ...\n assign key_big = \n **debug_mode_i ? 192'b0 :**  ( key_sel[1] ?\n key_big2 : ( key_sel[0] ? key_big1 : key_big0 ) );\n ..."
+            }
+          ]
+        }
+      ],
+      "PotentialMitigations": [
+        {
+          "Phase": [
+            "Architecture and Design",
+            "Implementation"
+          ],
+          "Description": "\n\nDisable access to security-sensitive information stored in fuses directly and also reflected from temporary storage locations when in debug mode.\n"
+        }
+      ]
+    },
+    "/cwe/1243/parents": {
+      "weakness_parents": [
+        "1263"
+      ],
+      "category_parents": [
+        "1207",
+        "1396"
+      ]
+    },
+    "/cwe/1243/children": null
+  }
+}

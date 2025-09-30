@@ -1,0 +1,67 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T23:14:39.103500",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "357",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/357": {
+      "ID": "357",
+      "Type": "base_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/357": {
+      "ID": "357",
+      "Name": "Insufficient UI Warning of Dangerous Operations",
+      "Abstraction": "Base",
+      "Structure": "Simple",
+      "Status": "Draft",
+      "Description": "The user interface provides a warning to a user regarding dangerous or sensitive operations, but the warning is not noticeable enough to warrant attention.",
+      "ExtendedDescription": null,
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Class": "Not Language-Specific",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Architecture and Design"
+        },
+        {
+          "Phase": "Implementation"
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Non-Repudiation"
+          ],
+          "Impact": [
+            "Hide Activities"
+          ]
+        }
+      ],
+      "DemonstrativeExamples": null,
+      "PotentialMitigations": null
+    },
+    "/cwe/357/parents": {
+      "weakness_parents": [],
+      "category_parents": [
+        "1413",
+        "355",
+        "996"
+      ]
+    },
+    "/cwe/357/children": {
+      "weakness_children": [
+        "450"
+      ],
+      "category_children": []
+    }
+  }
+}

@@ -1,0 +1,105 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T23:28:08.596800",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "462",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/462": {
+      "ID": "462",
+      "Type": "variant_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/462": {
+      "ID": "462",
+      "Name": "Duplicate Key in Associative List (Alist)",
+      "Abstraction": "Variant",
+      "Structure": "Simple",
+      "Status": "Incomplete",
+      "Description": "Duplicate keys in associative lists can lead to non-unique keys being mistaken for an error.",
+      "ExtendedDescription": "A duplicate key entry -- if the alist is designed properly -- could be used as a constant time replace function. However, duplicate key entries could be inserted by mistake. Because of this ambiguity, duplicate key entries in an association list are not recommended and should not be allowed.",
+      "LikelihoodOfExploit": "Low",
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Name": "C",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Language",
+          "Name": "C++",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Language",
+          "Name": "Java",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Language",
+          "Name": "C#",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Implementation"
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Other"
+          ],
+          "Impact": [
+            "Quality Degradation",
+            "Varies by Context"
+          ]
+        }
+      ],
+      "DemonstrativeExamples": [
+        {
+          "Entries": [
+            {
+              "IntroText": "The following code adds data to a list and then attempts to sort the data."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "Python",
+              "ExampleCode": "```\n\talist = []\n\twhile (foo()): #now assume there is a string data with a key basename\n\t\tqueue.append(basename,data)\n\t\tqueue.sort()\n```"
+            },
+            {
+              "BodyText": "Since basename is not necessarily unique, this may not sort how one would like it to be."
+            }
+          ]
+        }
+      ],
+      "PotentialMitigations": [
+        {
+          "Phase": [
+            "Architecture and Design"
+          ],
+          "Description": "Use a hash table instead of an alist."
+        },
+        {
+          "Phase": [
+            "Architecture and Design"
+          ],
+          "Description": "Use an alist which checks the uniqueness of hash keys with each entry before inserting the entry."
+        }
+      ]
+    },
+    "/cwe/462/parents": {
+      "weakness_parents": [],
+      "category_parents": [
+        "1412",
+        "744",
+        "878",
+        "977"
+      ]
+    },
+    "/cwe/462/children": null
+  }
+}

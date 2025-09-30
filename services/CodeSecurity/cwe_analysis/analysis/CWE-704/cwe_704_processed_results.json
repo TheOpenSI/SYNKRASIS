@@ -1,0 +1,134 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-30T00:00:26.317973",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "704",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/704": {
+      "ID": "704",
+      "Type": "class_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/704": {
+      "ID": "704",
+      "Name": "Incorrect Type Conversion or Cast",
+      "Abstraction": "Class",
+      "Structure": "Simple",
+      "Status": "Incomplete",
+      "Description": "The product does not correctly convert an object, resource, or structure from one type to a different type.",
+      "ExtendedDescription": null,
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Name": "C",
+          "Prevalence": "Often"
+        },
+        {
+          "Type": "Language",
+          "Name": "C++",
+          "Prevalence": "Often"
+        },
+        {
+          "Type": "Language",
+          "Class": "Not Language-Specific",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Implementation"
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Other"
+          ],
+          "Impact": [
+            "Other"
+          ]
+        }
+      ],
+      "DemonstrativeExamples": [
+        {
+          "ID": "DX-74",
+          "Entries": [
+            {
+              "IntroText": "In this example, depending on the return value of accecssmainframe(), the variable amount can hold a negative value when it is returned. Because the function is declared to return an unsigned value, amount will be implicitly cast to an unsigned number."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "C",
+              "ExampleCode": "```\n\tunsigned int readdata () {\n\t\tint amount = 0;\n\t\t...\n\t\tamount = accessmainframe();\n\t\t...\n\t\treturn amount;\n\t}\n```"
+            },
+            {
+              "BodyText": "If the return value of accessmainframe() is -1, then the return value of readdata() will be 4,294,967,295 on a system that uses 32-bit integers."
+            }
+          ]
+        },
+        {
+          "ID": "DX-188",
+          "Entries": [
+            {
+              "IntroText": "The following code uses a union to support the representation of different types of messages. It formats messages differently, depending on their type."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "C",
+              "ExampleCode": "```\n\t#define NAME_TYPE 1\n\t#define ID_TYPE 2\n\tstruct MessageBuffer\n\t{\n\t\tint msgType;\n\t\tunion {\n\t\t\tchar *name;\n\t\t\tint nameID;\n\t\t};\n\t};\n\tint main (int argc, char **argv) {\n\t\t\tstruct MessageBuffer buf;\n\t\t\tchar *defaultMessage = \"Hello World\";\n\t\t\tbuf.msgType = NAME_TYPE;\n\t\t\tbuf.name = defaultMessage;\n\t\t\tprintf(\"Pointer of buf.name is %p\\n\", buf.name);\n```\n/* This particular value for nameID is used to make the code architecture-independent. If coming from untrusted input, it could be any value. */* \n\t\t\t\n\t\t\tbuf.nameID = (int)(defaultMessage + 1);\n\t\t\tprintf(\"Pointer of buf.name is now %p\\n\", buf.name);\n\t\t\tif (buf.msgType == NAME_TYPE) {\n\t\t\t```\n\t\t\t\tprintf(\"Message: %s\\n\", buf.name);\n\t\t\t}\n\t\t\telse {\n\t\t\t\tprintf(\"Message: Use ID %d\\n\", buf.nameID);\n\t\t\t}\n\t}\n```"
+            },
+            {
+              "BodyText": "The code intends to process the message as a NAME_TYPE, and sets the default message to \"Hello World.\" However, since both buf.name and buf.nameID are part of the same union, they can act as aliases for the same memory location, depending on memory layout after compilation."
+            },
+            {
+              "BodyText": "As a result, modification of buf.nameID - an int - can effectively modify the pointer that is stored in buf.name - a string."
+            },
+            {
+              "BodyText": "Execution of the program might generate output such as:"
+            },
+            {
+              "BodyText": "```\n\t\tPointer of name is 10830\n\t\tPointer of name is now 10831\n\t\tMessage: ello World\n```"
+            },
+            {
+              "BodyText": "Notice how the pointer for buf.name was changed, even though buf.name was not explicitly modified."
+            },
+            {
+              "BodyText": "In this case, the first \"H\" character of the message is omitted. However, if an attacker is able to fully control the value of buf.nameID, then buf.name could contain an arbitrary pointer, leading to out-of-bounds reads or writes."
+            }
+          ]
+        }
+      ],
+      "PotentialMitigations": null
+    },
+    "/cwe/704/parents": {
+      "weakness_parents": [],
+      "category_parents": [
+        "1129",
+        "1157",
+        "1158",
+        "1161",
+        "1306",
+        "1416",
+        "737",
+        "741",
+        "747",
+        "875",
+        "883",
+        "998"
+      ]
+    },
+    "/cwe/704/children": {
+      "weakness_children": [
+        "1389",
+        "588",
+        "681",
+        "843"
+      ],
+      "category_children": []
+    }
+  }
+}

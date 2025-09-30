@@ -1,0 +1,63 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T23:37:24.965947",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "530",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/530": {
+      "ID": "530",
+      "Type": "variant_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/530": {
+      "ID": "530",
+      "Name": "Exposure of Backup File to an Unauthorized Control Sphere",
+      "Abstraction": "Variant",
+      "Structure": "Simple",
+      "Status": "Incomplete",
+      "Description": "A backup file is stored in a directory or archive that is made accessible to unauthorized actors.",
+      "ExtendedDescription": "Often, older backup files are renamed with an extension such as .~bk to distinguish them from production files. The source code for old files that have been renamed in this manner and left in the webroot can often be retrieved. This renaming may have been performed automatically by the web server, or manually by the administrator.",
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": null,
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Operation",
+          "Note": "OMISSION: This weakness is caused by missing a security tactic during the architecture and design phase."
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Confidentiality"
+          ],
+          "Impact": [
+            "Read Application Data"
+          ],
+          "Note": "At a minimum, an attacker who retrieves this file would have all the information contained in it, whether that be database calls, the format of parameters accepted by the application, or simply information regarding the architectural structure of your site."
+        }
+      ],
+      "DemonstrativeExamples": null,
+      "PotentialMitigations": [
+        {
+          "Phase": [
+            "Policy"
+          ],
+          "Description": "Recommendations include implementing a security policy within your organization that prohibits backing up web application source code in the webroot."
+        }
+      ]
+    },
+    "/cwe/530/parents": {
+      "weakness_parents": [],
+      "category_parents": [
+        "1011",
+        "1403",
+        "731",
+        "963"
+      ]
+    },
+    "/cwe/530/children": null
+  }
+}

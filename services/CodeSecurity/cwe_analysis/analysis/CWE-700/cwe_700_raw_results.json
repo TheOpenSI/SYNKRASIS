@@ -1,0 +1,88 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-30T00:00:11.240722",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "700",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/700": {
+      "endpoint": "/cwe/700",
+      "url": "https://cwe-api.mitre.org/api/v1/cwe/700",
+      "status_code": 200,
+      "success": true,
+      "error": null,
+      "data": [
+        {
+          "Type": "view",
+          "ID": "700"
+        }
+      ]
+    },
+    "/cwe/weakness/700": {
+      "endpoint": "/cwe/weakness/700",
+      "url": "https://cwe-api.mitre.org/api/v1/cwe/weakness/700",
+      "status_code": 404,
+      "success": false,
+      "error": "HTTP 404: \"for weakness: cwe (700) not found, use the view endpoint\"\n",
+      "data": null
+    },
+    "/cwe/700/parents": {
+      "endpoint": "/cwe/700/parents",
+      "url": "https://cwe-api.mitre.org/api/v1/cwe/700/parents",
+      "status_code": 200,
+      "success": true,
+      "error": null,
+      "data": []
+    },
+    "/cwe/700/children": {
+      "endpoint": "/cwe/700/children",
+      "url": "https://cwe-api.mitre.org/api/v1/cwe/700/children",
+      "status_code": 200,
+      "success": true,
+      "error": null,
+      "data": [
+        {
+          "Type": "category",
+          "ID": "1005",
+          "ViewID": "700"
+        },
+        {
+          "Type": "category",
+          "ID": "2",
+          "ViewID": "700"
+        },
+        {
+          "Type": "category",
+          "ID": "227",
+          "ViewID": "700"
+        },
+        {
+          "Type": "category",
+          "ID": "254",
+          "ViewID": "700"
+        },
+        {
+          "Type": "category",
+          "ID": "361",
+          "ViewID": "700"
+        },
+        {
+          "Type": "category",
+          "ID": "388",
+          "ViewID": "700"
+        },
+        {
+          "Type": "category",
+          "ID": "398",
+          "ViewID": "700"
+        },
+        {
+          "Type": "category",
+          "ID": "485",
+          "ViewID": "700"
+        }
+      ]
+    }
+  }
+}

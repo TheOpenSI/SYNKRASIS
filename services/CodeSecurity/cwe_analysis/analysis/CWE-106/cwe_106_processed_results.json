@@ -1,0 +1,119 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T22:11:52.240309",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "106",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/106": {
+      "ID": "106",
+      "Type": "variant_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/106": {
+      "ID": "106",
+      "Name": "Struts: Plug-in Framework not in Use",
+      "Abstraction": "Variant",
+      "Structure": "Simple",
+      "Status": "Draft",
+      "Description": "When an application does not use an input validation framework such as the Struts Validator, there is a greater risk of introducing weaknesses related to insufficient input validation.",
+      "ExtendedDescription": "\n\nUnchecked input is the leading cause of vulnerabilities in J2EE applications. Unchecked input leads to cross-site scripting, process control, and SQL injection vulnerabilities, among others.\n\n\nAlthough J2EE applications are not generally susceptible to memory corruption attacks, if a J2EE application interfaces with native code that does not perform array bounds checking, an attacker may be able to use an input validation mistake in the J2EE application to launch a buffer overflow attack.\n",
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Name": "Java",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Implementation"
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Integrity"
+          ],
+          "Impact": [
+            "Unexpected State"
+          ]
+        }
+      ],
+      "DemonstrativeExamples": [
+        {
+          "Entries": [
+            {
+              "IntroText": "In the following Java example the class RegistrationForm is a Struts framework ActionForm Bean that will maintain user input data from a registration webpage for an online business site. The user will enter registration data and, through the Struts framework, the RegistrationForm bean will maintain the user data."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "Java",
+              "ExampleCode": "```\n\tpublic class RegistrationForm extends org.apache.struts.action.ActionForm {\n```\n// private variables for registration form* \n\t\tprivate String name;\n\t\tprivate String email;\n\t\t...\n\t\t\n\t\tpublic RegistrationForm() {\n\t\t```\n\t\t\tsuper();\n\t\t}\n```\n// getter and setter methods for private variables* \n\t\t...\n\t\t}"
+            },
+            {
+              "BodyText": "However, the RegistrationForm class extends the Struts ActionForm class which does use the Struts validator plug-in to provide validator capabilities. In the following example, the RegistrationForm Java class extends the ValidatorForm and Struts configuration XML file, struts-config.xml, instructs the application to use the Struts validator plug-in."
+            },
+            {
+              "Nature": "Good",
+              "Language": "Java",
+              "ExampleCode": "```\n\tpublic class RegistrationForm extends org.apache.struts.validator.ValidatorForm {\n```\n// private variables for registration form* \n\t\tprivate String name;\n\t\tprivate String email;\n\t\t...\n\t\t\n\t\tpublic RegistrationForm() {\n\t\t```\n\t\t\tsuper();\n\t\t}\n\t\tpublic ActionErrors validate(ActionMapping mapping, HttpServletRequest request) {...}\n```\n// getter and setter methods for private variables* \n\t\t...\n\t\t}"
+            },
+            {
+              "BodyText": "The plug-in tag of the Struts configuration XML file includes the name of the validator plug-in to be used and includes a set-property tag to instruct the application to use the file, validator-rules.xml, for default validation rules and the file, validation.XML, for custom validation."
+            },
+            {
+              "Nature": "Good",
+              "Language": "XML",
+              "ExampleCode": "```\n\t<struts-config>\n\t\t<form-beans>\n\t\t\t<form-bean name=\"RegistrationForm\" type=\"RegistrationForm\"/>\n\t\t</form-beans>\n\t\t...\n\t\t<!-- ========================= Validator plugin ================================= -->\n\t\t<plug-in className=\"org.apache.struts.validator.ValidatorPlugIn\">\n\t\t\t<set-property\n\t\t\t\tproperty=\"pathnames\"\n\t\t\t\tvalue=\"/WEB-INF/validator-rules.xml,/WEB-INF/validation.xml\"/>\n\t\t</plug-in>\n\t</struts-config>\n```"
+            }
+          ]
+        }
+      ],
+      "PotentialMitigations": [
+        {
+          "Phase": [
+            "Architecture and Design"
+          ],
+          "Strategy": "Input Validation",
+          "Description": "Use an input validation framework such as Struts."
+        },
+        {
+          "Phase": [
+            "Architecture and Design"
+          ],
+          "Strategy": "Libraries or Frameworks",
+          "Description": "Use an input validation framework such as Struts."
+        },
+        {
+          "Phase": [
+            "Implementation"
+          ],
+          "Strategy": "Input Validation",
+          "Description": "\n\nUse the Struts Validator to validate all program input before it is processed by the application. Ensure that there are no holes in the configuration of the Struts Validator. Example uses of the validator include checking to ensure that:\n\n\n  - Phone number fields contain only valid characters in phone numbers\n\n  - Boolean values are only \"T\" or \"F\"\n\n  - Free-form strings are of a reasonable length and composition\n\n"
+        },
+        {
+          "Phase": [
+            "Implementation"
+          ],
+          "Strategy": "Libraries or Frameworks",
+          "Description": "\n\nUse the Struts Validator to validate all program input before it is processed by the application. Ensure that there are no holes in the configuration of the Struts Validator. Example uses of the validator include checking to ensure that:\n\n\n  - Phone number fields contain only valid characters in phone numbers\n\n  - Boolean values are only \"T\" or \"F\"\n\n  - Free-form strings are of a reasonable length and composition\n\n"
+        }
+      ]
+    },
+    "/cwe/106/parents": {
+      "weakness_parents": [
+        "20"
+      ],
+      "category_parents": [
+        "1406",
+        "722",
+        "990"
+      ]
+    },
+    "/cwe/106/children": null
+  }
+}

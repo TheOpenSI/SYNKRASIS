@@ -1,0 +1,105 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T23:17:53.306238",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "382",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/382": {
+      "ID": "382",
+      "Type": "variant_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/382": {
+      "ID": "382",
+      "Name": "J2EE Bad Practices: Use of System.exit()",
+      "Abstraction": "Variant",
+      "Structure": "Simple",
+      "Status": "Draft",
+      "Description": "A J2EE application uses System.exit(), which also shuts down its container.",
+      "ExtendedDescription": "It is never a good idea for a web application to attempt to shut down the application container. Access to a function that can shut down the application is an avenue for Denial of Service (DoS) attacks.",
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Name": "Java",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Implementation",
+          "Note": "A call to System.exit() is probably part of leftover debug code or code imported from a non-J2EE application."
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Availability"
+          ],
+          "Impact": [
+            "DoS: Crash, Exit, or Restart"
+          ]
+        }
+      ],
+      "DemonstrativeExamples": [
+        {
+          "ID": "DX-199",
+          "Entries": [
+            {
+              "IntroText": "Included in the doPost() method defined below is a call to System.exit() in the event of a specific exception."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "Java",
+              "ExampleCode": "```\n\tPublic void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {\n\t\ttry {\n\t\t\t...\n\t\t} catch (ApplicationSpecificException ase) {\n\t\t\tlogger.error(\"Caught: \" + ase.toString());\n\t\t\tSystem.exit(1);\n\t\t}\n\t}\n```"
+            }
+          ]
+        }
+      ],
+      "PotentialMitigations": [
+        {
+          "Phase": [
+            "Architecture and Design"
+          ],
+          "Strategy": "Separation of Privilege",
+          "Description": "The shutdown function should be a privileged function available only to a properly authorized administrative user"
+        },
+        {
+          "Phase": [
+            "Implementation"
+          ],
+          "Description": "Web applications should not call methods that cause the virtual machine to exit, such as System.exit()"
+        },
+        {
+          "Phase": [
+            "Implementation"
+          ],
+          "Description": "Web applications should also not throw any Throwables to the application server as this may adversely affect the container."
+        },
+        {
+          "Phase": [
+            "Implementation"
+          ],
+          "Description": "Non-web applications may have a main() method that contains a System.exit(), but generally should not call System.exit() from other locations in the code"
+        }
+      ]
+    },
+    "/cwe/382/parents": {
+      "weakness_parents": [
+        "705"
+      ],
+      "category_parents": [
+        "1141",
+        "1410",
+        "361",
+        "730",
+        "851",
+        "1001"
+      ]
+    },
+    "/cwe/382/children": null
+  }
+}

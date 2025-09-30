@@ -1,0 +1,116 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T22:34:41.936148",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "1294",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/1294": {
+      "ID": "1294",
+      "Type": "class_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/1294": {
+      "ID": "1294",
+      "Name": "Insecure Security Identifier Mechanism",
+      "Abstraction": "Class",
+      "Structure": "Simple",
+      "Status": "Incomplete",
+      "Description": "The System-on-Chip (SoC) implements a Security Identifier mechanism to differentiate what actions are allowed or disallowed when a transaction originates from an entity. However, the Security Identifiers are not correctly implemented.",
+      "ExtendedDescription": "\n\nSystems-On-Chip (Integrated circuits and hardware engines) implement Security Identifiers to differentiate/identify actions originated from various agents. These actions could be 'read', 'write', 'program', 'reset', 'fetch', 'compute', etc. Security identifiers are generated and assigned to every agent in the System (SoC) that is either capable of generating an action or receiving an action from another agent. Every agent could be assigned a unique, Security Identifier based on its trust level or privileges.\n\n\nA broad class of flaws can exist in the Security Identifier process, including but not limited to missing security identifiers, improper conversion of security identifiers, incorrect generation of security identifiers, etc.\n",
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Class": "Not Language-Specific",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Operating_System",
+          "Class": "Not OS-Specific",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Architecture",
+          "Class": "Not Architecture-Specific",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Technology",
+          "Name": "Bus/Interface Hardware",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Technology",
+          "Class": "Not Technology-Specific",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Architecture and Design",
+          "Note": "Such issues could be introduced during hardware architecture and design, then identified later during Testing or System Configuration phases."
+        },
+        {
+          "Phase": "Implementation",
+          "Note": "Such issues could be introduced during hardware implementation, then identified later during Testing or System Configuration phases."
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Confidentiality",
+            "Integrity",
+            "Availability",
+            "Access Control"
+          ],
+          "Impact": [
+            "Modify Memory",
+            "Read Memory",
+            "DoS: Resource Consumption (Other)",
+            "Execute Unauthorized Code or Commands",
+            "Gain Privileges or Assume Identity",
+            "Quality Degradation"
+          ],
+          "Likelihood": [
+            "High"
+          ]
+        }
+      ],
+      "DemonstrativeExamples": null,
+      "PotentialMitigations": [
+        {
+          "Phase": [
+            "Architecture and Design"
+          ],
+          "Description": "Security Identifier Decoders must be reviewed for design inconsistency and common weaknesses."
+        },
+        {
+          "Phase": [
+            "Implementation"
+          ],
+          "Description": "Access and programming flows must be tested in pre-silicon and post-silicon testing."
+        }
+      ]
+    },
+    "/cwe/1294/parents": {
+      "weakness_parents": [],
+      "category_parents": [
+        "1198",
+        "1396"
+      ]
+    },
+    "/cwe/1294/children": {
+      "weakness_children": [
+        "1259",
+        "1270",
+        "1290",
+        "1292",
+        "1302"
+      ],
+      "category_children": []
+    }
+  }
+}

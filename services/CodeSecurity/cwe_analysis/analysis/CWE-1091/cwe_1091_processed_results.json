@@ -1,0 +1,51 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T22:16:08.394518",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "1091",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/1091": {
+      "ID": "1091",
+      "Type": "base_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/1091": {
+      "ID": "1091",
+      "Name": "Use of Object without Invoking Destructor Method",
+      "Abstraction": "Base",
+      "Structure": "Simple",
+      "Status": "Incomplete",
+      "Description": "The product contains a method that accesses an object but does not later invoke\n\t\t\t\t\tthe element's associated finalize/destructor method.",
+      "ExtendedDescription": "\n\nThis issue can make the product perform more slowly by retaining memory and/or other resources longer than necessary. If the relevant code is reachable by an attacker, then this performance problem might introduce a vulnerability.\n",
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": null,
+      "AlternateTerms": null,
+      "ModesOfIntroduction": null,
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Other"
+          ],
+          "Impact": [
+            "Reduce Performance"
+          ]
+        }
+      ],
+      "DemonstrativeExamples": null,
+      "PotentialMitigations": null
+    },
+    "/cwe/1091/parents": {
+      "weakness_parents": [
+        "1076"
+      ],
+      "category_parents": [
+        "1132",
+        "1309",
+        "1416"
+      ]
+    },
+    "/cwe/1091/children": null
+  }
+}

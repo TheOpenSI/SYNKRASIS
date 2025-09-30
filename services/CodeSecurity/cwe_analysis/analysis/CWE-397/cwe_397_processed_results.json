@@ -1,0 +1,125 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T23:19:37.575791",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "397",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/397": {
+      "ID": "397",
+      "Type": "base_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/397": {
+      "ID": "397",
+      "Name": "Declaration of Throws for Generic Exception",
+      "Abstraction": "Base",
+      "Structure": "Simple",
+      "Status": "Draft",
+      "Description": "The product throws or raises an overly broad exceptions that can hide important details and produce inappropriate responses to certain conditions.",
+      "ExtendedDescription": "Declaring a method to throw Exception or Throwable promotes generic error handling procedures that make it difficult for callers to perform proper error handling and error recovery. For example, Java's exception mechanism makes it easy for callers to anticipate what can go wrong and write code to handle each specific exceptional circumstance. Declaring that a method throws a generic form of exception defeats this system.",
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Name": "C++",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Language",
+          "Name": "C#",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Language",
+          "Name": "Java",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Language",
+          "Name": "Python",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Implementation"
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Non-Repudiation",
+            "Other"
+          ],
+          "Impact": [
+            "Hide Activities",
+            "Alter Execution Logic"
+          ],
+          "Note": "Throwing a generic exception can hide details about unexpected adversary activities by making it difficult to properly troubleshoot error conditions during execution."
+        }
+      ],
+      "DemonstrativeExamples": [
+        {
+          "ID": "DX-198",
+          "Entries": [
+            {
+              "IntroText": "The following method throws three types of exceptions."
+            },
+            {
+              "Nature": "Good",
+              "Language": "Java",
+              "ExampleCode": "```\n\tpublic void doExchange() throws IOException, InvocationTargetException, SQLException {\n\t\t...\n\t}\n```"
+            },
+            {
+              "BodyText": "While it might seem tidier to write"
+            },
+            {
+              "Nature": "Bad",
+              "Language": "Java",
+              "ExampleCode": "```\n\tpublic void doExchange() throws Exception {\n\t\t...\n\t}\n```"
+            },
+            {
+              "BodyText": "doing so hampers the caller's ability to understand and handle the exceptions that occur. Further, if a later revision of doExchange() introduces a new type of exception that should be treated differently than previous exceptions, there is no easy way to enforce this requirement."
+            }
+          ]
+        },
+        {
+          "Entries": [
+            {
+              "IntroText": "Early versions of C++ (C++98, C++03, C++11) included a feature known as Dynamic Exception Specification. This allowed functions to declare what type of exceptions it may throw. It is possible to declare a general class of exception to cover any derived exceptions that may be thrown."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "C++",
+              "ExampleCode": "```\n\tint myfunction() throw(std::exception) {\n\t\tif (0) throw out_of_range();\n\t\tthrow length_error();\n\t}\n```"
+            },
+            {
+              "BodyText": "In the example above, the code declares that myfunction() can throw an exception of type \"std::exception\" thus hiding details about the possible derived exceptions that could potentially be thrown."
+            }
+          ]
+        }
+      ],
+      "PotentialMitigations": null
+    },
+    "/cwe/397/parents": {
+      "weakness_parents": [
+        "221",
+        "705"
+      ],
+      "category_parents": [
+        "1129",
+        "1131",
+        "1141",
+        "1410",
+        "389",
+        "388",
+        "851",
+        "960"
+      ]
+    },
+    "/cwe/397/children": null
+  }
+}

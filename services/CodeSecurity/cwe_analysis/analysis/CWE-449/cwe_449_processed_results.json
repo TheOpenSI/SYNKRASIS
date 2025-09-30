@@ -1,0 +1,69 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T23:26:24.131348",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "449",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/449": {
+      "ID": "449",
+      "Type": "base_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/449": {
+      "ID": "449",
+      "Name": "The UI Performs the Wrong Action",
+      "Abstraction": "Base",
+      "Structure": "Simple",
+      "Status": "Incomplete",
+      "Description": "The UI performs the wrong action with respect to the user's request.",
+      "ExtendedDescription": null,
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Class": "Not Language-Specific",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Implementation"
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Other"
+          ],
+          "Impact": [
+            "Quality Degradation",
+            "Varies by Context"
+          ]
+        }
+      ],
+      "DemonstrativeExamples": null,
+      "PotentialMitigations": [
+        {
+          "Phase": [
+            "Testing"
+          ],
+          "Description": "Perform extensive functionality testing of the UI. The UI should behave as specified."
+        }
+      ]
+    },
+    "/cwe/449/parents": {
+      "weakness_parents": [
+        "446"
+      ],
+      "category_parents": [
+        "1412",
+        "355",
+        "995"
+      ]
+    },
+    "/cwe/449/children": null
+  }
+}

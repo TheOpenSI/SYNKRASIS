@@ -1,0 +1,105 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T22:30:25.400970",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "1263",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/1263": {
+      "ID": "1263",
+      "Type": "class_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/1263": {
+      "ID": "1263",
+      "Name": "Improper Physical Access Control",
+      "Abstraction": "Class",
+      "Structure": "Simple",
+      "Status": "Incomplete",
+      "Description": "The product is designed with access restricted to certain information, but it does not sufficiently protect against an unauthorized actor with physical access to these areas.",
+      "ExtendedDescription": "Sections of a product intended to have restricted access may be inadvertently or intentionally rendered accessible when the implemented physical protections are insufficient. The specific requirements around how robust the design of the physical protection mechanism needs to be depends on the type of product being protected. Selecting the correct physical protection mechanism and properly enforcing it through implementation and manufacturing are critical to the overall physical security of the product.",
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Class": "Not Language-Specific",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Operating_System",
+          "Class": "Not OS-Specific",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Architecture",
+          "Class": "Not Architecture-Specific",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Technology",
+          "Class": "Not Technology-Specific",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Architecture and Design",
+          "Note": "This weakness can arise if design decisions are made that do not align with the intended physical protection of the product"
+        },
+        {
+          "Phase": "Manufacturing",
+          "Note": "While the architecture and design phase of the product may have accurately met the intended robustness for product physical protections, this phase may introduce the weakness through errors in physically manufacturing the product."
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Confidentiality",
+            "Integrity",
+            "Access Control"
+          ],
+          "Impact": [
+            "Varies by Context"
+          ]
+        }
+      ],
+      "DemonstrativeExamples": null,
+      "PotentialMitigations": [
+        {
+          "Phase": [
+            "Architecture and Design"
+          ],
+          "Description": "Specific protection requirements depend strongly on contextual factors including the level of acceptable risk associated with compromise to the product's protection mechanism. Designers could incorporate anti-tampering measures that protect against or detect when the product has been tampered with."
+        },
+        {
+          "Phase": [
+            "Testing"
+          ],
+          "Description": "The testing phase of the lifecycle should establish a method for determining whether the protection mechanism is sufficient to prevent unauthorized access."
+        },
+        {
+          "Phase": [
+            "Manufacturing"
+          ],
+          "Description": "Ensure that all protection mechanisms are fully activated at the time of manufacturing and distribution."
+        }
+      ]
+    },
+    "/cwe/1263/parents": {
+      "weakness_parents": [],
+      "category_parents": [
+        "1208",
+        "1364",
+        "1396"
+      ]
+    },
+    "/cwe/1263/children": {
+      "weakness_children": [
+        "1243"
+      ],
+      "category_children": []
+    }
+  }
+}

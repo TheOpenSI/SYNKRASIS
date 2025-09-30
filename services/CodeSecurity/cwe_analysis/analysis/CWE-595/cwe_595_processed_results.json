@@ -1,0 +1,135 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T23:45:59.168664",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "595",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/595": {
+      "ID": "595",
+      "Type": "variant_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/595": {
+      "ID": "595",
+      "Name": "Comparison of Object References Instead of Object Contents",
+      "Abstraction": "Variant",
+      "Structure": "Simple",
+      "Status": "Incomplete",
+      "Description": "The product compares object references instead of the contents of the objects themselves, preventing it from detecting equivalent objects.",
+      "ExtendedDescription": "For example, in Java, comparing objects using == usually produces deceptive results, since the == operator compares object references rather than values; often, this means that using == for strings is actually comparing the strings' references, not their values.",
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Name": "Java",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Language",
+          "Name": "JavaScript",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Language",
+          "Name": "PHP",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Language",
+          "Class": "Not Language-Specific",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Implementation"
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Other"
+          ],
+          "Impact": [
+            "Varies by Context"
+          ],
+          "Note": "This weakness can lead to erroneous results that can cause unexpected application behaviors."
+        }
+      ],
+      "DemonstrativeExamples": [
+        {
+          "ID": "DX-60",
+          "Entries": [
+            {
+              "IntroText": "In the example below, two Java String objects are declared and initialized with the same string values. An if statement is used to determine if the strings are equivalent."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "Java",
+              "ExampleCode": "```\n\tString str1 = new String(\"Hello\");\n\tString str2 = new String(\"Hello\");\n\tif (str1 == str2) {\n\t\tSystem.out.println(\"str1 == str2\");\n\t}\n```"
+            },
+            {
+              "BodyText": "However, the if statement will not be executed as the strings are compared using the \"==\" operator. For Java objects, such as String objects, the \"==\" operator compares object references, not object values. While the two String objects above contain the same string values, they refer to different object references, so the System.out.println statement will not be executed. To compare object values, the previous code could be modified to use the equals method:"
+            },
+            {
+              "Nature": "Good",
+              "Language": "Java",
+              "ExampleCode": "```\n\tif (str1.equals(str2)) {\n\t\tSystem.out.println(\"str1 equals str2\");\n\t}\n```"
+            }
+          ]
+        },
+        {
+          "Entries": [
+            {
+              "IntroText": "In the following Java example, two BankAccount objects are compared in the isSameAccount method using the == operator."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "Java",
+              "ExampleCode": "```\n\tpublic boolean isSameAccount(BankAccount accountA, BankAccount accountB) {\n\t\treturn accountA == accountB;\n\t}\n```"
+            },
+            {
+              "BodyText": "Using the == operator to compare objects may produce incorrect or deceptive results by comparing object references rather than values. The equals() method should be used to ensure correct results or objects should contain a member variable that uniquely identifies the object."
+            },
+            {
+              "BodyText": "The following example shows the use of the equals() method to compare the BankAccount objects and the next example uses a class get method to retrieve the bank account number that uniquely identifies the BankAccount object to compare the objects."
+            },
+            {
+              "Nature": "Good",
+              "Language": "Java",
+              "ExampleCode": "```\n\tpublic boolean isSameAccount(BankAccount accountA, BankAccount accountB) {\n\t\treturn accountA.equals(accountB);\n\t}\n```"
+            }
+          ]
+        }
+      ],
+      "PotentialMitigations": [
+        {
+          "Phase": [
+            "Implementation"
+          ],
+          "Description": "In Java, use the equals() method to compare objects instead of the == operator. If using ==, it is important for performance reasons that your objects are created by a static factory, not by a constructor."
+        }
+      ]
+    },
+    "/cwe/595/parents": {
+      "weakness_parents": [],
+      "category_parents": [
+        "1136",
+        "1306",
+        "1397",
+        "847",
+        "977"
+      ]
+    },
+    "/cwe/595/children": {
+      "weakness_children": [
+        "1097",
+        "597"
+      ],
+      "category_children": []
+    }
+  }
+}

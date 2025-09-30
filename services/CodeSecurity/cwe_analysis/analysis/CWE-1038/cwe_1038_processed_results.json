@@ -1,0 +1,67 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T22:08:58.946523",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "1038",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/1038": {
+      "ID": "1038",
+      "Type": "class_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/1038": {
+      "ID": "1038",
+      "Name": "Insecure Automated Optimizations",
+      "Abstraction": "Class",
+      "Structure": "Simple",
+      "Status": "Draft",
+      "Description": "The product uses a mechanism that automatically optimizes code, e.g. to improve a characteristic such as performance, but the optimizations can have an unintended side effect that might violate an intended security assumption.",
+      "ExtendedDescription": null,
+      "LikelihoodOfExploit": "Low",
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Class": "Not Language-Specific",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Architecture and Design",
+          "Note": "Optimizations built into the design of a product can have unintended consequences during execution."
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Integrity"
+          ],
+          "Impact": [
+            "Alter Execution Logic"
+          ],
+          "Note": "The optimizations alter the order of execution resulting in side effects that were not intended by the original developer."
+        }
+      ],
+      "DemonstrativeExamples": null,
+      "PotentialMitigations": null
+    },
+    "/cwe/1038/parents": {
+      "weakness_parents": [
+        "758"
+      ],
+      "category_parents": [
+        "1398"
+      ]
+    },
+    "/cwe/1038/children": {
+      "weakness_children": [
+        "1037",
+        "733"
+      ],
+      "category_children": []
+    }
+  }
+}

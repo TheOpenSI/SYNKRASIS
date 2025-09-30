@@ -1,0 +1,72 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T23:48:52.037044",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "615",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/615": {
+      "ID": "615",
+      "Type": "variant_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/615": {
+      "ID": "615",
+      "Name": "Inclusion of Sensitive Information in Source Code Comments",
+      "Abstraction": "Variant",
+      "Structure": "Simple",
+      "Status": "Incomplete",
+      "Description": "While adding general comments is very useful, some programmers tend to leave important data, such as: filenames related to the web application, old links or links which were not meant to be browsed by users, old code fragments, etc.",
+      "ExtendedDescription": "An attacker who finds these comments can map the application's structure and files, expose hidden parts of the site, and study the fragments of code to reverse engineer the application, which may help develop further attacks against the site.",
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": null,
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Implementation"
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Confidentiality"
+          ],
+          "Impact": [
+            "Read Application Data"
+          ]
+        }
+      ],
+      "DemonstrativeExamples": [
+        {
+          "Entries": [
+            {
+              "IntroText": "The following comment, embedded in a JSP, will be displayed in the resulting HTML output."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "JSP",
+              "ExampleCode": "```\n\t<!-- FIXME: calling this with more than 30 args kills the JDBC server -->\n```"
+            }
+          ]
+        }
+      ],
+      "PotentialMitigations": [
+        {
+          "Phase": [
+            "Distribution"
+          ],
+          "Description": "Remove comments which have sensitive information about the design/implementation of the application. Some of the comments may be exposed to the user and affect the security posture of the application."
+        }
+      ]
+    },
+    "/cwe/615/parents": {
+      "weakness_parents": [],
+      "category_parents": [
+        "1417",
+        "963"
+      ]
+    },
+    "/cwe/615/children": null
+  }
+}

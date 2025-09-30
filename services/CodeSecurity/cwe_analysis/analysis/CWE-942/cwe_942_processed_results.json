@@ -1,0 +1,131 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-30T00:18:30.817624",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "942",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/942": {
+      "ID": "942",
+      "Type": "variant_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/942": {
+      "ID": "942",
+      "Name": "Permissive Cross-domain Security Policy with Untrusted Domains",
+      "Abstraction": "Variant",
+      "Structure": "Simple",
+      "Status": "Incomplete",
+      "Description": "The product uses a web-client protection\n         mechanism such as a Content Security Policy (CSP) or\n         cross-domain policy file, but the policy includes untrusted\n         domains with which the web client is allowed to\n         communicate.",
+      "ExtendedDescription": "\n\nIf a cross-domain policy file includes domains that should not be trusted, such as when using wildcards under a high-level domain, then the application could be attacked by these untrusted domains. In many cases, the attack can be launched without the victim even being aware of it.\n",
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Class": "Not Language-Specific",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Technology",
+          "Class": "Web Based",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Implementation"
+        },
+        {
+          "Phase": "Architecture and Design",
+          "Note": "COMMISSION: This weakness refers to an incorrect design related to an architectural security tactic."
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Confidentiality",
+            "Integrity",
+            "Availability",
+            "Access Control"
+          ],
+          "Impact": [
+            "Execute Unauthorized Code or Commands",
+            "Bypass Protection Mechanism",
+            "Read Application Data",
+            "Varies by Context"
+          ],
+          "Note": "With an overly permissive policy file, an attacker may be able to bypass the web browser's same-origin policy and conduct many of the same attacks seen in Cross-Site Scripting (CWE-79). An attacker can exploit the weakness to transfer private information from the victim's machine to the attacker, manipulate or steal cookies that may include session information, create malicious requests to a web site on behalf of the victim, or execute malicious code on the end user systems. Other damaging attacks include the disclosure of end user files, installation of Trojan horse programs, redirecting the user to some other page or site, running ActiveX controls (under Microsoft Internet Explorer) from sites that a user perceives as trustworthy, and modifying presentation of content."
+        }
+      ],
+      "DemonstrativeExamples": [
+        {
+          "ID": "DX-208",
+          "Entries": [
+            {
+              "IntroText": "These cross-domain policy files mean to allow Flash and Silverlight applications hosted on other domains to access its data:"
+            },
+            {
+              "BodyText": "Flash crossdomain.xml :"
+            },
+            {
+              "Nature": "Bad",
+              "Language": "XML",
+              "ExampleCode": "```\n\t<cross-domain-policy xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n\txsi:noNamespaceSchemaLocation=\"http://www.adobe.com/xml/schemas/PolicyFile.xsd\">\n\t<allow-access-from domain=\"*.example.com\"/>\n\t<allow-access-from domain=\"*\"/>\n\t</cross-domain-policy>\n```"
+            },
+            {
+              "BodyText": "Silverlight clientaccesspolicy.xml :"
+            },
+            {
+              "Nature": "Bad",
+              "Language": "XML",
+              "ExampleCode": "```\n\t<?xml version=\"1.0\" encoding=\"utf-8\"?>\n\t<access-policy>\n\t<cross-domain-access>\n\t<policy>\n\t<allow-from http-request-headers=\"SOAPAction\">\n\t<domain uri=\"*\"/>\n\t</allow-from>\n\t<grant-to>\n\t<resource path=\"/\" include-subpaths=\"true\"/>\n\t</grant-to>\n\t</policy>\n\t</cross-domain-access>\n\t</access-policy>\n```"
+            },
+            {
+              "BodyText": "These entries are far too permissive, allowing any Flash or Silverlight application to send requests. A malicious application hosted on any other web site will be able to send requests on behalf of any user tricked into executing it."
+            }
+          ]
+        }
+      ],
+      "PotentialMitigations": [
+        {
+          "Phase": [
+            "Architecture and Design",
+            "Operation"
+          ],
+          "Strategy": "Attack Surface Reduction",
+          "Description": "Define a restrictive Content Security Policy [REF-1486] or cross-domain policy file."
+        },
+        {
+          "Phase": [
+            "Architecture and Design",
+            "Operation"
+          ],
+          "Strategy": "Attack Surface Reduction",
+          "Description": "Avoid using wildcards in the CSP / cross-domain policy file. Any domain matching the wildcard expression will be implicitly trusted, and can perform two-way interaction with the target server."
+        },
+        {
+          "Phase": [
+            "Architecture and Design",
+            "Operation"
+          ],
+          "Strategy": "Environment Hardening",
+          "Description": "For Flash, modify crossdomain.xml to use meta-policy options such as 'master-only' or 'none' to reduce the possibility of an attacker planting extraneous cross-domain policy files on a server."
+        }
+      ]
+    },
+    "/cwe/942/parents": {
+      "weakness_parents": [
+        "863",
+        "923"
+      ],
+      "category_parents": [
+        "1011",
+        "1349",
+        "1396"
+      ]
+    },
+    "/cwe/942/children": null
+  }
+}

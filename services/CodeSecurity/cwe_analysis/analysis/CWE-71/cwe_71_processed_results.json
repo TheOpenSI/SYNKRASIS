@@ -1,0 +1,33 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-30T00:01:03.991850",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "71",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/71": {
+      "ID": "71",
+      "Type": "deprecated_weakness",
+      "is_deprecated": true
+    },
+    "/cwe/weakness/71": {
+      "ID": "71",
+      "Name": "DEPRECATED: Apple '.DS_Store'",
+      "Abstraction": "Variant",
+      "Structure": "Simple",
+      "Status": "Deprecated",
+      "Description": "This entry has been deprecated as it represents a specific observed example of a UNIX Hard Link weakness type rather than its own individual weakness type. Please refer to CWE-62.",
+      "ExtendedDescription": null,
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": null,
+      "AlternateTerms": null,
+      "ModesOfIntroduction": null,
+      "CommonConsequences": null,
+      "DemonstrativeExamples": null,
+      "PotentialMitigations": null
+    },
+    "/cwe/71/parents": null,
+    "/cwe/71/children": null
+  }
+}

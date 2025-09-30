@@ -1,0 +1,103 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T22:36:05.072621",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "1303",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/1303": {
+      "ID": "1303",
+      "Type": "base_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/1303": {
+      "ID": "1303",
+      "Name": "Non-Transparent Sharing of Microarchitectural Resources",
+      "Abstraction": "Base",
+      "Structure": "Simple",
+      "Status": "Draft",
+      "Description": "Hardware structures shared across execution contexts (e.g., caches and branch predictors) can violate the expected architecture isolation between contexts.",
+      "ExtendedDescription": "\n\nModern processors use techniques such as out-of-order execution, speculation, prefetching, data forwarding, and caching to increase performance. Details about the implementation of these techniques are hidden from the programmer's view. This is problematic when the hardware implementation of these techniques results in resources being shared across supposedly isolated contexts. Contention for shared resources between different contexts opens covert channels that allow malicious programs executing in one context to recover information from another context.\n\n\nSome examples of shared micro-architectural resources that have been used to leak information between contexts are caches, branch prediction logic, and load or store buffers. Speculative and out-of-order execution provides an attacker with increased control over which data is leaked through the covert channel.\n\n\nIf the extent of resource sharing between contexts in the design microarchitecture is undocumented, it is extremely difficult to ensure system assets are protected against disclosure.\n",
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Class": "Not Language-Specific",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Operating_System",
+          "Class": "Not OS-Specific",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Architecture",
+          "Class": "Not Architecture-Specific",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Technology",
+          "Class": "Not Technology-Specific",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Architecture and Design",
+          "Note": "Such issues could be introduced during hardware architecture and design and identified later during Testing or System Configuration phases."
+        },
+        {
+          "Phase": "Implementation",
+          "Note": "Such issues could be introduced during implementation and identified later during Testing or System Configuration phases."
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Confidentiality"
+          ],
+          "Impact": [
+            "Read Application Data",
+            "Read Memory"
+          ],
+          "Note": "Microarchitectural side-channels have been used to leak specific information such as cryptographic keys, and Address Space Layout Randomization (ALSR) offsets as well as arbitrary memory."
+        }
+      ],
+      "DemonstrativeExamples": [
+        {
+          "Entries": [
+            {
+              "IntroText": "On some processors the hardware indirect branch predictor is shared between execution contexts, for example, between sibling SMT threads. When SMT thread A executes an indirect branch to a target address X, this target may be temporarily stored by the indirect branch predictor. A subsequent indirect branch mis-prediction for SMT thread B could speculatively execute instructions at X (or at a location in B's address space that partially aliases X). Even though the processor rolls back the architectural effects of the mis-predicted indirect branch, the memory accesses alter data cache state, which is not rolled back after the indirect branch is resolved."
+            }
+          ]
+        }
+      ],
+      "PotentialMitigations": [
+        {
+          "Phase": [
+            "Architecture and Design"
+          ],
+          "Description": "Microarchitectural covert channels can be addressed using a mixture of hardware and software mitigation techniques. These include partitioned caches, new barrier and flush instructions, and disabling high resolution performance counters and timers."
+        },
+        {
+          "Phase": [
+            "Requirements"
+          ],
+          "Description": "Microarchitectural covert channels can be addressed using a mixture of hardware and software mitigation techniques. These include partitioned caches, new barrier and flush instructions, and disabling high resolution performance counters and timers."
+        }
+      ]
+    },
+    "/cwe/1303/parents": {
+      "weakness_parents": [],
+      "category_parents": [
+        "1198",
+        "1364",
+        "1366",
+        "1418"
+      ]
+    },
+    "/cwe/1303/children": null
+  }
+}

@@ -1,0 +1,128 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T23:44:51.978239",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "587",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/587": {
+      "ID": "587",
+      "Type": "variant_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/587": {
+      "ID": "587",
+      "Name": "Assignment of a Fixed Address to a Pointer",
+      "Abstraction": "Variant",
+      "Structure": "Simple",
+      "Status": "Draft",
+      "Description": "The product sets a pointer to a specific address other than NULL or 0.",
+      "ExtendedDescription": "Using a fixed address is not portable, because that address will probably not be valid in all environments or platforms.",
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Name": "C",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Language",
+          "Name": "C++",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Language",
+          "Name": "C#",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Language",
+          "Class": "Assembly",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Implementation"
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Integrity",
+            "Confidentiality",
+            "Availability"
+          ],
+          "Impact": [
+            "Execute Unauthorized Code or Commands"
+          ],
+          "Note": "If one executes code at a known location, an attacker might be able to inject code there beforehand."
+        },
+        {
+          "Scope": [
+            "Availability"
+          ],
+          "Impact": [
+            "DoS: Crash, Exit, or Restart",
+            "Reduce Maintainability",
+            "Reduce Reliability"
+          ],
+          "Note": "If the code is ported to another platform or environment, the pointer is likely to be invalid and cause a crash."
+        },
+        {
+          "Scope": [
+            "Confidentiality",
+            "Integrity"
+          ],
+          "Impact": [
+            "Read Memory",
+            "Modify Memory"
+          ],
+          "Note": "The data at a known pointer location can be easily read or influenced by an attacker."
+        }
+      ],
+      "DemonstrativeExamples": [
+        {
+          "ID": "DX-192",
+          "Entries": [
+            {
+              "IntroText": "This code assumes a particular function will always be found at a particular address. It assigns a pointer to that address and calls the function."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "C",
+              "ExampleCode": "```\n\tint (*pt2Function) (float, char, char)=0x08040000;\n\tint result2 = (*pt2Function) (12, 'a', 'b');\n```\n// Here we can inject code to execute.*"
+            },
+            {
+              "BodyText": "The same function may not always be found at the same memory address. This could lead to a crash, or an attacker may alter the memory at the expected address, leading to arbitrary code execution."
+            }
+          ]
+        }
+      ],
+      "PotentialMitigations": [
+        {
+          "Phase": [
+            "Implementation"
+          ],
+          "Description": "Never set a pointer to a fixed address."
+        }
+      ]
+    },
+    "/cwe/587/parents": {
+      "weakness_parents": [
+        "758"
+      ],
+      "category_parents": [
+        "1158",
+        "1399",
+        "465",
+        "738",
+        "872",
+        "998"
+      ]
+    },
+    "/cwe/587/children": null
+  }
+}

@@ -1,0 +1,73 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T23:34:55.475464",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "512",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/512": {
+      "ID": "512",
+      "Type": "base_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/512": {
+      "ID": "512",
+      "Name": "Spyware",
+      "Abstraction": "Base",
+      "Structure": "Simple",
+      "Status": "Incomplete",
+      "Description": "The product collects personally identifiable information about a human user or the user's activities, but the product accesses this information using other resources besides itself, and it does not require that user's explicit approval or direct input into the product.",
+      "ExtendedDescription": "\"Spyware\" is a commonly used term with many definitions and interpretations. In general, it is meant to refer to products that collect information or install functionality that human users might not allow if they were fully aware of the actions being taken by the software. For example, a user might expect that tax software would collect a social security number and include it when filing a tax return, but that same user would not expect gaming software to obtain the social security number from that tax software's data.",
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": null,
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Architecture and Design"
+        },
+        {
+          "Phase": "Implementation"
+        },
+        {
+          "Phase": "Operation"
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Confidentiality"
+          ],
+          "Impact": [
+            "Read Application Data"
+          ]
+        }
+      ],
+      "DemonstrativeExamples": null,
+      "PotentialMitigations": [
+        {
+          "Phase": [
+            "Operation"
+          ],
+          "Description": "Use spyware detection and removal software."
+        },
+        {
+          "Phase": [
+            "Installation"
+          ],
+          "Description": "Always verify the integrity of the product that is being installed."
+        }
+      ]
+    },
+    "/cwe/512/parents": {
+      "weakness_parents": [
+        "506"
+      ],
+      "category_parents": [
+        "1412",
+        "904"
+      ]
+    },
+    "/cwe/512/children": null
+  }
+}

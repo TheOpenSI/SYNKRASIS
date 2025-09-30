@@ -1,0 +1,125 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T22:38:52.652681",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "1327",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/1327": {
+      "ID": "1327",
+      "Type": "base_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/1327": {
+      "ID": "1327",
+      "Name": "Binding to an Unrestricted IP Address",
+      "Abstraction": "Base",
+      "Structure": "Simple",
+      "Status": "Incomplete",
+      "Description": "The product assigns the address 0.0.0.0 for a database server, a cloud service/instance, or any computing resource that communicates remotely.",
+      "ExtendedDescription": "\n\nWhen a server binds to the address 0.0.0.0, it allows connections from every IP address on the local machine, effectively exposing the server to every possible network. This might be much broader access than intended by the developer or administrator, who might only be expecting the server to be reachable from a single interface/network.\n",
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Name": "Other",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Operating_System",
+          "Class": "Not OS-Specific",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Architecture",
+          "Class": "Not Architecture-Specific",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Technology",
+          "Name": "Web Server",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Technology",
+          "Class": "Client Server",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Technology",
+          "Class": "Cloud Computing",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "System Configuration"
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Availability"
+          ],
+          "Impact": [
+            "DoS: Amplification"
+          ],
+          "Likelihood": [
+            "High"
+          ]
+        }
+      ],
+      "DemonstrativeExamples": [
+        {
+          "Entries": [
+            {
+              "IntroText": "The following code snippet uses 0.0.0.0 in a Puppet script."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "Other",
+              "ExampleCode": "signingserver::instance {\n\n```\n\t \"nightly-key-signing-server\": \n\t\t listenaddr => \"0.0.0.0\",\n\t\t port => \"9100\",\n\t\t code_tag => \"SIGNING_SERVER\",\n\t }\n```"
+            },
+            {
+              "BodyText": "The Puppet code snippet is used to provision a signing server that will use 0.0.0.0 to accept traffic. However, as 0.0.0.0 is unrestricted, malicious users may use this IP address to launch frequent requests and cause denial of service attacks."
+            },
+            {
+              "Nature": "Good",
+              "Language": "Other",
+              "ExampleCode": "signingserver::instance {\n\n```\n\t \"nightly-key-signing-server\": \n\t\t listenaddr => \"127.0.0.1\",\n\t\t port => \"9100\",\n\t\t code_tag => \"SIGNING_SERVER\",\n\t }\n```"
+            }
+          ]
+        }
+      ],
+      "PotentialMitigations": [
+        {
+          "Phase": [
+            "System Configuration"
+          ],
+          "Description": "Assign IP addresses that are not 0.0.0.0.",
+          "Effectiveness": "High"
+        },
+        {
+          "Phase": [
+            "System Configuration"
+          ],
+          "Strategy": "Firewall",
+          "Description": "Unwanted connections to the configured server may be denied through a firewall or other packet filtering measures.",
+          "Effectiveness": "High"
+        }
+      ]
+    },
+    "/cwe/1327/parents": {
+      "weakness_parents": [
+        "668"
+      ],
+      "category_parents": [
+        "1403",
+        "417"
+      ]
+    },
+    "/cwe/1327/children": null
+  }
+}

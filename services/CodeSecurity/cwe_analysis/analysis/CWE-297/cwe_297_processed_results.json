@@ -1,0 +1,118 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T23:06:18.899398",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "297",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/297": {
+      "ID": "297",
+      "Type": "variant_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/297": {
+      "ID": "297",
+      "Name": "Improper Validation of Certificate with Host Mismatch",
+      "Abstraction": "Variant",
+      "Structure": "Simple",
+      "Status": "Incomplete",
+      "Description": "The product communicates with a host that provides a certificate, but the product does not properly ensure that the certificate is actually associated with that host.",
+      "ExtendedDescription": "\n\nEven if a certificate is well-formed, signed, and follows the chain of trust, it may simply be a valid certificate for a different site than the site that the product is interacting with. If the certificate's host-specific data is not properly checked - such as the Common Name (CN) in the Subject or the Subject Alternative Name (SAN) extension of an X.509 certificate - it may be possible for a redirection or spoofing attack to allow a malicious host with a valid certificate to provide data, impersonating a trusted host. In order to ensure data integrity, the certificate must be valid and it must pertain to the site that is being accessed.\n\n\nEven if the product attempts to check the hostname, it is still possible to incorrectly check the hostname. For example, attackers could create a certificate with a name that begins with a trusted name followed by a NUL byte, which could cause some string-based comparisons to only examine the portion that contains the trusted name.\n\n\nThis weakness can occur even when the product uses Certificate Pinning, if the product does not verify the hostname at the time a certificate is pinned.\n",
+      "LikelihoodOfExploit": "High",
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Class": "Not Language-Specific",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Technology",
+          "Class": "Mobile",
+          "Prevalence": "Undetermined"
+        },
+        {
+          "Type": "Technology",
+          "Class": "Not Technology-Specific",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Implementation",
+          "Note": "When the product uses certificate pinning, the developer might not properly validate all relevant components of the certificate before pinning the certificate. This can make it difficult or expensive to test after the pinning is complete."
+        },
+        {
+          "Phase": "Implementation",
+          "Note": "REALIZATION: This weakness is caused during implementation of an architectural security tactic."
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Access Control"
+          ],
+          "Impact": [
+            "Gain Privileges or Assume Identity"
+          ],
+          "Note": "The data read from the system vouched for by the certificate may not be from the expected system."
+        },
+        {
+          "Scope": [
+            "Authentication",
+            "Other"
+          ],
+          "Impact": [
+            "Other"
+          ],
+          "Note": "Trust afforded to the system in question - based on the malicious certificate - may allow for spoofing or redirection attacks."
+        }
+      ],
+      "DemonstrativeExamples": [
+        {
+          "ID": "DX-122",
+          "Entries": [
+            {
+              "IntroText": "The following OpenSSL code obtains a certificate and verifies it."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "C",
+              "ExampleCode": "```\n\tcert = SSL_get_peer_certificate(ssl);\n\tif (cert && (SSL_get_verify_result(ssl)==X509_V_OK)) {\n```\n// do secret things* \n\t\t\t}"
+            },
+            {
+              "BodyText": "Even though the \"verify\" step returns X509_V_OK, this step does not include checking the Common Name against the name of the host. That is, there is no guarantee that the certificate is for the desired host. The SSL connection could have been established with a malicious host that provided a valid certificate."
+            }
+          ]
+        }
+      ],
+      "PotentialMitigations": [
+        {
+          "Phase": [
+            "Architecture and Design"
+          ],
+          "Description": "Fully check the hostname of the certificate and provide the user with adequate information about the nature of the problem and how to proceed."
+        },
+        {
+          "Phase": [
+            "Implementation"
+          ],
+          "Description": "If certificate pinning is being used, ensure that all relevant properties of the certificate are fully validated before the certificate is pinned, including the hostname."
+        }
+      ]
+    },
+    "/cwe/297/parents": {
+      "weakness_parents": [
+        "923"
+      ],
+      "category_parents": [
+        "1014",
+        "1353",
+        "1396",
+        "948"
+      ]
+    },
+    "/cwe/297/children": null
+  }
+}

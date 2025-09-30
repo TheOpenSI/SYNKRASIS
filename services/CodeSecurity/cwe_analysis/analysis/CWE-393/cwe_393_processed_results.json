@@ -1,0 +1,78 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T23:19:07.772999",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "393",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/393": {
+      "ID": "393",
+      "Type": "base_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/393": {
+      "ID": "393",
+      "Name": "Return of Wrong Status Code",
+      "Abstraction": "Base",
+      "Structure": "Simple",
+      "Status": "Draft",
+      "Description": "A function or operation returns an incorrect return value or status code that does not indicate the true result of execution, causing the product to modify its behavior based on the incorrect result.",
+      "ExtendedDescription": "This can lead to unpredictable behavior. If the function is used to make security-critical decisions or provide security-critical information, then the wrong status code can cause the product to assume that an action is safe or correct, even when it is not.",
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Class": "Not Language-Specific",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Implementation"
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Integrity",
+            "Other"
+          ],
+          "Impact": [
+            "Unexpected State",
+            "Alter Execution Logic"
+          ],
+          "Note": "This weakness could place the system in a state that could lead unexpected logic to be executed or other unintended behaviors."
+        }
+      ],
+      "DemonstrativeExamples": [
+        {
+          "ID": "DX-186",
+          "Entries": [
+            {
+              "IntroText": "In the following example, an HTTP 404 status code is returned in the event of an IOException encountered in a Java servlet. A 404 code is typically meant to indicate a non-existent resource and would be somewhat misleading in this case."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "Java",
+              "ExampleCode": "```\n\ttry {\n```\n// something that might throw IOException* \n\t\t\t...} catch (IOException ioe) {\n\t```\n\t\tresponse.sendError(SC_NOT_FOUND);\n\t}\n```"
+            }
+          ]
+        }
+      ],
+      "PotentialMitigations": null
+    },
+    "/cwe/393/parents": {
+      "weakness_parents": [
+        "684"
+      ],
+      "category_parents": [
+        "1412",
+        "389",
+        "961"
+      ]
+    },
+    "/cwe/393/children": null
+  }
+}

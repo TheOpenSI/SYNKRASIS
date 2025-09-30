@@ -1,0 +1,86 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T23:19:22.668165",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "395",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/395": {
+      "ID": "395",
+      "Type": "base_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/395": {
+      "ID": "395",
+      "Name": "Use of NullPointerException Catch to Detect NULL Pointer Dereference",
+      "Abstraction": "Base",
+      "Structure": "Simple",
+      "Status": "Draft",
+      "Description": "Catching NullPointerException should not be used as an alternative to programmatic checks to prevent dereferencing a null pointer.",
+      "ExtendedDescription": "\n\nProgrammers typically catch NullPointerException under three circumstances:\n\n\n  - The program contains a null pointer dereference. Catching the resulting exception was easier than fixing the underlying problem.\n\n  - The program explicitly throws a NullPointerException to signal an error condition.\n\n  - The code is part of a test harness that supplies unexpected input to the classes under test.\n\nOf these three circumstances, only the last is acceptable.",
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Name": "Java",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Implementation"
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Availability"
+          ],
+          "Impact": [
+            "DoS: Resource Consumption (CPU)"
+          ]
+        }
+      ],
+      "DemonstrativeExamples": [
+        {
+          "ID": "DX-202",
+          "Entries": [
+            {
+              "IntroText": "The following code mistakenly catches a NullPointerException."
+            },
+            {
+              "Nature": "Bad",
+              "Language": "Java",
+              "ExampleCode": "```\n\ttry { \n\t\t mysteryMethod(); \n\t } catch (NullPointerException npe) {\n\t }\n```"
+            }
+          ]
+        }
+      ],
+      "PotentialMitigations": [
+        {
+          "Phase": [
+            "Architecture and Design",
+            "Implementation"
+          ],
+          "Description": "Do not extensively rely on catching exceptions (especially for validating user input) to handle errors. Handling exceptions can decrease the performance of an application."
+        }
+      ]
+    },
+    "/cwe/395/parents": {
+      "weakness_parents": [
+        "705",
+        "755"
+      ],
+      "category_parents": [
+        "1410",
+        "389",
+        "388",
+        "851",
+        "962"
+      ]
+    },
+    "/cwe/395/children": null
+  }
+}

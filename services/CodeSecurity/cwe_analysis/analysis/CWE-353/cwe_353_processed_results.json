@@ -1,0 +1,109 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T23:14:09.367255",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "353",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/353": {
+      "ID": "353",
+      "Type": "base_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/353": {
+      "ID": "353",
+      "Name": "Missing Support for Integrity Check",
+      "Abstraction": "Base",
+      "Structure": "Simple",
+      "Status": "Draft",
+      "Description": "The product uses a transmission protocol that does not include a mechanism for verifying the integrity of the data during transmission, such as a checksum.",
+      "ExtendedDescription": "If integrity check values or \"checksums\" are omitted from a protocol, there is no way of determining if data has been corrupted in transmission. The lack of checksum functionality in a protocol removes the first application-level check of data that can be used. The end-to-end philosophy of checks states that integrity checks should be performed at the lowest level that they can be completely implemented. Excluding further sanity checks and input validation performed by applications, the protocol's checksum is the most important level of checksum, since it can be performed more completely than at any previous level and takes into account entire messages, as opposed to single packets.",
+      "LikelihoodOfExploit": "Medium",
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Class": "Not Language-Specific",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Architecture and Design",
+          "Note": "OMISSION: This weakness is caused by missing a security tactic during the architecture and design phase."
+        },
+        {
+          "Phase": "Implementation"
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Integrity",
+            "Other"
+          ],
+          "Impact": [
+            "Other"
+          ],
+          "Note": "Data that is parsed and used may be corrupted."
+        },
+        {
+          "Scope": [
+            "Non-Repudiation",
+            "Other"
+          ],
+          "Impact": [
+            "Hide Activities",
+            "Other"
+          ],
+          "Note": "Without a checksum it is impossible to determine if any changes have been made to the data after it was sent."
+        }
+      ],
+      "DemonstrativeExamples": [
+        {
+          "Entries": [
+            {
+              "IntroText": "In this example, a request packet is received, and privileged information is sent to the requester:"
+            },
+            {
+              "Nature": "Bad",
+              "Language": "Java",
+              "ExampleCode": "```\n\twhile(true) {\n\t\tDatagramPacket rp = new DatagramPacket(rData,rData.length);\n\t\toutSock.receive(rp);\n\t\tInetAddress IPAddress = rp.getAddress();\n\t\tint port = rp.getPort();\n\t\tout = secret.getBytes();\n\t\tDatagramPacket sp =new DatagramPacket(out, out.length, IPAddress, port);\n\t\toutSock.send(sp);\n\t}\n```"
+            },
+            {
+              "BodyText": "The response containing secret data has no integrity check associated with it, allowing an attacker to alter the message without detection."
+            }
+          ]
+        }
+      ],
+      "PotentialMitigations": [
+        {
+          "Phase": [
+            "Architecture and Design"
+          ],
+          "Description": "Add an appropriately sized checksum to the protocol, ensuring that data received may be simply validated before it is parsed and used."
+        },
+        {
+          "Phase": [
+            "Implementation"
+          ],
+          "Description": "Ensure that the checksums present in the protocol design are properly implemented and added to each message before it is sent."
+        }
+      ]
+    },
+    "/cwe/353/parents": {
+      "weakness_parents": [
+        "345"
+      ],
+      "category_parents": [
+        "1020",
+        "1354",
+        "1411",
+        "1214",
+        "957"
+      ]
+    },
+    "/cwe/353/children": null
+  }
+}

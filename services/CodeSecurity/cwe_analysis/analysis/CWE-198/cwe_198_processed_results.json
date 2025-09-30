@@ -1,0 +1,60 @@
+{
+  "test_info": {
+    "timestamp": "2025-09-29T22:53:06.582557",
+    "base_url": "https://cwe-api.mitre.org/api/v1",
+    "test_cwe_id": "198",
+    "total_endpoints_tested": 4
+  },
+  "results": {
+    "/cwe/198": {
+      "ID": "198",
+      "Type": "variant_weakness",
+      "is_deprecated": false
+    },
+    "/cwe/weakness/198": {
+      "ID": "198",
+      "Name": "Use of Incorrect Byte Ordering",
+      "Abstraction": "Variant",
+      "Structure": "Simple",
+      "Status": "Draft",
+      "Description": "The product receives input from an upstream component, but it does not account for byte ordering (e.g. big-endian and little-endian) when processing the input, causing an incorrect number or value to be used.",
+      "ExtendedDescription": null,
+      "LikelihoodOfExploit": null,
+      "ApplicablePlatforms": [
+        {
+          "Type": "Language",
+          "Class": "Not Language-Specific",
+          "Prevalence": "Undetermined"
+        }
+      ],
+      "AlternateTerms": null,
+      "ModesOfIntroduction": [
+        {
+          "Phase": "Implementation"
+        }
+      ],
+      "CommonConsequences": [
+        {
+          "Scope": [
+            "Integrity"
+          ],
+          "Impact": [
+            "Unexpected State"
+          ]
+        }
+      ],
+      "DemonstrativeExamples": null,
+      "PotentialMitigations": null
+    },
+    "/cwe/198/parents": {
+      "weakness_parents": [],
+      "category_parents": [
+        "1147",
+        "1399",
+        "857",
+        "993"
+      ]
+    },
+    "/cwe/198/children": null
+  }
+}
