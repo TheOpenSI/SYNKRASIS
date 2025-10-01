@@ -198,7 +198,18 @@
     },
     "/cwe/476/parents": {
       "weakness_parents": [
-        "754"
+        [
+          "pillar_weakness",
+          "710"
+        ],
+        [
+          "class_weakness",
+          "754"
+        ],
+        [
+          "class_weakness",
+          "754"
+        ]
       ],
       "category_parents": [
         "1136",
@@ -217,6 +228,6 @@
         "867"
       ]
     },
-    "/cwe/476/children": null
+    "/cwe/476/children": {}
   }
 }

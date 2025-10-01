@@ -131,7 +131,10 @@
     },
     "/cwe/480/parents": {
       "weakness_parents": [
-        "670"
+        [
+          "class_weakness",
+          "670"
+        ]
       ],
       "category_parents": [
         "1157",
@@ -150,11 +153,19 @@
     },
     "/cwe/480/children": {
       "weakness_children": [
-        "481",
-        "482",
-        "597"
-      ],
-      "category_children": []
+        [
+          "variant_weakness",
+          "481"
+        ],
+        [
+          "variant_weakness",
+          "482"
+        ],
+        [
+          "variant_weakness",
+          "597"
+        ]
+      ]
     }
   }
 }

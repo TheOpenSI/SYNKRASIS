@@ -173,7 +173,14 @@
     },
     "/cwe/170/parents": {
       "weakness_parents": [
-        "20"
+        [
+          "pillar_weakness",
+          "707"
+        ],
+        [
+          "class_weakness",
+          "20"
+        ]
       ],
       "category_parents": [
         "1161",
@@ -188,6 +195,6 @@
         "973"
       ]
     },
-    "/cwe/170/children": null
+    "/cwe/170/children": {}
   }
 }

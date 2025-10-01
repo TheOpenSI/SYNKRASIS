@@ -55,12 +55,21 @@
       ]
     },
     "/cwe/422/parents": {
-      "weakness_parents": [],
+      "weakness_parents": [
+        [
+          "base_weakness",
+          "360"
+        ],
+        [
+          "base_weakness",
+          "420"
+        ]
+      ],
       "category_parents": [
         "1396",
         "953"
       ]
     },
-    "/cwe/422/children": null
+    "/cwe/422/children": {}
   }
 }

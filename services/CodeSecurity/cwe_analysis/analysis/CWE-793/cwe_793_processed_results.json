@@ -80,12 +80,17 @@
       "PotentialMitigations": null
     },
     "/cwe/793/parents": {
-      "weakness_parents": [],
+      "weakness_parents": [
+        [
+          "variant_weakness",
+          "792"
+        ]
+      ],
       "category_parents": [
         "1019",
         "1407"
       ]
     },
-    "/cwe/793/children": null
+    "/cwe/793/children": {}
   }
 }

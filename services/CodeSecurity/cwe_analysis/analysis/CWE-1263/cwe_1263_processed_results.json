@@ -88,7 +88,12 @@
       ]
     },
     "/cwe/1263/parents": {
-      "weakness_parents": [],
+      "weakness_parents": [
+        [
+          "pillar_weakness",
+          "284"
+        ]
+      ],
       "category_parents": [
         "1208",
         "1364",
@@ -97,9 +102,11 @@
     },
     "/cwe/1263/children": {
       "weakness_children": [
-        "1243"
-      ],
-      "category_children": []
+        [
+          "base_weakness",
+          "1243"
+        ]
+      ]
     }
   }
 }

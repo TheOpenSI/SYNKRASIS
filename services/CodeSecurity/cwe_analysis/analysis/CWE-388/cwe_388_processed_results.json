@@ -12,18 +12,26 @@
       "is_deprecated": false
     },
     "/cwe/weakness/388": null,
-    "/cwe/388/parents": {
-      "weakness_parents": [],
-      "category_parents": []
-    },
+    "/cwe/388/parents": {},
     "/cwe/388/children": {
       "weakness_children": [
-        "391",
-        "395",
-        "396",
-        "397"
-      ],
-      "category_children": []
+        [
+          "base_weakness",
+          "391"
+        ],
+        [
+          "base_weakness",
+          "395"
+        ],
+        [
+          "base_weakness",
+          "396"
+        ],
+        [
+          "base_weakness",
+          "397"
+        ]
+      ]
     }
   }
 }

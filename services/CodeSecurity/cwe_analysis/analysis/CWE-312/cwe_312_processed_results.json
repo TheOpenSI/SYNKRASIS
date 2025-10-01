@@ -235,8 +235,18 @@
     },
     "/cwe/312/parents": {
       "weakness_parents": [
-        "311",
-        "922"
+        [
+          "class_weakness",
+          "311"
+        ],
+        [
+          "class_weakness",
+          "922"
+        ],
+        [
+          "class_weakness",
+          "311"
+        ]
       ],
       "category_parents": [
         "1013",
@@ -253,15 +263,35 @@
     },
     "/cwe/312/children": {
       "weakness_children": [
-        "313",
-        "314",
-        "315",
-        "316",
-        "317",
-        "318",
-        "526"
-      ],
-      "category_children": []
+        [
+          "variant_weakness",
+          "313"
+        ],
+        [
+          "variant_weakness",
+          "314"
+        ],
+        [
+          "variant_weakness",
+          "315"
+        ],
+        [
+          "variant_weakness",
+          "316"
+        ],
+        [
+          "variant_weakness",
+          "317"
+        ],
+        [
+          "variant_weakness",
+          "318"
+        ],
+        [
+          "variant_weakness",
+          "526"
+        ]
+      ]
     }
   }
 }

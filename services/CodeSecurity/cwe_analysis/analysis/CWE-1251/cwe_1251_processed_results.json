@@ -90,12 +90,17 @@
       ]
     },
     "/cwe/1251/parents": {
-      "weakness_parents": [],
+      "weakness_parents": [
+        [
+          "base_weakness",
+          "1250"
+        ]
+      ],
       "category_parents": [
         "1202",
         "1415"
       ]
     },
-    "/cwe/1251/children": null
+    "/cwe/1251/children": {}
   }
 }

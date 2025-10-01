@@ -44,16 +44,23 @@
       "PotentialMitigations": null
     },
     "/cwe/1229/parents": {
-      "weakness_parents": [],
+      "weakness_parents": [
+        [
+          "pillar_weakness",
+          "664"
+        ]
+      ],
       "category_parents": [
         "1416"
       ]
     },
     "/cwe/1229/children": {
       "weakness_children": [
-        "514"
-      ],
-      "category_children": []
+        [
+          "class_weakness",
+          "514"
+        ]
+      ]
     }
   }
 }

@@ -235,7 +235,18 @@
     },
     "/cwe/190/parents": {
       "weakness_parents": [
-        "20"
+        [
+          "pillar_weakness",
+          "682"
+        ],
+        [
+          "pillar_weakness",
+          "682"
+        ],
+        [
+          "class_weakness",
+          "20"
+        ]
       ],
       "category_parents": [
         "1137",
@@ -253,8 +264,12 @@
       ]
     },
     "/cwe/190/children": {
-      "weakness_children": [],
-      "category_children": []
+      "weakness_children": [
+        [
+          "chain_weakness",
+          "680"
+        ]
+      ]
     }
   }
 }

@@ -18,7 +18,7 @@
       "Structure": "Simple",
       "Status": "Incomplete",
       "Description": "The product displays information or identifiers to a user, but the display mechanism does not make it easy for the user to distinguish between visually similar or identical glyphs (homoglyphs), which may cause the user to misinterpret a glyph and perform an unintended, insecure action.",
-      "ExtendedDescription": "\n\nSome glyphs, pictures, or icons can be semantically distinct to a program, while appearing very similar or identical to a human user. These are referred to as homoglyphs. For example, the lowercase \"l\" (ell) and uppercase \"I\" (eye) have different character codes, but these characters can be displayed in exactly the same way to a user, depending on the font. This can also occur between different character sets. For example, the Latin capital letter \"A\" and the Greek capital letter \"Α\" (Alpha) are treated as distinct by programs, but may be displayed in exactly the same way to a user. Accent marks may also cause letters to appear very similar, such as the Latin capital letter grave mark \"À\" and its equivalent \"Á\" with the acute accent.\n\n\nAdversaries can exploit this visual similarity for attacks such as phishing, e.g. by providing a link to an attacker-controlled hostname that looks like a hostname that the victim trusts. In a different use of homoglyphs, an adversary may create a back door username that is visually similar to the username of a regular user, which then makes it more difficult for a system administrator to detect the malicious username while reviewing logs.\n",
+      "ExtendedDescription": "\n\nSome glyphs, pictures, or icons can be semantically distinct to a program, while appearing very similar or identical to a human user. These are referred to as homoglyphs. For example, the lowercase \"l\" (ell) and uppercase \"I\" (eye) have different character codes, but these characters can be displayed in exactly the same way to a user, depending on the font. This can also occur between different character sets. For example, the Latin capital letter \"A\" and the Greek capital letter \"\u0391\" (Alpha) are treated as distinct by programs, but may be displayed in exactly the same way to a user. Accent marks may also cause letters to appear very similar, such as the Latin capital letter grave mark \"\u00c0\" and its equivalent \"\u00c1\" with the acute accent.\n\n\nAdversaries can exploit this visual similarity for attacks such as phishing, e.g. by providing a link to an attacker-controlled hostname that looks like a hostname that the victim trusts. In a different use of homoglyphs, an adversary may create a back door username that is visually similar to the username of a regular user, which then makes it more difficult for a system administrator to detect the malicious username while reviewing logs.\n",
       "LikelihoodOfExploit": "Medium",
       "ApplicablePlatforms": [
         {
@@ -67,7 +67,7 @@
             },
             {
               "Nature": "Attack",
-              "ExampleCode": "```\n\thttp://www.еxаmрlе.соm\n```"
+              "ExampleCode": "```\n\thttp://www.\u0435x\u0430m\u0440l\u0435.\u0441\u043em\n```"
             },
             {
               "BodyText": "However, the URL above is comprised of Cyrillic characters that look identical to the expected ASCII characters. This results in most users not being able to distinguish between the two and assuming that the above URL is trusted and safe. The \"e\" is actually the \"CYRILLIC SMALL LETTER IE\" which is represented in HTML as the character &#x435, while the \"a\" is actually the \"CYRILLIC SMALL LETTER A\" which is represented in HTML as the character &#x430. The \"p\", \"c\", and \"o\" are also Cyrillic characters in this example. Viewing the source reveals a URL of \"http://www.&#x435;x&#x430;m&#x440;l&#x435;.&#x441;&#x43e;m\". An adversary can utilize this approach to perform an attack such as a phishing attack in order to drive traffic to a malicious website."
@@ -84,7 +84,7 @@
             },
             {
               "Nature": "Result",
-              "ExampleCode": "```\n\t123.123.123.123 аdmіn [17/Jul/2017:09:05:49 -0400] \"GET /example/users/userlist HTTP/1.1\" 401 12846\n\t 123.123.123.123 аdmіn [17/Jul/2017:09:06:51 -0400] \"GET /example/users/userlist HTTP/1.1\" 200 4523\n\t 123.123.123.123 admin [17/Jul/2017:09:10:02 -0400] \"GET /example/users/editusers HTTP/1.1\" 200 6291\n\t 123.123.123.123 аdmіn [17/Jul/2017:09:10:02 -0400] \"GET /example/users/editusers HTTP/1.1\" 200 6291\n```"
+              "ExampleCode": "```\n\t123.123.123.123 \u0430dm\u0456n [17/Jul/2017:09:05:49 -0400] \"GET /example/users/userlist HTTP/1.1\" 401 12846\n\t 123.123.123.123 \u0430dm\u0456n [17/Jul/2017:09:06:51 -0400] \"GET /example/users/userlist HTTP/1.1\" 200 4523\n\t 123.123.123.123 admin [17/Jul/2017:09:10:02 -0400] \"GET /example/users/editusers HTTP/1.1\" 200 6291\n\t 123.123.123.123 \u0430dm\u0456n [17/Jul/2017:09:10:02 -0400] \"GET /example/users/editusers HTTP/1.1\" 200 6291\n```"
             },
             {
               "BodyText": "Upon closer inspection, the account that generated three of these log entries is \"&#x430;dm&#x456;n\". Only the third log entry is by the legitimate admin account. This makes it more difficult to determine which actions were performed by the adversary and which actions were executed by the legitimate \"admin\" account."
@@ -109,13 +109,16 @@
     },
     "/cwe/1007/parents": {
       "weakness_parents": [
-        "451"
+        [
+          "class_weakness",
+          "451"
+        ]
       ],
       "category_parents": [
         "1412",
         "355"
       ]
     },
-    "/cwe/1007/children": null
+    "/cwe/1007/children": {}
   }
 }

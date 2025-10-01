@@ -103,7 +103,14 @@
     },
     "/cwe/296/parents": {
       "weakness_parents": [
-        "573"
+        [
+          "base_weakness",
+          "295"
+        ],
+        [
+          "class_weakness",
+          "573"
+        ]
       ],
       "category_parents": [
         "1014",
@@ -114,6 +121,6 @@
         "948"
       ]
     },
-    "/cwe/296/children": null
+    "/cwe/296/children": {}
   }
 }

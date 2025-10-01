@@ -70,7 +70,12 @@
       "PotentialMitigations": null
     },
     "/cwe/345/parents": {
-      "weakness_parents": [],
+      "weakness_parents": [
+        [
+          "pillar_weakness",
+          "693"
+        ]
+      ],
       "category_parents": [
         "1014",
         "1354",
@@ -81,23 +86,87 @@
     },
     "/cwe/345/children": {
       "weakness_children": [
-        "1293",
-        "346",
-        "347",
-        "348",
-        "349",
-        "351",
-        "352",
-        "353",
-        "354",
-        "360",
-        "494",
-        "616",
-        "646",
-        "649",
-        "924"
-      ],
-      "category_children": []
+        [
+          "base_weakness",
+          "1293"
+        ],
+        [
+          "class_weakness",
+          "346"
+        ],
+        [
+          "class_weakness",
+          "346"
+        ],
+        [
+          "base_weakness",
+          "347"
+        ],
+        [
+          "base_weakness",
+          "347"
+        ],
+        [
+          "base_weakness",
+          "348"
+        ],
+        [
+          "base_weakness",
+          "349"
+        ],
+        [
+          "base_weakness",
+          "351"
+        ],
+        [
+          "compound_weakness",
+          "352"
+        ],
+        [
+          "compound_weakness",
+          "352"
+        ],
+        [
+          "base_weakness",
+          "353"
+        ],
+        [
+          "base_weakness",
+          "354"
+        ],
+        [
+          "base_weakness",
+          "354"
+        ],
+        [
+          "base_weakness",
+          "360"
+        ],
+        [
+          "base_weakness",
+          "494"
+        ],
+        [
+          "variant_weakness",
+          "616"
+        ],
+        [
+          "variant_weakness",
+          "646"
+        ],
+        [
+          "base_weakness",
+          "649"
+        ],
+        [
+          "base_weakness",
+          "924"
+        ],
+        [
+          "base_weakness",
+          "924"
+        ]
+      ]
     }
   }
 }

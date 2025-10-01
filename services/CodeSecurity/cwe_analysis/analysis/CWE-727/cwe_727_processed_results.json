@@ -12,22 +12,42 @@
       "is_deprecated": false
     },
     "/cwe/weakness/727": null,
-    "/cwe/727/parents": {
-      "weakness_parents": [],
-      "category_parents": []
-    },
+    "/cwe/727/parents": {},
     "/cwe/727/children": {
       "weakness_children": [
-        "117",
-        "74",
-        "77",
-        "78",
-        "89",
-        "91",
-        "95",
-        "98"
-      ],
-      "category_children": []
+        [
+          "base_weakness",
+          "117"
+        ],
+        [
+          "class_weakness",
+          "74"
+        ],
+        [
+          "class_weakness",
+          "77"
+        ],
+        [
+          "base_weakness",
+          "78"
+        ],
+        [
+          "base_weakness",
+          "89"
+        ],
+        [
+          "base_weakness",
+          "91"
+        ],
+        [
+          "variant_weakness",
+          "95"
+        ],
+        [
+          "variant_weakness",
+          "98"
+        ]
+      ]
     }
   }
 }

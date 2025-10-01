@@ -112,7 +112,6 @@
       "PotentialMitigations": null
     },
     "/cwe/691/parents": {
-      "weakness_parents": [],
       "category_parents": [
         "1410",
         "977"
@@ -120,21 +119,59 @@
     },
     "/cwe/691/children": {
       "weakness_children": [
-        "1265",
-        "1281",
-        "362",
-        "430",
-        "431",
-        "662",
-        "670",
-        "696",
-        "705",
-        "768",
-        "799",
-        "834",
-        "841"
-      ],
-      "category_children": []
+        [
+          "base_weakness",
+          "1265"
+        ],
+        [
+          "base_weakness",
+          "1281"
+        ],
+        [
+          "class_weakness",
+          "362"
+        ],
+        [
+          "base_weakness",
+          "430"
+        ],
+        [
+          "base_weakness",
+          "431"
+        ],
+        [
+          "class_weakness",
+          "662"
+        ],
+        [
+          "class_weakness",
+          "670"
+        ],
+        [
+          "class_weakness",
+          "696"
+        ],
+        [
+          "class_weakness",
+          "705"
+        ],
+        [
+          "variant_weakness",
+          "768"
+        ],
+        [
+          "class_weakness",
+          "799"
+        ],
+        [
+          "class_weakness",
+          "834"
+        ],
+        [
+          "base_weakness",
+          "841"
+        ]
+      ]
     }
   }
 }

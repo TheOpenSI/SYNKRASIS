@@ -52,7 +52,12 @@
       "PotentialMitigations": null
     },
     "/cwe/118/parents": {
-      "weakness_parents": [],
+      "weakness_parents": [
+        [
+          "pillar_weakness",
+          "664"
+        ]
+      ],
       "category_parents": [
         "1416",
         "970"
@@ -60,9 +65,11 @@
     },
     "/cwe/118/children": {
       "weakness_children": [
-        "119"
-      ],
-      "category_children": []
+        [
+          "class_weakness",
+          "119"
+        ]
+      ]
     }
   }
 }

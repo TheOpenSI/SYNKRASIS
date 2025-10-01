@@ -49,12 +49,21 @@
       "PotentialMitigations": null
     },
     "/cwe/45/parents": {
-      "weakness_parents": [],
+      "weakness_parents": [
+        [
+          "variant_weakness",
+          "165"
+        ],
+        [
+          "variant_weakness",
+          "44"
+        ]
+      ],
       "category_parents": [
         "1404",
         "981"
       ]
     },
-    "/cwe/45/children": null
+    "/cwe/45/children": {}
   }
 }

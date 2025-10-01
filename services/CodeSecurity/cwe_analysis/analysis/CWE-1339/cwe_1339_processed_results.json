@@ -18,7 +18,7 @@
       "Structure": "Simple",
       "Status": "Draft",
       "Description": "The product processes a real number with an implementation in which the number's representation does not preserve required accuracy and precision in its fractional part, causing an incorrect result.",
-      "ExtendedDescription": "\n\nWhen a security decision or calculation requires highly precise, accurate numbers such as financial calculations or prices, then small variations in the number could be exploited by an attacker. \n\n\nThere are multiple ways to store the fractional part of a real number in a computer. In all of these cases, there is a limit to the accuracy of recording a fraction. If the fraction can be represented in a fixed number of digits (binary or decimal), there might not be enough digits assigned to represent the number. In other cases the number cannot be represented in a fixed number of digits due to repeating in decimal or binary notation (e.g. 0.333333...) or due to a transcendental number such as Π or √2. Rounding of numbers can lead to situations where the computer results do not adequately match the result of sufficiently accurate math. \n",
+      "ExtendedDescription": "\n\nWhen a security decision or calculation requires highly precise, accurate numbers such as financial calculations or prices, then small variations in the number could be exploited by an attacker. \n\n\nThere are multiple ways to store the fractional part of a real number in a computer. In all of these cases, there is a limit to the accuracy of recording a fraction. If the fraction can be represented in a fixed number of digits (binary or decimal), there might not be enough digits assigned to represent the number. In other cases the number cannot be represented in a fixed number of digits due to repeating in decimal or binary notation (e.g. 0.333333...) or due to a transcendental number such as \u03a0 or \u221a2. Rounding of numbers can lead to situations where the computer results do not adequately match the result of sufficiently accurate math. \n",
       "LikelihoodOfExploit": null,
       "ApplicablePlatforms": [
         {
@@ -134,12 +134,17 @@
       ]
     },
     "/cwe/1339/parents": {
-      "weakness_parents": [],
+      "weakness_parents": [
+        [
+          "pillar_weakness",
+          "682"
+        ]
+      ],
       "category_parents": [
         "1408",
         "189"
       ]
     },
-    "/cwe/1339/children": null
+    "/cwe/1339/children": {}
   }
 }

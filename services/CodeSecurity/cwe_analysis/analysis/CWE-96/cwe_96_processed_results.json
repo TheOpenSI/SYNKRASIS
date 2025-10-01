@@ -153,7 +153,12 @@
       ]
     },
     "/cwe/96/parents": {
-      "weakness_parents": [],
+      "weakness_parents": [
+        [
+          "base_weakness",
+          "94"
+        ]
+      ],
       "category_parents": [
         "1019",
         "1347",
@@ -163,9 +168,11 @@
     },
     "/cwe/96/children": {
       "weakness_children": [
-        "97"
-      ],
-      "category_children": []
+        [
+          "variant_weakness",
+          "97"
+        ]
+      ]
     }
   }
 }

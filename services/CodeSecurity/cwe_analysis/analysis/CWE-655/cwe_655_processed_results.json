@@ -84,7 +84,14 @@
     },
     "/cwe/655/parents": {
       "weakness_parents": [
-        "657"
+        [
+          "class_weakness",
+          "657"
+        ],
+        [
+          "pillar_weakness",
+          "693"
+        ]
       ],
       "category_parents": [
         "1379",
@@ -92,6 +99,6 @@
         "995"
       ]
     },
-    "/cwe/655/children": null
+    "/cwe/655/children": {}
   }
 }

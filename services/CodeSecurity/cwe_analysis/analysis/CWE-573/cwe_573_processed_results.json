@@ -42,7 +42,12 @@
       "PotentialMitigations": null
     },
     "/cwe/573/parents": {
-      "weakness_parents": [],
+      "weakness_parents": [
+        [
+          "pillar_weakness",
+          "710"
+        ]
+      ],
       "category_parents": [
         "1140",
         "1412",
@@ -52,28 +57,87 @@
     },
     "/cwe/573/children": {
       "weakness_children": [
-        "103",
-        "104",
-        "243",
-        "253",
-        "296",
-        "304",
-        "325",
-        "329",
-        "358",
-        "475",
-        "568",
-        "577",
-        "578",
-        "579",
-        "580",
-        "581",
-        "628",
-        "675",
-        "694",
-        "695"
-      ],
-      "category_children": []
+        [
+          "variant_weakness",
+          "103"
+        ],
+        [
+          "variant_weakness",
+          "104"
+        ],
+        [
+          "variant_weakness",
+          "243"
+        ],
+        [
+          "base_weakness",
+          "253"
+        ],
+        [
+          "base_weakness",
+          "296"
+        ],
+        [
+          "base_weakness",
+          "304"
+        ],
+        [
+          "base_weakness",
+          "325"
+        ],
+        [
+          "variant_weakness",
+          "329"
+        ],
+        [
+          "base_weakness",
+          "358"
+        ],
+        [
+          "base_weakness",
+          "475"
+        ],
+        [
+          "variant_weakness",
+          "568"
+        ],
+        [
+          "variant_weakness",
+          "577"
+        ],
+        [
+          "variant_weakness",
+          "578"
+        ],
+        [
+          "variant_weakness",
+          "579"
+        ],
+        [
+          "variant_weakness",
+          "580"
+        ],
+        [
+          "variant_weakness",
+          "581"
+        ],
+        [
+          "base_weakness",
+          "628"
+        ],
+        [
+          "class_weakness",
+          "675"
+        ],
+        [
+          "base_weakness",
+          "694"
+        ],
+        [
+          "base_weakness",
+          "695"
+        ]
+      ]
     }
   }
 }

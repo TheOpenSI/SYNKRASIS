@@ -45,6 +45,7 @@ class CWEGraphBuilder:
                 self.graph.add_node(
                     cwe_id,
                     label=node_label,
+                    title=results.get(f'/cwe/{cwe_id}')["Type"],
                     type='weakness'
                 )
         
@@ -64,7 +65,7 @@ class CWEGraphBuilder:
             
             # parent edges
             for parent_id in parents_info.get('weakness_parents', []):
-                self.graph.add_edge(parent_id, cwe_id, relationship='parent')
+                self.graph.add_edge(parent_id[1], cwe_id, relationship=f'parent_{parent_id[0]}')
             
             # for parent_id in parents_info.get('category_parents', []):
             #     self.categories.add(parent_id)
@@ -79,7 +80,7 @@ class CWEGraphBuilder:
             
             # Add child edges
             for child_id in children_info.get('weakness_children', []):
-                self.graph.add_edge(cwe_id, child_id, relationship='child')
+                self.graph.add_edge(cwe_id, child_id[1], relationship=f'child_{child_id[0]}')
             
             # for child_id in children_info.get('category_children', []):
             #     self.categories.add(child_id)
@@ -92,7 +93,10 @@ class CWEGraphBuilder:
             #         )
             #     self.graph.add_edge(cwe_id, child_id, relationship='category_child')
     
-    def export_interactive_html(self, output_file: str = "cwe_graph.html"):
+    def export_interactive_html(self, 
+                                output_file: str = ("/home/s448780/workspace_hcc4/"
+                                                    "SYNKRASIS/services/"
+                                                    "CodeSecurity/cwe_analysis/cwe_graph.html")):
         """Export graph as interactive HTML using pyvis"""
         
         net = Network(
@@ -126,10 +130,11 @@ class CWEGraphBuilder:
         # Add edges
         for source, target, attrs in self.graph.edges(data=True):
             relation = attrs.get('relationship', '')
-            if 'parent' in relation:
-                edge_color = "#ff6b6b" 
-            else:
-                edge_color = "#4ecdc4"
+            # if 'parent' in relation:
+            #     edge_color = "#ff6b6b" 
+            # else:
+            #     edge_color = "#4ecdc4"
+            edge_color = "#4ecdc4"
             net.add_edge(source, target, color=edge_color, title=relation)
         
         # Use show_buttons and save_graph instead of show

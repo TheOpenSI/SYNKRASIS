@@ -42,7 +42,10 @@
     },
     "/cwe/229/parents": {
       "weakness_parents": [
-        "228"
+        [
+          "class_weakness",
+          "228"
+        ]
       ],
       "category_parents": [
         "1407",
@@ -52,11 +55,19 @@
     },
     "/cwe/229/children": {
       "weakness_children": [
-        "230",
-        "231",
-        "232"
-      ],
-      "category_children": []
+        [
+          "variant_weakness",
+          "230"
+        ],
+        [
+          "variant_weakness",
+          "231"
+        ],
+        [
+          "variant_weakness",
+          "232"
+        ]
+      ]
     }
   }
 }

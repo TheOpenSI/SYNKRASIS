@@ -223,7 +223,12 @@
       ]
     },
     "/cwe/400/parents": {
-      "weakness_parents": [],
+      "weakness_parents": [
+        [
+          "pillar_weakness",
+          "664"
+        ]
+      ],
       "category_parents": [
         "1148",
         "1152",
@@ -236,15 +241,43 @@
     },
     "/cwe/400/children": {
       "weakness_children": [
-        "1235",
-        "1246",
-        "405",
-        "770",
-        "771",
-        "779",
-        "920"
-      ],
-      "category_children": []
+        [
+          "base_weakness",
+          "1235"
+        ],
+        [
+          "base_weakness",
+          "1246"
+        ],
+        [
+          "class_weakness",
+          "405"
+        ],
+        [
+          "base_weakness",
+          "770"
+        ],
+        [
+          "base_weakness",
+          "770"
+        ],
+        [
+          "base_weakness",
+          "771"
+        ],
+        [
+          "base_weakness",
+          "779"
+        ],
+        [
+          "base_weakness",
+          "920"
+        ],
+        [
+          "base_weakness",
+          "920"
+        ]
+      ]
     }
   }
 }
