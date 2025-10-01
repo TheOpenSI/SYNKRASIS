@@ -1,3 +1,8 @@
+# This patch is to fix the initial analysis files that had issues with relationships.
+# It reads both raw and processed files, extracts and processes the relationships,
+# and updates the processed files accordingly.
+# ==================================================================================================
+
 import os
 import json
 from pathlib import Path
