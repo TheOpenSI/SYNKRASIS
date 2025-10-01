@@ -375,9 +375,8 @@ def print_llm_stats(stats, total_samples):
         print(f"No agreement: {none} ({none/at_least_two*100:.1f}% of {at_least_two} samples)")
 
 
-# Main execution
 if __name__ == "__main__":
-    # Total samples in your dataset
+    # Total samples in dataset
     TOTAL_SAMPLES = 121
     
     # File paths
