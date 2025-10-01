@@ -149,6 +149,41 @@ class CWEGraphBuilder:
         print(f"Total edges: {self.graph.number_of_edges()}")
         print(f"Category nodes: {len(self.categories)}")
         print(f"Weakness nodes: {self.graph.number_of_nodes() - len(self.categories)}")
+    
+    def compute_and_save_relationships(self, 
+                                       output_file: str = "cwe_relationships.json"):
+        """
+        Compute transitive closure of all CWE relationships and save to JSON.
+        For each CWE, finds all related CWEs (ancestors + descendants).
+        """
+        relationships = {}
+        
+        print("Computing relationships...")
+        for node in self.graph.nodes():
+            # Get all ancestors (following parent edges backwards)
+            ancestors = nx.ancestors(self.graph, node)
+            
+            # Get all descendants (following child edges forwards)
+            descendants = nx.descendants(self.graph, node)
+            
+            # Combine and sort
+            related = sorted(ancestors | descendants)
+            relationships[node] = related
+        
+        # Save to JSON
+        with open(output_file, 'w') as f:
+            json.dump(relationships, f, indent=2)
+        
+        print(f"Relationships saved to {output_file}")
+        print(f"Total CWEs: {len(relationships)}")
+        
+        # Some stats
+        total_relationships = sum(len(v) for v in relationships.values())
+        avg_relationships = total_relationships / len(relationships) if relationships else 0
+        print(f"Total relationships: {total_relationships}")
+        print(f"Average relationships per CWE: {avg_relationships:.1f}")
+        
+        return relationships
 
 
 if __name__ == "__main__":
@@ -167,3 +202,8 @@ if __name__ == "__main__":
     
     print("Exporting to HTML...")
     builder.export_interactive_html("cwe_graph.html")
+    
+    print("\nComputing relationships...")
+    builder.compute_and_save_relationships(("/home/s448780/workspace_hcc4/SYNKRASIS/"
+                                            "services/CodeSecurity/"
+                                            "cwe_analysis/cwe_relationships.json"))
