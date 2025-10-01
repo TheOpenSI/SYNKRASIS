@@ -201,7 +201,7 @@ if __name__ == "__main__":
     builder.get_stats()
     
     print("Exporting to HTML...")
-    builder.export_interactive_html("cwe_graph.html")
+    builder.export_interactive_html()
     
     print("\nComputing relationships...")
     builder.compute_and_save_relationships(("/home/s448780/workspace_hcc4/SYNKRASIS/"
