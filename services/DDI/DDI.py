@@ -325,11 +325,13 @@ class DDI(ServiceBase):
        return optimal_attempts
    
    
-    def get_DDI(self) -> dict:
+    def get_DDI(self,
+                norm_effectiveness: dict = None) -> dict:
         """
         Get DDI analysis results including fitting and optimal attempts.
         """
-        norm_effectiveness = self.get_norm_debugging_influence(is_DDI=False)
+        if norm_effectiveness is None: # for experimeents with direct access to norm data
+            norm_effectiveness = self.get_norm_debugging_influence(is_DDI=False)
         fitted_lambda, fitted_e_0, r_2 =  self.fit_exponential_decay(norm_effectiveness["DDI"])
         t_theta = []
         t_theta_ceiling = []
