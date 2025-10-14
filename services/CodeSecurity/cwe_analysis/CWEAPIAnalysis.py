@@ -345,7 +345,8 @@ class CWEAPIAnalysis:
         
 
 if __name__ == "__main__":
-    with open("/home/s448780/workspace_hcc4/SYNKRASIS/services/CodeSecurity/data/cwe/unique_cwes.txt", "r") as f:
+    with open("/home/s448780/workspace_hcc4/SYNKRASIS/services/CodeSecurity/cwe_analysis/cwe/unique_cwes.txt", 
+              "r") as f:
         cwes = f.readlines()
         
     for cwe in tqdm(cwes):
