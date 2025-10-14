@@ -1,6 +1,8 @@
 # This patch is to fix the initial analysis files that had issues with relationships.
+# Issue: Saved data had issues with relationship description.
+# Such as it would omit relationships if it does not match dcertain description.
 # It reads both raw and processed files, extracts and processes the relationships,
-# and updates the processed files accordingly.
+# and updates the processed files in each CWE folder accordingly.
 # ==================================================================================================
 
 import os

@@ -1,11 +1,16 @@
+# =============================================================================================
+# Runs the evaluators to collect prediction data
+# =============================================================================================
 import os, sys
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..')))
 
-from services.CodeSecurity.StaticToolEval import StaticToolEval
-from services.CodeSecurity.LLMEval import LLMEval
+from services.CodeSecurity.evaluators.StaticToolEval import StaticToolEval
+from services.CodeSecurity.evaluators.LLMEval import LLMEval
 from services.LLM.Ollama.Ollama import Ollama
 
 if __name__ == "__main__":
+    # Static Tool
+    # -------------------------------------------
     # evaluator = StaticToolEval(
     #     dataset_path= "/home/s448780/workspace_hcc4/SYNKRASIS/services/CodeSecurity/data/SecurityEval.jsonl",
     #     vul_code_key="Insecure_code",
@@ -15,7 +20,13 @@ if __name__ == "__main__":
     
     # evaluator.load_static_tools()
     # evaluator.run_evaluation()
-    llm_model_names = ["qwen2.5-coder:32b", "mistral:latest", "qwen2.5-coder:latest", "llama3.1:latest"]
+    
+    # LLM
+    # -------------------------------------------
+    llm_model_names = ["qwen2.5-coder:32b", 
+                       "mistral:latest", 
+                       "qwen2.5-coder:latest", 
+                       "llama3.1:latest"]
     llm_models = [Ollama(model_name=name) for name in llm_model_names]
     
     evaluator = LLMEval(

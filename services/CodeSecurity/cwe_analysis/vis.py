@@ -1,3 +1,9 @@
+# =============================================================================================
+# Builds a network graph of CWE relationships and exports as interactive HTML
+# Save the relationships as JSON
+# =============================================================================================
+
+# Build with Claude
 import os
 import json
 from pathlib import Path

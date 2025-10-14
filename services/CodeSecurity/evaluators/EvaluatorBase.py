@@ -1,6 +1,10 @@
 # ==============================================================================================
 # Code Security Evaluator Base Class
-# Inherity from this class to implement specific evaluation strategies.
+# Evaluates static analysis tools/LLMs on code security datasets.
+# Creates a dataset with true labels and llm/static tool analysis results.
+# Does not perform analysis itself.
+# ----------------------------------------------------------------------------------------------
+# Inherit from this class to implement specific evaluation strategies.
 # Child classes to implement:
 #   - _get_all_dirs_to_create() -> set
 #   - _get_consolidated_file_name() -> str
@@ -12,7 +16,7 @@
 # ==============================================================================================
 
 import os, sys
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..')))
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', '..')))
 
 import json
 
@@ -63,10 +67,11 @@ class EvaluatorBase(ABC):
         self.code_dir_name = code_dir_name
         self.base_path = Path(base_path) / f"exp_dir_{self._filename_from_dataset}"
         os.makedirs(self.base_path, exist_ok=True)
+        
         self.data = self._load_dataset()
+        # functions to process data, e.g.CWE-020_author_1.py -> CWE-020
         self.vul_process_func = vul_code_processing_func
         self.label_process_func = true_label_processing_func
-        self.static_tools = None  # To be set by subclasses
         
      
     def get_code_dir(self) -> str:
@@ -88,8 +93,8 @@ class EvaluatorBase(ABC):
         3. For each entry:
             a. Extract and process vul_code and true_label
             b. Create code file
-            c. Run each static analysis tool
-            d. Analyze and collect results
+            c. Run each static analysis tool or llm model
+            d. Analyse and collect results
             e. Save consolidated results
         Results are saved in a consolidated JSON file in the base_path.  
         Note: Ensure that static tools are loaded before calling this method.
@@ -202,6 +207,7 @@ class EvaluatorBase(ABC):
                      process_type: str) -> str:
         """
         Process the data using the provided processing function.
+        Used in _get_vul_code_and_label_sample.
 
         Args:
             data_to_process (str): The data to be processed.

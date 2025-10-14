@@ -1,3 +1,7 @@
+# ============================================================================================
+# Collect all CWEs from the latest CWE PDF from MITRE
+# Saves unique CWEs to a text file
+# ============================================================================================
 import sys, os
 sys.path.append(os.path.dirname(os.path.abspath(__file__)) + "/../../../")
 
@@ -28,7 +32,8 @@ def main():
 
 def save_cwes_to_file(cwes: set[str], 
                       output_file: str = \
-                          "/home/s448780/workspace_hcc4/SYNKRASIS/services/CodeSecurity/data/cwe/unique_cwes.txt") -> None:
+                          ("/home/s448780/workspace_hcc4/SYNKRASIS/"
+                           "services/CodeSecurity/data/cwe/unique_cwes.txt")) -> None:
     with open(output_file, 'w') as f:
         for cwe in sorted(cwes):
             f.write(f"{cwe}\n")

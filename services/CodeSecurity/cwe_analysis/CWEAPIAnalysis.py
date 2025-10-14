@@ -1,3 +1,8 @@
+# =============================================================================================
+# Collects all data from the MITRE CWE REST API for analysis
+# Hits all available endpoints for a given CWE ID
+# Saves raw and processed data to files for further analysis
+# =============================================================================================
 import sys, os
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', '..')))
 import requests

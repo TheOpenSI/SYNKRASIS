@@ -10,7 +10,7 @@ from abc import ABC, abstractmethod
 from utils.logger.Logger import Logger
 
 if TYPE_CHECKING:
-    from services.CodeSecurity.StaticToolEval import StaticToolEval
+    from services.CodeSecurity.evaluators.StaticToolEval import StaticToolEval
 
 class StaticToolBase(ABC):
     def __init__(self,

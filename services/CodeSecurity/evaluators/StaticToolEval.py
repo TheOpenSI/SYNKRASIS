@@ -2,7 +2,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 import os, sys
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..')))
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', '..')))
 
 import json
 import subprocess
@@ -14,7 +14,7 @@ from tqdm import tqdm
 from utils.output_message_format.output_colour import print_info, print_success, print_error
 from services.CodeSecurity.StaticTools.CodeQL import CodeQL
 from services.CodeSecurity.StaticTools.Semgrep import Semgrep
-from services.CodeSecurity.EvaluatorBase import EvaluatorBase
+from services.CodeSecurity.evaluators.EvaluatorBase import EvaluatorBase
 
 if TYPE_CHECKING:
     from services.CodeSecurity.StaticTools. StaticToolBase import StaticToolBase

@@ -12,7 +12,7 @@ from pathlib import Path
 from services.CodeSecurity.StaticTools.StaticToolBase import StaticToolBase
 
 if TYPE_CHECKING:
-    from services.CodeSecurity.StaticToolEval import StaticToolEval
+    from services.CodeSecurity.evaluators.StaticToolEval import StaticToolEval
 
 class CodeQL(StaticToolBase):
     def __init__(self,

@@ -1,5 +1,11 @@
+# ==============================================================================================
+# LLM-based Code Security Evaluator
+# Evaluates LLMs on code security datasets.
+# Creates a dataset with true labels and llm analysis results.
+# Does not perform analysis itself.
+# ==============================================================================================
 import sys, os
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..')))
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', '..')))
 
 import re
 import time
@@ -9,7 +15,7 @@ from pathlib import Path
     
 from services.LLM.LLMBase import LLMBase
 from services.LLM.Ollama.Ollama import Ollama
-from services.CodeSecurity.EvaluatorBase import EvaluatorBase
+from services.CodeSecurity.evaluators.EvaluatorBase import EvaluatorBase
 from utils.logger.Logger import Logger
 from utils.output_message_format.output_colour import print_info, print_success, print_error
 
@@ -25,7 +31,7 @@ class LLMEval(EvaluatorBase):
                  true_label_processing_func: callable = None,
                  llm_models: list[LLMBase] = [Ollama(model_name="qwen2.5-coder")],
                  llm_system_prompt_path: str = ("/home/s448780/workspace_hcc4/SYNKRASIS/"
-                                                "services/CodeSecurity/llm_prompt/"
+                                                "services/CodeSecurity/evaluators/llm_prompt/"
                                                 "code_sec_cwe_prompt.txt")) -> None:
         """
         LLM-based Code Analysis Evaluation tool.
@@ -95,6 +101,8 @@ class LLMEval(EvaluatorBase):
         Returns:
             list[dict]: List of evaluation results from each LLM.
         """
+        # NOTE: Processing sequentially for the whole dataset would be far better.
+        # NOTE: Will fix that later if required.
         self.logger.debug(f"Running LLM evaluation for sample index: {sample_index}")
         results_for_all_llms = []
         for llm in self.llms:
@@ -119,12 +127,11 @@ class LLMEval(EvaluatorBase):
         
             # log
             print_info((f"Analysis results from {llm.model_name} on "
-                        f"sample {sample_index}: {parsed_response}."))
+                        f"sample {sample_index}: CWE count {parsed_response['count']}."))
             self.logger.info((f"Analysis results from {llm.model_name} on "
                               f"sample {sample_index}: {parsed_response}."))
             
             # delay
-            # NOTE: Is processing the whole dataset for each LLM sequentially better?
             if self.is_delay_required:
                 self.logger.debug("Delaying for 2 seconds before next LLM analysis.")
                 time.sleep(2)  # Delay to unload vram
@@ -147,20 +154,32 @@ class LLMEval(EvaluatorBase):
             'cwe': [],
             'raw_summary': ''
         }
-        
-        # Extract vulnerability count
-        vul_match = re.search(r'Vulnerabilities Found:\s*(\d+)', response, re.IGNORECASE)
-        if vul_match:
-            result['count'] = int(vul_match.group(1))
-        
-        # Extract CWE numbers (just the numbers, not confidence)
-        cwe_matches = re.findall(r'CWE[-\s]?(\d+)', response, re.IGNORECASE)
-        result['cwe'] = list(set([f'CWE-{num}' for num in cwe_matches]))
-        
+
         # Extract raw summary (everything after "### Findings Summary")
         summary_start = response.find('### Findings Summary')
         if summary_start != -1:
             result['raw_summary'] = response[summary_start:].strip()
+        else:
+            result['raw_summary'] = response.strip()
+            self.logger.warning("No findings summary found in LLM response.")
+            
+        # Extract CWE numbers (just the numbers, not confidence)
+        # Using the summary for CWE extraction in case LLM discusses CWEs elsewhere
+        cwe_matches = re.findall(r'CWE[-\s]?(\d+)', result['raw_summary'], re.IGNORECASE)
+        result['cwe'] = list(set([f'CWE-{num}' for num in cwe_matches])) # NOTE: just numbers?
         
+        # Extract vulnerability count
+        vul_match = re.search(r'Vulnerabilities Found:\s*(\d+)', response, re.IGNORECASE)
+        if vul_match:
+            result['reported_count'] = int(vul_match.group(1))
+        
+        # Processed CWE Count
+        result['count'] = len(result['cwe'])
+        
+        if result['count'] != result['reported_count']:
+            self.logger.warning((f"Discrepancy in vulnerability count: "
+                                 f"Reported {result['reported_count']} vs "
+                                 f"Processed {result['count']}"))
+
         self.logger.debug(f"Parsed LLM response:\n{result}\n")
         return result
