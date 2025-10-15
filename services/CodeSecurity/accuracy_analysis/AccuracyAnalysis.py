@@ -23,12 +23,24 @@ class AccuracyAnalysis:
                  mapping_path: str = ("/home/s448780/workspace_hcc4/SYNKRASIS/"
                                       "services/CodeSecurity/"
                                       "cwe_analysis/cwe_relationships.json")) -> None:
+        """
+        Initilise accuracy analysis for either static tools or LLMs.
+
+        Args:
+            tool_type (str): Type of tool, either 'static' or 'llm'
+            result_path (str): Path to the result file
+            mapping_path (str, optional): Path to the mapping file. 
+                Defaults to ("/home/s448780/workspace_hcc4/SYNKRASIS/" 
+                "services/CodeSecurity/" "cwe_analysis/cwe_relationships.json").
+        """
         self.logger = Logger(self.__class__.__name__, "DEBUG")
         self.mapping_path = mapping_path
         self.relationships = self._build_relationships(mapping_path)
         self.tool_type = self._check_tool_type(tool_type)
+        self.logger.info(f"Setting up accuracy analysis for '{self.tool_type}' tool")
         self.results = self._load_results(result_path)
         
+        # NOTE: rebase for static check
         if self.tool_type == 'llm':
             self._llm_analysis()
         else:
@@ -36,26 +48,62 @@ class AccuracyAnalysis:
             
         
     def _load_results(self, path: str) -> list:
+        """
+        Load analysis result with predictions.
+
+        Args:
+            path (str): Path to the result file
+
+        Returns:
+            list: List of analysis results
+        """
         with open(path, "r") as f:
             data = json.load(f)
+        self.logger.info(f"Loaded {len(data)} samples from {path}")
         return data
     
     
     def _check_tool_type(self, tool_type: str) -> str:
+        """
+        Tool type checker, must be 'static' or 'llm'.
+
+        Args:
+            tool_type (str): Tool type to check.
+
+        Raises:
+            ValueError: If tool type is invalid.
+
+        Returns:
+            str: Checked tool type.
+        """
         if tool_type not in ['static', 'llm']:
             raise ValueError("'tool_type' must be 'static' or 'llm'")
         return tool_type
 
 
     def _build_relationships(self, mapping_path: str) -> dict:
+        """
+        Build a mapping of CWE relationships from the provided JSON file.
+        Relationships are bidirectional but does not include transitive closure.
+
+        Args:
+            mapping_path (str): Path to the mapping file.
+
+        Returns:
+            dict: Mapping of CWE relationships.
+        """
+        self.logger.info(f"Loading CWE relationships from {mapping_path}")
         with open(mapping_path, "r") as f:
             cwe_mapping = json.load(f)
+
+        self.logger.info("Relationship mapping loaded.")
         return cwe_mapping
 
 
     def are_cwes_directly_related(self, cwe1: str, cwe2: str) -> bool:
         """
-        Check if two CWE codes are directly related (with normalisation)
+        Check if two CWE codes are directly related (with normalisation).
+        TRANSITIVE relationships are NOT considered here.
         
         Args:
             cwe1: First CWE code
@@ -64,45 +112,47 @@ class AccuracyAnalysis:
         Returns:
             bool: True if related, False otherwise
         """
+        self.logger.debug(f"Checking direct relationship between {cwe1} and {cwe2}")
         num1 = self.normalise_cwe_number(cwe1)
         num2 = self.normalise_cwe_number(cwe2)
         
         # Direct match
         if num1 == num2:
+            self.logger.debug(f"{num1} and {num2} are directly related (exact same code)")
             return True
         
-        # Check via relationships
-        return num2 in self.relationships.get(num1, set())
+        direct_relationship = num2 in self.relationships.get(num1, set())
+        self.logger.debug(f"{num1} and {num2} direct relationship: {direct_relationship}")
+        return direct_relationship
     
     
     def are_cwes_transitively_related(self, 
                                       cwe1: str, 
                                       cwe2: str) -> Tuple[bool, Optional[List[str]]]:
         """
-        Check if two CWE codes are related either directly or transitively.
+        Check if two CWE codes are related either DIRECTLY or TRANSITIVELY.
         
         Args:
             cwe1: First CWE code
             cwe2: Second CWE code
             
         Returns:
-            Tuple of (is_related: bool, path: list[str] | None)
+            Tuple[bool, list[str] | None]
             - If related, path shows the connection from cwe1 to cwe2
             - If not related, path is None
         """
+        self.logger.debug(f"Checking transitive relationship between {cwe1} and {cwe2}")
         num1 = self.normalise_cwe_number(cwe1)
         num2 = self.normalise_cwe_number(cwe2)
-        
-        if num1 == num2:
-            return True, [num1]
-        
+                
         # check if they're directly related
         if self.are_cwes_directly_related(num1, num2):
             return True, [num1, num2]
         
         # BFS
-        visited = {num1}
-        queue = deque([(num1, [num1])])
+        self.logger.debug(f"Performing BFS for transitive relationship between {num1} and {num2}")
+        visited: set = {num1}
+        queue: deque = deque([(num1, [num1])])
         
         while queue:
             current, path = queue.popleft()
@@ -110,19 +160,21 @@ class AccuracyAnalysis:
             
             for related_cwe in related_cwes:
                 if related_cwe == num2:
+                    self.logger.debug(f"Found transitive relationship path: {path + [related_cwe]}")
                     return True, path + [related_cwe]
                 
                 if related_cwe not in visited:
                     visited.add(related_cwe)
                     queue.append((related_cwe, path + [related_cwe]))
         
+        self.logger.debug(f"No transitive relationship found between {num1} and {num2}")
         return False, None
 
 
     def normalise_cwe_number(self, cwe_code: str) -> str:
         """
         Normalise CWE number by removing leading zeros.
-        CWE-020 and CWE-20 should be treated as the same.
+        e.g. CWE-020 and CWE-20 should be treated as the same.
         
         Args:
             cwe_code: CWE code in format "CWE-___" or just number
@@ -131,77 +183,122 @@ class AccuracyAnalysis:
             str: Normalised CWE number as string, e.g "020" -> "20"
         """
         cwe_code = cwe_code.strip()
+        
+        # Empty input or no CWE e.g. Code has no known vulnerability as true label
+        if cwe_code == None or cwe_code == "":
+            self.logger.debug("Empty CWE code provided for normalisation")
+            return None
+        
         if cwe_code.startswith("CWE-"):
             num = cwe_code[4:]
         else:
             num = cwe_code
         
-        # Convert to int and back to remove leading zeros
-        return str(int(num))
-    
-    
+        normalised_num = str(int(num))
+        self.logger.debug(f"Normalised '{cwe_code}' to '{normalised_num}'")
+        return normalised_num
+
+
     def _extract_cwe_number(self, cwe_string: str) -> Optional[str]:
+        """
+        Extract CWE number from a string using regex.
+
+        Args:
+            cwe_string (str): Input string potentially containing a CWE number.
+
+        Returns:
+            Optional[str]: Extracted CWE number or None if not found.
+        """
         match = re.search(r'CWE[\s]?-[\s]?(\d+)', cwe_string, re.IGNORECASE)
-        return match.group(1) if match else None
+        cwe_number = match.group(1) if match else None
+        self.logger.debug(f"Extracted CWE number '{cwe_number}' from string '{cwe_string}'")
+        return cwe_number
     
     
-    def _get_all_cwes_for_single_static_analysis(self, analysis_results: List[dict]) -> List[str]:
+    def _get_all_cwes_for_single_static_analysis(self, 
+                                                 analysis_results: List[dict]) -> List[str]:
+        """
+        Extract all CWE numbers from a single static analysis result.
+        
+        Args:
+            analysis_results (List[dict]): List of analysis result dicts from actual result file.
+            
+        Returns:
+            List[str]: List of extracted CWE numbers as strings.
+        """
+        self.logger.debug("Extracting CWEs from single static analysis results")
         all_cwes = []
         for result in analysis_results:
             cwes_field = result.get('cwes', [])
             if isinstance(cwes_field, list):
+                self.logger.debug(f"Found CWEs in list format: {cwes_field}")
                 for cwe_string in cwes_field:
                     cwe_num = self._extract_cwe_number(str(cwe_string))
                     if cwe_num:
                         all_cwes.append(cwe_num)
             elif isinstance(cwes_field, str):
+                self.logger.debug(f"Found CWEs in string format: {cwes_field}")
                 cwe_num = self._extract_cwe_number(cwes_field)
                 if cwe_num:
                     all_cwes.append(cwe_num)
+        self.logger.debug(f"Extracted CWEs: {all_cwes}")
         return all_cwes
     
     
-    def _get_all_cwes_for_single_llm_analysis(self, parsed_response: dict) -> List[str]:
+    def _get_all_cwes_for_single_llm_analysis(self, 
+                                              parsed_response: dict) -> List[str]:
+        """
+        Extract all CWE numbers from a single LLM analysis result.
+        
+        Args:
+            parsed_response (dict): Parsed response dict from actual result file.
+        
+        Returns:
+            List[str]: List of extracted CWE numbers as strings.
+        """
+        self.logger.debug("Extracting CWEs from single LLM analysis parsed response")
         cwe_list = parsed_response.get('cwe', [])
         all_cwes = []
         for cwe in cwe_list:
             cwe_num = self._extract_cwe_number(str(cwe))
             if cwe_num:
                 all_cwes.append(cwe_num)
+        self.logger.debug(f"Extracted CWEs: {all_cwes}")
         return all_cwes
     
     
-    def _evaluate_single_sample(self, true_label: str, tool_cwes: List[str]) -> Dict:
+    def _evaluate_single_sample(self, 
+                                true_label: str, 
+                                tool_cwes: List[str]) -> Dict:
         """
-        Evaluate a single sample's predictions
+        Evaluate a single sample's predictions.
+        Args:
+            true_label (str): The true CWE label for the sample.
+            tool_cwes (List[str]): List of CWE codes predicted by the tool.
         
-        Returns dict with:
-        - strict_correct: bool
-        - lenient_correct: bool
-        - true_positives: list of CWEs
-        - false_positives: list of CWEs
-        - fp_count: int
-        - noise_ratio: float (FPs / total reported)
+        
+        
+        Returns: 
+            dict: {strict_correct: bool, 
+                   lenient_correct: bool, 
+                   true_positives: list of CWEs, 
+                   false_positives: list of CWEs, 
+                   fp_count: int, 
+                   noise_ratio: float (FPs / total reported),
+                   complete_miss: bool}
         """
+        self.logger.debug(f"Evaluating sample with true label '{true_label}' and predicted CWEs: {tool_cwes}")
         true_label_norm = self.normalise_cwe_number(true_label)
         
         if not tool_cwes:
-            # Tool reported nothing
-            return {
-                'strict_correct': False,
-                'lenient_correct': False,
-                'true_positives': [],
-                'false_positives': [],
-                'fp_count': 0,
-                'noise_ratio': 0.0,
-                'complete_miss': True
-            }
+            return self._handle_no_reported_cwe(true_label_norm)
         
         true_positives = []
         false_positives = []
         
         for cwe in tool_cwes:
             cwe_norm = self.normalise_cwe_number(cwe)
+            # NOTE: Cluster beforehand to make this faster
             is_related, _ = self.are_cwes_transitively_related(true_label_norm, cwe_norm)
             
             if is_related:
@@ -230,10 +327,36 @@ class AccuracyAnalysis:
             'noise_ratio': noise_ratio,
             'complete_miss': complete_miss
         }
+        
+    
+    def _handle_no_reported_cwe(self, true_label_norm: str) -> Dict:
+        """
+        Handle case where tool reported no CWEs.
+        
+        Args:
+            true_label_norm (str): Normalised true CWE label.
+        
+        Returns:
+            dict: Evaluation result indicating complete miss if true label exists.
+        """
+        self.logger.debug("Tool reported no CWEs")
+        evaluation = {
+            'strict_correct': True if true_label_norm == None else False,
+            'lenient_correct': True if true_label_norm == None else False,
+            'true_positives': [None] if true_label_norm == None else [],
+            'false_positives': [],
+            'fp_count': 0,
+            'noise_ratio': 0.0,
+            'complete_miss': False if true_label_norm == None else True
+        }
+        self.logger.debug(f"Evaluation result: {evaluation}")
+        return evaluation
     
     
     def _llm_analysis(self):
-        """Analyse LLM results"""
+        """
+        Analyse LLM results
+        """
         # Get all unique LLM models
         llm_models = set()
         for sample in self.results:
@@ -243,7 +366,7 @@ class AccuracyAnalysis:
         
         llm_models = sorted(list(llm_models))
         
-        # Initialize metrics for each model
+        # Initialise metrics for each model
         model_metrics = {}
         for model in llm_models:
             model_metrics[model] = {
@@ -260,12 +383,9 @@ class AccuracyAnalysis:
         # Process each sample
         for sample in self.results:
             true_label = sample.get('true_label')
-            analysis_list = sample.get('analysis', [])
+            analysis_list = sample.get('analysis', []) # predictions
             
-            for analysis in analysis_list:
-                if 'llm_model' not in analysis:
-                    continue
-                    
+            for analysis in analysis_list:  
                 model = analysis['llm_model']
                 model_metrics[model]['total_samples'] += 1
                 
@@ -295,7 +415,9 @@ class AccuracyAnalysis:
     
     
     def _static_analysis(self):
-        """Analyse static tool results"""
+        """
+        Analyse static tool results
+        """
         # Get all unique static tools
         static_tools = set()
         for sample in self.results:
@@ -356,8 +478,16 @@ class AccuracyAnalysis:
             self._print_tool_report(tool, tool_metrics[tool])
     
     
-    def _print_tool_report(self, tool_name: str, metrics: Dict):
-        """Print formatted report for a single tool"""
+    def _print_tool_report(self, 
+                           tool_name: str, 
+                           metrics: Dict) -> None:
+        """
+        Print formatted report for a single tool
+        
+        Args:
+            tool_name (str): Name of the tool
+            metrics (Dict): Metrics dictionary for the tool
+        """
         total = metrics['total_samples']
         strict = metrics['strict_correct']
         lenient = metrics['lenient_correct']
@@ -368,10 +498,10 @@ class AccuracyAnalysis:
         print("━" * 80)
         print("CORRECTNESS")
         print("━" * 80)
-        print(f"Strict Correct:    {strict}/{total} ({strict/total*100:.1f}%)  ← Perfect detection, no noise")
-        print(f"Lenient Correct:   {lenient}/{total} ({lenient/total*100:.1f}%)  ← Found vulnerability, ignoring extras")
-        print(f"Complete Miss:     {miss}/{total} ({miss/total*100:.1f}%)  ← Failed to detect")
-        
+        print(f"Strict Correct:    {strict}/{total} ({strict/total*100:.1f}%) | Perfect detection, no noise")
+        print(f"Lenient Correct:   {lenient}/{total} ({lenient/total*100:.1f}%) | Found vulnerability, ignoring extras")
+        print(f"Complete Miss:     {miss}/{total} ({miss/total*100:.1f}%) | Failed to detect")
+
         print("\n" + "━" * 80)
         print("FALSE POSITIVE ANALYSIS")
         print("━" * 80)
