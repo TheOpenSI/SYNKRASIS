@@ -377,7 +377,8 @@ class AccuracyAnalysis:
                 'fp_counts': [],
                 'noise_ratios': [],
                 'fp_distribution': defaultdict(int),
-                'samples_with_detections': 0
+                'samples_with_detections': 0,
+                'complete_miss_wo_fp': 0
             }
         
         # Process each sample
@@ -393,6 +394,10 @@ class AccuracyAnalysis:
                 tool_cwes = self._get_all_cwes_for_single_llm_analysis(parsed_response)
                 
                 evaluation = self._evaluate_single_sample(true_label, tool_cwes)
+                
+                # No CWE incorrectly reported
+                if evaluation['complete_miss'] == True and evaluation['false_positives'] == []:
+                    model_metrics[model]['complete_miss_wo_fp'] += 1
                 
                 if evaluation['strict_correct']:
                     model_metrics[model]['strict_correct'] += 1
@@ -438,7 +443,8 @@ class AccuracyAnalysis:
                 'fp_counts': [],
                 'noise_ratios': [],
                 'fp_distribution': defaultdict(int),
-                'samples_with_detections': 0
+                'samples_with_detections': 0,
+                'complete_miss_wo_fp': 0
             }
         
         # Process each sample
@@ -457,6 +463,10 @@ class AccuracyAnalysis:
                 tool_cwes = self._get_all_cwes_for_single_static_analysis(analysis_results)
                 
                 evaluation = self._evaluate_single_sample(true_label, tool_cwes)
+                
+                # No CWE incorrectly reported
+                if evaluation['complete_miss'] == True and evaluation['false_positives'] == []:
+                    tool_metrics[tool]['complete_miss_wo_fp'] += 1
                 
                 if evaluation['strict_correct']:
                     tool_metrics[tool]['strict_correct'] += 1
@@ -493,6 +503,7 @@ class AccuracyAnalysis:
         lenient = metrics['lenient_correct']
         miss = metrics['complete_miss']
         detections = metrics['samples_with_detections']
+        complete_miss_wo_fp = metrics['complete_miss_wo_fp']
         
         print(f"\nTool: {tool_name} ({total} samples)")
         print("━" * 80)
@@ -510,6 +521,7 @@ class AccuracyAnalysis:
             samples_with_fps = sum(1 for fp in metrics['fp_counts'] if fp > 0)
             print((f"Samples with FPs:  {samples_with_fps}/{detections} "
                    f"({samples_with_fps/detections*100:.1f}% of detections had noise)"))
+            print((f"True misses w/o FPs: {complete_miss_wo_fp}"))
             
             print("\nFP Count Distribution:")
             fp_dist = metrics['fp_distribution']
