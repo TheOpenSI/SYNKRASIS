@@ -28,10 +28,10 @@ from utils.code_parsing.code_parser import parse_response
 class OllamaContainer(LLMBase):
     def __init__(self, 
                  model_name: str = "mistral", # uses mistral as default model
-                 enable_chat_history:bool = False, 
+                 enable_chat_history: bool = False, 
                  max_history: int = 3,
                  verbose_switch: bool = False,
-                 container_name = "ollama",
+                 container_name: str = "ollama",
                  local_port: int = 11434):
         """
         Ollama container class for running ollama from the official Ollama container.
@@ -147,8 +147,7 @@ class OllamaContainer(LLMBase):
                 if not self.chat_history:
                     self.init_chat_history(user_prompt)
                     
-                self.chat_history.add_interaction(user_prompt,
-                                                  response["response"]) 
+                self.chat_history.add_interaction(user_prompt, response) 
                 
             if self.verbose_switch:
                 print_model_output(full_query, "USER")
