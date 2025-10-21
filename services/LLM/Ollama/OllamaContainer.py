@@ -148,8 +148,7 @@ class OllamaContainer(LLMBase):
                 if not self.chat_history:
                     self.init_chat_history(user_prompt)
                     
-                self.chat_history.add_interaction(user_prompt,
-                                                  response["response"]) 
+                self.chat_history.add_interaction(user_prompt, response) 
                 
             if self.verbose_switch:
                 print_model_output(full_query, "USER")
