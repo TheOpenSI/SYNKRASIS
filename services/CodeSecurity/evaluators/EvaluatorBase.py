@@ -26,7 +26,7 @@ from typing import Any
 from tqdm import tqdm
 
 from utils.logger.Logger import Logger
-from utils.output_message_format.output_colour import print_error, print_success
+from utils.output_message_format.output_colour import print_error, print_success, print_info
 
 class EvaluatorBase(ABC):
     def __init__(self,
@@ -50,7 +50,6 @@ class EvaluatorBase(ABC):
             code_dir_name (str, optional): Directory name to store code files.
             base_path (str, optional): Base path for experiment directories.
                 Will add dastaset name to this path.
-                Defaults to "/home/s448780/workspace_hcc4/SYNKRASIS/services/CodeSecurity/".
             vul_code_processing_func (callable, optional): Function to process vul_code. 
                 Should take a string and return a processed string, e.g. Remove backticks.
                 Defaults to None.
@@ -85,7 +84,9 @@ class EvaluatorBase(ABC):
         return str(self.base_path / self.code_dir_name)
     
     
-    def run_evaluation(self) -> None:
+    def run_evaluation(self,
+                       is_test: bool = False,
+                       n_samples: int = 10) -> None:
         """
         Run the evaluation process:
         1. Setup directories
@@ -98,6 +99,12 @@ class EvaluatorBase(ABC):
             e. Save consolidated results
         Results are saved in a consolidated JSON file in the base_path.  
         Note: Ensure that static tools are loaded before calling this method.
+        
+        Args:
+            is_test (bool, optional): If True, runs first n samples for testing.
+                Defaults to False.
+            n_samples (int, optional): Number of samples to run if is_test is True.
+                Defaults to 10.
         """
         # Setup directories
         self._setup_directories()
@@ -107,10 +114,18 @@ class EvaluatorBase(ABC):
             self.base_path / f"{self._filename_from_dataset}_{self._get_consolidated_file_name()}.json"
         all_results = []
         
+        if is_test:
+            self.logger.info(f"Test mode: Processing {n_samples} samples only.")
+            print_info(f"Test mode: Processing {n_samples} samples only.")
+        
         # Iterate over dataset
         for i, entry in enumerate(tqdm(self.data, 
                                        desc=f"Processing Code Samples from {Path(self.dataset_path).name}")):
             try:
+                if is_test and i > n_samples -1:
+                    self.logger.info("Test mode: Reached sample limit, stopping evaluation.")
+                    break
+                    
                 vul_code, true_label = self._get_vul_code_and_label_sample(entry)
                 
                 # Create code file

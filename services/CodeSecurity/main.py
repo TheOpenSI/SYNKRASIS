@@ -28,13 +28,13 @@ if __name__ == "__main__":
                        "qwen2.5-coder:latest", 
                        "llama3.1:latest",
                        "phi4"]
-    llm_models = [OllamaContainer(model_name=name) for name in llm_model_names]
+    llm_models = [OllamaContainer(model_name=name, suppress_stdout=True) for name in llm_model_names]
     
     evaluator = LLMEval(
-        dataset_path = "/home/s448780/workspace_hcc4/SYNKRASIS/services/CodeSecurity/data/SecurityEval.jsonl",
+        dataset_path = "/home/adnana/workspace/SYNKRASIS/services/CodeSecurity/data/SecurityEval.jsonl",
         vul_code_key = "Insecure_code",
         true_label_key = "ID",
         true_label_processing_func = lambda x: x.split("_")[0],
         llm_models = llm_models
     )
-    evaluator.run_evaluation()
+    evaluator.run_evaluation(is_test=True, n_samples=5)

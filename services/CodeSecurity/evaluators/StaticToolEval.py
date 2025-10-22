@@ -27,7 +27,7 @@ class StaticToolEval(EvaluatorBase):
                  true_label_key: str,
                  code_file_name: str = "main.py",
                  code_dir_name: str = "vul_code",
-                 base_path: str = "/home/s448780/workspace_hcc4/SYNKRASIS/services/CodeSecurity/",
+                 base_path: str = "/home/adnana/workspace/SYNKRASIS/services/CodeSecurity/",
                  vul_code_processing_func: callable = None,
                  true_label_processing_func: callable = None) -> None:
         """
@@ -42,7 +42,7 @@ class StaticToolEval(EvaluatorBase):
             code_dir_name (str, optional): Directory name to store code files.
             base_path (str, optional): Base path for experiment directories.
                 Will add dastaset name to this path.
-                Defaults to "/home/s448780/workspace_hcc4/SYNKRASIS/services/CodeSecurity/".
+                Defaults to "/home/adnana/workspace/SYNKRASIS/services/CodeSecurity/".
             vul_code_processing_func (callable, optional): Function to process vul_code. 
                 Should take a string and return a processed string, e.g. Remove backticks.
                 Defaults to None.

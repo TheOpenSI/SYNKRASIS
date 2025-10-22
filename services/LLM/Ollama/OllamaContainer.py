@@ -33,7 +33,8 @@ class OllamaContainer(LLMBase):
                  max_history: int = 3,
                  verbose_switch: bool = False,
                  container_name = "ollama",
-                 local_port: int = 11434):
+                 local_port: int = 11434,
+                 suppress_stdout: bool = False) -> None:
         """
         Ollama container class for running ollama from the official Ollama container.
 
@@ -46,7 +47,7 @@ class OllamaContainer(LLMBase):
                 Defaults to "ollama".
             local_port (int, optional): Port on which the ollama server is running.
         """
-        super().__init__(model_name, enable_chat_history, max_history, verbose_switch)
+        super().__init__(model_name, enable_chat_history, max_history, verbose_switch, suppress_stdout)
         self.container_name = container_name
         self._check_model_availability()
         self.local_port = local_port
@@ -149,13 +150,15 @@ class OllamaContainer(LLMBase):
                     self.init_chat_history(user_prompt)
                     
                 self.chat_history.add_interaction(user_prompt, response) 
-                
-            if self.verbose_switch:
-                print_model_output(full_query, "USER")
+            
+            if not self.suppress_stdout:    
+                if self.verbose_switch:
+                    print_model_output(full_query, "USER")
+                    print("\n")
+                    
+                print_model_output(response, self.model_name)
                 print("\n")
-                
-            print_model_output(response, self.model_name)
-            print("\n")
+            
             return response
 
         except ConnectionError as ce:

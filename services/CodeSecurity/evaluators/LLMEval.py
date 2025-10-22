@@ -26,11 +26,11 @@ class LLMEval(EvaluatorBase):
                  true_label_key: str,
                  code_file_name: str = "main.py",
                  code_dir_name: str = "vul_code",
-                 base_path: str = "/home/s448780/workspace_hcc4/SYNKRASIS/services/CodeSecurity/",
+                 base_path: str = "/home/adnana/workspace/SYNKRASIS/services/CodeSecurity/",
                  vul_code_processing_func: callable = None,
                  true_label_processing_func: callable = None,
                  llm_models: list[LLMBase] = [Ollama(model_name="qwen2.5-coder")],
-                 llm_system_prompt_path: str = ("/home/s448780/workspace_hcc4/SYNKRASIS/"
+                 llm_system_prompt_path: str = ("/home/adnana/workspace/SYNKRASIS/"
                                                 "services/CodeSecurity/evaluators/llm_prompt/"
                                                 "code_sec_cwe_prompt.txt")) -> None:
         """
@@ -164,17 +164,22 @@ class LLMEval(EvaluatorBase):
             self.logger.warning("No findings summary found in LLM response.")
             
         # Extract CWE numbers (just the numbers, not confidence)
-        # Using the summary for CWE extraction in case LLM discusses CWEs elsewhere
-        cwe_matches = re.findall(r'CWE[-\s]?(\d+)', result['raw_summary'], re.IGNORECASE)
-        result['cwe'] = list(set([f'CWE-{num}' for num in cwe_matches])) # NOTE: just numbers?
+        # Using the summary for main CWE extraction in case LLM discusses CWEs elsewhere
+        cwe_matches = self.find_cwe_from_text(result['raw_summary'])
+        cwe_matches_whole_response = self.find_cwe_from_text(response)
         
-        # Extract vulnerability count
+        result['cwe'] = list(set([f'CWE-{num}' for num in cwe_matches])) # NOTE: just numbers?
+        result['_cwe_whole_response'] = list(set([f'CWE-{num}' for num in cwe_matches_whole_response]))
+        
+        # Extract reported vulnerability count insted of len(cwe)
         vul_match = re.search(r'Vulnerabilities Found:\s*(\d+)', response, re.IGNORECASE)
-        if vul_match:
-            result['reported_count'] = int(vul_match.group(1))
+        result['reported_count'] = int(vul_match.group(1)) \
+                                   if vul_match \
+                                   else -1
         
         # Processed CWE Count
         result['count'] = len(result['cwe'])
+        result['_cwe_whole_response_count'] = len(result['_cwe_whole_response'])
         
         if result['count'] != result['reported_count']:
             self.logger.warning((f"Discrepancy in vulnerability count: "
@@ -183,3 +188,17 @@ class LLMEval(EvaluatorBase):
 
         self.logger.debug(f"Parsed LLM response:\n{result}\n")
         return result
+    
+    
+    @staticmethod
+    def find_cwe_from_text(text: str) -> list[str]:
+        """
+        Find CWE identifiers in the given text.
+
+        Args:
+            text (str): The text to search for CWE identifiers.
+
+        Returns:
+            list[str]: A list of CWE identifiers found in the text.
+        """
+        return re.findall(r'CWE[-\s]?(\d+)', text, re.IGNORECASE)

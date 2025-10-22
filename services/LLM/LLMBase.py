@@ -38,7 +38,8 @@ class LLMBase(ServiceBase):
                  model_name: str, 
                  enable_chat_history: bool = False,
                  max_history: int = 3,
-                 verbose_switch: bool = False):
+                 verbose_switch: bool = False,
+                 suppress_stdout: bool = False):
         """
         Base class for all LLM services
         Args:
@@ -48,6 +49,7 @@ class LLMBase(ServiceBase):
                 Defaults to 3.
             verbose_switch (bool, optional): Whether to print out full prompt and response. 
                 Defaults to False.
+            suppress_stdout (bool, optional): Whether to suppress stdout printing.
         """
         super().__init__()
         self.model_name = model_name
@@ -57,6 +59,7 @@ class LLMBase(ServiceBase):
         self.chat_history: ChatHistory = None
         self.max_history = max_history
         self.verbose_switch = verbose_switch
+        self.suppress_stdout = suppress_stdout
         self.system_prompt = ("You are a helpful assistant, "
                               "always answer the question to the best of your ability "
                               "even if the context is not useful.")
