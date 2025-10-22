@@ -13,22 +13,46 @@ from services.LLM.HF_LLM.HF_LLM import HF_LLM
 # Utils
 from utils.output_message_format.output_colour import print_model_output, print_info, print_error 
 from utils.output_message_format.output_colour import print_success, print_warning
+from utils.cli.CLICommands import CLICommands
 from utils.resource.resource_mg_util import call_cleanup
+
+from prompt_toolkit import PromptSession
+from prompt_toolkit.key_binding import KeyBindings
 
 
 def main():
     try:
+        cli_commands = CLICommands()
+        
+        # Key Binding
+        kb = KeyBindings()
+
+        @kb.add('tab')
+        def _(event):
+            """
+            Key binding.
+
+            Args:
+                event: Prompt toolkit injects this.
+                Contains current buffer, app state.
+            """
+            buffer = event.current_buffer
+            suggestion = buffer.suggestion
+            if suggestion:
+                buffer.insert_text(suggestion.text)
+                
+        session = PromptSession(auto_suggest = cli_commands.auto_suggest,
+                                key_bindings = kb)
+        
         ollama = OllamaContainer(model_name="qwen2.5-coder:7b",
                                  enable_chat_history=True,
                                  max_history=10)
         while True:
-            user_input = input(">> Query: ")
+            user_input = session.prompt(">> Query: ")
             
-            if user_input.lower() == "exit":
-                exit_message = ("Goodbye! If you have any more questions or need assistance "
-                                "in the future, feel free to return. Have a great day!")
-                print_model_output(exit_message, ollama.model_name)
-                break
+            if user_input.startswith('\\'):
+                cli_commands.execute_command(user_input)
+                continue
             
             ollama.generate_response(user_input, suppress_conversation_history=False)
     
