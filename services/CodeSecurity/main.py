@@ -70,7 +70,8 @@ if __name__ == "__main__":
                        "mistral:latest", 
                        "qwen2.5-coder:latest", 
                        "llama3.1:latest",
-                       "phi4"]
+                       "phi4",
+                       "deepseek-coder:6.7b"]
     
     llm_models = [OllamaClient(model_name=name, 
                                container_name="localhost",
