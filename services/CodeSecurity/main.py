@@ -6,7 +6,7 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '.
 
 from services.CodeSecurity.evaluators.StaticToolEval import StaticToolEval
 from services.CodeSecurity.evaluators.LLMEval import LLMEval
-from services.LLM.Ollama.OllamaContainer import OllamaContainer
+from services.LLM.Ollama.OllamaClient import OllamaClient
 
 if __name__ == "__main__":
     # Static Tool
@@ -28,7 +28,9 @@ if __name__ == "__main__":
                        "qwen2.5-coder:latest", 
                        "llama3.1:latest",
                        "phi4"]
-    llm_models = [OllamaContainer(model_name=name, suppress_stdout=True) for name in llm_model_names]
+    llm_models = [OllamaClient(model_name=name, 
+                               container_name="localhost",
+                               suppress_stdout=True) for name in llm_model_names]
     
     evaluator = LLMEval(
         dataset_path = "/home/adnana/workspace/SYNKRASIS/services/CodeSecurity/data/SecurityEval.jsonl",

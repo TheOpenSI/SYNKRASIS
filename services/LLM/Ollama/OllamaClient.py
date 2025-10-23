@@ -29,8 +29,9 @@ class OllamaClient(LLMBase):
                  max_history: int = 3,
                  verbose_switch: bool = False,
                  container_name = "ollama",
-                 local_port: int = 11434):
-        super().__init__(model_name, enable_chat_history, max_history, verbose_switch)
+                 local_port: int = 11434,
+                 suppress_stdout: bool = False) -> None:
+        super().__init__(model_name, enable_chat_history, max_history, verbose_switch, suppress_stdout)
         self._tag_model() # tag the model to support model availability check
         self.ollama_client = self._set_local_client(container_name, local_port)
         self.pull_manager = OllamaPullManager(model_name=self.model_name,
@@ -102,7 +103,9 @@ class OllamaClient(LLMBase):
         full_query = self._prepare_prompt(messages) 
         
         # Generate response from the model
-        response = self.ollama_client.generate(model = self.model_name, prompt = full_query)
+        response = self.ollama_client.generate(model = self.model_name, 
+                                               prompt = full_query,
+                                               keep_alive=0)
 
         # Add the interaction to chat history
         if self.enable_chat_history and response:
@@ -111,14 +114,15 @@ class OllamaClient(LLMBase):
 
             # For chat it's response["message"]["content"]
             self.chat_history.add_interaction(user_prompt,
-                                                response["response"])  
-            
-        if self.verbose_switch:
-            print_model_output(full_query, "USER")
+                                                response["response"])
+        
+        if not self.suppress_stdout:    
+            if self.verbose_switch:
+                print_model_output(full_query, "USER")
+                print("\n")
+                
+            print_model_output(response["response"], self.model_name)
             print("\n")
-            
-        print_model_output(response["response"], self.model_name)
-        print("\n")
         return response["response"]
         
         

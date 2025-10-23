@@ -116,20 +116,19 @@ class LLMEval(EvaluatorBase):
             # Genrate response
             self.logger.debug(f"Generating response from {llm.model_name} for sample {sample_index}.")
             response = llm.generate_response(user_prompt)
+            self.logger.debug(f"Response from {llm.model_name} for sample {sample_index}:\n{response}\n")
             
             # Parse response
-            parsed_response = self._parse_llm_response(response)
+            parsed_response = self._parse_llm_response(response, llm.model_name)
             results_for_all_llms.append({
                 "llm_model": llm.model_name,
                 "parsed_response": parsed_response,
                 "raw_response": response
             })
         
-            # log
             print_info((f"Analysis results from {llm.model_name} on "
                         f"sample {sample_index}: CWE count {parsed_response['count']}."))
-            self.logger.info((f"Analysis results from {llm.model_name} on "
-                              f"sample {sample_index}: {parsed_response}."))
+            self.logger.info("="*50)
             
             # delay
             if self.is_delay_required:
@@ -139,7 +138,9 @@ class LLMEval(EvaluatorBase):
         return results_for_all_llms
     
     
-    def _parse_llm_response(self, response: str) -> Dict:
+    def _parse_llm_response(self, 
+                            response: str,
+                            model_name: str) -> Dict:
         """
         Parse the LLM response to extract vulnerability count and CWEs.        
         Args:
@@ -148,20 +149,15 @@ class LLMEval(EvaluatorBase):
         Returns:
             Dict with keys: count (int), cwe (list[str]), raw_summary (str)
         """
-        self.logger.debug("Parsing LLM response.")
+        self.logger.debug(f"Parsing {model_name}'s response.")
         result = {
             'count': 0,
             'cwe': [],
             'raw_summary': ''
         }
 
-        # Extract raw summary (everything after "### Findings Summary")
-        summary_start = response.find('### Findings Summary')
-        if summary_start != -1:
-            result['raw_summary'] = response[summary_start:].strip()
-        else:
-            result['raw_summary'] = response.strip()
-            self.logger.warning("No findings summary found in LLM response.")
+        # Extract raw summary
+        result['raw_summary'] = self.extract_summary(response)
             
         # Extract CWE numbers (just the numbers, not confidence)
         # Using the summary for main CWE extraction in case LLM discusses CWEs elsewhere
@@ -181,17 +177,31 @@ class LLMEval(EvaluatorBase):
         result['count'] = len(result['cwe'])
         result['_cwe_whole_response_count'] = len(result['_cwe_whole_response'])
         
+        # Analysis
+        result["did_report_wrong"] = not result["reported_count"] == result["count"]
+        result["did_discuss_other_vuls"] = result["_cwe_whole_response_count"] > result["count"]
+        result["is_summary_present"] = not result["raw_summary"] == ""
+
+        # logging
+        self.logger.debug(f"Summary extracted: {result['raw_summary']}")
+        self.logger.debug(f"CWEs extracted from summary: {result['cwe']}")
+        self.logger.debug(f"Number of CWEs extracted from summary: {result['count']}")
+        self.logger.debug(f"CWEs extracted from whole response: {result['_cwe_whole_response']}")
+        self.logger.debug(f"Number of CWEs extracted from whole response: {result['_cwe_whole_response_count']}")
+        self.logger.debug(f"Reported vulnerability count (in text): {result['reported_count']}")
+        self.logger.debug(f"Did report wrong count: {result['did_report_wrong']}")
+        self.logger.debug(f"Did discuss other vulnerabilities: {result['did_discuss_other_vuls']}")
+        self.logger.debug(f"Is summary present: {result['is_summary_present']}")
+        
         if result['count'] != result['reported_count']:
             self.logger.warning((f"Discrepancy in vulnerability count: "
                                  f"Reported {result['reported_count']} vs "
                                  f"Processed {result['count']}"))
-
-        self.logger.debug(f"Parsed LLM response:\n{result}\n")
+            
         return result
     
     
-    @staticmethod
-    def find_cwe_from_text(text: str) -> list[str]:
+    def find_cwe_from_text(self, text: str) -> list[str]:
         """
         Find CWE identifiers in the given text.
 
@@ -201,4 +211,29 @@ class LLMEval(EvaluatorBase):
         Returns:
             list[str]: A list of CWE identifiers found in the text.
         """
+        if text == "" or text is None:
+            self.logger.debug("No text provided for CWE extraction.")
+            return []
         return re.findall(r'CWE[-\s]?(\d+)', text, re.IGNORECASE)
+    
+    
+    @staticmethod
+    def extract_summary(response: str) -> str:
+        """
+        Extract summary section from LLM response.
+        
+        Matches headings like: ### Findings Summary, Summary, ***Findings Summary***, #### SUMMARY
+        
+        Args:
+            response (str): The LLM response text
+            
+        Returns:
+            str: The extracted summary text, or empty string if not found
+        """
+        pattern = r'[#]*\s?(?:Findings\s+)?Summary'
+        match = re.search(pattern, response, re.IGNORECASE)
+        
+        if match:
+            return response[match.start():].strip()
+        else:
+            return ""
