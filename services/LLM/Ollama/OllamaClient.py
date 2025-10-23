@@ -105,7 +105,7 @@ class OllamaClient(LLMBase):
         # Generate response from the model
         response = self.ollama_client.generate(model = self.model_name, 
                                                prompt = full_query,
-                                               keep_alive=0)
+                                               keep_alive=10)
 
         # Add the interaction to chat history
         if self.enable_chat_history and response:

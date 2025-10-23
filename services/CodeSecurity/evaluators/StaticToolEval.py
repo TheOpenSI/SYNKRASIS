@@ -59,6 +59,9 @@ class StaticToolEval(EvaluatorBase):
                          vul_code_processing_func,
                          true_label_processing_func)
         self.static_tools: List[StaticToolBase] = None  # To be set by load_static_tools method
+        # consolidated output path
+        self.consolidated_output_path = \
+            self.base_path / f"{self._filename_from_dataset}_{self._get_consolidated_file_name()}.json"
          
         
     def load_static_tools(self,

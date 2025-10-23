@@ -108,10 +108,7 @@ class EvaluatorBase(ABC):
         """
         # Setup directories
         self._setup_directories()
-        
-        # Consolidates analysis
-        consolidated_output_path = \
-            self.base_path / f"{self._filename_from_dataset}_{self._get_consolidated_file_name()}.json"
+
         all_results = []
         
         if is_test:
@@ -131,7 +128,7 @@ class EvaluatorBase(ABC):
                 # Create code file
                 self._create_code_file(vul_code)
                 
-                # Run each static tool
+                # Run each 
                 results_for_all_candidates = self._run_evaluation_for_each_candidate(i, vul_code)
                     
                 # saving consolidated results
@@ -142,8 +139,8 @@ class EvaluatorBase(ABC):
                 })
                 
                 # saving to json
-                self._save_json(consolidated_output_path, all_results)
-                self.logger.info(f"Consolidated results updated at {consolidated_output_path}.")
+                self._save_json(self.consolidated_output_path, all_results)
+                self.logger.info(f"Consolidated results updated at {self.consolidated_output_path}.")
                     
             except KeyError as e:
                 self.logger.error(f"Missing key in dataset entry: {e}")

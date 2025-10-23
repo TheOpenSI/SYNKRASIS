@@ -1,19 +1,19 @@
-from flask import Flask, redirect, request
-import re
+import boto3
 
-app = Flask(__name__)
+DYNAMO_CLIENT = boto3.client('dynamodb', config=config)
 
 
-@app.route('/redirect')
-def redirectToTarget():
+def getUser(username, password):
     '''
-    Get target URL from request,
-    use a regular expression to check if it is a valid target,
-    then redirect to the target URL
+    Get the user information from the users table by using its username and password.
     '''
-    target = request.args.get('target')
-    regex = re.compile("(www|beta).example.com/")
-    if regex.match(target):
-        return redirect(target)
-    else:
-        return "Invalid target"
+
+    return DYNAMO_CLIENT.scan(
+        FilterExpression=username + " = :u AND password = :p",
+        ExpressionAttributeValues={
+            ":u": {'S': username},
+            ":p": {'S': password}
+        },
+        ProjectionExpression="username, password",
+        TableName="users"
+    )

@@ -71,6 +71,9 @@ class LLMEval(EvaluatorBase):
         for llm in self.llms:
             llm.set_system_prompt_from_file(llm_system_prompt_path)
         self.is_delay_required: bool = False if len(self.llms) == 1 else True
+        # consolidated output path
+        self.consolidated_output_path = \
+            self.base_path / f"{self._filename_from_dataset}_{self._get_consolidated_file_name()}.json"
             
             
     def _get_all_dirs_to_create(self) -> set:
