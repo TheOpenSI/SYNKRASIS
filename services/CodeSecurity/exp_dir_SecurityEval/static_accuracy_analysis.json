@@ -1,0 +1,35 @@
+[
+    {
+        "tool_name": "CodeQL",
+        "total_samples": 121,
+        "detections_made": 58,
+        "strict_correct": 55,
+        "lenient_correct": 58,
+        "total_miss": 63,
+        "predictions_with_noise": 3,
+        "predicted_secure": 63,
+        "fp_distribution": {
+            "0": 55,
+            "1": 3
+        },
+        "avg_fp_noisy": 1.0,
+        "avg_fp_all": 0.05172413793103448,
+        "max_fp": 1
+    },
+    {
+        "tool_name": "Semgrep",
+        "total_samples": 121,
+        "detections_made": 56,
+        "strict_correct": 56,
+        "lenient_correct": 56,
+        "total_miss": 65,
+        "predictions_with_noise": 0,
+        "predicted_secure": 65,
+        "fp_distribution": {
+            "0": 56
+        },
+        "avg_fp_noisy": 0.0,
+        "avg_fp_all": 0.0,
+        "max_fp": 0
+    }
+]
