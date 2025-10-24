@@ -20,7 +20,7 @@ class AccuracyAnalysis:
     def __init__(self,
                  tool_type: str,
                  result_path: str,
-                 mapping_path: str = ("/home/s448780/workspace_hcc4/SYNKRASIS/"
+                 mapping_path: str = ("/home/adnana/workspace/SYNKRASIS/"
                                       "services/CodeSecurity/"
                                       "cwe_analysis/cwe_relationships.json")) -> None:
         """
@@ -189,7 +189,7 @@ class AccuracyAnalysis:
             self.logger.debug("Empty CWE code provided for normalisation")
             return None
         
-        if cwe_code.startswith("CWE-"):
+        if cwe_code.upper().startswith("CWE-"):
             num = cwe_code[4:]
         else:
             num = cwe_code
@@ -557,22 +557,22 @@ class AccuracyAnalysis:
 
 
 if __name__ == "__main__":
-    # Example usage for LLM
-    llm_path = ("/home/s448780/workspace_hcc4/SYNKRASIS/services/CodeSecurity/"
-                "exp_dir_SecurityEval/"
-                "SecurityEval_qwen2_5_coder_32b_mistral_latest_qwen2_5_coder_latest_llama3_1_latest.json")
+    # LLMs
+    llm_path = ("services/CodeSecurity/exp_dir_SVEN/"
+                "SVEN_qwen2_5_coder_32b_mistral_latest_qwen2_5_coder_latest_"
+                "llama3_1_latest_phi4_latest_deepseek_coder_6_7b_devstral_24b.json")
     
     print("=" * 80)
     print("LLM ANALYSIS")
     print("=" * 80)
     llm_analyser = AccuracyAnalysis(tool_type='llm', result_path=llm_path)
     
-    # Example usage for static tools
-    static_path = ("/home/s448780/workspace_hcc4/SYNKRASIS/services/CodeSecurity/"
-                   "exp_dir_SecurityEval/"
-                   "SecurityEval_consolidated_evaluation_results.json")
+    # Static tools
+    # static_path = ("/home/s448780/workspace_hcc4/SYNKRASIS/services/CodeSecurity/"
+    #                "exp_dir_SecurityEval/"
+    #                "SecurityEval_consolidated_evaluation_results.json")
     
-    print("\n" + "=" * 80)
-    print("STATIC TOOLS ANALYSIS")
-    print("=" * 80)
-    static_analyser = AccuracyAnalysis(tool_type='static', result_path=static_path)
+    # print("\n" + "=" * 80)
+    # print("STATIC TOOLS ANALYSIS")
+    # print("=" * 80)
+    # static_analyser = AccuracyAnalysis(tool_type='static', result_path=static_path)
