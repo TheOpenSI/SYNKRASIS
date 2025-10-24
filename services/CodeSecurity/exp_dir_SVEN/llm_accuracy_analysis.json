@@ -1,0 +1,126 @@
+[
+    {
+        "tool_name": "deepseek-coder:6.7b",
+        "total_samples": 720,
+        "detections_made": 526,
+        "strict_correct": 496,
+        "lenient_correct": 523,
+        "total_miss": 197,
+        "predictions_with_noise": 30,
+        "predicted_secure": 194,
+        "fp_distribution": {
+            "0": 496,
+            "1": 30
+        },
+        "avg_fp_noisy": 1.0,
+        "avg_fp_all": 0.057034220532319393,
+        "max_fp": 1
+    },
+    {
+        "tool_name": "devstral:24b",
+        "total_samples": 720,
+        "detections_made": 650,
+        "strict_correct": 572,
+        "lenient_correct": 650,
+        "total_miss": 70,
+        "predictions_with_noise": 78,
+        "predicted_secure": 70,
+        "fp_distribution": {
+            "0": 572,
+            "1": 74,
+            "2": 4
+        },
+        "avg_fp_noisy": 1.0512820512820513,
+        "avg_fp_all": 0.12615384615384614,
+        "max_fp": 2
+    },
+    {
+        "tool_name": "llama3.1:latest",
+        "total_samples": 720,
+        "detections_made": 602,
+        "strict_correct": 544,
+        "lenient_correct": 602,
+        "total_miss": 118,
+        "predictions_with_noise": 58,
+        "predicted_secure": 118,
+        "fp_distribution": {
+            "0": 544,
+            "1": 56,
+            "2": 2
+        },
+        "avg_fp_noisy": 1.0344827586206897,
+        "avg_fp_all": 0.09966777408637874,
+        "max_fp": 2
+    },
+    {
+        "tool_name": "mistral:latest",
+        "total_samples": 720,
+        "detections_made": 132,
+        "strict_correct": 111,
+        "lenient_correct": 131,
+        "total_miss": 589,
+        "predictions_with_noise": 21,
+        "predicted_secure": 588,
+        "fp_distribution": {
+            "0": 111,
+            "1": 20,
+            "2": 1
+        },
+        "avg_fp_noisy": 1.0476190476190477,
+        "avg_fp_all": 0.16666666666666666,
+        "max_fp": 2
+    },
+    {
+        "tool_name": "phi4:latest",
+        "total_samples": 720,
+        "detections_made": 597,
+        "strict_correct": 572,
+        "lenient_correct": 596,
+        "total_miss": 124,
+        "predictions_with_noise": 25,
+        "predicted_secure": 123,
+        "fp_distribution": {
+            "0": 572,
+            "1": 24,
+            "2": 1
+        },
+        "avg_fp_noisy": 1.04,
+        "avg_fp_all": 0.04355108877721943,
+        "max_fp": 2
+    },
+    {
+        "tool_name": "qwen2.5-coder:32b",
+        "total_samples": 720,
+        "detections_made": 663,
+        "strict_correct": 636,
+        "lenient_correct": 663,
+        "total_miss": 57,
+        "predictions_with_noise": 27,
+        "predicted_secure": 57,
+        "fp_distribution": {
+            "0": 636,
+            "1": 27
+        },
+        "avg_fp_noisy": 1.0,
+        "avg_fp_all": 0.04072398190045249,
+        "max_fp": 1
+    },
+    {
+        "tool_name": "qwen2.5-coder:latest",
+        "total_samples": 720,
+        "detections_made": 585,
+        "strict_correct": 560,
+        "lenient_correct": 585,
+        "total_miss": 135,
+        "predictions_with_noise": 25,
+        "predicted_secure": 135,
+        "fp_distribution": {
+            "0": 560,
+            "1": 24,
+            "2": 1
+        },
+        "avg_fp_noisy": 1.04,
+        "avg_fp_all": 0.044444444444444446,
+        "max_fp": 2
+    }
+]

@@ -12,6 +12,7 @@ import re
 from collections import defaultdict
 from collections import deque
 from typing import Dict, List, Tuple, Optional
+from pathlib import Path
 
 from utils.logger.Logger import Logger
 
@@ -39,13 +40,29 @@ class AccuracyAnalysis:
         self.tool_type = self._check_tool_type(tool_type)
         self.logger.info(f"Setting up accuracy analysis for '{self.tool_type}' tool")
         self.results = self._load_results(result_path)
+        self.output_path = Path(result_path).parent / f"{self.tool_type}_accuracy_analysis.json"
         
         # NOTE: rebase for static check
-        if self.tool_type == 'llm':
-            self._llm_analysis()
-        else:
-            self._static_analysis()
-            
+        analysis_result = self._llm_analysis() \
+                          if self.tool_type == 'llm' \
+                          else self._static_analysis()
+        self.logger.info("Accuracy analysis completed.")
+        
+        self._save_analysis(analysis_result)
+        
+    
+    def _save_analysis(self,
+                       analysis_result: dict) -> None:
+        """
+        Save the analysis result to the output path.
+        
+        Args:
+            analysis_result (dict): Analysis result to save.
+        """
+        with open(self.output_path, "w") as f:
+            json.dump(analysis_result, f, indent=4)
+        self.logger.info("Analysis saved successfully.")
+        
         
     def _load_results(self, path: str) -> list:
         """
@@ -353,7 +370,7 @@ class AccuracyAnalysis:
         return evaluation
     
     
-    def _llm_analysis(self):
+    def _llm_analysis(self) -> List[dict]:
         """
         Analyse LLM results
         """
@@ -415,11 +432,14 @@ class AccuracyAnalysis:
                     model_metrics[model]['fp_distribution'][evaluation['fp_count']] += 1
         
         # Print reports for each model
+        results = []
         for model in llm_models:
-            self._print_tool_report(model, model_metrics[model])
-    
-    
-    def _static_analysis(self):
+            result = self._print_tool_report(model, model_metrics[model])
+            results.append(result)
+
+        return results
+
+    def _static_analysis(self) -> List[dict]:
         """
         Analyse static tool results
         """
@@ -484,83 +504,102 @@ class AccuracyAnalysis:
                     tool_metrics[tool]['fp_distribution'][evaluation['fp_count']] += 1
         
         # Print reports for each tool
+        results = []
         for tool in static_tools:
-            self._print_tool_report(tool, tool_metrics[tool])
+            result = self._print_tool_report(tool, tool_metrics[tool])
+            results.append(result)
+        
+        return results
+        
     
     
     def _print_tool_report(self, 
                            tool_name: str, 
-                           metrics: Dict) -> None:
+                           metrics: Dict) -> dict:
         """
         Print formatted report for a single tool
         
         Args:
             tool_name (str): Name of the tool
             metrics (Dict): Metrics dictionary for the tool
+        
+        Returns:
+            dict: Summary of the tool's metrics
         """
         total = metrics['total_samples']
         strict = metrics['strict_correct']
         lenient = metrics['lenient_correct']
         miss = metrics['complete_miss']
         detections = metrics['samples_with_detections']
-        complete_miss_wo_fp = metrics['complete_miss_wo_fp']
+        complete_miss_wo_fp = metrics['complete_miss_wo_fp'] # secure prediction
+        with_noise = lenient - strict + miss - complete_miss_wo_fp
+        fp_dist = metrics['fp_distribution'] # will report strict and noise
+        max_fp = max(fp_dist.keys()) if fp_dist else 0
+        avg_fp_for_noisy_preds = self._get_avg_fp_count_from_noisy_predictions(fp_dist, with_noise)
+        avg_fp_for_all_preds = self._get_avg_fp_count_from_noisy_predictions(fp_dist, detections)
         
         print(f"\nTool: {tool_name} ({total} samples)")
         print("━" * 80)
         print("CORRECTNESS")
         print("━" * 80)
+        print(f"Total detections made: {detections}/{total} ({detections/total*100:.1f}%)")
         print(f"Strict Correct:    {strict}/{total} ({strict/total*100:.1f}%) | Perfect detection, no noise")
         print(f"Lenient Correct:   {lenient}/{total} ({lenient/total*100:.1f}%) | Found vulnerability, ignoring extras")
-        print(f"Complete Miss:     {miss}/{total} ({miss/total*100:.1f}%) | Failed to detect")
-
+        print(f"Predictions with Noise: {with_noise}/{total} ({with_noise/total*100:.1f}%) | Detected vulnerability but with FPs")
+        print(f"Predicted secure: {complete_miss_wo_fp}/{total} ({complete_miss_wo_fp/total*100:.1f}%) | No vulnerabilities detected")
         print("\n" + "━" * 80)
         print("FALSE POSITIVE ANALYSIS")
         print("━" * 80)
-        
-        if detections > 0:
-            samples_with_fps = sum(1 for fp in metrics['fp_counts'] if fp > 0)
-            print((f"Samples with FPs:  {samples_with_fps}/{detections} "
-                   f"({samples_with_fps/detections*100:.1f}% of detections had noise)"))
-            print((f"True misses w/o FPs: {complete_miss_wo_fp}"))
-            
-            print("\nFP Count Distribution:")
-            fp_dist = metrics['fp_distribution']
-            max_fp = max(fp_dist.keys()) if fp_dist else 0
-            
-            # Group 3+ FPs together
-            for i in range(max_fp + 1):
-                if i <= 2:
-                    count = fp_dist.get(i, 0)
-                    pct = count / detections * 100 if detections > 0 else 0
-                    print(f"  {i} FPs:  {count} samples ({pct:.1f}%)")
-                elif i == 3:
-                    count_3plus = sum(fp_dist.get(j, 0) for j in range(3, max_fp + 1))
-                    pct = count_3plus / detections * 100 if detections > 0 else 0
-                    print(f"  3+ FPs: {count_3plus} samples ({pct:.1f}%)")
-                    break
-            
-            # Calculate averages
-            avg_fp_all = sum(metrics['fp_counts']) / len(metrics['fp_counts']) if metrics['fp_counts'] else 0
-            fp_counts_nonzero = [fp for fp in metrics['fp_counts'] if fp > 0]
-            avg_fp_when_fp = sum(fp_counts_nonzero) / len(fp_counts_nonzero) if fp_counts_nonzero else 0
-            median_fp = sorted(metrics['fp_counts'])[len(metrics['fp_counts'])//2] if metrics['fp_counts'] else 0
-            avg_noise = sum(metrics['noise_ratios']) / len(metrics['noise_ratios']) if metrics['noise_ratios'] else 0
-            
-            print(f"\nAverage FPs per sample (all):        {avg_fp_all:.1f}")
-            print(f"Average FPs per sample (when FP>0):  {avg_fp_when_fp:.1f}")
-            print(f"Median FPs:                          {median_fp}")
-            print(f"Average Noise Ratio:                 {avg_noise*100:.1f}%")
-        else:
-            print("No detections to analyse")
-        
+        print(f"False positive distribution: {fp_dist}")
+        print(f"Average FP count for noisy predictions: {avg_fp_for_noisy_preds:.2f}")
+        print(f"Average FP count for all predictions with detections: {avg_fp_for_all_preds:.2f}")
+        print(f"Maximum FP count observed: {max_fp}")
+        print("━" * 80)
         print("\n")
+        
+        return {
+            'tool_name': tool_name,
+            'total_samples': total,
+            'detections_made': detections,
+            'strict_correct': strict,
+            'lenient_correct': lenient,
+            'total_miss': miss,
+            'predictions_with_noise': with_noise,
+            'predicted_secure': complete_miss_wo_fp,
+            'fp_distribution': fp_dist,
+            'avg_fp_noisy': avg_fp_for_noisy_preds,
+            'avg_fp_all': avg_fp_for_all_preds,
+            'max_fp': max_fp
+        }
+        
+    
+    def _get_avg_fp_count_from_noisy_predictions(self,
+                                                 fp_distribution: Dict[int, int],
+                                                 noisy_prediction_count: int) -> float:
+        """
+        Calculate average FP count from noisy predictions.
+
+        Args:
+            fp_distribution (Dict[int, int]): Distribution of FP counts.
+            noisy_prediction_count (int): Number of noisy predictions.
+
+        Returns:
+            float: Average FP count for noisy predictions.
+        """
+        if noisy_prediction_count == 0:
+            return 0.0
+
+        total_fp = sum(fp * count for fp, count in fp_distribution.items() if fp > 0)
+        self.logger.debug(f"Total FPs from noisy predictions: {total_fp}")
+        self.logger.debug(f"On Average FP count for noisy predictions: {total_fp / noisy_prediction_count}")
+        
+        return total_fp / noisy_prediction_count
 
 
 if __name__ == "__main__":
     # LLMs
-    llm_path = ("services/CodeSecurity/exp_dir_SVEN/"
-                "SVEN_qwen2_5_coder_32b_mistral_latest_qwen2_5_coder_latest_"
-                "llama3_1_latest_phi4_latest_deepseek_coder_6_7b_devstral_24b.json")
+    llm_path = ("services/CodeSecurity/exp_dir_SecurityEval/"
+                "SecurityEval_qwen2_5_coder_32b_mistral_latest_qwen2_5_coder_latest_llama3_1_latest_phi4_latest.json")
     
     print("=" * 80)
     print("LLM ANALYSIS")

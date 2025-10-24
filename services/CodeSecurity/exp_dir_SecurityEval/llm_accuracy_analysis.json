@@ -1,0 +1,93 @@
+[
+    {
+        "tool_name": "llama3.1:latest",
+        "total_samples": 121,
+        "detections_made": 108,
+        "strict_correct": 91,
+        "lenient_correct": 105,
+        "total_miss": 16,
+        "predictions_with_noise": 17,
+        "predicted_secure": 13,
+        "fp_distribution": {
+            "0": 91,
+            "1": 14,
+            "2": 2,
+            "4": 1
+        },
+        "avg_fp_noisy": 1.2941176470588236,
+        "avg_fp_all": 0.2037037037037037,
+        "max_fp": 4
+    },
+    {
+        "tool_name": "mistral:latest",
+        "total_samples": 121,
+        "detections_made": 17,
+        "strict_correct": 15,
+        "lenient_correct": 16,
+        "total_miss": 105,
+        "predictions_with_noise": 2,
+        "predicted_secure": 104,
+        "fp_distribution": {
+            "0": 15,
+            "1": 2
+        },
+        "avg_fp_noisy": 1.0,
+        "avg_fp_all": 0.11764705882352941,
+        "max_fp": 1
+    },
+    {
+        "tool_name": "phi4:latest",
+        "total_samples": 121,
+        "detections_made": 117,
+        "strict_correct": 111,
+        "lenient_correct": 115,
+        "total_miss": 6,
+        "predictions_with_noise": 6,
+        "predicted_secure": 4,
+        "fp_distribution": {
+            "0": 111,
+            "1": 4,
+            "2": 2
+        },
+        "avg_fp_noisy": 1.3333333333333333,
+        "avg_fp_all": 0.06837606837606838,
+        "max_fp": 2
+    },
+    {
+        "tool_name": "qwen2.5-coder:32b",
+        "total_samples": 121,
+        "detections_made": 120,
+        "strict_correct": 106,
+        "lenient_correct": 117,
+        "total_miss": 4,
+        "predictions_with_noise": 14,
+        "predicted_secure": 1,
+        "fp_distribution": {
+            "0": 106,
+            "1": 12,
+            "2": 2
+        },
+        "avg_fp_noisy": 1.1428571428571428,
+        "avg_fp_all": 0.13333333333333333,
+        "max_fp": 2
+    },
+    {
+        "tool_name": "qwen2.5-coder:latest",
+        "total_samples": 121,
+        "detections_made": 113,
+        "strict_correct": 103,
+        "lenient_correct": 110,
+        "total_miss": 11,
+        "predictions_with_noise": 10,
+        "predicted_secure": 8,
+        "fp_distribution": {
+            "0": 103,
+            "1": 8,
+            "3": 1,
+            "2": 1
+        },
+        "avg_fp_noisy": 1.3,
+        "avg_fp_all": 0.11504424778761062,
+        "max_fp": 3
+    }
+]
