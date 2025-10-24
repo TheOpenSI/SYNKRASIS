@@ -47,6 +47,7 @@ def llm_result_consolidator(file_paths: list[str]) -> None:
     model_names = ["_".join(Path(file_path).stem.split("_")[1:]) for file_path in file_paths]
     consolidated_output_path = "_".join([dataset_name] + model_names) + ".json"
     target_path = Path(file_paths[0]).parent / consolidated_output_path
+    
     with open(target_path, "w") as f:
         json.dump(consolidated_result, f, indent=4)
 
@@ -71,7 +72,8 @@ if __name__ == "__main__":
                        "qwen2.5-coder:latest", 
                        "llama3.1:latest",
                        "phi4",
-                       "deepseek-coder:6.7b"]
+                       "deepseek-coder:6.7b",
+                       "devstral:24b"]
     
     llm_models = [OllamaClient(model_name=name, 
                                container_name="localhost",
@@ -81,16 +83,17 @@ if __name__ == "__main__":
     saved_result_paths = []
     for llm_model in llm_models:
         evaluator = LLMEval(
-            dataset_path = "/home/adnana/workspace/SYNKRASIS/services/CodeSecurity/data/SecurityEval.jsonl",
-            vul_code_key = "Insecure_code",
-            true_label_key = "ID",
-            true_label_processing_func = lambda x: x.split("_")[0],
-            llm_models = [llm_model]
+            dataset_path = "services/CodeSecurity/data/SVEN.json",
+            vul_code_key = "func_src_before",
+            true_label_key = "vul_type",
+            llm_models = [llm_model],
+            
         )
         evaluator.run_evaluation()
         saved_result_paths.append(evaluator.consolidated_output_path)
         
-        time.sleep(20) # to unload the weights from VRAM
+        if llm_model != llm_models[-1]:
+            time.sleep(20) # to unload the weights from VRAM
         
     # Consolidate results
     llm_result_consolidator(saved_result_paths)
