@@ -598,20 +598,21 @@ class AccuracyAnalysis:
 
 if __name__ == "__main__":
     # LLMs
-    # llm_path = ("services/CodeSecurity/exp_dir_SecurityEval/"
-    #             "SecurityEval_qwen2_5_coder_32b_mistral_latest_qwen2_5_coder_latest_llama3_1_latest_phi4_latest.json")
+    llm_path = ("services/CodeSecurity/exp_dir_SVEN_python/"
+                "SVEN_qwen2_5_coder_32b_mistral_latest_qwen2_5_coder_latest_"
+                "llama3_1_latest_phi4_latest_deepseek_coder_6_7b_devstral_24b.json")
     
-    # print("=" * 80)
-    # print("LLM ANALYSIS")
-    # print("=" * 80)
-    # llm_analyser = AccuracyAnalysis(tool_type='llm', result_path=llm_path)
+    print("=" * 80)
+    print("LLM ANALYSIS")
+    print("=" * 80)
+    llm_analyser = AccuracyAnalysis(tool_type='llm', result_path=llm_path)
     
     # Static tools
-    static_path = ("services/CodeSecurity/"
-                   "exp_dir_SecurityEval/"
-                   "SecurityEval_consolidated_evaluation_results.json")
+    # static_path = ("services/CodeSecurity/"
+    #                "exp_dir_SecurityEval/"
+    #                "SecurityEval_consolidated_evaluation_results.json")
     
-    print("=" * 80)
-    print("STATIC TOOLS ANALYSIS")
-    print("=" * 80)
-    static_analyser = AccuracyAnalysis(tool_type='static', result_path=static_path)
+    # print("=" * 80)
+    # print("STATIC TOOLS ANALYSIS")
+    # print("=" * 80)
+    # static_analyser = AccuracyAnalysis(tool_type='static', result_path=static_path)

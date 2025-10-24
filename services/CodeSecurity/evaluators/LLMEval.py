@@ -24,7 +24,6 @@ class LLMEval(EvaluatorBase):
                  dataset_path: str,
                  vul_code_key: str,
                  true_label_key: str,
-                 code_file_name: str = "main.py",
                  code_dir_name: str = "vul_code",
                  base_path: str = "/home/adnana/workspace/SYNKRASIS/services/CodeSecurity/",
                  vul_code_processing_func: callable = None,
@@ -40,8 +39,6 @@ class LLMEval(EvaluatorBase):
             dataset_path (str): Path to the dataset file (.json or .jsonl).
             vul_code_key (str): Key to extract vulnerable code from dataset entries.
             true_label_key (str): Key to extract true label from dataset entries.
-            code_file_name (str, optional): Name of the code file to create for analysis. 
-                Defaults to "main.py".
             code_dir_name (str, optional): Directory name to store code files.
             base_path (str, optional): Base path for experiment directories.
                 Will add dastaset name to this path.
@@ -60,7 +57,6 @@ class LLMEval(EvaluatorBase):
         super().__init__(dataset_path,
                          vul_code_key,
                          true_label_key,
-                         code_file_name,
                          code_dir_name,
                          base_path,
                          vul_code_processing_func,
@@ -71,7 +67,9 @@ class LLMEval(EvaluatorBase):
         for llm in self.llms:
             llm.set_system_prompt_from_file(llm_system_prompt_path)
         self.is_delay_required: bool = False if len(self.llms) == 1 else True
-        # consolidated output path
+        
+    
+    def _set_consolidated_output_path(self):
         self.consolidated_output_path = \
             self.base_path / f"{self._filename_from_dataset}_{self._get_consolidated_file_name()}.json"
             

@@ -55,45 +55,44 @@ def llm_result_consolidator(file_paths: list[str]) -> None:
 if __name__ == "__main__":
     # Static Tool
     # -------------------------------------------
-    # evaluator = StaticToolEval(
-    #     dataset_path= "/home/s448780/workspace_hcc4/SYNKRASIS/services/CodeSecurity/data/SecurityEval.jsonl",
-    #     vul_code_key="Insecure_code",
-    #     true_label_key="ID",
-    #     true_label_processing_func=lambda x: x.split("_")[0]
-    # )
-    
-    # evaluator.load_static_tools()
-    # evaluator.run_evaluation()
+    evaluator = StaticToolEval(
+        dataset_path= "services/CodeSecurity/data/SVEN_python.json",
+        vul_code_key="func_src_before",
+        true_label_key="vul_type",
+        use_default_static_tools=True,
+        # true_label_processing_func=lambda x: x.split("_")[0]
+    )
+    evaluator.run_evaluation()
     
     # LLM
     # -------------------------------------------
-    llm_model_names = ["qwen2.5-coder:32b", 
-                       "mistral:latest", 
-                       "qwen2.5-coder:latest", 
-                       "llama3.1:latest",
-                       "phi4",
-                       "deepseek-coder:6.7b",
-                       "devstral:24b"]
+    # llm_model_names = ["qwen2.5-coder:32b", 
+    #                    "mistral:latest", 
+    #                    "qwen2.5-coder:latest", 
+    #                    "llama3.1:latest",
+    #                    "phi4",
+    #                    "deepseek-coder:6.7b",
+    #                    "devstral:24b"]
     
-    llm_models = [OllamaClient(model_name=name, 
-                               container_name="localhost",
-                               suppress_stdout=True) for name in llm_model_names]
+    # llm_models = [OllamaClient(model_name=name, 
+    #                            container_name="localhost",
+    #                            suppress_stdout=True) for name in llm_model_names]
     
-    # Loading weights takes a while, so for LLMs we run the whole dataset at once.
-    saved_result_paths = []
-    for llm_model in llm_models:
-        evaluator = LLMEval(
-            dataset_path = "services/CodeSecurity/data/SVEN.json",
-            vul_code_key = "func_src_before",
-            true_label_key = "vul_type",
-            llm_models = [llm_model],
+    # # Loading weights takes a while, so for LLMs we run the whole dataset at once.
+    # saved_result_paths = []
+    # for llm_model in llm_models:
+    #     evaluator = LLMEval(
+    #         dataset_path = "services/CodeSecurity/data/SVEN.json",
+    #         vul_code_key = "func_src_before",
+    #         true_label_key = "vul_type",
+    #         llm_models = [llm_model],
             
-        )
-        evaluator.run_evaluation()
-        saved_result_paths.append(evaluator.consolidated_output_path)
+    #     )
+    #     evaluator.run_evaluation()
+    #     saved_result_paths.append(evaluator.consolidated_output_path)
         
-        if llm_model != llm_models[-1]:
-            time.sleep(20) # to unload the weights from VRAM
+    #     if llm_model != llm_models[-1]:
+    #         time.sleep(20) # to unload the weights from VRAM
         
-    # Consolidate results
-    llm_result_consolidator(saved_result_paths)
+    # # Consolidate results
+    # llm_result_consolidator(saved_result_paths)

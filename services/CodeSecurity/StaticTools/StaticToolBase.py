@@ -1,3 +1,10 @@
+# ==========================================================================================
+# STATIC TOOL BASE CLASS
+# Child class mut implement - 
+#   build_command(self, index: Union[str, int]) -> list
+#   run_analysis(self, output_path: Path) -> list
+#   get_output_file(self, index: Union[str, int]) -> str
+# ==========================================================================================
 from __future__ import annotations
 from typing import TYPE_CHECKING
 import sys, os

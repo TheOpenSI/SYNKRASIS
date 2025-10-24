@@ -27,9 +27,10 @@ class StaticToolEval(EvaluatorBase):
                  true_label_key: str,
                  code_file_name: str = "main.py",
                  code_dir_name: str = "vul_code",
-                 base_path: str = "/home/adnana/workspace/SYNKRASIS/services/CodeSecurity/",
+                 base_path: str = "services/CodeSecurity/",
                  vul_code_processing_func: callable = None,
-                 true_label_processing_func: callable = None) -> None:
+                 true_label_processing_func: callable = None,
+                 use_default_static_tools: bool = True) -> None:
         """
         Static Code Analysis Tool Evaluation Framework
 
@@ -53,33 +54,50 @@ class StaticToolEval(EvaluatorBase):
         super().__init__(dataset_path,
                          vul_code_key,
                          true_label_key,
-                         code_file_name,
                          code_dir_name,
                          base_path,
                          vul_code_processing_func,
                          true_label_processing_func)
-        self.static_tools: List[StaticToolBase] = None  # To be set by load_static_tools method
-        # consolidated output path
-        self.consolidated_output_path = \
-            self.base_path / f"{self._filename_from_dataset}_{self._get_consolidated_file_name()}.json"
-         
+        self.static_tools: List[StaticToolBase] = self._load_default_static_tools() \
+                                                  if use_default_static_tools \
+                                                  else None
+        self.code_file_name = code_file_name
+        
+                
+    def _set_consolidated_output_path(self) -> None:
+        if self.static_tools is None:
+            self.consolidated_output_path = "" # will set at load_static_tools
+        else:
+            self.consolidated_output_path = \
+                self.base_path / f"{self._filename_from_dataset}_{self._get_consolidated_file_name()}.json"
+        
         
     def load_static_tools(self,
                           static_tools: list[StaticToolBase] = None) -> None:
         """
         Load static analysis tools configuration.
-        Must be called before running evaluation.
         
         Args:
             static_tools (list[StaticToolBase], optional): List of static analysis tool instances. 
                 If None, default tools (CodeQL and Semgrep) will be loaded.
         """
-        if static_tools is not None:
-            self.logger.info("Loading provided static analysis tools configuration.")
-            self.static_tools = static_tools
-        else:
-            self.logger.info("No static analysis tools provided, loading default configuration.")
-            self.static_tools = self._load_default_static_tools()
+        self.logger.info("Loading provided static analysis tools configuration.")
+        self.static_tools = static_tools
+        self._set_consolidated_output_path()
+
+
+    def _create_code_file(self,
+                          code: str) -> None:
+        """
+        Create a code file from the provided code string.
+
+        Args:
+            code (str): Code string to write to file.
+        """
+        self.logger.info("Creating code file from dataset...")
+        with open(self.base_path / self.code_dir_name / self.code_file_name, 'w') as f:
+            f.write(code)
+        self.logger.info(f"Code file created at {self.base_path / self.code_dir_name / self.code_file_name}")
     
         
     def _load_default_static_tools(self) -> list[StaticToolBase]:
@@ -131,7 +149,7 @@ class StaticToolEval(EvaluatorBase):
     def _run_evaluation_for_each_candidate(self, 
                                            sample_index: int,
                                            vul_code: str) -> list[dict]:
-        # Static tools will ignore vul_code argument
+        self._create_code_file(vul_code)
         self._run_evaluation_for_each_static_tool(sample_index)
 
 

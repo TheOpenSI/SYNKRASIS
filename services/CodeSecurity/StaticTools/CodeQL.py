@@ -17,11 +17,10 @@ if TYPE_CHECKING:
 class CodeQL(StaticToolBase):
     def __init__(self,
                  evaluator: StaticToolEval,
-                 script_path: str =
-                    "/home/s448780/workspace_hcc4/SYNKRASIS/services/CodeSecurity/scripts/run_codeql.bash",
+                 script_path: str = "services/CodeSecurity/scripts/run_codeql.bash",
                  db_dir: str = "db_ql",
                  output_dir: str = "output_ql",
-                 binary_path: str = "/home/s448780/workspace_hcc4/codeql/codeql") -> None:
+                 binary_path: str = "/home/adnana/workspace/codeql/codeql") -> None:
         self.db_dir = db_dir
         required_dir_names = [db_dir, output_dir]
         self.binary_path = binary_path

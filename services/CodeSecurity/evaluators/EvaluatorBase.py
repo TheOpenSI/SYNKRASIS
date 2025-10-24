@@ -33,7 +33,6 @@ class EvaluatorBase(ABC):
                   dataset_path: str,
                   vul_code_key: str,
                   true_label_key: str,
-                  code_file_name: str,
                   code_dir_name: str, 
                   base_path: str, 
                   vul_code_processing_func: callable,
@@ -45,8 +44,6 @@ class EvaluatorBase(ABC):
             dataset_path (str): Path to the dataset file (.json or .jsonl).
             vul_code_key (str): Key to extract vulnerable code from dataset entries.
             true_label_key (str): Key to extract true label from dataset entries.
-            code_file_name (str, optional): Name of the code file to create for analysis. 
-                Defaults to "main.py".
             code_dir_name (str, optional): Directory name to store code files.
             base_path (str, optional): Base path for experiment directories.
                 Will add dastaset name to this path.
@@ -62,7 +59,6 @@ class EvaluatorBase(ABC):
         self._filename_from_dataset = self._process_for_file_name(str(Path(self.dataset_path).stem))
         self.vul_code_key = vul_code_key
         self.true_label_key = true_label_key
-        self.code_file_name = code_file_name
         self.code_dir_name = code_dir_name
         self.base_path = Path(base_path) / f"exp_dir_{self._filename_from_dataset}"
         os.makedirs(self.base_path, exist_ok=True)
@@ -71,8 +67,10 @@ class EvaluatorBase(ABC):
         # functions to process data, e.g.CWE-020_author_1.py -> CWE-020
         self.vul_process_func = vul_code_processing_func
         self.label_process_func = true_label_processing_func
-        
-     
+        # consolidated output path
+        self._set_consolidated_output_path()
+
+
     def get_code_dir(self) -> str:
         """
         Get the full path to the code directory where code files are saved.
@@ -125,10 +123,7 @@ class EvaluatorBase(ABC):
                     
                 vul_code, true_label = self._get_vul_code_and_label_sample(entry)
                 
-                # Create code file
-                self._create_code_file(vul_code)
-                
-                # Run each 
+                # Run each
                 results_for_all_candidates = self._run_evaluation_for_each_candidate(i, vul_code)
                     
                 # saving consolidated results
@@ -148,7 +143,7 @@ class EvaluatorBase(ABC):
             except Exception as e:
                 self.logger.error(f"Unexpected error processing sample {i}: {e}")
                 print_error(f"Unexpected error processing sample {i}: {e}")
-
+                
     
     def _load_dataset(self) -> list:
         """
@@ -199,20 +194,6 @@ class EvaluatorBase(ABC):
             true_label: {true_label[:15]}... (truncated)")
         return vul_code, true_label
     
-    
-    def _create_code_file(self,
-                          code: str) -> None:
-        """
-        Create a code file from the provided code string.
-
-        Args:
-            code (str): Code string to write to file.
-        """
-        self.logger.info("Creating code file from dataset...")
-        with open(self.base_path / self.code_dir_name / self.code_file_name, 'w') as f:
-            f.write(code)
-        self.logger.info(f"Code file created at {self.base_path / self.code_dir_name / self.code_file_name}")
-        
     
     def _process_data(self,
                      data_to_process: str,
@@ -333,5 +314,13 @@ class EvaluatorBase(ABC):
             
         Returns:
             list[dict]: List of analysis results from each static tool.
+        """
+        pass
+    
+    
+    @abstractmethod
+    def _set_consolidated_output_path(self) -> None:
+        """
+        Set the consolidated output path based on dataset name and evaluator type.
         """
         pass

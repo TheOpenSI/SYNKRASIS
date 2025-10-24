@@ -17,8 +17,7 @@ if TYPE_CHECKING:
 class Semgrep(StaticToolBase):
     def __init__(self,
                  evaluator: StaticToolEval,
-                 script_path: str = 
-                    "/home/s448780/workspace_hcc4/SYNKRASIS/services/CodeSecurity/scripts/run_semgrep.bash",
+                 script_path: str = "services/CodeSecurity/scripts/run_semgrep.bash",
                  output_dir: str = "output_sem") -> None:
         required_dir_names = [output_dir]
         super().__init__(evaluator, "Semgrep", script_path, output_dir, required_dir_names)
