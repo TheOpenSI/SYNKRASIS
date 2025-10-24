@@ -42,7 +42,17 @@ def prepare_sven_data(sven_path: str = sven_path) -> dict:
         json.dump(data, f, indent=4)
     
     return stats
+
+def prepare_sven_python(full_data_path: str) -> None:
+    with open(full_data_path, "r") as f:
+        full_data = json.load(f)
+    python_data = [entry for entry in full_data if entry["language"] == "python"]
+    target_path = "services/CodeSecurity/data/SVEN_python.json"
+    with open(target_path, "w") as f:
+        json.dump(python_data, f, indent=4)
+    
     
 if __name__ == "__main__":
-    stats = prepare_sven_data()
-    print(stats)
+    # stats = prepare_sven_data()
+    # print(stats)
+    prepare_sven_python("services/CodeSecurity/data/SVEN.json")
