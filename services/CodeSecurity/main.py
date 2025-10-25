@@ -60,6 +60,7 @@ if __name__ == "__main__":
         vul_code_key="func_src_before",
         true_label_key="vul_type",
         use_default_static_tools=True,
+        base_path="/home/s448780/workspace_hcc4/SYNKRASIS/services/CodeSecurity"
         # true_label_processing_func=lambda x: x.split("_")[0]
     )
     evaluator.run_evaluation()

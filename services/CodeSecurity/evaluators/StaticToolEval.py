@@ -51,6 +51,10 @@ class StaticToolEval(EvaluatorBase):
                 Should take a string and return a processed string.
                 Defaults to None.
         """
+        self.static_tools: List[StaticToolBase] = self._load_default_static_tools() \
+                                                  if use_default_static_tools \
+                                                  else None
+                                                  
         super().__init__(dataset_path,
                          vul_code_key,
                          true_label_key,
@@ -58,12 +62,9 @@ class StaticToolEval(EvaluatorBase):
                          base_path,
                          vul_code_processing_func,
                          true_label_processing_func)
-        self.static_tools: List[StaticToolBase] = self._load_default_static_tools() \
-                                                  if use_default_static_tools \
-                                                  else None
         self.code_file_name = code_file_name
-        
-                
+
+
     def _set_consolidated_output_path(self) -> None:
         if self.static_tools is None:
             self.consolidated_output_path = "" # will set at load_static_tools
@@ -109,6 +110,7 @@ class StaticToolEval(EvaluatorBase):
         """
         return [CodeQL(self), Semgrep(self)]
         # return [Semgrep(self)]
+        # return [CodeQL(self)]
         
         
     def _check_if_static_tools_loaded(self) -> None:
@@ -150,7 +152,7 @@ class StaticToolEval(EvaluatorBase):
                                            sample_index: int,
                                            vul_code: str) -> list[dict]:
         self._create_code_file(vul_code)
-        self._run_evaluation_for_each_static_tool(sample_index)
+        return self._run_evaluation_for_each_static_tool(sample_index)
 
 
     def _run_evaluation_for_each_static_tool(self, 

@@ -21,8 +21,7 @@ class AccuracyAnalysis:
     def __init__(self,
                  tool_type: str,
                  result_path: str,
-                 mapping_path: str = ("/home/adnana/workspace/SYNKRASIS/"
-                                      "services/CodeSecurity/"
+                 mapping_path: str = ("services/CodeSecurity/"
                                       "cwe_analysis/cwe_relationships.json")) -> None:
         """
         Initilise accuracy analysis for either static tools or LLMs.
@@ -598,21 +597,19 @@ class AccuracyAnalysis:
 
 if __name__ == "__main__":
     # LLMs
-    llm_path = ("services/CodeSecurity/exp_dir_SVEN_python/"
-                "SVEN_qwen2_5_coder_32b_mistral_latest_qwen2_5_coder_latest_"
-                "llama3_1_latest_phi4_latest_deepseek_coder_6_7b_devstral_24b.json")
+    # llm_path = ("services/CodeSecurity/exp_dir_SVEN_python/"
+    #             "SVEN_qwen2_5_coder_32b_mistral_latest_qwen2_5_coder_latest_"
+    #             "llama3_1_latest_phi4_latest_deepseek_coder_6_7b_devstral_24b.json")
     
-    print("=" * 80)
-    print("LLM ANALYSIS")
-    print("=" * 80)
-    llm_analyser = AccuracyAnalysis(tool_type='llm', result_path=llm_path)
+    # print("=" * 80)
+    # print("LLM ANALYSIS")
+    # print("=" * 80)
+    # llm_analyser = AccuracyAnalysis(tool_type='llm', result_path=llm_path)
     
     # Static tools
-    # static_path = ("services/CodeSecurity/"
-    #                "exp_dir_SecurityEval/"
-    #                "SecurityEval_consolidated_evaluation_results.json")
+    static_path = ("services/CodeSecurity/exp_dir_SVEN_python/SVEN_python_CodeQL_Semgrep.json")
     
-    # print("=" * 80)
-    # print("STATIC TOOLS ANALYSIS")
-    # print("=" * 80)
-    # static_analyser = AccuracyAnalysis(tool_type='static', result_path=static_path)
+    print("=" * 80)
+    print("STATIC TOOLS ANALYSIS")
+    print("=" * 80)
+    static_analyser = AccuracyAnalysis(tool_type='static', result_path=static_path)
