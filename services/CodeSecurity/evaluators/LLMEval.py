@@ -54,6 +54,7 @@ class LLMEval(EvaluatorBase):
             llm_system_prompt_path (str, optional): Path to the system prompt file for the LLM.
         """
         self.logger = Logger(self.__class__.__name__, "DEBUG")
+        self.llms = llm_models
         super().__init__(dataset_path,
                          vul_code_key,
                          true_label_key,
@@ -61,7 +62,6 @@ class LLMEval(EvaluatorBase):
                          base_path,
                          vul_code_processing_func,
                          true_label_processing_func)
-        self.llms = llm_models
         self.logger.debug(f"Using LLM model: {[llm.model_name for llm in self.llms]}")
         self.logger.debug(f"Loading LLM system prompt from: {llm_system_prompt_path}")
         for llm in self.llms:
