@@ -33,7 +33,7 @@ class EvaluatorBase(ABC):
                   dataset_path: str,
                   vul_code_key: str,
                   true_label_key: str,
-                  code_dir_name: str, 
+                  code_dir_name: str, # NOTE: LLM Eval won't neeed this
                   base_path: str, 
                   vul_code_processing_func: callable,
                   true_label_processing_func: callable) -> None: 
