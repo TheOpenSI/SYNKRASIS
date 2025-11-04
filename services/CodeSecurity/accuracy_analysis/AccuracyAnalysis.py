@@ -114,12 +114,32 @@ class AccuracyAnalysis:
 
         self.logger.info("Relationship mapping loaded.")
         return cwe_mapping
-
-
-    def are_cwes_directly_related(self, cwe1: str, cwe2: str) -> bool:
+    
+    
+    def are_cwes_exactly_related(self, cwe1: str, cwe2: str) -> bool:
         """
-        Check if two CWE codes are directly related (with normalisation).
+        Check if two CWE codes are exactly the same (with normalisation).
+        
+        Args:
+            cwe1: First CWE code
+            cwe2: Second CWE code
+        Returns:
+            bool: True if exactly the same, False otherwise
+        """
+        self.logger.debug(f"Checking exact relationship between {cwe1} and {cwe2}")
+        num1 = self.normalise_cwe_number(cwe1)
+        num2 = self.normalise_cwe_number(cwe2)
+        
+        exact_relationship = num1 == num2
+        self.logger.debug(f"{num1} and {num2} exact relationship: {exact_relationship}")
+        return exact_relationship
+
+
+    def are_cwes_immediately_related(self, cwe1: str, cwe2: str) -> bool:
+        """
+        Check if two CWE codes are immediately related (with normalisation).
         TRANSITIVE relationships are NOT considered here.
+        Only considers direct relationships from the mapping e.g. parent-child
         
         Args:
             cwe1: First CWE code
