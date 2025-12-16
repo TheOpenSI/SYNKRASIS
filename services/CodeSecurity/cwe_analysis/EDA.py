@@ -111,7 +111,7 @@ def _eda_children(cwe_id: str, cwe_type: str, children: dict) -> list:
         else: 
             unknown_children_ot_weak_cat.append((cwe_id, child_type))
     
-    return processed_children
+    return list(set(processed_children))
         
         
 def _eda_parents(cwe_id: str, cwe_type: str, parents: dict) -> list:
@@ -138,7 +138,7 @@ def _eda_parent_category(parent_list: list[str]) -> list[str]:
     
     for parent in parent_list:
         parent_categories.add(parent)
-    return parent_list
+    return list(set(parent_list))
         
         
 def _eda_parent_weakness(cwe_id: str, parent_list: list[list]) -> list[str]:
@@ -151,7 +151,7 @@ def _eda_parent_weakness(cwe_id: str, parent_list: list[list]) -> list[str]:
             parent_ids.append(l[1])
         else:
             print(f"Parent weakness list is not list[list] for CWE-{cwe_id}: {parent_list}")
-    return parent_ids
+    return list(set(parent_ids))
 
 
 def parent_category_analysis(cwes: list):
