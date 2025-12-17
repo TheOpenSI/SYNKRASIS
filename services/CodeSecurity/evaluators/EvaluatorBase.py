@@ -60,7 +60,7 @@ class EvaluatorBase(ABC):
         self.vul_code_key = vul_code_key
         self.true_label_key = true_label_key
         self.code_dir_name = code_dir_name
-        self.base_path = Path(base_path) / f"exp_dir_{self._filename_from_dataset}"
+        self.base_path = Path(base_path) / f"experiments/exp_dir_{self._filename_from_dataset}"
         os.makedirs(self.base_path, exist_ok=True)
         
         self.data = self._load_dataset()
