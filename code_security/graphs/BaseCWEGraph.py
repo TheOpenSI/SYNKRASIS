@@ -20,7 +20,8 @@
 from abc import ABC, abstractmethod
 import json
 import networkx as nx
-from typing import Dict, List, Tuple, Optional, Set
+from typing import Dict, List, Tuple, Optional, Set, DefaultDict
+from pathlib import Path
 
 class BaseCWEGraph(ABC):
     """
@@ -283,7 +284,7 @@ class BaseCWEGraph(ABC):
         Calculate penalty score using hierarchical distance and direction.
         
         Implements the penalty function:
-            P(c_pred, c_true) = d(c_pred, c_true) × \alpha(c_pred, c_true)
+            P(c_pred, c_true) = d(c_pred, c_true) * \alpha(c_pred, c_true)
         
         where \alpha depends on the direction of the error:
             - \alpha_up: prediction is ancestor (more general) 
@@ -326,7 +327,7 @@ class BaseCWEGraph(ABC):
         distance, path = self.get_distance_with_path(predicted_cwe, true_cwe)
         
         # Handle cases where CWEs are not in graph or not connected
-        if distance == -1:
+        if distance == -1 or predicted_cwe is None:
             if predicted_cwe not in self.directed.nodes():
                 explanation = (f"Predicted CWE-{predicted_cwe} not in graph - "
                "likely a View/Category or invalid CWE")
@@ -508,3 +509,63 @@ class BaseCWEGraph(ABC):
         
         alpha = self.alpha_lateral - (self.alpha_lateral - self.least_penalty) * normalised
         return alpha
+    
+    
+    def get_alpha(self,
+                  predictions_path: str,
+                  gt_cwe_extraction_function: callable,
+                  alpha_path: str,
+                  detailed_result_path: str) -> None:
+        """
+        Get ALPHA score for a dataset.
+        
+        Args:
+            predictions_path: Path to predictions JSON file
+            dataset_path: Path to dataset JSON file
+            gt_key: Key in dataset entries for ground truth CWE ID
+        """
+        alpha_score: DefaultDict[str, int] = DefaultDict(int)
+        detailed_result: List[Dict] = []
+        
+        with open(predictions_path, "r") as pred_f:
+            predictions = json.load(pred_f)
+        
+        for prediction in predictions:
+            sample_index = prediction["sample_index"]
+            gt = gt_cwe_extraction_function(prediction["true_label"])
+            llm_predictions = prediction["analysis"]
+            
+            penalty_scores: Dict[str, int] = {}
+            for llm_prediction in llm_predictions:
+                llm_model = llm_prediction["llm_model"]
+                predicted_cwe_list = llm_prediction["parsed_response"]["cwe"]
+                # print(predicted_cwe_list)
+                predicted_cwe = predicted_cwe_list[-1] \
+                    if len(predicted_cwe_list) > 0 \
+                        else None                   
+                predicted_cwe = predicted_cwe.replace("CWE-", "") if predicted_cwe is not None else None
+                penalty = self.calculate_penalty_score(true_cwe=gt, predicted_cwe=predicted_cwe)
+                alpha_score[llm_model] += penalty["penalty"]
+                penalty_scores[llm_model] = penalty["penalty"]
+            
+            detailed_result.append({
+                "sample_index": sample_index,
+                "ground_truth": gt,
+                "penalty_scores": penalty_scores
+            })
+            
+        # create parent dirs
+        Path(alpha_path).parent.mkdir(parents=True, exist_ok=True)
+        Path(detailed_result_path).parent.mkdir(parents=True, exist_ok=True)
+        
+        # Save alpha scores
+        with open(alpha_path, "w") as alpha_f:
+            json.dump(alpha_score, alpha_f, indent=2)
+        print(f"Saved ALPHA scores to {alpha_path}")
+        
+        # Save detailed results
+        with open(detailed_result_path, "w") as detail_f:
+            json.dump(detailed_result, detail_f, indent=2)
+        print(f"Saved detailed results to {detailed_result_path}")
+        
+            
