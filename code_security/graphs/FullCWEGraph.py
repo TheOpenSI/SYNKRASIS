@@ -1,33 +1,26 @@
 import networkx as nx
 
 from typing import Dict
-from code_security.BaseCWEGraph import BaseCWEGraph
+from code_security.graphs.BaseCWEGraph import BaseCWEGraph
 
-class WeaknessCWEGraph(BaseCWEGraph):
+class FullCWEGraph(BaseCWEGraph):
     """
-    Weakness-only CWE graph (excludes views and categories).
-    Focuses on semantic weakness relationships without organisational overhead.
-    """
+    Full CWE graph including all types: weaknesses, views, and categories.
     
-    WEAKNESS_TYPES = {
-        'pillar_weakness',
-        'class_weakness',
-        'base_weakness',
-        'variant_weakness',
-        'compound_weakness',
-        'chain_weakness'
-    }
+    Use this when you need the complete CWE taxonomy structure.
+    Not recommended for LLM evaluation (views create artificial shortcuts).
+    """
     
     def _build_graph(self):
-        """Build graph with only weakness types."""
+        """Build graph with all CWE types."""
         self.directed = nx.DiGraph()
         
-        # Add weakness nodes only
+        # Add all nodes
         for cwe_id, cwe_info in self.data.items():
             if self._should_include_node(cwe_id, cwe_info):
                 self.directed.add_node(cwe_id, type=cwe_info['type'])
         
-        # Add edges between weaknesses
+        # Add all edges
         for cwe_id, cwe_info in self.data.items():
             if cwe_id not in self.directed.nodes():
                 continue
@@ -43,6 +36,6 @@ class WeaknessCWEGraph(BaseCWEGraph):
         self.undirected = self.directed.to_undirected()
     
     def _should_include_node(self, cwe_id: str, cwe_info: Dict) -> bool:
-        """Include only weakness types."""
+        """Include all non-deprecated CWEs."""
         cwe_type = cwe_info.get('type', '')
-        return cwe_type in self.WEAKNESS_TYPES
+        return 'deprecated' not in cwe_type.lower()

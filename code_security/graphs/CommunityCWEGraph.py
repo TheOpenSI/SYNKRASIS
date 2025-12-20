@@ -1,7 +1,7 @@
 from typing import Dict, List, Tuple, Optional, Set
 from collections import defaultdict
 from networkx.algorithms import community
-from code_security.BaseCWEGraph import BaseCWEGraph
+from code_security.graphs.BaseCWEGraph import BaseCWEGraph
 
 class CommunityCWEGraph:
     """

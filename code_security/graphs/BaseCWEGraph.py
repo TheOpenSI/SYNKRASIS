@@ -1,7 +1,26 @@
+# ========================================================================================
+# Base CWE Graph Class
+#
+# Child class to implement -
+#   - _build_graph(): Build the graph structure
+#   - _should_include_node(cwe_id, cwe_info): Determine if a CWE should be included
+#
+# Usage:
+#   - get_distance(cwe1, cwe2): Get shortest path distance between two CWEs
+#   - get_distance_with_path(cwe1, cwe2): Get distance and path
+#   - get_distance_with_details(cwe1, cwe2): Get detailed distance info
+#   - batch_distance_calculation(cwe_pairs): Batch distance calculation
+#   - get_statistics(): Get basic graph statistics
+#   - get_cwe_info(cwe_id): Get information about a specific CWE
+#   - get_relationship_direction(cwe_pred, cwe_true): Get relationship direction
+#   - calculate_penalty_score(true_cwe, predicted_cwe): Calculate penalty score
+#   - calculate_and_save_depths(output_path): Calculate and save depths to file
+# ========================================================================================
+
 from abc import ABC, abstractmethod
 import json
 import networkx as nx
-from typing import Dict, List, Tuple, Optional
+from typing import Dict, List, Tuple, Optional, Set
 
 class BaseCWEGraph(ABC):
     """
@@ -9,7 +28,9 @@ class BaseCWEGraph(ABC):
     Defines the interface that all graph implementations must provide.
     """
     
-    def __init__(self, eda_results_path: str):
+    def __init__(self, 
+                 eda_results_path: str = "code_security/eda_results.json",
+                 depth_analysis_path: str = "code_security/depth_analysis/cwe_depths.json"):
         """
         Initialise the graph analyser.
         
@@ -17,16 +38,20 @@ class BaseCWEGraph(ABC):
             eda_results_path: Path to eda_results.json file
         """
         self.eda_results_path = eda_results_path
+        self.depth_analysis_path = depth_analysis_path
         self.data = self._load_data()
         self.directed = None
         self.undirected = None
         self._build_graph()
-
-
-    def _load_data(self) -> Dict:
-        """Load the EDA results JSON file."""
-        with open(self.eda_results_path, 'r') as f:
-            return json.load(f)
+        self.max_alpha = 2.5 # Default max alpha for out-of-graph predictions
+        self.alpha_up = 2.0   # Default alpha for generalising errors
+        self.alpha_lateral = 1.8  # Default alpha for lateral errors
+        self.least_penalty = 1.1  # Default least penalty for over-specifying errors
+        self._initialise_depth_cache()
+        stats = self.get_statistics()
+        graph_diameter = stats['diameter']
+        # Default max penalty (distance) \for unknown/unconnected CWEs
+        self.max_penalty = int(graph_diameter/2) + 1
 
 
     @abstractmethod
@@ -39,6 +64,44 @@ class BaseCWEGraph(ABC):
     def _should_include_node(self, cwe_id: str, cwe_info: Dict) -> bool:
         """Determine if a CWE should be included in this graph."""
         pass
+
+
+    def _initialise_depth_cache(self):
+        """
+        Initialise depth-related caches from saved depth file or calculate fresh.
+        Call this in __init__ after _build_graph().
+        
+        Creates:
+            - self.cwe_depths: Dict[str, int] - depth for each CWE
+            - self.type_max_depths: Dict[str, int] - max depth per type
+        """
+        with open(self.depth_analysis_path, "r") as f:
+            depth_data = json.load(f)
+        
+        self.cwe_depths = {cwe_id: info['depth'] for cwe_id, info in depth_data.items()}
+        print("Loaded depths from cwe_depths.json")
+        
+        # Calculate type max depths
+        self.type_max_depths = {}
+        type_depths = {}
+        
+        for cwe_id, depth in self.cwe_depths.items():
+            if cwe_id in self.data:
+                cwe_type = self.data[cwe_id].get('type', 'Unknown')
+                if cwe_type not in type_depths:
+                    type_depths[cwe_type] = []
+                type_depths[cwe_type].append(depth)
+        
+        for cwe_type, depths in type_depths.items():
+            self.type_max_depths[cwe_type] = max(depths)
+        
+        print(f"Type max depths: {self.type_max_depths}")
+
+
+    def _load_data(self) -> Dict:
+        """Load the EDA results JSON file."""
+        with open(self.eda_results_path, 'r') as f:
+            return json.load(f)
 
 
     def get_distance(self, cwe1: str, cwe2: str) -> int:
@@ -215,16 +278,12 @@ class BaseCWEGraph(ABC):
 
     def calculate_penalty_score(self, 
                             true_cwe: str, 
-                            predicted_cwe: str,
-                            alpha_up: float = 2.0,
-                            alpha_lateral: float = 1.5,
-                            alpha_down: float = 1.2,
-                            max_penalty: float = 3.0) -> Dict:
+                            predicted_cwe: str) -> Dict:
         """
         Calculate penalty score using hierarchical distance and direction.
         
         Implements the penalty function:
-            P(c_pred, c_true) = d(c_pred, c_true) × α(c_pred, c_true)
+            P(c_pred, c_true) = d(c_pred, c_true) × \alpha(c_pred, c_true)
         
         where \alpha depends on the direction of the error:
             - \alpha_up: prediction is ancestor (more general) 
@@ -234,10 +293,6 @@ class BaseCWEGraph(ABC):
         Args:
             true_cwe: Ground truth CWE ID
             predicted_cwe: Predicted CWE ID
-            alpha_up: Penalty multiplier for generalising errors (default: 2.0)
-            alpha_lateral: Penalty multiplier for lateral errors (default: 1.5)
-            alpha_down: Penalty multiplier for over-specifying errors (default: 1.2)
-            max_penalty: Maximum penalty for out-of-graph or disconnected predictions (default: 10.0)
         
         Returns:
             Dictionary containing:
@@ -273,7 +328,8 @@ class BaseCWEGraph(ABC):
         # Handle cases where CWEs are not in graph or not connected
         if distance == -1:
             if predicted_cwe not in self.directed.nodes():
-                explanation = f"Predicted CWE-{predicted_cwe} not in graph - likely a View/Category or invalid CWE"
+                explanation = (f"Predicted CWE-{predicted_cwe} not in graph - "
+               "likely a View/Category or invalid CWE")
                 predicted_type = 'Not in graph'
             elif true_cwe not in self.directed.nodes():
                 explanation = f"Ground truth CWE-{true_cwe} not in graph"
@@ -283,10 +339,10 @@ class BaseCWEGraph(ABC):
                 predicted_type = self.data.get(predicted_cwe, {}).get('type', 'Unknown')
             
             return {
-                'penalty': max_penalty,
+                'penalty': self.max_penalty * self.max_alpha,
                 'distance': -1,
                 'direction': 'unknown',
-                'alpha': max_penalty,  # Effectively max penalty
+                'alpha': self.max_alpha,  # Effectively max penalty
                 'explanation': explanation,
                 'path': path,
                 'true_cwe': true_cwe,
@@ -299,17 +355,17 @@ class BaseCWEGraph(ABC):
         direction = self.get_relationship_direction(predicted_cwe, true_cwe)
         
         if direction == 'ancestor':
-            alpha = alpha_up
+            alpha = self.alpha_up
             direction_description = "more general (going up hierarchy)"
         elif direction == 'descendant':
-            alpha = alpha_down
+            alpha = self._get_alpha_down_adaptive(true_cwe)
             direction_description = "more specific (going down hierarchy)"
         elif direction == 'lateral':
-            alpha = alpha_lateral
+            alpha = self.alpha_lateral
             direction_description = "lateral relationship (different branch)"
         else:
             # Shouldn't happen if distance >= 0, but safety check
-            alpha = alpha_lateral
+            alpha = self.alpha_lateral
             direction_description = "unclear relationship"
         
         # Calculate penalty
@@ -322,7 +378,7 @@ class BaseCWEGraph(ABC):
             distance_description = f"{distance} hops away"
         
         explanation = (f"Prediction is {distance_description} and {direction_description}. "
-                    f"Penalty = {distance} × {alpha} = {penalty:.2f}")
+                    f"Penalty = {distance} * {alpha} = {penalty:.2f}")
         
         return {
             'penalty': penalty,
@@ -336,3 +392,119 @@ class BaseCWEGraph(ABC):
             'true_type': self.data.get(true_cwe, {}).get('type', 'Unknown'),
             'predicted_type': self.data.get(predicted_cwe, {}).get('type', 'Unknown')
         }
+
+    
+    def _calculate_max_depth_to_leaf(self, cwe_id: str, visited: Set[str] = None) -> int:
+        """
+        Calculate maximum distance from this CWE to any leaf node in its subtree.
+        A leaf is defined as a CWE with no children.
+        
+        Args:
+            cwe_id: CWE ID (without "CWE-" prefix)
+            visited: Set of visited nodes for cycle detection
+            
+        Returns:
+            Maximum depth to any leaf (0 if this CWE is itself a leaf)
+        """
+        if visited is None:
+            visited = set()
+        
+        # Cycle detection
+        if cwe_id in visited or cwe_id not in self.data:
+            return 0
+        
+        visited.add(cwe_id)
+        
+        # Get children from data
+        children = self.data[cwe_id].get('children', [])
+        
+        # Base case: leaf node (no children)
+        if not children:
+            return 0
+        
+        # Recursive case: find max depth among all children
+        max_depth = 0
+        for child_id in children:
+            if child_id in self.directed.nodes():  # Only process children in graph
+                child_depth = self._calculate_max_depth_to_leaf(child_id, visited.copy())
+                max_depth = max(max_depth, child_depth)
+        
+        return max_depth + 1
+
+
+    def calculate_and_save_depths(self, output_path: str) -> Dict[str, int]:
+        """
+        Calculate max depth to leaf for all CWEs and save with metadata.
+        
+        Output JSON structure:
+        {
+        "cwe_id": {
+            "type": "base_weakness",
+            "depth": 1,
+            "parents_count": 2,
+            "children_count": 1,
+            "immediate_relationships_count": 3
+        },
+        ...
+        }
+        
+        Args:
+            output_path: Path to save the depth analysis JSON
+            
+        Returns:
+            Dictionary mapping CWE ID -> depth value
+        """
+        print("Calculating depths for all CWEs in graph...")
+        
+        depths = {}
+        depth_analysis = {}
+        
+        total = len(self.directed.nodes())
+        for i, cwe_id in enumerate(self.directed.nodes(), 1):
+            if i % 100 == 0:
+                print(f"  Progress: {i}/{total}")
+            
+            # Calculate depth
+            depth = self._calculate_max_depth_to_leaf(cwe_id)
+            depths[cwe_id] = depth
+            
+            # Gather metadata from data
+            cwe_data = self.data.get(cwe_id, {})
+            
+            depth_analysis[cwe_id] = {
+                'type': cwe_data.get('type', 'Unknown'),
+                'depth': depth,
+                'parents_count': len(cwe_data.get('parents', [])),
+                'children_count': len(cwe_data.get('children', [])),
+                'immediate_relationships_count': len(cwe_data.get('immediate_relationships', []))
+            }
+        
+        print(f"Calculated depths for {len(depths)} CWEs")
+        
+        # Save to file
+        with open(output_path, 'w') as f:
+            json.dump(depth_analysis, f, indent=2)
+        
+        print(f"Depth analysis saved to {output_path}")
+        
+        return depths
+    
+    
+    def _get_alpha_down_adaptive(self, true_cwe: str) -> float:
+        """Calculate adaptive alpha_down based on CWE depth."""
+        
+        # Get depth and type
+        depth = self.cwe_depths.get(true_cwe, 0)
+        cwe_type = self.data[true_cwe]['type']
+        
+        # Get type max depth
+        type_max = self.type_max_depths.get(cwe_type, 1)
+        
+        # Calculate alpha
+        if type_max > 0:
+            normalised = depth / type_max
+        else:
+            normalised = 0
+        
+        alpha = self.alpha_lateral - (self.alpha_lateral - self.least_penalty) * normalised
+        return alpha

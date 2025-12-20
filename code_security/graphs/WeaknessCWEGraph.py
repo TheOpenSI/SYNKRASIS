@@ -1,26 +1,37 @@
 import networkx as nx
+import json
 
-from typing import Dict
-from code_security.BaseCWEGraph import BaseCWEGraph
+from typing import Dict, Set, List, Tuple
+from collections import defaultdict, deque
 
-class FullCWEGraph(BaseCWEGraph):
+from code_security.graphs.BaseCWEGraph import BaseCWEGraph
+
+class WeaknessCWEGraph(BaseCWEGraph):
     """
-    Full CWE graph including all types: weaknesses, views, and categories.
+    Weakness-only CWE graph (excludes views and categories).
+    Focuses on semantic weakness relationships without organisational overhead.
+    """
     
-    Use this when you need the complete CWE taxonomy structure.
-    Not recommended for LLM evaluation (views create artificial shortcuts).
-    """
+    WEAKNESS_TYPES = {
+        'pillar_weakness',
+        'class_weakness',
+        'base_weakness',
+        'variant_weakness',
+        'compound_weakness',
+        'chain_weakness'
+    }
+    
     
     def _build_graph(self):
-        """Build graph with all CWE types."""
+        """Build graph with only weakness types."""
         self.directed = nx.DiGraph()
         
-        # Add all nodes
+        # Add weakness nodes only
         for cwe_id, cwe_info in self.data.items():
             if self._should_include_node(cwe_id, cwe_info):
                 self.directed.add_node(cwe_id, type=cwe_info['type'])
         
-        # Add all edges
+        # Add edges between weaknesses
         for cwe_id, cwe_info in self.data.items():
             if cwe_id not in self.directed.nodes():
                 continue
@@ -34,8 +45,9 @@ class FullCWEGraph(BaseCWEGraph):
                     self.directed.add_edge(parent_id, cwe_id, relationship='parent_of')
         
         self.undirected = self.directed.to_undirected()
-    
+
+
     def _should_include_node(self, cwe_id: str, cwe_info: Dict) -> bool:
-        """Include all non-deprecated CWEs."""
+        """Include only weakness types."""
         cwe_type = cwe_info.get('type', '')
-        return 'deprecated' not in cwe_type.lower()
+        return cwe_type in self.WEAKNESS_TYPES   
