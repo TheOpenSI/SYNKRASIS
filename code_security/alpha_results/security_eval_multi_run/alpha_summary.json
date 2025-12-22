@@ -1,0 +1,43 @@
+{
+  "individual_runs": {
+    "run_1": {
+      "qwen2.5-coder:32b": 597.9816666666667,
+      "mistral:latest": 1124.1499999999999,
+      "qwen2.5-coder:latest": 938.6999999999999,
+      "llama3.1:latest": 893.1333333333336,
+      "phi4:latest": 803.8750000000001,
+      "deepseek-coder:6.7b": 1279.1666666666665,
+      "devstral:24b": 588.9733333333335
+    },
+    "run_2": {
+      "qwen2.5-coder:32b": 634.5750000000002,
+      "mistral:latest": 1188.1166666666663,
+      "qwen2.5-coder:latest": 915.3000000000001,
+      "llama3.1:latest": 866.7833333333332,
+      "phi4:latest": 805.8166666666668,
+      "deepseek-coder:6.7b": 1160.9933333333327,
+      "devstral:24b": 599.1833333333334
+    },
+    "run_3": {
+      "qwen2.5-coder:32b": 620.9816666666668,
+      "mistral:latest": 1158.55,
+      "qwen2.5-coder:latest": 910.4833333333336,
+      "llama3.1:latest": 809.6000000000001,
+      "phi4:latest": 782.45,
+      "deepseek-coder:6.7b": 1245.2833333333333,
+      "devstral:24b": 547.4500000000002
+    },
+    "majority": {
+      "qwen2.5-coder:32b": 584.7150000000003,
+      "mistral:latest": 1159.7499999999998,
+      "qwen2.5-coder:latest": 900.3499999999999,
+      "llama3.1:latest": 891.3833333333334,
+      "phi4:latest": 787.5500000000002,
+      "deepseek-coder:6.7b": 1316.7666666666664,
+      "devstral:24b": 563.3733333333336
+    }
+  },
+  "num_samples": 121,
+  "num_models": 7,
+  "output_dir": "code_security/alpha_results/security_eval_multi_run"
+}
