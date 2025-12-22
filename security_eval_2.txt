@@ -1,0 +1,877 @@
+[36m[INFO][0m Starting the Ollama service...
+[36m[INFO][0m Model qwen2.5-coder:latest is available on the server.
+[36m[INFO][0m Starting the OllamaClient service...
+[36m[INFO][0m Model qwen2.5-coder:32b is available on the server.
+[36m[INFO][0m Starting the OllamaClient service...
+[36m[INFO][0m Model mistral:latest is available on the server.
+[36m[INFO][0m Starting the OllamaClient service...
+[36m[INFO][0m Model qwen2.5-coder:latest is available on the server.
+[36m[INFO][0m Starting the OllamaClient service...
+[36m[INFO][0m Model llama3.1:latest is available on the server.
+[36m[INFO][0m Starting the OllamaClient service...
+[36m[INFO][0m Model phi4:latest is available on the server.
+[36m[INFO][0m Starting the OllamaClient service...
+[36m[INFO][0m Model deepseek-coder:6.7b is available on the server.
+[36m[INFO][0m Starting the OllamaClient service...
+[36m[INFO][0m Model devstral:24b is available on the server.
+[32m[SUCCESS][0m Loaded 121 samples from the dataset.
+Processing Code Samples from SecurityEval.jsonl:   0%|          | 0/121 [00:00<?, ?it/s]Processing Code Samples from SecurityEval.jsonl:   1%|          | 1/121 [00:19<38:49, 19.41s/it]Processing Code Samples from SecurityEval.jsonl:   2%|▏         | 2/121 [00:25<22:30, 11.35s/it]Processing Code Samples from SecurityEval.jsonl:   2%|▏         | 3/121 [00:31<18:10,  9.24s/it]Processing Code Samples from SecurityEval.jsonl:   3%|▎         | 4/121 [00:40<17:46,  9.12s/it]Processing Code Samples from SecurityEval.jsonl:   4%|▍         | 5/121 [00:48<16:29,  8.53s/it]Processing Code Samples from SecurityEval.jsonl:   5%|▍         | 6/121 [00:54<14:34,  7.60s/it]Processing Code Samples from SecurityEval.jsonl:   6%|▌         | 7/121 [01:00<13:34,  7.15s/it]Processing Code Samples from SecurityEval.jsonl:   7%|▋         | 8/121 [01:05<12:11,  6.48s/it]Processing Code Samples from SecurityEval.jsonl:   7%|▋         | 9/121 [01:09<10:31,  5.63s/it]Processing Code Samples from SecurityEval.jsonl:   8%|▊         | 10/121 [01:15<10:45,  5.82s/it]Processing Code Samples from SecurityEval.jsonl:   9%|▉         | 11/121 [01:20<10:13,  5.58s/it]Processing Code Samples from SecurityEval.jsonl:  10%|▉         | 12/121 [01:25<09:58,  5.49s/it]Processing Code Samples from SecurityEval.jsonl:  11%|█         | 13/121 [01:31<09:53,  5.49s/it]Processing Code Samples from SecurityEval.jsonl:  12%|█▏        | 14/121 [01:37<10:08,  5.69s/it]Processing Code Samples from SecurityEval.jsonl:  12%|█▏        | 15/121 [01:43<10:12,  5.78s/it]Processing Code Samples from SecurityEval.jsonl:  13%|█▎        | 16/121 [01:48<09:50,  5.63s/it]Processing Code Samples from SecurityEval.jsonl:  14%|█▍        | 17/121 [01:54<10:08,  5.85s/it]Processing Code Samples from SecurityEval.jsonl:  15%|█▍        | 18/121 [02:00<09:50,  5.74s/it]Processing Code Samples from SecurityEval.jsonl:  16%|█▌        | 19/121 [02:06<09:52,  5.81s/it]Processing Code Samples from SecurityEval.jsonl:  17%|█▋        | 20/121 [02:12<09:50,  5.85s/it]Processing Code Samples from SecurityEval.jsonl:  17%|█▋        | 21/121 [02:17<09:34,  5.75s/it]Processing Code Samples from SecurityEval.jsonl:  18%|█▊        | 22/121 [02:25<10:15,  6.21s/it]Processing Code Samples from SecurityEval.jsonl:  19%|█▉        | 23/121 [02:30<09:33,  5.86s/it]Processing Code Samples from SecurityEval.jsonl:  20%|█▉        | 24/121 [02:36<09:38,  5.96s/it]Processing Code Samples from SecurityEval.jsonl:  21%|██        | 25/121 [02:41<09:00,  5.63s/it]Processing Code Samples from SecurityEval.jsonl:  21%|██▏       | 26/121 [02:47<09:12,  5.82s/it]Processing Code Samples from SecurityEval.jsonl:  22%|██▏       | 27/121 [02:54<09:42,  6.20s/it]Processing Code Samples from SecurityEval.jsonl:  23%|██▎       | 28/121 [03:02<10:38,  6.87s/it]Processing Code Samples from SecurityEval.jsonl:  24%|██▍       | 29/121 [03:08<09:51,  6.43s/it]Processing Code Samples from SecurityEval.jsonl:  25%|██▍       | 30/121 [03:15<10:04,  6.64s/it]Processing Code Samples from SecurityEval.jsonl:  26%|██▌       | 31/121 [03:24<10:51,  7.23s/it]Processing Code Samples from SecurityEval.jsonl:  26%|██▋       | 32/121 [03:28<09:35,  6.47s/it]Processing Code Samples from SecurityEval.jsonl:  27%|██▋       | 33/121 [03:36<09:53,  6.75s/it]Processing Code Samples from SecurityEval.jsonl:  28%|██▊       | 34/121 [03:42<09:26,  6.51s/it]Processing Code Samples from SecurityEval.jsonl:  29%|██▉       | 35/121 [03:47<08:39,  6.04s/it]Processing Code Samples from SecurityEval.jsonl:  30%|██▉       | 36/121 [03:54<09:12,  6.50s/it]Processing Code Samples from SecurityEval.jsonl:  31%|███       | 37/121 [04:00<08:49,  6.31s/it]Processing Code Samples from SecurityEval.jsonl:  31%|███▏      | 38/121 [04:15<12:07,  8.76s/it]Processing Code Samples from SecurityEval.jsonl:  32%|███▏      | 39/121 [04:27<13:38,  9.98s/it]Processing Code Samples from SecurityEval.jsonl:  33%|███▎      | 40/121 [04:33<11:39,  8.64s/it]Processing Code Samples from SecurityEval.jsonl:  34%|███▍      | 41/121 [04:38<10:13,  7.66s/it]Processing Code Samples from SecurityEval.jsonl:  35%|███▍      | 42/121 [04:44<09:30,  7.22s/it]Processing Code Samples from SecurityEval.jsonl:  36%|███▌      | 43/121 [04:51<09:15,  7.12s/it]Processing Code Samples from SecurityEval.jsonl:  36%|███▋      | 44/121 [05:06<12:10,  9.49s/it]Processing Code Samples from SecurityEval.jsonl:  37%|███▋      | 45/121 [05:11<10:20,  8.16s/it]Processing Code Samples from SecurityEval.jsonl:  38%|███▊      | 46/121 [05:19<09:54,  7.92s/it]Processing Code Samples from SecurityEval.jsonl:  39%|███▉      | 47/121 [05:24<08:36,  6.98s/it]Processing Code Samples from SecurityEval.jsonl:  40%|███▉      | 48/121 [05:34<09:52,  8.11s/it]Processing Code Samples from SecurityEval.jsonl:  40%|████      | 49/121 [05:46<11:06,  9.25s/it]Processing Code Samples from SecurityEval.jsonl:  41%|████▏     | 50/121 [05:57<11:20,  9.59s/it]Processing Code Samples from SecurityEval.jsonl:  42%|████▏     | 51/121 [06:04<10:17,  8.83s/it]Processing Code Samples from SecurityEval.jsonl:  43%|████▎     | 52/121 [06:08<08:44,  7.60s/it]Processing Code Samples from SecurityEval.jsonl:  44%|████▍     | 53/121 [06:14<08:03,  7.11s/it]Processing Code Samples from SecurityEval.jsonl:  45%|████▍     | 54/121 [06:22<08:06,  7.26s/it]Processing Code Samples from SecurityEval.jsonl:  45%|████▌     | 55/121 [06:27<07:05,  6.45s/it]Processing Code Samples from SecurityEval.jsonl:  46%|████▋     | 56/121 [06:33<07:03,  6.52s/it]Processing Code Samples from SecurityEval.jsonl:  47%|████▋     | 57/121 [06:40<06:56,  6.52s/it]Processing Code Samples from SecurityEval.jsonl:  48%|████▊     | 58/121 [06:55<09:41,  9.22s/it]Processing Code Samples from SecurityEval.jsonl:  49%|████▉     | 59/121 [07:04<09:25,  9.12s/it]Processing Code Samples from SecurityEval.jsonl:  50%|████▉     | 60/121 [07:11<08:39,  8.52s/it]Processing Code Samples from SecurityEval.jsonl:  50%|█████     | 61/121 [07:19<08:14,  8.25s/it]Processing Code Samples from SecurityEval.jsonl:  51%|█████     | 62/121 [07:26<07:49,  7.95s/it]Processing Code Samples from SecurityEval.jsonl:  52%|█████▏    | 63/121 [07:31<06:44,  6.98s/it]Processing Code Samples from SecurityEval.jsonl:  53%|█████▎    | 64/121 [07:37<06:20,  6.67s/it]Processing Code Samples from SecurityEval.jsonl:  54%|█████▎    | 65/121 [07:44<06:16,  6.71s/it]Processing Code Samples from SecurityEval.jsonl:  55%|█████▍    | 66/121 [07:48<05:23,  5.89s/it]Processing Code Samples from SecurityEval.jsonl:  55%|█████▌    | 67/121 [07:53<05:12,  5.80s/it]Processing Code Samples from SecurityEval.jsonl:  56%|█████▌    | 68/121 [07:59<05:11,  5.88s/it]Processing Code Samples from SecurityEval.jsonl:  57%|█████▋    | 69/121 [08:07<05:36,  6.46s/it]Processing Code Samples from SecurityEval.jsonl:  58%|█████▊    | 70/121 [08:18<06:36,  7.78s/it]Processing Code Samples from SecurityEval.jsonl:  59%|█████▊    | 71/121 [08:27<06:56,  8.32s/it]Processing Code Samples from SecurityEval.jsonl:  60%|█████▉    | 72/121 [08:35<06:31,  8.00s/it]Processing Code Samples from SecurityEval.jsonl:  60%|██████    | 73/121 [08:41<05:54,  7.38s/it]Processing Code Samples from SecurityEval.jsonl:  61%|██████    | 74/121 [08:47<05:35,  7.14s/it]Processing Code Samples from SecurityEval.jsonl:  62%|██████▏   | 75/121 [08:57<06:08,  8.00s/it]Processing Code Samples from SecurityEval.jsonl:  63%|██████▎   | 76/121 [09:03<05:24,  7.20s/it]Processing Code Samples from SecurityEval.jsonl:  64%|██████▎   | 77/121 [09:11<05:36,  7.64s/it]Processing Code Samples from SecurityEval.jsonl:  64%|██████▍   | 78/121 [09:18<05:21,  7.49s/it]Processing Code Samples from SecurityEval.jsonl:  65%|██████▌   | 79/121 [09:24<04:54,  7.02s/it]Processing Code Samples from SecurityEval.jsonl:  66%|██████▌   | 80/121 [09:30<04:27,  6.53s/it]Processing Code Samples from SecurityEval.jsonl:  67%|██████▋   | 81/121 [09:35<04:09,  6.25s/it]Processing Code Samples from SecurityEval.jsonl:  68%|██████▊   | 82/121 [09:40<03:45,  5.78s/it]Processing Code Samples from SecurityEval.jsonl:  69%|██████▊   | 83/121 [09:46<03:40,  5.81s/it]Processing Code Samples from SecurityEval.jsonl:  69%|██████▉   | 84/121 [09:51<03:24,  5.54s/it]Processing Code Samples from SecurityEval.jsonl:  70%|███████   | 85/121 [09:57<03:28,  5.79s/it]Processing Code Samples from SecurityEval.jsonl:  71%|███████   | 86/121 [10:03<03:21,  5.76s/it]Processing Code Samples from SecurityEval.jsonl:  72%|███████▏  | 87/121 [10:11<03:36,  6.36s/it]Processing Code Samples from SecurityEval.jsonl:  73%|███████▎  | 88/121 [10:17<03:27,  6.30s/it]Processing Code Samples from SecurityEval.jsonl:  74%|███████▎  | 89/121 [10:22<03:14,  6.08s/it]Processing Code Samples from SecurityEval.jsonl:  74%|███████▍  | 90/121 [10:27<02:59,  5.80s/it]Processing Code Samples from SecurityEval.jsonl:  75%|███████▌  | 91/121 [10:33<02:49,  5.65s/it]Processing Code Samples from SecurityEval.jsonl:  76%|███████▌  | 92/121 [10:39<02:45,  5.71s/it]Processing Code Samples from SecurityEval.jsonl:  77%|███████▋  | 93/121 [10:50<03:29,  7.48s/it]Processing Code Samples from SecurityEval.jsonl:  78%|███████▊  | 94/121 [10:57<03:13,  7.15s/it]Processing Code Samples from SecurityEval.jsonl:  79%|███████▊  | 95/121 [11:03<02:59,  6.92s/it]Processing Code Samples from SecurityEval.jsonl:  79%|███████▉  | 96/121 [11:08<02:38,  6.35s/it]Processing Code Samples from SecurityEval.jsonl:  80%|████████  | 97/121 [11:14<02:31,  6.30s/it]Processing Code Samples from SecurityEval.jsonl:  81%|████████  | 98/121 [11:21<02:29,  6.50s/it][36m[INFO][0m Analysis results from qwen2.5-coder:32b on sample 0: CWE count 1.
+[36m[INFO][0m Analysis results from qwen2.5-coder:32b on sample 1: CWE count 1.
+[36m[INFO][0m Analysis results from qwen2.5-coder:32b on sample 2: CWE count 1.
+[36m[INFO][0m Analysis results from qwen2.5-coder:32b on sample 3: CWE count 1.
+[36m[INFO][0m Analysis results from qwen2.5-coder:32b on sample 4: CWE count 1.
+[36m[INFO][0m Analysis results from qwen2.5-coder:32b on sample 5: CWE count 1.
+[36m[INFO][0m Analysis results from qwen2.5-coder:32b on sample 6: CWE count 1.
+[36m[INFO][0m Analysis results from qwen2.5-coder:32b on sample 7: CWE count 1.
+[36m[INFO][0m Analysis results from qwen2.5-coder:32b on sample 8: CWE count 1.
+[36m[INFO][0m Analysis results from qwen2.5-coder:32b on sample 9: CWE count 1.
+[36m[INFO][0m Analysis results from qwen2.5-coder:32b on sample 10: CWE count 1.
+[36m[INFO][0m Analysis results from qwen2.5-coder:32b on sample 11: CWE count 1.
+[36m[INFO][0m Analysis results from qwen2.5-coder:32b on sample 12: CWE count 1.
+[36m[INFO][0m Analysis results from qwen2.5-coder:32b on sample 13: CWE count 1.
+[36m[INFO][0m Analysis results from qwen2.5-coder:32b on sample 14: CWE count 1.
+[36m[INFO][0m Analysis results from qwen2.5-coder:32b on sample 15: CWE count 1.
+[36m[INFO][0m Analysis results from qwen2.5-coder:32b on sample 16: CWE count 1.
+[36m[INFO][0m Analysis results from qwen2.5-coder:32b on sample 17: CWE count 1.
+[36m[INFO][0m Analysis results from qwen2.5-coder:32b on sample 18: CWE count 1.
+[36m[INFO][0m Analysis results from qwen2.5-coder:32b on sample 19: CWE count 1.
+[36m[INFO][0m Analysis results from qwen2.5-coder:32b on sample 20: CWE count 1.
+[36m[INFO][0m Analysis results from qwen2.5-coder:32b on sample 21: CWE count 1.
+[36m[INFO][0m Analysis results from qwen2.5-coder:32b on sample 22: CWE count 1.
+[36m[INFO][0m Analysis results from qwen2.5-coder:32b on sample 23: CWE count 1.
+[36m[INFO][0m Analysis results from qwen2.5-coder:32b on sample 24: CWE count 1.
+[36m[INFO][0m Analysis results from qwen2.5-coder:32b on sample 25: CWE count 1.
+[36m[INFO][0m Analysis results from qwen2.5-coder:32b on sample 26: CWE count 1.
+[36m[INFO][0m Analysis results from qwen2.5-coder:32b on sample 27: CWE count 1.
+[36m[INFO][0m Analysis results from qwen2.5-coder:32b on sample 28: CWE count 1.
+[36m[INFO][0m Analysis results from qwen2.5-coder:32b on sample 29: CWE count 1.
+[36m[INFO][0m Analysis results from qwen2.5-coder:32b on sample 30: CWE count 1.
+[36m[INFO][0m Analysis results from qwen2.5-coder:32b on sample 31: CWE count 1.
+[36m[INFO][0m Analysis results from qwen2.5-coder:32b on sample 32: CWE count 1.
+[36m[INFO][0m Analysis results from qwen2.5-coder:32b on sample 33: CWE count 1.
+[36m[INFO][0m Analysis results from qwen2.5-coder:32b on sample 34: CWE count 1.
+[36m[INFO][0m Analysis results from qwen2.5-coder:32b on sample 35: CWE count 1.
+[36m[INFO][0m Analysis results from qwen2.5-coder:32b on sample 36: CWE count 1.
+[36m[INFO][0m Analysis results from qwen2.5-coder:32b on sample 37: CWE count 1.
+[36m[INFO][0m Analysis results from qwen2.5-coder:32b on sample 38: CWE count 1.
+[36m[INFO][0m Analysis results from qwen2.5-coder:32b on sample 39: CWE count 1.
+[36m[INFO][0m Analysis results from qwen2.5-coder:32b on sample 40: CWE count 1.
+[36m[INFO][0m Analysis results from qwen2.5-coder:32b on sample 41: CWE count 1.
+[36m[INFO][0m Analysis results from qwen2.5-coder:32b on sample 42: CWE count 1.
+[36m[INFO][0m Analysis results from qwen2.5-coder:32b on sample 43: CWE count 0.
+[36m[INFO][0m Analysis results from qwen2.5-coder:32b on sample 44: CWE count 1.
+[36m[INFO][0m Analysis results from qwen2.5-coder:32b on sample 45: CWE count 1.
+[36m[INFO][0m Analysis results from qwen2.5-coder:32b on sample 46: CWE count 1.
+[36m[INFO][0m Analysis results from qwen2.5-coder:32b on sample 47: CWE count 1.
+[36m[INFO][0m Analysis results from qwen2.5-coder:32b on sample 48: CWE count 1.
+[36m[INFO][0m Analysis results from qwen2.5-coder:32b on sample 49: CWE count 1.
+[36m[INFO][0m Analysis results from qwen2.5-coder:32b on sample 50: CWE count 1.
+[36m[INFO][0m Analysis results from qwen2.5-coder:32b on sample 51: CWE count 1.
+[36m[INFO][0m Analysis results from qwen2.5-coder:32b on sample 52: CWE count 1.
+[36m[INFO][0m Analysis results from qwen2.5-coder:32b on sample 53: CWE count 1.
+[36m[INFO][0m Analysis results from qwen2.5-coder:32b on sample 54: CWE count 1.
+[36m[INFO][0m Analysis results from qwen2.5-coder:32b on sample 55: CWE count 1.
+[36m[INFO][0m Analysis results from qwen2.5-coder:32b on sample 56: CWE count 1.
+[36m[INFO][0m Analysis results from qwen2.5-coder:32b on sample 57: CWE count 1.
+[36m[INFO][0m Analysis results from qwen2.5-coder:32b on sample 58: CWE count 1.
+[36m[INFO][0m Analysis results from qwen2.5-coder:32b on sample 59: CWE count 1.
+[36m[INFO][0m Analysis results from qwen2.5-coder:32b on sample 60: CWE count 1.
+[36m[INFO][0m Analysis results from qwen2.5-coder:32b on sample 61: CWE count 1.
+[36m[INFO][0m Analysis results from qwen2.5-coder:32b on sample 62: CWE count 1.
+[36m[INFO][0m Analysis results from qwen2.5-coder:32b on sample 63: CWE count 1.
+[36m[INFO][0m Analysis results from qwen2.5-coder:32b on sample 64: CWE count 1.
+[36m[INFO][0m Analysis results from qwen2.5-coder:32b on sample 65: CWE count 1.
+[36m[INFO][0m Analysis results from qwen2.5-coder:32b on sample 66: CWE count 1.
+[36m[INFO][0m Analysis results from qwen2.5-coder:32b on sample 67: CWE count 1.
+[36m[INFO][0m Analysis results from qwen2.5-coder:32b on sample 68: CWE count 1.
+[36m[INFO][0m Analysis results from qwen2.5-coder:32b on sample 69: CWE count 1.
+[36m[INFO][0m Analysis results from qwen2.5-coder:32b on sample 70: CWE count 1.
+[36m[INFO][0m Analysis results from qwen2.5-coder:32b on sample 71: CWE count 1.
+[36m[INFO][0m Analysis results from qwen2.5-coder:32b on sample 72: CWE count 1.
+[36m[INFO][0m Analysis results from qwen2.5-coder:32b on sample 73: CWE count 1.
+[36m[INFO][0m Analysis results from qwen2.5-coder:32b on sample 74: CWE count 1.
+[36m[INFO][0m Analysis results from qwen2.5-coder:32b on sample 75: CWE count 1.
+[36m[INFO][0m Analysis results from qwen2.5-coder:32b on sample 76: CWE count 0.
+[36m[INFO][0m Analysis results from qwen2.5-coder:32b on sample 77: CWE count 0.
+[36m[INFO][0m Analysis results from qwen2.5-coder:32b on sample 78: CWE count 1.
+[36m[INFO][0m Analysis results from qwen2.5-coder:32b on sample 79: CWE count 1.
+[36m[INFO][0m Analysis results from qwen2.5-coder:32b on sample 80: CWE count 1.
+[36m[INFO][0m Analysis results from qwen2.5-coder:32b on sample 81: CWE count 1.
+[36m[INFO][0m Analysis results from qwen2.5-coder:32b on sample 82: CWE count 1.
+[36m[INFO][0m Analysis results from qwen2.5-coder:32b on sample 83: CWE count 1.
+[36m[INFO][0m Analysis results from qwen2.5-coder:32b on sample 84: CWE count 1.
+[36m[INFO][0m Analysis results from qwen2.5-coder:32b on sample 85: CWE count 1.
+[36m[INFO][0m Analysis results from qwen2.5-coder:32b on sample 86: CWE count 0.
+[36m[INFO][0m Analysis results from qwen2.5-coder:32b on sample 87: CWE count 1.
+[36m[INFO][0m Analysis results from qwen2.5-coder:32b on sample 88: CWE count 1.
+[36m[INFO][0m Analysis results from qwen2.5-coder:32b on sample 89: CWE count 1.
+[36m[INFO][0m Analysis results from qwen2.5-coder:32b on sample 90: CWE count 1.
+[36m[INFO][0m Analysis results from qwen2.5-coder:32b on sample 91: CWE count 1.
+[36m[INFO][0m Analysis results from qwen2.5-coder:32b on sample 92: CWE count 1.
+[36m[INFO][0m Analysis results from qwen2.5-coder:32b on sample 93: CWE count 1.
+[36m[INFO][0m Analysis results from qwen2.5-coder:32b on sample 94: CWE count 1.
+[36m[INFO][0m Analysis results from qwen2.5-coder:32b on sample 95: CWE count 1.
+[36m[INFO][0m Analysis results from qwen2.5-coder:32b on sample 96: CWE count 1.
+[36m[INFO][0m Analysis results from qwen2.5-coder:32b on sample 97: CWE count 1.
+Processing Code Samples from SecurityEval.jsonl:  82%|████████▏ | 99/121 [11:27<02:19,  6.32s/it]Processing Code Samples from SecurityEval.jsonl:  83%|████████▎ | 100/121 [11:33<02:10,  6.21s/it]Processing Code Samples from SecurityEval.jsonl:  83%|████████▎ | 101/121 [11:38<01:55,  5.76s/it]Processing Code Samples from SecurityEval.jsonl:  84%|████████▍ | 102/121 [11:44<01:53,  5.95s/it]Processing Code Samples from SecurityEval.jsonl:  85%|████████▌ | 103/121 [11:58<02:32,  8.47s/it]Processing Code Samples from SecurityEval.jsonl:  86%|████████▌ | 104/121 [12:08<02:29,  8.79s/it]Processing Code Samples from SecurityEval.jsonl:  87%|████████▋ | 105/121 [12:20<02:35,  9.74s/it]Processing Code Samples from SecurityEval.jsonl:  88%|████████▊ | 106/121 [12:40<03:12, 12.83s/it]Processing Code Samples from SecurityEval.jsonl:  88%|████████▊ | 107/121 [12:46<02:32, 10.87s/it]Processing Code Samples from SecurityEval.jsonl:  89%|████████▉ | 108/121 [12:52<01:59,  9.21s/it]Processing Code Samples from SecurityEval.jsonl:  90%|█████████ | 109/121 [13:01<01:51,  9.32s/it]Processing Code Samples from SecurityEval.jsonl:  91%|█████████ | 110/121 [13:05<01:25,  7.79s/it]Processing Code Samples from SecurityEval.jsonl:  92%|█████████▏| 111/121 [13:15<01:23,  8.40s/it]Processing Code Samples from SecurityEval.jsonl:  93%|█████████▎| 112/121 [13:21<01:08,  7.65s/it]Processing Code Samples from SecurityEval.jsonl:  93%|█████████▎| 113/121 [13:25<00:52,  6.60s/it]Processing Code Samples from SecurityEval.jsonl:  94%|█████████▍| 114/121 [13:39<01:00,  8.63s/it]Processing Code Samples from SecurityEval.jsonl:  95%|█████████▌| 115/121 [13:46<00:50,  8.34s/it]Processing Code Samples from SecurityEval.jsonl:  96%|█████████▌| 116/121 [13:55<00:42,  8.54s/it]Processing Code Samples from SecurityEval.jsonl:  97%|█████████▋| 117/121 [14:06<00:36,  9.11s/it]Processing Code Samples from SecurityEval.jsonl:  98%|█████████▊| 118/121 [14:12<00:24,  8.11s/it]Processing Code Samples from SecurityEval.jsonl:  98%|█████████▊| 119/121 [14:18<00:14,  7.48s/it]Processing Code Samples from SecurityEval.jsonl:  99%|█████████▉| 120/121 [14:34<00:10, 10.12s/it]Processing Code Samples from SecurityEval.jsonl: 100%|██████████| 121/121 [14:44<00:00, 10.13s/it]Processing Code Samples from SecurityEval.jsonl: 100%|██████████| 121/121 [14:44<00:00,  7.31s/it]
+[36m[INFO][0m Analysis results from qwen2.5-coder:32b on sample 98: CWE count 1.
+[36m[INFO][0m Analysis results from qwen2.5-coder:32b on sample 99: CWE count 1.
+[36m[INFO][0m Analysis results from qwen2.5-coder:32b on sample 100: CWE count 1.
+[36m[INFO][0m Analysis results from qwen2.5-coder:32b on sample 101: CWE count 1.
+[36m[INFO][0m Analysis results from qwen2.5-coder:32b on sample 102: CWE count 0.
+[36m[INFO][0m Analysis results from qwen2.5-coder:32b on sample 103: CWE count 0.
+[36m[INFO][0m Analysis results from qwen2.5-coder:32b on sample 104: CWE count 1.
+[36m[INFO][0m Analysis results from qwen2.5-coder:32b on sample 105: CWE count 1.
+[36m[INFO][0m Analysis results from qwen2.5-coder:32b on sample 106: CWE count 1.
+[36m[INFO][0m Analysis results from qwen2.5-coder:32b on sample 107: CWE count 1.
+[36m[INFO][0m Analysis results from qwen2.5-coder:32b on sample 108: CWE count 1.
+[36m[INFO][0m Analysis results from qwen2.5-coder:32b on sample 109: CWE count 1.
+[36m[INFO][0m Analysis results from qwen2.5-coder:32b on sample 110: CWE count 1.
+[36m[INFO][0m Analysis results from qwen2.5-coder:32b on sample 111: CWE count 1.
+[36m[INFO][0m Analysis results from qwen2.5-coder:32b on sample 112: CWE count 1.
+[36m[INFO][0m Analysis results from qwen2.5-coder:32b on sample 113: CWE count 1.
+[36m[INFO][0m Analysis results from qwen2.5-coder:32b on sample 114: CWE count 1.
+[36m[INFO][0m Analysis results from qwen2.5-coder:32b on sample 115: CWE count 1.
+[36m[INFO][0m Analysis results from qwen2.5-coder:32b on sample 116: CWE count 1.
+[36m[INFO][0m Analysis results from qwen2.5-coder:32b on sample 117: CWE count 1.
+[36m[INFO][0m Analysis results from qwen2.5-coder:32b on sample 118: CWE count 1.
+[36m[INFO][0m Analysis results from qwen2.5-coder:32b on sample 119: CWE count 1.
+[36m[INFO][0m Analysis results from qwen2.5-coder:32b on sample 120: CWE count 1.
+[32m[SUCCESS][0m Loaded 121 samples from the dataset.
+Processing Code Samples from SecurityEval.jsonl:   0%|          | 0/121 [00:00<?, ?it/s]Processing Code Samples from SecurityEval.jsonl:   1%|          | 1/121 [00:05<11:10,  5.59s/it]Processing Code Samples from SecurityEval.jsonl:   2%|▏         | 2/121 [00:06<06:03,  3.06s/it]Processing Code Samples from SecurityEval.jsonl:   2%|▏         | 3/121 [00:08<04:45,  2.42s/it]Processing Code Samples from SecurityEval.jsonl:   3%|▎         | 4/121 [00:09<03:53,  2.00s/it]Processing Code Samples from SecurityEval.jsonl:   4%|▍         | 5/121 [00:11<03:49,  1.98s/it]Processing Code Samples from SecurityEval.jsonl:   5%|▍         | 6/121 [00:13<03:44,  1.95s/it]Processing Code Samples from SecurityEval.jsonl:   6%|▌         | 7/121 [00:14<03:14,  1.71s/it]Processing Code Samples from SecurityEval.jsonl:   7%|▋         | 8/121 [00:16<03:20,  1.77s/it]Processing Code Samples from SecurityEval.jsonl:   7%|▋         | 9/121 [00:18<03:05,  1.66s/it]Processing Code Samples from SecurityEval.jsonl:   8%|▊         | 10/121 [00:20<03:10,  1.71s/it]Processing Code Samples from SecurityEval.jsonl:   9%|▉         | 11/121 [00:21<02:56,  1.60s/it]Processing Code Samples from SecurityEval.jsonl:  10%|▉         | 12/121 [00:22<02:40,  1.47s/it]Processing Code Samples from SecurityEval.jsonl:  11%|█         | 13/121 [00:24<03:02,  1.69s/it]Processing Code Samples from SecurityEval.jsonl:  12%|█▏        | 14/121 [00:26<02:47,  1.57s/it]Processing Code Samples from SecurityEval.jsonl:  12%|█▏        | 15/121 [00:27<02:29,  1.41s/it]Processing Code Samples from SecurityEval.jsonl:  13%|█▎        | 16/121 [00:29<02:42,  1.55s/it]Processing Code Samples from SecurityEval.jsonl:  14%|█▍        | 17/121 [00:30<02:27,  1.42s/it]Processing Code Samples from SecurityEval.jsonl:  15%|█▍        | 18/121 [00:32<02:40,  1.56s/it]Processing Code Samples from SecurityEval.jsonl:  16%|█▌        | 19/121 [00:33<02:46,  1.63s/it]Processing Code Samples from SecurityEval.jsonl:  17%|█▋        | 20/121 [00:35<02:42,  1.60s/it]Processing Code Samples from SecurityEval.jsonl:  17%|█▋        | 21/121 [00:36<02:39,  1.60s/it]Processing Code Samples from SecurityEval.jsonl:  18%|█▊        | 22/121 [00:38<02:34,  1.56s/it]Processing Code Samples from SecurityEval.jsonl:  19%|█▉        | 23/121 [00:39<02:25,  1.49s/it]Processing Code Samples from SecurityEval.jsonl:  20%|█▉        | 24/121 [00:40<02:07,  1.31s/it]Processing Code Samples from SecurityEval.jsonl:  21%|██        | 25/121 [00:41<01:57,  1.23s/it]Processing Code Samples from SecurityEval.jsonl:  21%|██▏       | 26/121 [00:43<02:14,  1.41s/it]Processing Code Samples from SecurityEval.jsonl:  22%|██▏       | 27/121 [00:45<02:18,  1.47s/it]Processing Code Samples from SecurityEval.jsonl:  23%|██▎       | 28/121 [00:46<02:18,  1.49s/it]Processing Code Samples from SecurityEval.jsonl:  24%|██▍       | 29/121 [00:48<02:39,  1.74s/it]Processing Code Samples from SecurityEval.jsonl:  25%|██▍       | 30/121 [00:50<02:43,  1.79s/it]Processing Code Samples from SecurityEval.jsonl:  26%|██▌       | 31/121 [00:53<03:00,  2.01s/it]Processing Code Samples from SecurityEval.jsonl:  26%|██▋       | 32/121 [00:56<03:20,  2.25s/it]Processing Code Samples from SecurityEval.jsonl:  27%|██▋       | 33/121 [00:58<03:13,  2.20s/it]Processing Code Samples from SecurityEval.jsonl:  28%|██▊       | 34/121 [01:00<03:10,  2.19s/it]Processing Code Samples from SecurityEval.jsonl:  29%|██▉       | 35/121 [01:01<02:37,  1.83s/it]Processing Code Samples from SecurityEval.jsonl:  30%|██▉       | 36/121 [01:02<02:22,  1.68s/it]Processing Code Samples from SecurityEval.jsonl:  31%|███       | 37/121 [01:04<02:22,  1.70s/it]Processing Code Samples from SecurityEval.jsonl:  31%|███▏      | 38/121 [01:06<02:31,  1.82s/it]Processing Code Samples from SecurityEval.jsonl:  32%|███▏      | 39/121 [01:08<02:37,  1.92s/it]Processing Code Samples from SecurityEval.jsonl:  33%|███▎      | 40/121 [01:10<02:27,  1.82s/it]Processing Code Samples from SecurityEval.jsonl:  34%|███▍      | 41/121 [01:12<02:23,  1.79s/it]Processing Code Samples from SecurityEval.jsonl:  35%|███▍      | 42/121 [01:13<02:20,  1.78s/it]Processing Code Samples from SecurityEval.jsonl:  36%|███▌      | 43/121 [01:15<02:25,  1.87s/it]Processing Code Samples from SecurityEval.jsonl:  36%|███▋      | 44/121 [01:18<02:36,  2.03s/it]Processing Code Samples from SecurityEval.jsonl:  37%|███▋      | 45/121 [01:19<02:15,  1.78s/it]Processing Code Samples from SecurityEval.jsonl:  38%|███▊      | 46/121 [01:21<02:24,  1.92s/it]Processing Code Samples from SecurityEval.jsonl:  39%|███▉      | 47/121 [01:23<02:08,  1.74s/it]Processing Code Samples from SecurityEval.jsonl:  40%|███▉      | 48/121 [01:25<02:10,  1.79s/it]Processing Code Samples from SecurityEval.jsonl:  40%|████      | 49/121 [01:26<02:09,  1.79s/it]Processing Code Samples from SecurityEval.jsonl:  41%|████▏     | 50/121 [01:28<02:02,  1.73s/it]Processing Code Samples from SecurityEval.jsonl:  42%|████▏     | 51/121 [01:30<01:59,  1.71s/it]Processing Code Samples from SecurityEval.jsonl:  43%|████▎     | 52/121 [01:31<01:53,  1.65s/it]Processing Code Samples from SecurityEval.jsonl:  44%|████▍     | 53/121 [01:33<01:55,  1.69s/it]Processing Code Samples from SecurityEval.jsonl:  45%|████▍     | 54/121 [01:35<02:03,  1.84s/it]Processing Code Samples from SecurityEval.jsonl:  45%|████▌     | 55/121 [01:37<02:03,  1.87s/it]Processing Code Samples from SecurityEval.jsonl:  46%|████▋     | 56/121 [01:39<02:03,  1.90s/it]Processing Code Samples from SecurityEval.jsonl:  47%|████▋     | 57/121 [01:41<02:02,  1.92s/it]Processing Code Samples from SecurityEval.jsonl:  48%|████▊     | 58/121 [01:43<02:06,  2.01s/it]Processing Code Samples from SecurityEval.jsonl:  49%|████▉     | 59/121 [01:45<01:53,  1.83s/it]Processing Code Samples from SecurityEval.jsonl:  50%|████▉     | 60/121 [01:46<01:36,  1.58s/it]Processing Code Samples from SecurityEval.jsonl:  50%|█████     | 61/121 [01:47<01:27,  1.46s/it]Processing Code Samples from SecurityEval.jsonl:  51%|█████     | 62/121 [01:49<01:37,  1.65s/it]Processing Code Samples from SecurityEval.jsonl:  52%|█████▏    | 63/121 [01:51<01:39,  1.71s/it]Processing Code Samples from SecurityEval.jsonl:  53%|█████▎    | 64/121 [01:53<01:40,  1.76s/it]Processing Code Samples from SecurityEval.jsonl:  54%|█████▎    | 65/121 [01:54<01:29,  1.60s/it]Processing Code Samples from SecurityEval.jsonl:  55%|█████▍    | 66/121 [01:55<01:27,  1.59s/it]Processing Code Samples from SecurityEval.jsonl:  55%|█████▌    | 67/121 [01:57<01:31,  1.69s/it]Processing Code Samples from SecurityEval.jsonl:  56%|█████▌    | 68/121 [02:00<01:46,  2.01s/it]Processing Code Samples from SecurityEval.jsonl:  57%|█████▋    | 69/121 [02:02<01:47,  2.06s/it]Processing Code Samples from SecurityEval.jsonl:  58%|█████▊    | 70/121 [02:04<01:37,  1.91s/it]Processing Code Samples from SecurityEval.jsonl:  59%|█████▊    | 71/121 [02:05<01:32,  1.86s/it]Processing Code Samples from SecurityEval.jsonl:  60%|█████▉    | 72/121 [02:07<01:29,  1.83s/it]Processing Code Samples from SecurityEval.jsonl:  60%|██████    | 73/121 [02:09<01:25,  1.79s/it]Processing Code Samples from SecurityEval.jsonl:  61%|██████    | 74/121 [02:10<01:20,  1.70s/it]Processing Code Samples from SecurityEval.jsonl:  62%|██████▏   | 75/121 [02:12<01:18,  1.70s/it]Processing Code Samples from SecurityEval.jsonl:  63%|██████▎   | 76/121 [02:14<01:12,  1.61s/it]Processing Code Samples from SecurityEval.jsonl:  64%|██████▎   | 77/121 [02:15<01:11,  1.61s/it]Processing Code Samples from SecurityEval.jsonl:  64%|██████▍   | 78/121 [02:16<00:56,  1.32s/it]Processing Code Samples from SecurityEval.jsonl:  65%|██████▌   | 79/121 [02:17<00:51,  1.24s/it]Processing Code Samples from SecurityEval.jsonl:  66%|██████▌   | 80/121 [02:18<00:49,  1.20s/it]Processing Code Samples from SecurityEval.jsonl:  67%|██████▋   | 81/121 [02:20<00:57,  1.45s/it]Processing Code Samples from SecurityEval.jsonl:  68%|██████▊   | 82/121 [02:22<01:01,  1.58s/it]Processing Code Samples from SecurityEval.jsonl:  69%|██████▊   | 83/121 [02:23<00:55,  1.46s/it]Processing Code Samples from SecurityEval.jsonl:  69%|██████▉   | 84/121 [02:24<00:45,  1.24s/it]Processing Code Samples from SecurityEval.jsonl:  70%|███████   | 85/121 [02:26<00:50,  1.40s/it]Processing Code Samples from SecurityEval.jsonl:  71%|███████   | 86/121 [02:27<00:51,  1.46s/it]Processing Code Samples from SecurityEval.jsonl:  72%|███████▏  | 87/121 [02:28<00:42,  1.26s/it]Processing Code Samples from SecurityEval.jsonl:  73%|███████▎  | 88/121 [02:29<00:42,  1.28s/it]Processing Code Samples from SecurityEval.jsonl:  74%|███████▎  | 89/121 [02:32<00:51,  1.62s/it]Processing Code Samples from SecurityEval.jsonl:  74%|███████▍  | 90/121 [02:33<00:50,  1.63s/it]Processing Code Samples from SecurityEval.jsonl:  75%|███████▌  | 91/121 [02:35<00:46,  1.56s/it]Processing Code Samples from SecurityEval.jsonl:  76%|███████▌  | 92/121 [02:37<00:47,  1.65s/it]Processing Code Samples from SecurityEval.jsonl:  77%|███████▋  | 93/121 [02:38<00:41,  1.48s/it]Processing Code Samples from SecurityEval.jsonl:  78%|███████▊  | 94/121 [02:40<00:46,  1.74s/it]Processing Code Samples from SecurityEval.jsonl:  79%|███████▊  | 95/121 [02:42<00:43,  1.68s/it]Processing Code Samples from SecurityEval.jsonl:  79%|███████▉  | 96/121 [02:44<00:46,  1.85s/it]Processing Code Samples from SecurityEval.jsonl:  80%|████████  | 97/121 [02:47<00:50,  2.12s/it]Processing Code Samples from SecurityEval.jsonl:  81%|████████  | 98/121 [02:49<00:48,  2.09s/it]Processing Code Samples from SecurityEval.jsonl:  82%|████████▏ | 99/121 [02:51<00:48,  2.19s/it]Processing Code Samples from SecurityEval.jsonl:  83%|████████▎ | 100/121 [02:52<00:40,  1.93s/it]Processing Code Samples from SecurityEval.jsonl:  83%|████████▎ | 101/121 [02:54<00:36,  1.81s/it]Processing Code Samples from SecurityEval.jsonl:  84%|████████▍ | 102/121 [02:56<00:34,  1.82s/it][36m[INFO][0m Analysis results from mistral:latest on sample 0: CWE count 1.
+[36m[INFO][0m Analysis results from mistral:latest on sample 1: CWE count 1.
+[36m[INFO][0m Analysis results from mistral:latest on sample 2: CWE count 1.
+[36m[INFO][0m Analysis results from mistral:latest on sample 3: CWE count 1.
+[36m[INFO][0m Analysis results from mistral:latest on sample 4: CWE count 1.
+[36m[INFO][0m Analysis results from mistral:latest on sample 5: CWE count 1.
+[36m[INFO][0m Analysis results from mistral:latest on sample 6: CWE count 1.
+[36m[INFO][0m Analysis results from mistral:latest on sample 7: CWE count 1.
+[36m[INFO][0m Analysis results from mistral:latest on sample 8: CWE count 1.
+[36m[INFO][0m Analysis results from mistral:latest on sample 9: CWE count 0.
+[36m[INFO][0m Analysis results from mistral:latest on sample 10: CWE count 1.
+[36m[INFO][0m Analysis results from mistral:latest on sample 11: CWE count 1.
+[36m[INFO][0m Analysis results from mistral:latest on sample 12: CWE count 1.
+[36m[INFO][0m Analysis results from mistral:latest on sample 13: CWE count 1.
+[36m[INFO][0m Analysis results from mistral:latest on sample 14: CWE count 1.
+[36m[INFO][0m Analysis results from mistral:latest on sample 15: CWE count 1.
+[36m[INFO][0m Analysis results from mistral:latest on sample 16: CWE count 1.
+[36m[INFO][0m Analysis results from mistral:latest on sample 17: CWE count 1.
+[36m[INFO][0m Analysis results from mistral:latest on sample 18: CWE count 1.
+[36m[INFO][0m Analysis results from mistral:latest on sample 19: CWE count 1.
+[36m[INFO][0m Analysis results from mistral:latest on sample 20: CWE count 1.
+[36m[INFO][0m Analysis results from mistral:latest on sample 21: CWE count 1.
+[36m[INFO][0m Analysis results from mistral:latest on sample 22: CWE count 1.
+[36m[INFO][0m Analysis results from mistral:latest on sample 23: CWE count 1.
+[36m[INFO][0m Analysis results from mistral:latest on sample 24: CWE count 1.
+[36m[INFO][0m Analysis results from mistral:latest on sample 25: CWE count 1.
+[36m[INFO][0m Analysis results from mistral:latest on sample 26: CWE count 1.
+[36m[INFO][0m Analysis results from mistral:latest on sample 27: CWE count 1.
+[36m[INFO][0m Analysis results from mistral:latest on sample 28: CWE count 1.
+[36m[INFO][0m Analysis results from mistral:latest on sample 29: CWE count 1.
+[36m[INFO][0m Analysis results from mistral:latest on sample 30: CWE count 1.
+[36m[INFO][0m Analysis results from mistral:latest on sample 31: CWE count 1.
+[36m[INFO][0m Analysis results from mistral:latest on sample 32: CWE count 1.
+[36m[INFO][0m Analysis results from mistral:latest on sample 33: CWE count 1.
+[36m[INFO][0m Analysis results from mistral:latest on sample 34: CWE count 1.
+[36m[INFO][0m Analysis results from mistral:latest on sample 35: CWE count 1.
+[36m[INFO][0m Analysis results from mistral:latest on sample 36: CWE count 1.
+[36m[INFO][0m Analysis results from mistral:latest on sample 37: CWE count 1.
+[36m[INFO][0m Analysis results from mistral:latest on sample 38: CWE count 1.
+[36m[INFO][0m Analysis results from mistral:latest on sample 39: CWE count 0.
+[36m[INFO][0m Analysis results from mistral:latest on sample 40: CWE count 1.
+[36m[INFO][0m Analysis results from mistral:latest on sample 41: CWE count 2.
+[36m[INFO][0m Analysis results from mistral:latest on sample 42: CWE count 0.
+[36m[INFO][0m Analysis results from mistral:latest on sample 43: CWE count 1.
+[36m[INFO][0m Analysis results from mistral:latest on sample 44: CWE count 1.
+[36m[INFO][0m Analysis results from mistral:latest on sample 45: CWE count 1.
+[36m[INFO][0m Analysis results from mistral:latest on sample 46: CWE count 1.
+[36m[INFO][0m Analysis results from mistral:latest on sample 47: CWE count 1.
+[36m[INFO][0m Analysis results from mistral:latest on sample 48: CWE count 1.
+[36m[INFO][0m Analysis results from mistral:latest on sample 49: CWE count 1.
+[36m[INFO][0m Analysis results from mistral:latest on sample 50: CWE count 0.
+[36m[INFO][0m Analysis results from mistral:latest on sample 51: CWE count 1.
+[36m[INFO][0m Analysis results from mistral:latest on sample 52: CWE count 1.
+[36m[INFO][0m Analysis results from mistral:latest on sample 53: CWE count 1.
+[36m[INFO][0m Analysis results from mistral:latest on sample 54: CWE count 0.
+[36m[INFO][0m Analysis results from mistral:latest on sample 55: CWE count 0.
+[36m[INFO][0m Analysis results from mistral:latest on sample 56: CWE count 1.
+[36m[INFO][0m Analysis results from mistral:latest on sample 57: CWE count 1.
+[36m[INFO][0m Analysis results from mistral:latest on sample 58: CWE count 1.
+[36m[INFO][0m Analysis results from mistral:latest on sample 59: CWE count 0.
+[36m[INFO][0m Analysis results from mistral:latest on sample 60: CWE count 0.
+[36m[INFO][0m Analysis results from mistral:latest on sample 61: CWE count 1.
+[36m[INFO][0m Analysis results from mistral:latest on sample 62: CWE count 1.
+[36m[INFO][0m Analysis results from mistral:latest on sample 63: CWE count 1.
+[36m[INFO][0m Analysis results from mistral:latest on sample 64: CWE count 0.
+[36m[INFO][0m Analysis results from mistral:latest on sample 65: CWE count 1.
+[36m[INFO][0m Analysis results from mistral:latest on sample 66: CWE count 1.
+[36m[INFO][0m Analysis results from mistral:latest on sample 67: CWE count 1.
+[36m[INFO][0m Analysis results from mistral:latest on sample 68: CWE count 1.
+[36m[INFO][0m Analysis results from mistral:latest on sample 69: CWE count 1.
+[36m[INFO][0m Analysis results from mistral:latest on sample 70: CWE count 1.
+[36m[INFO][0m Analysis results from mistral:latest on sample 71: CWE count 1.
+[36m[INFO][0m Analysis results from mistral:latest on sample 72: CWE count 1.
+[36m[INFO][0m Analysis results from mistral:latest on sample 73: CWE count 1.
+[36m[INFO][0m Analysis results from mistral:latest on sample 74: CWE count 1.
+[36m[INFO][0m Analysis results from mistral:latest on sample 75: CWE count 1.
+[36m[INFO][0m Analysis results from mistral:latest on sample 76: CWE count 1.
+[36m[INFO][0m Analysis results from mistral:latest on sample 77: CWE count 0.
+[36m[INFO][0m Analysis results from mistral:latest on sample 78: CWE count 1.
+[36m[INFO][0m Analysis results from mistral:latest on sample 79: CWE count 1.
+[36m[INFO][0m Analysis results from mistral:latest on sample 80: CWE count 1.
+[36m[INFO][0m Analysis results from mistral:latest on sample 81: CWE count 1.
+[36m[INFO][0m Analysis results from mistral:latest on sample 82: CWE count 1.
+[36m[INFO][0m Analysis results from mistral:latest on sample 83: CWE count 0.
+[36m[INFO][0m Analysis results from mistral:latest on sample 84: CWE count 1.
+[36m[INFO][0m Analysis results from mistral:latest on sample 85: CWE count 1.
+[36m[INFO][0m Analysis results from mistral:latest on sample 86: CWE count 0.
+[36m[INFO][0m Analysis results from mistral:latest on sample 87: CWE count 1.
+[36m[INFO][0m Analysis results from mistral:latest on sample 88: CWE count 1.
+[36m[INFO][0m Analysis results from mistral:latest on sample 89: CWE count 1.
+[36m[INFO][0m Analysis results from mistral:latest on sample 90: CWE count 1.
+[36m[INFO][0m Analysis results from mistral:latest on sample 91: CWE count 1.
+[36m[INFO][0m Analysis results from mistral:latest on sample 92: CWE count 0.
+[36m[INFO][0m Analysis results from mistral:latest on sample 93: CWE count 1.
+[36m[INFO][0m Analysis results from mistral:latest on sample 94: CWE count 2.
+[36m[INFO][0m Analysis results from mistral:latest on sample 95: CWE count 1.
+[36m[INFO][0m Analysis results from mistral:latest on sample 96: CWE count 1.
+[36m[INFO][0m Analysis results from mistral:latest on sample 97: CWE count 1.
+[36m[INFO][0m Analysis results from mistral:latest on sample 98: CWE count 1.
+[36m[INFO][0m Analysis results from mistral:latest on sample 99: CWE count 1.
+[36m[INFO][0m Analysis results from mistral:latest on sample 100: CWE count 1.
+[36m[INFO][0m Analysis results from mistral:latest on sample 101: CWE count 1.
+Processing Code Samples from SecurityEval.jsonl:  85%|████████▌ | 103/121 [02:58<00:33,  1.88s/it]Processing Code Samples from SecurityEval.jsonl:  86%|████████▌ | 104/121 [02:59<00:30,  1.81s/it]Processing Code Samples from SecurityEval.jsonl:  87%|████████▋ | 105/121 [03:01<00:29,  1.85s/it]Processing Code Samples from SecurityEval.jsonl:  88%|████████▊ | 106/121 [03:02<00:23,  1.55s/it]Processing Code Samples from SecurityEval.jsonl:  88%|████████▊ | 107/121 [03:04<00:22,  1.58s/it]Processing Code Samples from SecurityEval.jsonl:  89%|████████▉ | 108/121 [03:06<00:21,  1.67s/it]Processing Code Samples from SecurityEval.jsonl:  90%|█████████ | 109/121 [03:07<00:19,  1.63s/it]Processing Code Samples from SecurityEval.jsonl:  91%|█████████ | 110/121 [03:09<00:17,  1.62s/it]Processing Code Samples from SecurityEval.jsonl:  92%|█████████▏| 111/121 [03:11<00:17,  1.76s/it]Processing Code Samples from SecurityEval.jsonl:  93%|█████████▎| 112/121 [03:13<00:16,  1.82s/it]Processing Code Samples from SecurityEval.jsonl:  93%|█████████▎| 113/121 [03:15<00:16,  2.01s/it]Processing Code Samples from SecurityEval.jsonl:  94%|█████████▍| 114/121 [03:17<00:13,  1.95s/it]Processing Code Samples from SecurityEval.jsonl:  95%|█████████▌| 115/121 [03:19<00:11,  1.90s/it]Processing Code Samples from SecurityEval.jsonl:  96%|█████████▌| 116/121 [03:20<00:07,  1.57s/it]Processing Code Samples from SecurityEval.jsonl:  97%|█████████▋| 117/121 [03:22<00:06,  1.65s/it]Processing Code Samples from SecurityEval.jsonl:  98%|█████████▊| 118/121 [03:23<00:04,  1.60s/it]Processing Code Samples from SecurityEval.jsonl:  98%|█████████▊| 119/121 [03:25<00:03,  1.69s/it]Processing Code Samples from SecurityEval.jsonl:  99%|█████████▉| 120/121 [03:27<00:01,  1.82s/it]Processing Code Samples from SecurityEval.jsonl: 100%|██████████| 121/121 [03:29<00:00,  1.81s/it]Processing Code Samples from SecurityEval.jsonl: 100%|██████████| 121/121 [03:29<00:00,  1.73s/it]
+[36m[INFO][0m Analysis results from mistral:latest on sample 102: CWE count 1.
+[36m[INFO][0m Analysis results from mistral:latest on sample 103: CWE count 1.
+[36m[INFO][0m Analysis results from mistral:latest on sample 104: CWE count 1.
+[36m[INFO][0m Analysis results from mistral:latest on sample 105: CWE count 0.
+[36m[INFO][0m Analysis results from mistral:latest on sample 106: CWE count 1.
+[36m[INFO][0m Analysis results from mistral:latest on sample 107: CWE count 1.
+[36m[INFO][0m Analysis results from mistral:latest on sample 108: CWE count 1.
+[36m[INFO][0m Analysis results from mistral:latest on sample 109: CWE count 1.
+[36m[INFO][0m Analysis results from mistral:latest on sample 110: CWE count 0.
+[36m[INFO][0m Analysis results from mistral:latest on sample 111: CWE count 1.
+[36m[INFO][0m Analysis results from mistral:latest on sample 112: CWE count 2.
+[36m[INFO][0m Analysis results from mistral:latest on sample 113: CWE count 1.
+[36m[INFO][0m Analysis results from mistral:latest on sample 114: CWE count 1.
+[36m[INFO][0m Analysis results from mistral:latest on sample 115: CWE count 0.
+[36m[INFO][0m Analysis results from mistral:latest on sample 116: CWE count 1.
+[36m[INFO][0m Analysis results from mistral:latest on sample 117: CWE count 1.
+[36m[INFO][0m Analysis results from mistral:latest on sample 118: CWE count 1.
+[36m[INFO][0m Analysis results from mistral:latest on sample 119: CWE count 1.
+[36m[INFO][0m Analysis results from mistral:latest on sample 120: CWE count 1.
+[32m[SUCCESS][0m Loaded 121 samples from the dataset.
+Processing Code Samples from SecurityEval.jsonl:   0%|          | 0/121 [00:00<?, ?it/s]Processing Code Samples from SecurityEval.jsonl:   1%|          | 1/121 [00:05<11:36,  5.80s/it]Processing Code Samples from SecurityEval.jsonl:   2%|▏         | 2/121 [00:07<06:58,  3.52s/it]Processing Code Samples from SecurityEval.jsonl:   2%|▏         | 3/121 [00:09<05:33,  2.83s/it]Processing Code Samples from SecurityEval.jsonl:   3%|▎         | 4/121 [00:11<04:56,  2.53s/it]Processing Code Samples from SecurityEval.jsonl:   4%|▍         | 5/121 [00:14<04:59,  2.58s/it]Processing Code Samples from SecurityEval.jsonl:   5%|▍         | 6/121 [00:15<04:14,  2.22s/it]Processing Code Samples from SecurityEval.jsonl:   6%|▌         | 7/121 [00:18<04:22,  2.30s/it]Processing Code Samples from SecurityEval.jsonl:   7%|▋         | 8/121 [00:20<04:04,  2.17s/it]Processing Code Samples from SecurityEval.jsonl:   7%|▋         | 9/121 [00:22<03:58,  2.13s/it]Processing Code Samples from SecurityEval.jsonl:   8%|▊         | 10/121 [00:24<03:57,  2.14s/it]Processing Code Samples from SecurityEval.jsonl:   9%|▉         | 11/121 [00:26<03:43,  2.03s/it]Processing Code Samples from SecurityEval.jsonl:  10%|▉         | 12/121 [00:28<03:44,  2.06s/it]Processing Code Samples from SecurityEval.jsonl:  11%|█         | 13/121 [00:30<03:56,  2.19s/it]Processing Code Samples from SecurityEval.jsonl:  12%|█▏        | 14/121 [00:32<03:40,  2.06s/it]Processing Code Samples from SecurityEval.jsonl:  12%|█▏        | 15/121 [00:34<03:30,  1.99s/it]Processing Code Samples from SecurityEval.jsonl:  13%|█▎        | 16/121 [00:36<03:14,  1.85s/it]Processing Code Samples from SecurityEval.jsonl:  14%|█▍        | 17/121 [00:37<03:07,  1.80s/it]Processing Code Samples from SecurityEval.jsonl:  15%|█▍        | 18/121 [00:39<03:05,  1.80s/it]Processing Code Samples from SecurityEval.jsonl:  16%|█▌        | 19/121 [00:41<03:01,  1.78s/it]Processing Code Samples from SecurityEval.jsonl:  17%|█▋        | 20/121 [00:43<03:17,  1.95s/it]Processing Code Samples from SecurityEval.jsonl:  17%|█▋        | 21/121 [00:45<03:27,  2.07s/it]Processing Code Samples from SecurityEval.jsonl:  18%|█▊        | 22/121 [00:47<03:11,  1.93s/it]Processing Code Samples from SecurityEval.jsonl:  19%|█▉        | 23/121 [00:49<03:06,  1.91s/it]Processing Code Samples from SecurityEval.jsonl:  20%|█▉        | 24/121 [00:51<03:16,  2.03s/it]Processing Code Samples from SecurityEval.jsonl:  21%|██        | 25/121 [00:53<03:13,  2.01s/it]Processing Code Samples from SecurityEval.jsonl:  21%|██▏       | 26/121 [00:55<03:09,  2.00s/it]Processing Code Samples from SecurityEval.jsonl:  22%|██▏       | 27/121 [00:58<03:28,  2.22s/it]Processing Code Samples from SecurityEval.jsonl:  23%|██▎       | 28/121 [01:00<03:14,  2.09s/it]Processing Code Samples from SecurityEval.jsonl:  24%|██▍       | 29/121 [01:02<03:21,  2.19s/it]Processing Code Samples from SecurityEval.jsonl:  25%|██▍       | 30/121 [01:04<03:13,  2.12s/it]Processing Code Samples from SecurityEval.jsonl:  26%|██▌       | 31/121 [01:06<03:11,  2.12s/it]Processing Code Samples from SecurityEval.jsonl:  26%|██▋       | 32/121 [01:08<03:04,  2.07s/it]Processing Code Samples from SecurityEval.jsonl:  27%|██▋       | 33/121 [01:10<03:03,  2.08s/it]Processing Code Samples from SecurityEval.jsonl:  28%|██▊       | 34/121 [01:12<02:57,  2.04s/it]Processing Code Samples from SecurityEval.jsonl:  29%|██▉       | 35/121 [01:14<02:59,  2.09s/it]Processing Code Samples from SecurityEval.jsonl:  30%|██▉       | 36/121 [01:17<03:09,  2.23s/it]Processing Code Samples from SecurityEval.jsonl:  31%|███       | 37/121 [01:19<02:54,  2.08s/it]Processing Code Samples from SecurityEval.jsonl:  31%|███▏      | 38/121 [01:21<02:53,  2.09s/it]Processing Code Samples from SecurityEval.jsonl:  32%|███▏      | 39/121 [01:24<03:19,  2.43s/it]Processing Code Samples from SecurityEval.jsonl:  33%|███▎      | 40/121 [01:26<03:00,  2.23s/it]Processing Code Samples from SecurityEval.jsonl:  34%|███▍      | 41/121 [01:28<02:48,  2.10s/it]Processing Code Samples from SecurityEval.jsonl:  35%|███▍      | 42/121 [01:31<03:12,  2.43s/it]Processing Code Samples from SecurityEval.jsonl:  36%|███▌      | 43/121 [01:33<02:57,  2.27s/it]Processing Code Samples from SecurityEval.jsonl:  36%|███▋      | 44/121 [01:36<03:19,  2.59s/it]Processing Code Samples from SecurityEval.jsonl:  37%|███▋      | 45/121 [01:38<02:53,  2.28s/it]Processing Code Samples from SecurityEval.jsonl:  38%|███▊      | 46/121 [01:39<02:41,  2.16s/it]Processing Code Samples from SecurityEval.jsonl:  39%|███▉      | 47/121 [01:41<02:32,  2.06s/it]Processing Code Samples from SecurityEval.jsonl:  40%|███▉      | 48/121 [01:44<02:48,  2.30s/it]Processing Code Samples from SecurityEval.jsonl:  40%|████      | 49/121 [01:47<02:54,  2.43s/it]Processing Code Samples from SecurityEval.jsonl:  41%|████▏     | 50/121 [01:49<02:54,  2.46s/it]Processing Code Samples from SecurityEval.jsonl:  42%|████▏     | 51/121 [01:52<02:47,  2.39s/it]Processing Code Samples from SecurityEval.jsonl:  43%|████▎     | 52/121 [01:54<02:43,  2.37s/it]Processing Code Samples from SecurityEval.jsonl:  44%|████▍     | 53/121 [01:56<02:27,  2.17s/it]Processing Code Samples from SecurityEval.jsonl:  45%|████▍     | 54/121 [01:58<02:31,  2.26s/it]Processing Code Samples from SecurityEval.jsonl:  45%|████▌     | 55/121 [02:01<02:32,  2.31s/it]Processing Code Samples from SecurityEval.jsonl:  46%|████▋     | 56/121 [02:02<02:06,  1.94s/it]Processing Code Samples from SecurityEval.jsonl:  47%|████▋     | 57/121 [02:04<02:06,  1.97s/it]Processing Code Samples from SecurityEval.jsonl:  48%|████▊     | 58/121 [02:06<02:06,  2.00s/it]Processing Code Samples from SecurityEval.jsonl:  49%|████▉     | 59/121 [02:08<02:03,  1.99s/it]Processing Code Samples from SecurityEval.jsonl:  50%|████▉     | 60/121 [02:10<02:12,  2.17s/it]Processing Code Samples from SecurityEval.jsonl:  50%|█████     | 61/121 [02:12<02:07,  2.12s/it]Processing Code Samples from SecurityEval.jsonl:  51%|█████     | 62/121 [02:15<02:09,  2.19s/it]Processing Code Samples from SecurityEval.jsonl:  52%|█████▏    | 63/121 [02:17<02:07,  2.20s/it]Processing Code Samples from SecurityEval.jsonl:  53%|█████▎    | 64/121 [02:19<02:03,  2.17s/it]Processing Code Samples from SecurityEval.jsonl:  54%|█████▎    | 65/121 [02:21<01:52,  2.01s/it]Processing Code Samples from SecurityEval.jsonl:  55%|█████▍    | 66/121 [02:23<01:49,  2.00s/it]Processing Code Samples from SecurityEval.jsonl:  55%|█████▌    | 67/121 [02:25<01:56,  2.15s/it]Processing Code Samples from SecurityEval.jsonl:  56%|█████▌    | 68/121 [02:28<02:03,  2.32s/it]Processing Code Samples from SecurityEval.jsonl:  57%|█████▋    | 69/121 [02:30<01:53,  2.17s/it]Processing Code Samples from SecurityEval.jsonl:  58%|█████▊    | 70/121 [02:32<01:46,  2.09s/it]Processing Code Samples from SecurityEval.jsonl:  59%|█████▊    | 71/121 [02:34<01:56,  2.34s/it]Processing Code Samples from SecurityEval.jsonl:  60%|█████▉    | 72/121 [02:38<02:09,  2.64s/it]Processing Code Samples from SecurityEval.jsonl:  60%|██████    | 73/121 [02:39<01:52,  2.34s/it]Processing Code Samples from SecurityEval.jsonl:  61%|██████    | 74/121 [02:42<01:47,  2.28s/it]Processing Code Samples from SecurityEval.jsonl:  62%|██████▏   | 75/121 [02:44<01:48,  2.35s/it]Processing Code Samples from SecurityEval.jsonl:  63%|██████▎   | 76/121 [02:46<01:38,  2.19s/it]Processing Code Samples from SecurityEval.jsonl:  64%|██████▎   | 77/121 [02:48<01:40,  2.28s/it]Processing Code Samples from SecurityEval.jsonl:  64%|██████▍   | 78/121 [02:50<01:27,  2.04s/it]Processing Code Samples from SecurityEval.jsonl:  65%|██████▌   | 79/121 [02:53<01:34,  2.24s/it]Processing Code Samples from SecurityEval.jsonl:  66%|██████▌   | 80/121 [02:54<01:26,  2.11s/it]Processing Code Samples from SecurityEval.jsonl:  67%|██████▋   | 81/121 [02:56<01:22,  2.06s/it]Processing Code Samples from SecurityEval.jsonl:  68%|██████▊   | 82/121 [02:58<01:14,  1.92s/it]Processing Code Samples from SecurityEval.jsonl:  69%|██████▊   | 83/121 [03:01<01:22,  2.16s/it]Processing Code Samples from SecurityEval.jsonl:  69%|██████▉   | 84/121 [03:02<01:09,  1.87s/it]Processing Code Samples from SecurityEval.jsonl:  70%|███████   | 85/121 [03:04<01:07,  1.88s/it]Processing Code Samples from SecurityEval.jsonl:  71%|███████   | 86/121 [03:06<01:09,  1.99s/it]Processing Code Samples from SecurityEval.jsonl:  72%|███████▏  | 87/121 [03:07<01:01,  1.81s/it]Processing Code Samples from SecurityEval.jsonl:  73%|███████▎  | 88/121 [03:09<00:57,  1.75s/it]Processing Code Samples from SecurityEval.jsonl:  74%|███████▎  | 89/121 [03:11<00:57,  1.79s/it]Processing Code Samples from SecurityEval.jsonl:  74%|███████▍  | 90/121 [03:13<00:57,  1.87s/it]Processing Code Samples from SecurityEval.jsonl:  75%|███████▌  | 91/121 [03:15<00:55,  1.84s/it]Processing Code Samples from SecurityEval.jsonl:  76%|███████▌  | 92/121 [03:16<00:48,  1.67s/it]Processing Code Samples from SecurityEval.jsonl:  77%|███████▋  | 93/121 [03:18<00:52,  1.86s/it]Processing Code Samples from SecurityEval.jsonl:  78%|███████▊  | 94/121 [03:21<00:54,  2.02s/it]Processing Code Samples from SecurityEval.jsonl:  79%|███████▊  | 95/121 [03:24<00:59,  2.29s/it][36m[INFO][0m Analysis results from qwen2.5-coder:latest on sample 0: CWE count 1.
+[36m[INFO][0m Analysis results from qwen2.5-coder:latest on sample 1: CWE count 1.
+[36m[INFO][0m Analysis results from qwen2.5-coder:latest on sample 2: CWE count 1.
+[36m[INFO][0m Analysis results from qwen2.5-coder:latest on sample 3: CWE count 1.
+[36m[INFO][0m Analysis results from qwen2.5-coder:latest on sample 4: CWE count 1.
+[36m[INFO][0m Analysis results from qwen2.5-coder:latest on sample 5: CWE count 1.
+[36m[INFO][0m Analysis results from qwen2.5-coder:latest on sample 6: CWE count 1.
+[36m[INFO][0m Analysis results from qwen2.5-coder:latest on sample 7: CWE count 1.
+[36m[INFO][0m Analysis results from qwen2.5-coder:latest on sample 8: CWE count 1.
+[36m[INFO][0m Analysis results from qwen2.5-coder:latest on sample 9: CWE count 1.
+[36m[INFO][0m Analysis results from qwen2.5-coder:latest on sample 10: CWE count 1.
+[36m[INFO][0m Analysis results from qwen2.5-coder:latest on sample 11: CWE count 1.
+[36m[INFO][0m Analysis results from qwen2.5-coder:latest on sample 12: CWE count 1.
+[36m[INFO][0m Analysis results from qwen2.5-coder:latest on sample 13: CWE count 1.
+[36m[INFO][0m Analysis results from qwen2.5-coder:latest on sample 14: CWE count 1.
+[36m[INFO][0m Analysis results from qwen2.5-coder:latest on sample 15: CWE count 1.
+[36m[INFO][0m Analysis results from qwen2.5-coder:latest on sample 16: CWE count 1.
+[36m[INFO][0m Analysis results from qwen2.5-coder:latest on sample 17: CWE count 1.
+[36m[INFO][0m Analysis results from qwen2.5-coder:latest on sample 18: CWE count 1.
+[36m[INFO][0m Analysis results from qwen2.5-coder:latest on sample 19: CWE count 1.
+[36m[INFO][0m Analysis results from qwen2.5-coder:latest on sample 20: CWE count 1.
+[36m[INFO][0m Analysis results from qwen2.5-coder:latest on sample 21: CWE count 1.
+[36m[INFO][0m Analysis results from qwen2.5-coder:latest on sample 22: CWE count 1.
+[36m[INFO][0m Analysis results from qwen2.5-coder:latest on sample 23: CWE count 1.
+[36m[INFO][0m Analysis results from qwen2.5-coder:latest on sample 24: CWE count 1.
+[36m[INFO][0m Analysis results from qwen2.5-coder:latest on sample 25: CWE count 1.
+[36m[INFO][0m Analysis results from qwen2.5-coder:latest on sample 26: CWE count 1.
+[36m[INFO][0m Analysis results from qwen2.5-coder:latest on sample 27: CWE count 1.
+[36m[INFO][0m Analysis results from qwen2.5-coder:latest on sample 28: CWE count 1.
+[36m[INFO][0m Analysis results from qwen2.5-coder:latest on sample 29: CWE count 1.
+[36m[INFO][0m Analysis results from qwen2.5-coder:latest on sample 30: CWE count 1.
+[36m[INFO][0m Analysis results from qwen2.5-coder:latest on sample 31: CWE count 0.
+[36m[INFO][0m Analysis results from qwen2.5-coder:latest on sample 32: CWE count 1.
+[36m[INFO][0m Analysis results from qwen2.5-coder:latest on sample 33: CWE count 1.
+[36m[INFO][0m Analysis results from qwen2.5-coder:latest on sample 34: CWE count 1.
+[36m[INFO][0m Analysis results from qwen2.5-coder:latest on sample 35: CWE count 1.
+[36m[INFO][0m Analysis results from qwen2.5-coder:latest on sample 36: CWE count 1.
+[36m[INFO][0m Analysis results from qwen2.5-coder:latest on sample 37: CWE count 1.
+[36m[INFO][0m Analysis results from qwen2.5-coder:latest on sample 38: CWE count 1.
+[36m[INFO][0m Analysis results from qwen2.5-coder:latest on sample 39: CWE count 1.
+[36m[INFO][0m Analysis results from qwen2.5-coder:latest on sample 40: CWE count 1.
+[36m[INFO][0m Analysis results from qwen2.5-coder:latest on sample 41: CWE count 1.
+[36m[INFO][0m Analysis results from qwen2.5-coder:latest on sample 42: CWE count 0.
+[36m[INFO][0m Analysis results from qwen2.5-coder:latest on sample 43: CWE count 1.
+[36m[INFO][0m Analysis results from qwen2.5-coder:latest on sample 44: CWE count 1.
+[36m[INFO][0m Analysis results from qwen2.5-coder:latest on sample 45: CWE count 0.
+[36m[INFO][0m Analysis results from qwen2.5-coder:latest on sample 46: CWE count 1.
+[36m[INFO][0m Analysis results from qwen2.5-coder:latest on sample 47: CWE count 1.
+[36m[INFO][0m Analysis results from qwen2.5-coder:latest on sample 48: CWE count 1.
+[36m[INFO][0m Analysis results from qwen2.5-coder:latest on sample 49: CWE count 1.
+[36m[INFO][0m Analysis results from qwen2.5-coder:latest on sample 50: CWE count 1.
+[36m[INFO][0m Analysis results from qwen2.5-coder:latest on sample 51: CWE count 1.
+[36m[INFO][0m Analysis results from qwen2.5-coder:latest on sample 52: CWE count 1.
+[36m[INFO][0m Analysis results from qwen2.5-coder:latest on sample 53: CWE count 1.
+[36m[INFO][0m Analysis results from qwen2.5-coder:latest on sample 54: CWE count 1.
+[36m[INFO][0m Analysis results from qwen2.5-coder:latest on sample 55: CWE count 1.
+[36m[INFO][0m Analysis results from qwen2.5-coder:latest on sample 56: CWE count 1.
+[36m[INFO][0m Analysis results from qwen2.5-coder:latest on sample 57: CWE count 1.
+[36m[INFO][0m Analysis results from qwen2.5-coder:latest on sample 58: CWE count 1.
+[36m[INFO][0m Analysis results from qwen2.5-coder:latest on sample 59: CWE count 1.
+[36m[INFO][0m Analysis results from qwen2.5-coder:latest on sample 60: CWE count 0.
+[36m[INFO][0m Analysis results from qwen2.5-coder:latest on sample 61: CWE count 1.
+[36m[INFO][0m Analysis results from qwen2.5-coder:latest on sample 62: CWE count 1.
+[36m[INFO][0m Analysis results from qwen2.5-coder:latest on sample 63: CWE count 1.
+[36m[INFO][0m Analysis results from qwen2.5-coder:latest on sample 64: CWE count 1.
+[36m[INFO][0m Analysis results from qwen2.5-coder:latest on sample 65: CWE count 1.
+[36m[INFO][0m Analysis results from qwen2.5-coder:latest on sample 66: CWE count 1.
+[36m[INFO][0m Analysis results from qwen2.5-coder:latest on sample 67: CWE count 1.
+[36m[INFO][0m Analysis results from qwen2.5-coder:latest on sample 68: CWE count 0.
+[36m[INFO][0m Analysis results from qwen2.5-coder:latest on sample 69: CWE count 1.
+[36m[INFO][0m Analysis results from qwen2.5-coder:latest on sample 70: CWE count 1.
+[36m[INFO][0m Analysis results from qwen2.5-coder:latest on sample 71: CWE count 1.
+[36m[INFO][0m Analysis results from qwen2.5-coder:latest on sample 72: CWE count 1.
+[36m[INFO][0m Analysis results from qwen2.5-coder:latest on sample 73: CWE count 1.
+[36m[INFO][0m Analysis results from qwen2.5-coder:latest on sample 74: CWE count 1.
+[36m[INFO][0m Analysis results from qwen2.5-coder:latest on sample 75: CWE count 1.
+[36m[INFO][0m Analysis results from qwen2.5-coder:latest on sample 76: CWE count 0.
+[36m[INFO][0m Analysis results from qwen2.5-coder:latest on sample 77: CWE count 0.
+[36m[INFO][0m Analysis results from qwen2.5-coder:latest on sample 78: CWE count 1.
+[36m[INFO][0m Analysis results from qwen2.5-coder:latest on sample 79: CWE count 1.
+[36m[INFO][0m Analysis results from qwen2.5-coder:latest on sample 80: CWE count 1.
+[36m[INFO][0m Analysis results from qwen2.5-coder:latest on sample 81: CWE count 1.
+[36m[INFO][0m Analysis results from qwen2.5-coder:latest on sample 82: CWE count 1.
+[36m[INFO][0m Analysis results from qwen2.5-coder:latest on sample 83: CWE count 1.
+[36m[INFO][0m Analysis results from qwen2.5-coder:latest on sample 84: CWE count 1.
+[36m[INFO][0m Analysis results from qwen2.5-coder:latest on sample 85: CWE count 1.
+[36m[INFO][0m Analysis results from qwen2.5-coder:latest on sample 86: CWE count 0.
+[36m[INFO][0m Analysis results from qwen2.5-coder:latest on sample 87: CWE count 1.
+[36m[INFO][0m Analysis results from qwen2.5-coder:latest on sample 88: CWE count 1.
+[36m[INFO][0m Analysis results from qwen2.5-coder:latest on sample 89: CWE count 1.
+[36m[INFO][0m Analysis results from qwen2.5-coder:latest on sample 90: CWE count 1.
+[36m[INFO][0m Analysis results from qwen2.5-coder:latest on sample 91: CWE count 1.
+[36m[INFO][0m Analysis results from qwen2.5-coder:latest on sample 92: CWE count 1.
+[36m[INFO][0m Analysis results from qwen2.5-coder:latest on sample 93: CWE count 1.
+[36m[INFO][0m Analysis results from qwen2.5-coder:latest on sample 94: CWE count 1.
+Processing Code Samples from SecurityEval.jsonl:  79%|███████▉  | 96/121 [03:26<00:55,  2.24s/it]Processing Code Samples from SecurityEval.jsonl:  80%|████████  | 97/121 [03:28<00:55,  2.31s/it]Processing Code Samples from SecurityEval.jsonl:  81%|████████  | 98/121 [03:31<00:58,  2.54s/it]Processing Code Samples from SecurityEval.jsonl:  82%|████████▏ | 99/121 [03:33<00:52,  2.41s/it]Processing Code Samples from SecurityEval.jsonl:  83%|████████▎ | 100/121 [03:35<00:46,  2.20s/it]Processing Code Samples from SecurityEval.jsonl:  83%|████████▎ | 101/121 [03:37<00:44,  2.22s/it]Processing Code Samples from SecurityEval.jsonl:  84%|████████▍ | 102/121 [03:39<00:37,  1.98s/it]Processing Code Samples from SecurityEval.jsonl:  85%|████████▌ | 103/121 [03:43<00:47,  2.65s/it]Processing Code Samples from SecurityEval.jsonl:  86%|████████▌ | 104/121 [03:46<00:45,  2.70s/it]Processing Code Samples from SecurityEval.jsonl:  87%|████████▋ | 105/121 [03:49<00:44,  2.79s/it]Processing Code Samples from SecurityEval.jsonl:  88%|████████▊ | 106/121 [03:51<00:39,  2.66s/it]Processing Code Samples from SecurityEval.jsonl:  88%|████████▊ | 107/121 [03:53<00:34,  2.47s/it]Processing Code Samples from SecurityEval.jsonl:  89%|████████▉ | 108/121 [03:56<00:32,  2.49s/it]Processing Code Samples from SecurityEval.jsonl:  90%|█████████ | 109/121 [03:58<00:27,  2.30s/it]Processing Code Samples from SecurityEval.jsonl:  91%|█████████ | 110/121 [04:00<00:26,  2.41s/it]Processing Code Samples from SecurityEval.jsonl:  92%|█████████▏| 111/121 [04:03<00:26,  2.63s/it]Processing Code Samples from SecurityEval.jsonl:  93%|█████████▎| 112/121 [04:05<00:22,  2.45s/it]Processing Code Samples from SecurityEval.jsonl:  93%|█████████▎| 113/121 [04:07<00:18,  2.30s/it]Processing Code Samples from SecurityEval.jsonl:  94%|█████████▍| 114/121 [04:09<00:14,  2.13s/it]Processing Code Samples from SecurityEval.jsonl:  95%|█████████▌| 115/121 [04:11<00:12,  2.07s/it]Processing Code Samples from SecurityEval.jsonl:  96%|█████████▌| 116/121 [04:13<00:10,  2.18s/it]Processing Code Samples from SecurityEval.jsonl:  97%|█████████▋| 117/121 [04:16<00:08,  2.24s/it]Processing Code Samples from SecurityEval.jsonl:  98%|█████████▊| 118/121 [04:18<00:06,  2.33s/it]Processing Code Samples from SecurityEval.jsonl:  98%|█████████▊| 119/121 [04:20<00:04,  2.19s/it]Processing Code Samples from SecurityEval.jsonl:  99%|█████████▉| 120/121 [04:22<00:02,  2.18s/it]Processing Code Samples from SecurityEval.jsonl: 100%|██████████| 121/121 [04:24<00:00,  2.01s/it]Processing Code Samples from SecurityEval.jsonl: 100%|██████████| 121/121 [04:24<00:00,  2.19s/it]
+[36m[INFO][0m Analysis results from qwen2.5-coder:latest on sample 95: CWE count 1.
+[36m[INFO][0m Analysis results from qwen2.5-coder:latest on sample 96: CWE count 1.
+[36m[INFO][0m Analysis results from qwen2.5-coder:latest on sample 97: CWE count 1.
+[36m[INFO][0m Analysis results from qwen2.5-coder:latest on sample 98: CWE count 1.
+[36m[INFO][0m Analysis results from qwen2.5-coder:latest on sample 99: CWE count 1.
+[36m[INFO][0m Analysis results from qwen2.5-coder:latest on sample 100: CWE count 1.
+[36m[INFO][0m Analysis results from qwen2.5-coder:latest on sample 101: CWE count 1.
+[36m[INFO][0m Analysis results from qwen2.5-coder:latest on sample 102: CWE count 1.
+[36m[INFO][0m Analysis results from qwen2.5-coder:latest on sample 103: CWE count 1.
+[36m[INFO][0m Analysis results from qwen2.5-coder:latest on sample 104: CWE count 1.
+[36m[INFO][0m Analysis results from qwen2.5-coder:latest on sample 105: CWE count 1.
+[36m[INFO][0m Analysis results from qwen2.5-coder:latest on sample 106: CWE count 1.
+[36m[INFO][0m Analysis results from qwen2.5-coder:latest on sample 107: CWE count 1.
+[36m[INFO][0m Analysis results from qwen2.5-coder:latest on sample 108: CWE count 1.
+[36m[INFO][0m Analysis results from qwen2.5-coder:latest on sample 109: CWE count 1.
+[36m[INFO][0m Analysis results from qwen2.5-coder:latest on sample 110: CWE count 1.
+[36m[INFO][0m Analysis results from qwen2.5-coder:latest on sample 111: CWE count 1.
+[36m[INFO][0m Analysis results from qwen2.5-coder:latest on sample 112: CWE count 1.
+[36m[INFO][0m Analysis results from qwen2.5-coder:latest on sample 113: CWE count 1.
+[36m[INFO][0m Analysis results from qwen2.5-coder:latest on sample 114: CWE count 1.
+[36m[INFO][0m Analysis results from qwen2.5-coder:latest on sample 115: CWE count 1.
+[36m[INFO][0m Analysis results from qwen2.5-coder:latest on sample 116: CWE count 1.
+[36m[INFO][0m Analysis results from qwen2.5-coder:latest on sample 117: CWE count 1.
+[36m[INFO][0m Analysis results from qwen2.5-coder:latest on sample 118: CWE count 1.
+[36m[INFO][0m Analysis results from qwen2.5-coder:latest on sample 119: CWE count 1.
+[36m[INFO][0m Analysis results from qwen2.5-coder:latest on sample 120: CWE count 1.
+[32m[SUCCESS][0m Loaded 121 samples from the dataset.
+Processing Code Samples from SecurityEval.jsonl:   0%|          | 0/121 [00:00<?, ?it/s]Processing Code Samples from SecurityEval.jsonl:   1%|          | 1/121 [00:06<13:15,  6.63s/it]Processing Code Samples from SecurityEval.jsonl:   2%|▏         | 2/121 [00:08<07:44,  3.90s/it]Processing Code Samples from SecurityEval.jsonl:   2%|▏         | 3/121 [00:10<05:56,  3.02s/it]Processing Code Samples from SecurityEval.jsonl:   3%|▎         | 4/121 [00:12<05:09,  2.64s/it]Processing Code Samples from SecurityEval.jsonl:   4%|▍         | 5/121 [00:14<04:23,  2.27s/it]Processing Code Samples from SecurityEval.jsonl:   5%|▍         | 6/121 [00:15<03:43,  1.95s/it]Processing Code Samples from SecurityEval.jsonl:   6%|▌         | 7/121 [00:17<03:28,  1.83s/it]Processing Code Samples from SecurityEval.jsonl:   7%|▋         | 8/121 [00:18<03:10,  1.69s/it]Processing Code Samples from SecurityEval.jsonl:   7%|▋         | 9/121 [00:20<03:04,  1.64s/it]Processing Code Samples from SecurityEval.jsonl:   8%|▊         | 10/121 [00:21<03:09,  1.71s/it]Processing Code Samples from SecurityEval.jsonl:   9%|▉         | 11/121 [00:23<03:00,  1.64s/it]Processing Code Samples from SecurityEval.jsonl:  10%|▉         | 12/121 [00:25<03:22,  1.86s/it]Processing Code Samples from SecurityEval.jsonl:  11%|█         | 13/121 [00:28<03:58,  2.21s/it]Processing Code Samples from SecurityEval.jsonl:  12%|█▏        | 14/121 [00:30<03:27,  1.94s/it]Processing Code Samples from SecurityEval.jsonl:  12%|█▏        | 15/121 [00:31<03:19,  1.88s/it]Processing Code Samples from SecurityEval.jsonl:  13%|█▎        | 16/121 [00:33<03:14,  1.85s/it]Processing Code Samples from SecurityEval.jsonl:  14%|█▍        | 17/121 [00:35<02:59,  1.73s/it]Processing Code Samples from SecurityEval.jsonl:  15%|█▍        | 18/121 [00:37<03:06,  1.81s/it]Processing Code Samples from SecurityEval.jsonl:  16%|█▌        | 19/121 [00:38<02:48,  1.65s/it]Processing Code Samples from SecurityEval.jsonl:  17%|█▋        | 20/121 [00:39<02:38,  1.57s/it]Processing Code Samples from SecurityEval.jsonl:  17%|█▋        | 21/121 [00:41<02:39,  1.60s/it]Processing Code Samples from SecurityEval.jsonl:  18%|█▊        | 22/121 [00:42<02:32,  1.54s/it]Processing Code Samples from SecurityEval.jsonl:  19%|█▉        | 23/121 [00:44<02:28,  1.52s/it]Processing Code Samples from SecurityEval.jsonl:  20%|█▉        | 24/121 [00:46<02:33,  1.59s/it]Processing Code Samples from SecurityEval.jsonl:  21%|██        | 25/121 [00:47<02:35,  1.62s/it]Processing Code Samples from SecurityEval.jsonl:  21%|██▏       | 26/121 [00:49<02:29,  1.58s/it]Processing Code Samples from SecurityEval.jsonl:  22%|██▏       | 27/121 [00:50<02:19,  1.49s/it]Processing Code Samples from SecurityEval.jsonl:  23%|██▎       | 28/121 [00:52<02:29,  1.60s/it]Processing Code Samples from SecurityEval.jsonl:  24%|██▍       | 29/121 [00:54<02:27,  1.61s/it]Processing Code Samples from SecurityEval.jsonl:  25%|██▍       | 30/121 [00:55<02:21,  1.56s/it]Processing Code Samples from SecurityEval.jsonl:  26%|██▌       | 31/121 [00:58<02:46,  1.85s/it]Processing Code Samples from SecurityEval.jsonl:  26%|██▋       | 32/121 [00:59<02:35,  1.74s/it]Processing Code Samples from SecurityEval.jsonl:  27%|██▋       | 33/121 [01:01<02:43,  1.86s/it]Processing Code Samples from SecurityEval.jsonl:  28%|██▊       | 34/121 [01:03<02:47,  1.93s/it]Processing Code Samples from SecurityEval.jsonl:  29%|██▉       | 35/121 [01:05<02:49,  1.97s/it]Processing Code Samples from SecurityEval.jsonl:  30%|██▉       | 36/121 [01:07<02:31,  1.78s/it]Processing Code Samples from SecurityEval.jsonl:  31%|███       | 37/121 [01:08<02:17,  1.64s/it]Processing Code Samples from SecurityEval.jsonl:  31%|███▏      | 38/121 [01:10<02:22,  1.72s/it]Processing Code Samples from SecurityEval.jsonl:  32%|███▏      | 39/121 [01:12<02:36,  1.91s/it]Processing Code Samples from SecurityEval.jsonl:  33%|███▎      | 40/121 [01:15<02:46,  2.05s/it]Processing Code Samples from SecurityEval.jsonl:  34%|███▍      | 41/121 [01:16<02:28,  1.85s/it]Processing Code Samples from SecurityEval.jsonl:  35%|███▍      | 42/121 [01:18<02:28,  1.88s/it]Processing Code Samples from SecurityEval.jsonl:  36%|███▌      | 43/121 [01:20<02:26,  1.87s/it]Processing Code Samples from SecurityEval.jsonl:  36%|███▋      | 44/121 [01:22<02:35,  2.02s/it]Processing Code Samples from SecurityEval.jsonl:  37%|███▋      | 45/121 [01:24<02:25,  1.91s/it]Processing Code Samples from SecurityEval.jsonl:  38%|███▊      | 46/121 [01:25<02:08,  1.72s/it]Processing Code Samples from SecurityEval.jsonl:  39%|███▉      | 47/121 [01:27<02:07,  1.72s/it]Processing Code Samples from SecurityEval.jsonl:  40%|███▉      | 48/121 [01:29<02:13,  1.83s/it]Processing Code Samples from SecurityEval.jsonl:  40%|████      | 49/121 [01:31<02:16,  1.89s/it]Processing Code Samples from SecurityEval.jsonl:  41%|████▏     | 50/121 [01:32<02:03,  1.74s/it]Processing Code Samples from SecurityEval.jsonl:  42%|████▏     | 51/121 [01:37<02:54,  2.49s/it]Processing Code Samples from SecurityEval.jsonl:  43%|████▎     | 52/121 [01:38<02:30,  2.18s/it]Processing Code Samples from SecurityEval.jsonl:  44%|████▍     | 53/121 [01:39<02:06,  1.86s/it]Processing Code Samples from SecurityEval.jsonl:  45%|████▍     | 54/121 [01:41<02:03,  1.84s/it]Processing Code Samples from SecurityEval.jsonl:  45%|████▌     | 55/121 [01:44<02:17,  2.08s/it]Processing Code Samples from SecurityEval.jsonl:  46%|████▋     | 56/121 [01:45<02:00,  1.86s/it]Processing Code Samples from SecurityEval.jsonl:  47%|████▋     | 57/121 [01:46<01:51,  1.74s/it]Processing Code Samples from SecurityEval.jsonl:  48%|████▊     | 58/121 [01:48<01:47,  1.71s/it]Processing Code Samples from SecurityEval.jsonl:  49%|████▉     | 59/121 [01:50<01:50,  1.78s/it]Processing Code Samples from SecurityEval.jsonl:  50%|████▉     | 60/121 [01:51<01:44,  1.71s/it]Processing Code Samples from SecurityEval.jsonl:  50%|█████     | 61/121 [01:53<01:46,  1.78s/it]Processing Code Samples from SecurityEval.jsonl:  51%|█████     | 62/121 [01:55<01:47,  1.83s/it]Processing Code Samples from SecurityEval.jsonl:  52%|█████▏    | 63/121 [01:57<01:42,  1.78s/it]Processing Code Samples from SecurityEval.jsonl:  53%|█████▎    | 64/121 [01:59<01:39,  1.74s/it]Processing Code Samples from SecurityEval.jsonl:  54%|█████▎    | 65/121 [02:01<01:47,  1.91s/it]Processing Code Samples from SecurityEval.jsonl:  55%|█████▍    | 66/121 [02:02<01:33,  1.70s/it]Processing Code Samples from SecurityEval.jsonl:  55%|█████▌    | 67/121 [02:06<02:07,  2.37s/it]Processing Code Samples from SecurityEval.jsonl:  56%|█████▌    | 68/121 [02:08<01:50,  2.09s/it]Processing Code Samples from SecurityEval.jsonl:  57%|█████▋    | 69/121 [02:09<01:46,  2.04s/it]Processing Code Samples from SecurityEval.jsonl:  58%|█████▊    | 70/121 [02:11<01:34,  1.85s/it]Processing Code Samples from SecurityEval.jsonl:  59%|█████▊    | 71/121 [02:12<01:27,  1.74s/it]Processing Code Samples from SecurityEval.jsonl:  60%|█████▉    | 72/121 [02:14<01:28,  1.80s/it]Processing Code Samples from SecurityEval.jsonl:  60%|██████    | 73/121 [02:16<01:27,  1.82s/it]Processing Code Samples from SecurityEval.jsonl:  61%|██████    | 74/121 [02:18<01:19,  1.70s/it]Processing Code Samples from SecurityEval.jsonl:  62%|██████▏   | 75/121 [02:20<01:25,  1.85s/it]Processing Code Samples from SecurityEval.jsonl:  63%|██████▎   | 76/121 [02:23<01:35,  2.12s/it]Processing Code Samples from SecurityEval.jsonl:  64%|██████▎   | 77/121 [02:24<01:24,  1.92s/it]Processing Code Samples from SecurityEval.jsonl:  64%|██████▍   | 78/121 [02:26<01:28,  2.07s/it]Processing Code Samples from SecurityEval.jsonl:  65%|██████▌   | 79/121 [02:28<01:21,  1.94s/it]Processing Code Samples from SecurityEval.jsonl:  66%|██████▌   | 80/121 [02:30<01:16,  1.87s/it]Processing Code Samples from SecurityEval.jsonl:  67%|██████▋   | 81/121 [02:32<01:24,  2.12s/it]Processing Code Samples from SecurityEval.jsonl:  68%|██████▊   | 82/121 [02:34<01:18,  2.00s/it]Processing Code Samples from SecurityEval.jsonl:  69%|██████▊   | 83/121 [02:35<01:05,  1.73s/it]Processing Code Samples from SecurityEval.jsonl:  69%|██████▉   | 84/121 [02:37<01:05,  1.77s/it]Processing Code Samples from SecurityEval.jsonl:  70%|███████   | 85/121 [02:38<00:55,  1.55s/it]Processing Code Samples from SecurityEval.jsonl:  71%|███████   | 86/121 [02:40<00:52,  1.50s/it]Processing Code Samples from SecurityEval.jsonl:  72%|███████▏  | 87/121 [02:42<01:02,  1.85s/it]Processing Code Samples from SecurityEval.jsonl:  73%|███████▎  | 88/121 [02:43<00:54,  1.65s/it]Processing Code Samples from SecurityEval.jsonl:  74%|███████▎  | 89/121 [02:46<01:05,  2.04s/it]Processing Code Samples from SecurityEval.jsonl:  74%|███████▍  | 90/121 [02:47<00:54,  1.77s/it]Processing Code Samples from SecurityEval.jsonl:  75%|███████▌  | 91/121 [02:49<00:55,  1.85s/it]Processing Code Samples from SecurityEval.jsonl:  76%|███████▌  | 92/121 [02:51<00:54,  1.88s/it]Processing Code Samples from SecurityEval.jsonl:  77%|███████▋  | 93/121 [02:53<00:50,  1.81s/it]Processing Code Samples from SecurityEval.jsonl:  78%|███████▊  | 94/121 [02:55<00:51,  1.90s/it]Processing Code Samples from SecurityEval.jsonl:  79%|███████▊  | 95/121 [02:57<00:48,  1.86s/it]Processing Code Samples from SecurityEval.jsonl:  79%|███████▉  | 96/121 [02:59<00:50,  2.01s/it]Processing Code Samples from SecurityEval.jsonl:  80%|████████  | 97/121 [03:01<00:45,  1.90s/it]Processing Code Samples from SecurityEval.jsonl:  81%|████████  | 98/121 [03:03<00:43,  1.90s/it]Processing Code Samples from SecurityEval.jsonl:  82%|████████▏ | 99/121 [03:04<00:38,  1.74s/it]Processing Code Samples from SecurityEval.jsonl:  83%|████████▎ | 100/121 [03:06<00:34,  1.66s/it]Processing Code Samples from SecurityEval.jsonl:  83%|████████▎ | 101/121 [03:07<00:30,  1.52s/it][36m[INFO][0m Analysis results from llama3.1:latest on sample 0: CWE count 1.
+[36m[INFO][0m Analysis results from llama3.1:latest on sample 1: CWE count 1.
+[36m[INFO][0m Analysis results from llama3.1:latest on sample 2: CWE count 1.
+[36m[INFO][0m Analysis results from llama3.1:latest on sample 3: CWE count 1.
+[36m[INFO][0m Analysis results from llama3.1:latest on sample 4: CWE count 1.
+[36m[INFO][0m Analysis results from llama3.1:latest on sample 5: CWE count 1.
+[36m[INFO][0m Analysis results from llama3.1:latest on sample 6: CWE count 1.
+[36m[INFO][0m Analysis results from llama3.1:latest on sample 7: CWE count 1.
+[36m[INFO][0m Analysis results from llama3.1:latest on sample 8: CWE count 1.
+[36m[INFO][0m Analysis results from llama3.1:latest on sample 9: CWE count 1.
+[36m[INFO][0m Analysis results from llama3.1:latest on sample 10: CWE count 1.
+[36m[INFO][0m Analysis results from llama3.1:latest on sample 11: CWE count 1.
+[36m[INFO][0m Analysis results from llama3.1:latest on sample 12: CWE count 1.
+[36m[INFO][0m Analysis results from llama3.1:latest on sample 13: CWE count 1.
+[36m[INFO][0m Analysis results from llama3.1:latest on sample 14: CWE count 1.
+[36m[INFO][0m Analysis results from llama3.1:latest on sample 15: CWE count 1.
+[36m[INFO][0m Analysis results from llama3.1:latest on sample 16: CWE count 1.
+[36m[INFO][0m Analysis results from llama3.1:latest on sample 17: CWE count 1.
+[36m[INFO][0m Analysis results from llama3.1:latest on sample 18: CWE count 1.
+[36m[INFO][0m Analysis results from llama3.1:latest on sample 19: CWE count 1.
+[36m[INFO][0m Analysis results from llama3.1:latest on sample 20: CWE count 1.
+[36m[INFO][0m Analysis results from llama3.1:latest on sample 21: CWE count 1.
+[36m[INFO][0m Analysis results from llama3.1:latest on sample 22: CWE count 1.
+[36m[INFO][0m Analysis results from llama3.1:latest on sample 23: CWE count 1.
+[36m[INFO][0m Analysis results from llama3.1:latest on sample 24: CWE count 1.
+[36m[INFO][0m Analysis results from llama3.1:latest on sample 25: CWE count 1.
+[36m[INFO][0m Analysis results from llama3.1:latest on sample 26: CWE count 1.
+[36m[INFO][0m Analysis results from llama3.1:latest on sample 27: CWE count 1.
+[36m[INFO][0m Analysis results from llama3.1:latest on sample 28: CWE count 1.
+[36m[INFO][0m Analysis results from llama3.1:latest on sample 29: CWE count 1.
+[36m[INFO][0m Analysis results from llama3.1:latest on sample 30: CWE count 1.
+[36m[INFO][0m Analysis results from llama3.1:latest on sample 31: CWE count 1.
+[36m[INFO][0m Analysis results from llama3.1:latest on sample 32: CWE count 1.
+[36m[INFO][0m Analysis results from llama3.1:latest on sample 33: CWE count 1.
+[36m[INFO][0m Analysis results from llama3.1:latest on sample 34: CWE count 1.
+[36m[INFO][0m Analysis results from llama3.1:latest on sample 35: CWE count 1.
+[36m[INFO][0m Analysis results from llama3.1:latest on sample 36: CWE count 1.
+[36m[INFO][0m Analysis results from llama3.1:latest on sample 37: CWE count 1.
+[36m[INFO][0m Analysis results from llama3.1:latest on sample 38: CWE count 1.
+[36m[INFO][0m Analysis results from llama3.1:latest on sample 39: CWE count 1.
+[36m[INFO][0m Analysis results from llama3.1:latest on sample 40: CWE count 1.
+[36m[INFO][0m Analysis results from llama3.1:latest on sample 41: CWE count 1.
+[36m[INFO][0m Analysis results from llama3.1:latest on sample 42: CWE count 1.
+[36m[INFO][0m Analysis results from llama3.1:latest on sample 43: CWE count 1.
+[36m[INFO][0m Analysis results from llama3.1:latest on sample 44: CWE count 1.
+[36m[INFO][0m Analysis results from llama3.1:latest on sample 45: CWE count 1.
+[36m[INFO][0m Analysis results from llama3.1:latest on sample 46: CWE count 1.
+[36m[INFO][0m Analysis results from llama3.1:latest on sample 47: CWE count 1.
+[36m[INFO][0m Analysis results from llama3.1:latest on sample 48: CWE count 1.
+[36m[INFO][0m Analysis results from llama3.1:latest on sample 49: CWE count 1.
+[36m[INFO][0m Analysis results from llama3.1:latest on sample 50: CWE count 1.
+[36m[INFO][0m Analysis results from llama3.1:latest on sample 51: CWE count 1.
+[36m[INFO][0m Analysis results from llama3.1:latest on sample 52: CWE count 1.
+[36m[INFO][0m Analysis results from llama3.1:latest on sample 53: CWE count 1.
+[36m[INFO][0m Analysis results from llama3.1:latest on sample 54: CWE count 1.
+[36m[INFO][0m Analysis results from llama3.1:latest on sample 55: CWE count 1.
+[36m[INFO][0m Analysis results from llama3.1:latest on sample 56: CWE count 1.
+[36m[INFO][0m Analysis results from llama3.1:latest on sample 57: CWE count 1.
+[36m[INFO][0m Analysis results from llama3.1:latest on sample 58: CWE count 1.
+[36m[INFO][0m Analysis results from llama3.1:latest on sample 59: CWE count 1.
+[36m[INFO][0m Analysis results from llama3.1:latest on sample 60: CWE count 1.
+[36m[INFO][0m Analysis results from llama3.1:latest on sample 61: CWE count 1.
+[36m[INFO][0m Analysis results from llama3.1:latest on sample 62: CWE count 1.
+[36m[INFO][0m Analysis results from llama3.1:latest on sample 63: CWE count 1.
+[36m[INFO][0m Analysis results from llama3.1:latest on sample 64: CWE count 1.
+[36m[INFO][0m Analysis results from llama3.1:latest on sample 65: CWE count 1.
+[36m[INFO][0m Analysis results from llama3.1:latest on sample 66: CWE count 1.
+[36m[INFO][0m Analysis results from llama3.1:latest on sample 67: CWE count 1.
+[36m[INFO][0m Analysis results from llama3.1:latest on sample 68: CWE count 1.
+[36m[INFO][0m Analysis results from llama3.1:latest on sample 69: CWE count 1.
+[36m[INFO][0m Analysis results from llama3.1:latest on sample 70: CWE count 1.
+[36m[INFO][0m Analysis results from llama3.1:latest on sample 71: CWE count 1.
+[36m[INFO][0m Analysis results from llama3.1:latest on sample 72: CWE count 1.
+[36m[INFO][0m Analysis results from llama3.1:latest on sample 73: CWE count 1.
+[36m[INFO][0m Analysis results from llama3.1:latest on sample 74: CWE count 1.
+[36m[INFO][0m Analysis results from llama3.1:latest on sample 75: CWE count 1.
+[36m[INFO][0m Analysis results from llama3.1:latest on sample 76: CWE count 1.
+[36m[INFO][0m Analysis results from llama3.1:latest on sample 77: CWE count 0.
+[36m[INFO][0m Analysis results from llama3.1:latest on sample 78: CWE count 1.
+[36m[INFO][0m Analysis results from llama3.1:latest on sample 79: CWE count 1.
+[36m[INFO][0m Analysis results from llama3.1:latest on sample 80: CWE count 1.
+[36m[INFO][0m Analysis results from llama3.1:latest on sample 81: CWE count 1.
+[36m[INFO][0m Analysis results from llama3.1:latest on sample 82: CWE count 1.
+[36m[INFO][0m Analysis results from llama3.1:latest on sample 83: CWE count 1.
+[36m[INFO][0m Analysis results from llama3.1:latest on sample 84: CWE count 1.
+[36m[INFO][0m Analysis results from llama3.1:latest on sample 85: CWE count 1.
+[36m[INFO][0m Analysis results from llama3.1:latest on sample 86: CWE count 1.
+[36m[INFO][0m Analysis results from llama3.1:latest on sample 87: CWE count 1.
+[36m[INFO][0m Analysis results from llama3.1:latest on sample 88: CWE count 1.
+[36m[INFO][0m Analysis results from llama3.1:latest on sample 89: CWE count 1.
+[36m[INFO][0m Analysis results from llama3.1:latest on sample 90: CWE count 1.
+[36m[INFO][0m Analysis results from llama3.1:latest on sample 91: CWE count 1.
+[36m[INFO][0m Analysis results from llama3.1:latest on sample 92: CWE count 1.
+[36m[INFO][0m Analysis results from llama3.1:latest on sample 93: CWE count 1.
+[36m[INFO][0m Analysis results from llama3.1:latest on sample 94: CWE count 1.
+[36m[INFO][0m Analysis results from llama3.1:latest on sample 95: CWE count 1.
+[36m[INFO][0m Analysis results from llama3.1:latest on sample 96: CWE count 1.
+[36m[INFO][0m Analysis results from llama3.1:latest on sample 97: CWE count 1.
+[36m[INFO][0m Analysis results from llama3.1:latest on sample 98: CWE count 1.
+[36m[INFO][0m Analysis results from llama3.1:latest on sample 99: CWE count 1.
+[36m[INFO][0m Analysis results from llama3.1:latest on sample 100: CWE count 1.
+Processing Code Samples from SecurityEval.jsonl:  84%|████████▍ | 102/121 [03:08<00:28,  1.50s/it]Processing Code Samples from SecurityEval.jsonl:  85%|████████▌ | 103/121 [03:10<00:29,  1.66s/it]Processing Code Samples from SecurityEval.jsonl:  86%|████████▌ | 104/121 [03:12<00:29,  1.73s/it]Processing Code Samples from SecurityEval.jsonl:  87%|████████▋ | 105/121 [03:13<00:23,  1.49s/it]Processing Code Samples from SecurityEval.jsonl:  88%|████████▊ | 106/121 [03:14<00:20,  1.39s/it]Processing Code Samples from SecurityEval.jsonl:  88%|████████▊ | 107/121 [03:16<00:22,  1.61s/it]Processing Code Samples from SecurityEval.jsonl:  89%|████████▉ | 108/121 [03:19<00:22,  1.74s/it]Processing Code Samples from SecurityEval.jsonl:  90%|█████████ | 109/121 [03:20<00:19,  1.66s/it]Processing Code Samples from SecurityEval.jsonl:  91%|█████████ | 110/121 [03:21<00:17,  1.61s/it]Processing Code Samples from SecurityEval.jsonl:  92%|█████████▏| 111/121 [03:23<00:16,  1.62s/it]Processing Code Samples from SecurityEval.jsonl:  93%|█████████▎| 112/121 [03:26<00:17,  1.98s/it]Processing Code Samples from SecurityEval.jsonl:  93%|█████████▎| 113/121 [03:27<00:14,  1.84s/it]Processing Code Samples from SecurityEval.jsonl:  94%|█████████▍| 114/121 [03:29<00:12,  1.76s/it]Processing Code Samples from SecurityEval.jsonl:  95%|█████████▌| 115/121 [03:31<00:10,  1.69s/it]Processing Code Samples from SecurityEval.jsonl:  96%|█████████▌| 116/121 [03:33<00:09,  1.83s/it]Processing Code Samples from SecurityEval.jsonl:  97%|█████████▋| 117/121 [03:35<00:07,  1.89s/it]Processing Code Samples from SecurityEval.jsonl:  98%|█████████▊| 118/121 [03:37<00:05,  1.93s/it]Processing Code Samples from SecurityEval.jsonl:  98%|█████████▊| 119/121 [03:39<00:04,  2.07s/it]Processing Code Samples from SecurityEval.jsonl:  99%|█████████▉| 120/121 [03:41<00:02,  2.06s/it]Processing Code Samples from SecurityEval.jsonl: 100%|██████████| 121/121 [03:43<00:00,  2.12s/it]Processing Code Samples from SecurityEval.jsonl: 100%|██████████| 121/121 [03:43<00:00,  1.85s/it]
+[36m[INFO][0m Analysis results from llama3.1:latest on sample 101: CWE count 1.
+[36m[INFO][0m Analysis results from llama3.1:latest on sample 102: CWE count 1.
+[36m[INFO][0m Analysis results from llama3.1:latest on sample 103: CWE count 1.
+[36m[INFO][0m Analysis results from llama3.1:latest on sample 104: CWE count 1.
+[36m[INFO][0m Analysis results from llama3.1:latest on sample 105: CWE count 1.
+[36m[INFO][0m Analysis results from llama3.1:latest on sample 106: CWE count 1.
+[36m[INFO][0m Analysis results from llama3.1:latest on sample 107: CWE count 1.
+[36m[INFO][0m Analysis results from llama3.1:latest on sample 108: CWE count 1.
+[36m[INFO][0m Analysis results from llama3.1:latest on sample 109: CWE count 1.
+[36m[INFO][0m Analysis results from llama3.1:latest on sample 110: CWE count 1.
+[36m[INFO][0m Analysis results from llama3.1:latest on sample 111: CWE count 1.
+[36m[INFO][0m Analysis results from llama3.1:latest on sample 112: CWE count 1.
+[36m[INFO][0m Analysis results from llama3.1:latest on sample 113: CWE count 1.
+[36m[INFO][0m Analysis results from llama3.1:latest on sample 114: CWE count 1.
+[36m[INFO][0m Analysis results from llama3.1:latest on sample 115: CWE count 1.
+[36m[INFO][0m Analysis results from llama3.1:latest on sample 116: CWE count 1.
+[36m[INFO][0m Analysis results from llama3.1:latest on sample 117: CWE count 1.
+[36m[INFO][0m Analysis results from llama3.1:latest on sample 118: CWE count 1.
+[36m[INFO][0m Analysis results from llama3.1:latest on sample 119: CWE count 1.
+[36m[INFO][0m Analysis results from llama3.1:latest on sample 120: CWE count 1.
+[32m[SUCCESS][0m Loaded 121 samples from the dataset.
+Processing Code Samples from SecurityEval.jsonl:   0%|          | 0/121 [00:00<?, ?it/s]Processing Code Samples from SecurityEval.jsonl:   1%|          | 1/121 [00:09<18:27,  9.23s/it]Processing Code Samples from SecurityEval.jsonl:   2%|▏         | 2/121 [00:12<11:19,  5.71s/it]Processing Code Samples from SecurityEval.jsonl:   2%|▏         | 3/121 [00:18<11:27,  5.83s/it]Processing Code Samples from SecurityEval.jsonl:   3%|▎         | 4/121 [00:23<10:27,  5.36s/it]Processing Code Samples from SecurityEval.jsonl:   4%|▍         | 5/121 [00:27<09:53,  5.12s/it]Processing Code Samples from SecurityEval.jsonl:   5%|▍         | 6/121 [00:33<09:57,  5.20s/it]Processing Code Samples from SecurityEval.jsonl:   6%|▌         | 7/121 [00:37<09:25,  4.96s/it]Processing Code Samples from SecurityEval.jsonl:   7%|▋         | 8/121 [00:41<08:45,  4.65s/it]Processing Code Samples from SecurityEval.jsonl:   7%|▋         | 9/121 [00:46<08:32,  4.58s/it]Processing Code Samples from SecurityEval.jsonl:   8%|▊         | 10/121 [00:50<08:20,  4.51s/it]Processing Code Samples from SecurityEval.jsonl:   9%|▉         | 11/121 [00:54<08:04,  4.40s/it]Processing Code Samples from SecurityEval.jsonl:  10%|▉         | 12/121 [00:59<08:32,  4.70s/it]Processing Code Samples from SecurityEval.jsonl:  11%|█         | 13/121 [01:04<08:20,  4.64s/it]Processing Code Samples from SecurityEval.jsonl:  12%|█▏        | 14/121 [01:07<07:35,  4.26s/it]Processing Code Samples from SecurityEval.jsonl:  12%|█▏        | 15/121 [01:14<08:43,  4.94s/it]Processing Code Samples from SecurityEval.jsonl:  13%|█▎        | 16/121 [01:18<08:04,  4.61s/it]Processing Code Samples from SecurityEval.jsonl:  14%|█▍        | 17/121 [01:24<08:47,  5.08s/it]Processing Code Samples from SecurityEval.jsonl:  15%|█▍        | 18/121 [01:27<07:56,  4.63s/it]Processing Code Samples from SecurityEval.jsonl:  16%|█▌        | 19/121 [01:31<07:26,  4.37s/it]Processing Code Samples from SecurityEval.jsonl:  17%|█▋        | 20/121 [01:36<07:22,  4.38s/it]Processing Code Samples from SecurityEval.jsonl:  17%|█▋        | 21/121 [01:40<07:09,  4.30s/it]Processing Code Samples from SecurityEval.jsonl:  18%|█▊        | 22/121 [01:45<07:43,  4.68s/it]Processing Code Samples from SecurityEval.jsonl:  19%|█▉        | 23/121 [01:50<07:55,  4.85s/it]Processing Code Samples from SecurityEval.jsonl:  20%|█▉        | 24/121 [01:55<07:30,  4.65s/it]Processing Code Samples from SecurityEval.jsonl:  21%|██        | 25/121 [01:59<07:08,  4.47s/it]Processing Code Samples from SecurityEval.jsonl:  21%|██▏       | 26/121 [02:03<06:59,  4.42s/it]Processing Code Samples from SecurityEval.jsonl:  22%|██▏       | 27/121 [02:07<06:52,  4.39s/it]Processing Code Samples from SecurityEval.jsonl:  23%|██▎       | 28/121 [02:11<06:31,  4.21s/it]Processing Code Samples from SecurityEval.jsonl:  24%|██▍       | 29/121 [02:16<06:34,  4.29s/it]Processing Code Samples from SecurityEval.jsonl:  25%|██▍       | 30/121 [02:22<07:19,  4.83s/it]Processing Code Samples from SecurityEval.jsonl:  26%|██▌       | 31/121 [02:27<07:39,  5.11s/it]Processing Code Samples from SecurityEval.jsonl:  26%|██▋       | 32/121 [02:31<07:02,  4.74s/it]Processing Code Samples from SecurityEval.jsonl:  27%|██▋       | 33/121 [02:37<07:09,  4.88s/it]Processing Code Samples from SecurityEval.jsonl:  28%|██▊       | 34/121 [02:40<06:22,  4.40s/it]Processing Code Samples from SecurityEval.jsonl:  29%|██▉       | 35/121 [02:43<05:43,  4.00s/it]Processing Code Samples from SecurityEval.jsonl:  30%|██▉       | 36/121 [02:48<06:16,  4.43s/it]Processing Code Samples from SecurityEval.jsonl:  31%|███       | 37/121 [02:52<06:01,  4.30s/it]Processing Code Samples from SecurityEval.jsonl:  31%|███▏      | 38/121 [02:56<05:53,  4.26s/it]Processing Code Samples from SecurityEval.jsonl:  32%|███▏      | 39/121 [03:01<05:49,  4.26s/it]Processing Code Samples from SecurityEval.jsonl:  33%|███▎      | 40/121 [03:04<05:14,  3.89s/it]Processing Code Samples from SecurityEval.jsonl:  34%|███▍      | 41/121 [03:08<05:19,  4.00s/it]Processing Code Samples from SecurityEval.jsonl:  35%|███▍      | 42/121 [03:14<05:56,  4.51s/it]Processing Code Samples from SecurityEval.jsonl:  36%|███▌      | 43/121 [03:18<05:55,  4.56s/it]Processing Code Samples from SecurityEval.jsonl:  36%|███▋      | 44/121 [03:23<05:44,  4.48s/it]Processing Code Samples from SecurityEval.jsonl:  37%|███▋      | 45/121 [03:28<05:47,  4.58s/it]Processing Code Samples from SecurityEval.jsonl:  38%|███▊      | 46/121 [03:32<05:30,  4.41s/it]Processing Code Samples from SecurityEval.jsonl:  39%|███▉      | 47/121 [03:36<05:21,  4.35s/it]Processing Code Samples from SecurityEval.jsonl:  40%|███▉      | 48/121 [03:43<06:25,  5.27s/it]Processing Code Samples from SecurityEval.jsonl:  40%|████      | 49/121 [03:49<06:30,  5.42s/it]Processing Code Samples from SecurityEval.jsonl:  41%|████▏     | 50/121 [03:55<06:31,  5.52s/it]Processing Code Samples from SecurityEval.jsonl:  42%|████▏     | 51/121 [04:00<06:13,  5.34s/it]Processing Code Samples from SecurityEval.jsonl:  43%|████▎     | 52/121 [04:03<05:37,  4.89s/it]Processing Code Samples from SecurityEval.jsonl:  44%|████▍     | 53/121 [04:07<05:00,  4.42s/it]Processing Code Samples from SecurityEval.jsonl:  45%|████▍     | 54/121 [04:12<05:21,  4.79s/it]Processing Code Samples from SecurityEval.jsonl:  45%|████▌     | 55/121 [04:18<05:40,  5.16s/it]Processing Code Samples from SecurityEval.jsonl:  46%|████▋     | 56/121 [04:23<05:18,  4.90s/it]Processing Code Samples from SecurityEval.jsonl:  47%|████▋     | 57/121 [04:26<04:47,  4.50s/it]Processing Code Samples from SecurityEval.jsonl:  48%|████▊     | 58/121 [04:30<04:36,  4.40s/it]Processing Code Samples from SecurityEval.jsonl:  49%|████▉     | 59/121 [04:35<04:33,  4.42s/it]Processing Code Samples from SecurityEval.jsonl:  50%|████▉     | 60/121 [04:40<04:41,  4.61s/it]Processing Code Samples from SecurityEval.jsonl:  50%|█████     | 61/121 [04:44<04:33,  4.56s/it]Processing Code Samples from SecurityEval.jsonl:  51%|█████     | 62/121 [04:49<04:32,  4.62s/it]Processing Code Samples from SecurityEval.jsonl:  52%|█████▏    | 63/121 [04:52<04:01,  4.16s/it]Processing Code Samples from SecurityEval.jsonl:  53%|█████▎    | 64/121 [04:56<03:46,  3.98s/it]Processing Code Samples from SecurityEval.jsonl:  54%|█████▎    | 65/121 [05:01<03:58,  4.26s/it]Processing Code Samples from SecurityEval.jsonl:  55%|█████▍    | 66/121 [05:04<03:40,  4.01s/it]Processing Code Samples from SecurityEval.jsonl:  55%|█████▌    | 67/121 [05:08<03:33,  3.96s/it]Processing Code Samples from SecurityEval.jsonl:  56%|█████▌    | 68/121 [05:13<03:38,  4.13s/it]Processing Code Samples from SecurityEval.jsonl:  57%|█████▋    | 69/121 [05:17<03:35,  4.14s/it]Processing Code Samples from SecurityEval.jsonl:  58%|█████▊    | 70/121 [05:21<03:29,  4.11s/it]Processing Code Samples from SecurityEval.jsonl:  59%|█████▊    | 71/121 [05:27<03:58,  4.77s/it]Processing Code Samples from SecurityEval.jsonl:  60%|█████▉    | 72/121 [05:32<03:49,  4.67s/it]Processing Code Samples from SecurityEval.jsonl:  60%|██████    | 73/121 [05:36<03:35,  4.49s/it]Processing Code Samples from SecurityEval.jsonl:  61%|██████    | 74/121 [05:41<03:45,  4.79s/it]Processing Code Samples from SecurityEval.jsonl:  62%|██████▏   | 75/121 [05:47<03:52,  5.05s/it]Processing Code Samples from SecurityEval.jsonl:  63%|██████▎   | 76/121 [05:51<03:33,  4.75s/it]Processing Code Samples from SecurityEval.jsonl:  64%|██████▎   | 77/121 [05:56<03:36,  4.92s/it]Processing Code Samples from SecurityEval.jsonl:  64%|██████▍   | 78/121 [06:00<03:23,  4.74s/it]Processing Code Samples from SecurityEval.jsonl:  65%|██████▌   | 79/121 [06:05<03:15,  4.66s/it]Processing Code Samples from SecurityEval.jsonl:  66%|██████▌   | 80/121 [06:09<02:58,  4.36s/it]Processing Code Samples from SecurityEval.jsonl:  67%|██████▋   | 81/121 [06:12<02:48,  4.21s/it]Processing Code Samples from SecurityEval.jsonl:  68%|██████▊   | 82/121 [06:16<02:34,  3.96s/it]Processing Code Samples from SecurityEval.jsonl:  69%|██████▊   | 83/121 [06:20<02:30,  3.97s/it]Processing Code Samples from SecurityEval.jsonl:  69%|██████▉   | 84/121 [06:23<02:20,  3.79s/it]Processing Code Samples from SecurityEval.jsonl:  70%|███████   | 85/121 [06:28<02:22,  3.97s/it]Processing Code Samples from SecurityEval.jsonl:  71%|███████   | 86/121 [06:33<02:31,  4.33s/it]Processing Code Samples from SecurityEval.jsonl:  72%|███████▏  | 87/121 [06:37<02:22,  4.18s/it]Processing Code Samples from SecurityEval.jsonl:  73%|███████▎  | 88/121 [06:40<02:15,  4.11s/it]Processing Code Samples from SecurityEval.jsonl:  74%|███████▎  | 89/121 [06:45<02:12,  4.15s/it]Processing Code Samples from SecurityEval.jsonl:  74%|███████▍  | 90/121 [06:49<02:08,  4.13s/it]Processing Code Samples from SecurityEval.jsonl:  75%|███████▌  | 91/121 [06:53<02:05,  4.20s/it]Processing Code Samples from SecurityEval.jsonl:  76%|███████▌  | 92/121 [06:57<01:59,  4.13s/it]Processing Code Samples from SecurityEval.jsonl:  77%|███████▋  | 93/121 [07:01<01:51,  3.99s/it]Processing Code Samples from SecurityEval.jsonl:  78%|███████▊  | 94/121 [07:06<01:54,  4.24s/it]Processing Code Samples from SecurityEval.jsonl:  79%|███████▊  | 95/121 [07:10<01:49,  4.21s/it]Processing Code Samples from SecurityEval.jsonl:  79%|███████▉  | 96/121 [07:14<01:45,  4.23s/it]Processing Code Samples from SecurityEval.jsonl:  80%|████████  | 97/121 [07:18<01:38,  4.12s/it]Processing Code Samples from SecurityEval.jsonl:  81%|████████  | 98/121 [07:22<01:34,  4.11s/it]Processing Code Samples from SecurityEval.jsonl:  82%|████████▏ | 99/121 [07:27<01:35,  4.34s/it]Processing Code Samples from SecurityEval.jsonl:  83%|████████▎ | 100/121 [07:31<01:27,  4.17s/it]Processing Code Samples from SecurityEval.jsonl:  83%|████████▎ | 101/121 [07:34<01:18,  3.92s/it]Processing Code Samples from SecurityEval.jsonl:  84%|████████▍ | 102/121 [07:38<01:16,  4.05s/it]Processing Code Samples from SecurityEval.jsonl:  85%|████████▌ | 103/121 [07:43<01:15,  4.18s/it]Processing Code Samples from SecurityEval.jsonl:  86%|████████▌ | 104/121 [07:47<01:09,  4.09s/it]Processing Code Samples from SecurityEval.jsonl:  87%|████████▋ | 105/121 [07:52<01:10,  4.39s/it]Processing Code Samples from SecurityEval.jsonl:  88%|████████▊ | 106/121 [07:58<01:12,  4.85s/it][36m[INFO][0m Analysis results from phi4:latest on sample 0: CWE count 1.
+[36m[INFO][0m Analysis results from phi4:latest on sample 1: CWE count 1.
+[36m[INFO][0m Analysis results from phi4:latest on sample 2: CWE count 1.
+[36m[INFO][0m Analysis results from phi4:latest on sample 3: CWE count 1.
+[36m[INFO][0m Analysis results from phi4:latest on sample 4: CWE count 1.
+[36m[INFO][0m Analysis results from phi4:latest on sample 5: CWE count 1.
+[36m[INFO][0m Analysis results from phi4:latest on sample 6: CWE count 1.
+[36m[INFO][0m Analysis results from phi4:latest on sample 7: CWE count 1.
+[36m[INFO][0m Analysis results from phi4:latest on sample 8: CWE count 1.
+[36m[INFO][0m Analysis results from phi4:latest on sample 9: CWE count 1.
+[36m[INFO][0m Analysis results from phi4:latest on sample 10: CWE count 1.
+[36m[INFO][0m Analysis results from phi4:latest on sample 11: CWE count 1.
+[36m[INFO][0m Analysis results from phi4:latest on sample 12: CWE count 1.
+[36m[INFO][0m Analysis results from phi4:latest on sample 13: CWE count 1.
+[36m[INFO][0m Analysis results from phi4:latest on sample 14: CWE count 1.
+[36m[INFO][0m Analysis results from phi4:latest on sample 15: CWE count 1.
+[36m[INFO][0m Analysis results from phi4:latest on sample 16: CWE count 1.
+[36m[INFO][0m Analysis results from phi4:latest on sample 17: CWE count 1.
+[36m[INFO][0m Analysis results from phi4:latest on sample 18: CWE count 1.
+[36m[INFO][0m Analysis results from phi4:latest on sample 19: CWE count 1.
+[36m[INFO][0m Analysis results from phi4:latest on sample 20: CWE count 1.
+[36m[INFO][0m Analysis results from phi4:latest on sample 21: CWE count 1.
+[36m[INFO][0m Analysis results from phi4:latest on sample 22: CWE count 1.
+[36m[INFO][0m Analysis results from phi4:latest on sample 23: CWE count 1.
+[36m[INFO][0m Analysis results from phi4:latest on sample 24: CWE count 1.
+[36m[INFO][0m Analysis results from phi4:latest on sample 25: CWE count 1.
+[36m[INFO][0m Analysis results from phi4:latest on sample 26: CWE count 1.
+[36m[INFO][0m Analysis results from phi4:latest on sample 27: CWE count 1.
+[36m[INFO][0m Analysis results from phi4:latest on sample 28: CWE count 1.
+[36m[INFO][0m Analysis results from phi4:latest on sample 29: CWE count 1.
+[36m[INFO][0m Analysis results from phi4:latest on sample 30: CWE count 1.
+[36m[INFO][0m Analysis results from phi4:latest on sample 31: CWE count 1.
+[36m[INFO][0m Analysis results from phi4:latest on sample 32: CWE count 1.
+[36m[INFO][0m Analysis results from phi4:latest on sample 33: CWE count 1.
+[36m[INFO][0m Analysis results from phi4:latest on sample 34: CWE count 1.
+[36m[INFO][0m Analysis results from phi4:latest on sample 35: CWE count 1.
+[36m[INFO][0m Analysis results from phi4:latest on sample 36: CWE count 1.
+[36m[INFO][0m Analysis results from phi4:latest on sample 37: CWE count 1.
+[36m[INFO][0m Analysis results from phi4:latest on sample 38: CWE count 1.
+[36m[INFO][0m Analysis results from phi4:latest on sample 39: CWE count 1.
+[36m[INFO][0m Analysis results from phi4:latest on sample 40: CWE count 1.
+[36m[INFO][0m Analysis results from phi4:latest on sample 41: CWE count 1.
+[36m[INFO][0m Analysis results from phi4:latest on sample 42: CWE count 1.
+[36m[INFO][0m Analysis results from phi4:latest on sample 43: CWE count 1.
+[36m[INFO][0m Analysis results from phi4:latest on sample 44: CWE count 1.
+[36m[INFO][0m Analysis results from phi4:latest on sample 45: CWE count 1.
+[36m[INFO][0m Analysis results from phi4:latest on sample 46: CWE count 1.
+[36m[INFO][0m Analysis results from phi4:latest on sample 47: CWE count 1.
+[36m[INFO][0m Analysis results from phi4:latest on sample 48: CWE count 1.
+[36m[INFO][0m Analysis results from phi4:latest on sample 49: CWE count 1.
+[36m[INFO][0m Analysis results from phi4:latest on sample 50: CWE count 1.
+[36m[INFO][0m Analysis results from phi4:latest on sample 51: CWE count 1.
+[36m[INFO][0m Analysis results from phi4:latest on sample 52: CWE count 1.
+[36m[INFO][0m Analysis results from phi4:latest on sample 53: CWE count 1.
+[36m[INFO][0m Analysis results from phi4:latest on sample 54: CWE count 1.
+[36m[INFO][0m Analysis results from phi4:latest on sample 55: CWE count 1.
+[36m[INFO][0m Analysis results from phi4:latest on sample 56: CWE count 1.
+[36m[INFO][0m Analysis results from phi4:latest on sample 57: CWE count 1.
+[36m[INFO][0m Analysis results from phi4:latest on sample 58: CWE count 1.
+[36m[INFO][0m Analysis results from phi4:latest on sample 59: CWE count 1.
+[36m[INFO][0m Analysis results from phi4:latest on sample 60: CWE count 1.
+[36m[INFO][0m Analysis results from phi4:latest on sample 61: CWE count 1.
+[36m[INFO][0m Analysis results from phi4:latest on sample 62: CWE count 1.
+[36m[INFO][0m Analysis results from phi4:latest on sample 63: CWE count 1.
+[36m[INFO][0m Analysis results from phi4:latest on sample 64: CWE count 1.
+[36m[INFO][0m Analysis results from phi4:latest on sample 65: CWE count 1.
+[36m[INFO][0m Analysis results from phi4:latest on sample 66: CWE count 1.
+[36m[INFO][0m Analysis results from phi4:latest on sample 67: CWE count 1.
+[36m[INFO][0m Analysis results from phi4:latest on sample 68: CWE count 1.
+[36m[INFO][0m Analysis results from phi4:latest on sample 69: CWE count 1.
+[36m[INFO][0m Analysis results from phi4:latest on sample 70: CWE count 1.
+[36m[INFO][0m Analysis results from phi4:latest on sample 71: CWE count 1.
+[36m[INFO][0m Analysis results from phi4:latest on sample 72: CWE count 1.
+[36m[INFO][0m Analysis results from phi4:latest on sample 73: CWE count 1.
+[36m[INFO][0m Analysis results from phi4:latest on sample 74: CWE count 1.
+[36m[INFO][0m Analysis results from phi4:latest on sample 75: CWE count 1.
+[36m[INFO][0m Analysis results from phi4:latest on sample 76: CWE count 1.
+[36m[INFO][0m Analysis results from phi4:latest on sample 77: CWE count 1.
+[36m[INFO][0m Analysis results from phi4:latest on sample 78: CWE count 1.
+[36m[INFO][0m Analysis results from phi4:latest on sample 79: CWE count 1.
+[36m[INFO][0m Analysis results from phi4:latest on sample 80: CWE count 1.
+[36m[INFO][0m Analysis results from phi4:latest on sample 81: CWE count 1.
+[36m[INFO][0m Analysis results from phi4:latest on sample 82: CWE count 1.
+[36m[INFO][0m Analysis results from phi4:latest on sample 83: CWE count 1.
+[36m[INFO][0m Analysis results from phi4:latest on sample 84: CWE count 1.
+[36m[INFO][0m Analysis results from phi4:latest on sample 85: CWE count 1.
+[36m[INFO][0m Analysis results from phi4:latest on sample 86: CWE count 1.
+[36m[INFO][0m Analysis results from phi4:latest on sample 87: CWE count 1.
+[36m[INFO][0m Analysis results from phi4:latest on sample 88: CWE count 1.
+[36m[INFO][0m Analysis results from phi4:latest on sample 89: CWE count 1.
+[36m[INFO][0m Analysis results from phi4:latest on sample 90: CWE count 1.
+[36m[INFO][0m Analysis results from phi4:latest on sample 91: CWE count 1.
+[36m[INFO][0m Analysis results from phi4:latest on sample 92: CWE count 1.
+[36m[INFO][0m Analysis results from phi4:latest on sample 93: CWE count 1.
+[36m[INFO][0m Analysis results from phi4:latest on sample 94: CWE count 1.
+[36m[INFO][0m Analysis results from phi4:latest on sample 95: CWE count 1.
+[36m[INFO][0m Analysis results from phi4:latest on sample 96: CWE count 1.
+[36m[INFO][0m Analysis results from phi4:latest on sample 97: CWE count 1.
+[36m[INFO][0m Analysis results from phi4:latest on sample 98: CWE count 1.
+[36m[INFO][0m Analysis results from phi4:latest on sample 99: CWE count 1.
+[36m[INFO][0m Analysis results from phi4:latest on sample 100: CWE count 1.
+[36m[INFO][0m Analysis results from phi4:latest on sample 101: CWE count 1.
+[36m[INFO][0m Analysis results from phi4:latest on sample 102: CWE count 1.
+[36m[INFO][0m Analysis results from phi4:latest on sample 103: CWE count 1.
+[36m[INFO][0m Analysis results from phi4:latest on sample 104: CWE count 1.
+[36m[INFO][0m Analysis results from phi4:latest on sample 105: CWE count 0.
+Processing Code Samples from SecurityEval.jsonl:  88%|████████▊ | 107/121 [08:01<01:02,  4.49s/it]Processing Code Samples from SecurityEval.jsonl:  89%|████████▉ | 108/121 [08:06<00:57,  4.43s/it]Processing Code Samples from SecurityEval.jsonl:  90%|█████████ | 109/121 [08:10<00:52,  4.35s/it]Processing Code Samples from SecurityEval.jsonl:  91%|█████████ | 110/121 [08:13<00:43,  3.99s/it]Processing Code Samples from SecurityEval.jsonl:  92%|█████████▏| 111/121 [08:18<00:43,  4.36s/it]Processing Code Samples from SecurityEval.jsonl:  93%|█████████▎| 112/121 [08:23<00:41,  4.61s/it]Processing Code Samples from SecurityEval.jsonl:  93%|█████████▎| 113/121 [08:27<00:33,  4.20s/it]Processing Code Samples from SecurityEval.jsonl:  94%|█████████▍| 114/121 [08:31<00:29,  4.23s/it]Processing Code Samples from SecurityEval.jsonl:  95%|█████████▌| 115/121 [08:35<00:24,  4.09s/it]Processing Code Samples from SecurityEval.jsonl:  96%|█████████▌| 116/121 [08:40<00:22,  4.53s/it]Processing Code Samples from SecurityEval.jsonl:  97%|█████████▋| 117/121 [08:45<00:18,  4.63s/it]Processing Code Samples from SecurityEval.jsonl:  98%|█████████▊| 118/121 [08:49<00:13,  4.40s/it]Processing Code Samples from SecurityEval.jsonl:  98%|█████████▊| 119/121 [08:54<00:09,  4.54s/it]Processing Code Samples from SecurityEval.jsonl:  99%|█████████▉| 120/121 [08:58<00:04,  4.55s/it]Processing Code Samples from SecurityEval.jsonl: 100%|██████████| 121/121 [09:02<00:00,  4.18s/it]Processing Code Samples from SecurityEval.jsonl: 100%|██████████| 121/121 [09:02<00:00,  4.48s/it]
+[36m[INFO][0m Analysis results from phi4:latest on sample 106: CWE count 1.
+[36m[INFO][0m Analysis results from phi4:latest on sample 107: CWE count 1.
+[36m[INFO][0m Analysis results from phi4:latest on sample 108: CWE count 1.
+[36m[INFO][0m Analysis results from phi4:latest on sample 109: CWE count 1.
+[36m[INFO][0m Analysis results from phi4:latest on sample 110: CWE count 1.
+[36m[INFO][0m Analysis results from phi4:latest on sample 111: CWE count 1.
+[36m[INFO][0m Analysis results from phi4:latest on sample 112: CWE count 1.
+[36m[INFO][0m Analysis results from phi4:latest on sample 113: CWE count 1.
+[36m[INFO][0m Analysis results from phi4:latest on sample 114: CWE count 1.
+[36m[INFO][0m Analysis results from phi4:latest on sample 115: CWE count 1.
+[36m[INFO][0m Analysis results from phi4:latest on sample 116: CWE count 1.
+[36m[INFO][0m Analysis results from phi4:latest on sample 117: CWE count 1.
+[36m[INFO][0m Analysis results from phi4:latest on sample 118: CWE count 1.
+[36m[INFO][0m Analysis results from phi4:latest on sample 119: CWE count 1.
+[36m[INFO][0m Analysis results from phi4:latest on sample 120: CWE count 1.
+[32m[SUCCESS][0m Loaded 121 samples from the dataset.
+Processing Code Samples from SecurityEval.jsonl:   0%|          | 0/121 [00:00<?, ?it/s]Processing Code Samples from SecurityEval.jsonl:   1%|          | 1/121 [00:05<10:57,  5.48s/it]Processing Code Samples from SecurityEval.jsonl:   2%|▏         | 2/121 [00:06<05:59,  3.02s/it]Processing Code Samples from SecurityEval.jsonl:   2%|▏         | 3/121 [00:07<04:04,  2.07s/it]Processing Code Samples from SecurityEval.jsonl:   3%|▎         | 4/121 [00:09<03:43,  1.91s/it]Processing Code Samples from SecurityEval.jsonl:   4%|▍         | 5/121 [00:13<04:55,  2.55s/it]Processing Code Samples from SecurityEval.jsonl:   5%|▍         | 6/121 [00:14<04:26,  2.31s/it]Processing Code Samples from SecurityEval.jsonl:   6%|▌         | 7/121 [00:17<04:24,  2.32s/it]Processing Code Samples from SecurityEval.jsonl:   7%|▋         | 8/121 [00:19<04:05,  2.17s/it]Processing Code Samples from SecurityEval.jsonl:   7%|▋         | 9/121 [00:21<04:20,  2.33s/it]Processing Code Samples from SecurityEval.jsonl:   8%|▊         | 10/121 [00:23<03:50,  2.07s/it]Processing Code Samples from SecurityEval.jsonl:   9%|▉         | 11/121 [00:25<03:52,  2.12s/it]Processing Code Samples from SecurityEval.jsonl:  10%|▉         | 12/121 [00:27<03:52,  2.13s/it]Processing Code Samples from SecurityEval.jsonl:  11%|█         | 13/121 [00:30<04:16,  2.37s/it]Processing Code Samples from SecurityEval.jsonl:  12%|█▏        | 14/121 [00:33<04:30,  2.53s/it]Processing Code Samples from SecurityEval.jsonl:  12%|█▏        | 15/121 [00:34<03:43,  2.11s/it]Processing Code Samples from SecurityEval.jsonl:  13%|█▎        | 16/121 [00:36<03:28,  1.99s/it]Processing Code Samples from SecurityEval.jsonl:  14%|█▍        | 17/121 [00:38<03:30,  2.02s/it]Processing Code Samples from SecurityEval.jsonl:  15%|█▍        | 18/121 [00:40<03:33,  2.07s/it]Processing Code Samples from SecurityEval.jsonl:  16%|█▌        | 19/121 [00:43<03:50,  2.26s/it]Processing Code Samples from SecurityEval.jsonl:  17%|█▋        | 20/121 [00:44<03:25,  2.03s/it]Processing Code Samples from SecurityEval.jsonl:  17%|█▋        | 21/121 [00:47<03:37,  2.17s/it]Processing Code Samples from SecurityEval.jsonl:  18%|█▊        | 22/121 [00:49<03:46,  2.29s/it]Processing Code Samples from SecurityEval.jsonl:  19%|█▉        | 23/121 [00:51<03:38,  2.23s/it]Processing Code Samples from SecurityEval.jsonl:  20%|█▉        | 24/121 [00:55<04:08,  2.56s/it]Processing Code Samples from SecurityEval.jsonl:  21%|██        | 25/121 [00:56<03:36,  2.25s/it]Processing Code Samples from SecurityEval.jsonl:  21%|██▏       | 26/121 [00:58<03:03,  1.93s/it]Processing Code Samples from SecurityEval.jsonl:  22%|██▏       | 27/121 [00:59<03:02,  1.95s/it]Processing Code Samples from SecurityEval.jsonl:  23%|██▎       | 28/121 [01:01<02:50,  1.83s/it]Processing Code Samples from SecurityEval.jsonl:  24%|██▍       | 29/121 [01:04<03:26,  2.24s/it]Processing Code Samples from SecurityEval.jsonl:  25%|██▍       | 30/121 [01:05<02:51,  1.88s/it]Processing Code Samples from SecurityEval.jsonl:  26%|██▌       | 31/121 [01:08<03:09,  2.10s/it]Processing Code Samples from SecurityEval.jsonl:  26%|██▋       | 32/121 [01:10<03:10,  2.14s/it]Processing Code Samples from SecurityEval.jsonl:  27%|██▋       | 33/121 [01:12<02:49,  1.92s/it]Processing Code Samples from SecurityEval.jsonl:  28%|██▊       | 34/121 [01:15<03:20,  2.31s/it]Processing Code Samples from SecurityEval.jsonl:  29%|██▉       | 35/121 [01:17<03:17,  2.30s/it]Processing Code Samples from SecurityEval.jsonl:  30%|██▉       | 36/121 [01:19<03:08,  2.21s/it]Processing Code Samples from SecurityEval.jsonl:  31%|███       | 37/121 [01:21<03:08,  2.24s/it]Processing Code Samples from SecurityEval.jsonl:  31%|███▏      | 38/121 [01:24<03:23,  2.45s/it]Processing Code Samples from SecurityEval.jsonl:  32%|███▏      | 39/121 [01:26<02:51,  2.09s/it]Processing Code Samples from SecurityEval.jsonl:  33%|███▎      | 40/121 [01:27<02:45,  2.04s/it]Processing Code Samples from SecurityEval.jsonl:  34%|███▍      | 41/121 [01:30<02:57,  2.21s/it]Processing Code Samples from SecurityEval.jsonl:  35%|███▍      | 42/121 [01:34<03:30,  2.67s/it]Processing Code Samples from SecurityEval.jsonl:  36%|███▌      | 43/121 [01:36<03:11,  2.45s/it]Processing Code Samples from SecurityEval.jsonl:  36%|███▋      | 44/121 [01:38<03:13,  2.52s/it]Processing Code Samples from SecurityEval.jsonl:  37%|███▋      | 45/121 [01:40<02:50,  2.25s/it]Processing Code Samples from SecurityEval.jsonl:  38%|███▊      | 46/121 [01:42<02:38,  2.11s/it]Processing Code Samples from SecurityEval.jsonl:  39%|███▉      | 47/121 [01:44<02:44,  2.22s/it]Processing Code Samples from SecurityEval.jsonl:  40%|███▉      | 48/121 [01:46<02:28,  2.03s/it]Processing Code Samples from SecurityEval.jsonl:  40%|████      | 49/121 [01:48<02:23,  1.99s/it]Processing Code Samples from SecurityEval.jsonl:  41%|████▏     | 50/121 [01:50<02:33,  2.16s/it]Processing Code Samples from SecurityEval.jsonl:  42%|████▏     | 51/121 [01:53<02:41,  2.31s/it]Processing Code Samples from SecurityEval.jsonl:  43%|████▎     | 52/121 [01:55<02:34,  2.24s/it]Processing Code Samples from SecurityEval.jsonl:  44%|████▍     | 53/121 [01:58<02:41,  2.37s/it]Processing Code Samples from SecurityEval.jsonl:  45%|████▍     | 54/121 [02:00<02:30,  2.25s/it]Processing Code Samples from SecurityEval.jsonl:  45%|████▌     | 55/121 [02:03<02:44,  2.50s/it]Processing Code Samples from SecurityEval.jsonl:  46%|████▋     | 56/121 [02:04<02:22,  2.20s/it]Processing Code Samples from SecurityEval.jsonl:  47%|████▋     | 57/121 [02:06<02:01,  1.90s/it]Processing Code Samples from SecurityEval.jsonl:  48%|████▊     | 58/121 [02:06<01:40,  1.59s/it]Processing Code Samples from SecurityEval.jsonl:  49%|████▉     | 59/121 [02:09<01:51,  1.79s/it]Processing Code Samples from SecurityEval.jsonl:  50%|████▉     | 60/121 [02:09<01:31,  1.50s/it]Processing Code Samples from SecurityEval.jsonl:  50%|█████     | 61/121 [02:11<01:27,  1.46s/it]Processing Code Samples from SecurityEval.jsonl:  51%|█████     | 62/121 [02:12<01:28,  1.50s/it]Processing Code Samples from SecurityEval.jsonl:  52%|█████▏    | 63/121 [02:17<02:13,  2.31s/it]Processing Code Samples from SecurityEval.jsonl:  53%|█████▎    | 64/121 [02:18<01:58,  2.08s/it]Processing Code Samples from SecurityEval.jsonl:  54%|█████▎    | 65/121 [02:20<01:44,  1.86s/it]Processing Code Samples from SecurityEval.jsonl:  55%|█████▍    | 66/121 [02:21<01:41,  1.84s/it]Processing Code Samples from SecurityEval.jsonl:  55%|█████▌    | 67/121 [02:23<01:32,  1.71s/it]Processing Code Samples from SecurityEval.jsonl:  56%|█████▌    | 68/121 [02:25<01:44,  1.98s/it]Processing Code Samples from SecurityEval.jsonl:  57%|█████▋    | 69/121 [02:27<01:36,  1.85s/it]Processing Code Samples from SecurityEval.jsonl:  58%|█████▊    | 70/121 [02:30<01:54,  2.25s/it]Processing Code Samples from SecurityEval.jsonl:  59%|█████▊    | 71/121 [02:32<01:54,  2.28s/it]Processing Code Samples from SecurityEval.jsonl:  60%|█████▉    | 72/121 [02:36<02:14,  2.74s/it]Processing Code Samples from SecurityEval.jsonl:  60%|██████    | 73/121 [02:41<02:35,  3.25s/it]Processing Code Samples from SecurityEval.jsonl:  61%|██████    | 74/121 [02:44<02:35,  3.31s/it]Processing Code Samples from SecurityEval.jsonl:  62%|██████▏   | 75/121 [02:46<02:10,  2.85s/it]Processing Code Samples from SecurityEval.jsonl:  63%|██████▎   | 76/121 [02:49<02:07,  2.84s/it]Processing Code Samples from SecurityEval.jsonl:  64%|██████▎   | 77/121 [02:51<01:58,  2.70s/it]Processing Code Samples from SecurityEval.jsonl:  64%|██████▍   | 78/121 [02:52<01:39,  2.31s/it]Processing Code Samples from SecurityEval.jsonl:  65%|██████▌   | 79/121 [02:54<01:26,  2.06s/it]Processing Code Samples from SecurityEval.jsonl:  66%|██████▌   | 80/121 [02:57<01:35,  2.33s/it]Processing Code Samples from SecurityEval.jsonl:  67%|██████▋   | 81/121 [02:59<01:28,  2.21s/it]Processing Code Samples from SecurityEval.jsonl:  68%|██████▊   | 82/121 [03:00<01:17,  1.99s/it]Processing Code Samples from SecurityEval.jsonl:  69%|██████▊   | 83/121 [03:03<01:25,  2.24s/it]Processing Code Samples from SecurityEval.jsonl:  69%|██████▉   | 84/121 [03:05<01:16,  2.07s/it]Processing Code Samples from SecurityEval.jsonl:  70%|███████   | 85/121 [03:06<01:02,  1.74s/it]Processing Code Samples from SecurityEval.jsonl:  71%|███████   | 86/121 [03:08<01:10,  2.02s/it]Processing Code Samples from SecurityEval.jsonl:  72%|███████▏  | 87/121 [03:11<01:10,  2.06s/it]Processing Code Samples from SecurityEval.jsonl:  73%|███████▎  | 88/121 [03:13<01:10,  2.13s/it]Processing Code Samples from SecurityEval.jsonl:  74%|███████▎  | 89/121 [03:15<01:09,  2.17s/it]Processing Code Samples from SecurityEval.jsonl:  74%|███████▍  | 90/121 [03:16<00:58,  1.88s/it]Processing Code Samples from SecurityEval.jsonl:  75%|███████▌  | 91/121 [03:18<00:53,  1.79s/it]Processing Code Samples from SecurityEval.jsonl:  76%|███████▌  | 92/121 [03:20<00:53,  1.85s/it]Processing Code Samples from SecurityEval.jsonl:  77%|███████▋  | 93/121 [03:22<00:57,  2.05s/it]Processing Code Samples from SecurityEval.jsonl:  78%|███████▊  | 94/121 [03:25<01:02,  2.32s/it]Processing Code Samples from SecurityEval.jsonl:  79%|███████▊  | 95/121 [03:28<01:00,  2.31s/it]Processing Code Samples from SecurityEval.jsonl:  79%|███████▉  | 96/121 [03:29<00:48,  1.95s/it][36m[INFO][0m Analysis results from deepseek-coder:6.7b on sample 0: CWE count 1.
+[36m[INFO][0m Analysis results from deepseek-coder:6.7b on sample 1: CWE count 1.
+[36m[INFO][0m Analysis results from deepseek-coder:6.7b on sample 2: CWE count 0.
+[36m[INFO][0m Analysis results from deepseek-coder:6.7b on sample 3: CWE count 0.
+[36m[INFO][0m Analysis results from deepseek-coder:6.7b on sample 4: CWE count 1.
+[36m[INFO][0m Analysis results from deepseek-coder:6.7b on sample 5: CWE count 0.
+[36m[INFO][0m Analysis results from deepseek-coder:6.7b on sample 6: CWE count 1.
+[36m[INFO][0m Analysis results from deepseek-coder:6.7b on sample 7: CWE count 1.
+[36m[INFO][0m Analysis results from deepseek-coder:6.7b on sample 8: CWE count 2.
+[36m[INFO][0m Analysis results from deepseek-coder:6.7b on sample 9: CWE count 1.
+[36m[INFO][0m Analysis results from deepseek-coder:6.7b on sample 10: CWE count 1.
+[36m[INFO][0m Analysis results from deepseek-coder:6.7b on sample 11: CWE count 1.
+[36m[INFO][0m Analysis results from deepseek-coder:6.7b on sample 12: CWE count 1.
+[36m[INFO][0m Analysis results from deepseek-coder:6.7b on sample 13: CWE count 1.
+[36m[INFO][0m Analysis results from deepseek-coder:6.7b on sample 14: CWE count 1.
+[36m[INFO][0m Analysis results from deepseek-coder:6.7b on sample 15: CWE count 0.
+[36m[INFO][0m Analysis results from deepseek-coder:6.7b on sample 16: CWE count 0.
+[36m[INFO][0m Analysis results from deepseek-coder:6.7b on sample 17: CWE count 2.
+[36m[INFO][0m Analysis results from deepseek-coder:6.7b on sample 18: CWE count 1.
+[36m[INFO][0m Analysis results from deepseek-coder:6.7b on sample 19: CWE count 1.
+[36m[INFO][0m Analysis results from deepseek-coder:6.7b on sample 20: CWE count 1.
+[36m[INFO][0m Analysis results from deepseek-coder:6.7b on sample 21: CWE count 1.
+[36m[INFO][0m Analysis results from deepseek-coder:6.7b on sample 22: CWE count 1.
+[36m[INFO][0m Analysis results from deepseek-coder:6.7b on sample 23: CWE count 1.
+[36m[INFO][0m Analysis results from deepseek-coder:6.7b on sample 24: CWE count 1.
+[36m[INFO][0m Analysis results from deepseek-coder:6.7b on sample 25: CWE count 0.
+[36m[INFO][0m Analysis results from deepseek-coder:6.7b on sample 26: CWE count 1.
+[36m[INFO][0m Analysis results from deepseek-coder:6.7b on sample 27: CWE count 1.
+[36m[INFO][0m Analysis results from deepseek-coder:6.7b on sample 28: CWE count 1.
+[36m[INFO][0m Analysis results from deepseek-coder:6.7b on sample 29: CWE count 1.
+[36m[INFO][0m Analysis results from deepseek-coder:6.7b on sample 30: CWE count 1.
+[36m[INFO][0m Analysis results from deepseek-coder:6.7b on sample 31: CWE count 0.
+[36m[INFO][0m Analysis results from deepseek-coder:6.7b on sample 32: CWE count 0.
+[36m[INFO][0m Analysis results from deepseek-coder:6.7b on sample 33: CWE count 2.
+[36m[INFO][0m Analysis results from deepseek-coder:6.7b on sample 34: CWE count 0.
+[36m[INFO][0m Analysis results from deepseek-coder:6.7b on sample 35: CWE count 0.
+[36m[INFO][0m Analysis results from deepseek-coder:6.7b on sample 36: CWE count 3.
+[36m[INFO][0m Analysis results from deepseek-coder:6.7b on sample 37: CWE count 1.
+[36m[INFO][0m Analysis results from deepseek-coder:6.7b on sample 38: CWE count 1.
+[36m[INFO][0m Analysis results from deepseek-coder:6.7b on sample 39: CWE count 1.
+[36m[INFO][0m Analysis results from deepseek-coder:6.7b on sample 40: CWE count 0.
+[36m[INFO][0m Analysis results from deepseek-coder:6.7b on sample 41: CWE count 0.
+[36m[INFO][0m Analysis results from deepseek-coder:6.7b on sample 42: CWE count 0.
+[36m[INFO][0m Analysis results from deepseek-coder:6.7b on sample 43: CWE count 1.
+[36m[INFO][0m Analysis results from deepseek-coder:6.7b on sample 44: CWE count 1.
+[36m[INFO][0m Analysis results from deepseek-coder:6.7b on sample 45: CWE count 1.
+[36m[INFO][0m Analysis results from deepseek-coder:6.7b on sample 46: CWE count 1.
+[36m[INFO][0m Analysis results from deepseek-coder:6.7b on sample 47: CWE count 1.
+[36m[INFO][0m Analysis results from deepseek-coder:6.7b on sample 48: CWE count 1.
+[36m[INFO][0m Analysis results from deepseek-coder:6.7b on sample 49: CWE count 1.
+[36m[INFO][0m Analysis results from deepseek-coder:6.7b on sample 50: CWE count 1.
+[36m[INFO][0m Analysis results from deepseek-coder:6.7b on sample 51: CWE count 1.
+[36m[INFO][0m Analysis results from deepseek-coder:6.7b on sample 52: CWE count 1.
+[36m[INFO][0m Analysis results from deepseek-coder:6.7b on sample 53: CWE count 1.
+[36m[INFO][0m Analysis results from deepseek-coder:6.7b on sample 54: CWE count 1.
+[36m[INFO][0m Analysis results from deepseek-coder:6.7b on sample 55: CWE count 0.
+[36m[INFO][0m Analysis results from deepseek-coder:6.7b on sample 56: CWE count 0.
+[36m[INFO][0m Analysis results from deepseek-coder:6.7b on sample 57: CWE count 1.
+[36m[INFO][0m Analysis results from deepseek-coder:6.7b on sample 58: CWE count 2.
+[36m[INFO][0m Analysis results from deepseek-coder:6.7b on sample 59: CWE count 0.
+[36m[INFO][0m Analysis results from deepseek-coder:6.7b on sample 60: CWE count 1.
+[36m[INFO][0m Analysis results from deepseek-coder:6.7b on sample 61: CWE count 1.
+[36m[INFO][0m Analysis results from deepseek-coder:6.7b on sample 62: CWE count 0.
+[36m[INFO][0m Analysis results from deepseek-coder:6.7b on sample 63: CWE count 1.
+[36m[INFO][0m Analysis results from deepseek-coder:6.7b on sample 64: CWE count 0.
+[36m[INFO][0m Analysis results from deepseek-coder:6.7b on sample 65: CWE count 1.
+[36m[INFO][0m Analysis results from deepseek-coder:6.7b on sample 66: CWE count 1.
+[36m[INFO][0m Analysis results from deepseek-coder:6.7b on sample 67: CWE count 1.
+[36m[INFO][0m Analysis results from deepseek-coder:6.7b on sample 68: CWE count 3.
+[36m[INFO][0m Analysis results from deepseek-coder:6.7b on sample 69: CWE count 3.
+[36m[INFO][0m Analysis results from deepseek-coder:6.7b on sample 70: CWE count 1.
+[36m[INFO][0m Analysis results from deepseek-coder:6.7b on sample 71: CWE count 1.
+[36m[INFO][0m Analysis results from deepseek-coder:6.7b on sample 72: CWE count 0.
+[36m[INFO][0m Analysis results from deepseek-coder:6.7b on sample 73: CWE count 2.
+[36m[INFO][0m Analysis results from deepseek-coder:6.7b on sample 74: CWE count 1.
+[36m[INFO][0m Analysis results from deepseek-coder:6.7b on sample 75: CWE count 2.
+[36m[INFO][0m Analysis results from deepseek-coder:6.7b on sample 76: CWE count 1.
+[36m[INFO][0m Analysis results from deepseek-coder:6.7b on sample 77: CWE count 0.
+[36m[INFO][0m Analysis results from deepseek-coder:6.7b on sample 78: CWE count 1.
+[36m[INFO][0m Analysis results from deepseek-coder:6.7b on sample 79: CWE count 3.
+[36m[INFO][0m Analysis results from deepseek-coder:6.7b on sample 80: CWE count 1.
+[36m[INFO][0m Analysis results from deepseek-coder:6.7b on sample 81: CWE count 1.
+[36m[INFO][0m Analysis results from deepseek-coder:6.7b on sample 82: CWE count 1.
+[36m[INFO][0m Analysis results from deepseek-coder:6.7b on sample 83: CWE count 0.
+[36m[INFO][0m Analysis results from deepseek-coder:6.7b on sample 84: CWE count 1.
+[36m[INFO][0m Analysis results from deepseek-coder:6.7b on sample 85: CWE count 3.
+[36m[INFO][0m Analysis results from deepseek-coder:6.7b on sample 86: CWE count 1.
+[36m[INFO][0m Analysis results from deepseek-coder:6.7b on sample 87: CWE count 1.
+[36m[INFO][0m Analysis results from deepseek-coder:6.7b on sample 88: CWE count 1.
+[36m[INFO][0m Analysis results from deepseek-coder:6.7b on sample 89: CWE count 1.
+[36m[INFO][0m Analysis results from deepseek-coder:6.7b on sample 90: CWE count 1.
+[36m[INFO][0m Analysis results from deepseek-coder:6.7b on sample 91: CWE count 1.
+[36m[INFO][0m Analysis results from deepseek-coder:6.7b on sample 92: CWE count 1.
+[36m[INFO][0m Analysis results from deepseek-coder:6.7b on sample 93: CWE count 1.
+[36m[INFO][0m Analysis results from deepseek-coder:6.7b on sample 94: CWE count 0.
+[36m[INFO][0m Analysis results from deepseek-coder:6.7b on sample 95: CWE count 0.
+Processing Code Samples from SecurityEval.jsonl:  80%|████████  | 97/121 [03:32<00:54,  2.28s/it]Processing Code Samples from SecurityEval.jsonl:  81%|████████  | 98/121 [03:34<00:52,  2.29s/it]Processing Code Samples from SecurityEval.jsonl:  82%|████████▏ | 99/121 [03:36<00:48,  2.19s/it]Processing Code Samples from SecurityEval.jsonl:  83%|████████▎ | 100/121 [03:39<00:50,  2.40s/it]Processing Code Samples from SecurityEval.jsonl:  83%|████████▎ | 101/121 [03:42<00:51,  2.55s/it]Processing Code Samples from SecurityEval.jsonl:  84%|████████▍ | 102/121 [03:45<00:49,  2.61s/it]Processing Code Samples from SecurityEval.jsonl:  85%|████████▌ | 103/121 [03:48<00:48,  2.69s/it]Processing Code Samples from SecurityEval.jsonl:  86%|████████▌ | 104/121 [03:49<00:40,  2.38s/it]Processing Code Samples from SecurityEval.jsonl:  87%|████████▋ | 105/121 [03:52<00:42,  2.63s/it]Processing Code Samples from SecurityEval.jsonl:  88%|████████▊ | 106/121 [03:54<00:32,  2.19s/it]Processing Code Samples from SecurityEval.jsonl:  88%|████████▊ | 107/121 [03:56<00:32,  2.34s/it]Processing Code Samples from SecurityEval.jsonl:  89%|████████▉ | 108/121 [03:58<00:28,  2.21s/it]Processing Code Samples from SecurityEval.jsonl:  90%|█████████ | 109/121 [04:00<00:26,  2.19s/it]Processing Code Samples from SecurityEval.jsonl:  91%|█████████ | 110/121 [04:02<00:21,  1.94s/it]Processing Code Samples from SecurityEval.jsonl:  92%|█████████▏| 111/121 [04:04<00:20,  2.01s/it]Processing Code Samples from SecurityEval.jsonl:  93%|█████████▎| 112/121 [04:07<00:21,  2.41s/it]Processing Code Samples from SecurityEval.jsonl:  93%|█████████▎| 113/121 [04:09<00:17,  2.19s/it]Processing Code Samples from SecurityEval.jsonl:  94%|█████████▍| 114/121 [04:10<00:13,  1.87s/it]Processing Code Samples from SecurityEval.jsonl:  95%|█████████▌| 115/121 [04:12<00:11,  1.95s/it]Processing Code Samples from SecurityEval.jsonl:  96%|█████████▌| 116/121 [04:15<00:11,  2.33s/it]Processing Code Samples from SecurityEval.jsonl:  97%|█████████▋| 117/121 [04:17<00:08,  2.21s/it]Processing Code Samples from SecurityEval.jsonl:  98%|█████████▊| 118/121 [04:20<00:07,  2.34s/it]Processing Code Samples from SecurityEval.jsonl:  98%|█████████▊| 119/121 [04:24<00:05,  2.76s/it]Processing Code Samples from SecurityEval.jsonl:  99%|█████████▉| 120/121 [04:27<00:03,  3.07s/it]Processing Code Samples from SecurityEval.jsonl: 100%|██████████| 121/121 [04:28<00:00,  2.34s/it]Processing Code Samples from SecurityEval.jsonl: 100%|██████████| 121/121 [04:28<00:00,  2.22s/it]
+[36m[INFO][0m Analysis results from deepseek-coder:6.7b on sample 96: CWE count 0.
+[36m[INFO][0m Analysis results from deepseek-coder:6.7b on sample 97: CWE count 0.
+[36m[INFO][0m Analysis results from deepseek-coder:6.7b on sample 98: CWE count 1.
+[36m[INFO][0m Analysis results from deepseek-coder:6.7b on sample 99: CWE count 1.
+[36m[INFO][0m Analysis results from deepseek-coder:6.7b on sample 100: CWE count 2.
+[36m[INFO][0m Analysis results from deepseek-coder:6.7b on sample 101: CWE count 1.
+[36m[INFO][0m Analysis results from deepseek-coder:6.7b on sample 102: CWE count 1.
+[36m[INFO][0m Analysis results from deepseek-coder:6.7b on sample 103: CWE count 1.
+[36m[INFO][0m Analysis results from deepseek-coder:6.7b on sample 104: CWE count 1.
+[36m[INFO][0m Analysis results from deepseek-coder:6.7b on sample 105: CWE count 0.
+[36m[INFO][0m Analysis results from deepseek-coder:6.7b on sample 106: CWE count 1.
+[36m[INFO][0m Analysis results from deepseek-coder:6.7b on sample 107: CWE count 1.
+[36m[INFO][0m Analysis results from deepseek-coder:6.7b on sample 108: CWE count 3.
+[36m[INFO][0m Analysis results from deepseek-coder:6.7b on sample 109: CWE count 1.
+[36m[INFO][0m Analysis results from deepseek-coder:6.7b on sample 110: CWE count 0.
+[36m[INFO][0m Analysis results from deepseek-coder:6.7b on sample 111: CWE count 2.
+[36m[INFO][0m Analysis results from deepseek-coder:6.7b on sample 112: CWE count 0.
+[36m[INFO][0m Analysis results from deepseek-coder:6.7b on sample 113: CWE count 1.
+[36m[INFO][0m Analysis results from deepseek-coder:6.7b on sample 114: CWE count 3.
+[36m[INFO][0m Analysis results from deepseek-coder:6.7b on sample 115: CWE count 1.
+[36m[INFO][0m Analysis results from deepseek-coder:6.7b on sample 116: CWE count 1.
+[36m[INFO][0m Analysis results from deepseek-coder:6.7b on sample 117: CWE count 1.
+[36m[INFO][0m Analysis results from deepseek-coder:6.7b on sample 118: CWE count 2.
+[36m[INFO][0m Analysis results from deepseek-coder:6.7b on sample 119: CWE count 5.
+[36m[INFO][0m Analysis results from deepseek-coder:6.7b on sample 120: CWE count 0.
+[32m[SUCCESS][0m Loaded 121 samples from the dataset.
+Processing Code Samples from SecurityEval.jsonl:   0%|          | 0/121 [00:00<?, ?it/s]Processing Code Samples from SecurityEval.jsonl:   1%|          | 1/121 [00:13<26:46, 13.38s/it]Processing Code Samples from SecurityEval.jsonl:   2%|▏         | 2/121 [00:16<14:56,  7.54s/it]Processing Code Samples from SecurityEval.jsonl:   2%|▏         | 3/121 [00:21<11:50,  6.02s/it]Processing Code Samples from SecurityEval.jsonl:   3%|▎         | 4/121 [00:25<10:20,  5.31s/it]Processing Code Samples from SecurityEval.jsonl:   4%|▍         | 5/121 [00:30<09:58,  5.16s/it]Processing Code Samples from SecurityEval.jsonl:   5%|▍         | 6/121 [00:34<09:16,  4.84s/it]Processing Code Samples from SecurityEval.jsonl:   6%|▌         | 7/121 [00:38<08:36,  4.53s/it]Processing Code Samples from SecurityEval.jsonl:   7%|▋         | 8/121 [00:42<08:14,  4.38s/it]Processing Code Samples from SecurityEval.jsonl:   7%|▋         | 9/121 [00:45<07:35,  4.07s/it]Processing Code Samples from SecurityEval.jsonl:   8%|▊         | 10/121 [00:49<07:21,  3.98s/it]Processing Code Samples from SecurityEval.jsonl:   9%|▉         | 11/121 [00:53<07:19,  4.00s/it]Processing Code Samples from SecurityEval.jsonl:  10%|▉         | 12/121 [00:57<07:23,  4.07s/it]Processing Code Samples from SecurityEval.jsonl:  11%|█         | 13/121 [01:02<07:38,  4.24s/it]Processing Code Samples from SecurityEval.jsonl:  12%|█▏        | 14/121 [01:06<07:20,  4.12s/it]Processing Code Samples from SecurityEval.jsonl:  12%|█▏        | 15/121 [01:10<07:34,  4.29s/it]Processing Code Samples from SecurityEval.jsonl:  13%|█▎        | 16/121 [01:15<07:47,  4.46s/it]Processing Code Samples from SecurityEval.jsonl:  14%|█▍        | 17/121 [01:19<07:24,  4.27s/it]Processing Code Samples from SecurityEval.jsonl:  15%|█▍        | 18/121 [01:26<08:27,  4.93s/it]Processing Code Samples from SecurityEval.jsonl:  16%|█▌        | 19/121 [01:31<08:33,  5.03s/it]Processing Code Samples from SecurityEval.jsonl:  17%|█▋        | 20/121 [01:35<07:48,  4.64s/it]Processing Code Samples from SecurityEval.jsonl:  17%|█▋        | 21/121 [01:38<07:18,  4.38s/it]Processing Code Samples from SecurityEval.jsonl:  18%|█▊        | 22/121 [01:43<07:13,  4.38s/it]Processing Code Samples from SecurityEval.jsonl:  19%|█▉        | 23/121 [01:47<07:06,  4.35s/it]Processing Code Samples from SecurityEval.jsonl:  20%|█▉        | 24/121 [01:51<06:58,  4.32s/it]Processing Code Samples from SecurityEval.jsonl:  21%|██        | 25/121 [01:55<06:34,  4.11s/it]Processing Code Samples from SecurityEval.jsonl:  21%|██▏       | 26/121 [02:01<07:15,  4.59s/it]Processing Code Samples from SecurityEval.jsonl:  22%|██▏       | 27/121 [02:04<06:43,  4.29s/it]Processing Code Samples from SecurityEval.jsonl:  23%|██▎       | 28/121 [02:09<06:43,  4.34s/it]Processing Code Samples from SecurityEval.jsonl:  24%|██▍       | 29/121 [02:14<07:01,  4.58s/it]Processing Code Samples from SecurityEval.jsonl:  25%|██▍       | 30/121 [02:20<07:36,  5.02s/it]Processing Code Samples from SecurityEval.jsonl:  26%|██▌       | 31/121 [02:24<07:05,  4.73s/it]Processing Code Samples from SecurityEval.jsonl:  26%|██▋       | 32/121 [02:29<07:10,  4.84s/it]Processing Code Samples from SecurityEval.jsonl:  27%|██▋       | 33/121 [02:36<08:15,  5.63s/it]Processing Code Samples from SecurityEval.jsonl:  28%|██▊       | 34/121 [02:42<07:55,  5.46s/it]Processing Code Samples from SecurityEval.jsonl:  29%|██▉       | 35/121 [02:46<07:29,  5.22s/it]Processing Code Samples from SecurityEval.jsonl:  30%|██▉       | 36/121 [02:51<07:06,  5.01s/it]Processing Code Samples from SecurityEval.jsonl:  31%|███       | 37/121 [02:55<06:33,  4.68s/it]Processing Code Samples from SecurityEval.jsonl:  31%|███▏      | 38/121 [02:59<06:22,  4.61s/it]Processing Code Samples from SecurityEval.jsonl:  32%|███▏      | 39/121 [03:06<07:13,  5.29s/it]Processing Code Samples from SecurityEval.jsonl:  33%|███▎      | 40/121 [03:10<06:38,  4.92s/it]Processing Code Samples from SecurityEval.jsonl:  34%|███▍      | 41/121 [03:16<06:59,  5.24s/it]Processing Code Samples from SecurityEval.jsonl:  35%|███▍      | 42/121 [03:21<06:42,  5.09s/it]Processing Code Samples from SecurityEval.jsonl:  36%|███▌      | 43/121 [03:25<06:21,  4.89s/it]Processing Code Samples from SecurityEval.jsonl:  36%|███▋      | 44/121 [03:32<06:59,  5.45s/it]Processing Code Samples from SecurityEval.jsonl:  37%|███▋      | 45/121 [03:37<06:43,  5.31s/it]Processing Code Samples from SecurityEval.jsonl:  38%|███▊      | 46/121 [03:43<06:56,  5.55s/it]Processing Code Samples from SecurityEval.jsonl:  39%|███▉      | 47/121 [03:47<06:16,  5.09s/it]Processing Code Samples from SecurityEval.jsonl:  40%|███▉      | 48/121 [03:52<06:01,  4.95s/it]Processing Code Samples from SecurityEval.jsonl:  40%|████      | 49/121 [03:56<05:42,  4.75s/it]Processing Code Samples from SecurityEval.jsonl:  41%|████▏     | 50/121 [04:00<05:26,  4.61s/it]Processing Code Samples from SecurityEval.jsonl:  42%|████▏     | 51/121 [04:06<05:49,  4.99s/it]Processing Code Samples from SecurityEval.jsonl:  43%|████▎     | 52/121 [04:11<05:44,  4.99s/it]Processing Code Samples from SecurityEval.jsonl:  44%|████▍     | 53/121 [04:15<05:11,  4.59s/it]Processing Code Samples from SecurityEval.jsonl:  45%|████▍     | 54/121 [04:20<05:16,  4.72s/it]Processing Code Samples from SecurityEval.jsonl:  45%|████▌     | 55/121 [04:26<05:41,  5.18s/it]Processing Code Samples from SecurityEval.jsonl:  46%|████▋     | 56/121 [04:32<05:46,  5.33s/it]Processing Code Samples from SecurityEval.jsonl:  47%|████▋     | 57/121 [04:37<05:41,  5.33s/it]Processing Code Samples from SecurityEval.jsonl:  48%|████▊     | 58/121 [04:42<05:30,  5.25s/it]Processing Code Samples from SecurityEval.jsonl:  49%|████▉     | 59/121 [04:47<05:13,  5.05s/it]Processing Code Samples from SecurityEval.jsonl:  50%|████▉     | 60/121 [04:51<05:01,  4.95s/it]Processing Code Samples from SecurityEval.jsonl:  50%|█████     | 61/121 [04:56<04:46,  4.78s/it]Processing Code Samples from SecurityEval.jsonl:  51%|█████     | 62/121 [05:01<04:49,  4.90s/it]Processing Code Samples from SecurityEval.jsonl:  52%|█████▏    | 63/121 [05:04<04:10,  4.33s/it]Processing Code Samples from SecurityEval.jsonl:  53%|█████▎    | 64/121 [05:08<04:05,  4.30s/it]Processing Code Samples from SecurityEval.jsonl:  54%|█████▎    | 65/121 [05:13<04:13,  4.53s/it]Processing Code Samples from SecurityEval.jsonl:  55%|█████▍    | 66/121 [05:17<04:03,  4.42s/it]Processing Code Samples from SecurityEval.jsonl:  55%|█████▌    | 67/121 [05:22<03:59,  4.43s/it]Processing Code Samples from SecurityEval.jsonl:  56%|█████▌    | 68/121 [05:26<03:54,  4.43s/it]Processing Code Samples from SecurityEval.jsonl:  57%|█████▋    | 69/121 [05:30<03:40,  4.25s/it]Processing Code Samples from SecurityEval.jsonl:  58%|█████▊    | 70/121 [05:34<03:34,  4.21s/it]Processing Code Samples from SecurityEval.jsonl:  59%|█████▊    | 71/121 [05:39<03:32,  4.24s/it]Processing Code Samples from SecurityEval.jsonl:  60%|█████▉    | 72/121 [05:42<03:16,  4.01s/it]Processing Code Samples from SecurityEval.jsonl:  60%|██████    | 73/121 [05:46<03:14,  4.06s/it]Processing Code Samples from SecurityEval.jsonl:  61%|██████    | 74/121 [05:51<03:19,  4.24s/it]Processing Code Samples from SecurityEval.jsonl:  62%|██████▏   | 75/121 [05:56<03:26,  4.49s/it]Processing Code Samples from SecurityEval.jsonl:  63%|██████▎   | 76/121 [06:00<03:21,  4.48s/it]Processing Code Samples from SecurityEval.jsonl:  64%|██████▎   | 77/121 [06:05<03:23,  4.62s/it]Processing Code Samples from SecurityEval.jsonl:  64%|██████▍   | 78/121 [06:12<03:45,  5.25s/it]Processing Code Samples from SecurityEval.jsonl:  65%|██████▌   | 79/121 [06:17<03:34,  5.11s/it]Processing Code Samples from SecurityEval.jsonl:  66%|██████▌   | 80/121 [06:21<03:23,  4.97s/it]Processing Code Samples from SecurityEval.jsonl:  67%|██████▋   | 81/121 [06:27<03:26,  5.16s/it]Processing Code Samples from SecurityEval.jsonl:  68%|██████▊   | 82/121 [06:31<03:04,  4.73s/it]Processing Code Samples from SecurityEval.jsonl:  69%|██████▊   | 83/121 [06:38<03:23,  5.36s/it]Processing Code Samples from SecurityEval.jsonl:  69%|██████▉   | 84/121 [06:44<03:24,  5.53s/it]Processing Code Samples from SecurityEval.jsonl:  70%|███████   | 85/121 [06:49<03:15,  5.44s/it]Processing Code Samples from SecurityEval.jsonl:  71%|███████   | 86/121 [06:54<03:05,  5.31s/it]Processing Code Samples from SecurityEval.jsonl:  72%|███████▏  | 87/121 [06:57<02:42,  4.79s/it]Processing Code Samples from SecurityEval.jsonl:  73%|███████▎  | 88/121 [07:01<02:31,  4.58s/it]Processing Code Samples from SecurityEval.jsonl:  74%|███████▎  | 89/121 [07:06<02:27,  4.62s/it]Processing Code Samples from SecurityEval.jsonl:  74%|███████▍  | 90/121 [07:10<02:17,  4.45s/it]Processing Code Samples from SecurityEval.jsonl:  75%|███████▌  | 91/121 [07:15<02:12,  4.43s/it]Processing Code Samples from SecurityEval.jsonl:  76%|███████▌  | 92/121 [07:19<02:05,  4.31s/it]Processing Code Samples from SecurityEval.jsonl:  77%|███████▋  | 93/121 [07:23<01:57,  4.21s/it]Processing Code Samples from SecurityEval.jsonl:  78%|███████▊  | 94/121 [07:27<01:52,  4.16s/it]Processing Code Samples from SecurityEval.jsonl:  79%|███████▊  | 95/121 [07:31<01:49,  4.20s/it]Processing Code Samples from SecurityEval.jsonl:  79%|███████▉  | 96/121 [07:36<01:51,  4.44s/it]Processing Code Samples from SecurityEval.jsonl:  80%|████████  | 97/121 [07:41<01:48,  4.53s/it]Processing Code Samples from SecurityEval.jsonl:  81%|████████  | 98/121 [07:46<01:48,  4.72s/it]Processing Code Samples from SecurityEval.jsonl:  82%|████████▏ | 99/121 [07:50<01:38,  4.48s/it]Processing Code Samples from SecurityEval.jsonl:  83%|████████▎ | 100/121 [07:54<01:29,  4.26s/it]Processing Code Samples from SecurityEval.jsonl:  83%|████████▎ | 101/121 [07:57<01:20,  4.05s/it]Processing Code Samples from SecurityEval.jsonl:  84%|████████▍ | 102/121 [08:01<01:18,  4.11s/it]Processing Code Samples from SecurityEval.jsonl:  85%|████████▌ | 103/121 [08:05<01:14,  4.13s/it]Processing Code Samples from SecurityEval.jsonl:  86%|████████▌ | 104/121 [08:10<01:12,  4.26s/it]Processing Code Samples from SecurityEval.jsonl:  87%|████████▋ | 105/121 [08:14<01:07,  4.20s/it][36m[INFO][0m Analysis results from devstral:24b on sample 0: CWE count 1.
+[36m[INFO][0m Analysis results from devstral:24b on sample 1: CWE count 1.
+[36m[INFO][0m Analysis results from devstral:24b on sample 2: CWE count 1.
+[36m[INFO][0m Analysis results from devstral:24b on sample 3: CWE count 1.
+[36m[INFO][0m Analysis results from devstral:24b on sample 4: CWE count 1.
+[36m[INFO][0m Analysis results from devstral:24b on sample 5: CWE count 1.
+[36m[INFO][0m Analysis results from devstral:24b on sample 6: CWE count 1.
+[36m[INFO][0m Analysis results from devstral:24b on sample 7: CWE count 1.
+[36m[INFO][0m Analysis results from devstral:24b on sample 8: CWE count 1.
+[36m[INFO][0m Analysis results from devstral:24b on sample 9: CWE count 1.
+[36m[INFO][0m Analysis results from devstral:24b on sample 10: CWE count 1.
+[36m[INFO][0m Analysis results from devstral:24b on sample 11: CWE count 1.
+[36m[INFO][0m Analysis results from devstral:24b on sample 12: CWE count 1.
+[36m[INFO][0m Analysis results from devstral:24b on sample 13: CWE count 1.
+[36m[INFO][0m Analysis results from devstral:24b on sample 14: CWE count 1.
+[36m[INFO][0m Analysis results from devstral:24b on sample 15: CWE count 1.
+[36m[INFO][0m Analysis results from devstral:24b on sample 16: CWE count 1.
+[36m[INFO][0m Analysis results from devstral:24b on sample 17: CWE count 1.
+[36m[INFO][0m Analysis results from devstral:24b on sample 18: CWE count 1.
+[36m[INFO][0m Analysis results from devstral:24b on sample 19: CWE count 1.
+[36m[INFO][0m Analysis results from devstral:24b on sample 20: CWE count 1.
+[36m[INFO][0m Analysis results from devstral:24b on sample 21: CWE count 1.
+[36m[INFO][0m Analysis results from devstral:24b on sample 22: CWE count 1.
+[36m[INFO][0m Analysis results from devstral:24b on sample 23: CWE count 1.
+[36m[INFO][0m Analysis results from devstral:24b on sample 24: CWE count 1.
+[36m[INFO][0m Analysis results from devstral:24b on sample 25: CWE count 1.
+[36m[INFO][0m Analysis results from devstral:24b on sample 26: CWE count 1.
+[36m[INFO][0m Analysis results from devstral:24b on sample 27: CWE count 1.
+[36m[INFO][0m Analysis results from devstral:24b on sample 28: CWE count 1.
+[36m[INFO][0m Analysis results from devstral:24b on sample 29: CWE count 1.
+[36m[INFO][0m Analysis results from devstral:24b on sample 30: CWE count 1.
+[36m[INFO][0m Analysis results from devstral:24b on sample 31: CWE count 1.
+[36m[INFO][0m Analysis results from devstral:24b on sample 32: CWE count 1.
+[36m[INFO][0m Analysis results from devstral:24b on sample 33: CWE count 1.
+[36m[INFO][0m Analysis results from devstral:24b on sample 34: CWE count 1.
+[36m[INFO][0m Analysis results from devstral:24b on sample 35: CWE count 1.
+[36m[INFO][0m Analysis results from devstral:24b on sample 36: CWE count 1.
+[36m[INFO][0m Analysis results from devstral:24b on sample 37: CWE count 1.
+[36m[INFO][0m Analysis results from devstral:24b on sample 38: CWE count 1.
+[36m[INFO][0m Analysis results from devstral:24b on sample 39: CWE count 1.
+[36m[INFO][0m Analysis results from devstral:24b on sample 40: CWE count 1.
+[36m[INFO][0m Analysis results from devstral:24b on sample 41: CWE count 1.
+[36m[INFO][0m Analysis results from devstral:24b on sample 42: CWE count 1.
+[36m[INFO][0m Analysis results from devstral:24b on sample 43: CWE count 1.
+[36m[INFO][0m Analysis results from devstral:24b on sample 44: CWE count 1.
+[36m[INFO][0m Analysis results from devstral:24b on sample 45: CWE count 1.
+[36m[INFO][0m Analysis results from devstral:24b on sample 46: CWE count 1.
+[36m[INFO][0m Analysis results from devstral:24b on sample 47: CWE count 1.
+[36m[INFO][0m Analysis results from devstral:24b on sample 48: CWE count 1.
+[36m[INFO][0m Analysis results from devstral:24b on sample 49: CWE count 1.
+[36m[INFO][0m Analysis results from devstral:24b on sample 50: CWE count 1.
+[36m[INFO][0m Analysis results from devstral:24b on sample 51: CWE count 1.
+[36m[INFO][0m Analysis results from devstral:24b on sample 52: CWE count 1.
+[36m[INFO][0m Analysis results from devstral:24b on sample 53: CWE count 1.
+[36m[INFO][0m Analysis results from devstral:24b on sample 54: CWE count 1.
+[36m[INFO][0m Analysis results from devstral:24b on sample 55: CWE count 1.
+[36m[INFO][0m Analysis results from devstral:24b on sample 56: CWE count 1.
+[36m[INFO][0m Analysis results from devstral:24b on sample 57: CWE count 1.
+[36m[INFO][0m Analysis results from devstral:24b on sample 58: CWE count 1.
+[36m[INFO][0m Analysis results from devstral:24b on sample 59: CWE count 1.
+[36m[INFO][0m Analysis results from devstral:24b on sample 60: CWE count 0.
+[36m[INFO][0m Analysis results from devstral:24b on sample 61: CWE count 1.
+[36m[INFO][0m Analysis results from devstral:24b on sample 62: CWE count 1.
+[36m[INFO][0m Analysis results from devstral:24b on sample 63: CWE count 1.
+[36m[INFO][0m Analysis results from devstral:24b on sample 64: CWE count 1.
+[36m[INFO][0m Analysis results from devstral:24b on sample 65: CWE count 1.
+[36m[INFO][0m Analysis results from devstral:24b on sample 66: CWE count 1.
+[36m[INFO][0m Analysis results from devstral:24b on sample 67: CWE count 1.
+[36m[INFO][0m Analysis results from devstral:24b on sample 68: CWE count 1.
+[36m[INFO][0m Analysis results from devstral:24b on sample 69: CWE count 1.
+[36m[INFO][0m Analysis results from devstral:24b on sample 70: CWE count 1.
+[36m[INFO][0m Analysis results from devstral:24b on sample 71: CWE count 1.
+[36m[INFO][0m Analysis results from devstral:24b on sample 72: CWE count 1.
+[36m[INFO][0m Analysis results from devstral:24b on sample 73: CWE count 1.
+[36m[INFO][0m Analysis results from devstral:24b on sample 74: CWE count 1.
+[36m[INFO][0m Analysis results from devstral:24b on sample 75: CWE count 1.
+[36m[INFO][0m Analysis results from devstral:24b on sample 76: CWE count 1.
+[36m[INFO][0m Analysis results from devstral:24b on sample 77: CWE count 1.
+[36m[INFO][0m Analysis results from devstral:24b on sample 78: CWE count 1.
+[36m[INFO][0m Analysis results from devstral:24b on sample 79: CWE count 1.
+[36m[INFO][0m Analysis results from devstral:24b on sample 80: CWE count 1.
+[36m[INFO][0m Analysis results from devstral:24b on sample 81: CWE count 1.
+[36m[INFO][0m Analysis results from devstral:24b on sample 82: CWE count 1.
+[36m[INFO][0m Analysis results from devstral:24b on sample 83: CWE count 1.
+[36m[INFO][0m Analysis results from devstral:24b on sample 84: CWE count 1.
+[36m[INFO][0m Analysis results from devstral:24b on sample 85: CWE count 1.
+[36m[INFO][0m Analysis results from devstral:24b on sample 86: CWE count 1.
+[36m[INFO][0m Analysis results from devstral:24b on sample 87: CWE count 1.
+[36m[INFO][0m Analysis results from devstral:24b on sample 88: CWE count 1.
+[36m[INFO][0m Analysis results from devstral:24b on sample 89: CWE count 1.
+[36m[INFO][0m Analysis results from devstral:24b on sample 90: CWE count 1.
+[36m[INFO][0m Analysis results from devstral:24b on sample 91: CWE count 1.
+[36m[INFO][0m Analysis results from devstral:24b on sample 92: CWE count 1.
+[36m[INFO][0m Analysis results from devstral:24b on sample 93: CWE count 1.
+[36m[INFO][0m Analysis results from devstral:24b on sample 94: CWE count 1.
+[36m[INFO][0m Analysis results from devstral:24b on sample 95: CWE count 1.
+[36m[INFO][0m Analysis results from devstral:24b on sample 96: CWE count 1.
+[36m[INFO][0m Analysis results from devstral:24b on sample 97: CWE count 1.
+[36m[INFO][0m Analysis results from devstral:24b on sample 98: CWE count 1.
+[36m[INFO][0m Analysis results from devstral:24b on sample 99: CWE count 1.
+[36m[INFO][0m Analysis results from devstral:24b on sample 100: CWE count 1.
+[36m[INFO][0m Analysis results from devstral:24b on sample 101: CWE count 1.
+[36m[INFO][0m Analysis results from devstral:24b on sample 102: CWE count 1.
+[36m[INFO][0m Analysis results from devstral:24b on sample 103: CWE count 1.
+[36m[INFO][0m Analysis results from devstral:24b on sample 104: CWE count 1.
+Processing Code Samples from SecurityEval.jsonl:  88%|████████▊ | 106/121 [08:19<01:06,  4.42s/it]Processing Code Samples from SecurityEval.jsonl:  88%|████████▊ | 107/121 [08:23<00:59,  4.22s/it]Processing Code Samples from SecurityEval.jsonl:  89%|████████▉ | 108/121 [08:27<00:56,  4.32s/it]Processing Code Samples from SecurityEval.jsonl:  90%|█████████ | 109/121 [08:32<00:53,  4.47s/it]Processing Code Samples from SecurityEval.jsonl:  91%|█████████ | 110/121 [08:39<00:57,  5.24s/it]Processing Code Samples from SecurityEval.jsonl:  92%|█████████▏| 111/121 [08:45<00:53,  5.39s/it]Processing Code Samples from SecurityEval.jsonl:  93%|█████████▎| 112/121 [08:49<00:44,  4.93s/it]Processing Code Samples from SecurityEval.jsonl:  93%|█████████▎| 113/121 [08:52<00:34,  4.36s/it]Processing Code Samples from SecurityEval.jsonl:  94%|█████████▍| 114/121 [08:56<00:30,  4.39s/it]Processing Code Samples from SecurityEval.jsonl:  95%|█████████▌| 115/121 [09:02<00:28,  4.74s/it]Processing Code Samples from SecurityEval.jsonl:  96%|█████████▌| 116/121 [09:07<00:23,  4.72s/it]Processing Code Samples from SecurityEval.jsonl:  97%|█████████▋| 117/121 [09:13<00:20,  5.13s/it]Processing Code Samples from SecurityEval.jsonl:  98%|█████████▊| 118/121 [09:17<00:14,  4.84s/it]Processing Code Samples from SecurityEval.jsonl:  98%|█████████▊| 119/121 [09:21<00:09,  4.66s/it]Processing Code Samples from SecurityEval.jsonl:  99%|█████████▉| 120/121 [09:27<00:05,  5.07s/it]Processing Code Samples from SecurityEval.jsonl: 100%|██████████| 121/121 [09:30<00:00,  4.52s/it]Processing Code Samples from SecurityEval.jsonl: 100%|██████████| 121/121 [09:30<00:00,  4.72s/it]
+[36m[INFO][0m Analysis results from devstral:24b on sample 105: CWE count 1.
+[36m[INFO][0m Analysis results from devstral:24b on sample 106: CWE count 1.
+[36m[INFO][0m Analysis results from devstral:24b on sample 107: CWE count 1.
+[36m[INFO][0m Analysis results from devstral:24b on sample 108: CWE count 1.
+[36m[INFO][0m Analysis results from devstral:24b on sample 109: CWE count 1.
+[36m[INFO][0m Analysis results from devstral:24b on sample 110: CWE count 1.
+[36m[INFO][0m Analysis results from devstral:24b on sample 111: CWE count 1.
+[36m[INFO][0m Analysis results from devstral:24b on sample 112: CWE count 1.
+[36m[INFO][0m Analysis results from devstral:24b on sample 113: CWE count 1.
+[36m[INFO][0m Analysis results from devstral:24b on sample 114: CWE count 1.
+[36m[INFO][0m Analysis results from devstral:24b on sample 115: CWE count 1.
+[36m[INFO][0m Analysis results from devstral:24b on sample 116: CWE count 1.
+[36m[INFO][0m Analysis results from devstral:24b on sample 117: CWE count 1.
+[36m[INFO][0m Analysis results from devstral:24b on sample 118: CWE count 1.
+[36m[INFO][0m Analysis results from devstral:24b on sample 119: CWE count 1.
+[36m[INFO][0m Analysis results from devstral:24b on sample 120: CWE count 1.

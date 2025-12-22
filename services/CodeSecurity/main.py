@@ -84,13 +84,14 @@ if __name__ == "__main__":
     saved_result_paths = []
     for llm_model in llm_models:
         evaluator = LLMEval(
-            dataset_path = "services/CodeSecurity/data/SVEN_python.json",
-            # vul_code_key = "Insecure_code",
-            vul_code_key = "func_src_before",
-            # true_label_key = "ID",
-            true_label_key = "vul_type",
+            # dataset_path = "services/CodeSecurity/data/SVEN_python.json",
+            dataset_path = "services/CodeSecurity/data/SecurityEval.jsonl",
+            vul_code_key = "Insecure_code",
+            # vul_code_key = "func_src_before",
+            true_label_key = "ID",
+            # true_label_key = "vul_type",
             llm_models = [llm_model],
-            # true_label_processing_func = lambda x: x.split("_")[0]
+            true_label_processing_func = lambda x: x.split("_")[0]
         )
         evaluator.run_evaluation()
         saved_result_paths.append(evaluator.consolidated_output_path)
