@@ -1,0 +1,3523 @@
+[
+  {
+    "sample_index": 0,
+    "true_label": "CWE-020",
+    "analysis": [
+      {
+        "llm_model": "CodeQL",
+        "parsed_response": {
+          "cwe": []
+        },
+        "_original_cwes": [],
+        "_cwe_confidence": {},
+        "_strategy": "any_match"
+      },
+      {
+        "llm_model": "Semgrep",
+        "parsed_response": {
+          "cwe": []
+        },
+        "_original_cwes": [],
+        "_cwe_confidence": {},
+        "_strategy": "any_match"
+      }
+    ]
+  },
+  {
+    "sample_index": 1,
+    "true_label": "CWE-020",
+    "analysis": [
+      {
+        "llm_model": "CodeQL",
+        "parsed_response": {
+          "cwe": []
+        },
+        "_original_cwes": [],
+        "_cwe_confidence": {},
+        "_strategy": "any_match"
+      },
+      {
+        "llm_model": "Semgrep",
+        "parsed_response": {
+          "cwe": [
+            "CWE-611"
+          ]
+        },
+        "_original_cwes": [
+          "CWE-611"
+        ],
+        "_cwe_confidence": {
+          "CWE-611": "LOW"
+        },
+        "_strategy": "any_match"
+      }
+    ]
+  },
+  {
+    "sample_index": 2,
+    "true_label": "CWE-020",
+    "analysis": [
+      {
+        "llm_model": "CodeQL",
+        "parsed_response": {
+          "cwe": [
+            "CWE-79"
+          ]
+        },
+        "_original_cwes": [
+          "CWE-79",
+          "CWE-116"
+        ],
+        "_cwe_confidence": {},
+        "_strategy": "any_match"
+      },
+      {
+        "llm_model": "Semgrep",
+        "parsed_response": {
+          "cwe": []
+        },
+        "_original_cwes": [],
+        "_cwe_confidence": {},
+        "_strategy": "any_match"
+      }
+    ]
+  },
+  {
+    "sample_index": 3,
+    "true_label": "CWE-020",
+    "analysis": [
+      {
+        "llm_model": "CodeQL",
+        "parsed_response": {
+          "cwe": [
+            "CWE-502"
+          ]
+        },
+        "_original_cwes": [
+          "CWE-502",
+          "CWE-79",
+          "CWE-116"
+        ],
+        "_cwe_confidence": {},
+        "_strategy": "any_match"
+      },
+      {
+        "llm_model": "Semgrep",
+        "parsed_response": {
+          "cwe": [
+            "CWE-502"
+          ]
+        },
+        "_original_cwes": [
+          "CWE-502"
+        ],
+        "_cwe_confidence": {
+          "CWE-502": "LOW"
+        },
+        "_strategy": "any_match"
+      }
+    ]
+  },
+  {
+    "sample_index": 4,
+    "true_label": "CWE-020",
+    "analysis": [
+      {
+        "llm_model": "CodeQL",
+        "parsed_response": {
+          "cwe": [
+            "CWE-20"
+          ]
+        },
+        "_original_cwes": [
+          "CWE-20",
+          "CWE-601"
+        ],
+        "_cwe_confidence": {},
+        "_strategy": "any_match"
+      },
+      {
+        "llm_model": "Semgrep",
+        "parsed_response": {
+          "cwe": [
+            "CWE-601"
+          ]
+        },
+        "_original_cwes": [
+          "CWE-601"
+        ],
+        "_cwe_confidence": {
+          "CWE-601": "LOW"
+        },
+        "_strategy": "any_match"
+      }
+    ]
+  },
+  {
+    "sample_index": 5,
+    "true_label": "CWE-020",
+    "analysis": [
+      {
+        "llm_model": "CodeQL",
+        "parsed_response": {
+          "cwe": [
+            "CWE-20"
+          ]
+        },
+        "_original_cwes": [
+          "CWE-20",
+          "CWE-601"
+        ],
+        "_cwe_confidence": {},
+        "_strategy": "any_match"
+      },
+      {
+        "llm_model": "Semgrep",
+        "parsed_response": {
+          "cwe": [
+            "CWE-601"
+          ]
+        },
+        "_original_cwes": [
+          "CWE-601"
+        ],
+        "_cwe_confidence": {
+          "CWE-601": "LOW"
+        },
+        "_strategy": "any_match"
+      }
+    ]
+  },
+  {
+    "sample_index": 6,
+    "true_label": "CWE-022",
+    "analysis": [
+      {
+        "llm_model": "CodeQL",
+        "parsed_response": {
+          "cwe": [
+            "CWE-22"
+          ]
+        },
+        "_original_cwes": [
+          "CWE-22",
+          "CWE-23",
+          "CWE-36",
+          "CWE-73",
+          "CWE-99"
+        ],
+        "_cwe_confidence": {},
+        "_strategy": "any_match"
+      },
+      {
+        "llm_model": "Semgrep",
+        "parsed_response": {
+          "cwe": []
+        },
+        "_original_cwes": [],
+        "_cwe_confidence": {},
+        "_strategy": "any_match"
+      }
+    ]
+  },
+  {
+    "sample_index": 7,
+    "true_label": "CWE-022",
+    "analysis": [
+      {
+        "llm_model": "CodeQL",
+        "parsed_response": {
+          "cwe": []
+        },
+        "_original_cwes": [],
+        "_cwe_confidence": {},
+        "_strategy": "any_match"
+      },
+      {
+        "llm_model": "Semgrep",
+        "parsed_response": {
+          "cwe": [
+            "CWE-939"
+          ]
+        },
+        "_original_cwes": [
+          "CWE-939"
+        ],
+        "_cwe_confidence": {
+          "CWE-939": "LOW"
+        },
+        "_strategy": "any_match"
+      }
+    ]
+  },
+  {
+    "sample_index": 8,
+    "true_label": "CWE-022",
+    "analysis": [
+      {
+        "llm_model": "CodeQL",
+        "parsed_response": {
+          "cwe": [
+            "CWE-22"
+          ]
+        },
+        "_original_cwes": [
+          "CWE-22",
+          "CWE-23",
+          "CWE-36",
+          "CWE-73",
+          "CWE-99"
+        ],
+        "_cwe_confidence": {},
+        "_strategy": "any_match"
+      },
+      {
+        "llm_model": "Semgrep",
+        "parsed_response": {
+          "cwe": [
+            "CWE-22"
+          ]
+        },
+        "_original_cwes": [
+          "CWE-22"
+        ],
+        "_cwe_confidence": {
+          "CWE-22": "MEDIUM"
+        },
+        "_strategy": "any_match"
+      }
+    ]
+  },
+  {
+    "sample_index": 9,
+    "true_label": "CWE-022",
+    "analysis": [
+      {
+        "llm_model": "CodeQL",
+        "parsed_response": {
+          "cwe": [
+            "CWE-22"
+          ]
+        },
+        "_original_cwes": [
+          "CWE-22"
+        ],
+        "_cwe_confidence": {},
+        "_strategy": "any_match"
+      },
+      {
+        "llm_model": "Semgrep",
+        "parsed_response": {
+          "cwe": []
+        },
+        "_original_cwes": [],
+        "_cwe_confidence": {},
+        "_strategy": "any_match"
+      }
+    ]
+  },
+  {
+    "sample_index": 10,
+    "true_label": "CWE-078",
+    "analysis": [
+      {
+        "llm_model": "CodeQL",
+        "parsed_response": {
+          "cwe": []
+        },
+        "_original_cwes": [],
+        "_cwe_confidence": {},
+        "_strategy": "any_match"
+      },
+      {
+        "llm_model": "Semgrep",
+        "parsed_response": {
+          "cwe": [
+            "CWE-78"
+          ]
+        },
+        "_original_cwes": [
+          "CWE-78"
+        ],
+        "_cwe_confidence": {
+          "CWE-78": "MEDIUM"
+        },
+        "_strategy": "any_match"
+      }
+    ]
+  },
+  {
+    "sample_index": 11,
+    "true_label": "CWE-078",
+    "analysis": [
+      {
+        "llm_model": "CodeQL",
+        "parsed_response": {
+          "cwe": [
+            "CWE-78"
+          ]
+        },
+        "_original_cwes": [
+          "CWE-78",
+          "CWE-88"
+        ],
+        "_cwe_confidence": {},
+        "_strategy": "any_match"
+      },
+      {
+        "llm_model": "Semgrep",
+        "parsed_response": {
+          "cwe": [
+            "CWE-78"
+          ]
+        },
+        "_original_cwes": [
+          "CWE-78"
+        ],
+        "_cwe_confidence": {
+          "CWE-78": "MEDIUM"
+        },
+        "_strategy": "any_match"
+      }
+    ]
+  },
+  {
+    "sample_index": 12,
+    "true_label": "CWE-079",
+    "analysis": [
+      {
+        "llm_model": "CodeQL",
+        "parsed_response": {
+          "cwe": [
+            "CWE-79"
+          ]
+        },
+        "_original_cwes": [
+          "CWE-79"
+        ],
+        "_cwe_confidence": {},
+        "_strategy": "any_match"
+      },
+      {
+        "llm_model": "Semgrep",
+        "parsed_response": {
+          "cwe": [
+            "CWE-116"
+          ]
+        },
+        "_original_cwes": [
+          "CWE-116"
+        ],
+        "_cwe_confidence": {
+          "CWE-116": "MEDIUM"
+        },
+        "_strategy": "any_match"
+      }
+    ]
+  },
+  {
+    "sample_index": 13,
+    "true_label": "CWE-079",
+    "analysis": [
+      {
+        "llm_model": "CodeQL",
+        "parsed_response": {
+          "cwe": [
+            "CWE-79"
+          ]
+        },
+        "_original_cwes": [
+          "CWE-79",
+          "CWE-116"
+        ],
+        "_cwe_confidence": {},
+        "_strategy": "any_match"
+      },
+      {
+        "llm_model": "Semgrep",
+        "parsed_response": {
+          "cwe": []
+        },
+        "_original_cwes": [],
+        "_cwe_confidence": {},
+        "_strategy": "any_match"
+      }
+    ]
+  },
+  {
+    "sample_index": 14,
+    "true_label": "CWE-079",
+    "analysis": [
+      {
+        "llm_model": "CodeQL",
+        "parsed_response": {
+          "cwe": [
+            "CWE-79"
+          ]
+        },
+        "_original_cwes": [
+          "CWE-79",
+          "CWE-116"
+        ],
+        "_cwe_confidence": {},
+        "_strategy": "any_match"
+      },
+      {
+        "llm_model": "Semgrep",
+        "parsed_response": {
+          "cwe": []
+        },
+        "_original_cwes": [],
+        "_cwe_confidence": {},
+        "_strategy": "any_match"
+      }
+    ]
+  },
+  {
+    "sample_index": 15,
+    "true_label": "CWE-080",
+    "analysis": [
+      {
+        "llm_model": "CodeQL",
+        "parsed_response": {
+          "cwe": [
+            "CWE-79"
+          ]
+        },
+        "_original_cwes": [
+          "CWE-79",
+          "CWE-116"
+        ],
+        "_cwe_confidence": {},
+        "_strategy": "any_match"
+      },
+      {
+        "llm_model": "Semgrep",
+        "parsed_response": {
+          "cwe": [
+            "CWE-79"
+          ]
+        },
+        "_original_cwes": [
+          "CWE-79"
+        ],
+        "_cwe_confidence": {
+          "CWE-79": "MEDIUM"
+        },
+        "_strategy": "any_match"
+      }
+    ]
+  },
+  {
+    "sample_index": 16,
+    "true_label": "CWE-089",
+    "analysis": [
+      {
+        "llm_model": "CodeQL",
+        "parsed_response": {
+          "cwe": []
+        },
+        "_original_cwes": [],
+        "_cwe_confidence": {},
+        "_strategy": "any_match"
+      },
+      {
+        "llm_model": "Semgrep",
+        "parsed_response": {
+          "cwe": [
+            "CWE-89"
+          ]
+        },
+        "_original_cwes": [
+          "CWE-89"
+        ],
+        "_cwe_confidence": {
+          "CWE-89": "LOW"
+        },
+        "_strategy": "any_match"
+      }
+    ]
+  },
+  {
+    "sample_index": 17,
+    "true_label": "CWE-089",
+    "analysis": [
+      {
+        "llm_model": "CodeQL",
+        "parsed_response": {
+          "cwe": []
+        },
+        "_original_cwes": [],
+        "_cwe_confidence": {},
+        "_strategy": "any_match"
+      },
+      {
+        "llm_model": "Semgrep",
+        "parsed_response": {
+          "cwe": [
+            "CWE-89"
+          ]
+        },
+        "_original_cwes": [
+          "CWE-89"
+        ],
+        "_cwe_confidence": {
+          "CWE-89": "LOW"
+        },
+        "_strategy": "any_match"
+      }
+    ]
+  },
+  {
+    "sample_index": 18,
+    "true_label": "CWE-090",
+    "analysis": [
+      {
+        "llm_model": "CodeQL",
+        "parsed_response": {
+          "cwe": [
+            "CWE-90"
+          ]
+        },
+        "_original_cwes": [
+          "CWE-90"
+        ],
+        "_cwe_confidence": {},
+        "_strategy": "any_match"
+      },
+      {
+        "llm_model": "Semgrep",
+        "parsed_response": {
+          "cwe": []
+        },
+        "_original_cwes": [],
+        "_cwe_confidence": {},
+        "_strategy": "any_match"
+      }
+    ]
+  },
+  {
+    "sample_index": 19,
+    "true_label": "CWE-090",
+    "analysis": [
+      {
+        "llm_model": "CodeQL",
+        "parsed_response": {
+          "cwe": [
+            "CWE-90"
+          ]
+        },
+        "_original_cwes": [
+          "CWE-90",
+          "CWE-287"
+        ],
+        "_cwe_confidence": {},
+        "_strategy": "any_match"
+      },
+      {
+        "llm_model": "Semgrep",
+        "parsed_response": {
+          "cwe": []
+        },
+        "_original_cwes": [],
+        "_cwe_confidence": {},
+        "_strategy": "any_match"
+      }
+    ]
+  },
+  {
+    "sample_index": 20,
+    "true_label": "CWE-094",
+    "analysis": [
+      {
+        "llm_model": "CodeQL",
+        "parsed_response": {
+          "cwe": []
+        },
+        "_original_cwes": [],
+        "_cwe_confidence": {},
+        "_strategy": "any_match"
+      },
+      {
+        "llm_model": "Semgrep",
+        "parsed_response": {
+          "cwe": []
+        },
+        "_original_cwes": [],
+        "_cwe_confidence": {},
+        "_strategy": "any_match"
+      }
+    ]
+  },
+  {
+    "sample_index": 21,
+    "true_label": "CWE-094",
+    "analysis": [
+      {
+        "llm_model": "CodeQL",
+        "parsed_response": {
+          "cwe": [
+            "CWE-94"
+          ]
+        },
+        "_original_cwes": [
+          "CWE-94",
+          "CWE-95",
+          "CWE-116"
+        ],
+        "_cwe_confidence": {},
+        "_strategy": "any_match"
+      },
+      {
+        "llm_model": "Semgrep",
+        "parsed_response": {
+          "cwe": [
+            "CWE-95"
+          ]
+        },
+        "_original_cwes": [
+          "CWE-78",
+          "CWE-95"
+        ],
+        "_cwe_confidence": {
+          "CWE-95": "MEDIUM"
+        },
+        "_strategy": "any_match"
+      }
+    ]
+  },
+  {
+    "sample_index": 22,
+    "true_label": "CWE-094",
+    "analysis": [
+      {
+        "llm_model": "CodeQL",
+        "parsed_response": {
+          "cwe": [
+            "CWE-94"
+          ]
+        },
+        "_original_cwes": [
+          "CWE-94",
+          "CWE-95",
+          "CWE-116"
+        ],
+        "_cwe_confidence": {},
+        "_strategy": "any_match"
+      },
+      {
+        "llm_model": "Semgrep",
+        "parsed_response": {
+          "cwe": [
+            "CWE-95"
+          ]
+        },
+        "_original_cwes": [
+          "CWE-95",
+          "CWE-78"
+        ],
+        "_cwe_confidence": {
+          "CWE-95": "MEDIUM"
+        },
+        "_strategy": "any_match"
+      }
+    ]
+  },
+  {
+    "sample_index": 23,
+    "true_label": "CWE-095",
+    "analysis": [
+      {
+        "llm_model": "CodeQL",
+        "parsed_response": {
+          "cwe": []
+        },
+        "_original_cwes": [],
+        "_cwe_confidence": {},
+        "_strategy": "any_match"
+      },
+      {
+        "llm_model": "Semgrep",
+        "parsed_response": {
+          "cwe": [
+            "CWE-95"
+          ]
+        },
+        "_original_cwes": [
+          "CWE-95"
+        ],
+        "_cwe_confidence": {
+          "CWE-95": "LOW"
+        },
+        "_strategy": "any_match"
+      }
+    ]
+  },
+  {
+    "sample_index": 24,
+    "true_label": "CWE-099",
+    "analysis": [
+      {
+        "llm_model": "CodeQL",
+        "parsed_response": {
+          "cwe": [
+            "CWE-99"
+          ]
+        },
+        "_original_cwes": [
+          "CWE-22",
+          "CWE-23",
+          "CWE-36",
+          "CWE-73",
+          "CWE-99"
+        ],
+        "_cwe_confidence": {},
+        "_strategy": "any_match"
+      },
+      {
+        "llm_model": "Semgrep",
+        "parsed_response": {
+          "cwe": []
+        },
+        "_original_cwes": [],
+        "_cwe_confidence": {},
+        "_strategy": "any_match"
+      }
+    ]
+  },
+  {
+    "sample_index": 25,
+    "true_label": "CWE-113",
+    "analysis": [
+      {
+        "llm_model": "CodeQL",
+        "parsed_response": {
+          "cwe": []
+        },
+        "_original_cwes": [],
+        "_cwe_confidence": {},
+        "_strategy": "any_match"
+      },
+      {
+        "llm_model": "Semgrep",
+        "parsed_response": {
+          "cwe": []
+        },
+        "_original_cwes": [],
+        "_cwe_confidence": {},
+        "_strategy": "any_match"
+      }
+    ]
+  },
+  {
+    "sample_index": 26,
+    "true_label": "CWE-113",
+    "analysis": [
+      {
+        "llm_model": "CodeQL",
+        "parsed_response": {
+          "cwe": []
+        },
+        "_original_cwes": [],
+        "_cwe_confidence": {},
+        "_strategy": "any_match"
+      },
+      {
+        "llm_model": "Semgrep",
+        "parsed_response": {
+          "cwe": []
+        },
+        "_original_cwes": [],
+        "_cwe_confidence": {},
+        "_strategy": "any_match"
+      }
+    ]
+  },
+  {
+    "sample_index": 27,
+    "true_label": "CWE-116",
+    "analysis": [
+      {
+        "llm_model": "CodeQL",
+        "parsed_response": {
+          "cwe": [
+            "CWE-78"
+          ]
+        },
+        "_original_cwes": [
+          "CWE-78",
+          "CWE-88"
+        ],
+        "_cwe_confidence": {},
+        "_strategy": "any_match"
+      },
+      {
+        "llm_model": "Semgrep",
+        "parsed_response": {
+          "cwe": [
+            "CWE-78"
+          ]
+        },
+        "_original_cwes": [
+          "CWE-78",
+          "CWE-377"
+        ],
+        "_cwe_confidence": {
+          "CWE-78": "MEDIUM"
+        },
+        "_strategy": "any_match"
+      }
+    ]
+  },
+  {
+    "sample_index": 28,
+    "true_label": "CWE-116",
+    "analysis": [
+      {
+        "llm_model": "CodeQL",
+        "parsed_response": {
+          "cwe": [
+            "CWE-116"
+          ]
+        },
+        "_original_cwes": [
+          "CWE-116",
+          "CWE-20",
+          "CWE-185",
+          "CWE-186"
+        ],
+        "_cwe_confidence": {},
+        "_strategy": "any_match"
+      },
+      {
+        "llm_model": "Semgrep",
+        "parsed_response": {
+          "cwe": []
+        },
+        "_original_cwes": [],
+        "_cwe_confidence": {},
+        "_strategy": "any_match"
+      }
+    ]
+  },
+  {
+    "sample_index": 29,
+    "true_label": "CWE-117",
+    "analysis": [
+      {
+        "llm_model": "CodeQL",
+        "parsed_response": {
+          "cwe": []
+        },
+        "_original_cwes": [],
+        "_cwe_confidence": {},
+        "_strategy": "any_match"
+      },
+      {
+        "llm_model": "Semgrep",
+        "parsed_response": {
+          "cwe": []
+        },
+        "_original_cwes": [],
+        "_cwe_confidence": {},
+        "_strategy": "any_match"
+      }
+    ]
+  },
+  {
+    "sample_index": 30,
+    "true_label": "CWE-117",
+    "analysis": [
+      {
+        "llm_model": "CodeQL",
+        "parsed_response": {
+          "cwe": [
+            "CWE-117"
+          ]
+        },
+        "_original_cwes": [
+          "CWE-117"
+        ],
+        "_cwe_confidence": {},
+        "_strategy": "any_match"
+      },
+      {
+        "llm_model": "Semgrep",
+        "parsed_response": {
+          "cwe": []
+        },
+        "_original_cwes": [],
+        "_cwe_confidence": {},
+        "_strategy": "any_match"
+      }
+    ]
+  },
+  {
+    "sample_index": 31,
+    "true_label": "CWE-117",
+    "analysis": [
+      {
+        "llm_model": "CodeQL",
+        "parsed_response": {
+          "cwe": []
+        },
+        "_original_cwes": [],
+        "_cwe_confidence": {},
+        "_strategy": "any_match"
+      },
+      {
+        "llm_model": "Semgrep",
+        "parsed_response": {
+          "cwe": []
+        },
+        "_original_cwes": [],
+        "_cwe_confidence": {},
+        "_strategy": "any_match"
+      }
+    ]
+  },
+  {
+    "sample_index": 32,
+    "true_label": "CWE-1204",
+    "analysis": [
+      {
+        "llm_model": "CodeQL",
+        "parsed_response": {
+          "cwe": []
+        },
+        "_original_cwes": [],
+        "_cwe_confidence": {},
+        "_strategy": "any_match"
+      },
+      {
+        "llm_model": "Semgrep",
+        "parsed_response": {
+          "cwe": [
+            "CWE-1104"
+          ]
+        },
+        "_original_cwes": [
+          "CWE-1104"
+        ],
+        "_cwe_confidence": {},
+        "_strategy": "any_match"
+      }
+    ]
+  },
+  {
+    "sample_index": 33,
+    "true_label": "CWE-193",
+    "analysis": [
+      {
+        "llm_model": "CodeQL",
+        "parsed_response": {
+          "cwe": []
+        },
+        "_original_cwes": [],
+        "_cwe_confidence": {},
+        "_strategy": "any_match"
+      },
+      {
+        "llm_model": "Semgrep",
+        "parsed_response": {
+          "cwe": []
+        },
+        "_original_cwes": [],
+        "_cwe_confidence": {},
+        "_strategy": "any_match"
+      }
+    ]
+  },
+  {
+    "sample_index": 34,
+    "true_label": "CWE-200",
+    "analysis": [
+      {
+        "llm_model": "CodeQL",
+        "parsed_response": {
+          "cwe": []
+        },
+        "_original_cwes": [],
+        "_cwe_confidence": {},
+        "_strategy": "any_match"
+      },
+      {
+        "llm_model": "Semgrep",
+        "parsed_response": {
+          "cwe": [
+            "CWE-89"
+          ]
+        },
+        "_original_cwes": [
+          "CWE-89"
+        ],
+        "_cwe_confidence": {},
+        "_strategy": "any_match"
+      }
+    ]
+  },
+  {
+    "sample_index": 35,
+    "true_label": "CWE-209",
+    "analysis": [
+      {
+        "llm_model": "CodeQL",
+        "parsed_response": {
+          "cwe": [
+            "CWE-209"
+          ]
+        },
+        "_original_cwes": [
+          "CWE-209",
+          "CWE-497"
+        ],
+        "_cwe_confidence": {},
+        "_strategy": "any_match"
+      },
+      {
+        "llm_model": "Semgrep",
+        "parsed_response": {
+          "cwe": []
+        },
+        "_original_cwes": [],
+        "_cwe_confidence": {},
+        "_strategy": "any_match"
+      }
+    ]
+  },
+  {
+    "sample_index": 36,
+    "true_label": "CWE-215",
+    "analysis": [
+      {
+        "llm_model": "CodeQL",
+        "parsed_response": {
+          "cwe": [
+            "CWE-215"
+          ]
+        },
+        "_original_cwes": [
+          "CWE-215",
+          "CWE-489"
+        ],
+        "_cwe_confidence": {},
+        "_strategy": "any_match"
+      },
+      {
+        "llm_model": "Semgrep",
+        "parsed_response": {
+          "cwe": [
+            "CWE-489"
+          ]
+        },
+        "_original_cwes": [
+          "CWE-489",
+          "CWE-668"
+        ],
+        "_cwe_confidence": {
+          "CWE-668": "MEDIUM",
+          "CWE-489": "HIGH"
+        },
+        "_strategy": "any_match"
+      }
+    ]
+  },
+  {
+    "sample_index": 37,
+    "true_label": "CWE-250",
+    "analysis": [
+      {
+        "llm_model": "CodeQL",
+        "parsed_response": {
+          "cwe": []
+        },
+        "_original_cwes": [],
+        "_cwe_confidence": {},
+        "_strategy": "any_match"
+      },
+      {
+        "llm_model": "Semgrep",
+        "parsed_response": {
+          "cwe": []
+        },
+        "_original_cwes": [],
+        "_cwe_confidence": {},
+        "_strategy": "any_match"
+      }
+    ]
+  },
+  {
+    "sample_index": 38,
+    "true_label": "CWE-252",
+    "analysis": [
+      {
+        "llm_model": "CodeQL",
+        "parsed_response": {
+          "cwe": []
+        },
+        "_original_cwes": [],
+        "_cwe_confidence": {},
+        "_strategy": "any_match"
+      },
+      {
+        "llm_model": "Semgrep",
+        "parsed_response": {
+          "cwe": []
+        },
+        "_original_cwes": [],
+        "_cwe_confidence": {},
+        "_strategy": "any_match"
+      }
+    ]
+  },
+  {
+    "sample_index": 39,
+    "true_label": "CWE-259",
+    "analysis": [
+      {
+        "llm_model": "CodeQL",
+        "parsed_response": {
+          "cwe": [
+            "CWE-208"
+          ]
+        },
+        "_original_cwes": [
+          "CWE-208"
+        ],
+        "_cwe_confidence": {},
+        "_strategy": "any_match"
+      },
+      {
+        "llm_model": "Semgrep",
+        "parsed_response": {
+          "cwe": []
+        },
+        "_original_cwes": [],
+        "_cwe_confidence": {},
+        "_strategy": "any_match"
+      }
+    ]
+  },
+  {
+    "sample_index": 40,
+    "true_label": "CWE-259",
+    "analysis": [
+      {
+        "llm_model": "CodeQL",
+        "parsed_response": {
+          "cwe": []
+        },
+        "_original_cwes": [],
+        "_cwe_confidence": {},
+        "_strategy": "any_match"
+      },
+      {
+        "llm_model": "Semgrep",
+        "parsed_response": {
+          "cwe": []
+        },
+        "_original_cwes": [],
+        "_cwe_confidence": {},
+        "_strategy": "any_match"
+      }
+    ]
+  },
+  {
+    "sample_index": 41,
+    "true_label": "CWE-269",
+    "analysis": [
+      {
+        "llm_model": "CodeQL",
+        "parsed_response": {
+          "cwe": []
+        },
+        "_original_cwes": [],
+        "_cwe_confidence": {},
+        "_strategy": "any_match"
+      },
+      {
+        "llm_model": "Semgrep",
+        "parsed_response": {
+          "cwe": []
+        },
+        "_original_cwes": [],
+        "_cwe_confidence": {},
+        "_strategy": "any_match"
+      }
+    ]
+  },
+  {
+    "sample_index": 42,
+    "true_label": "CWE-283",
+    "analysis": [
+      {
+        "llm_model": "CodeQL",
+        "parsed_response": {
+          "cwe": []
+        },
+        "_original_cwes": [],
+        "_cwe_confidence": {},
+        "_strategy": "any_match"
+      },
+      {
+        "llm_model": "Semgrep",
+        "parsed_response": {
+          "cwe": []
+        },
+        "_original_cwes": [],
+        "_cwe_confidence": {},
+        "_strategy": "any_match"
+      }
+    ]
+  },
+  {
+    "sample_index": 43,
+    "true_label": "CWE-285",
+    "analysis": [
+      {
+        "llm_model": "CodeQL",
+        "parsed_response": {
+          "cwe": []
+        },
+        "_original_cwes": [],
+        "_cwe_confidence": {},
+        "_strategy": "any_match"
+      },
+      {
+        "llm_model": "Semgrep",
+        "parsed_response": {
+          "cwe": []
+        },
+        "_original_cwes": [],
+        "_cwe_confidence": {},
+        "_strategy": "any_match"
+      }
+    ]
+  },
+  {
+    "sample_index": 44,
+    "true_label": "CWE-295",
+    "analysis": [
+      {
+        "llm_model": "CodeQL",
+        "parsed_response": {
+          "cwe": []
+        },
+        "_original_cwes": [],
+        "_cwe_confidence": {},
+        "_strategy": "any_match"
+      },
+      {
+        "llm_model": "Semgrep",
+        "parsed_response": {
+          "cwe": []
+        },
+        "_original_cwes": [],
+        "_cwe_confidence": {},
+        "_strategy": "any_match"
+      }
+    ]
+  },
+  {
+    "sample_index": 45,
+    "true_label": "CWE-295",
+    "analysis": [
+      {
+        "llm_model": "CodeQL",
+        "parsed_response": {
+          "cwe": []
+        },
+        "_original_cwes": [],
+        "_cwe_confidence": {},
+        "_strategy": "any_match"
+      },
+      {
+        "llm_model": "Semgrep",
+        "parsed_response": {
+          "cwe": []
+        },
+        "_original_cwes": [],
+        "_cwe_confidence": {},
+        "_strategy": "any_match"
+      }
+    ]
+  },
+  {
+    "sample_index": 46,
+    "true_label": "CWE-295",
+    "analysis": [
+      {
+        "llm_model": "CodeQL",
+        "parsed_response": {
+          "cwe": [
+            "CWE-295"
+          ]
+        },
+        "_original_cwes": [
+          "CWE-295"
+        ],
+        "_cwe_confidence": {},
+        "_strategy": "any_match"
+      },
+      {
+        "llm_model": "Semgrep",
+        "parsed_response": {
+          "cwe": [
+            "CWE-295"
+          ]
+        },
+        "_original_cwes": [
+          "CWE-400",
+          "CWE-295"
+        ],
+        "_cwe_confidence": {
+          "CWE-295": "LOW"
+        },
+        "_strategy": "any_match"
+      }
+    ]
+  },
+  {
+    "sample_index": 47,
+    "true_label": "CWE-306",
+    "analysis": [
+      {
+        "llm_model": "CodeQL",
+        "parsed_response": {
+          "cwe": []
+        },
+        "_original_cwes": [],
+        "_cwe_confidence": {},
+        "_strategy": "any_match"
+      },
+      {
+        "llm_model": "Semgrep",
+        "parsed_response": {
+          "cwe": []
+        },
+        "_original_cwes": [],
+        "_cwe_confidence": {},
+        "_strategy": "any_match"
+      }
+    ]
+  },
+  {
+    "sample_index": 48,
+    "true_label": "CWE-319",
+    "analysis": [
+      {
+        "llm_model": "CodeQL",
+        "parsed_response": {
+          "cwe": [
+            "CWE-614"
+          ]
+        },
+        "_original_cwes": [
+          "CWE-614",
+          "CWE-1004",
+          "CWE-1275"
+        ],
+        "_cwe_confidence": {},
+        "_strategy": "any_match"
+      },
+      {
+        "llm_model": "Semgrep",
+        "parsed_response": {
+          "cwe": [
+            "CWE-614"
+          ]
+        },
+        "_original_cwes": [
+          "CWE-614"
+        ],
+        "_cwe_confidence": {
+          "CWE-614": "LOW"
+        },
+        "_strategy": "any_match"
+      }
+    ]
+  },
+  {
+    "sample_index": 49,
+    "true_label": "CWE-319",
+    "analysis": [
+      {
+        "llm_model": "CodeQL",
+        "parsed_response": {
+          "cwe": []
+        },
+        "_original_cwes": [],
+        "_cwe_confidence": {},
+        "_strategy": "any_match"
+      },
+      {
+        "llm_model": "Semgrep",
+        "parsed_response": {
+          "cwe": []
+        },
+        "_original_cwes": [],
+        "_cwe_confidence": {},
+        "_strategy": "any_match"
+      }
+    ]
+  },
+  {
+    "sample_index": 50,
+    "true_label": "CWE-321",
+    "analysis": [
+      {
+        "llm_model": "CodeQL",
+        "parsed_response": {
+          "cwe": []
+        },
+        "_original_cwes": [],
+        "_cwe_confidence": {},
+        "_strategy": "any_match"
+      },
+      {
+        "llm_model": "Semgrep",
+        "parsed_response": {
+          "cwe": []
+        },
+        "_original_cwes": [],
+        "_cwe_confidence": {},
+        "_strategy": "any_match"
+      }
+    ]
+  },
+  {
+    "sample_index": 51,
+    "true_label": "CWE-321",
+    "analysis": [
+      {
+        "llm_model": "CodeQL",
+        "parsed_response": {
+          "cwe": []
+        },
+        "_original_cwes": [],
+        "_cwe_confidence": {},
+        "_strategy": "any_match"
+      },
+      {
+        "llm_model": "Semgrep",
+        "parsed_response": {
+          "cwe": []
+        },
+        "_original_cwes": [],
+        "_cwe_confidence": {},
+        "_strategy": "any_match"
+      }
+    ]
+  },
+  {
+    "sample_index": 52,
+    "true_label": "CWE-326",
+    "analysis": [
+      {
+        "llm_model": "CodeQL",
+        "parsed_response": {
+          "cwe": [
+            "CWE-326"
+          ]
+        },
+        "_original_cwes": [
+          "CWE-326"
+        ],
+        "_cwe_confidence": {},
+        "_strategy": "any_match"
+      },
+      {
+        "llm_model": "Semgrep",
+        "parsed_response": {
+          "cwe": [
+            "CWE-326"
+          ]
+        },
+        "_original_cwes": [
+          "CWE-1104",
+          "CWE-326"
+        ],
+        "_cwe_confidence": {
+          "CWE-326": "HIGH"
+        },
+        "_strategy": "any_match"
+      }
+    ]
+  },
+  {
+    "sample_index": 53,
+    "true_label": "CWE-326",
+    "analysis": [
+      {
+        "llm_model": "CodeQL",
+        "parsed_response": {
+          "cwe": [
+            "CWE-326"
+          ]
+        },
+        "_original_cwes": [
+          "CWE-326"
+        ],
+        "_cwe_confidence": {},
+        "_strategy": "any_match"
+      },
+      {
+        "llm_model": "Semgrep",
+        "parsed_response": {
+          "cwe": [
+            "CWE-326"
+          ]
+        },
+        "_original_cwes": [
+          "CWE-1104",
+          "CWE-326"
+        ],
+        "_cwe_confidence": {
+          "CWE-326": "HIGH"
+        },
+        "_strategy": "any_match"
+      }
+    ]
+  },
+  {
+    "sample_index": 54,
+    "true_label": "CWE-327",
+    "analysis": [
+      {
+        "llm_model": "CodeQL",
+        "parsed_response": {
+          "cwe": [
+            "CWE-327"
+          ]
+        },
+        "_original_cwes": [
+          "CWE-327"
+        ],
+        "_cwe_confidence": {},
+        "_strategy": "any_match"
+      },
+      {
+        "llm_model": "Semgrep",
+        "parsed_response": {
+          "cwe": [
+            "CWE-327"
+          ]
+        },
+        "_original_cwes": [
+          "CWE-1104",
+          "CWE-327"
+        ],
+        "_cwe_confidence": {
+          "CWE-327": "HIGH"
+        },
+        "_strategy": "any_match"
+      }
+    ]
+  },
+  {
+    "sample_index": 55,
+    "true_label": "CWE-327",
+    "analysis": [
+      {
+        "llm_model": "CodeQL",
+        "parsed_response": {
+          "cwe": [
+            "CWE-327"
+          ]
+        },
+        "_original_cwes": [
+          "CWE-327"
+        ],
+        "_cwe_confidence": {},
+        "_strategy": "any_match"
+      },
+      {
+        "llm_model": "Semgrep",
+        "parsed_response": {
+          "cwe": [
+            "CWE-326"
+          ]
+        },
+        "_original_cwes": [
+          "CWE-326"
+        ],
+        "_cwe_confidence": {
+          "CWE-326": "MEDIUM"
+        },
+        "_strategy": "any_match"
+      }
+    ]
+  },
+  {
+    "sample_index": 56,
+    "true_label": "CWE-327",
+    "analysis": [
+      {
+        "llm_model": "CodeQL",
+        "parsed_response": {
+          "cwe": [
+            "CWE-327"
+          ]
+        },
+        "_original_cwes": [
+          "CWE-327",
+          "CWE-328",
+          "CWE-916",
+          "CWE-208"
+        ],
+        "_cwe_confidence": {},
+        "_strategy": "any_match"
+      },
+      {
+        "llm_model": "Semgrep",
+        "parsed_response": {
+          "cwe": [
+            "CWE-327"
+          ]
+        },
+        "_original_cwes": [
+          "CWE-327"
+        ],
+        "_cwe_confidence": {
+          "CWE-327": "MEDIUM"
+        },
+        "_strategy": "any_match"
+      }
+    ]
+  },
+  {
+    "sample_index": 57,
+    "true_label": "CWE-327",
+    "analysis": [
+      {
+        "llm_model": "CodeQL",
+        "parsed_response": {
+          "cwe": [
+            "CWE-327"
+          ]
+        },
+        "_original_cwes": [
+          "CWE-327",
+          "CWE-328",
+          "CWE-916"
+        ],
+        "_cwe_confidence": {},
+        "_strategy": "any_match"
+      },
+      {
+        "llm_model": "Semgrep",
+        "parsed_response": {
+          "cwe": []
+        },
+        "_original_cwes": [],
+        "_cwe_confidence": {},
+        "_strategy": "any_match"
+      }
+    ]
+  },
+  {
+    "sample_index": 58,
+    "true_label": "CWE-329",
+    "analysis": [
+      {
+        "llm_model": "CodeQL",
+        "parsed_response": {
+          "cwe": []
+        },
+        "_original_cwes": [],
+        "_cwe_confidence": {},
+        "_strategy": "any_match"
+      },
+      {
+        "llm_model": "Semgrep",
+        "parsed_response": {
+          "cwe": [
+            "CWE-327"
+          ]
+        },
+        "_original_cwes": [
+          "CWE-327"
+        ],
+        "_cwe_confidence": {
+          "CWE-327": "MEDIUM"
+        },
+        "_strategy": "any_match"
+      }
+    ]
+  },
+  {
+    "sample_index": 59,
+    "true_label": "CWE-330",
+    "analysis": [
+      {
+        "llm_model": "CodeQL",
+        "parsed_response": {
+          "cwe": []
+        },
+        "_original_cwes": [],
+        "_cwe_confidence": {},
+        "_strategy": "any_match"
+      },
+      {
+        "llm_model": "Semgrep",
+        "parsed_response": {
+          "cwe": [
+            "CWE-330"
+          ]
+        },
+        "_original_cwes": [
+          "CWE-330"
+        ],
+        "_cwe_confidence": {},
+        "_strategy": "any_match"
+      }
+    ]
+  },
+  {
+    "sample_index": 60,
+    "true_label": "CWE-331",
+    "analysis": [
+      {
+        "llm_model": "CodeQL",
+        "parsed_response": {
+          "cwe": []
+        },
+        "_original_cwes": [],
+        "_cwe_confidence": {},
+        "_strategy": "any_match"
+      },
+      {
+        "llm_model": "Semgrep",
+        "parsed_response": {
+          "cwe": [
+            "CWE-330"
+          ]
+        },
+        "_original_cwes": [
+          "CWE-330"
+        ],
+        "_cwe_confidence": {},
+        "_strategy": "any_match"
+      }
+    ]
+  },
+  {
+    "sample_index": 61,
+    "true_label": "CWE-339",
+    "analysis": [
+      {
+        "llm_model": "CodeQL",
+        "parsed_response": {
+          "cwe": []
+        },
+        "_original_cwes": [],
+        "_cwe_confidence": {},
+        "_strategy": "any_match"
+      },
+      {
+        "llm_model": "Semgrep",
+        "parsed_response": {
+          "cwe": []
+        },
+        "_original_cwes": [],
+        "_cwe_confidence": {},
+        "_strategy": "any_match"
+      }
+    ]
+  },
+  {
+    "sample_index": 62,
+    "true_label": "CWE-347",
+    "analysis": [
+      {
+        "llm_model": "CodeQL",
+        "parsed_response": {
+          "cwe": [
+            "CWE-347"
+          ]
+        },
+        "_original_cwes": [
+          "CWE-347"
+        ],
+        "_cwe_confidence": {},
+        "_strategy": "any_match"
+      },
+      {
+        "llm_model": "Semgrep",
+        "parsed_response": {
+          "cwe": []
+        },
+        "_original_cwes": [],
+        "_cwe_confidence": {},
+        "_strategy": "any_match"
+      }
+    ]
+  },
+  {
+    "sample_index": 63,
+    "true_label": "CWE-347",
+    "analysis": [
+      {
+        "llm_model": "CodeQL",
+        "parsed_response": {
+          "cwe": [
+            "CWE-347"
+          ]
+        },
+        "_original_cwes": [
+          "CWE-347"
+        ],
+        "_cwe_confidence": {},
+        "_strategy": "any_match"
+      },
+      {
+        "llm_model": "Semgrep",
+        "parsed_response": {
+          "cwe": [
+            "CWE-287"
+          ]
+        },
+        "_original_cwes": [
+          "CWE-287"
+        ],
+        "_cwe_confidence": {
+          "CWE-287": "MEDIUM"
+        },
+        "_strategy": "any_match"
+      }
+    ]
+  },
+  {
+    "sample_index": 64,
+    "true_label": "CWE-347",
+    "analysis": [
+      {
+        "llm_model": "CodeQL",
+        "parsed_response": {
+          "cwe": [
+            "CWE-347"
+          ]
+        },
+        "_original_cwes": [
+          "CWE-347"
+        ],
+        "_cwe_confidence": {},
+        "_strategy": "any_match"
+      },
+      {
+        "llm_model": "Semgrep",
+        "parsed_response": {
+          "cwe": []
+        },
+        "_original_cwes": [],
+        "_cwe_confidence": {},
+        "_strategy": "any_match"
+      }
+    ]
+  },
+  {
+    "sample_index": 65,
+    "true_label": "CWE-367",
+    "analysis": [
+      {
+        "llm_model": "CodeQL",
+        "parsed_response": {
+          "cwe": []
+        },
+        "_original_cwes": [],
+        "_cwe_confidence": {},
+        "_strategy": "any_match"
+      },
+      {
+        "llm_model": "Semgrep",
+        "parsed_response": {
+          "cwe": []
+        },
+        "_original_cwes": [],
+        "_cwe_confidence": {},
+        "_strategy": "any_match"
+      }
+    ]
+  },
+  {
+    "sample_index": 66,
+    "true_label": "CWE-377",
+    "analysis": [
+      {
+        "llm_model": "CodeQL",
+        "parsed_response": {
+          "cwe": [
+            "CWE-377"
+          ]
+        },
+        "_original_cwes": [
+          "CWE-377"
+        ],
+        "_cwe_confidence": {},
+        "_strategy": "any_match"
+      },
+      {
+        "llm_model": "Semgrep",
+        "parsed_response": {
+          "cwe": [
+            "CWE-377"
+          ]
+        },
+        "_original_cwes": [
+          "CWE-377"
+        ],
+        "_cwe_confidence": {},
+        "_strategy": "any_match"
+      }
+    ]
+  },
+  {
+    "sample_index": 67,
+    "true_label": "CWE-379",
+    "analysis": [
+      {
+        "llm_model": "CodeQL",
+        "parsed_response": {
+          "cwe": [
+            "CWE-377"
+          ]
+        },
+        "_original_cwes": [
+          "CWE-377"
+        ],
+        "_cwe_confidence": {},
+        "_strategy": "any_match"
+      },
+      {
+        "llm_model": "Semgrep",
+        "parsed_response": {
+          "cwe": [
+            "CWE-377"
+          ]
+        },
+        "_original_cwes": [
+          "CWE-377"
+        ],
+        "_cwe_confidence": {},
+        "_strategy": "any_match"
+      }
+    ]
+  },
+  {
+    "sample_index": 68,
+    "true_label": "CWE-385",
+    "analysis": [
+      {
+        "llm_model": "CodeQL",
+        "parsed_response": {
+          "cwe": []
+        },
+        "_original_cwes": [],
+        "_cwe_confidence": {},
+        "_strategy": "any_match"
+      },
+      {
+        "llm_model": "Semgrep",
+        "parsed_response": {
+          "cwe": []
+        },
+        "_original_cwes": [],
+        "_cwe_confidence": {},
+        "_strategy": "any_match"
+      }
+    ]
+  },
+  {
+    "sample_index": 69,
+    "true_label": "CWE-400",
+    "analysis": [
+      {
+        "llm_model": "CodeQL",
+        "parsed_response": {
+          "cwe": [
+            "CWE-400"
+          ]
+        },
+        "_original_cwes": [
+          "CWE-730",
+          "CWE-400"
+        ],
+        "_cwe_confidence": {},
+        "_strategy": "any_match"
+      },
+      {
+        "llm_model": "Semgrep",
+        "parsed_response": {
+          "cwe": []
+        },
+        "_original_cwes": [],
+        "_cwe_confidence": {},
+        "_strategy": "any_match"
+      }
+    ]
+  },
+  {
+    "sample_index": 70,
+    "true_label": "CWE-406",
+    "analysis": [
+      {
+        "llm_model": "CodeQL",
+        "parsed_response": {
+          "cwe": []
+        },
+        "_original_cwes": [],
+        "_cwe_confidence": {},
+        "_strategy": "any_match"
+      },
+      {
+        "llm_model": "Semgrep",
+        "parsed_response": {
+          "cwe": []
+        },
+        "_original_cwes": [],
+        "_cwe_confidence": {},
+        "_strategy": "any_match"
+      }
+    ]
+  },
+  {
+    "sample_index": 71,
+    "true_label": "CWE-414",
+    "analysis": [
+      {
+        "llm_model": "CodeQL",
+        "parsed_response": {
+          "cwe": []
+        },
+        "_original_cwes": [],
+        "_cwe_confidence": {},
+        "_strategy": "any_match"
+      },
+      {
+        "llm_model": "Semgrep",
+        "parsed_response": {
+          "cwe": []
+        },
+        "_original_cwes": [],
+        "_cwe_confidence": {},
+        "_strategy": "any_match"
+      }
+    ]
+  },
+  {
+    "sample_index": 72,
+    "true_label": "CWE-425",
+    "analysis": [
+      {
+        "llm_model": "CodeQL",
+        "parsed_response": {
+          "cwe": []
+        },
+        "_original_cwes": [],
+        "_cwe_confidence": {},
+        "_strategy": "any_match"
+      },
+      {
+        "llm_model": "Semgrep",
+        "parsed_response": {
+          "cwe": []
+        },
+        "_original_cwes": [],
+        "_cwe_confidence": {},
+        "_strategy": "any_match"
+      }
+    ]
+  },
+  {
+    "sample_index": 73,
+    "true_label": "CWE-434",
+    "analysis": [
+      {
+        "llm_model": "CodeQL",
+        "parsed_response": {
+          "cwe": [
+            "CWE-22"
+          ]
+        },
+        "_original_cwes": [
+          "CWE-22",
+          "CWE-23",
+          "CWE-36",
+          "CWE-73",
+          "CWE-99"
+        ],
+        "_cwe_confidence": {},
+        "_strategy": "any_match"
+      },
+      {
+        "llm_model": "Semgrep",
+        "parsed_response": {
+          "cwe": []
+        },
+        "_original_cwes": [],
+        "_cwe_confidence": {},
+        "_strategy": "any_match"
+      }
+    ]
+  },
+  {
+    "sample_index": 74,
+    "true_label": "CWE-434",
+    "analysis": [
+      {
+        "llm_model": "CodeQL",
+        "parsed_response": {
+          "cwe": [
+            "CWE-22"
+          ]
+        },
+        "_original_cwes": [
+          "CWE-22",
+          "CWE-23",
+          "CWE-36",
+          "CWE-73",
+          "CWE-99"
+        ],
+        "_cwe_confidence": {},
+        "_strategy": "any_match"
+      },
+      {
+        "llm_model": "Semgrep",
+        "parsed_response": {
+          "cwe": []
+        },
+        "_original_cwes": [],
+        "_cwe_confidence": {},
+        "_strategy": "any_match"
+      }
+    ]
+  },
+  {
+    "sample_index": 75,
+    "true_label": "CWE-454",
+    "analysis": [
+      {
+        "llm_model": "CodeQL",
+        "parsed_response": {
+          "cwe": [
+            "CWE-208"
+          ]
+        },
+        "_original_cwes": [
+          "CWE-208"
+        ],
+        "_cwe_confidence": {},
+        "_strategy": "any_match"
+      },
+      {
+        "llm_model": "Semgrep",
+        "parsed_response": {
+          "cwe": []
+        },
+        "_original_cwes": [],
+        "_cwe_confidence": {},
+        "_strategy": "any_match"
+      }
+    ]
+  },
+  {
+    "sample_index": 76,
+    "true_label": "CWE-462",
+    "analysis": [
+      {
+        "llm_model": "CodeQL",
+        "parsed_response": {
+          "cwe": []
+        },
+        "_original_cwes": [],
+        "_cwe_confidence": {},
+        "_strategy": "any_match"
+      },
+      {
+        "llm_model": "Semgrep",
+        "parsed_response": {
+          "cwe": []
+        },
+        "_original_cwes": [],
+        "_cwe_confidence": {},
+        "_strategy": "any_match"
+      }
+    ]
+  },
+  {
+    "sample_index": 77,
+    "true_label": "CWE-477",
+    "analysis": [
+      {
+        "llm_model": "CodeQL",
+        "parsed_response": {
+          "cwe": []
+        },
+        "_original_cwes": [],
+        "_cwe_confidence": {},
+        "_strategy": "any_match"
+      },
+      {
+        "llm_model": "Semgrep",
+        "parsed_response": {
+          "cwe": []
+        },
+        "_original_cwes": [],
+        "_cwe_confidence": {},
+        "_strategy": "any_match"
+      }
+    ]
+  },
+  {
+    "sample_index": 78,
+    "true_label": "CWE-502",
+    "analysis": [
+      {
+        "llm_model": "CodeQL",
+        "parsed_response": {
+          "cwe": []
+        },
+        "_original_cwes": [],
+        "_cwe_confidence": {},
+        "_strategy": "any_match"
+      },
+      {
+        "llm_model": "Semgrep",
+        "parsed_response": {
+          "cwe": [
+            "CWE-502"
+          ]
+        },
+        "_original_cwes": [
+          "CWE-502"
+        ],
+        "_cwe_confidence": {
+          "CWE-502": "LOW"
+        },
+        "_strategy": "any_match"
+      }
+    ]
+  },
+  {
+    "sample_index": 79,
+    "true_label": "CWE-502",
+    "analysis": [
+      {
+        "llm_model": "CodeQL",
+        "parsed_response": {
+          "cwe": []
+        },
+        "_original_cwes": [],
+        "_cwe_confidence": {},
+        "_strategy": "any_match"
+      },
+      {
+        "llm_model": "Semgrep",
+        "parsed_response": {
+          "cwe": [
+            "CWE-502"
+          ]
+        },
+        "_original_cwes": [
+          "CWE-502"
+        ],
+        "_cwe_confidence": {
+          "CWE-502": "LOW"
+        },
+        "_strategy": "any_match"
+      }
+    ]
+  },
+  {
+    "sample_index": 80,
+    "true_label": "CWE-502",
+    "analysis": [
+      {
+        "llm_model": "CodeQL",
+        "parsed_response": {
+          "cwe": []
+        },
+        "_original_cwes": [],
+        "_cwe_confidence": {},
+        "_strategy": "any_match"
+      },
+      {
+        "llm_model": "Semgrep",
+        "parsed_response": {
+          "cwe": [
+            "CWE-502"
+          ]
+        },
+        "_original_cwes": [
+          "CWE-502"
+        ],
+        "_cwe_confidence": {
+          "CWE-502": "LOW"
+        },
+        "_strategy": "any_match"
+      }
+    ]
+  },
+  {
+    "sample_index": 81,
+    "true_label": "CWE-502",
+    "analysis": [
+      {
+        "llm_model": "CodeQL",
+        "parsed_response": {
+          "cwe": [
+            "CWE-502"
+          ]
+        },
+        "_original_cwes": [
+          "CWE-502"
+        ],
+        "_cwe_confidence": {},
+        "_strategy": "any_match"
+      },
+      {
+        "llm_model": "Semgrep",
+        "parsed_response": {
+          "cwe": [
+            "CWE-502"
+          ]
+        },
+        "_original_cwes": [
+          "CWE-502"
+        ],
+        "_cwe_confidence": {
+          "CWE-502": "LOW"
+        },
+        "_strategy": "any_match"
+      }
+    ]
+  },
+  {
+    "sample_index": 82,
+    "true_label": "CWE-521",
+    "analysis": [
+      {
+        "llm_model": "CodeQL",
+        "parsed_response": {
+          "cwe": []
+        },
+        "_original_cwes": [],
+        "_cwe_confidence": {},
+        "_strategy": "any_match"
+      },
+      {
+        "llm_model": "Semgrep",
+        "parsed_response": {
+          "cwe": []
+        },
+        "_original_cwes": [],
+        "_cwe_confidence": {},
+        "_strategy": "any_match"
+      }
+    ]
+  },
+  {
+    "sample_index": 83,
+    "true_label": "CWE-521",
+    "analysis": [
+      {
+        "llm_model": "CodeQL",
+        "parsed_response": {
+          "cwe": []
+        },
+        "_original_cwes": [],
+        "_cwe_confidence": {},
+        "_strategy": "any_match"
+      },
+      {
+        "llm_model": "Semgrep",
+        "parsed_response": {
+          "cwe": []
+        },
+        "_original_cwes": [],
+        "_cwe_confidence": {},
+        "_strategy": "any_match"
+      }
+    ]
+  },
+  {
+    "sample_index": 84,
+    "true_label": "CWE-522",
+    "analysis": [
+      {
+        "llm_model": "CodeQL",
+        "parsed_response": {
+          "cwe": [
+            "CWE-208"
+          ]
+        },
+        "_original_cwes": [
+          "CWE-208"
+        ],
+        "_cwe_confidence": {},
+        "_strategy": "any_match"
+      },
+      {
+        "llm_model": "Semgrep",
+        "parsed_response": {
+          "cwe": []
+        },
+        "_original_cwes": [],
+        "_cwe_confidence": {},
+        "_strategy": "any_match"
+      }
+    ]
+  },
+  {
+    "sample_index": 85,
+    "true_label": "CWE-522",
+    "analysis": [
+      {
+        "llm_model": "CodeQL",
+        "parsed_response": {
+          "cwe": [
+            "CWE-327"
+          ]
+        },
+        "_original_cwes": [
+          "CWE-327",
+          "CWE-328",
+          "CWE-916"
+        ],
+        "_cwe_confidence": {},
+        "_strategy": "any_match"
+      },
+      {
+        "llm_model": "Semgrep",
+        "parsed_response": {
+          "cwe": [
+            "CWE-327"
+          ]
+        },
+        "_original_cwes": [
+          "CWE-327"
+        ],
+        "_cwe_confidence": {
+          "CWE-327": "MEDIUM"
+        },
+        "_strategy": "any_match"
+      }
+    ]
+  },
+  {
+    "sample_index": 86,
+    "true_label": "CWE-595",
+    "analysis": [
+      {
+        "llm_model": "CodeQL",
+        "parsed_response": {
+          "cwe": []
+        },
+        "_original_cwes": [],
+        "_cwe_confidence": {},
+        "_strategy": "any_match"
+      },
+      {
+        "llm_model": "Semgrep",
+        "parsed_response": {
+          "cwe": []
+        },
+        "_original_cwes": [],
+        "_cwe_confidence": {},
+        "_strategy": "any_match"
+      }
+    ]
+  },
+  {
+    "sample_index": 87,
+    "true_label": "CWE-601",
+    "analysis": [
+      {
+        "llm_model": "CodeQL",
+        "parsed_response": {
+          "cwe": [
+            "CWE-601"
+          ]
+        },
+        "_original_cwes": [
+          "CWE-601"
+        ],
+        "_cwe_confidence": {},
+        "_strategy": "any_match"
+      },
+      {
+        "llm_model": "Semgrep",
+        "parsed_response": {
+          "cwe": [
+            "CWE-601"
+          ]
+        },
+        "_original_cwes": [
+          "CWE-601"
+        ],
+        "_cwe_confidence": {
+          "CWE-601": "LOW"
+        },
+        "_strategy": "any_match"
+      }
+    ]
+  },
+  {
+    "sample_index": 88,
+    "true_label": "CWE-601",
+    "analysis": [
+      {
+        "llm_model": "CodeQL",
+        "parsed_response": {
+          "cwe": []
+        },
+        "_original_cwes": [],
+        "_cwe_confidence": {},
+        "_strategy": "any_match"
+      },
+      {
+        "llm_model": "Semgrep",
+        "parsed_response": {
+          "cwe": [
+            "CWE-601"
+          ]
+        },
+        "_original_cwes": [
+          "CWE-601"
+        ],
+        "_cwe_confidence": {
+          "CWE-601": "MEDIUM"
+        },
+        "_strategy": "any_match"
+      }
+    ]
+  },
+  {
+    "sample_index": 89,
+    "true_label": "CWE-601",
+    "analysis": [
+      {
+        "llm_model": "CodeQL",
+        "parsed_response": {
+          "cwe": [
+            "CWE-601"
+          ]
+        },
+        "_original_cwes": [
+          "CWE-601"
+        ],
+        "_cwe_confidence": {},
+        "_strategy": "any_match"
+      },
+      {
+        "llm_model": "Semgrep",
+        "parsed_response": {
+          "cwe": [
+            "CWE-601"
+          ]
+        },
+        "_original_cwes": [
+          "CWE-601"
+        ],
+        "_cwe_confidence": {
+          "CWE-601": "LOW"
+        },
+        "_strategy": "any_match"
+      }
+    ]
+  },
+  {
+    "sample_index": 90,
+    "true_label": "CWE-601",
+    "analysis": [
+      {
+        "llm_model": "CodeQL",
+        "parsed_response": {
+          "cwe": []
+        },
+        "_original_cwes": [],
+        "_cwe_confidence": {},
+        "_strategy": "any_match"
+      },
+      {
+        "llm_model": "Semgrep",
+        "parsed_response": {
+          "cwe": []
+        },
+        "_original_cwes": [],
+        "_cwe_confidence": {},
+        "_strategy": "any_match"
+      }
+    ]
+  },
+  {
+    "sample_index": 91,
+    "true_label": "CWE-601",
+    "analysis": [
+      {
+        "llm_model": "CodeQL",
+        "parsed_response": {
+          "cwe": []
+        },
+        "_original_cwes": [],
+        "_cwe_confidence": {},
+        "_strategy": "any_match"
+      },
+      {
+        "llm_model": "Semgrep",
+        "parsed_response": {
+          "cwe": []
+        },
+        "_original_cwes": [],
+        "_cwe_confidence": {},
+        "_strategy": "any_match"
+      }
+    ]
+  },
+  {
+    "sample_index": 92,
+    "true_label": "CWE-605",
+    "analysis": [
+      {
+        "llm_model": "CodeQL",
+        "parsed_response": {
+          "cwe": [
+            "CWE-200"
+          ]
+        },
+        "_original_cwes": [
+          "CWE-200"
+        ],
+        "_cwe_confidence": {},
+        "_strategy": "any_match"
+      },
+      {
+        "llm_model": "Semgrep",
+        "parsed_response": {
+          "cwe": [
+            "CWE-200"
+          ]
+        },
+        "_original_cwes": [
+          "CWE-200"
+        ],
+        "_cwe_confidence": {
+          "CWE-200": "HIGH"
+        },
+        "_strategy": "any_match"
+      }
+    ]
+  },
+  {
+    "sample_index": 93,
+    "true_label": "CWE-611",
+    "analysis": [
+      {
+        "llm_model": "CodeQL",
+        "parsed_response": {
+          "cwe": [
+            "CWE-611"
+          ]
+        },
+        "_original_cwes": [
+          "CWE-611",
+          "CWE-827"
+        ],
+        "_cwe_confidence": {},
+        "_strategy": "any_match"
+      },
+      {
+        "llm_model": "Semgrep",
+        "parsed_response": {
+          "cwe": [
+            "CWE-611"
+          ]
+        },
+        "_original_cwes": [
+          "CWE-611"
+        ],
+        "_cwe_confidence": {},
+        "_strategy": "any_match"
+      }
+    ]
+  },
+  {
+    "sample_index": 94,
+    "true_label": "CWE-611",
+    "analysis": [
+      {
+        "llm_model": "CodeQL",
+        "parsed_response": {
+          "cwe": [
+            "CWE-611"
+          ]
+        },
+        "_original_cwes": [
+          "CWE-611",
+          "CWE-827"
+        ],
+        "_cwe_confidence": {},
+        "_strategy": "any_match"
+      },
+      {
+        "llm_model": "Semgrep",
+        "parsed_response": {
+          "cwe": [
+            "CWE-611"
+          ]
+        },
+        "_original_cwes": [
+          "CWE-611"
+        ],
+        "_cwe_confidence": {},
+        "_strategy": "any_match"
+      }
+    ]
+  },
+  {
+    "sample_index": 95,
+    "true_label": "CWE-611",
+    "analysis": [
+      {
+        "llm_model": "CodeQL",
+        "parsed_response": {
+          "cwe": []
+        },
+        "_original_cwes": [],
+        "_cwe_confidence": {},
+        "_strategy": "any_match"
+      },
+      {
+        "llm_model": "Semgrep",
+        "parsed_response": {
+          "cwe": [
+            "CWE-611"
+          ]
+        },
+        "_original_cwes": [
+          "CWE-611"
+        ],
+        "_cwe_confidence": {},
+        "_strategy": "any_match"
+      }
+    ]
+  },
+  {
+    "sample_index": 96,
+    "true_label": "CWE-611",
+    "analysis": [
+      {
+        "llm_model": "CodeQL",
+        "parsed_response": {
+          "cwe": []
+        },
+        "_original_cwes": [],
+        "_cwe_confidence": {},
+        "_strategy": "any_match"
+      },
+      {
+        "llm_model": "Semgrep",
+        "parsed_response": {
+          "cwe": [
+            "CWE-611"
+          ]
+        },
+        "_original_cwes": [
+          "CWE-611"
+        ],
+        "_cwe_confidence": {},
+        "_strategy": "any_match"
+      }
+    ]
+  },
+  {
+    "sample_index": 97,
+    "true_label": "CWE-611",
+    "analysis": [
+      {
+        "llm_model": "CodeQL",
+        "parsed_response": {
+          "cwe": []
+        },
+        "_original_cwes": [],
+        "_cwe_confidence": {},
+        "_strategy": "any_match"
+      },
+      {
+        "llm_model": "Semgrep",
+        "parsed_response": {
+          "cwe": [
+            "CWE-611"
+          ]
+        },
+        "_original_cwes": [
+          "CWE-611"
+        ],
+        "_cwe_confidence": {},
+        "_strategy": "any_match"
+      }
+    ]
+  },
+  {
+    "sample_index": 98,
+    "true_label": "CWE-611",
+    "analysis": [
+      {
+        "llm_model": "CodeQL",
+        "parsed_response": {
+          "cwe": []
+        },
+        "_original_cwes": [],
+        "_cwe_confidence": {},
+        "_strategy": "any_match"
+      },
+      {
+        "llm_model": "Semgrep",
+        "parsed_response": {
+          "cwe": [
+            "CWE-611"
+          ]
+        },
+        "_original_cwes": [
+          "CWE-611"
+        ],
+        "_cwe_confidence": {
+          "CWE-611": "LOW"
+        },
+        "_strategy": "any_match"
+      }
+    ]
+  },
+  {
+    "sample_index": 99,
+    "true_label": "CWE-641",
+    "analysis": [
+      {
+        "llm_model": "CodeQL",
+        "parsed_response": {
+          "cwe": [
+            "CWE-22"
+          ]
+        },
+        "_original_cwes": [
+          "CWE-22",
+          "CWE-23",
+          "CWE-36",
+          "CWE-73",
+          "CWE-99"
+        ],
+        "_cwe_confidence": {},
+        "_strategy": "any_match"
+      },
+      {
+        "llm_model": "Semgrep",
+        "parsed_response": {
+          "cwe": []
+        },
+        "_original_cwes": [],
+        "_cwe_confidence": {},
+        "_strategy": "any_match"
+      }
+    ]
+  },
+  {
+    "sample_index": 100,
+    "true_label": "CWE-643",
+    "analysis": [
+      {
+        "llm_model": "CodeQL",
+        "parsed_response": {
+          "cwe": []
+        },
+        "_original_cwes": [],
+        "_cwe_confidence": {},
+        "_strategy": "any_match"
+      },
+      {
+        "llm_model": "Semgrep",
+        "parsed_response": {
+          "cwe": [
+            "CWE-611"
+          ]
+        },
+        "_original_cwes": [
+          "CWE-611"
+        ],
+        "_cwe_confidence": {},
+        "_strategy": "any_match"
+      }
+    ]
+  },
+  {
+    "sample_index": 101,
+    "true_label": "CWE-643",
+    "analysis": [
+      {
+        "llm_model": "CodeQL",
+        "parsed_response": {
+          "cwe": [
+            "CWE-643"
+          ]
+        },
+        "_original_cwes": [
+          "CWE-643"
+        ],
+        "_cwe_confidence": {},
+        "_strategy": "any_match"
+      },
+      {
+        "llm_model": "Semgrep",
+        "parsed_response": {
+          "cwe": [
+            "CWE-611"
+          ]
+        },
+        "_original_cwes": [
+          "CWE-611"
+        ],
+        "_cwe_confidence": {
+          "CWE-611": "LOW"
+        },
+        "_strategy": "any_match"
+      }
+    ]
+  },
+  {
+    "sample_index": 102,
+    "true_label": "CWE-703",
+    "analysis": [
+      {
+        "llm_model": "CodeQL",
+        "parsed_response": {
+          "cwe": []
+        },
+        "_original_cwes": [],
+        "_cwe_confidence": {},
+        "_strategy": "any_match"
+      },
+      {
+        "llm_model": "Semgrep",
+        "parsed_response": {
+          "cwe": []
+        },
+        "_original_cwes": [],
+        "_cwe_confidence": {},
+        "_strategy": "any_match"
+      }
+    ]
+  },
+  {
+    "sample_index": 103,
+    "true_label": "CWE-703",
+    "analysis": [
+      {
+        "llm_model": "CodeQL",
+        "parsed_response": {
+          "cwe": []
+        },
+        "_original_cwes": [],
+        "_cwe_confidence": {},
+        "_strategy": "any_match"
+      },
+      {
+        "llm_model": "Semgrep",
+        "parsed_response": {
+          "cwe": []
+        },
+        "_original_cwes": [],
+        "_cwe_confidence": {},
+        "_strategy": "any_match"
+      }
+    ]
+  },
+  {
+    "sample_index": 104,
+    "true_label": "CWE-703",
+    "analysis": [
+      {
+        "llm_model": "CodeQL",
+        "parsed_response": {
+          "cwe": []
+        },
+        "_original_cwes": [],
+        "_cwe_confidence": {},
+        "_strategy": "any_match"
+      },
+      {
+        "llm_model": "Semgrep",
+        "parsed_response": {
+          "cwe": [
+            "CWE-754"
+          ]
+        },
+        "_original_cwes": [
+          "CWE-754"
+        ],
+        "_cwe_confidence": {},
+        "_strategy": "any_match"
+      }
+    ]
+  },
+  {
+    "sample_index": 105,
+    "true_label": "CWE-730",
+    "analysis": [
+      {
+        "llm_model": "CodeQL",
+        "parsed_response": {
+          "cwe": []
+        },
+        "_original_cwes": [],
+        "_cwe_confidence": {},
+        "_strategy": "any_match"
+      },
+      {
+        "llm_model": "Semgrep",
+        "parsed_response": {
+          "cwe": []
+        },
+        "_original_cwes": [],
+        "_cwe_confidence": {},
+        "_strategy": "any_match"
+      }
+    ]
+  },
+  {
+    "sample_index": 106,
+    "true_label": "CWE-730",
+    "analysis": [
+      {
+        "llm_model": "CodeQL",
+        "parsed_response": {
+          "cwe": [
+            "CWE-730"
+          ]
+        },
+        "_original_cwes": [
+          "CWE-730",
+          "CWE-400"
+        ],
+        "_cwe_confidence": {},
+        "_strategy": "any_match"
+      },
+      {
+        "llm_model": "Semgrep",
+        "parsed_response": {
+          "cwe": []
+        },
+        "_original_cwes": [],
+        "_cwe_confidence": {},
+        "_strategy": "any_match"
+      }
+    ]
+  },
+  {
+    "sample_index": 107,
+    "true_label": "CWE-730",
+    "analysis": [
+      {
+        "llm_model": "CodeQL",
+        "parsed_response": {
+          "cwe": [
+            "CWE-730"
+          ]
+        },
+        "_original_cwes": [
+          "CWE-730",
+          "CWE-400"
+        ],
+        "_cwe_confidence": {},
+        "_strategy": "any_match"
+      },
+      {
+        "llm_model": "Semgrep",
+        "parsed_response": {
+          "cwe": []
+        },
+        "_original_cwes": [],
+        "_cwe_confidence": {},
+        "_strategy": "any_match"
+      }
+    ]
+  },
+  {
+    "sample_index": 108,
+    "true_label": "CWE-732",
+    "analysis": [
+      {
+        "llm_model": "CodeQL",
+        "parsed_response": {
+          "cwe": [
+            "CWE-732"
+          ]
+        },
+        "_original_cwes": [
+          "CWE-732"
+        ],
+        "_cwe_confidence": {},
+        "_strategy": "any_match"
+      },
+      {
+        "llm_model": "Semgrep",
+        "parsed_response": {
+          "cwe": [
+            "CWE-276"
+          ]
+        },
+        "_original_cwes": [
+          "CWE-276",
+          "CWE-78"
+        ],
+        "_cwe_confidence": {
+          "CWE-276": "MEDIUM"
+        },
+        "_strategy": "any_match"
+      }
+    ]
+  },
+  {
+    "sample_index": 109,
+    "true_label": "CWE-759",
+    "analysis": [
+      {
+        "llm_model": "CodeQL",
+        "parsed_response": {
+          "cwe": [
+            "CWE-327"
+          ]
+        },
+        "_original_cwes": [
+          "CWE-327",
+          "CWE-328",
+          "CWE-916"
+        ],
+        "_cwe_confidence": {},
+        "_strategy": "any_match"
+      },
+      {
+        "llm_model": "Semgrep",
+        "parsed_response": {
+          "cwe": [
+            "CWE-327"
+          ]
+        },
+        "_original_cwes": [
+          "CWE-327"
+        ],
+        "_cwe_confidence": {
+          "CWE-327": "MEDIUM"
+        },
+        "_strategy": "any_match"
+      }
+    ]
+  },
+  {
+    "sample_index": 110,
+    "true_label": "CWE-760",
+    "analysis": [
+      {
+        "llm_model": "CodeQL",
+        "parsed_response": {
+          "cwe": []
+        },
+        "_original_cwes": [],
+        "_cwe_confidence": {},
+        "_strategy": "any_match"
+      },
+      {
+        "llm_model": "Semgrep",
+        "parsed_response": {
+          "cwe": []
+        },
+        "_original_cwes": [],
+        "_cwe_confidence": {},
+        "_strategy": "any_match"
+      }
+    ]
+  },
+  {
+    "sample_index": 111,
+    "true_label": "CWE-776",
+    "analysis": [
+      {
+        "llm_model": "CodeQL",
+        "parsed_response": {
+          "cwe": [
+            "CWE-776"
+          ]
+        },
+        "_original_cwes": [
+          "CWE-776",
+          "CWE-400"
+        ],
+        "_cwe_confidence": {},
+        "_strategy": "any_match"
+      },
+      {
+        "llm_model": "Semgrep",
+        "parsed_response": {
+          "cwe": [
+            "CWE-611"
+          ]
+        },
+        "_original_cwes": [
+          "CWE-611"
+        ],
+        "_cwe_confidence": {
+          "CWE-611": "LOW"
+        },
+        "_strategy": "any_match"
+      }
+    ]
+  },
+  {
+    "sample_index": 112,
+    "true_label": "CWE-798",
+    "analysis": [
+      {
+        "llm_model": "CodeQL",
+        "parsed_response": {
+          "cwe": []
+        },
+        "_original_cwes": [],
+        "_cwe_confidence": {},
+        "_strategy": "any_match"
+      },
+      {
+        "llm_model": "Semgrep",
+        "parsed_response": {
+          "cwe": []
+        },
+        "_original_cwes": [],
+        "_cwe_confidence": {},
+        "_strategy": "any_match"
+      }
+    ]
+  },
+  {
+    "sample_index": 113,
+    "true_label": "CWE-798",
+    "analysis": [
+      {
+        "llm_model": "CodeQL",
+        "parsed_response": {
+          "cwe": [
+            "CWE-208"
+          ]
+        },
+        "_original_cwes": [
+          "CWE-208"
+        ],
+        "_cwe_confidence": {},
+        "_strategy": "any_match"
+      },
+      {
+        "llm_model": "Semgrep",
+        "parsed_response": {
+          "cwe": []
+        },
+        "_original_cwes": [],
+        "_cwe_confidence": {},
+        "_strategy": "any_match"
+      }
+    ]
+  },
+  {
+    "sample_index": 114,
+    "true_label": "CWE-827",
+    "analysis": [
+      {
+        "llm_model": "CodeQL",
+        "parsed_response": {
+          "cwe": []
+        },
+        "_original_cwes": [],
+        "_cwe_confidence": {},
+        "_strategy": "any_match"
+      },
+      {
+        "llm_model": "Semgrep",
+        "parsed_response": {
+          "cwe": [
+            "CWE-611"
+          ]
+        },
+        "_original_cwes": [
+          "CWE-611"
+        ],
+        "_cwe_confidence": {},
+        "_strategy": "any_match"
+      }
+    ]
+  },
+  {
+    "sample_index": 115,
+    "true_label": "CWE-835",
+    "analysis": [
+      {
+        "llm_model": "CodeQL",
+        "parsed_response": {
+          "cwe": []
+        },
+        "_original_cwes": [],
+        "_cwe_confidence": {},
+        "_strategy": "any_match"
+      },
+      {
+        "llm_model": "Semgrep",
+        "parsed_response": {
+          "cwe": []
+        },
+        "_original_cwes": [],
+        "_cwe_confidence": {},
+        "_strategy": "any_match"
+      }
+    ]
+  },
+  {
+    "sample_index": 116,
+    "true_label": "CWE-841",
+    "analysis": [
+      {
+        "llm_model": "CodeQL",
+        "parsed_response": {
+          "cwe": []
+        },
+        "_original_cwes": [],
+        "_cwe_confidence": {},
+        "_strategy": "any_match"
+      },
+      {
+        "llm_model": "Semgrep",
+        "parsed_response": {
+          "cwe": []
+        },
+        "_original_cwes": [],
+        "_cwe_confidence": {},
+        "_strategy": "any_match"
+      }
+    ]
+  },
+  {
+    "sample_index": 117,
+    "true_label": "CWE-918",
+    "analysis": [
+      {
+        "llm_model": "CodeQL",
+        "parsed_response": {
+          "cwe": [
+            "CWE-918"
+          ]
+        },
+        "_original_cwes": [
+          "CWE-79",
+          "CWE-116",
+          "CWE-918"
+        ],
+        "_cwe_confidence": {},
+        "_strategy": "any_match"
+      },
+      {
+        "llm_model": "Semgrep",
+        "parsed_response": {
+          "cwe": [
+            "CWE-918"
+          ]
+        },
+        "_original_cwes": [
+          "CWE-918",
+          "CWE-400"
+        ],
+        "_cwe_confidence": {
+          "CWE-918": "MEDIUM"
+        },
+        "_strategy": "any_match"
+      }
+    ]
+  },
+  {
+    "sample_index": 118,
+    "true_label": "CWE-918",
+    "analysis": [
+      {
+        "llm_model": "CodeQL",
+        "parsed_response": {
+          "cwe": [
+            "CWE-918"
+          ]
+        },
+        "_original_cwes": [
+          "CWE-79",
+          "CWE-116",
+          "CWE-918"
+        ],
+        "_cwe_confidence": {},
+        "_strategy": "any_match"
+      },
+      {
+        "llm_model": "Semgrep",
+        "parsed_response": {
+          "cwe": [
+            "CWE-918"
+          ]
+        },
+        "_original_cwes": [
+          "CWE-918",
+          "CWE-400"
+        ],
+        "_cwe_confidence": {
+          "CWE-918": "MEDIUM"
+        },
+        "_strategy": "any_match"
+      }
+    ]
+  },
+  {
+    "sample_index": 119,
+    "true_label": "CWE-941",
+    "analysis": [
+      {
+        "llm_model": "CodeQL",
+        "parsed_response": {
+          "cwe": []
+        },
+        "_original_cwes": [],
+        "_cwe_confidence": {},
+        "_strategy": "any_match"
+      },
+      {
+        "llm_model": "Semgrep",
+        "parsed_response": {
+          "cwe": []
+        },
+        "_original_cwes": [],
+        "_cwe_confidence": {},
+        "_strategy": "any_match"
+      }
+    ]
+  },
+  {
+    "sample_index": 120,
+    "true_label": "CWE-943",
+    "analysis": [
+      {
+        "llm_model": "CodeQL",
+        "parsed_response": {
+          "cwe": []
+        },
+        "_original_cwes": [],
+        "_cwe_confidence": {},
+        "_strategy": "any_match"
+      },
+      {
+        "llm_model": "Semgrep",
+        "parsed_response": {
+          "cwe": []
+        },
+        "_original_cwes": [],
+        "_cwe_confidence": {},
+        "_strategy": "any_match"
+      }
+    ]
+  }
+]

@@ -13,7 +13,8 @@ class ALPHAMultiRun:
     and majority voting consensus.
     """
 
-    def __init__(self, graph):
+    def __init__(self, 
+                 graph):
         """
         Initialise with a CWE graph instance.
 
