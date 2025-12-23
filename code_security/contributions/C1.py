@@ -44,15 +44,19 @@ e_3 = ("services/CodeSecurity/experiments/exp_dir_SVEN_python_3/SVEN_python_qwen
 #     output_dir='code_security/alpha_results/sven_multi_run'
 # )
 
-# SAST
-sven = "services/CodeSecurity/experiments/SAST/SVEN_sast_transformed_confidence.json"
-security_eval = "services/CodeSecurity/experiments/SAST/SecurityEval_sast_transformed_confidence.json"
+# SAST confidence
+# sven = "services/CodeSecurity/experiments/SAST/SVEN_sast_transformed_confidence.json"
+# security_eval = "services/CodeSecurity/experiments/SAST/SecurityEval_sast_transformed_confidence.json"
+
+# SAST any match
+sven = "services/CodeSecurity/experiments/SAST/SVEN_sast_transformed_any_match.json"
+security_eval = "services/CodeSecurity/experiments/SAST/SecurityEval_sast_transformed_any_match.json"
 
 alpha_instance = ALPHA(
-    # predictions_path=sven,
-    predictions_path=security_eval,
+    predictions_path=sven,
+    # predictions_path=security_eval,
     eda_path=EDA_PATH
 )
 alpha_instance.export_alpha(
-    output_path="code_security/alpha_results/sast_security_eval/sast_security_eval.json"
+    output_path="code_security/alpha_results/sast_sven_any/sast_sven_any.json"
 )

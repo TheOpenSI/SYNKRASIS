@@ -1,0 +1,970 @@
+[
+  {
+    "sample_index": 0,
+    "ground_truth": "20",
+    "penalty_scores": {
+      "CodeQL": 17.5,
+      "Semgrep": 17.5
+    }
+  },
+  {
+    "sample_index": 1,
+    "ground_truth": "20",
+    "penalty_scores": {
+      "CodeQL": 17.5,
+      "Semgrep": 5.4
+    }
+  },
+  {
+    "sample_index": 2,
+    "ground_truth": "20",
+    "penalty_scores": {
+      "CodeQL": 5.4,
+      "Semgrep": 17.5
+    }
+  },
+  {
+    "sample_index": 3,
+    "ground_truth": "20",
+    "penalty_scores": {
+      "CodeQL": 5.4,
+      "Semgrep": 5.4
+    }
+  },
+  {
+    "sample_index": 4,
+    "ground_truth": "20",
+    "penalty_scores": {
+      "CodeQL": 0.0,
+      "Semgrep": 5.4
+    }
+  },
+  {
+    "sample_index": 5,
+    "ground_truth": "20",
+    "penalty_scores": {
+      "CodeQL": 0.0,
+      "Semgrep": 5.4
+    }
+  },
+  {
+    "sample_index": 6,
+    "ground_truth": "22",
+    "penalty_scores": {
+      "CodeQL": 0.0,
+      "Semgrep": 17.5
+    }
+  },
+  {
+    "sample_index": 7,
+    "ground_truth": "22",
+    "penalty_scores": {
+      "CodeQL": 17.5,
+      "Semgrep": 12.6
+    }
+  },
+  {
+    "sample_index": 8,
+    "ground_truth": "22",
+    "penalty_scores": {
+      "CodeQL": 0.0,
+      "Semgrep": 0.0
+    }
+  },
+  {
+    "sample_index": 9,
+    "ground_truth": "22",
+    "penalty_scores": {
+      "CodeQL": 0.0,
+      "Semgrep": 17.5
+    }
+  },
+  {
+    "sample_index": 10,
+    "ground_truth": "78",
+    "penalty_scores": {
+      "CodeQL": 17.5,
+      "Semgrep": 0.0
+    }
+  },
+  {
+    "sample_index": 11,
+    "ground_truth": "78",
+    "penalty_scores": {
+      "CodeQL": 0.0,
+      "Semgrep": 0.0
+    }
+  },
+  {
+    "sample_index": 12,
+    "ground_truth": "79",
+    "penalty_scores": {
+      "CodeQL": 0.0,
+      "Semgrep": 5.4
+    }
+  },
+  {
+    "sample_index": 13,
+    "ground_truth": "79",
+    "penalty_scores": {
+      "CodeQL": 0.0,
+      "Semgrep": 17.5
+    }
+  },
+  {
+    "sample_index": 14,
+    "ground_truth": "79",
+    "penalty_scores": {
+      "CodeQL": 0.0,
+      "Semgrep": 17.5
+    }
+  },
+  {
+    "sample_index": 15,
+    "ground_truth": "80",
+    "penalty_scores": {
+      "CodeQL": 2.0,
+      "Semgrep": 2.0
+    }
+  },
+  {
+    "sample_index": 16,
+    "ground_truth": "89",
+    "penalty_scores": {
+      "CodeQL": 17.5,
+      "Semgrep": 0.0
+    }
+  },
+  {
+    "sample_index": 17,
+    "ground_truth": "89",
+    "penalty_scores": {
+      "CodeQL": 17.5,
+      "Semgrep": 0.0
+    }
+  },
+  {
+    "sample_index": 18,
+    "ground_truth": "90",
+    "penalty_scores": {
+      "CodeQL": 0.0,
+      "Semgrep": 17.5
+    }
+  },
+  {
+    "sample_index": 19,
+    "ground_truth": "90",
+    "penalty_scores": {
+      "CodeQL": 0.0,
+      "Semgrep": 17.5
+    }
+  },
+  {
+    "sample_index": 20,
+    "ground_truth": "94",
+    "penalty_scores": {
+      "CodeQL": 17.5,
+      "Semgrep": 17.5
+    }
+  },
+  {
+    "sample_index": 21,
+    "ground_truth": "94",
+    "penalty_scores": {
+      "CodeQL": 0.0,
+      "Semgrep": 1.3333333333333335
+    }
+  },
+  {
+    "sample_index": 22,
+    "ground_truth": "94",
+    "penalty_scores": {
+      "CodeQL": 0.0,
+      "Semgrep": 1.3333333333333335
+    }
+  },
+  {
+    "sample_index": 23,
+    "ground_truth": "95",
+    "penalty_scores": {
+      "CodeQL": 17.5,
+      "Semgrep": 0.0
+    }
+  },
+  {
+    "sample_index": 24,
+    "ground_truth": "99",
+    "penalty_scores": {
+      "CodeQL": 0.0,
+      "Semgrep": 17.5
+    }
+  },
+  {
+    "sample_index": 25,
+    "ground_truth": "113",
+    "penalty_scores": {
+      "CodeQL": 17.5,
+      "Semgrep": 17.5
+    }
+  },
+  {
+    "sample_index": 26,
+    "ground_truth": "113",
+    "penalty_scores": {
+      "CodeQL": 17.5,
+      "Semgrep": 17.5
+    }
+  },
+  {
+    "sample_index": 27,
+    "ground_truth": "116",
+    "penalty_scores": {
+      "CodeQL": 5.4,
+      "Semgrep": 5.4
+    }
+  },
+  {
+    "sample_index": 28,
+    "ground_truth": "116",
+    "penalty_scores": {
+      "CodeQL": 0.0,
+      "Semgrep": 17.5
+    }
+  },
+  {
+    "sample_index": 29,
+    "ground_truth": "117",
+    "penalty_scores": {
+      "CodeQL": 17.5,
+      "Semgrep": 17.5
+    }
+  },
+  {
+    "sample_index": 30,
+    "ground_truth": "117",
+    "penalty_scores": {
+      "CodeQL": 0.0,
+      "Semgrep": 17.5
+    }
+  },
+  {
+    "sample_index": 31,
+    "ground_truth": "117",
+    "penalty_scores": {
+      "CodeQL": 17.5,
+      "Semgrep": 17.5
+    }
+  },
+  {
+    "sample_index": 32,
+    "ground_truth": "1204",
+    "penalty_scores": {
+      "CodeQL": 17.5,
+      "Semgrep": 9.0
+    }
+  },
+  {
+    "sample_index": 33,
+    "ground_truth": "193",
+    "penalty_scores": {
+      "CodeQL": 17.5,
+      "Semgrep": 17.5
+    }
+  },
+  {
+    "sample_index": 34,
+    "ground_truth": "200",
+    "penalty_scores": {
+      "CodeQL": 17.5,
+      "Semgrep": 10.8
+    }
+  },
+  {
+    "sample_index": 35,
+    "ground_truth": "209",
+    "penalty_scores": {
+      "CodeQL": 0.0,
+      "Semgrep": 17.5
+    }
+  },
+  {
+    "sample_index": 36,
+    "ground_truth": "215",
+    "penalty_scores": {
+      "CodeQL": 0.0,
+      "Semgrep": 12.6
+    }
+  },
+  {
+    "sample_index": 37,
+    "ground_truth": "250",
+    "penalty_scores": {
+      "CodeQL": 17.5,
+      "Semgrep": 17.5
+    }
+  },
+  {
+    "sample_index": 38,
+    "ground_truth": "252",
+    "penalty_scores": {
+      "CodeQL": 17.5,
+      "Semgrep": 17.5
+    }
+  },
+  {
+    "sample_index": 39,
+    "ground_truth": "259",
+    "penalty_scores": {
+      "CodeQL": 12.6,
+      "Semgrep": 17.5
+    }
+  },
+  {
+    "sample_index": 40,
+    "ground_truth": "259",
+    "penalty_scores": {
+      "CodeQL": 17.5,
+      "Semgrep": 17.5
+    }
+  },
+  {
+    "sample_index": 41,
+    "ground_truth": "269",
+    "penalty_scores": {
+      "CodeQL": 17.5,
+      "Semgrep": 17.5
+    }
+  },
+  {
+    "sample_index": 42,
+    "ground_truth": "283",
+    "penalty_scores": {
+      "CodeQL": 17.5,
+      "Semgrep": 17.5
+    }
+  },
+  {
+    "sample_index": 43,
+    "ground_truth": "285",
+    "penalty_scores": {
+      "CodeQL": 17.5,
+      "Semgrep": 17.5
+    }
+  },
+  {
+    "sample_index": 44,
+    "ground_truth": "295",
+    "penalty_scores": {
+      "CodeQL": 17.5,
+      "Semgrep": 17.5
+    }
+  },
+  {
+    "sample_index": 45,
+    "ground_truth": "295",
+    "penalty_scores": {
+      "CodeQL": 17.5,
+      "Semgrep": 17.5
+    }
+  },
+  {
+    "sample_index": 46,
+    "ground_truth": "295",
+    "penalty_scores": {
+      "CodeQL": 0.0,
+      "Semgrep": 0.0
+    }
+  },
+  {
+    "sample_index": 47,
+    "ground_truth": "306",
+    "penalty_scores": {
+      "CodeQL": 17.5,
+      "Semgrep": 17.5
+    }
+  },
+  {
+    "sample_index": 48,
+    "ground_truth": "319",
+    "penalty_scores": {
+      "CodeQL": 1.5666666666666667,
+      "Semgrep": 1.5666666666666667
+    }
+  },
+  {
+    "sample_index": 49,
+    "ground_truth": "319",
+    "penalty_scores": {
+      "CodeQL": 17.5,
+      "Semgrep": 17.5
+    }
+  },
+  {
+    "sample_index": 50,
+    "ground_truth": "321",
+    "penalty_scores": {
+      "CodeQL": 17.5,
+      "Semgrep": 17.5
+    }
+  },
+  {
+    "sample_index": 51,
+    "ground_truth": "321",
+    "penalty_scores": {
+      "CodeQL": 17.5,
+      "Semgrep": 17.5
+    }
+  },
+  {
+    "sample_index": 52,
+    "ground_truth": "326",
+    "penalty_scores": {
+      "CodeQL": 0.0,
+      "Semgrep": 0.0
+    }
+  },
+  {
+    "sample_index": 53,
+    "ground_truth": "326",
+    "penalty_scores": {
+      "CodeQL": 0.0,
+      "Semgrep": 0.0
+    }
+  },
+  {
+    "sample_index": 54,
+    "ground_truth": "327",
+    "penalty_scores": {
+      "CodeQL": 0.0,
+      "Semgrep": 0.0
+    }
+  },
+  {
+    "sample_index": 55,
+    "ground_truth": "327",
+    "penalty_scores": {
+      "CodeQL": 0.0,
+      "Semgrep": 3.6
+    }
+  },
+  {
+    "sample_index": 56,
+    "ground_truth": "327",
+    "penalty_scores": {
+      "CodeQL": 0.0,
+      "Semgrep": 0.0
+    }
+  },
+  {
+    "sample_index": 57,
+    "ground_truth": "327",
+    "penalty_scores": {
+      "CodeQL": 0.0,
+      "Semgrep": 17.5
+    }
+  },
+  {
+    "sample_index": 58,
+    "ground_truth": "329",
+    "penalty_scores": {
+      "CodeQL": 17.5,
+      "Semgrep": 7.2
+    }
+  },
+  {
+    "sample_index": 59,
+    "ground_truth": "330",
+    "penalty_scores": {
+      "CodeQL": 17.5,
+      "Semgrep": 0.0
+    }
+  },
+  {
+    "sample_index": 60,
+    "ground_truth": "331",
+    "penalty_scores": {
+      "CodeQL": 17.5,
+      "Semgrep": 2.0
+    }
+  },
+  {
+    "sample_index": 61,
+    "ground_truth": "339",
+    "penalty_scores": {
+      "CodeQL": 17.5,
+      "Semgrep": 17.5
+    }
+  },
+  {
+    "sample_index": 62,
+    "ground_truth": "347",
+    "penalty_scores": {
+      "CodeQL": 0.0,
+      "Semgrep": 17.5
+    }
+  },
+  {
+    "sample_index": 63,
+    "ground_truth": "347",
+    "penalty_scores": {
+      "CodeQL": 0.0,
+      "Semgrep": 7.2
+    }
+  },
+  {
+    "sample_index": 64,
+    "ground_truth": "347",
+    "penalty_scores": {
+      "CodeQL": 0.0,
+      "Semgrep": 17.5
+    }
+  },
+  {
+    "sample_index": 65,
+    "ground_truth": "367",
+    "penalty_scores": {
+      "CodeQL": 17.5,
+      "Semgrep": 17.5
+    }
+  },
+  {
+    "sample_index": 66,
+    "ground_truth": "377",
+    "penalty_scores": {
+      "CodeQL": 0.0,
+      "Semgrep": 0.0
+    }
+  },
+  {
+    "sample_index": 67,
+    "ground_truth": "379",
+    "penalty_scores": {
+      "CodeQL": 2.0,
+      "Semgrep": 2.0
+    }
+  },
+  {
+    "sample_index": 68,
+    "ground_truth": "385",
+    "penalty_scores": {
+      "CodeQL": 17.5,
+      "Semgrep": 17.5
+    }
+  },
+  {
+    "sample_index": 69,
+    "ground_truth": "400",
+    "penalty_scores": {
+      "CodeQL": 0.0,
+      "Semgrep": 17.5
+    }
+  },
+  {
+    "sample_index": 70,
+    "ground_truth": "406",
+    "penalty_scores": {
+      "CodeQL": 17.5,
+      "Semgrep": 17.5
+    }
+  },
+  {
+    "sample_index": 71,
+    "ground_truth": "414",
+    "penalty_scores": {
+      "CodeQL": 17.5,
+      "Semgrep": 17.5
+    }
+  },
+  {
+    "sample_index": 72,
+    "ground_truth": "425",
+    "penalty_scores": {
+      "CodeQL": 17.5,
+      "Semgrep": 17.5
+    }
+  },
+  {
+    "sample_index": 73,
+    "ground_truth": "434",
+    "penalty_scores": {
+      "CodeQL": 7.2,
+      "Semgrep": 17.5
+    }
+  },
+  {
+    "sample_index": 74,
+    "ground_truth": "434",
+    "penalty_scores": {
+      "CodeQL": 7.2,
+      "Semgrep": 17.5
+    }
+  },
+  {
+    "sample_index": 75,
+    "ground_truth": "454",
+    "penalty_scores": {
+      "CodeQL": 12.6,
+      "Semgrep": 17.5
+    }
+  },
+  {
+    "sample_index": 76,
+    "ground_truth": "462",
+    "penalty_scores": {
+      "CodeQL": 17.5,
+      "Semgrep": 17.5
+    }
+  },
+  {
+    "sample_index": 77,
+    "ground_truth": "477",
+    "penalty_scores": {
+      "CodeQL": 17.5,
+      "Semgrep": 17.5
+    }
+  },
+  {
+    "sample_index": 78,
+    "ground_truth": "502",
+    "penalty_scores": {
+      "CodeQL": 17.5,
+      "Semgrep": 0.0
+    }
+  },
+  {
+    "sample_index": 79,
+    "ground_truth": "502",
+    "penalty_scores": {
+      "CodeQL": 17.5,
+      "Semgrep": 0.0
+    }
+  },
+  {
+    "sample_index": 80,
+    "ground_truth": "502",
+    "penalty_scores": {
+      "CodeQL": 17.5,
+      "Semgrep": 0.0
+    }
+  },
+  {
+    "sample_index": 81,
+    "ground_truth": "502",
+    "penalty_scores": {
+      "CodeQL": 0.0,
+      "Semgrep": 0.0
+    }
+  },
+  {
+    "sample_index": 82,
+    "ground_truth": "521",
+    "penalty_scores": {
+      "CodeQL": 17.5,
+      "Semgrep": 17.5
+    }
+  },
+  {
+    "sample_index": 83,
+    "ground_truth": "521",
+    "penalty_scores": {
+      "CodeQL": 17.5,
+      "Semgrep": 17.5
+    }
+  },
+  {
+    "sample_index": 84,
+    "ground_truth": "522",
+    "penalty_scores": {
+      "CodeQL": 7.2,
+      "Semgrep": 17.5
+    }
+  },
+  {
+    "sample_index": 85,
+    "ground_truth": "522",
+    "penalty_scores": {
+      "CodeQL": 9.0,
+      "Semgrep": 9.0
+    }
+  },
+  {
+    "sample_index": 86,
+    "ground_truth": "595",
+    "penalty_scores": {
+      "CodeQL": 17.5,
+      "Semgrep": 17.5
+    }
+  },
+  {
+    "sample_index": 87,
+    "ground_truth": "601",
+    "penalty_scores": {
+      "CodeQL": 0.0,
+      "Semgrep": 0.0
+    }
+  },
+  {
+    "sample_index": 88,
+    "ground_truth": "601",
+    "penalty_scores": {
+      "CodeQL": 17.5,
+      "Semgrep": 0.0
+    }
+  },
+  {
+    "sample_index": 89,
+    "ground_truth": "601",
+    "penalty_scores": {
+      "CodeQL": 0.0,
+      "Semgrep": 0.0
+    }
+  },
+  {
+    "sample_index": 90,
+    "ground_truth": "601",
+    "penalty_scores": {
+      "CodeQL": 17.5,
+      "Semgrep": 17.5
+    }
+  },
+  {
+    "sample_index": 91,
+    "ground_truth": "601",
+    "penalty_scores": {
+      "CodeQL": 17.5,
+      "Semgrep": 17.5
+    }
+  },
+  {
+    "sample_index": 92,
+    "ground_truth": "605",
+    "penalty_scores": {
+      "CodeQL": 7.2,
+      "Semgrep": 7.2
+    }
+  },
+  {
+    "sample_index": 93,
+    "ground_truth": "611",
+    "penalty_scores": {
+      "CodeQL": 0.0,
+      "Semgrep": 0.0
+    }
+  },
+  {
+    "sample_index": 94,
+    "ground_truth": "611",
+    "penalty_scores": {
+      "CodeQL": 0.0,
+      "Semgrep": 0.0
+    }
+  },
+  {
+    "sample_index": 95,
+    "ground_truth": "611",
+    "penalty_scores": {
+      "CodeQL": 17.5,
+      "Semgrep": 0.0
+    }
+  },
+  {
+    "sample_index": 96,
+    "ground_truth": "611",
+    "penalty_scores": {
+      "CodeQL": 17.5,
+      "Semgrep": 0.0
+    }
+  },
+  {
+    "sample_index": 97,
+    "ground_truth": "611",
+    "penalty_scores": {
+      "CodeQL": 17.5,
+      "Semgrep": 0.0
+    }
+  },
+  {
+    "sample_index": 98,
+    "ground_truth": "611",
+    "penalty_scores": {
+      "CodeQL": 17.5,
+      "Semgrep": 0.0
+    }
+  },
+  {
+    "sample_index": 99,
+    "ground_truth": "641",
+    "penalty_scores": {
+      "CodeQL": 10.8,
+      "Semgrep": 17.5
+    }
+  },
+  {
+    "sample_index": 100,
+    "ground_truth": "643",
+    "penalty_scores": {
+      "CodeQL": 17.5,
+      "Semgrep": 12.6
+    }
+  },
+  {
+    "sample_index": 101,
+    "ground_truth": "643",
+    "penalty_scores": {
+      "CodeQL": 0.0,
+      "Semgrep": 12.6
+    }
+  },
+  {
+    "sample_index": 102,
+    "ground_truth": "703",
+    "penalty_scores": {
+      "CodeQL": 17.5,
+      "Semgrep": 17.5
+    }
+  },
+  {
+    "sample_index": 103,
+    "ground_truth": "703",
+    "penalty_scores": {
+      "CodeQL": 17.5,
+      "Semgrep": 17.5
+    }
+  },
+  {
+    "sample_index": 104,
+    "ground_truth": "703",
+    "penalty_scores": {
+      "CodeQL": 17.5,
+      "Semgrep": 1.2400000000000002
+    }
+  },
+  {
+    "sample_index": 105,
+    "ground_truth": "730",
+    "penalty_scores": {
+      "CodeQL": 17.5,
+      "Semgrep": 17.5
+    }
+  },
+  {
+    "sample_index": 106,
+    "ground_truth": "730",
+    "penalty_scores": {
+      "CodeQL": 0.0,
+      "Semgrep": 17.5
+    }
+  },
+  {
+    "sample_index": 107,
+    "ground_truth": "730",
+    "penalty_scores": {
+      "CodeQL": 0.0,
+      "Semgrep": 17.5
+    }
+  },
+  {
+    "sample_index": 108,
+    "ground_truth": "732",
+    "penalty_scores": {
+      "CodeQL": 0.0,
+      "Semgrep": 1.625
+    }
+  },
+  {
+    "sample_index": 109,
+    "ground_truth": "759",
+    "penalty_scores": {
+      "CodeQL": 4.0,
+      "Semgrep": 4.0
+    }
+  },
+  {
+    "sample_index": 110,
+    "ground_truth": "760",
+    "penalty_scores": {
+      "CodeQL": 17.5,
+      "Semgrep": 17.5
+    }
+  },
+  {
+    "sample_index": 111,
+    "ground_truth": "776",
+    "penalty_scores": {
+      "CodeQL": 0.0,
+      "Semgrep": 9.0
+    }
+  },
+  {
+    "sample_index": 112,
+    "ground_truth": "798",
+    "penalty_scores": {
+      "CodeQL": 17.5,
+      "Semgrep": 17.5
+    }
+  },
+  {
+    "sample_index": 113,
+    "ground_truth": "798",
+    "penalty_scores": {
+      "CodeQL": 10.8,
+      "Semgrep": 17.5
+    }
+  },
+  {
+    "sample_index": 114,
+    "ground_truth": "827",
+    "penalty_scores": {
+      "CodeQL": 17.5,
+      "Semgrep": 7.2
+    }
+  },
+  {
+    "sample_index": 115,
+    "ground_truth": "835",
+    "penalty_scores": {
+      "CodeQL": 17.5,
+      "Semgrep": 17.5
+    }
+  },
+  {
+    "sample_index": 116,
+    "ground_truth": "841",
+    "penalty_scores": {
+      "CodeQL": 17.5,
+      "Semgrep": 17.5
+    }
+  },
+  {
+    "sample_index": 117,
+    "ground_truth": "918",
+    "penalty_scores": {
+      "CodeQL": 0.0,
+      "Semgrep": 0.0
+    }
+  },
+  {
+    "sample_index": 118,
+    "ground_truth": "918",
+    "penalty_scores": {
+      "CodeQL": 0.0,
+      "Semgrep": 0.0
+    }
+  },
+  {
+    "sample_index": 119,
+    "ground_truth": "941",
+    "penalty_scores": {
+      "CodeQL": 17.5,
+      "Semgrep": 17.5
+    }
+  },
+  {
+    "sample_index": 120,
+    "ground_truth": "943",
+    "penalty_scores": {
+      "CodeQL": 17.5,
+      "Semgrep": 17.5
+    }
+  }
+]
