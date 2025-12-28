@@ -42,3 +42,21 @@ class ALPHA:
             alpha_path=output_path,
             detailed_result_path=detailed_result_path
         )
+        
+    
+    def get_distance_stats(self):
+        weaakness_cwe_graph = self.create_weakness_graph()
+        return weaakness_cwe_graph.compute_distance_statistics()
+        
+if __name__ == "__main__":
+    EDA_PATH = "code_security/eda_results.json"
+    sven = "services/CodeSecurity/experiments/SAST/SVEN_sast_transformed_any_match.json"
+    security_eval = "services/CodeSecurity/experiments/SAST/SecurityEval_sast_transformed_any_match.json"
+
+    alpha_instance = ALPHA(
+        predictions_path=sven,
+        # predictions_path=security_eval,
+        eda_path=EDA_PATH
+    )
+    
+    alpha_instance.get_distance_stats()

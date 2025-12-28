@@ -568,4 +568,68 @@ class BaseCWEGraph(ABC):
             json.dump(detailed_result, detail_f, indent=2)
         print(f"Saved detailed results to {detailed_result_path}")
         
+        
+    def compute_distance_statistics(self) -> Dict:
+        """
+        Compute statistics about in-graph distances.
+        Used to justify out-of-graph penalty settings.
+        
+        Returns:
+            Dictionary with median, mean, and distribution of distances
+        """
+        print("Computing distance statistics for all CWE pairs...")
+        
+        nodes = list(self.directed.nodes())
+        n = len(nodes)
+        total_pairs = n * (n - 1) // 2  # Number of unique pairs
+        
+        distances = []
+        
+        # Calculate distances for all unique pairs
+        for i, cwe1 in enumerate(nodes):
+            if i % 50 == 0:
+                print(f"  Progress: {i}/{n} nodes processed")
             
+            for cwe2 in nodes[i+1:]:  # Only pairs where i < j (avoid duplicates)
+                dist = self.get_distance(cwe1, cwe2)
+                if dist > 0:  # Exclude same CWE (dist=0) and disconnected (-1)
+                    distances.append(dist)
+        
+        # Calculate statistics
+        distances_sorted = sorted(distances)
+        n_distances = len(distances)
+        
+        median = distances_sorted[n_distances // 2] if n_distances > 0 else 0
+        mean = sum(distances) / n_distances if n_distances > 0 else 0
+        
+        # Distribution
+        from collections import Counter
+        dist_counts = Counter(distances)
+        
+        stats = self.get_statistics()
+        diameter = stats['diameter']
+        
+        result = {
+            'median_distance': median,
+            'mean_distance': mean,
+            'total_pairs': total_pairs,
+            'connected_pairs': n_distances,
+            'diameter': diameter,
+            'diameter_over_2': diameter / 2,
+            'distance_distribution': dict(dist_counts),
+            'comparison': {
+                'median_vs_diameter_half': f"Median {median} ≈ diameter/2 {diameter/2:.1f}",
+                'recommended_doog': int(diameter/2) + 1
+            }
+        }
+        
+        print(f"\nDistance Statistics:")
+        print(f"  Median: {median}")
+        print(f"  Mean: {mean:.2f}")
+        print(f"  Diameter: {diameter}")
+        print(f"  Diameter/2: {diameter/2:.1f}")
+        print(f"  Recommended d_oog: {int(diameter/2) + 1}")
+        print(f"  Total unique pairs: {total_pairs}")
+        print(f"  Connected pairs (dist > 0): {len(distances)}")
+        
+        return result
