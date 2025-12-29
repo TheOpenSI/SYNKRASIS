@@ -2,6 +2,7 @@
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-red.svg)](https://opensource.org/licenses/MIT)
 [![arXiv](https://img.shields.io/badge/arXiv-2506.18403-b31b1b.svg)](https://arxiv.org/abs/2506.18403)
+[![Published in Scientific Reports](https://img.shields.io/badge/Published%20in-Scientific%20Reports-red)](https://doi.org/10.1038/s41598-025-27846-5)
 
 ## Abstract
 
@@ -46,10 +47,11 @@ We evaluated 18 state-of-the-art language models on HumanEval, revealing distinc
 ## Citation
 
 ```bibtex
-@article{adnan2025debugging,
-  title={The Debugging Decay Index: Rethinking Debugging Strategies for Code LLMs},
-  author={Adnan, Muntasir and Kuhn, Carlos C. N.},
-  journal={arXiv preprint arXiv:2506.18403},
-  year={2025}
+@article{ddi_adnan,
+  title={Measuring and mitigating debugging effectiveness decay in code language models},
+  author={Adnan, Muntasir and Kuhn, Carlos CN},
+  journal={Sci Rep 15},
+  year={2025},
+  doi = {https://doi.org/10.1038/s41598-025-27846-5}
 }
 ```
