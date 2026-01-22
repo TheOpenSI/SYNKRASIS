@@ -1,0 +1,584 @@
+# **BUSINESS REQUIREMENTS DOCUMENT**
+## **Automated Customer Churn Prediction System**
+
+**Client:** TechServe Solutions Ltd  
+**Date:** 22 January 2026  
+**Project Sponsor:** Sarah Mitchell, VP Customer Success  
+**Technical Contact:** James Chen, Head of Data & Analytics
+
+---
+
+## **1. WHAT WE NEED**
+
+We need an automated system that predicts which customers are likely to cancel their subscriptions, so our Customer Success team can intervene proactively. Currently, this is done manually by our data analyst once a week, and it's not scalable.
+
+### **Current Situation:**
+- Our data analyst spends 2 days per week pulling data from multiple systems, cleaning it, and running a model in Excel
+- By the time we get predictions, they're already outdated
+- We're missing opportunities to save at-risk customers
+- Our churn rate is 18% annually, costing us approximately £2.3M in lost revenue
+
+### **What We Want:**
+- **Daily predictions** of which customers are at risk of churning
+- A **list of high-risk customers** delivered to our Customer Success team each morning
+- This should run **automatically** without manual intervention
+- We want to **reduce churn by 10%** within 6 months (saving ~£1.2M annually)
+
+---
+
+## **2. WHAT DATA WE HAVE**
+
+### **Data Sources - Connection Details:**
+
+**A) Customer Database (PostgreSQL - CRM System)**
+
+**Database Connection:**
+- **Host:** `192.168.1.10`
+- **Port:** `5432`
+- **Database Name:** `techserve_crm`
+- **Schema:** `customer_data`
+- **Username:** `readonly_user`
+- **Password:** `crm_read_2026!` (will be changed to production credentials)
+- **Version:** PostgreSQL 14.7
+
+**Key Tables:**
+- `customer_data.customers` - approximately 75,000 active records
+  - Contains: customer_id, registration_date, account_type, subscription_tier, contract_value, company_name, country, industry_sector, company_size
+- `customer_data.subscriptions` - subscription and contract details
+  - Contains: customer_id, subscription_start_date, subscription_end_date, monthly_value, payment_method
+- `customer_data.account_events` - account status changes, including churn events
+  - Contains: customer_id, event_type, event_date, churn_reason
+
+**Daily Refresh:** Database is updated nightly, completes by 01:30 UTC
+
+**Sample Query to Get Customers:**
+```sql
+SELECT customer_id, company_name, registration_date, account_type, 
+       subscription_tier, contract_value, country, company_size
+FROM customer_data.customers
+WHERE account_status = 'active'
+AND registration_date <= CURRENT_DATE - INTERVAL '90 days';
+```
+
+---
+
+**B) Application Usage Database (MySQL)**
+
+**Database Connection:**
+- **Host:** `192.168.1.11`
+- **Port:** `3306`
+- **Database Name:** `techserve_app_prod`
+- **Schema:** `usage_metrics`
+- **Username:** `analytics_reader`
+- **Password:** `app_metrics_2026!`
+- **Version:** MySQL 8.0.32
+
+**Key Tables:**
+- `usage_metrics.daily_logins` - login events by customer and date
+  - Contains: customer_id, date, login_count, unique_users_logged_in
+- `usage_metrics.feature_usage` - feature usage per customer per day
+  - Contains: customer_id, date, feature_name, usage_minutes
+- `usage_metrics.api_calls` - API usage statistics
+  - Contains: customer_id, date, total_api_calls, failed_calls
+- `usage_metrics.storage_usage` - data upload/storage
+  - Contains: customer_id, date, data_uploaded_mb, total_storage_gb
+
+**Data Retention:** 90 days of detailed daily data
+
+**Sample Query to Get Usage Data:**
+```sql
+SELECT customer_id, date, login_count, total_api_calls, data_uploaded_mb
+FROM usage_metrics.daily_logins dl
+LEFT JOIN usage_metrics.api_calls ac USING (customer_id, date)
+LEFT JOIN usage_metrics.storage_usage su USING (customer_id, date)
+WHERE date >= CURDATE() - INTERVAL 30 DAY;
+```
+
+---
+
+**C) Support Ticketing System (Zendesk)**
+
+**API Connection:**
+- **Base URL:** `https://techserve.zendesk.com/api/v2/`
+- **Email:** `dataintegration@techserve.com`
+- **API Token:** `a1b2c3d4e5f6g7h8i9j0k1l2m3n4o5p6` (test token, production will be different)
+- **Authentication:** Basic Auth (email/token)
+- **Rate Limit:** 700 requests per minute
+
+**Key Endpoints:**
+- `/tickets.json` - get ticket data
+- `/organizations.json` - get customer organization data
+- `/satisfaction_ratings.json` - CSAT scores
+
+**Customer ID Mapping:**
+- Zendesk organization `external_id` field contains our CRM `customer_id`
+
+**Sample API Call:**
+```bash
+curl https://techserve.zendesk.com/api/v2/tickets.json?start_time=2026-01-01 \
+  -u dataintegration@techserve.com/token:a1b2c3d4e5f6g7h8i9j0k1l2m3n4o5p6
+```
+
+**Data We Care About:**
+- Number of tickets per customer (last 30/90 days)
+- Average resolution time
+- Tickets with negative sentiment
+- Escalated tickets
+- CSAT scores
+
+---
+
+**D) Historical Churn Data**
+
+**Available in CRM Database:**
+- **Table:** `customer_data.account_events`
+- **Churn Events Query:**
+```sql
+SELECT customer_id, event_date as churn_date, event_type, churn_reason
+FROM customer_data.account_events
+WHERE event_type IN ('cancellation', 'downgrade_to_free')
+AND event_date >= '2024-01-01';
+```
+
+**Churn Definition:** Customer either cancels their paid account OR downgrades to free tier
+
+**Available History:** 2 years (2024-2025) - approximately 18,000 churn events
+
+---
+
+### **What We Consider Important:**
+From our experience, these are warning signs:
+- Decreasing login frequency
+- Not using key features they previously used
+- High volume of support tickets, especially unresolved ones
+- Negative sentiment in support interactions
+- Contract renewal coming up soon
+- Small companies who haven't grown their user count
+
+**But you're the experts** - you might find patterns we haven't noticed.
+
+---
+
+## **3. WHAT WE WANT AS OUTPUT**
+
+### **Daily Deliverables:**
+
+**1) High-Risk Customer List (CSV File)**
+
+**File Details:**
+- **Filename:** `high_risk_customers_YYYY-MM-DD.csv`
+- **Location:** `/shared/customer_success/churn_predictions/daily/`
+- **This is a network share:** Mounted on your development server
+- **Delivery Time:** Must be available by **07:45 UTC** each day
+
+**CSV Format:**
+```csv
+customer_id,company_name,account_owner_email,churn_probability,risk_category,prediction_date,contract_renewal_date,primary_risk_factors
+CUST-12345,Acme Corp,john.smith@techserve.com,0.87,High,2026-01-22,2026-02-15,"decreasing_usage,support_tickets,low_engagement"
+```
+
+**Required Columns:**
+- `customer_id` - matches CRM format (e.g., CUST-12345)
+- `company_name` - from CRM
+- `account_owner_email` - the Customer Success Manager email
+- `churn_probability` - decimal between 0.00 and 1.00
+- `risk_category` - 'High', 'Medium', or 'Low'
+- `prediction_date` - date of prediction (YYYY-MM-DD)
+- `contract_renewal_date` - if available
+- `primary_risk_factors` - top 3 factors, comma-separated
+
+**Filter:** Only include customers where risk_category = 'High'
+
+---
+
+**2) Full Predictions Database Table**
+
+**Database Connection:**
+- **Host:** `192.168.1.12`
+- **Port:** `5432`
+- **Database:** `techserve_analytics`
+- **Schema:** `ml_predictions`
+- **Username:** `ml_writer`
+- **Password:** `predictions_write_2026!`
+
+**Table to Create:**
+```sql
+CREATE TABLE ml_predictions.churn_predictions_daily (
+    customer_id VARCHAR(50) NOT NULL,
+    prediction_date DATE NOT NULL,
+    churn_probability DECIMAL(5,4),
+    risk_category VARCHAR(20),
+    model_version VARCHAR(50),
+    prediction_timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (customer_id, prediction_date)
+);
+```
+
+**Write all predictions here** (not just high-risk) - we connect Tableau to this table for dashboards.
+
+**Data Retention:** Keep last 180 days, older records can be deleted.
+
+---
+
+**3) Email Notifications**
+
+**Daily Summary Email:**
+- **To:** `customer-success-team@techserve.com`
+- **CC:** `james.chen@techserve.com`, `emma.rodriguez@techserve.com`
+- **From:** `ml-predictions@techserve.com`
+- **Subject:** `Daily Churn Predictions - [Date] - [X] High-Risk Customers Identified`
+- **Send Time:** 08:00 UTC
+
+**SMTP Server:**
+- **Host:** `mail.techserve.com`
+- **Port:** `587` (STARTTLS)
+- **Username:** `ml-predictions@techserve.com`
+- **Password:** `smtp_pass_2026!`
+
+**Email Content (HTML format):**
+```html
+<h2>Daily Churn Prediction Summary - January 22, 2026</h2>
+
+<h3>Overview</h3>
+<ul>
+  <li>Total customers scored: 75,234</li>
+  <li>High-risk customers: 543 (+12 from yesterday)</li>
+  <li>Medium-risk customers: 2,156</li>
+  <li>Low-risk customers: 72,535</li>
+</ul>
+
+<h3>Download High-Risk Customer List</h3>
+<p>File location: /shared/customer_success/churn_predictions/daily/high_risk_customers_2026-01-22.csv</p>
+
+<h3>Model Performance</h3>
+<ul>
+  <li>Model version: v20260122</li>
+  <li>Prediction accuracy: 82.3% (last 30 days validation)</li>
+</ul>
+
+<h3>Alerts</h3>
+<p style="color: green;">No data quality issues detected.</p>
+```
+
+---
+
+**Weekly Performance Report (Every Monday, 09:00 UTC):**
+- **To:** `sarah.mitchell@techserve.com`, `james.chen@techserve.com`
+- **CC:** `emma.rodriguez@techserve.com`
+- **Subject:** `Weekly Churn Model Performance - Week of [Date]`
+
+**Content:**
+- Number of high-risk customers predicted vs. last week
+- Model accuracy trend
+- Any data quality issues
+- Summary of actual churns vs. predictions (if we have validation data)
+
+---
+
+## **4. SCHEDULING & TIMING**
+
+### **Daily Schedule:**
+- **Run Time:** 02:00 UTC every day (including weekends)
+- **Must Complete By:** 07:45 UTC
+- **Ideal Completion:** 06:00 UTC (gives 1h45m buffer)
+
+### **Why 02:00 UTC?**
+- CRM database finishes nightly refresh at 01:30 UTC
+- Application database replication usually catches up by 01:45 UTC
+- Gives us enough buffer time before Customer Success team starts work at 08:00 UTC
+
+### **Catch-up Behaviour:**
+If the workflow fails:
+- Retry automatically (at least 2 times with 15-minute gap between retries)
+- If all retries fail, send critical alert email
+- We should be able to manually trigger a rerun for any specific date
+
+---
+
+## **5. ALERTING & NOTIFICATIONS**
+
+### **Critical Alerts (Workflow Failures):**
+- **To:** `it-operations@techserve.com`, `james.chen@techserve.com`
+- **From:** `ml-predictions-alerts@techserve.com`
+- **Subject:** `[CRITICAL] Churn Prediction Workflow Failed - [Date]`
+- **When:** 
+  - Workflow fails after all retries
+  - Database connection failures
+  - Data extraction errors
+  - Model training failures
+
+**Email Should Include:**
+- What failed (which task/step)
+- Error message
+- Timestamp
+- Log file location
+
+---
+
+**Warning Alerts (Non-Critical Issues):**
+- **To:** `james.chen@techserve.com`, `emma.rodriguez@techserve.com`
+- **From:** `ml-predictions-alerts@techserve.com`
+- **Subject:** `[WARNING] Churn Prediction - [Issue Description]`
+- **When:**
+  - Data quality issues (e.g., missing values >5%)
+  - Model performance below target (<75% accuracy)
+  - High-risk customer count unusual (>700 or <300)
+  - Workflow running slower than expected (>3 hours)
+
+---
+
+**Success Confirmation:**
+- **To:** `james.chen@techserve.com`
+- **Subject:** `[INFO] Churn Prediction Complete - [Date]`
+- **When:** Workflow completes successfully
+- **Content:** Brief summary (completion time, number of predictions)
+
+---
+
+## **6. FILE STORAGE & LOCATIONS**
+
+### **Network Shared Drives:**
+All file paths are on network storage mounted at `/shared/`
+
+**Output Locations:**
+- **Daily predictions:** `/shared/customer_success/churn_predictions/daily/`
+- **Model files:** `/shared/ml_models/churn_prediction/`
+- **Logs:** `/shared/ml_logs/churn_prediction/`
+- **Intermediate data:** `/shared/ml_temp/churn_prediction/` (can be deleted after run)
+
+**Naming Conventions:**
+- Predictions: `high_risk_customers_YYYY-MM-DD.csv`
+- Models: `churn_model_YYYY-MM-DD.pkl`
+- Logs: `workflow_log_YYYY-MM-DD.log`
+
+**Permissions:**
+- Your workflow service account will have read/write access to all these directories
+- Customer Success team has read-only access to `/shared/customer_success/`
+
+---
+
+## **7. WHAT "GOOD" LOOKS LIKE**
+
+### **Model Performance:**
+- **Minimum:** 75% precision (of customers we flag as high-risk, 75% actually churn)
+- **Target:** 80% precision
+- **Optimal:** 85%+ precision
+
+**We'll measure this by:**
+- Tracking predictions vs. actual churn events over 3 months
+- Emma will do spot checks weekly on a sample of predictions
+
+### **Coverage:**
+- Identify at least 500 high-risk customers per day
+- But no more than 800 (our Customer Success team can't handle more)
+
+### **Operational:**
+- Workflow completes successfully 99% of the time
+- Completes within 4 hours (95% of the time)
+- We get predictions every morning without fail
+
+---
+
+## **8. SECURITY & DATA PRIVACY**
+
+### **Access Control:**
+- Don't hardcode any passwords in code - use a config file we'll provide
+- Database connections should use SSL where possible
+- Only read data you need (principle of least access)
+
+### **GDPR:**
+- We have EU customers - their data must be handled carefully
+- If a customer requests deletion, we need to be able to remove them from:
+  - Training datasets
+  - Prediction history
+  - Any cached/intermediate files
+- **Action needed:** Provide us a script or method to delete a specific customer's data
+
+### **Data Handling:**
+- Don't copy production data to your personal machines
+- Development/testing should use the anonymised sample data we provide
+- Delete temporary files after each run
+
+---
+
+## **9. HANDOVER & DOCUMENTATION**
+
+### **What We Need From You:**
+
+**1) Technical Documentation:**
+- Architecture diagram (how does it all fit together?)
+- Explanation of the workflow steps
+- Where logs are written
+- How to check if it's running properly
+
+**2) Operational Runbook for IT Team:**
+- How to manually trigger a run for a specific date
+- How to check logs when something fails
+- Common errors and how to fix them
+- How to restart the workflow if it's stuck
+
+**3) Code Repository:**
+- All code in our internal GitLab: `http://gitlab.techserve.local/ml-projects/churn-prediction`
+- README with setup instructions
+- Requirements file (Python dependencies)
+
+**4) Training:**
+- 2-hour session with our IT Operations team
+- 1-hour session with Emma (our data analyst) to explain the model
+- Can be done remotely or on-site
+
+---
+
+## **10. CONTACT INFORMATION**
+
+### **Your On-Site Contacts:**
+
+**Project Sponsor:**
+- **Name:** Sarah Mitchell
+- **Title:** VP Customer Success
+- **Email:** sarah.mitchell@techserve.com
+- **Office:** Building A, 3rd Floor
+- **Availability:** Mon-Fri, 09:00-17:00 GMT
+
+**Technical Lead (Your Main Contact):**
+- **Name:** James Chen
+- **Title:** Head of Data & Analytics
+- **Email:** james.chen@techserve.com
+- **Mobile:** +44 7700 900123 (for urgent issues)
+- **Office:** Building B, 2nd Floor, Desk 23
+- **Availability:** Mon-Fri, 08:30-18:00 GMT
+
+**Domain Expert:**
+- **Name:** Emma Rodriguez
+- **Title:** Senior Data Analyst
+- **Email:** emma.rodriguez@techserve.com
+- **Office:** Building B, 2nd Floor, Desk 28
+- **Role:** Knows the data intimately, does this manually today
+- **Availability:** Tue-Fri (works from home Mondays)
+
+**IT Operations:**
+- **Name:** Michael O'Brien
+- **Title:** DevOps Lead
+- **Email:** michael.obrien@techserve.com
+- **Office:** Building C, IT Department
+- **Role:** Will help with server access, deployments, troubleshooting
+
+**End User Representative:**
+- **Name:** Lisa Patel
+- **Title:** Customer Success Manager
+- **Email:** lisa.patel@techserve.com
+- **Office:** Building A, 3rd Floor
+- **Role:** Will test that the predictions are useful and usable
+
+---
+
+## **11. DEVELOPMENT ENVIRONMENT**
+
+### **Server Access:**
+We've set up a development server for you:
+
+**Development Server:**
+- **Hostname:** `ml-dev-server.techserve.local`
+- **IP:** `192.168.1.50`
+- **OS:** Ubuntu 22.04 LTS
+- **Access:** SSH with your provided credentials
+- **Specs:** 16 CPU cores, 64 GB RAM, 500 GB storage
+- **Software Installed:** Python 3.10, PostgreSQL client, MySQL client, Docker
+
+**Your Development Account:**
+- **Username:** `ml_developer`
+- **Password:** Will be provided on first day
+- **Home Directory:** `/home/ml_developer/`
+- **Work Directory:** `/opt/churn_prediction/` (where you build the workflow)
+
+**Network Access:**
+- Can connect to all databases (development mode credentials)
+- Can connect to Zendesk API
+- Can access network shares (`/shared/` mounted)
+- Internet access available for downloading libraries
+
+---
+
+## **12. SAMPLE DATA FOR DEVELOPMENT**
+
+**Location:** `/shared/project_handover/sample_data/`
+
+**Files Provided:**
+- `customers_sample.csv` - 10,000 sample customers (anonymised)
+- `usage_sample.csv` - 30 days of usage data
+- `support_sample.csv` - support ticket data
+- `churn_events_sample.csv` - historical churn events
+
+**Use this data during development** instead of hitting production databases directly.
+
+---
+
+## **13. CURRENT MANUAL PROCESS (FOR CONTEXT)**
+
+**What Emma Does Today (Every Monday):**
+
+**08:00-09:00:** Pull customer data
+- Logs into CRM database via pgAdmin
+- Runs SQL query, exports to CSV
+- ~75,000 rows
+
+**09:00-10:00:** Pull usage data
+- Connects to MySQL database
+- Runs several queries for different metrics
+- Exports to separate CSV files
+
+**10:00-11:00:** Pull support data
+- Logs into Zendesk web interface
+- Manually exports ticket data
+- Limited to 1,000 rows at a time, has to paginate
+
+**11:00-13:00:** Clean and merge data
+- Opens all CSV files in Excel
+- Uses VLOOKUP to merge datasets on customer_id
+- Manually fills missing values
+- Calculates some metrics (e.g., login frequency = logins / days)
+
+**13:00-14:00:** Run model
+- Uses a logistic regression formula she built in Excel
+- 15 variables: login_frequency, ticket_count, contract_value, etc.
+- Calculates churn probability
+
+**14:00-15:00:** Create and send report
+- Sorts by probability score
+- Flags top 500 as "high-risk"
+- Adds customer names and account manager emails
+- Saves as CSV
+- Emails to Customer Success team
+
+**Pain Points:**
+- Takes 6-8 hours every Monday
+- Lots of manual steps = prone to errors
+- Only weekly frequency (not daily)
+- Emma is single point of failure (if she's sick/on holiday, it doesn't happen)
+- Model never gets updated with new patterns
+
+---
+
+## **14. OPEN QUESTIONS**
+
+These are things we'd like your input on during discovery:
+
+1. **Model retraining:** How often should we retrain the model? Daily? Weekly? Monthly?
+2. **Feature engineering:** What additional features would you recommend based on the data?
+3. **Monitoring:** What specific metrics should we track to monitor model health?
+4. **Infrastructure:** Do you need any additional compute resources?
+5. **Data quality:** What data quality checks should we implement?
+
+---
+
+## **APPENDIX: GLOSSARY**
+
+| Term | Definition |
+|------|------------|
+| **Churn** | Customer cancels subscription or downgrades to free tier |
+| **High-risk customer** | Customer with ≥70% probability of churning within 30 days |
+| **Account owner** | The Customer Success Manager assigned to that customer |
+| **CRM** | Customer Relationship Management system (our main customer database) |
+| **CSAT** | Customer Satisfaction Score (from support tickets) |
+| **Workflow** | The automated pipeline that runs daily |
+| **DAG** | Directed Acyclic Graph - how tasks are sequenced and related |

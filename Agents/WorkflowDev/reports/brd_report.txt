@@ -1,0 +1,601 @@
+[36m[INFO][0m Starting the OpenAI_GPT service...
+[36m[INFO][0m Starting the OpenAI_GPT service...
+[36m[INFO][0m Starting the OpenAI_GPT service...
+================================================== START ==================================================
+[31m[GPT-4.1-2025-04-14][0m trigger: Scheduled daily at 02:00 UTC (also supports manual trigger for catch-up/reruns)
+
+tasks:
+  - task_name: load_runtime_config
+description: Load runtime configuration and secrets (database credentials, API tokens)
+securely from config files. Validate required paths and schedule information.
+    depends_on: []
+
+  - task_name: data_quality_prechecks
+description: Check that source databases (PostgreSQL CRM, MySQL App, Zendesk API) and
+network shares are accessible. Confirm all sources refreshed after prior midnight (nightly
+ETL windows complete).
+    depends_on: [load_runtime_config]
+
+  - task_name: extract_crm_data
+description: Connect to PostgreSQL CRM database (SSL), extract relevant customer,
+subscription, and historical churn event data per requirements. Only extract customers
+active for 90+ days and relevant schema fields.
+    depends_on: [data_quality_prechecks]
+
+  - task_name: extract_app_usage_data
+description: Connect to MySQL application usage database (SSL), extract last 30 days’
+login, feature, API, and storage usage for all relevant customers.
+    depends_on: [data_quality_prechecks]
+
+  - task_name: extract_support_data
+description: Authenticate and extract support data from Zendesk API for all active
+customer organizations. Download tickets, organization info, and CSAT for last 30/90 days,
+handle pagination and map external_id to CRM customer_id.
+    depends_on: [data_quality_prechecks]
+
+  - task_name: merge_and_clean_data
+description: Merge datasets on customer_id, standardize and clean data (handle missing
+values, incorrect types, duplicates). Engineer usage/sentiment/ticket summary metrics as
+required. Drop records not meeting join requirements or with poor data quality.
+    depends_on: [extract_crm_data, extract_app_usage_data, extract_support_data]
+
+  - task_name: data_quality_validation
+description: Run post-merge data quality checks: missing value % per field, outlier
+detection, required columns present, duplicates removed. Generate warning alerts if
+missing data threshold >5%.
+    depends_on: [merge_and_clean_data]
+
+  - task_name: feature_engineering
+description: Compute/transform final model features (e.g., login frequency, feature usage
+changes, ticket counts, CSAT trends, days to renewal, org size trends, etc.) as per best
+practice or modeled approach.
+    depends_on: [data_quality_validation]
+
+  - task_name: fetch_latest_model
+description: Retrieve the most recent churn prediction model file
+(`/shared/ml_models/churn_prediction/`, filename matches date or default to latest),
+ensure version tracking.
+    depends_on: [feature_engineering]
+
+  - task_name: score_customers
+description: Run batch prediction, calculate churn probabilities using the model; assign
+risk_category ('High' ≥0.70, 'Medium' ≥0.40-0.69, else 'Low'). Extract top 3
+primary_risk_factors (interpretable features).
+    depends_on: [fetch_latest_model]
+
+  - task_name: enforce_coverage_limits
+description: If number of high-risk customers <500, adjust threshold downward to reach
+minimum; if >800, raise threshold to max 800. Confirm with requirements for daily
+operational coverage.
+    depends_on: [score_customers]
+
+  - task_name: write_full_predictions_db
+description: Insert all scored predictions into PostgreSQL analytics database table
+(`ml_predictions.churn_predictions_daily` on host 192.168.1.12), keeping only last 180
+days (delete older records as needed).
+    depends_on: [enforce_coverage_limits]
+
+  - task_name: generate_high_risk_csv
+description: Export high-risk customer rows (per adjusted threshold) to required daily CSV
+(filename: `high_risk_customers_YYYY-MM-DD.csv`, columns as specified), and save to
+`/shared/customer_success/churn_predictions/daily/`.
+    depends_on: [enforce_coverage_limits]
+
+  - task_name: copy_logs_and_cleanup
+description: Move log files to `/shared/ml_logs/churn_prediction/`, store all execution
+logs with correct date. Delete all intermediate files from
+`/shared/ml_temp/churn_prediction/`. Adhere to GDPR by not leaving personal data in temp
+locations.
+    depends_on: [generate_high_risk_csv, write_full_predictions_db]
+
+  - task_name: send_daily_summary_email
+description: At 08:00 UTC (or after predictions ready), send summary email (HTML format)
+with metrics to customer-success-team, CC'd recipients, with download link to high-risk
+CSV file. Use techserve SMTP server (`mail.techserve.com`, STARTTLS).
+    depends_on: [generate_high_risk_csv]
+
+  - task_name: send_success_notification
+description: Email success info to james.chen@techserve.com with brief completion summary
+upon successful workflow completion.
+    depends_on: [send_daily_summary_email, copy_logs_and_cleanup]
+
+  - task_name: send_model_performance_report
+description: Every Monday, generate and email weekly performance report (metrics, actuals
+vs. predictions, model accuracy, data quality issues) to specified distribution.
+    depends_on: [send_success_notification]
+
+  - task_name: monitor_and_handle_failures
+description: Monitor each task; on failure, retry entire workflow up to 2 times (15-minute
+gaps). After final failure, send critical alert email (with task name, error, log
+location) to IT Ops and specified contacts. Generate warning alerts per thresholds.
+    depends_on: [load_runtime_config]
+
+  - task_name: handle_gdpr_deletion_request
+description: Upon receiving a customer deletion request (manual trigger), remove all
+relevant customer data from training, prediction history
+(`ml_predictions.churn_predictions_daily`), and intermediate/cache files. Confirm
+deletion.
+    depends_on: []
+
+  - task_name: manual_trigger_support
+description: Support rerun/manual trigger for any date (via CLI or script), with date
+param handling for backfills/catch-ups as needed (uses same config and pipeline as
+scheduled run).
+    depends_on: [load_runtime_config]
+==================================================  END  ==================================================
+
+
+================================================== START ==================================================
+[31m[GPT-4.1-2025-04-14][0m ---
+task_name: load_runtime_config
+needs_clarification: yes
+
+clarifications_needed:
+  - "What is the exact format/structure of the config file(s) (YAML, JSON, ENV)?"
+- "Should config validation include checking for all credentials and paths, or just
+presence?"
+  - "Are there environment-specific files (dev/prod), and how is the active one selected?"
+---
+
+task_name: data_quality_prechecks
+needs_clarification: yes
+
+clarifications_needed:
+- "Specifically which checks constitute 'source databases...are accessible': is this just
+connection, or also table/data availability?"
+- "How is it confirmed that sources are 'refreshed': do we check timestamps/row counts or
+is it a file flag/marker?"
+- "What is the expected behavior if a source is reachable but not refreshed: retry, skip,
+or alert?"
+---
+
+task_name: extract_crm_data
+needs_clarification: yes
+
+clarifications_needed:
+- "What precise fields are 'relevant'—should analyst list all columns pulled from each
+table for prediction and reporting?"
+  - "How is connection securely established (SSL parameters, cert locations)?"
+  - "What batching/page size (if any) for large tables?"
+  - "Is deleted/inactive/flagged-for-GDPR-removal customer logic needed here?"
+---
+
+task_name: extract_app_usage_data
+needs_clarification: yes
+
+clarifications_needed:
+- "What are the exact query requirements per table—should all columns be pulled or only
+specific fields?"
+- "Are all customers in the application DB subsetted based on CRM/active status, or is a
+full pull & later join expected?"
+  - "Are there usage patterns to pre-aggregate (e.g., daily or rolling 30-day sums)?"
+- "What is expected if some customers have no usage in the last 30 days—should records be
+created or skipped?"
+---
+
+task_name: extract_support_data
+needs_clarification: yes
+
+clarifications_needed:
+- "What pagination strategy and API limits should be observed, and what is the max
+expected volume per call/task?"
+- "How are negative sentiment and escalation determined—is this a field or text mining
+required?"
+  - "Are only tickets in last 30/90 days needed or all open/resolved in that window?"
+- "Is a full mapping between Zendesk `external_id` and CRM `customer_id` always guaranteed
+or should missing mapping be reported/handled?"
+---
+
+task_name: merge_and_clean_data
+needs_clarification: yes
+
+clarifications_needed:
+- "What is the precise join order and join type (left/inner/outer) between CRM, usage, and
+support—should analyst specify?"
+- "What are the rules for standardization—date format, categorical encodings, null
+handling?"
+- "What criteria define 'poor data quality' for dropping records—missing key fields,
+excessive nulls, or other business rules?"
+  - "How are duplicate customers (across systems) resolved?"
+- "What is required to 'engineer usage/sentiment/ticket summary metrics as
+required'—should list of metrics and formulas be made explicit?"
+---
+
+task_name: data_quality_validation
+needs_clarification: yes
+
+clarifications_needed:
+- "What is the precise definition of acceptable value ranges for key fields—should
+thresholds be listed?"
+  - "What constitutes an 'outlier' for each feature?"
+- "Are there specific required columns for completion, and what action if they're
+missing?"
+  - "Should an explicit report or file be generated for warnings/alerts?"
+---
+
+task_name: feature_engineering
+needs_clarification: yes
+
+clarifications_needed:
+  - "What features are included—should each be listed with formula and data source?"
+  - "Are rolling/lag features (e.g., trailing-30-day usage) needed?"
+- "What is the engineering logic for 'org size trends' and 'feature usage
+changes'—definition/formula?"
+- "Should intermediary features (those not feeding model but supporting export/reporting)
+be included?"
+---
+
+task_name: fetch_latest_model
+needs_clarification: yes
+
+clarifications_needed:
+  - "What is the exact versioning/naming scheme for model files if >1 exists for a day?"
+  - "How is model file integrity validated—checksum, signature?"
+  - "What will the process be if no model file is present for the given date?"
+  - "Is rollback to a last-known-good model an expected behavior?"
+---
+
+task_name: score_customers
+needs_clarification: yes
+
+clarifications_needed:
+- "Precisely how are risk categories determined if threshold is adjusted later—is boundary
+hardcoded or dynamic?"
+- "What method is used to extract 'primary_risk_factors' (model explainability
+technique)?"
+  - "How are prediction timestamps handled if re-scoring (manual or rerun)?"
+---
+
+task_name: enforce_coverage_limits
+needs_clarification: yes
+
+clarifications_needed:
+- "What is the process for choosing new churn probability threshold—increment/decrement
+step size, loop cap, or business rules?"
+  - "Should the original risk category (pre-adjustment) be retained anywhere?"
+  - "Are there reporting needs for number of customers excluded due to adjustment?"
+- "What action is taken if <500 high-risk cannot be reached even at lowest threshold, or
+>800 remain at highest?"
+---
+
+task_name: write_full_predictions_db
+needs_clarification: yes
+
+clarifications_needed:
+- "Is retention enforcement (deleting >180 days) expected before insert, after, or as a
+separate periodic step?"
+- "What is the upsert behavior for duplicate (customer_id, prediction_date) keys—update,
+skip, error?"
+  - "Is a transaction/rollback strategy required if partial insert fails?"
+  - "Should failures here halt workflow or be retried/logged for later cleanup?"
+---
+
+task_name: generate_high_risk_csv
+needs_clarification: yes
+
+clarifications_needed:
+- "What is the canonical field order in the CSV—should field list exactly match business
+requirement and include null-safe defaults?"
+  - "How should special/invalid characters or missing values be handled in CSV?"
+  - "Is overwriting an existing file for a given date acceptable (idempotency)?"
+  - "Are primary_risk_factors aggregated by label or raw model output?"
+---
+
+task_name: copy_logs_and_cleanup
+needs_clarification: yes
+
+clarifications_needed:
+  - "What logging framework/format is required (plain text, JSON, structured log)?"
+- "Should old/intermediate logs be archived or deleted, and what's the retention period?"
+- "What exactly constitutes a 'temp' file—should filename patterns or directory rules be
+specified?"
+  - "How is GDPR compliance for deletion of temp files enforced and documented?"
+---
+
+task_name: send_daily_summary_email
+needs_clarification: yes
+
+clarifications_needed:
+- "What is the fallback if email fails to send on first attempt—should retry, queue, or
+log for manual send?"
+- "Should static or calculated metrics in the HTML summary (accuracy, high-risk count
+delta) be pulled from logs, prediction files, or calculations?"
+  - "Is TLS/SSL verification required for the SMTP session?"
+  - "Should any files be attached to the email, or only provide path/links?"
+---
+
+task_name: send_success_notification
+needs_clarification: yes
+
+clarifications_needed:
+  - "What is the minimum content required in the success email—subject, body template?"
+  - "Are there other success notification channels (e.g., Slack) to support?"
+  - "Should a runID/execution ID or other metadata be included in the summary?"
+- "What is the required time window for this email—immediately after completion, or
+batched?"
+---
+
+task_name: send_model_performance_report
+needs_clarification: yes
+
+clarifications_needed:
+  - "Where are actual churn events sourced from for Monday report validation?"
+  - "What period does 'Week of [Date]' cover—calendar week, 7 trailing days?"
+  - "What is the complete set of metrics and visualizations to include in report?"
+  - "Is there a fallback if validation/actual churn data is not available?"
+---
+
+task_name: monitor_and_handle_failures
+needs_clarification: yes
+
+clarifications_needed:
+  - "Which tasks/non-task errors should trigger critical alert vs. warning?"
+  - "What is the escalation path if email/alert delivery itself fails?"
+  - "Is log file location static or can it differ for re-runs, partial runs?"
+  - "Are all retries for the full workflow or should task-level retries be considered?"
+---
+
+task_name: handle_gdpr_deletion_request
+needs_clarification: yes
+
+clarifications_needed:
+  - "What is the interface/trigger for deletion requests (API, manual script, UI)?"
+  - "Which locations should be checked for customer data: all output, temp, backup, logs?"
+  - "Should analyst specify confirmation (e.g., audit log entry) post-deletion?"
+  - "How is data in backups handled (if any exist)?"
+---
+
+task_name: manual_trigger_support
+needs_clarification: yes
+
+clarifications_needed:
+  - "What is the required interface (CLI params, web UI, API) for manual trigger?"
+  - "Is user authentication/audit required for manual or backdated runs?"
+  - "Should logs for manual runs be clearly marked/distinguished from scheduled?"
+- "Are there restrictions or business rules for re-running historical dates (e.g., data
+retention limits, backfill window)?"
+---
+
+==================================================  END  ==================================================
+
+
+================================================== START ==================================================
+[31m[GPT-4.1-2025-04-14][0m trigger: Scheduled daily at 02:00 UTC, and optionally via manual trigger
+
+tasks:
+
+  - task_name: load_runtime_config
+    description: |
+Load runtime configuration from environment-specific YAML files provided by IT. The config
+loader must:
+- Validate presence and value of all credentials (database, SMTP, API) and all required
+file paths.
+- If a setting is missing or mismatched with environment, raise a critical alert and
+abort.
+- Environment (dev/prod) selection is by environment variable; fall back to default YAML
+if variable unset.
+    depends_on: []
+    
+  - task_name: data_quality_prechecks
+    description: |
+      Verify all data sources can be reached:
+- Confirm network connection and successful authentication for each source (CRM, App DB,
+Zendesk, file shares).
+- Check existence of all required tables and non-zero row count for last 24h (CRM
+refreshed if data updated after 01:30 UTC, App DB after 01:45 UTC; Zendesk via endpoint
+live ping).
+- If a source is accessible but not refreshed (latest date/timestamp not today), send
+warning, retry 2x (15-min interval); fail after retries triggers alert and aborts
+workflow.
+    depends_on: [load_runtime_config]
+    
+  - task_name: extract_crm_data
+    description: |
+Connect via SSL to the CRM PostgreSQL14 instance, using provided SSL certificates (paths
+from config). Extract these fields:
+- customers: customer_id, company_name, registration_date, account_type,
+subscription_tier, contract_value, country, industry_sector, company_size, account_status,
+account_owner_email
+- subscriptions: customer_id, subscription_start_date, subscription_end_date,
+monthly_value, payment_method
+- account_events (for historical churn): customer_id, event_type, event_date, churn_reason
+      Exclude customers flagged as deleted/inactive, or marked for GDPR removal.
+      Use batch queries of 10,000 rows (configurable via YAML).
+    depends_on: [data_quality_prechecks]
+
+  - task_name: extract_app_usage_data
+    description: |
+      Connect to MySQL8 over SSL, pull only fields needed for churn prediction/report:
+        - daily_logins: customer_id, date, login_count, unique_users_logged_in
+        - feature_usage: customer_id, date, feature_name, usage_minutes
+        - api_calls: customer_id, date, total_api_calls, failed_calls
+        - storage_usage: customer_id, date, data_uploaded_mb, total_storage_gb
+Only pull data for customer_ids that are active in the CRM pull, for the last 30 days. If
+any CRM customer has no usage record, add null records for completeness to enable
+downstream feature engineering.
+      Pre-aggregate basic daily and 30-day rolling sums as separate intermediate outputs.
+    depends_on: [data_quality_prechecks]
+
+  - task_name: extract_support_data
+    description: |
+Query Zendesk API with token using Python requests, adhering to 700 req/min rate limit and
+handling pagination with cursor-based method. Pull only tickets, organizations, and
+satisfaction ratings for last 90 days. For each ticket: customer_id (from
+organization.external_id), status, created_at, resolved_at, sentiment (if not present,
+infer via basic text mining on comment text with off-the-shelf sentiment lib), escalation
+status (use field, else infer by presence of escalation-related tags).
+      Missing external_id mapping: log warning and skip.
+    depends_on: [data_quality_prechecks]
+
+  - task_name: merge_and_clean_data
+    description: |
+      Join order: CRM (left) join usage (left), then (left) join support, on customer_id.
+Standardize all date fields to YYYY-MM-DD, categorical columns to lowercase snake_case,
+and fill nulls: for numeric fields with special marker (-1), categoricals as "unknown".
+      Drop records if missing customer_id, or >20% fields null; otherwise keep.
+      Deduplicate by customer_id (latest record wins).
+Engineer metrics: login frequency, 30d avg feature usage, support ticket count, avg
+resolution, negative sentiment %, list of top support issues.
+    depends_on: [extract_crm_data, extract_app_usage_data, extract_support_data]
+
+  - task_name: data_quality_validation
+    description: |
+Validate merged data for: no missing customer_id, account_owner_email, registration_date.
+Check value ranges: contract_value > 0, login_count >=0, ticket_count >=0, resolution_time
+>=0.
+      Outliers: flag values outside (Q1-1.5*IQR, Q3+1.5*IQR) for key features.
+      If required columns missing, log warning and abort.
+Generate a validation report file (CSV or JSON) to
+/shared/ml_logs/churn_prediction/data_quality_report_YYYY-MM-DD.json.
+    depends_on: [merge_and_clean_data]
+
+  - task_name: feature_engineering
+    description: |
+      Compute full feature set (each to be documented in tech docs):
+        - Login frequency (30d mean, 7d trend)
+        - Key feature usage change (30d vs previous 30d)
+        - API call volume (30d sum), failed API %
+- Support tickets: count, % unresolved, mean resolution time, escalations, CSAT avg,
+negative sentiment ratio
+        - Contract nearing renewal (renewal_date within 45 days: boolean)
+        - Company size trend (current vs 90d ago), user count trend
+        - Historical churn patterns (industry, region segment rates)
+      Also create intermediary/auxiliary features for reporting as needed.
+    depends_on: [data_quality_validation]
+
+  - task_name: fetch_latest_model
+    description: |
+Identify most recent model file in /shared/ml_models/churn_prediction/ using naming
+churn_model_YYYY-MM-DD.pkl—including variants if hotfix, e.g.,
+churn_model_YYYY-MM-DD_v2.pkl (choose highest suffix).
+Validate file by loading and calculating SHA256 checksum vs <filename>.sha256, abort if
+mismatch.
+If no model for today, fallback to most recent prior file; log warning. No valid model at
+all: critical alert and halt.
+    depends_on: [feature_engineering]
+
+  - task_name: score_customers
+    description: |
+      Apply model to feature set, record churn_probability for all.
+Risk category: boundaries (High ≥0.70, Medium ≥0.40, else Low). Thresholds are
+configurable in config file and can change over time (dynamic, not hardcoded).
+For each record, use SHAP or model feature attribution for primary_risk_factors (top 3 per
+guidelines).
+Record scoring timestamp as time of prediction; if rerun, update timestamp and annotate
+runID.
+    depends_on: [fetch_latest_model]
+
+  - task_name: enforce_coverage_limits
+    description: |
+If predicted high-risk customers <500 or >800, iteratively adjust high/medium boundary in
+0.01 increments (down to 0.60 and up to 0.80) with hard loop limit to avoid infinite
+regression; stop at first acceptable count or log warning if threshold unmet.
+      Retain original risk probabilities and risk label as separate columns for audit.
+      Record/report number above/below limits if adjustment needed (write summary to log).
+If not possible to reach required coverage caps, proceed with best-available set and send
+warning alert.
+    depends_on: [score_customers]
+
+  - task_name: write_full_predictions_db
+    description: |
+Connect to target PostgreSQL. Before insert, delete records older than 180 days for this
+table (data retention).
+Insert new daily predictions (upsert: update on (customer_id, prediction_date) collision).
+Wrap the load in a transaction; if partial insert fails, rollback and retry up to 2x, else
+halt with error and alert.
+If insert ultimately fails, downstream steps log and skip but workflow does not halt
+cleanly.
+    depends_on: [enforce_coverage_limits]
+
+  - task_name: generate_high_risk_csv
+    description: |
+Output CSV only for High risk customers, columns in this canonical order per requirement:
+customer_id, company_name, account_owner_email, churn_probability, risk_category,
+prediction_date, contract_renewal_date, primary_risk_factors
+All fields null-safe with blank or 'unknown' as default. Escape special/invalid
+characters.
+      Overwrite file with same date if pre-existing (idempotent).
+primary_risk_factors are output as comma-separated interpreted labels (from SHAP results
+and business mapping), not raw weights.
+    depends_on: [enforce_coverage_limits]
+
+  - task_name: copy_logs_and_cleanup
+    description: |
+Archive logs in JSON-lines format in /shared/ml_logs/churn_prediction/ with
+workflow_log_YYYY-MM-DD.log; delete logs older than 180 days.
+Temp/intermediate files: all files in /shared/ml_temp/churn_prediction/ and any *_tmp.csv,
+*_tmp.json—delete post-success or abort.
+      GDPR compliance step: log all deleted temp files and confirm in audit log.
+    depends_on: [generate_high_risk_csv, write_full_predictions_db]
+
+  - task_name: send_daily_summary_email
+    description: |
+Compose HTML summary using accuracy, risk count, model version, and delta from (log, DB,
+CSV files). Use SMTP with full TLS/SSL verification.
+If send fails, retry up to 2x, else log for manual resend and print critical warning.
+      Do not attach files; embed file paths only.
+    depends_on: [generate_high_risk_csv, copy_logs_and_cleanup]
+
+  - task_name: send_success_notification
+    description: |
+Send "INFO" email to james.chen@techserve.com immediately after completion. Subject per
+requirements, include: runID, completion timestamp, number of predictions, log path—all in
+body.
+      No Slack or other channel; email only.
+    depends_on: [send_daily_summary_email]
+
+  - task_name: send_model_performance_report
+    description: |
+Weekly, on Mondays post-prediction, pull validation data from CRM churn events for
+previous calendar week (Mon-Sun, week of [date] means last complete week).
+Metrics: count high-risk vs last week, new actual churns in high-risk cohort,
+precision/recall, model accuracy, data quality anomalies.
+      If validation unavailable, send with disclaimer.
+      Output is email only; no file attachments.
+    depends_on: [send_success_notification]
+
+  - task_name: monitor_and_handle_failures
+    description: |
+      Monitor all steps; critical alert if:
+        - Any extract or DB write step fails after retries
+        - Data quality/blocking validation fails
+        - Model fetch fails (no fallback)
+      Warning alert if:
+        - Data quality <95% complete
+        - Model accuracy drop <75%
+        - High-risk count outside 300-700 (post adjustment)
+        - Runtime exceeds 3 hours
+If alert email fails, log to file and escalate to on-call via out-of-band (documented in
+runbook, but not workflow-automated).
+Log files by default in /shared/ml_logs/churn_prediction/; use variant with runID for
+re-runs.
+Retries: entire workflow up to 2x (configurable); fatal task errors within tasks may
+attempt 1x retry.
+    depends_on: [load_runtime_config]
+
+  - task_name: handle_gdpr_deletion_request
+    description: |
+Expose CLI script accepting customer_id param, triggered by IT/analyst. Deletes all
+records for that customer from:
+        - Training datasets
+        - /shared/ml_temp/churn_prediction/
+        - ml_predictions.churn_predictions_daily
+        - /shared/customer_success/churn_predictions/daily/*
+        - Log files (redact entries; list in deletion audit log)
+Write audit entry for confirmation. Backups are out-of-scope except for scheduled nightly
+snapshots, which will be documented in GDPR exception log.
+    depends_on: [copy_logs_and_cleanup]
+
+  - task_name: manual_trigger_support
+    description: |
+Expose CLI supporting manual and backdated runs (date param required), authenticated with
+OS account.
+Log manual runs separately (workflow_log_YYYY-MM-DD_manual.log) and include run type and
+user.
+      Restrict backdating to last 365 days, else abort.
+      Logs for manual runs always marked "manual"; show up in dashboard.
+    depends_on: [load_runtime_config]
+
+==================================================  END  ==================================================
+
+
