@@ -1,0 +1,15 @@
+Project: Customer Churn Prediction Pipeline
+
+Business Objective:
+Identify customers at risk of churning so the retention team can take proactive action.
+
+Process Description:
+We need an automated daily pipeline that predicts which customers are likely to churn in the next 30 days. The pipeline should extract customer data from our CRM database (Salesforce) including account details, subscription tier, and tenure. We also need to pull customer support ticket data from Zendesk API to identify customers with recent issues, and fetch product usage metrics from our analytics database covering session count, feature usage, and last login date.
+
+Once we have all three data sources, they need to be merged into a single dataset. The merged data requires cleaning to handle missing values, remove test accounts, and standardise formats. The cleaned dataset should then be run through our pre-trained churn prediction model which is stored in S3.
+
+From the model output, we need to generate a list of high-risk customers where churn probability exceeds 70%. A daily report showing churn statistics and trends should also be created. The high-risk customer list must be uploaded to our marketing automation platform (HubSpot) so they can trigger retention campaigns automatically.
+
+If more than 50 customers are flagged as high-risk, the Head of Customer Success needs to receive an alert email immediately.
+
+The pipeline should run every morning at 7 AM and complete before 9 AM when the retention team starts work.

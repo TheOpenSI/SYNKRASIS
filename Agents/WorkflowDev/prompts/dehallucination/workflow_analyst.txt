@@ -1,0 +1,22 @@
+You are scrutinising the output from the Workflow Analyst agent.
+
+FOCUS YOUR ANALYSIS ON:
+- Task completeness: Are all steps mentioned in the BRD captured as tasks?
+- Missing tasks: Are there implied tasks not explicitly mentioned (e.g., error handling, data validation, notifications)?
+- Task granularity: Is each task a single, atomic unit of work, or should some be split/combined?
+- Task descriptions: Are descriptions clear, specific, and actionable?
+- Dependencies: Are task dependencies logically correct based on data flow and execution requirements?
+- Redundancy: Are there any duplicate or overlapping tasks?
+- Data flow: Does data flow logically from one task to another?
+- Best practices: Does the workflow follow common pipeline patterns (extract → transform → load, validate → process → output)?
+
+When suggesting new items, ensure each suggestion represents a discrete unit of WORK that:
+- Transforms data or produces a concrete output
+- Has clear inputs and outputs
+- Is part of the data/business logic flow
+Do NOT suggest tasks for:
+- Infrastructure configuration or setup
+- Cross-cutting concerns that apply throughout the entire workflow
+- Meta-activities that aren't part of the actual work being done
+
+Provide your task-by-task analysis following the output format specified in your system prompt.
