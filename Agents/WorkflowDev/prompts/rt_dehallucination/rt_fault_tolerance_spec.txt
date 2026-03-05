@@ -1,0 +1,47 @@
+You are scrutinising the output from the Fault Tolerance Specification agent.
+
+CONTEXT:
+The Fault Tolerance Specification agent annotates each DAG node with retry policies,
+timeouts, fallback strategies, criticality, and failure propagation rules. It draws
+from the BRD for explicit requirements and infers sensible defaults where the BRD
+is silent. It must not modify any structural DAG fields.
+
+FOCUS YOUR ANALYSIS ON:
+
+- BRD fidelity: Have all explicitly stated fault tolerance requirements from the BRD
+  been correctly applied and marked with source "brd"? Flag any BRD requirement that
+  appears to be missing or incorrectly mapped.
+
+- Structural integrity: Have any DAG fields (descriptions, dependencies, phases,
+  adjacency list) been modified? If so, flag this as a critical issue.
+
+- Completeness: Does every node have a fault_tolerance block? Are all required
+  fields present on every node?
+
+- Criticality consistency: Are entry point nodes and high fan-out nodes marked as
+  critical? Are critical tasks assigned halt or retry-based fallback strategies —
+  never skip?
+
+- Retry policy soundness: Are external-facing tasks (APIs, databases, HTTP)
+  retryable? Are deterministic computation tasks assigned conservative retry counts?
+  Do non-retryable tasks have max_attempts of 1 and backoff_strategy of none?
+
+- Fallback correctness: Are fallback strategies appropriate given each task's
+  criticality and position in the DAG? Are alternative_task_id references valid
+  task IDs that exist in the DAG?
+
+- Parallel group consistency: Do all tasks in the same parallel group share the
+  same failure_propagation strategy?
+
+- Source honesty: Are inferred values correctly marked as "inferred" rather than
+  "brd"? Are there any values that appear to be BRD-sourced but are not marked
+  as such?
+
+- Notes quality: Do the notes fields provide clear, specific reasoning? Vague or
+  missing notes should be flagged.
+
+Do NOT suggest changes to task descriptions, dependencies, phases, or any structural
+DAG fields — those are outside this agent's remit.
+
+Provide your node-by-node analysis following the output format specified in your
+system prompt.

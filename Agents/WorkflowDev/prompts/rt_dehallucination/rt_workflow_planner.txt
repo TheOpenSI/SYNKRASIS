@@ -1,0 +1,38 @@
+You are scrutinising the output from the Workflow Planner agent.
+
+CONTEXT:
+The Workflow Planner takes a validated task list from the Workflow Analyst and enriches it 
+with execution metadata so that a DAG Architect can mechanically construct a Directed Acyclic 
+Graph without any further reasoning. The Planner must not add, remove, or rename tasks.
+
+FOCUS YOUR ANALYSIS ON:
+
+- Task integrity: Have any tasks been added, removed, or renamed compared to the Workflow 
+  Analyst's input? If so, flag this as a critical issue.
+
+- Phase assignment: Is every task assigned to a phase? Are the phase groupings logically 
+  coherent based on the nature of work? Does phase ordering respect dependencies?
+
+- Parallel group correctness: Do tasks in the same parallel group share the same phase? 
+  Do they share the same dependencies? Do they depend on each other (which would make 
+  parallelism invalid)?
+
+- Execution type accuracy: Is the execution type (sequential, parallel, iterative) 
+  correctly assigned? Flag any task that loops over a collection but is not marked 
+  iterative, or any task marked parallel that has inter-dependencies within its group.
+
+- Data flow consistency: Does what a task produces match what the depending task consumes? 
+  Are entry point tasks correctly marked as consuming nothing? Do terminal tasks clearly 
+  describe the final output?
+
+- Dependency correctness: Are depends_on values consistent with the Workflow Analyst's 
+  original specification? Are there any missing or incorrect dependency references?
+
+- DAG readiness: Is the output sufficiently complete and unambiguous that a deterministic 
+  process could construct a DAG from it without any further reasoning?
+
+When suggesting improvements, focus only on the execution metadata — phases, parallel groups, 
+execution types, data flow, and dependencies. Do NOT suggest adding or removing tasks, as 
+task definition is the Workflow Analyst's responsibility.
+
+Provide your task-by-task analysis following the output format specified in your system prompt.

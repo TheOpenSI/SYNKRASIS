@@ -1,0 +1,3925 @@
+[36m[INFO][0m Starting the OpenAI_GPT service...
+[36m[INFO][0m Starting the OpenAI_GPT service...
+[36m[INFO][0m Starting the OpenAI_GPT service...
+[36m[INFO][0m Starting the OpenAI_GPT service...
+[36m[INFO][0m Starting the OpenAI_GPT service...
+[1/6] Workflow Analyst running...
+================================================== START ==================================================
+[31m[GPT-4.1-2025-04-14][0m {
+  "process_name": "Daily Customer Churn Prediction Pipeline",
+  "tasks": [
+    {
+      "id": "T1",
+      "description": "Extract customer account data from Salesforce CRM database",
+      "depends_on": []
+    },
+    {
+      "id": "T2",
+      "description": "Fetch customer support ticket data from Zendesk API",
+      "depends_on": []
+    },
+    {
+      "id": "T3",
+      "description": "Extract customer product usage metrics from analytics database",
+      "depends_on": []
+    },
+    {
+      "id": "T4",
+"description": "Merge account data, support ticket data, and product usage metrics into a
+unified dataset",
+      "depends_on": ["T1", "T2", "T3"]
+    },
+    {
+      "id": "T5",
+"description": "Clean merged dataset by handling missing values, removing test accounts,
+and standardising formats",
+      "depends_on": ["T4"]
+    },
+    {
+      "id": "T6",
+"description": "Run pre-trained churn prediction model from S3 on the cleaned dataset",
+      "depends_on": ["T5"]
+    },
+    {
+      "id": "T7",
+"description": "Filter model output to generate list of customers with churn probability
+over 70%",
+      "depends_on": ["T6"]
+    },
+    {
+      "id": "T8",
+      "description": "Generate daily report showing churn statistics and trends",
+      "depends_on": ["T6"]
+    },
+    {
+      "id": "T9",
+"description": "Upload high-risk customer list to HubSpot marketing automation platform",
+      "depends_on": ["T7"]
+    },
+    {
+      "id": "T10",
+"description": "Send alert email to Head of Customer Success if high-risk list exceeds 50
+customers",
+      "depends_on": ["T7"]
+    }
+  ]
+}
+==================================================  END  ==================================================
+
+
+[1/6] Dehallucinating workflow analyst output...
+================================================== START ==================================================
+[31m[GPT-4.1-2025-04-14][0m ---
+SCRUTINY ANALYSIS
+
+Item: T1 - Extract customer account data from Salesforce CRM database  
+Issues: None identified  
+Suggestions: None  
+Recommendations: No changes needed  
+
+Item: T2 - Fetch customer support ticket data from Zendesk API  
+Issues: None identified  
+Suggestions: None  
+Recommendations: No changes needed  
+
+Item: T3 - Extract customer product usage metrics from analytics database  
+Issues: None identified  
+Suggestions: None  
+Recommendations: No changes needed  
+
+Item: T4 - Merge account data, support ticket data, and product usage metrics into a
+unified dataset  
+Issues: None identified  
+Suggestions: None  
+Recommendations: No changes needed  
+
+Item: T5 - Clean merged dataset by handling missing values, removing test accounts, and
+standardising formats  
+Issues: None identified  
+Suggestions: None  
+Recommendations: No changes needed  
+
+Item: T6 - Run pre-trained churn prediction model from S3 on the cleaned dataset  
+Issues: None identified  
+Suggestions: None  
+Recommendations: No changes needed  
+
+Item: T7 - Filter model output to generate list of customers with churn probability over
+70%  
+Issues: None identified  
+Suggestions: None  
+Recommendations: No changes needed  
+
+Item: T8 - Generate daily report showing churn statistics and trends  
+Issues: Task does not explicitly mention that it should include both statistics and trends
+as required by the BRD. However, this may be implied.  
+Suggestions: Clarify that the report should cover both detailed statistics and churn trend
+analytics for completeness.  
+Recommendations: Update the description to “Generate daily report showing detailed churn
+statistics and historical trends.”  
+
+Item: T9 - Upload high-risk customer list to HubSpot marketing automation platform  
+Issues: None identified  
+Suggestions: None  
+Recommendations: No changes needed  
+
+Item: T10 - Send alert email to Head of Customer Success if high-risk list exceeds 50
+customers  
+Issues: The conditional logic (i.e., only if more than 50 high-risk customers) is present,
+but task description could explicitly mention that the evaluation is based on the T7
+output for clarity.  
+Suggestions: Clarify input dependency for the threshold evaluation.  
+Recommendations: Consider updating to “Evaluate count of high-risk customers and send
+alert email to Head of Customer Success if the list exceeds 50.”  
+
+---  
+Overall Workflow Issues and Missing Tasks:
+
+Issues:  
+- The workflow does not explicitly call out data validation/quality checks after
+extraction and before merge. This is a common best practice to catch errors early and
+prevent bad input propagating through the system.
+- There is no explicit task for handling errors or logging failures, even though robust
+pipelines handle exceptions for downstream reliability. However, per your instruction,
+infrastructure or cross-cutting concerns should generally be excluded unless a business
+logic output depends on them.
+- The task “Upload high-risk customer list to HubSpot” does not specify error handling or
+retries if the upload fails, but this could be part of automation logic, not a standalone
+workflow task.
+- Daily scheduling and time window monitoring (7-9 AM) are operational concerns and
+correctly omitted from tasks.
+
+Suggestions:
+- Insert a validation/quality check task post-extraction/pre-merge to catch incomplete or
+corrupt data.
+- Consider a distinct “Validate data integrity and completeness for extracted datasets”
+task between T3 and T4.
+
+Recommendations:
+- Add new task:  
+    id: “T3a”  
+description: “Validate extracted datasets for completeness, integrity, and expected
+formatting prior to merging”  
+    depends_on: ["T1", "T2", "T3"], precedes T4
+
+---
+==================================================  END  ==================================================
+
+
+[1/6] Refining workflow analyst output...
+================================================== START ==================================================
+[31m[GPT-4.1-2025-04-14][0m Refinement Reasoning:
+
+1. The scrutiny suggests clarifying T8 to explicitly include both detailed churn
+statistics and historical trends. I will update T8's description accordingly.
+2. For T10, the feedback requests a clearer description stating that the evaluation is
+based on the output of T7, and to explicitly mention the threshold check for the high-risk
+customer list. I will update T10 to: "Evaluate count of high-risk customers and send alert
+email to Head of Customer Success if the list exceeds 50."
+3. The major process recommendation is to introduce a new task after data extraction but
+before merging: "Validate extracted datasets for completeness, integrity, and expected
+formatting prior to merging." I will insert this as T3a, dependent on T1, T2, and T3, and
+make T4 depend on T3a.
+4. No changes or additional clarifications are needed for the other tasks as per the
+scrutiny.
+
+Here is the refined JSON specification:
+
+```json
+{
+  "process_name": "Daily Customer Churn Prediction Pipeline",
+  "tasks": [
+    {
+      "id": "T1",
+      "description": "Extract customer account data from Salesforce CRM database",
+      "depends_on": []
+    },
+    {
+      "id": "T2",
+      "description": "Fetch customer support ticket data from Zendesk API",
+      "depends_on": []
+    },
+    {
+      "id": "T3",
+      "description": "Extract customer product usage metrics from analytics database",
+      "depends_on": []
+    },
+    {
+      "id": "T3a",
+"description": "Validate extracted datasets for completeness, integrity, and expected
+formatting prior to merging",
+      "depends_on": ["T1", "T2", "T3"]
+    },
+    {
+      "id": "T4",
+"description": "Merge account data, support ticket data, and product usage metrics into a
+unified dataset",
+      "depends_on": ["T3a"]
+    },
+    {
+      "id": "T5",
+"description": "Clean merged dataset by handling missing values, removing test accounts,
+and standardising formats",
+      "depends_on": ["T4"]
+    },
+    {
+      "id": "T6",
+"description": "Run pre-trained churn prediction model from S3 on the cleaned dataset",
+      "depends_on": ["T5"]
+    },
+    {
+      "id": "T7",
+"description": "Filter model output to generate list of customers with churn probability
+over 70%",
+      "depends_on": ["T6"]
+    },
+    {
+      "id": "T8",
+"description": "Generate daily report showing detailed churn statistics and historical
+trends",
+      "depends_on": ["T6"]
+    },
+    {
+      "id": "T9",
+"description": "Upload high-risk customer list to HubSpot marketing automation platform",
+      "depends_on": ["T7"]
+    },
+    {
+      "id": "T10",
+"description": "Evaluate count of high-risk customers and send alert email to Head of
+Customer Success if the list exceeds 50",
+      "depends_on": ["T7"]
+    }
+  ]
+}
+```
+==================================================  END  ==================================================
+
+
+[2/6] Workflow Planner running...
+================================================== START ==================================================
+[31m[GPT-4.1-2025-04-14][0m Let's proceed through each step as prescribed:
+
+---
+
+## STEP 1 — PHASE IDENTIFICATION
+
+**Review of all tasks:**
+
+- **T1, T2, T3:** Data extraction from various sources.
+- **T3a:** Validation of all extracted datasets.
+- **T4:** Merging datasets.
+- **T5:** Data cleaning and preparation.
+- **T6:** Model inference.
+- **T7:** Filtering for high-risk customers.
+- **T8:** Reporting on churn with statistics and historical trends.
+- **T9:** Uploading results to a marketing tool.
+- **T10:** Alerting based on count of high-risk customers.
+
+**Proposed Phases:**
+
+1. **Data Acquisition**
+   - Tasks: T1, T2, T3
+   - Extract data from all sources.
+
+2. **Data Validation and Preparation**
+   - Tasks: T3a, T4, T5
+   - Validate, combine, and clean the raw data.
+
+3. **Prediction and Analysis**
+   - Tasks: T6, T7, T8
+   - Predict churn, analyze results, and produce reports.
+
+4. **Result Delivery**
+   - Tasks: T9, T10
+   - Deliver actionable output to stakeholders and systems.
+
+---
+
+## STEP 2 — DEPENDENCY ANALYSIS
+
+- T1, T2, T3 can run in parallel; they do not depend on each other.
+- T3a waits for T1, T2, T3.
+- T4 depends on T3a only.
+- T5 depends only on T4.
+- T6 depends only on T5.
+- T7 and T8 both depend on T6, and are independent of each other (can run in parallel).
+- T9 and T10 both depend on T7 and are independent of each other (can run in parallel).
+
+All dependencies are logical and correctly specified.
+
+---
+
+## STEP 3 — PARALLEL GROUP IDENTIFICATION
+
+- **PG1**: T1, T2, T3 (independent, same phase, can run in parallel)
+- **PG2**: T7, T8 (dependent on same task, can run in parallel, same phase)
+- **PG3**: T9, T10 (dependent on T7, can run in parallel, same phase)
+- Sequential elsewhere.
+
+---
+
+## STEP 4 — DATA FLOW MAPPING
+
+- **T1**: Consumes nothing (Startup, pulls CRM account data).  
+  Produces: Customer account dataset
+- **T2**: Consumes nothing (Startup, pulls support tickets).  
+  Produces: Customer support ticket dataset
+- **T3**: Consumes nothing (Startup, pulls product usage).  
+  Produces: Customer product usage metrics dataset
+
+- **T3a**: Consumes: Account, support ticket, and usage datasets (from T1, T2, T3).  
+  Produces: Validated datasets
+
+- **T4**: Consumes: Validated datasets  
+  Produces: Unified merged raw dataset
+
+- **T5**: Consumes: Unified merged raw dataset  
+  Produces: Cleaned and standardized customer dataset
+
+- **T6**: Consumes: Cleaned customer dataset  
+  Produces: Model inference output with churn probabilities
+
+- **T7**: Consumes: Model inference output  
+  Produces: List of customers with >70% churn probability
+
+- **T8**: Consumes: Model inference output  
+  Produces: Report with detailed churn statistics and historical trends
+
+- **T9**: Consumes: High-risk customer list  
+  Produces: High-risk customer list uploaded in HubSpot
+
+- **T10**: Consumes: High-risk customer list  
+  Produces: Alert email to Head of Customer Success if customer count exceeds 50
+
+---
+
+## STEP 5 — EXECUTION TYPE ASSIGNMENT
+
+- **T1, T2, T3**: parallel (PG1)
+- **T3a, T4, T5, T6**: sequential
+- **T7, T8**: parallel (PG2)
+- **T9, T10**: parallel (PG3)
+
+No iterative tasks; none specified to loop over collections.
+
+---
+
+## STEP 6 — FINAL REVIEW
+
+- All phases cover their intended tasks, all task IDs from analyst are used and unchanged.
+- Parallel groups are internally consistent.
+- Data flow consistent.
+- No renaming, dropping, or addition of tasks.
+
+---
+
+## FINAL ENRICHED JSON
+
+```json
+{
+  "process_name": "Daily Customer Churn Prediction Pipeline",
+  "phases": [
+    {
+      "phase_id": "P1",
+      "phase_name": "Data Acquisition",
+"description": "Extract customer data from all relevant sources including CRM, support,
+and product analytics.",
+      "task_ids": ["T1", "T2", "T3"]
+    },
+    {
+      "phase_id": "P2",
+      "phase_name": "Data Validation and Preparation",
+"description": "Validate completeness and integrity of extracted data, merge sources, and
+prepare for analysis.",
+      "task_ids": ["T3a", "T4", "T5"]
+    },
+    {
+      "phase_id": "P3",
+      "phase_name": "Prediction and Analysis",
+"description": "Run churn prediction, analyze results, and generate detailed statistics.",
+      "task_ids": ["T6", "T7", "T8"]
+    },
+    {
+      "phase_id": "P4",
+      "phase_name": "Result Delivery",
+"description": "Deliver high-risk customer information and alerts to marketing platform
+and stakeholders.",
+      "task_ids": ["T9", "T10"]
+    }
+  ],
+  "tasks": [
+    {
+      "id": "T1",
+      "description": "Extract customer account data from Salesforce CRM database",
+      "phase": "P1",
+      "execution_type": "parallel",
+      "depends_on": [],
+      "consumes": "None - entry point",
+      "produces": "Customer account dataset",
+      "parallel_group": "PG1"
+    },
+    {
+      "id": "T2",
+      "description": "Fetch customer support ticket data from Zendesk API",
+      "phase": "P1",
+      "execution_type": "parallel",
+      "depends_on": [],
+      "consumes": "None - entry point",
+      "produces": "Customer support ticket dataset",
+      "parallel_group": "PG1"
+    },
+    {
+      "id": "T3",
+      "description": "Extract customer product usage metrics from analytics database",
+      "phase": "P1",
+      "execution_type": "parallel",
+      "depends_on": [],
+      "consumes": "None - entry point",
+      "produces": "Customer product usage metrics dataset",
+      "parallel_group": "PG1"
+    },
+    {
+      "id": "T3a",
+"description": "Validate extracted datasets for completeness, integrity, and expected
+formatting prior to merging",
+      "phase": "P2",
+      "execution_type": "sequential",
+      "depends_on": ["T1", "T2", "T3"],
+"consumes": "Customer account dataset, customer support ticket dataset, and product usage
+metrics dataset",
+      "produces": "Validated datasets ready for merging",
+      "parallel_group": null
+    },
+    {
+      "id": "T4",
+"description": "Merge account data, support ticket data, and product usage metrics into a
+unified dataset",
+      "phase": "P2",
+      "execution_type": "sequential",
+      "depends_on": ["T3a"],
+      "consumes": "Validated datasets ready for merging",
+      "produces": "Unified merged raw dataset",
+      "parallel_group": null
+    },
+    {
+      "id": "T5",
+"description": "Clean merged dataset by handling missing values, removing test accounts,
+and standardising formats",
+      "phase": "P2",
+      "execution_type": "sequential",
+      "depends_on": ["T4"],
+      "consumes": "Unified merged raw dataset",
+      "produces": "Cleaned and standardized customer dataset",
+      "parallel_group": null
+    },
+    {
+      "id": "T6",
+"description": "Run pre-trained churn prediction model from S3 on the cleaned dataset",
+      "phase": "P3",
+      "execution_type": "sequential",
+      "depends_on": ["T5"],
+      "consumes": "Cleaned and standardized customer dataset",
+      "produces": "Model inference output with churn probabilities",
+      "parallel_group": null
+    },
+    {
+      "id": "T7",
+"description": "Filter model output to generate list of customers with churn probability
+over 70%",
+      "phase": "P3",
+      "execution_type": "parallel",
+      "depends_on": ["T6"],
+      "consumes": "Model inference output with churn probabilities",
+      "produces": "List of customers with churn probability over 70%",
+      "parallel_group": "PG2"
+    },
+    {
+      "id": "T8",
+"description": "Generate daily report showing detailed churn statistics and historical
+trends",
+      "phase": "P3",
+      "execution_type": "parallel",
+      "depends_on": ["T6"],
+      "consumes": "Model inference output with churn probabilities",
+      "produces": "Report with detailed churn statistics and historical trends",
+      "parallel_group": "PG2"
+    },
+    {
+      "id": "T9",
+"description": "Upload high-risk customer list to HubSpot marketing automation platform",
+      "phase": "P4",
+      "execution_type": "parallel",
+      "depends_on": ["T7"],
+      "consumes": "List of customers with churn probability over 70%",
+      "produces": "High-risk customer list uploaded in HubSpot",
+      "parallel_group": "PG3"
+    },
+    {
+      "id": "T10",
+"description": "Evaluate count of high-risk customers and send alert email to Head of
+Customer Success if the list exceeds 50",
+      "phase": "P4",
+      "execution_type": "parallel",
+      "depends_on": ["T7"],
+      "consumes": "List of customers with churn probability over 70%",
+"produces": "Alert email to Head of Customer Success if high-risk customer list exceeds
+50",
+      "parallel_group": "PG3"
+    }
+  ]
+}
+```
+==================================================  END  ==================================================
+
+
+[2/6] Dehallucinating workflow planner output...
+================================================== START ==================================================
+[31m[GPT-4.1-2025-04-14][0m ---
+SCRUTINY ANALYSIS
+
+Item: Task Integrity (All Tasks)
+Issues: None identified. No tasks have been added, removed, or renamed. All task IDs and
+descriptions are preserved as per the Workflow Analyst's input.
+Suggestions: None.
+Recommendations: No changes needed.
+
+---
+
+Item: Phase Assignment
+Issues: None identified. Every task is assigned to a phase. Phase groupings are logically
+coherent and match the nature of work:
+- Data extraction (T1–T3) grouped under Data Acquisition;
+- Validation, merging, and cleaning (T3a–T5) under Data Validation and Preparation;
+- Analysis (T6–T8) under Prediction and Analysis;
+- Output delivery (T9–T10) under Result Delivery.
+Phase ordering matches task dependencies.
+Suggestions: None.
+Recommendations: No changes needed.
+
+---
+
+Item: Parallel Group Correctness
+Issues: None identified.
+- All members of each parallel group (e.g., PG1: T1, T2, T3) are in the same phase and
+have no dependencies on each other.
+- PG2 (T7, T8) and PG3 (T9, T10) show the same expected parallelism; no inter-dependencies
+exist within groups.
+Suggestions: None.
+Recommendations: No changes needed.
+
+---
+
+Item: Execution Type Accuracy
+Issues: None identified.
+- All extract tasks are set as "parallel"
+- Data flow–dependent tasks are "sequential"
+- Parallel groups appropriately marked
+- No iterative tasks required per business requirements
+Suggestions: None.
+Recommendations: No changes needed.
+
+---
+
+Item: Data Flow Consistency
+Issues: None identified.
+- Entry-point tasks correctly marked as consuming "None"
+- Consumed/produced datasets are named consistently across tasks
+- Terminal outputs are explicit and linked to appropriate business needs (i.e., report,
+customer list upload, alert email)
+Suggestions: None.
+Recommendations: No changes needed.
+
+---
+
+Item: Dependency Correctness
+Issues: None identified.
+- All dependencies accurately reflect natural flow and previous step outputs
+- All dependency references are valid and complete
+Suggestions: None.
+Recommendations: No changes needed.
+
+---
+
+Item: DAG Readiness
+Issues: None identified.
+- Provided metadata (phases, dependencies, parallel groups, produced/consumed data) is
+complete and unambiguous
+- No additional reasoning required for DAG construction
+Suggestions: None.
+Recommendations: No changes needed.
+
+---
+
+Overall, the Workflow Planner's output is mechanically sound and meets all specified
+criteria for DAG construction metadata.
+==================================================  END  ==================================================
+
+
+[2/6] Refining workflow planner output...
+================================================== START ==================================================
+[31m[GPT-4.1-2025-04-14][0m **REFINEMENT RESPONSE:**
+This refinement is based on the scrutiny feedback provided, which states that all phase
+assignments, parallel groups, execution types, data flow, and dependencies are correct. No
+further changes are required to the tasks, dependencies, groupings, or descriptions. Thus,
+I will restate the plan, ensuring clear enrichment with execution metadata, phase names,
+parallel groupings, and data flow descriptions.
+
+---
+
+## REASONING STEPS
+
+### STEP 1 — PHASE IDENTIFICATION
+
+**Phases:**
+1. **Data Acquisition**: Initial phase gathering data from various sources  
+   - Task IDs: T1, T2, T3
+2. **Data Validation and Preparation**: Validates extracted data, merges, cleans  
+   - Task IDs: T3a, T4, T5
+3. **Prediction and Analysis**: Runs churn model, filters output, creates report  
+   - Task IDs: T6, T7, T8
+4. **Result Delivery**: Upload lists, send alerts  
+   - Task IDs: T9, T10
+
+### STEP 2 — DEPENDENCY ANALYSIS
+
+- **T1**, **T2**, **T3**: No dependencies (entry point tasks)
+- **T3a**: Depends on T1, T2, T3
+- **T4**: Depends on T3a
+- **T5**: Depends on T4
+- **T6**: Depends on T5
+- **T7**, **T8**: Both depend on T6; can be parallel
+- **T9**, **T10**: Both depend on T7; can be parallel
+
+All dependency references are valid and match the required data flow.
+
+### STEP 3 — PARALLEL GROUP IDENTIFICATION
+
+- **PG1**: T1, T2, T3 (parallel, all in Data Acquisition)
+- **PG2**: T7, T8 (parallel, both in Prediction and Analysis)
+- **PG3**: T9, T10 (parallel, both in Result Delivery)
+- All other tasks are sequential.
+
+### STEP 4 — DATA FLOW MAPPING
+
+- **T1**: Consumes none. Produces "Extracted customer account data".
+- **T2**: Consumes none. Produces "Extracted customer support ticket data".
+- **T3**: Consumes none. Produces "Extracted customer product usage metrics".
+- **T3a**: Consumes output from T1, T2, T3. Produces "Validated customer account, support,
+and usage datasets".
+- **T4**: Consumes "Validated customer account, support, and usage datasets". Produces
+"Unified merged dataset".
+- **T5**: Consumes "Unified merged dataset". Produces "Cleaned merged dataset".
+- **T6**: Consumes "Cleaned merged dataset". Produces "Churn model predictions for each
+customer".
+- **T7**: Consumes "Churn model predictions for each customer". Produces "High-risk
+customer list (churn probability >70%)".
+- **T8**: Consumes "Churn model predictions for each customer". Produces "Daily churn
+report including detailed statistics and historical trends".
+- **T9**: Consumes "High-risk customer list (churn probability >70%)". Produces "Uploaded
+high-risk customer list in HubSpot".
+- **T10**: Consumes "High-risk customer list (churn probability >70%)". Produces "Alert
+email sent to Head of Customer Success if high-risk list exceeds 50".
+
+### STEP 5 — EXECUTION TYPE ASSIGNMENT
+
+- **T1, T2, T3**: execution_type = parallel (all in PG1)
+- **T3a, T4, T5, T6**: sequential
+- **T7, T8**: parallel (PG2)
+- **T9, T10**: parallel (PG3)
+
+_No iterative tasks present in this workflow._
+
+### STEP 6 — FINAL REVIEW
+
+- All tasks clearly assigned to phases
+- All parallel groups are internally consistent and within a single phase
+- Data flows logically from source through each stage to the terminal outputs
+- No changes to tasks, dependencies, or field names
+
+---
+
+## FINAL ENRICHED JSON SPECIFICATION
+
+```json
+{
+  "process_name": "Daily Customer Churn Prediction Pipeline",
+  "phases": [
+    {
+      "phase_id": "P1",
+      "phase_name": "Data Acquisition",
+"description": "Gather customer-related data from various internal and external sources",
+      "task_ids": ["T1", "T2", "T3"]
+    },
+    {
+      "phase_id": "P2",
+      "phase_name": "Data Validation and Preparation",
+      "description": "Validate, merge, and clean extracted datasets for analysis",
+      "task_ids": ["T3a", "T4", "T5"]
+    },
+    {
+      "phase_id": "P3",
+      "phase_name": "Prediction and Analysis",
+"description": "Run churn prediction model and generate reports based on predictive
+results",
+      "task_ids": ["T6", "T7", "T8"]
+    },
+    {
+      "phase_id": "P4",
+      "phase_name": "Result Delivery",
+"description": "Deliver high-risk lists and notifications to downstream platforms and
+stakeholders",
+      "task_ids": ["T9", "T10"]
+    }
+  ],
+  "tasks": [
+    {
+      "id": "T1",
+      "description": "Extract customer account data from Salesforce CRM database",
+      "phase": "P1",
+      "execution_type": "parallel",
+      "depends_on": [],
+      "consumes": "None - entry point",
+      "produces": "Extracted customer account data",
+      "parallel_group": "PG1"
+    },
+    {
+      "id": "T2",
+      "description": "Fetch customer support ticket data from Zendesk API",
+      "phase": "P1",
+      "execution_type": "parallel",
+      "depends_on": [],
+      "consumes": "None - entry point",
+      "produces": "Extracted customer support ticket data",
+      "parallel_group": "PG1"
+    },
+    {
+      "id": "T3",
+      "description": "Extract customer product usage metrics from analytics database",
+      "phase": "P1",
+      "execution_type": "parallel",
+      "depends_on": [],
+      "consumes": "None - entry point",
+      "produces": "Extracted customer product usage metrics",
+      "parallel_group": "PG1"
+    },
+    {
+      "id": "T3a",
+"description": "Validate extracted datasets for completeness, integrity, and expected
+formatting prior to merging",
+      "phase": "P2",
+      "execution_type": "sequential",
+      "depends_on": ["T1", "T2", "T3"],
+"consumes": "Extracted customer account data, extracted customer support ticket data,
+extracted customer product usage metrics",
+      "produces": "Validated customer account, support, and usage datasets",
+      "parallel_group": null
+    },
+    {
+      "id": "T4",
+"description": "Merge account data, support ticket data, and product usage metrics into a
+unified dataset",
+      "phase": "P2",
+      "execution_type": "sequential",
+      "depends_on": ["T3a"],
+      "consumes": "Validated customer account, support, and usage datasets",
+      "produces": "Unified merged dataset",
+      "parallel_group": null
+    },
+    {
+      "id": "T5",
+"description": "Clean merged dataset by handling missing values, removing test accounts,
+and standardising formats",
+      "phase": "P2",
+      "execution_type": "sequential",
+      "depends_on": ["T4"],
+      "consumes": "Unified merged dataset",
+      "produces": "Cleaned merged dataset",
+      "parallel_group": null
+    },
+    {
+      "id": "T6",
+"description": "Run pre-trained churn prediction model from S3 on the cleaned dataset",
+      "phase": "P3",
+      "execution_type": "sequential",
+      "depends_on": ["T5"],
+      "consumes": "Cleaned merged dataset",
+      "produces": "Churn model predictions for each customer",
+      "parallel_group": null
+    },
+    {
+      "id": "T7",
+"description": "Filter model output to generate list of customers with churn probability
+over 70%",
+      "phase": "P3",
+      "execution_type": "parallel",
+      "depends_on": ["T6"],
+      "consumes": "Churn model predictions for each customer",
+      "produces": "High-risk customer list (churn probability >70%)",
+      "parallel_group": "PG2"
+    },
+    {
+      "id": "T8",
+"description": "Generate daily report showing detailed churn statistics and historical
+trends",
+      "phase": "P3",
+      "execution_type": "parallel",
+      "depends_on": ["T6"],
+      "consumes": "Churn model predictions for each customer",
+"produces": "Daily churn report including detailed statistics and historical trends",
+      "parallel_group": "PG2"
+    },
+    {
+      "id": "T9",
+"description": "Upload high-risk customer list to HubSpot marketing automation platform",
+      "phase": "P4",
+      "execution_type": "parallel",
+      "depends_on": ["T7"],
+      "consumes": "High-risk customer list (churn probability >70%)",
+      "produces": "Uploaded high-risk customer list in HubSpot",
+      "parallel_group": "PG3"
+    },
+    {
+      "id": "T10",
+"description": "Evaluate count of high-risk customers and send alert email to Head of
+Customer Success if the list exceeds 50",
+      "phase": "P4",
+      "execution_type": "parallel",
+      "depends_on": ["T7"],
+      "consumes": "High-risk customer list (churn probability >70%)",
+"produces": "Alert email sent to Head of Customer Success if high-risk list exceeds 50",
+      "parallel_group": "PG3"
+    }
+  ]
+}
+```
+==================================================  END  ==================================================
+
+
+[3/6] DAG Architect constructing and validating DAG...
+[3/6] DAG validated. Entry points: ['T1', 'T2', 'T3'] | Terminal nodes: ['T8', 'T9', 'T10']
+[4/6] Fault Tolerance Specification running...
+================================================== START ==================================================
+[31m[GPT-4.1-2025-04-14][0m ---
+**STEP 1 — BRD EXTRACTION**
+
+**BRD Fault Tolerance Statements (Explicit):**
+- "The pipeline should run every morning at 7 AM and complete before 9 AM when the
+retention team starts work."  
+_(Strict timing requirement; implies tasks should have suitable timeouts to allow retries
+within a 2-hour window.)_
+- "If more than 50 customers are flagged as high-risk, the Head of Customer Success needs
+to receive an alert email immediately."  
+_(The alert email [T10] is an important notification but not described as critical to
+block other outputs.)_
+
+**BRD-Implied Criticality:**
+- No tasks are explicitly described as "critical" or "optional," but achieving complete,
+accurate delivery is implied as essential for downstream stakeholders.
+- Data ingestion from Salesforce, Zendesk, analytics DB (T1/T2/T3) is the foundation of
+the pipeline.
+- Uploading the high-risk list to HubSpot and generating the report are the main business
+objectives.
+- Sending the alert email (T10) is secondary but strongly desired.
+
+**BRD Retry/Timeout/Fallback Statements:**
+- No explicit mention of retry, timeout, or fallback policies for any task.
+
+**STEP 2 — STRUCTURAL ANALYSIS**
+
+**Node-by-Node Reasoning:**
+
+- **PG1: T1 – Salesforce extraction; T2 – Zendesk API; T3 – Analytics DB**
+- All are independent entry points. Each represents core data needed for accurate churn
+prediction. Failure in any will undermine prediction results.
+  - T1: Database fetch (internal, but may occasionally be unavailable; mostly reliable).
+- T2: External API (Zendesk). External APIs tend to have transient network issues — should
+be retryable.
+- T3: Analytics database. Internal, but high data volume might cause timeouts; retryable
+but with conservative attempts.
+  - All three are in a parallel group — failure strategy should be consistent.
+
+- **T3a – Validate extracted datasets**
+- Sequential, single dependency node with all three data sources. If one or more upstream
+fail/skipped, can't proceed meaningfully.
+- Pure computation/validation task — deterministic, rare transient failure (but possible
+with memory/resource constraints).
+
+- **T4 – Merge datasets**
+- Single dependency, pure computation (deterministic merge), low likelihood of transient
+failures except in resource exhaustion.
+  
+- **T5 – Clean merged dataset**
+- Data transformation/cleaning; deterministic; retry only for transient runtime failures.
+
+- **T6 – Run pre-trained churn prediction model (from S3)**
+  - Consumes the cleaned dataset, accesses external storage (S3).
+- Model files could occasionally be unavailable due to infrastructure outages — this is an
+external data fetch step, should be robust to transient failures.
+
+- **PG2: T7 – Filter for high-risk list; T8 – Generate daily report**
+- Both take model output. Pure computation/filter/report steps — deterministic, limited
+blast radius (terminal if they fail).
+
+- **PG3: T9 – Upload to HubSpot; T10 – Send alert email**
+- Both triggered by T7 (high-risk list), both depend on an external system (HubSpot for
+T9, email server for T10).
+  - T9 is business critical as it triggers the automated retention campaign.
+- T10 is business-impacting, but not strictly critical (alert = mitigation for high alert
+volume, not primary business output).
+  - Both are parallel group siblings, so propagation consistency is required.
+
+**STEP 3 — ATTRIBUTE ASSIGNMENT**
+
+Below, for each node, I assign attributes; source is marked as 'brd' only where required
+by an explicit BRD statement, else 'inferred'. Conservative, pipeline-blocking defaults,
+retry for all external interactions, deterministic tasks have minimal retry.
+
+---
+
+**STEP 4 — CONSISTENCY CHECK**
+
+- Every node is covered.
+- No 'alternative_task_id' fields used (null throughout).
+- All critical nodes (all except T10) have fallback strategies of 'halt' or 'retry', never
+'skip'.
+- Non-retryable tasks have max_attempts 1 as appropriate.
+- For each parallel group, siblings use consistent failure_propagation (halt_pipeline for
+PG1, continue_unaffected for PG2, see notes for PG3).
+- No BRD requirements missed.
+
+---
+
+**STEP 5 — FINAL REVIEW**
+
+- 11 nodes annotated (T1–T10 plus T3a).
+- Attribute sources: Only timeouts implicitly covered by BRD (timing window); all else
+inferred.
+- Main assumptions flagged for human review:
+- Should failure to send high-risk alert email (T10) halt the pipeline (current:
+non-critical, does not halt)?
+  - Aggressive retries for external APIs (Zendesk, HubSpot) acceptable?
+- No conflict between BRD and inferred criticality/retry policies.
+
+---
+
+```json
+{
+  "process_name": "Daily Customer Churn Prediction Pipeline",
+  "fault_tolerance_spec": {
+    "nodes": [
+      {
+        "id": "T1",
+        "description": "Extract customer account data from Salesforce CRM database",
+        "phase": "P1",
+        "execution_type": "parallel",
+        "depends_on": [],
+        "consumes": "None - entry point",
+        "produces": "Extracted customer account data",
+        "parallel_group": "PG1",
+        "fault_tolerance": {
+          "criticality": "critical",
+          "criticality_source": "inferred",
+          "retry_policy": {
+            "retryable": true,
+            "max_attempts": 3,
+            "delay_seconds": 15,
+            "backoff_strategy": "exponential",
+            "source": "inferred"
+          },
+          "timeout_seconds": 60,
+          "timeout_source": "inferred",
+          "fallback": {
+            "strategy": "halt",
+            "fallback_value": null,
+            "alternative_task_id": null,
+            "source": "inferred"
+          },
+          "failure_propagation": "halt_pipeline",
+          "failure_propagation_source": "inferred",
+"notes": "Entry point; fetches critical customer account data from Salesforce. Failure
+blocks entire pipeline; retries added for transient DB/network errors. Halt pipeline if
+all attempts fail."
+        }
+      },
+      {
+        "id": "T2",
+        "description": "Fetch customer support ticket data from Zendesk API",
+        "phase": "P1",
+        "execution_type": "parallel",
+        "depends_on": [],
+        "consumes": "None - entry point",
+        "produces": "Extracted customer support ticket data",
+        "parallel_group": "PG1",
+        "fault_tolerance": {
+          "criticality": "critical",
+          "criticality_source": "inferred",
+          "retry_policy": {
+            "retryable": true,
+            "max_attempts": 5,
+            "delay_seconds": 10,
+            "backoff_strategy": "exponential",
+            "source": "inferred"
+          },
+          "timeout_seconds": 90,
+          "timeout_source": "inferred",
+          "fallback": {
+            "strategy": "halt",
+            "fallback_value": null,
+            "alternative_task_id": null,
+            "source": "inferred"
+          },
+          "failure_propagation": "halt_pipeline",
+          "failure_propagation_source": "inferred",
+"notes": "Entry point; fetches critical support data from external Zendesk API. External
+APIs are prone to transient unavailability — exponential retries. Failure blocks entire
+pipeline. Halt on persistent failure."
+        }
+      },
+      {
+        "id": "T3",
+        "description": "Extract customer product usage metrics from analytics database",
+        "phase": "P1",
+        "execution_type": "parallel",
+        "depends_on": [],
+        "consumes": "None - entry point",
+        "produces": "Extracted customer product usage metrics",
+        "parallel_group": "PG1",
+        "fault_tolerance": {
+          "criticality": "critical",
+          "criticality_source": "inferred",
+          "retry_policy": {
+            "retryable": true,
+            "max_attempts": 3,
+            "delay_seconds": 15,
+            "backoff_strategy": "exponential",
+            "source": "inferred"
+          },
+          "timeout_seconds": 120,
+          "timeout_source": "inferred",
+          "fallback": {
+            "strategy": "halt",
+            "fallback_value": null,
+            "alternative_task_id": null,
+            "source": "inferred"
+          },
+          "failure_propagation": "halt_pipeline",
+          "failure_propagation_source": "inferred",
+"notes": "Entry point for usage data; critical for customer churn calculation. Database
+extract, may fail due to connectivity/resource issues; retried with backoff. Any failure
+blocks pipeline."
+        }
+      },
+      {
+        "id": "T3a",
+"description": "Validate extracted datasets for completeness, integrity, and expected
+formatting prior to merging",
+        "phase": "P2",
+        "execution_type": "sequential",
+        "depends_on": [
+          "T1",
+          "T2",
+          "T3"
+        ],
+"consumes": "Extracted customer account data, extracted customer support ticket data,
+extracted customer product usage metrics",
+        "produces": "Validated customer account, support, and usage datasets",
+        "parallel_group": null,
+        "fault_tolerance": {
+          "criticality": "critical",
+          "criticality_source": "inferred",
+          "retry_policy": {
+            "retryable": true,
+            "max_attempts": 2,
+            "delay_seconds": 10,
+            "backoff_strategy": "fixed",
+            "source": "inferred"
+          },
+          "timeout_seconds": 60,
+          "timeout_source": "inferred",
+          "fallback": {
+            "strategy": "halt",
+            "fallback_value": null,
+            "alternative_task_id": null,
+            "source": "inferred"
+          },
+          "failure_propagation": "halt_pipeline",
+          "failure_propagation_source": "inferred",
+"notes": "Validates upstream datasets before merging. Deterministic, but can have
+resource/memory issues. Short retry window. Pipeline halts on failure."
+        }
+      },
+      {
+        "id": "T4",
+"description": "Merge account data, support ticket data, and product usage metrics into a
+unified dataset",
+        "phase": "P2",
+        "execution_type": "sequential",
+        "depends_on": [
+          "T3a"
+        ],
+        "consumes": "Validated customer account, support, and usage datasets",
+        "produces": "Unified merged dataset",
+        "parallel_group": null,
+        "fault_tolerance": {
+          "criticality": "critical",
+          "criticality_source": "inferred",
+          "retry_policy": {
+            "retryable": true,
+            "max_attempts": 2,
+            "delay_seconds": 5,
+            "backoff_strategy": "fixed",
+            "source": "inferred"
+          },
+          "timeout_seconds": 90,
+          "timeout_source": "inferred",
+          "fallback": {
+            "strategy": "halt",
+            "fallback_value": null,
+            "alternative_task_id": null,
+            "source": "inferred"
+          },
+          "failure_propagation": "halt_pipeline",
+          "failure_propagation_source": "inferred",
+"notes": "Merge is a computation-heavy but deterministic step. Any failure indicates a
+severe logic/integrity problem. Halt pipeline if unrecoverable."
+        }
+      },
+      {
+        "id": "T5",
+"description": "Clean merged dataset by handling missing values, removing test accounts,
+and standardising formats",
+        "phase": "P2",
+        "execution_type": "sequential",
+        "depends_on": [
+          "T4"
+        ],
+        "consumes": "Unified merged dataset",
+        "produces": "Cleaned merged dataset",
+        "parallel_group": null,
+        "fault_tolerance": {
+          "criticality": "critical",
+          "criticality_source": "inferred",
+          "retry_policy": {
+            "retryable": true,
+            "max_attempts": 2,
+            "delay_seconds": 5,
+            "backoff_strategy": "fixed",
+            "source": "inferred"
+          },
+          "timeout_seconds": 90,
+          "timeout_source": "inferred",
+          "fallback": {
+            "strategy": "halt",
+            "fallback_value": null,
+            "alternative_task_id": null,
+            "source": "inferred"
+          },
+          "failure_propagation": "halt_pipeline",
+          "failure_propagation_source": "inferred",
+"notes": "Cleansing is essential for model input accuracy; retryable for transient runtime
+errors. Halt if still failing."
+        }
+      },
+      {
+        "id": "T6",
+"description": "Run pre-trained churn prediction model from S3 on the cleaned dataset",
+        "phase": "P3",
+        "execution_type": "sequential",
+        "depends_on": [
+          "T5"
+        ],
+        "consumes": "Cleaned merged dataset",
+        "produces": "Churn model predictions for each customer",
+        "parallel_group": null,
+        "fault_tolerance": {
+          "criticality": "critical",
+          "criticality_source": "inferred",
+          "retry_policy": {
+            "retryable": true,
+            "max_attempts": 4,
+            "delay_seconds": 20,
+            "backoff_strategy": "exponential",
+            "source": "inferred"
+          },
+          "timeout_seconds": 180,
+          "timeout_source": "inferred",
+          "fallback": {
+            "strategy": "halt",
+            "fallback_value": null,
+            "alternative_task_id": null,
+            "source": "inferred"
+          },
+          "failure_propagation": "halt_pipeline",
+          "failure_propagation_source": "inferred",
+"notes": "Model run depends on S3 access, which may have transient issues. Usually
+deterministic, but S3 external. Halt if unresolvable."
+        }
+      },
+      {
+        "id": "T7",
+"description": "Filter model output to generate list of customers with churn probability
+over 70%",
+        "phase": "P3",
+        "execution_type": "parallel",
+        "depends_on": [
+          "T6"
+        ],
+        "consumes": "Churn model predictions for each customer",
+        "produces": "High-risk customer list (churn probability >70%)",
+        "parallel_group": "PG2",
+        "fault_tolerance": {
+          "criticality": "critical",
+          "criticality_source": "inferred",
+          "retry_policy": {
+            "retryable": false,
+            "max_attempts": 1,
+            "delay_seconds": 0,
+            "backoff_strategy": "none",
+            "source": "inferred"
+          },
+          "timeout_seconds": 60,
+          "timeout_source": "inferred",
+          "fallback": {
+            "strategy": "halt",
+            "fallback_value": null,
+            "alternative_task_id": null,
+            "source": "inferred"
+          },
+          "failure_propagation": "halt_pipeline",
+          "failure_propagation_source": "inferred",
+"notes": "Pure, deterministic postprocessing step. If it fails, it's an unrecoverable
+pipeline bug or resource constraint; no retry. Critical as output is required downstream."
+        }
+      },
+      {
+        "id": "T8",
+"description": "Generate daily report showing detailed churn statistics and historical
+trends",
+        "phase": "P3",
+        "execution_type": "parallel",
+        "depends_on": [
+          "T6"
+        ],
+        "consumes": "Churn model predictions for each customer",
+"produces": "Daily churn report including detailed statistics and historical trends",
+        "parallel_group": "PG2",
+        "fault_tolerance": {
+          "criticality": "critical",
+          "criticality_source": "inferred",
+          "retry_policy": {
+            "retryable": false,
+            "max_attempts": 1,
+            "delay_seconds": 0,
+            "backoff_strategy": "none",
+            "source": "inferred"
+          },
+          "timeout_seconds": 60,
+          "timeout_source": "inferred",
+          "fallback": {
+            "strategy": "halt",
+            "fallback_value": null,
+            "alternative_task_id": null,
+            "source": "inferred"
+          },
+          "failure_propagation": "halt_pipeline",
+          "failure_propagation_source": "inferred",
+"notes": "Terminal reporting/aggregation step. Pure computation, deterministic, not
+expected to encounter transient failures. Non-retryable. Halt pipeline if fails for
+consistency."
+        }
+      },
+      {
+        "id": "T9",
+"description": "Upload high-risk customer list to HubSpot marketing automation platform",
+        "phase": "P4",
+        "execution_type": "parallel",
+        "depends_on": [
+          "T7"
+        ],
+        "consumes": "High-risk customer list (churn probability >70%)",
+        "produces": "Uploaded high-risk customer list in HubSpot",
+        "parallel_group": "PG3",
+        "fault_tolerance": {
+          "criticality": "critical",
+          "criticality_source": "inferred",
+          "retry_policy": {
+            "retryable": true,
+            "max_attempts": 5,
+            "delay_seconds": 15,
+            "backoff_strategy": "exponential",
+            "source": "inferred"
+          },
+          "timeout_seconds": 90,
+          "timeout_source": "inferred",
+          "fallback": {
+            "strategy": "halt",
+            "fallback_value": null,
+            "alternative_task_id": null,
+            "source": "inferred"
+          },
+          "failure_propagation": "continue_unaffected",
+          "failure_propagation_source": "inferred",
+"notes": "Push to HubSpot is business-critical for automated retention actions; external
+API may fail transiently (retry with exponential backoff). If it fails after retries,
+pipeline considered failed for business purposes. In parallel group with T10 — allow alert
+email to attempt even if T9 fails."
+        }
+      },
+      {
+        "id": "T10",
+"description": "Evaluate count of high-risk customers and send alert email to Head of
+Customer Success if the list exceeds 50",
+        "phase": "P4",
+        "execution_type": "parallel",
+        "depends_on": [
+          "T7"
+        ],
+        "consumes": "High-risk customer list (churn probability >70%)",
+"produces": "Alert email sent to Head of Customer Success if high-risk list exceeds 50",
+        "parallel_group": "PG3",
+        "fault_tolerance": {
+          "criticality": "non_critical",
+          "criticality_source": "inferred",
+          "retry_policy": {
+            "retryable": true,
+            "max_attempts": 3,
+            "delay_seconds": 10,
+            "backoff_strategy": "exponential",
+            "source": "inferred"
+          },
+          "timeout_seconds": 60,
+          "timeout_source": "inferred",
+          "fallback": {
+            "strategy": "skip",
+            "fallback_value": null,
+            "alternative_task_id": null,
+            "source": "inferred"
+          },
+          "failure_propagation": "continue_unaffected",
+          "failure_propagation_source": "inferred",
+"notes": "Optional quality-of-life notification alert to Head of Customer Success. Not
+critical; if fails, should be skipped (but retried for transient SMTP/network issues) so
+it doesn't block marketing actions (T9)."
+        }
+      }
+    ],
+    "phases": [
+      {
+        "phase_id": "P1",
+        "phase_name": "Data Acquisition",
+"description": "Gather customer-related data from various internal and external sources",
+        "task_ids": [
+          "T1",
+          "T2",
+          "T3"
+        ]
+      },
+      {
+        "phase_id": "P2",
+        "phase_name": "Data Validation and Preparation",
+        "description": "Validate, merge, and clean extracted datasets for analysis",
+        "task_ids": [
+          "T3a",
+          "T4",
+          "T5"
+        ]
+      },
+      {
+        "phase_id": "P3",
+        "phase_name": "Prediction and Analysis",
+"description": "Run churn prediction model and generate reports based on predictive
+results",
+        "task_ids": [
+          "T6",
+          "T7",
+          "T8"
+        ]
+      },
+      {
+        "phase_id": "P4",
+        "phase_name": "Result Delivery",
+"description": "Deliver high-risk lists and notifications to downstream platforms and
+stakeholders",
+        "task_ids": [
+          "T9",
+          "T10"
+        ]
+      }
+    ],
+    "adjacency_list": {
+      "T1": [
+        "T3a"
+      ],
+      "T2": [
+        "T3a"
+      ],
+      "T3": [
+        "T3a"
+      ],
+      "T3a": [
+        "T4"
+      ],
+      "T4": [
+        "T5"
+      ],
+      "T5": [
+        "T6"
+      ],
+      "T6": [
+        "T7",
+        "T8"
+      ],
+      "T7": [
+        "T9",
+        "T10"
+      ],
+      "T8": [],
+      "T9": [],
+      "T10": []
+    },
+    "entry_points": [
+      "T1",
+      "T2",
+      "T3"
+    ],
+    "terminal_nodes": [
+      "T8",
+      "T9",
+      "T10"
+    ],
+    "parallel_groups": {
+      "PG1": [
+        "T1",
+        "T2",
+        "T3"
+      ],
+      "PG2": [
+        "T7",
+        "T8"
+      ],
+      "PG3": [
+        "T9",
+        "T10"
+      ]
+    }
+  }
+}
+```
+==================================================  END  ==================================================
+
+
+[5/6] DAG Visualiser rendering...
+DAG visualisation saved to: Agents/WorkflowDev/DAG/dag_output.png
+[6/6] Task Decomposer running...
+================================================== START ==================================================
+[31m[GPT-4.1-2025-04-14][0m STEP 1 — PIPELINE OVERVIEW
+
+- **Overall goal:**  
+To deliver a daily, automated workflow that predicts customer churn using data from
+multiple sources, produces a list of high-risk customers for marketing intervention, and
+creates daily churn reports—ensuring reliability via robust data ingestion, validation,
+model inference, external integrations, and notification under timing and fault tolerance
+constraints.
+
+- **Phases and tasks:**  
+- **Phase 1 (Data Acquisition):** T1 (Salesforce extract), T2 (Zendesk extract), T3
+(Analytics DB extract).
+- **Phase 2 (Data Validation and Preparation):** T3a (Validation), T4 (Merge), T5 (Clean).
+- **Phase 3 (Prediction and Analysis):** T6 (Model inference from S3), T7 (High-risk
+filter), T8 (Daily report).
+  - **Phase 4 (Result Delivery):** T9 (HubSpot upload), T10 (Send alert email).
+
+  Total tasks: **10** (plus a data validation node T3a).
+
+- **Entry points:**  
+  T1, T2, T3 (data extraction from Salesforce, Zendesk, Analytics DB).
+
+- **Terminal nodes:**  
+  T8 (Report Generation), T9 (HubSpot Upload), T10 (Alert Email).
+
+- **Cross-cutting concerns:**  
+1. **Consistent data models:** Data flows as structured, validated Pydantic models at each
+stage—no use of raw dicts or ambiguous types.
+2. **All external interactions** (Salesforce, Zendesk, Analytics DB, S3, HubSpot, Email)
+must be robust: async functions with retry/timeout decorators/utilities required for each.
+3. **Resource and time constraints:** Task timeouts and retry limits must ensure the
+overall pipeline completes within the 2-hour window (7 AM-9 AM).
+4. **Careful error propagation:** Any critical node must halt the pipeline on failure; T10
+must signal ‘skip’ if emailing the alert fails after retry, but not halt delivery of
+high-risk list to HubSpot.
+5. **Model output and downstream consumption:** Use strong typing to ensure task
+interfaces are robust—e.g., the same high-risk list format delivered to both HubSpot and
+the alert task.
+
+---
+
+STEP 2 — INTERFACE ANALYSIS
+
+- **Key data structures:**
+  - **CustomerAccountData** (output of T1)
+  - **CustomerSupportTicketData** (output of T2)
+  - **CustomerUsageMetrics** (output of T3)
+  - **ValidatedDatasets** (output of T3a)
+  - **MergedDataset** (output of T4)
+  - **CleanedMergedDataset** (output of T5)
+  - **ChurnModelPrediction** (output of T6; list of predictions for each customer)
+  - **HighRiskCustomerList** (output of T7; consumed by both T9 and T10)
+  - **ChurnReport** (output of T8)
+  - **HubSpotUploadResult** (output of T9)
+  - **AlertEmailResult** (output of T10)
+
+- **Shared models required:**
+  - **CustomerAccountRecord**: record-level, used within CustomerAccountData.
+  - **CustomerSupportTicketRecord**: for support data.
+  - **CustomerUsageRecord**: for usage data.
+  - **ChurnPredictionRecord**: for model outputs per customer.
+  - **HighRiskCustomerRecord**: subset of ChurnPredictionRecord for high-risk customers.
+
+- **Model list:**  
+These models must be pre-declared and referenced via `"model_reference"` in task
+input/output.
+
+---
+
+STEP 3 — PER TASK DECOMPOSITION
+
+Below, for each task:
+
+---
+
+### T1 (Salesforce extract)
+
+**IDENTITY:**  
+Extract all current customer account records from the Salesforce CRM.
+
+**FUNCTION NAME:**  
+`extract_salesforce_accounts`
+
+**INPUTS:**  
+- `salesforce_credentials` (dict; provided by orchestrator): Login and auth info.
+
+**OUTPUT:**  
+- Type: `CustomerAccountData` (Pydantic model, list of CustomerAccountRecord)
+- Model Reference: `CustomerAccountData`
+
+**EXECUTION PATTERN:**  
+`async_function`
+
+**KEY LOGIC STEPS:**
+1. Establish connection to Salesforce using credentials.
+2. Query all active (non-test) customer accounts, pulling fields: customer_id,
+account_name, subscription_tier, tenure (days), account_status, etc.
+3. Return as CustomerAccountData model.
+
+**EXTERNAL DEPENDENCIES:**  
+- Salesforce API (`simple_salesforce` suggested).
+
+**FAULT TOLERANCE:**  
+- Retryable on: ConnectionError, TimeoutError, Salesforce API errors.
+- Use `apply_retry` utility for up to 3 attempts with exponential backoff.
+- Enforce timeout (60s) via `asyncio.wait_for`.
+- On final failure, raise `SalesforceExtractionException`.
+
+**ACCEPTANCE CRITERIA:**  
+- On success: Returns non-empty CustomerAccountData.
+- On failure: Raises `SalesforceExtractionException`.
+- Validation: Output must be a list of CustomerAccountRecord with non-missing IDs and
+account_names.
+
+---
+
+### T2 (Zendesk extract)
+
+**IDENTITY:**  
+Fetch support ticket records from Zendesk API for all current customers.
+
+**FUNCTION NAME:**  
+`fetch_zendesk_tickets`
+
+**INPUTS:**  
+- `zendesk_credentials` (dict; from orchestrator): Zendesk API creds.
+- `since_date` (str, optional): Fetch tickets since this date.
+
+**OUTPUT:**  
+- Type: `CustomerSupportTicketData` (Pydantic model, list of CustomerSupportTicketRecord)
+- Model Reference: `CustomerSupportTicketData`
+
+**EXECUTION PATTERN:**  
+`async_function`
+
+**KEY LOGIC STEPS:**
+1. Use credentials to authenticate to Zendesk API.
+2. Query all tickets for current customers, filtering out test data.
+3. Return as CustomerSupportTicketData.
+
+**EXTERNAL DEPENDENCIES:**  
+- Zendesk API (`httpx` suggested).
+
+**FAULT TOLERANCE:**  
+- Retryable on: ConnectionError, TimeoutError, HTTP 5xx from API.
+- Use `apply_retry` utility for up to 5 attempts with exponential backoff.
+- Enforce timeout (90s) with `asyncio.wait_for`.
+- On final failure, raise `ZendeskExtractionException`.
+
+**ACCEPTANCE CRITERIA:**  
+- Returns CustomerSupportTicketData matching all active customers.
+- Raises `ZendeskExtractionException` on failure.
+- Validate: All records must have non-empty ticket IDs and timestamps.
+
+---
+
+### T3 (Analytics DB extract)
+
+**IDENTITY:**  
+Extract product usage metrics for all customers from the analytics database.
+
+**FUNCTION NAME:**  
+`extract_analytics_usage_metrics`
+
+**INPUTS:**  
+- `analytics_db_connection` (dict): DB credentials/settings.
+- `period_start` (str): ISO date.
+- `period_end` (str): ISO date.
+
+**OUTPUT:**  
+- Type: `CustomerUsageMetrics` (Pydantic model, list of CustomerUsageRecord)
+- Model Reference: `CustomerUsageMetrics`
+
+**EXECUTION PATTERN:**  
+`async_function`
+
+**KEY LOGIC STEPS:**
+1. Connect to analytics DB.
+2. Query for all usage metrics (session count, feature usage, last login) for all customer
+IDs, filtered by given time window.
+3. Return as CustomerUsageMetrics.
+
+**EXTERNAL DEPENDENCIES:**  
+- Relational DB (`asyncpg` or `aiomysql` suggested).
+
+**FAULT TOLERANCE:**  
+- Retryable on: ConnectionError, TimeoutError.
+- Use `apply_retry` utility for 3 attempts, exponential backoff.
+- Enforce timeout (120s) using `asyncio.wait_for`.
+- On failure, raise `AnalyticsDbExtractionException`.
+
+**ACCEPTANCE CRITERIA:**  
+- Returns CustomerUsageMetrics; each record must have valid customer_id and usage stats.
+- Exception: `AnalyticsDbExtractionException`.
+- Validate: Output is non-empty for non-empty input period.
+
+---
+
+### T3a (Validate extracted datasets)
+
+**IDENTITY:**  
+Verify that all three extracted datasets are complete, structurally sound, and formatted
+as expected.
+
+**FUNCTION NAME:**  
+`validate_extracted_datasets`
+
+**INPUTS:**  
+- `account_data` (CustomerAccountData; from T1)
+- `support_data` (CustomerSupportTicketData; from T2)
+- `usage_data` (CustomerUsageMetrics; from T3)
+
+**OUTPUT:**  
+- Type: `ValidatedDatasets` (Pydantic model holding all three datasets)
+- Model Reference: `ValidatedDatasets`
+
+**EXECUTION PATTERN:**  
+`simple_function`
+
+**KEY LOGIC STEPS:**
+1. Check for missing/empty datasets.
+2. Validate schemas: all datasets match expected models; required fields present.
+3. Ensure customer IDs align across datasets (report/fail on mismatches).
+4. Return ValidatedDatasets (contains full input data).
+
+**EXTERNAL DEPENDENCIES:**  
+- None (uses Pydantic for validation).
+
+**FAULT TOLERANCE:**  
+- Retryable on: MemoryError, RuntimeError.
+- Use `apply_retry` utility, 2 attempts, fixed delay.
+- Enforce timeout (60s) with `signal` module.
+- On failure, raise `ExtractedDataValidationException`.
+
+**ACCEPTANCE CRITERIA:**  
+- Returns ValidatedDatasets with all required structure.
+- Exception: `ExtractedDataValidationException`.
+- Validations: All datasets non-empty, customer_ids aligned.
+
+---
+
+### T4 (Merge datasets)
+
+**IDENTITY:**  
+Combine validated customer, support, and usage datasets into a single merged structure per
+customer.
+
+**FUNCTION NAME:**  
+`merge_customer_datasets`
+
+**INPUTS:**  
+- `validated_datasets` (ValidatedDatasets, from T3a)
+
+**OUTPUT:**  
+- Type: `MergedDataset` (Pydantic model; one record per customer)
+- Model Reference: `MergedDataset`
+
+**EXECUTION PATTERN:**  
+`simple_function`
+
+**KEY LOGIC STEPS:**
+1. Join datasets by customer_id.
+2. Handle potential missing join keys (fail on critical).
+3. Return as MergedDataset.
+
+**EXTERNAL DEPENDENCIES:**  
+- None.
+
+**FAULT TOLERANCE:**  
+- Retryable on: MemoryError, RuntimeError.
+- Use `apply_retry`, 2 attempts, fixed delay.
+- Timeout: 90s, `signal` module.
+- On failure, raise `DatasetMergeException`.
+
+**ACCEPTANCE CRITERIA:**  
+- Returns complete MergedDataset; all customers present.
+- Exception: `DatasetMergeException`.
+- Validations: No duplicate or missing customer IDs.
+
+---
+
+### T5 (Clean merged dataset)
+
+**IDENTITY:**  
+Clean the merged dataset: handle missing values, remove test/demo accounts, and
+standardize data formats.
+
+**FUNCTION NAME:**  
+`clean_merged_dataset`
+
+**INPUTS:**  
+- `merged_dataset` (MergedDataset, from T4)
+
+**OUTPUT:**  
+- Type: `CleanedMergedDataset`
+- Model Reference: `CleanedMergedDataset`
+
+**EXECUTION PATTERN:**  
+`simple_function`
+
+**KEY LOGIC STEPS:**
+1. Drop records with missing critical fields.
+2. Remove test/demo accounts (by filter condition).
+3. Standardize field formats across all records.
+4. Return CleanedMergedDataset.
+
+**EXTERNAL DEPENDENCIES:**  
+- None.
+
+**FAULT TOLERANCE:**  
+- Retryable on: RuntimeError, MemoryError.
+- Use `apply_retry`, 2 attempts, fixed delay.
+- Timeout: 90s, via `signal` module.
+- On failure, raise `DataCleaningException`.
+
+**ACCEPTANCE CRITERIA:**  
+- Returns CleanedMergedDataset, all records valid and standardized.
+- Exception: `DataCleaningException`.
+- Validations: All cleaned records pass schema validation; test/demo accounts removed.
+
+---
+
+### T6 (Run churn model)
+
+**IDENTITY:**  
+Apply pre-trained churn prediction model (downloaded from S3) to cleaned dataset.
+
+**FUNCTION NAME:**  
+`run_churn_prediction_model`
+
+**INPUTS:**  
+- `cleaned_dataset` (CleanedMergedDataset, from T5)
+- `s3_model_path` (str; provided by orchestrator)
+
+**OUTPUT:**  
+- Type: `ChurnModelPrediction` (list of ChurnPredictionRecord)
+- Model Reference: `ChurnModelPrediction`
+
+**EXECUTION PATTERN:**  
+`async_function`
+
+**KEY LOGIC STEPS:**
+1. Download pre-trained model from S3.
+2. Load model into memory.
+3. Apply model to each record in cleaned_dataset, producing churn probability per
+customer.
+4. Return ChurnModelPrediction.
+
+**EXTERNAL DEPENDENCIES:**  
+- S3 (boto3 or aiobotocore suggested); ML framework (`scikit-learn`/`joblib`), if
+applicable.
+
+**FAULT TOLERANCE:**  
+- Retryable on: S3 download failure, ConnectionError, TimeoutError.
+- Use `apply_retry`, 4 attempts, exponential backoff.
+- Timeout: 180s, via `asyncio.wait_for`.
+- On failure, raise `ChurnPredictionModelException`.
+
+**ACCEPTANCE CRITERIA:**  
+- Returns ChurnModelPrediction, all customers processed.
+- Exception: `ChurnPredictionModelException`.
+- Validation: Returned predictions must match input customer set.
+
+---
+
+### T7 (Filter for high-risk customers)
+
+**IDENTITY:**  
+Filter churn prediction records for customers where churn probability > 70%.
+
+**FUNCTION NAME:**  
+`filter_high_risk_customers`
+
+**INPUTS:**  
+- `model_predictions` (ChurnModelPrediction, from T6)
+
+**OUTPUT:**  
+- Type: `HighRiskCustomerList` (list of HighRiskCustomerRecord)
+- Model Reference: `HighRiskCustomerList`
+
+**EXECUTION PATTERN:**  
+`simple_function`
+
+**KEY LOGIC STEPS:**
+1. For each prediction, check if churn_probability > 0.7.
+2. Build HighRiskCustomerList from qualifying records.
+3. Return list.
+
+**EXTERNAL DEPENDENCIES:**  
+- None.
+
+**FAULT TOLERANCE:**  
+- Not retryable.
+- Timeout: 60s, via `signal` module.
+- On failure, raise `HighRiskCustomerFilterException`.
+
+**ACCEPTANCE CRITERIA:**  
+- Returns properly filtered high-risk customer records (probability > 0.7).
+- Exception: `HighRiskCustomerFilterException`.
+- Validation: All returned records have churn_probability > 0.7.
+
+---
+
+### T8 (Generate daily report)
+
+**IDENTITY:**  
+Generate a daily churn report from the model predictions, including trend stats.
+
+**FUNCTION NAME:**  
+`generate_churn_report`
+
+**INPUTS:**  
+- `model_predictions` (ChurnModelPrediction, from T6)
+
+**OUTPUT:**  
+- Type: `ChurnReport` (Pydantic model)
+- Model Reference: `ChurnReport`
+
+**EXECUTION PATTERN:**  
+`simple_function`
+
+**KEY LOGIC STEPS:**
+1. Compute aggregate stats: churn rates, distribution by tier, feature usage correlations,
+etc.
+2. Compare with previous days’ reports (if available) to compute trends.
+3. Build and return ChurnReport.
+
+**EXTERNAL DEPENDENCIES:**  
+- May read from persistent storage for prior-day stats (sqlite, local file, etc.).
+
+**FAULT TOLERANCE:**  
+- Not retryable.
+- Timeout: 60s, via `signal` module.
+- On failure, raise `ChurnReportGenerationException`.
+
+**ACCEPTANCE CRITERIA:**  
+- Returns valid ChurnReport, all stats filled.
+- Exception: `ChurnReportGenerationException`.
+- Validation: Output fields are non-null, trend computations succeed.
+
+---
+
+### T9 (Upload to HubSpot)
+
+**IDENTITY:**  
+Upload high-risk customer list to HubSpot via API.
+
+**FUNCTION NAME:**  
+`upload_high_risk_to_hubspot`
+
+**INPUTS:**  
+- `hubspot_credentials` (dict; provided by orchestrator)
+- `high_risk_customers` (HighRiskCustomerList; from T7)
+
+**OUTPUT:**  
+- Type: `HubSpotUploadResult` (Pydantic model; result, status)
+- Model Reference: `HubSpotUploadResult`
+
+**EXECUTION PATTERN:**  
+`async_function`
+
+**KEY LOGIC STEPS:**
+1. Authenticate to HubSpot API using credentials.
+2. Upload high-risk customers in batch.
+3. Confirm and verify successful creation/updating.
+4. Return upload result.
+
+**EXTERNAL DEPENDENCIES:**  
+- HubSpot API (`httpx` suggested).
+
+**FAULT TOLERANCE:**  
+- Retryable on: API errors, ConnectionError, TimeoutError.
+- Use `apply_retry`, 5 attempts, exponential backoff.
+- Timeout: 90s, `asyncio.wait_for`.
+- On failure, raise `HubSpotUploadException`.
+
+**ACCEPTANCE CRITERIA:**  
+- HubSpotUploadResult status == "success"
+- Exception: `HubSpotUploadException`.
+- Validation: All attempted uploads accounted for in API response.
+
+---
+
+### T10 (Send alert email)
+
+**IDENTITY:**  
+If the count of high-risk customers > 50, send alert email to Head of Customer Success.
+
+**FUNCTION NAME:**  
+`send_high_risk_alert_email`
+
+**INPUTS:**  
+- `email_settings` (dict; provided by orchestrator)
+- `high_risk_customers` (HighRiskCustomerList; from T7)
+
+**OUTPUT:**  
+- Type: `AlertEmailResult` (Pydantic model: success bool, error details)
+- Model Reference: `AlertEmailResult`
+
+**EXECUTION PATTERN:**  
+`async_function`
+
+**KEY LOGIC STEPS:**
+1. Count high-risk customers.
+2. If count > 50:
+    a. Compose alert email with summary, attach high-risk list (CSV or table).
+    b. Send email to Head of Customer Success.
+    c. Return AlertEmailResult with status.
+3. If count <=50, return AlertEmailResult (status: skipped/no-action).
+
+**EXTERNAL DEPENDENCIES:**  
+- SMTP/email service (`aiosmtplib` suggested).
+
+**FAULT TOLERANCE:**  
+- Retryable on: SMTP send failures, ConnectionError, TimeoutError.
+- Use `apply_retry`, 3 attempts, exponential backoff.
+- Timeout: 60s, `asyncio.wait_for`.
+- On persistent failure, return AlertEmailResult with status "skipped" and error.
+
+**ACCEPTANCE CRITERIA:**  
+- On successful email, AlertEmailResult.success == True.
+- If not sent (under threshold), AlertEmailResult.success == False, reason ==
+"under_threshold".
+- If unrecoverable error, AlertEmailResult.success == False, reason == "error", error
+details returned.
+
+---
+
+STEP 4 — CONSISTENCY CHECK
+
+- Each task mapped to a self-contained specification.
+- All task inputs/outputs reference either Python builtins or Pydantic models listed in
+shared_models.
+- Outputs and inputs are strictly typed and compatible.
+- Execution pattern is `async_function` for all I/O, `simple_function` for pure
+computation.
+- Fault tolerance (retry, timeout, fallback) matches the provided spec.
+- Each task spec contains everything a Coding Agent needs for implementation.
+
+---
+
+STEP 5 — FINAL SUMMARY
+
+- **Shared Pydantic models to define upfront:**  
+  1. CustomerAccountRecord  
+  2. CustomerAccountData  
+  3. CustomerSupportTicketRecord  
+  4. CustomerSupportTicketData  
+  5. CustomerUsageRecord  
+  6. CustomerUsageMetrics  
+  7. ValidatedDatasets  
+  8. MergedDataset  
+  9. CleanedMergedDataset  
+  10. ChurnPredictionRecord  
+  11. ChurnModelPrediction  
+  12. HighRiskCustomerRecord  
+  13. HighRiskCustomerList  
+  14. ChurnReport  
+  15. HubSpotUploadResult  
+  16. AlertEmailResult
+
+- **Utilities to implement:**  
+  - `apply_retry` (decorator for retrying transient errors)
+- `enforce_timeout` (decorator/wrapper for sync methods using `signal`; for async use
+`asyncio.wait_for` in implementation)
+  - All output models use `.validate()` from Pydantic before return.
+
+- **Recommended implementation order:**  
+  1. T1, T2, T3  
+  2. T3a  
+  3. T4  
+  4. T5  
+  5. T6  
+  6. T7, T8  
+  7. T9, T10
+
+- **Risks, ambiguities:**  
+- Consistency of customer_id field across sources: field names and formats must be
+strictly standardized in model design.
+- External APIs may change schema or authentication unexpectedly—good error logging
+needed.
+- If prior-day data for trend reporting in T8 is missing, output should handle gracefully.
+
+---
+
+```json
+{
+  "process_name": "Daily Customer Churn Prediction Pipeline",
+  "pipeline_overview": {
+"goal": "Automatically predict customer churn daily by aggregating multi-source data,
+producing a high-risk customer list and churn report, and delivering to marketing
+platforms and key stakeholders with robust fault tolerance.",
+    "total_phases": 4,
+    "total_tasks": 10,
+    "entry_points": ["T1", "T2", "T3"],
+    "terminal_nodes": ["T8", "T9", "T10"],
+    "cross_cutting_concerns": [
+"All data exchanged between tasks must use declared Pydantic models—no ambiguous dicts or
+untyped objects.",
+"All tasks performing I/O (APIs, databases, email, S3) are implemented as async functions,
+using retry and timeout utilities as specified.",
+"All fault tolerance policies (retries, timeouts, fallbacks) are implemented as per the
+fault tolerance specification.",
+"Schema validation with Pydantic must be performed before returning any structured
+output.",
+      "Strict customer_id alignment is required across all datasets."
+    ]
+  },
+  "shared_models": [
+    {
+      "model_name": "CustomerAccountRecord",
+      "description": "Single customer account entry from Salesforce",
+      "fields": [
+{"name": "customer_id", "type": "str", "description": "Unique customer identifier"},
+        {"name": "account_name", "type": "str", "description": "Customer's name"},
+{"name": "subscription_tier", "type": "str", "description": "Current subscription tier"},
+        {"name": "tenure_days", "type": "int", "description": "Customer tenure in days"},
+        {"name": "account_status", "type": "str", "description": "Active/Inactive status"}
+      ],
+      "produced_by": ["T1"],
+      "consumed_by": ["T3a"]
+    },
+    {
+      "model_name": "CustomerAccountData",
+      "description": "Full set of current customer account records",
+      "fields": [
+{"name": "accounts", "type": "List[CustomerAccountRecord]", "description": "All customer
+accounts from Salesforce"}
+      ],
+      "produced_by": ["T1"],
+      "consumed_by": ["T3a"]
+    },
+    {
+      "model_name": "CustomerSupportTicketRecord",
+      "description": "Single Zendesk support ticket record",
+      "fields": [
+{"name": "customer_id", "type": "str", "description": "ID of the customer associated with
+the ticket"},
+        {"name": "ticket_id", "type": "str", "description": "Zendesk ticket ID"},
+{"name": "created_at", "type": "datetime", "description": "UTC datetime ticket was
+created"},
+        {"name": "status", "type": "str", "description": "Current status of the ticket"}
+      ],
+      "produced_by": ["T2"],
+      "consumed_by": ["T3a"]
+    },
+    {
+      "model_name": "CustomerSupportTicketData",
+      "description": "All support ticket data extracted from Zendesk",
+      "fields": [
+{"name": "tickets", "type": "List[CustomerSupportTicketRecord]", "description": "Support
+ticket records"}
+      ],
+      "produced_by": ["T2"],
+      "consumed_by": ["T3a"]
+    },
+    {
+      "model_name": "CustomerUsageRecord",
+      "description": "Single product usage record per customer",
+      "fields": [
+        {"name": "customer_id", "type": "str", "description": "Unique customer ID"},
+{"name": "session_count", "type": "int", "description": "Total sessions in period"},
+{"name": "feature_usage", "type": "Dict[str, int]", "description": "Feature-wise usage
+counts"},
+{"name": "last_login", "type": "datetime", "description": "UTC datetime of last login"}
+      ],
+      "produced_by": ["T3"],
+      "consumed_by": ["T3a"]
+    },
+    {
+      "model_name": "CustomerUsageMetrics",
+      "description": "All product usage metrics extracted from analytics DB",
+      "fields": [
+{"name": "usage_records", "type": "List[CustomerUsageRecord]", "description": "Usage
+metrics for all customers"}
+      ],
+      "produced_by": ["T3"],
+      "consumed_by": ["T3a"]
+    },
+    {
+      "model_name": "ValidatedDatasets",
+"description": "Container holding validated outputs from Salesforce, Zendesk, analytics
+DB",
+      "fields": [
+{"name": "accounts", "type": "CustomerAccountData", "description": "Validated customer
+account records"},
+{"name": "support", "type": "CustomerSupportTicketData", "description": "Validated support
+ticket records"},
+{"name": "usage", "type": "CustomerUsageMetrics", "description": "Validated product usage
+metrics"}
+      ],
+      "produced_by": ["T3a"],
+      "consumed_by": ["T4"]
+    },
+    {
+      "model_name": "MergedDataset",
+      "description": "Result of merging all validated datasets, one record per customer",
+      "fields": [
+{"name": "records", "type": "List[MergedCustomerRecord]", "description": "Per-customer
+combined records"}
+      ],
+      "produced_by": ["T4"],
+      "consumed_by": ["T5"]
+    },
+    {
+      "model_name": "MergedCustomerRecord",
+      "description": "Combined per-customer record post-merge",
+      "fields": [
+        {"name": "customer_id", "type": "str", "description": "Customer identifier"},
+{"name": "account", "type": "CustomerAccountRecord", "description": "Account data"},
+{"name": "support_tickets", "type": "List[CustomerSupportTicketRecord]", "description":
+"Associated support tickets"},
+        {"name": "usage", "type": "CustomerUsageRecord", "description": "Usage metrics"}
+      ],
+      "produced_by": ["T4"],
+      "consumed_by": ["T5"]
+    },
+    {
+      "model_name": "CleanedMergedDataset",
+      "description": "Result of cleaning and filtering merged data",
+      "fields": [
+{"name": "records", "type": "List[MergedCustomerRecord]", "description": "Cleaned,
+standardized, filtered records"}
+      ],
+      "produced_by": ["T5"],
+      "consumed_by": ["T6"]
+    },
+    {
+      "model_name": "ChurnPredictionRecord",
+      "description": "Individual customer churn score",
+      "fields": [
+        {"name": "customer_id", "type": "str", "description": "Customer ID"},
+{"name": "churn_probability", "type": "float", "description": "Predicted risk (0.0-1.0)"}
+      ],
+      "produced_by": ["T6"],
+      "consumed_by": ["T7", "T8"]
+    },
+    {
+      "model_name": "ChurnModelPrediction",
+      "description": "All churn predictions for the day",
+      "fields": [
+{"name": "predictions", "type": "List[ChurnPredictionRecord]", "description": "Churn
+prediction per customer"}
+      ],
+      "produced_by": ["T6"],
+      "consumed_by": ["T7", "T8"]
+    },
+    {
+      "model_name": "HighRiskCustomerRecord",
+      "description": "Subset of churn prediction for high-risk customers",
+      "fields": [
+        {"name": "customer_id", "type": "str", "description": "Customer ID"},
+{"name": "churn_probability", "type": "float", "description": "Churn probability (>0.7)"}
+      ],
+      "produced_by": ["T7"],
+      "consumed_by": ["T9", "T10"]
+    },
+    {
+      "model_name": "HighRiskCustomerList",
+      "description": "List of customers over 70% churn probability",
+      "fields": [
+{"name": "high_risk_customers", "type": "List[HighRiskCustomerRecord]", "description":
+"High-risk customer records"}
+      ],
+      "produced_by": ["T7"],
+      "consumed_by": ["T9", "T10"]
+    },
+    {
+      "model_name": "ChurnReport",
+      "description": "Final daily report; statistics and trends",
+      "fields": [
+        {"name": "date", "type": "date", "description": "Report date"},
+        {"name": "total_customers", "type": "int", "description": "Number evaluated"},
+{"name": "high_risk_count", "type": "int", "description": "Customers with risk >70%"},
+{"name": "trend_data", "type": "Dict[str, Any]", "description": "Derived trends and
+statistics"}
+      ],
+      "produced_by": ["T8"],
+      "consumed_by": []
+    },
+    {
+      "model_name": "HubSpotUploadResult",
+      "description": "Result of pushing high-risk list to HubSpot",
+      "fields": [
+{"name": "uploaded_count", "type": "int", "description": "Number of customers uploaded"},
+        {"name": "status", "type": "str", "description": "Upload operation status"}
+      ],
+      "produced_by": ["T9"],
+      "consumed_by": []
+    },
+    {
+      "model_name": "AlertEmailResult",
+      "description": "Indicates whether alert email was sent",
+      "fields": [
+        {"name": "success", "type": "bool", "description": "True if sent"},
+        {"name": "reason", "type": "str", "description": "Reason if not sent"},
+{"name": "error_details", "type": "Optional[str]", "description": "Error message if
+failed"}
+      ],
+      "produced_by": ["T10"],
+      "consumed_by": []
+    }
+  ],
+  "shared_utilities": [
+    {
+      "utility_name": "apply_retry",
+"description": "Generic decorator or async helper for retrying functions on transient
+errors with max_attempts, delay, and backoff strategy.",
+"signature": "def apply_retry(fn: Callable, *, max_attempts: int, delay_seconds: int,
+backoff_strategy: str, retry_exceptions: Tuple[Exception, ...]) -> Callable",
+      "used_by": [
+        "T1", "T2", "T3", "T3a", "T4", "T5", "T6", "T9", "T10"
+      ]
+    }
+  ],
+"implementation_order": ["T1", "T2", "T3", "T3a", "T4", "T5", "T6", "T7", "T8", "T9",
+"T10"],
+  "task_specifications": [
+    {
+      "id": "T1",
+      "phase": "P1",
+      "phase_name": "Data Acquisition",
+"responsibility": "Extract all active customer account records from Salesforce CRM.",
+      "python_name": "extract_salesforce_accounts",
+      "execution_pattern": "async_function",
+      "inputs": [
+{"name": "salesforce_credentials", "type": "dict", "source": "Entry point - provided by
+pipeline orchestrator", "description": "Salesforce authentication configuration"}
+      ],
+      "output": {
+        "type": "CustomerAccountData",
+        "description": "Container of all extracted customer account records",
+        "model_reference": "CustomerAccountData"
+      },
+      "key_logic_steps": [
+        "1. Authenticate with Salesforce using provided credentials.",
+        "2. Fetch all active (non-test) customer accounts with required fields.",
+"3. Convert results to CustomerAccountRecord instances and compile into
+CustomerAccountData.",
+        "4. Validate output schema with Pydantic."
+      ],
+      "external_dependencies": [
+{"name": "Salesforce API", "type": "api", "suggested_library": "simple_salesforce",
+"description": "Connect to and fetch data from Salesforce CRM"}
+      ],
+      "fault_tolerance_implementation": {
+        "retryable": true,
+"retry_exceptions": ["ConnectionError", "TimeoutError", "SalesforceAuthenticationError",
+"SalesforceApiError"],
+        "retry_utility": "apply_retry",
+        "timeout_seconds": 60,
+        "timeout_implementation": "asyncio.wait_for",
+        "fallback_strategy": "halt",
+"fallback_implementation": "If all retries are exhausted or timeout is hit, raise
+SalesforceExtractionException.",
+        "on_final_failure": "SalesforceExtractionException"
+      },
+      "acceptance_criteria": {
+"success_return": "A non-empty, validated CustomerAccountData object with all required
+fields present for each account.",
+        "failure_exception": "SalesforceExtractionException",
+        "output_validations": [
+          "Output must be a valid CustomerAccountData with at least one entry.",
+          "All entries have non-empty customer_id and account_name."
+        ]
+      }
+    },
+    {
+      "id": "T2",
+      "phase": "P1",
+      "phase_name": "Data Acquisition",
+      "responsibility": "Fetch customer support ticket data from Zendesk API.",
+      "python_name": "fetch_zendesk_tickets",
+      "execution_pattern": "async_function",
+      "inputs": [
+{"name": "zendesk_credentials", "type": "dict", "source": "Entry point - provided by
+pipeline orchestrator", "description": "Zendesk API credentials"},
+{"name": "since_date", "type": "str", "source": "Entry point - provided by pipeline
+orchestrator", "description": "ISO date string to filter tickets"}
+      ],
+      "output": {
+        "type": "CustomerSupportTicketData",
+        "description": "Support tickets for all current customers",
+        "model_reference": "CustomerSupportTicketData"
+      },
+      "key_logic_steps": [
+        "1. Authenticate to Zendesk with supplied credentials.",
+        "2. Query all support tickets for current customers since provided date.",
+        "3. Filter out test ticket data.",
+"4. Parse to CustomerSupportTicketRecord and return as CustomerSupportTicketData.",
+        "5. Validate output schema with Pydantic."
+      ],
+      "external_dependencies": [
+{"name": "Zendesk API", "type": "api", "suggested_library": "httpx", "description": "Fetch
+support tickets from Zendesk"}
+      ],
+      "fault_tolerance_implementation": {
+        "retryable": true,
+        "retry_exceptions": ["ConnectionError", "TimeoutError", "HTTPStatusError"],
+        "retry_utility": "apply_retry",
+        "timeout_seconds": 90,
+        "timeout_implementation": "asyncio.wait_for",
+        "fallback_strategy": "halt",
+        "fallback_implementation": "Raise ZendeskExtractionException on final failure.",
+        "on_final_failure": "ZendeskExtractionException"
+      },
+      "acceptance_criteria": {
+        "success_return": "A valid CustomerSupportTicketData with all required records.",
+        "failure_exception": "ZendeskExtractionException",
+        "output_validations": [
+          "Each ticket has non-empty ticket_id and created_at."
+        ]
+      }
+    },
+    {
+      "id": "T3",
+      "phase": "P1",
+      "phase_name": "Data Acquisition",
+      "responsibility": "Extract customer product usage metrics from analytics database.",
+      "python_name": "extract_analytics_usage_metrics",
+      "execution_pattern": "async_function",
+      "inputs": [
+{"name": "analytics_db_connection", "type": "dict", "source": "Entry point - provided by
+pipeline orchestrator", "description": "Database connection/authentication info"},
+{"name": "period_start", "type": "str", "source": "Entry point - provided by pipeline
+orchestrator", "description": "Period start date (ISO string)"},
+{"name": "period_end", "type": "str", "source": "Entry point - provided by pipeline
+orchestrator", "description": "Period end date (ISO string)"}
+      ],
+      "output": {
+        "type": "CustomerUsageMetrics",
+        "description": "All product usage metrics for the relevant customer population",
+        "model_reference": "CustomerUsageMetrics"
+      },
+      "key_logic_steps": [
+        "1. Connect to analytics DB using the provided connection info.",
+"2. Run queries to extract session counts, feature usage, and last login per customer for
+requested period.",
+"3. Map raw records to CustomerUsageRecord and aggregate into CustomerUsageMetrics.",
+        "4. Validate with Pydantic."
+      ],
+      "external_dependencies": [
+{"name": "Analytics Database", "type": "database", "suggested_library": "asyncpg or
+aiomysql", "description": "Source of product usage metrics"}
+      ],
+      "fault_tolerance_implementation": {
+        "retryable": true,
+        "retry_exceptions": ["ConnectionError", "TimeoutError", "DatabaseError"],
+        "retry_utility": "apply_retry",
+        "timeout_seconds": 120,
+        "timeout_implementation": "asyncio.wait_for",
+        "fallback_strategy": "halt",
+"fallback_implementation": "Raise AnalyticsDbExtractionException on final failure.",
+        "on_final_failure": "AnalyticsDbExtractionException"
+      },
+      "acceptance_criteria": {
+"success_return": "A non-empty CustomerUsageMetrics object for the full requested
+period.",
+        "failure_exception": "AnalyticsDbExtractionException",
+        "output_validations": [
+          "All output records have customer_id and at least one usage metric present."
+        ]
+      }
+    },
+    {
+      "id": "T3a",
+      "phase": "P2",
+      "phase_name": "Data Validation and Preparation",
+"responsibility": "Validate extracted Salesforce, Zendesk, and usage datasets for
+completeness and formatting.",
+      "python_name": "validate_extracted_datasets",
+      "execution_pattern": "simple_function",
+      "inputs": [
+{"name": "account_data", "type": "CustomerAccountData", "source": "T1 output",
+"description": "Extracted customer account data"},
+{"name": "support_data", "type": "CustomerSupportTicketData", "source": "T2 output",
+"description": "Extracted support ticket data"},
+{"name": "usage_data", "type": "CustomerUsageMetrics", "source": "T3 output",
+"description": "Extracted usage metrics data"}
+      ],
+      "output": {
+        "type": "ValidatedDatasets",
+        "description": "Validated set of source data, ready for merging",
+        "model_reference": "ValidatedDatasets"
+      },
+      "key_logic_steps": [
+        "1. Ensure all datasets are present and non-empty.",
+        "2. Enforce that all required fields in each dataset are populated.",
+        "3. Cross-validate customer IDs for consistency across datasets.",
+        "4. Build and return ValidatedDatasets; raise if any check fails."
+      ],
+      "external_dependencies": [],
+      "fault_tolerance_implementation": {
+        "retryable": true,
+        "retry_exceptions": ["MemoryError", "RuntimeError"],
+        "retry_utility": "apply_retry",
+        "timeout_seconds": 60,
+        "timeout_implementation": "signal",
+        "fallback_strategy": "halt",
+"fallback_implementation": "Raise ExtractedDataValidationException if dataset validation
+fails after retry.",
+        "on_final_failure": "ExtractedDataValidationException"
+      },
+      "acceptance_criteria": {
+"success_return": "A ValidatedDatasets object containing all three non-empty datasets with
+aligned customer IDs.",
+        "failure_exception": "ExtractedDataValidationException",
+        "output_validations": [
+          "Each dataset is non-empty and Pydantic-validated.",
+          "All customer_ids align across datasets."
+        ]
+      }
+    },
+    {
+      "id": "T4",
+      "phase": "P2",
+      "phase_name": "Data Validation and Preparation",
+      "responsibility": "Merge validated datasets into a per-customer merged dataset.",
+      "python_name": "merge_customer_datasets",
+      "execution_pattern": "simple_function",
+      "inputs": [
+{"name": "validated_datasets", "type": "ValidatedDatasets", "source": "T3a output",
+"description": "Validated input data from previous step"}
+      ],
+      "output": {
+        "type": "MergedDataset",
+        "description": "Merged, per-customer unified data",
+        "model_reference": "MergedDataset"
+      },
+      "key_logic_steps": [
+        "1. Join account, support, and usage datasets on customer_id.",
+        "2. Map joined records into MergedCustomerRecord format.",
+        "3. Return all as MergedDataset."
+      ],
+      "external_dependencies": [],
+      "fault_tolerance_implementation": {
+        "retryable": true,
+        "retry_exceptions": ["MemoryError", "RuntimeError"],
+        "retry_utility": "apply_retry",
+        "timeout_seconds": 90,
+        "timeout_implementation": "signal",
+        "fallback_strategy": "halt",
+"fallback_implementation": "Raise DatasetMergeException if merge fails after retries.",
+        "on_final_failure": "DatasetMergeException"
+      },
+      "acceptance_criteria": {
+        "success_return": "MergedDataset with a record per customer and no duplicates.",
+        "failure_exception": "DatasetMergeException",
+        "output_validations": [
+          "Each output record must have all merged fields present.",
+          "customer_id unique and present in all records."
+        ]
+      }
+    },
+    {
+      "id": "T5",
+      "phase": "P2",
+      "phase_name": "Data Validation and Preparation",
+"responsibility": "Clean the merged dataset: remove test/demo accounts and standardize
+formats.",
+      "python_name": "clean_merged_dataset",
+      "execution_pattern": "simple_function",
+      "inputs": [
+{"name": "merged_dataset", "type": "MergedDataset", "source": "T4 output", "description":
+"Result of merging all datasets"}
+      ],
+      "output": {
+        "type": "CleanedMergedDataset",
+        "description": "Cleaned and filtered per-customer merged records",
+        "model_reference": "CleanedMergedDataset"
+      },
+      "key_logic_steps": [
+        "1. Drop records with missing critical fields.",
+        "2. Remove test/demo account records based on filter condition.",
+        "3. Standardize field formats (dates, enums, etc.).",
+        "4. Validate with Pydantic."
+      ],
+      "external_dependencies": [],
+      "fault_tolerance_implementation": {
+        "retryable": true,
+        "retry_exceptions": ["MemoryError", "RuntimeError"],
+        "retry_utility": "apply_retry",
+        "timeout_seconds": 90,
+        "timeout_implementation": "signal",
+        "fallback_strategy": "halt",
+        "fallback_implementation": "Raise DataCleaningException on persistent failure.",
+        "on_final_failure": "DataCleaningException"
+      },
+      "acceptance_criteria": {
+"success_return": "CleanedMergedDataset with only valid production customer records.",
+        "failure_exception": "DataCleaningException",
+        "output_validations": [
+          "No test/demo accounts remain.",
+          "All fields have standard, valid formats."
+        ]
+      }
+    },
+    {
+      "id": "T6",
+      "phase": "P3",
+      "phase_name": "Prediction and Analysis",
+"responsibility": "Run pre-trained churn prediction model (from S3) on cleaned dataset.",
+      "python_name": "run_churn_prediction_model",
+      "execution_pattern": "async_function",
+      "inputs": [
+{"name": "cleaned_dataset", "type": "CleanedMergedDataset", "source": "T5 output",
+"description": "Cleaned per-customer data for modeling"},
+{"name": "s3_model_path", "type": "str", "source": "Entry point - provided by pipeline
+orchestrator", "description": "S3 URI of model artifact"}
+      ],
+      "output": {
+        "type": "ChurnModelPrediction",
+        "description": "List of churn prediction records, one per customer",
+        "model_reference": "ChurnModelPrediction"
+      },
+      "key_logic_steps": [
+        "1. Download and load pre-trained model from provided S3 path.",
+        "2. Apply loaded model to each customer record to generate churn probabilities.",
+"3. Compile ChurnPredictionRecord per customer, aggregate as ChurnModelPrediction.",
+        "4. Validate with Pydantic."
+      ],
+      "external_dependencies": [
+{"name": "Amazon S3", "type": "service", "suggested_library": "aiobotocore",
+"description": "Download model artifact"},
+{"name": "ML Framework", "type": "library", "suggested_library": "scikit-learn, joblib",
+"description": "Load and execute pre-trained model"}
+      ],
+      "fault_tolerance_implementation": {
+        "retryable": true,
+        "retry_exceptions": ["ConnectionError", "TimeoutError", "S3DownloadError"],
+        "retry_utility": "apply_retry",
+        "timeout_seconds": 180,
+        "timeout_implementation": "asyncio.wait_for",
+        "fallback_strategy": "halt",
+"fallback_implementation": "Raise ChurnPredictionModelException if model cannot be loaded
+or executed.",
+        "on_final_failure": "ChurnPredictionModelException"
+      },
+      "acceptance_criteria": {
+        "success_return": "Fully processed ChurnModelPrediction for all input customers.",
+        "failure_exception": "ChurnPredictionModelException",
+        "output_validations": [
+          "Result has same number of predictions as input records."
+        ]
+      }
+    },
+    {
+      "id": "T7",
+      "phase": "P3",
+      "phase_name": "Prediction and Analysis",
+"responsibility": "Filter model predictions for customers with churn probability >70%.",
+      "python_name": "filter_high_risk_customers",
+      "execution_pattern": "simple_function",
+      "inputs": [
+{"name": "model_predictions", "type": "ChurnModelPrediction", "source": "T6 output",
+"description": "All per-customer predicted churn scores"}
+      ],
+      "output": {
+        "type": "HighRiskCustomerList",
+        "description": "High-risk customer records (probability >0.7)",
+        "model_reference": "HighRiskCustomerList"
+      },
+      "key_logic_steps": [
+        "1. Iterate over predictions and select records with churn_probability >0.7.",
+        "2. Compile to HighRiskCustomerList (one per qualifying customer).",
+        "3. Validate with Pydantic."
+      ],
+      "external_dependencies": [],
+      "fault_tolerance_implementation": {
+        "retryable": false,
+        "retry_exceptions": [],
+        "retry_utility": null,
+        "timeout_seconds": 60,
+        "timeout_implementation": "signal",
+        "fallback_strategy": "halt",
+"fallback_implementation": "Raise HighRiskCustomerFilterException if filtering logic
+fails.",
+        "on_final_failure": "HighRiskCustomerFilterException"
+      },
+      "acceptance_criteria": {
+        "success_return": "HighRiskCustomerList of all customers above threshold.",
+        "failure_exception": "HighRiskCustomerFilterException",
+        "output_validations": [
+          "All output records have churn_probability > 0.7."
+        ]
+      }
+    },
+    {
+      "id": "T8",
+      "phase": "P3",
+      "phase_name": "Prediction and Analysis",
+"responsibility": "Generate daily churn report (aggregates and trends) from model
+output.",
+      "python_name": "generate_churn_report",
+      "execution_pattern": "simple_function",
+      "inputs": [
+{"name": "model_predictions", "type": "ChurnModelPrediction", "source": "T6 output",
+"description": "All churn predictions"}
+      ],
+      "output": {
+        "type": "ChurnReport",
+        "description": "Daily report including churn stats and trend data",
+        "model_reference": "ChurnReport"
+      },
+      "key_logic_steps": [
+        "1. Compute overall churn rate and summarize by key strata (tier, tenure).",
+"2. Collect and include trend data by comparing to prior days (from storage, if
+available).",
+        "3. Build ChurnReport object with all computed stats and trends.",
+        "4. Validate with Pydantic."
+      ],
+      "external_dependencies": [
+{"name": "Trend Data Storage", "type": "database or file", "suggested_library": "sqlite3,
+pandas, or os", "description": "Load previous days' reports for trend calculation (if
+implemented)"}
+      ],
+      "fault_tolerance_implementation": {
+        "retryable": false,
+        "retry_exceptions": [],
+        "retry_utility": null,
+        "timeout_seconds": 60,
+        "timeout_implementation": "signal",
+        "fallback_strategy": "halt",
+        "fallback_implementation": "Raise ChurnReportGenerationException on failure.",
+        "on_final_failure": "ChurnReportGenerationException"
+      },
+      "acceptance_criteria": {
+"success_return": "ChurnReport object with all aggregations and trend fields populated for
+the current day.",
+        "failure_exception": "ChurnReportGenerationException",
+        "output_validations": [
+"All output fields must be present (date, total_customers, high_risk_count, trend_data)."
+        ]
+      }
+    },
+    {
+      "id": "T9",
+      "phase": "P4",
+      "phase_name": "Result Delivery",
+"responsibility": "Upload high-risk customer list to HubSpot marketing automation
+platform.",
+      "python_name": "upload_high_risk_to_hubspot",
+      "execution_pattern": "async_function",
+      "inputs": [
+{"name": "hubspot_credentials", "type": "dict", "source": "Entry point - provided by
+pipeline orchestrator", "description": "HubSpot API credentials"},
+{"name": "high_risk_customers", "type": "HighRiskCustomerList", "source": "T7 output",
+"description": "Customers flagged as high risk"}
+      ],
+      "output": {
+        "type": "HubSpotUploadResult",
+        "description": "Status and details of upload operation",
+        "model_reference": "HubSpotUploadResult"
+      },
+      "key_logic_steps": [
+        "1. Authenticate with HubSpot API using credentials.",
+        "2. Upload high-risk customers list (batch or one-by-one, as API allows).",
+        "3. Handle and log any errors for individual records.",
+        "4. Return operation status in HubSpotUploadResult.",
+        "5. Validate response."
+      ],
+      "external_dependencies": [
+{"name": "HubSpot API", "type": "api", "suggested_library": "httpx", "description": "Push
+high-risk customer list"}
+      ],
+      "fault_tolerance_implementation": {
+        "retryable": true,
+        "retry_exceptions": ["ConnectionError", "TimeoutError", "HTTPStatusError"],
+        "retry_utility": "apply_retry",
+        "timeout_seconds": 90,
+        "timeout_implementation": "asyncio.wait_for",
+        "fallback_strategy": "halt",
+"fallback_implementation": "Raise HubSpotUploadException if all retries exhausted.",
+        "on_final_failure": "HubSpotUploadException"
+      },
+      "acceptance_criteria": {
+        "success_return": "HubSpotUploadResult with status='success'.",
+        "failure_exception": "HubSpotUploadException",
+        "output_validations": [
+          "Uploaded_count matches length of input high_risk_customers.",
+          "status is 'success' on full success."
+        ]
+      }
+    },
+    {
+      "id": "T10",
+      "phase": "P4",
+      "phase_name": "Result Delivery",
+"responsibility": "If the number of high-risk customers exceeds 50, send alert email to
+Head of Customer Success.",
+      "python_name": "send_high_risk_alert_email",
+      "execution_pattern": "async_function",
+      "inputs": [
+{"name": "email_settings", "type": "dict", "source": "Entry point - provided by pipeline
+orchestrator", "description": "Email server credentials and settings"},
+{"name": "high_risk_customers", "type": "HighRiskCustomerList", "source": "T7 output",
+"description": "List of high-risk customers"}
+      ],
+      "output": {
+        "type": "AlertEmailResult",
+        "description": "Indicates if alert was sent or skipped, with error details",
+        "model_reference": "AlertEmailResult"
+      },
+      "key_logic_steps": [
+        "1. Count length of high_risk_customers.",
+        "2. If count > 50:",
+        "    a. Compose alert email, attach list (as table or CSV).",
+        "    b. Send message to Head of Customer Success using provided email_settings.",
+        "    c. Return AlertEmailResult.success=True.",
+        "3. Otherwise, return AlertEmailResult.success=False, reason='under_threshold'.",
+"4. If any SMTP/network error occurs, retry; after all retries fail, return
+AlertEmailResult.success=False, reason='error', error_details.",
+        "5. Validate result."
+      ],
+      "external_dependencies": [
+{"name": "SMTP", "type": "service", "suggested_library": "aiosmtplib", "description":
+"Send summary alert email"}
+      ],
+      "fault_tolerance_implementation": {
+        "retryable": true,
+        "retry_exceptions": ["ConnectionError", "TimeoutError", "SMTPException"],
+        "retry_utility": "apply_retry",
+        "timeout_seconds": 60,
+        "timeout_implementation": "asyncio.wait_for",
+        "fallback_strategy": "skip",
+"fallback_implementation": "If all retries exhausted, return an AlertEmailResult with
+success=False, reason='error', do not halt dependent tasks.",
+"on_final_failure": "Return AlertEmailResult with success=False, reason='error',
+error_details."
+      },
+      "acceptance_criteria": {
+"success_return": "AlertEmailResult showing success or skipped with correct reason.",
+        "failure_exception": null,
+        "output_validations": [
+"If count <= 50, AlertEmailResult.success is False, reason is 'under_threshold'.",
+"If all sends fail, success is False, reason is 'error', and error_details is set."
+        ]
+      }
+    }
+  ]
+}
+```
+==================================================  END  ==================================================
+
+
+[6/6] Planning pipeline complete.
+{
+  "process_name": "Daily Customer Churn Prediction Pipeline",
+  "pipeline_overview": {
+    "goal": "Automatically predict customer churn daily by aggregating multi-source data, producing a high-risk customer list and churn report, and delivering to marketing platforms and key stakeholders with robust fault tolerance.",
+    "total_phases": 4,
+    "total_tasks": 10,
+    "entry_points": [
+      "T1",
+      "T2",
+      "T3"
+    ],
+    "terminal_nodes": [
+      "T8",
+      "T9",
+      "T10"
+    ],
+    "cross_cutting_concerns": [
+      "All data exchanged between tasks must use declared Pydantic models\u2014no ambiguous dicts or untyped objects.",
+      "All tasks performing I/O (APIs, databases, email, S3) are implemented as async functions, using retry and timeout utilities as specified.",
+      "All fault tolerance policies (retries, timeouts, fallbacks) are implemented as per the fault tolerance specification.",
+      "Schema validation with Pydantic must be performed before returning any structured output.",
+      "Strict customer_id alignment is required across all datasets."
+    ]
+  },
+  "shared_models": [
+    {
+      "model_name": "CustomerAccountRecord",
+      "description": "Single customer account entry from Salesforce",
+      "fields": [
+        {
+          "name": "customer_id",
+          "type": "str",
+          "description": "Unique customer identifier"
+        },
+        {
+          "name": "account_name",
+          "type": "str",
+          "description": "Customer's name"
+        },
+        {
+          "name": "subscription_tier",
+          "type": "str",
+          "description": "Current subscription tier"
+        },
+        {
+          "name": "tenure_days",
+          "type": "int",
+          "description": "Customer tenure in days"
+        },
+        {
+          "name": "account_status",
+          "type": "str",
+          "description": "Active/Inactive status"
+        }
+      ],
+      "produced_by": [
+        "T1"
+      ],
+      "consumed_by": [
+        "T3a"
+      ]
+    },
+    {
+      "model_name": "CustomerAccountData",
+      "description": "Full set of current customer account records",
+      "fields": [
+        {
+          "name": "accounts",
+          "type": "List[CustomerAccountRecord]",
+          "description": "All customer accounts from Salesforce"
+        }
+      ],
+      "produced_by": [
+        "T1"
+      ],
+      "consumed_by": [
+        "T3a"
+      ]
+    },
+    {
+      "model_name": "CustomerSupportTicketRecord",
+      "description": "Single Zendesk support ticket record",
+      "fields": [
+        {
+          "name": "customer_id",
+          "type": "str",
+          "description": "ID of the customer associated with the ticket"
+        },
+        {
+          "name": "ticket_id",
+          "type": "str",
+          "description": "Zendesk ticket ID"
+        },
+        {
+          "name": "created_at",
+          "type": "datetime",
+          "description": "UTC datetime ticket was created"
+        },
+        {
+          "name": "status",
+          "type": "str",
+          "description": "Current status of the ticket"
+        }
+      ],
+      "produced_by": [
+        "T2"
+      ],
+      "consumed_by": [
+        "T3a"
+      ]
+    },
+    {
+      "model_name": "CustomerSupportTicketData",
+      "description": "All support ticket data extracted from Zendesk",
+      "fields": [
+        {
+          "name": "tickets",
+          "type": "List[CustomerSupportTicketRecord]",
+          "description": "Support ticket records"
+        }
+      ],
+      "produced_by": [
+        "T2"
+      ],
+      "consumed_by": [
+        "T3a"
+      ]
+    },
+    {
+      "model_name": "CustomerUsageRecord",
+      "description": "Single product usage record per customer",
+      "fields": [
+        {
+          "name": "customer_id",
+          "type": "str",
+          "description": "Unique customer ID"
+        },
+        {
+          "name": "session_count",
+          "type": "int",
+          "description": "Total sessions in period"
+        },
+        {
+          "name": "feature_usage",
+          "type": "Dict[str, int]",
+          "description": "Feature-wise usage counts"
+        },
+        {
+          "name": "last_login",
+          "type": "datetime",
+          "description": "UTC datetime of last login"
+        }
+      ],
+      "produced_by": [
+        "T3"
+      ],
+      "consumed_by": [
+        "T3a"
+      ]
+    },
+    {
+      "model_name": "CustomerUsageMetrics",
+      "description": "All product usage metrics extracted from analytics DB",
+      "fields": [
+        {
+          "name": "usage_records",
+          "type": "List[CustomerUsageRecord]",
+          "description": "Usage metrics for all customers"
+        }
+      ],
+      "produced_by": [
+        "T3"
+      ],
+      "consumed_by": [
+        "T3a"
+      ]
+    },
+    {
+      "model_name": "ValidatedDatasets",
+      "description": "Container holding validated outputs from Salesforce, Zendesk, analytics DB",
+      "fields": [
+        {
+          "name": "accounts",
+          "type": "CustomerAccountData",
+          "description": "Validated customer account records"
+        },
+        {
+          "name": "support",
+          "type": "CustomerSupportTicketData",
+          "description": "Validated support ticket records"
+        },
+        {
+          "name": "usage",
+          "type": "CustomerUsageMetrics",
+          "description": "Validated product usage metrics"
+        }
+      ],
+      "produced_by": [
+        "T3a"
+      ],
+      "consumed_by": [
+        "T4"
+      ]
+    },
+    {
+      "model_name": "MergedDataset",
+      "description": "Result of merging all validated datasets, one record per customer",
+      "fields": [
+        {
+          "name": "records",
+          "type": "List[MergedCustomerRecord]",
+          "description": "Per-customer combined records"
+        }
+      ],
+      "produced_by": [
+        "T4"
+      ],
+      "consumed_by": [
+        "T5"
+      ]
+    },
+    {
+      "model_name": "MergedCustomerRecord",
+      "description": "Combined per-customer record post-merge",
+      "fields": [
+        {
+          "name": "customer_id",
+          "type": "str",
+          "description": "Customer identifier"
+        },
+        {
+          "name": "account",
+          "type": "CustomerAccountRecord",
+          "description": "Account data"
+        },
+        {
+          "name": "support_tickets",
+          "type": "List[CustomerSupportTicketRecord]",
+          "description": "Associated support tickets"
+        },
+        {
+          "name": "usage",
+          "type": "CustomerUsageRecord",
+          "description": "Usage metrics"
+        }
+      ],
+      "produced_by": [
+        "T4"
+      ],
+      "consumed_by": [
+        "T5"
+      ]
+    },
+    {
+      "model_name": "CleanedMergedDataset",
+      "description": "Result of cleaning and filtering merged data",
+      "fields": [
+        {
+          "name": "records",
+          "type": "List[MergedCustomerRecord]",
+          "description": "Cleaned, standardized, filtered records"
+        }
+      ],
+      "produced_by": [
+        "T5"
+      ],
+      "consumed_by": [
+        "T6"
+      ]
+    },
+    {
+      "model_name": "ChurnPredictionRecord",
+      "description": "Individual customer churn score",
+      "fields": [
+        {
+          "name": "customer_id",
+          "type": "str",
+          "description": "Customer ID"
+        },
+        {
+          "name": "churn_probability",
+          "type": "float",
+          "description": "Predicted risk (0.0-1.0)"
+        }
+      ],
+      "produced_by": [
+        "T6"
+      ],
+      "consumed_by": [
+        "T7",
+        "T8"
+      ]
+    },
+    {
+      "model_name": "ChurnModelPrediction",
+      "description": "All churn predictions for the day",
+      "fields": [
+        {
+          "name": "predictions",
+          "type": "List[ChurnPredictionRecord]",
+          "description": "Churn prediction per customer"
+        }
+      ],
+      "produced_by": [
+        "T6"
+      ],
+      "consumed_by": [
+        "T7",
+        "T8"
+      ]
+    },
+    {
+      "model_name": "HighRiskCustomerRecord",
+      "description": "Subset of churn prediction for high-risk customers",
+      "fields": [
+        {
+          "name": "customer_id",
+          "type": "str",
+          "description": "Customer ID"
+        },
+        {
+          "name": "churn_probability",
+          "type": "float",
+          "description": "Churn probability (>0.7)"
+        }
+      ],
+      "produced_by": [
+        "T7"
+      ],
+      "consumed_by": [
+        "T9",
+        "T10"
+      ]
+    },
+    {
+      "model_name": "HighRiskCustomerList",
+      "description": "List of customers over 70% churn probability",
+      "fields": [
+        {
+          "name": "high_risk_customers",
+          "type": "List[HighRiskCustomerRecord]",
+          "description": "High-risk customer records"
+        }
+      ],
+      "produced_by": [
+        "T7"
+      ],
+      "consumed_by": [
+        "T9",
+        "T10"
+      ]
+    },
+    {
+      "model_name": "ChurnReport",
+      "description": "Final daily report; statistics and trends",
+      "fields": [
+        {
+          "name": "date",
+          "type": "date",
+          "description": "Report date"
+        },
+        {
+          "name": "total_customers",
+          "type": "int",
+          "description": "Number evaluated"
+        },
+        {
+          "name": "high_risk_count",
+          "type": "int",
+          "description": "Customers with risk >70%"
+        },
+        {
+          "name": "trend_data",
+          "type": "Dict[str, Any]",
+          "description": "Derived trends and statistics"
+        }
+      ],
+      "produced_by": [
+        "T8"
+      ],
+      "consumed_by": []
+    },
+    {
+      "model_name": "HubSpotUploadResult",
+      "description": "Result of pushing high-risk list to HubSpot",
+      "fields": [
+        {
+          "name": "uploaded_count",
+          "type": "int",
+          "description": "Number of customers uploaded"
+        },
+        {
+          "name": "status",
+          "type": "str",
+          "description": "Upload operation status"
+        }
+      ],
+      "produced_by": [
+        "T9"
+      ],
+      "consumed_by": []
+    },
+    {
+      "model_name": "AlertEmailResult",
+      "description": "Indicates whether alert email was sent",
+      "fields": [
+        {
+          "name": "success",
+          "type": "bool",
+          "description": "True if sent"
+        },
+        {
+          "name": "reason",
+          "type": "str",
+          "description": "Reason if not sent"
+        },
+        {
+          "name": "error_details",
+          "type": "Optional[str]",
+          "description": "Error message if failed"
+        }
+      ],
+      "produced_by": [
+        "T10"
+      ],
+      "consumed_by": []
+    }
+  ],
+  "shared_utilities": [
+    {
+      "utility_name": "apply_retry",
+      "description": "Generic decorator or async helper for retrying functions on transient errors with max_attempts, delay, and backoff strategy.",
+      "signature": "def apply_retry(fn: Callable, *, max_attempts: int, delay_seconds: int, backoff_strategy: str, retry_exceptions: Tuple[Exception, ...]) -> Callable",
+      "used_by": [
+        "T1",
+        "T2",
+        "T3",
+        "T3a",
+        "T4",
+        "T5",
+        "T6",
+        "T9",
+        "T10"
+      ]
+    }
+  ],
+  "implementation_order": [
+    "T1",
+    "T2",
+    "T3",
+    "T3a",
+    "T4",
+    "T5",
+    "T6",
+    "T7",
+    "T8",
+    "T9",
+    "T10"
+  ],
+  "task_specifications": [
+    {
+      "id": "T1",
+      "phase": "P1",
+      "phase_name": "Data Acquisition",
+      "responsibility": "Extract all active customer account records from Salesforce CRM.",
+      "python_name": "extract_salesforce_accounts",
+      "execution_pattern": "async_function",
+      "inputs": [
+        {
+          "name": "salesforce_credentials",
+          "type": "dict",
+          "source": "Entry point - provided by pipeline orchestrator",
+          "description": "Salesforce authentication configuration"
+        }
+      ],
+      "output": {
+        "type": "CustomerAccountData",
+        "description": "Container of all extracted customer account records",
+        "model_reference": "CustomerAccountData"
+      },
+      "key_logic_steps": [
+        "1. Authenticate with Salesforce using provided credentials.",
+        "2. Fetch all active (non-test) customer accounts with required fields.",
+        "3. Convert results to CustomerAccountRecord instances and compile into CustomerAccountData.",
+        "4. Validate output schema with Pydantic."
+      ],
+      "external_dependencies": [
+        {
+          "name": "Salesforce API",
+          "type": "api",
+          "suggested_library": "simple_salesforce",
+          "description": "Connect to and fetch data from Salesforce CRM"
+        }
+      ],
+      "fault_tolerance_implementation": {
+        "retryable": true,
+        "retry_exceptions": [
+          "ConnectionError",
+          "TimeoutError",
+          "SalesforceAuthenticationError",
+          "SalesforceApiError"
+        ],
+        "retry_utility": "apply_retry",
+        "timeout_seconds": 60,
+        "timeout_implementation": "asyncio.wait_for",
+        "fallback_strategy": "halt",
+        "fallback_implementation": "If all retries are exhausted or timeout is hit, raise SalesforceExtractionException.",
+        "on_final_failure": "SalesforceExtractionException"
+      },
+      "acceptance_criteria": {
+        "success_return": "A non-empty, validated CustomerAccountData object with all required fields present for each account.",
+        "failure_exception": "SalesforceExtractionException",
+        "output_validations": [
+          "Output must be a valid CustomerAccountData with at least one entry.",
+          "All entries have non-empty customer_id and account_name."
+        ]
+      }
+    },
+    {
+      "id": "T2",
+      "phase": "P1",
+      "phase_name": "Data Acquisition",
+      "responsibility": "Fetch customer support ticket data from Zendesk API.",
+      "python_name": "fetch_zendesk_tickets",
+      "execution_pattern": "async_function",
+      "inputs": [
+        {
+          "name": "zendesk_credentials",
+          "type": "dict",
+          "source": "Entry point - provided by pipeline orchestrator",
+          "description": "Zendesk API credentials"
+        },
+        {
+          "name": "since_date",
+          "type": "str",
+          "source": "Entry point - provided by pipeline orchestrator",
+          "description": "ISO date string to filter tickets"
+        }
+      ],
+      "output": {
+        "type": "CustomerSupportTicketData",
+        "description": "Support tickets for all current customers",
+        "model_reference": "CustomerSupportTicketData"
+      },
+      "key_logic_steps": [
+        "1. Authenticate to Zendesk with supplied credentials.",
+        "2. Query all support tickets for current customers since provided date.",
+        "3. Filter out test ticket data.",
+        "4. Parse to CustomerSupportTicketRecord and return as CustomerSupportTicketData.",
+        "5. Validate output schema with Pydantic."
+      ],
+      "external_dependencies": [
+        {
+          "name": "Zendesk API",
+          "type": "api",
+          "suggested_library": "httpx",
+          "description": "Fetch support tickets from Zendesk"
+        }
+      ],
+      "fault_tolerance_implementation": {
+        "retryable": true,
+        "retry_exceptions": [
+          "ConnectionError",
+          "TimeoutError",
+          "HTTPStatusError"
+        ],
+        "retry_utility": "apply_retry",
+        "timeout_seconds": 90,
+        "timeout_implementation": "asyncio.wait_for",
+        "fallback_strategy": "halt",
+        "fallback_implementation": "Raise ZendeskExtractionException on final failure.",
+        "on_final_failure": "ZendeskExtractionException"
+      },
+      "acceptance_criteria": {
+        "success_return": "A valid CustomerSupportTicketData with all required records.",
+        "failure_exception": "ZendeskExtractionException",
+        "output_validations": [
+          "Each ticket has non-empty ticket_id and created_at."
+        ]
+      }
+    },
+    {
+      "id": "T3",
+      "phase": "P1",
+      "phase_name": "Data Acquisition",
+      "responsibility": "Extract customer product usage metrics from analytics database.",
+      "python_name": "extract_analytics_usage_metrics",
+      "execution_pattern": "async_function",
+      "inputs": [
+        {
+          "name": "analytics_db_connection",
+          "type": "dict",
+          "source": "Entry point - provided by pipeline orchestrator",
+          "description": "Database connection/authentication info"
+        },
+        {
+          "name": "period_start",
+          "type": "str",
+          "source": "Entry point - provided by pipeline orchestrator",
+          "description": "Period start date (ISO string)"
+        },
+        {
+          "name": "period_end",
+          "type": "str",
+          "source": "Entry point - provided by pipeline orchestrator",
+          "description": "Period end date (ISO string)"
+        }
+      ],
+      "output": {
+        "type": "CustomerUsageMetrics",
+        "description": "All product usage metrics for the relevant customer population",
+        "model_reference": "CustomerUsageMetrics"
+      },
+      "key_logic_steps": [
+        "1. Connect to analytics DB using the provided connection info.",
+        "2. Run queries to extract session counts, feature usage, and last login per customer for requested period.",
+        "3. Map raw records to CustomerUsageRecord and aggregate into CustomerUsageMetrics.",
+        "4. Validate with Pydantic."
+      ],
+      "external_dependencies": [
+        {
+          "name": "Analytics Database",
+          "type": "database",
+          "suggested_library": "asyncpg or aiomysql",
+          "description": "Source of product usage metrics"
+        }
+      ],
+      "fault_tolerance_implementation": {
+        "retryable": true,
+        "retry_exceptions": [
+          "ConnectionError",
+          "TimeoutError",
+          "DatabaseError"
+        ],
+        "retry_utility": "apply_retry",
+        "timeout_seconds": 120,
+        "timeout_implementation": "asyncio.wait_for",
+        "fallback_strategy": "halt",
+        "fallback_implementation": "Raise AnalyticsDbExtractionException on final failure.",
+        "on_final_failure": "AnalyticsDbExtractionException"
+      },
+      "acceptance_criteria": {
+        "success_return": "A non-empty CustomerUsageMetrics object for the full requested period.",
+        "failure_exception": "AnalyticsDbExtractionException",
+        "output_validations": [
+          "All output records have customer_id and at least one usage metric present."
+        ]
+      }
+    },
+    {
+      "id": "T3a",
+      "phase": "P2",
+      "phase_name": "Data Validation and Preparation",
+      "responsibility": "Validate extracted Salesforce, Zendesk, and usage datasets for completeness and formatting.",
+      "python_name": "validate_extracted_datasets",
+      "execution_pattern": "simple_function",
+      "inputs": [
+        {
+          "name": "account_data",
+          "type": "CustomerAccountData",
+          "source": "T1 output",
+          "description": "Extracted customer account data"
+        },
+        {
+          "name": "support_data",
+          "type": "CustomerSupportTicketData",
+          "source": "T2 output",
+          "description": "Extracted support ticket data"
+        },
+        {
+          "name": "usage_data",
+          "type": "CustomerUsageMetrics",
+          "source": "T3 output",
+          "description": "Extracted usage metrics data"
+        }
+      ],
+      "output": {
+        "type": "ValidatedDatasets",
+        "description": "Validated set of source data, ready for merging",
+        "model_reference": "ValidatedDatasets"
+      },
+      "key_logic_steps": [
+        "1. Ensure all datasets are present and non-empty.",
+        "2. Enforce that all required fields in each dataset are populated.",
+        "3. Cross-validate customer IDs for consistency across datasets.",
+        "4. Build and return ValidatedDatasets; raise if any check fails."
+      ],
+      "external_dependencies": [],
+      "fault_tolerance_implementation": {
+        "retryable": true,
+        "retry_exceptions": [
+          "MemoryError",
+          "RuntimeError"
+        ],
+        "retry_utility": "apply_retry",
+        "timeout_seconds": 60,
+        "timeout_implementation": "signal",
+        "fallback_strategy": "halt",
+        "fallback_implementation": "Raise ExtractedDataValidationException if dataset validation fails after retry.",
+        "on_final_failure": "ExtractedDataValidationException"
+      },
+      "acceptance_criteria": {
+        "success_return": "A ValidatedDatasets object containing all three non-empty datasets with aligned customer IDs.",
+        "failure_exception": "ExtractedDataValidationException",
+        "output_validations": [
+          "Each dataset is non-empty and Pydantic-validated.",
+          "All customer_ids align across datasets."
+        ]
+      }
+    },
+    {
+      "id": "T4",
+      "phase": "P2",
+      "phase_name": "Data Validation and Preparation",
+      "responsibility": "Merge validated datasets into a per-customer merged dataset.",
+      "python_name": "merge_customer_datasets",
+      "execution_pattern": "simple_function",
+      "inputs": [
+        {
+          "name": "validated_datasets",
+          "type": "ValidatedDatasets",
+          "source": "T3a output",
+          "description": "Validated input data from previous step"
+        }
+      ],
+      "output": {
+        "type": "MergedDataset",
+        "description": "Merged, per-customer unified data",
+        "model_reference": "MergedDataset"
+      },
+      "key_logic_steps": [
+        "1. Join account, support, and usage datasets on customer_id.",
+        "2. Map joined records into MergedCustomerRecord format.",
+        "3. Return all as MergedDataset."
+      ],
+      "external_dependencies": [],
+      "fault_tolerance_implementation": {
+        "retryable": true,
+        "retry_exceptions": [
+          "MemoryError",
+          "RuntimeError"
+        ],
+        "retry_utility": "apply_retry",
+        "timeout_seconds": 90,
+        "timeout_implementation": "signal",
+        "fallback_strategy": "halt",
+        "fallback_implementation": "Raise DatasetMergeException if merge fails after retries.",
+        "on_final_failure": "DatasetMergeException"
+      },
+      "acceptance_criteria": {
+        "success_return": "MergedDataset with a record per customer and no duplicates.",
+        "failure_exception": "DatasetMergeException",
+        "output_validations": [
+          "Each output record must have all merged fields present.",
+          "customer_id unique and present in all records."
+        ]
+      }
+    },
+    {
+      "id": "T5",
+      "phase": "P2",
+      "phase_name": "Data Validation and Preparation",
+      "responsibility": "Clean the merged dataset: remove test/demo accounts and standardize formats.",
+      "python_name": "clean_merged_dataset",
+      "execution_pattern": "simple_function",
+      "inputs": [
+        {
+          "name": "merged_dataset",
+          "type": "MergedDataset",
+          "source": "T4 output",
+          "description": "Result of merging all datasets"
+        }
+      ],
+      "output": {
+        "type": "CleanedMergedDataset",
+        "description": "Cleaned and filtered per-customer merged records",
+        "model_reference": "CleanedMergedDataset"
+      },
+      "key_logic_steps": [
+        "1. Drop records with missing critical fields.",
+        "2. Remove test/demo account records based on filter condition.",
+        "3. Standardize field formats (dates, enums, etc.).",
+        "4. Validate with Pydantic."
+      ],
+      "external_dependencies": [],
+      "fault_tolerance_implementation": {
+        "retryable": true,
+        "retry_exceptions": [
+          "MemoryError",
+          "RuntimeError"
+        ],
+        "retry_utility": "apply_retry",
+        "timeout_seconds": 90,
+        "timeout_implementation": "signal",
+        "fallback_strategy": "halt",
+        "fallback_implementation": "Raise DataCleaningException on persistent failure.",
+        "on_final_failure": "DataCleaningException"
+      },
+      "acceptance_criteria": {
+        "success_return": "CleanedMergedDataset with only valid production customer records.",
+        "failure_exception": "DataCleaningException",
+        "output_validations": [
+          "No test/demo accounts remain.",
+          "All fields have standard, valid formats."
+        ]
+      }
+    },
+    {
+      "id": "T6",
+      "phase": "P3",
+      "phase_name": "Prediction and Analysis",
+      "responsibility": "Run pre-trained churn prediction model (from S3) on cleaned dataset.",
+      "python_name": "run_churn_prediction_model",
+      "execution_pattern": "async_function",
+      "inputs": [
+        {
+          "name": "cleaned_dataset",
+          "type": "CleanedMergedDataset",
+          "source": "T5 output",
+          "description": "Cleaned per-customer data for modeling"
+        },
+        {
+          "name": "s3_model_path",
+          "type": "str",
+          "source": "Entry point - provided by pipeline orchestrator",
+          "description": "S3 URI of model artifact"
+        }
+      ],
+      "output": {
+        "type": "ChurnModelPrediction",
+        "description": "List of churn prediction records, one per customer",
+        "model_reference": "ChurnModelPrediction"
+      },
+      "key_logic_steps": [
+        "1. Download and load pre-trained model from provided S3 path.",
+        "2. Apply loaded model to each customer record to generate churn probabilities.",
+        "3. Compile ChurnPredictionRecord per customer, aggregate as ChurnModelPrediction.",
+        "4. Validate with Pydantic."
+      ],
+      "external_dependencies": [
+        {
+          "name": "Amazon S3",
+          "type": "service",
+          "suggested_library": "aiobotocore",
+          "description": "Download model artifact"
+        },
+        {
+          "name": "ML Framework",
+          "type": "library",
+          "suggested_library": "scikit-learn, joblib",
+          "description": "Load and execute pre-trained model"
+        }
+      ],
+      "fault_tolerance_implementation": {
+        "retryable": true,
+        "retry_exceptions": [
+          "ConnectionError",
+          "TimeoutError",
+          "S3DownloadError"
+        ],
+        "retry_utility": "apply_retry",
+        "timeout_seconds": 180,
+        "timeout_implementation": "asyncio.wait_for",
+        "fallback_strategy": "halt",
+        "fallback_implementation": "Raise ChurnPredictionModelException if model cannot be loaded or executed.",
+        "on_final_failure": "ChurnPredictionModelException"
+      },
+      "acceptance_criteria": {
+        "success_return": "Fully processed ChurnModelPrediction for all input customers.",
+        "failure_exception": "ChurnPredictionModelException",
+        "output_validations": [
+          "Result has same number of predictions as input records."
+        ]
+      }
+    },
+    {
+      "id": "T7",
+      "phase": "P3",
+      "phase_name": "Prediction and Analysis",
+      "responsibility": "Filter model predictions for customers with churn probability >70%.",
+      "python_name": "filter_high_risk_customers",
+      "execution_pattern": "simple_function",
+      "inputs": [
+        {
+          "name": "model_predictions",
+          "type": "ChurnModelPrediction",
+          "source": "T6 output",
+          "description": "All per-customer predicted churn scores"
+        }
+      ],
+      "output": {
+        "type": "HighRiskCustomerList",
+        "description": "High-risk customer records (probability >0.7)",
+        "model_reference": "HighRiskCustomerList"
+      },
+      "key_logic_steps": [
+        "1. Iterate over predictions and select records with churn_probability >0.7.",
+        "2. Compile to HighRiskCustomerList (one per qualifying customer).",
+        "3. Validate with Pydantic."
+      ],
+      "external_dependencies": [],
+      "fault_tolerance_implementation": {
+        "retryable": false,
+        "retry_exceptions": [],
+        "retry_utility": null,
+        "timeout_seconds": 60,
+        "timeout_implementation": "signal",
+        "fallback_strategy": "halt",
+        "fallback_implementation": "Raise HighRiskCustomerFilterException if filtering logic fails.",
+        "on_final_failure": "HighRiskCustomerFilterException"
+      },
+      "acceptance_criteria": {
+        "success_return": "HighRiskCustomerList of all customers above threshold.",
+        "failure_exception": "HighRiskCustomerFilterException",
+        "output_validations": [
+          "All output records have churn_probability > 0.7."
+        ]
+      }
+    },
+    {
+      "id": "T8",
+      "phase": "P3",
+      "phase_name": "Prediction and Analysis",
+      "responsibility": "Generate daily churn report (aggregates and trends) from model output.",
+      "python_name": "generate_churn_report",
+      "execution_pattern": "simple_function",
+      "inputs": [
+        {
+          "name": "model_predictions",
+          "type": "ChurnModelPrediction",
+          "source": "T6 output",
+          "description": "All churn predictions"
+        }
+      ],
+      "output": {
+        "type": "ChurnReport",
+        "description": "Daily report including churn stats and trend data",
+        "model_reference": "ChurnReport"
+      },
+      "key_logic_steps": [
+        "1. Compute overall churn rate and summarize by key strata (tier, tenure).",
+        "2. Collect and include trend data by comparing to prior days (from storage, if available).",
+        "3. Build ChurnReport object with all computed stats and trends.",
+        "4. Validate with Pydantic."
+      ],
+      "external_dependencies": [
+        {
+          "name": "Trend Data Storage",
+          "type": "database or file",
+          "suggested_library": "sqlite3, pandas, or os",
+          "description": "Load previous days' reports for trend calculation (if implemented)"
+        }
+      ],
+      "fault_tolerance_implementation": {
+        "retryable": false,
+        "retry_exceptions": [],
+        "retry_utility": null,
+        "timeout_seconds": 60,
+        "timeout_implementation": "signal",
+        "fallback_strategy": "halt",
+        "fallback_implementation": "Raise ChurnReportGenerationException on failure.",
+        "on_final_failure": "ChurnReportGenerationException"
+      },
+      "acceptance_criteria": {
+        "success_return": "ChurnReport object with all aggregations and trend fields populated for the current day.",
+        "failure_exception": "ChurnReportGenerationException",
+        "output_validations": [
+          "All output fields must be present (date, total_customers, high_risk_count, trend_data)."
+        ]
+      }
+    },
+    {
+      "id": "T9",
+      "phase": "P4",
+      "phase_name": "Result Delivery",
+      "responsibility": "Upload high-risk customer list to HubSpot marketing automation platform.",
+      "python_name": "upload_high_risk_to_hubspot",
+      "execution_pattern": "async_function",
+      "inputs": [
+        {
+          "name": "hubspot_credentials",
+          "type": "dict",
+          "source": "Entry point - provided by pipeline orchestrator",
+          "description": "HubSpot API credentials"
+        },
+        {
+          "name": "high_risk_customers",
+          "type": "HighRiskCustomerList",
+          "source": "T7 output",
+          "description": "Customers flagged as high risk"
+        }
+      ],
+      "output": {
+        "type": "HubSpotUploadResult",
+        "description": "Status and details of upload operation",
+        "model_reference": "HubSpotUploadResult"
+      },
+      "key_logic_steps": [
+        "1. Authenticate with HubSpot API using credentials.",
+        "2. Upload high-risk customers list (batch or one-by-one, as API allows).",
+        "3. Handle and log any errors for individual records.",
+        "4. Return operation status in HubSpotUploadResult.",
+        "5. Validate response."
+      ],
+      "external_dependencies": [
+        {
+          "name": "HubSpot API",
+          "type": "api",
+          "suggested_library": "httpx",
+          "description": "Push high-risk customer list"
+        }
+      ],
+      "fault_tolerance_implementation": {
+        "retryable": true,
+        "retry_exceptions": [
+          "ConnectionError",
+          "TimeoutError",
+          "HTTPStatusError"
+        ],
+        "retry_utility": "apply_retry",
+        "timeout_seconds": 90,
+        "timeout_implementation": "asyncio.wait_for",
+        "fallback_strategy": "halt",
+        "fallback_implementation": "Raise HubSpotUploadException if all retries exhausted.",
+        "on_final_failure": "HubSpotUploadException"
+      },
+      "acceptance_criteria": {
+        "success_return": "HubSpotUploadResult with status='success'.",
+        "failure_exception": "HubSpotUploadException",
+        "output_validations": [
+          "Uploaded_count matches length of input high_risk_customers.",
+          "status is 'success' on full success."
+        ]
+      }
+    },
+    {
+      "id": "T10",
+      "phase": "P4",
+      "phase_name": "Result Delivery",
+      "responsibility": "If the number of high-risk customers exceeds 50, send alert email to Head of Customer Success.",
+      "python_name": "send_high_risk_alert_email",
+      "execution_pattern": "async_function",
+      "inputs": [
+        {
+          "name": "email_settings",
+          "type": "dict",
+          "source": "Entry point - provided by pipeline orchestrator",
+          "description": "Email server credentials and settings"
+        },
+        {
+          "name": "high_risk_customers",
+          "type": "HighRiskCustomerList",
+          "source": "T7 output",
+          "description": "List of high-risk customers"
+        }
+      ],
+      "output": {
+        "type": "AlertEmailResult",
+        "description": "Indicates if alert was sent or skipped, with error details",
+        "model_reference": "AlertEmailResult"
+      },
+      "key_logic_steps": [
+        "1. Count length of high_risk_customers.",
+        "2. If count > 50:",
+        "    a. Compose alert email, attach list (as table or CSV).",
+        "    b. Send message to Head of Customer Success using provided email_settings.",
+        "    c. Return AlertEmailResult.success=True.",
+        "3. Otherwise, return AlertEmailResult.success=False, reason='under_threshold'.",
+        "4. If any SMTP/network error occurs, retry; after all retries fail, return AlertEmailResult.success=False, reason='error', error_details.",
+        "5. Validate result."
+      ],
+      "external_dependencies": [
+        {
+          "name": "SMTP",
+          "type": "service",
+          "suggested_library": "aiosmtplib",
+          "description": "Send summary alert email"
+        }
+      ],
+      "fault_tolerance_implementation": {
+        "retryable": true,
+        "retry_exceptions": [
+          "ConnectionError",
+          "TimeoutError",
+          "SMTPException"
+        ],
+        "retry_utility": "apply_retry",
+        "timeout_seconds": 60,
+        "timeout_implementation": "asyncio.wait_for",
+        "fallback_strategy": "skip",
+        "fallback_implementation": "If all retries exhausted, return an AlertEmailResult with success=False, reason='error', do not halt dependent tasks.",
+        "on_final_failure": "Return AlertEmailResult with success=False, reason='error', error_details."
+      },
+      "acceptance_criteria": {
+        "success_return": "AlertEmailResult showing success or skipped with correct reason.",
+        "failure_exception": null,
+        "output_validations": [
+          "If count <= 50, AlertEmailResult.success is False, reason is 'under_threshold'.",
+          "If all sends fail, success is False, reason is 'error', and error_details is set."
+        ]
+      }
+    }
+  ]
+}
