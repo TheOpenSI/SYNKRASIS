@@ -34,7 +34,7 @@ class DDI(ServiceBase):
         Debugging Decay Index (DDI) implementation.
 
         Args:
-            file_path (str): Path to the file containing debugging effectiveness data.
+            file_path (str): Path to the CSV file containing debugging effectiveness data.
                 Effectiveness data is not normalised.
             model_name (str): Name of the model used for debugging.
             maximum_debugging_attempts (int): Maximum number of debugging attempts to consider,

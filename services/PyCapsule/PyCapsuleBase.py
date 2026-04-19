@@ -35,7 +35,7 @@ import re
 
 sys.path.append(f"{os.path.dirname(os.path.abspath(__file__))}/../..")
 
-import subprocess
+import subprocess, json
 from subprocess import CompletedProcess
 from typing import Union, Tuple
 from abc import abstractmethod
@@ -46,7 +46,7 @@ from services.Container.Container import Container
 from services.LLM.LLMBase import LLMBase
 from services.DDI.DDI import DDI
 from data.DatasetBase import DatasetBase
-from utils.output_message_format.output_colour import print_error, print_warning
+from utils.output_message_format.output_colour import print_error, print_info, print_warning
 from utils.output_message_format.output_colour import print_success, print_pycapsule
 from modules.ErrorHandling import ErrorHandling
 from modules.ExampleCallDetection import ExampleCallDetection
@@ -295,7 +295,7 @@ class PyCapsuleBase(ServiceBase):
                 
     def fix_code(self, 
                  response: CompletedProcess, 
-                 meta_data_dict: dict = None) -> tuple[int, int]:
+                 meta_data_dict: dict = None) -> tuple[int, int, list[str]]:
         """
         Gets activated only when response.returncode != 0.
         Will change system prompt, user query and attempt to fix the code.
@@ -304,12 +304,13 @@ class PyCapsuleBase(ServiceBase):
             response (CompletedProcess): Response from the container with error code, 
                 stdout and stderr.
         Returns:
-            Tuple (tuple[int, int]): return code and number of attempts made.
+            Tuple (tuple[int, int, list[str]]): return code, number of attempts made, and list of error types.
         """
         print_pycapsule("Starting PyCapsule in fix mode.")
 
         attempt_count = 0
         return_code = -1
+        error_trace: list[str] = []
 
         while response.returncode != 0 and attempt_count < self.maximum_attempts:
             self._change_system_prompt(is_fix_mode=True)  # Changing the system prompt for fix mode
@@ -326,6 +327,7 @@ class PyCapsuleBase(ServiceBase):
             else:
                 # Apply error handling to get the fix mode query
                 fix_mode_query = self._get_fix_mode_query(response, meta_data_dict)
+                error_trace.append(self.error_handling.current_error_type)
             
             # Updating code in container based on fix mode response
             self._update_code(fix_mode_query = fix_mode_query, 
@@ -341,7 +343,7 @@ class PyCapsuleBase(ServiceBase):
 
         self._change_system_prompt()  # Resetting the system prompt to normal mode
 
-        return return_code, attempt_count
+        return return_code, attempt_count, error_trace
     
     
     @deprecated(version='0.1', reason="Experimental use only.")
@@ -383,7 +385,7 @@ class PyCapsuleBase(ServiceBase):
         self.llm.set_system_prompt(code_gen_prompt)
 
 
-    def __call__(self, user_query: Union[str, dict]) -> tuple[int, int]:
+    def __call__(self, user_query: Union[str, dict]) -> tuple[int, int, list[str]]:
         """
         Generate code using LLM and run the code in the container.
 
@@ -391,7 +393,7 @@ class PyCapsuleBase(ServiceBase):
             user_query (Union[str, dict]): Either a datapoint as dict or string query.
             
         Returns:
-            Tuple (tuple[int, int]): return code and number of attempts made.
+            Tuple (tuple[int, int, list[str]]): return code, number of attempts made, and list of error types.
         """
         # Set the original question in LLM's chat history
         original_question = self._set_original_question(user_query)
@@ -409,16 +411,18 @@ class PyCapsuleBase(ServiceBase):
         response: CompletedProcess = self.container.start_container()
 
         flag = response.returncode  # 0 if code runs successfully
+        
+        error_trace: list[str] = []
 
         if response.returncode != 0:
             print_error("Generated code returned a non-zero exit code. \
                 Starting pycapsule in fix mode.")
             # Fix mode
-            flag, fix_mode_attempts = self._call_fix_code(response, user_query)
+            flag, fix_mode_attempts, error_trace = self._call_fix_code(response, user_query)
 
         self.llm.clear_chat_history()
 
-        return flag, fix_mode_attempts
+        return flag, fix_mode_attempts, error_trace
     
     
     def run_pycapsule_experiment(self, dataset: DatasetBase) -> None:
@@ -429,13 +433,12 @@ class PyCapsuleBase(ServiceBase):
         Args:
             dataset (DatasetBase): Dataset to run the PyCapsule on.
         """
-        
         while True:
             data_point = dataset.get_next()
             if data_point is None:
                 break
             
-            solve_flag, fix_mode_attempt_count = self.__call__(data_point)
+            solve_flag, fix_mode_attempt_count, error_trace = self.__call__(data_point)
             status = "fail"
             
             if solve_flag == 0:
@@ -447,27 +450,31 @@ class PyCapsuleBase(ServiceBase):
             dataset.append_result(
                 task_id=data_point["task_id"],
                 fix_mode_attempt_count = fix_mode_attempt_count,
-                status = status
+                status = status,
+                error_trace = error_trace
             )
+            # Save data
+            dataset.log_to_csv()
+            dataset.log_to_json()
             
             print("#" * 50)
             print(f"Solved {dataset.solved_count} problems, \
                 Unsolved {dataset.unsolved_count} problems")
             print("#" * 50)
         
-        exp_file_path = dataset.log_to_csv(model_name = self.llm.model_name)
         
         # DDI
-        ddi = DDI(
-            file_path= exp_file_path,
-            model_name = self.llm.model_name,
-            maximum_debugging_attempts= self.maximum_attempts,
-            phi= self.fresh_start if self.fresh_start else 1, # 1 is the init attempt
-            dataset = dataset.__class__.__name__.lower(),
-            output_dir = self.ddi_output_dir,
-            suffix=self.ddi_suffix
-        )
-        ddi()
+        if self.fresh_start is not None:
+            ddi = DDI(
+                file_path= dataset.generate_file_path() + ".csv", 
+                model_name = self.llm.model_name,
+                maximum_debugging_attempts= self.maximum_attempts,
+                phi= self.fresh_start if self.fresh_start else 1, # 1 is the init attempt
+                dataset = dataset.__class__.__name__,
+                output_dir = self.ddi_output_dir,
+                suffix=self.ddi_suffix
+            )
+            ddi()
 
     
     def cleanup(self):
@@ -482,10 +489,10 @@ class PyCapsuleBase(ServiceBase):
                 os.remove(file_path)
 
         print_success("PyCapsule resources cleaned up.")
-       
+         
 # ==============================================================================================
+
 # For testing only
-@staticmethod
 def run_command(command: str = "whoami") -> str:
     """
     For TESTING only.
@@ -501,7 +508,6 @@ def run_command(command: str = "whoami") -> str:
     return result.stdout.strip()
 
 
-@staticmethod
 def debug_insert_error():
     """
     For TESTING only.
