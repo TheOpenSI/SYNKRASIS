@@ -8,6 +8,7 @@ os.environ["TOKENIZERS_PARALLELISM"] = "false"
 from services.LLM.Ollama.Ollama import Ollama
 from services.LLM.Ollama.OllamaContainer import OllamaContainer
 from services.Container.Container import Container
+from services.PyCapsule.PyCapsule_BigCodeBench import PyCapsule_BigCodeBench
 
 # Utils
 from utils.output_message_format.output_colour import print_model_output, print_info, print_error 
@@ -15,21 +16,37 @@ from utils.output_message_format.output_colour import print_success, print_warni
 from utils.resource.resource_mg_util import call_cleanup
 from utils.ascii.synkrasis import print_synkrasis_logo
 
+# data
+from data.BigCodeBench.BigCodeBench import BigCodeBench
+
 
 def main():
     print_synkrasis_logo()
     try:
-        llm = Ollama()
-        while True:
-            query = input("Enter your query (or 'exit' to quit): ")
-            if query.lower() == 'exit':
-                break
-            llm.generate_response(query)
+        llm = OllamaContainer(model_name="phi4:14b", 
+                              enable_chat_history=True,
+                              max_history=1,
+                              verbose_switch=True,
+                              container_name="ollama",
+                              local_port=11434)
+        
+        container = Container(container_name = "synk_bigcode", 
+                              mount_dir_name = "synk_bigcode_mount",
+                              shell_script_name = "start_rm_req.sh")
+
+        pycapsule = PyCapsule_BigCodeBench(pycapsule_container = container,
+                                           llm = llm,
+                                           maximum_attempts = 5)
+        
+        dataloader = BigCodeBench(model_name="phi4:14b",
+                                  is_resuming=False)
+        
+        pycapsule.run_pycapsule_experiment(dataloader)
 
         
     finally:
         # Warning resource_tracker: There appear to be .* leaked semaphore objects"
-        call_cleanup([llm])
+        call_cleanup([llm, container, pycapsule])
 
 if __name__ == '__main__':
     main()
