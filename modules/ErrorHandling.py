@@ -37,28 +37,27 @@ from utils.output_message_format.output_colour import print_warning, print_error
 
 
 class ErrorHandling():
-    def __init__(self, target_file_name: str = "/usr/src/app/main.py"):
+    def __init__(self, 
+                 target_file_name: str = "/usr/src/app/main.py") -> None:
         """
         Error handling Module.
         Target file name is used to extract the file specific error messages.
         """
         self.target_file_name = target_file_name
-    
-    
+
+
     def _unittest_extract_errors(self, 
                                  error_message: str, 
                                  total_failed_count: int) -> list[str]:
         """
-        Extract all individual test case error message blocks from a 
-        unittest-style error output.
+        Extract all traceblack blocks from a unittest-style error output.
         
         Args:
         - error_message (str): The full error message from the unittest run.
         - total_failed_count (int): The number of extracted failed test cases.
         
         Returns:
-        - error_messages (list): A list of specific error tracebacks for each 
-        failed test case.
+        - error_messages (list): A list of specific error tracebacks for each failed test case.
         """        
         all_error_messages = self._extract_all_tracebacks(error_message)
         
@@ -126,16 +125,16 @@ class ErrorHandling():
         
         pattern = re.compile(
             r"""(Traceback[\s\S]*?"""
-            r"""(?:[A-Za-z\.]+[Ee]rror(?::\s*.*?)?|Exception(?::\s*.*?)?)"""
-            r"""(?=\s*Traceback|\n\s*\n|\n\s*$|$))""", 
+            r"""(?:[A-Za-z\.]+[Ee]rror(?::\s*.*?)?|Exception(?::\s*.*?)?|StopIteration)""" # stopitertion encountered in bigcode.
+            r"""(?=\s*Traceback|\n\s*\n|\n\s*$|$))""",
             re.VERBOSE | re.DOTALL
         )
         all_tracebacks = re.findall(pattern, error_message)
         
-        if len(all_tracebacks) != expected_block_count:
-            print_error((f"Expected traceback block count does not match actual count for - \n"
-                         f"{error_message}"))
-            raise ValueError("Expected traceback block count does not match actual count")
+        # if len(all_tracebacks) != expected_block_count:
+        #     print_error((f"Expected traceback block count does not match actual count for - \n"
+        #                  f"{error_message}"))
+        #     raise ValueError("Expected traceback block count does not match actual count")
 
         return all_tracebacks
         
@@ -219,7 +218,7 @@ class ErrorHandling():
                 return error_message_line.split(":")[0].strip()
         
         print_warning(f"Error type not found in error message:\n{error_message}")
-        raise ValueError("Error type not found in error message")
+        return "UnknownError"
 
 
     def remove_multithread_generic_error(self, error_message: str) -> str:
@@ -463,8 +462,6 @@ class ErrorHandling():
         count_dict, summary_result = self._unittest_generate_test_summary(first_line)
         
         # Number of expected error messages
-        # NOTE: This is not the actual error count, but the number of failed test cases
-        # NOTE: Need to check how expected fail x and unexpected success u are handled
         error_count = sum(value for key, value in count_dict.items() if key != ".")
         
         # Extract individual error messages
@@ -473,18 +470,28 @@ class ErrorHandling():
         # Keeping the uniqe error messages only
         error_messages = list(set(error_messages))
         
-        # Process all individual error messages
+        # Process all individual error messagess
+        self.current_error_type = []
         processed_error_messages = []
         for i, error_message in enumerate(error_messages):
             processed_error_messages.append("-"*50)
             processed_error_messages.append(f"Error {i + 1}:")
-            processed_error_messages.append(f"Error type: {self.get_error_type(error_message)}")
-            # NOTE: Can be processed further with e_h(error_message)
-            processed_error_messages.append(error_message)
+            error_type = self.get_error_type(error_message)
+            self.current_error_type.append(error_type)
+            processed_error_messages.append(f"Error type: {error_type}")
+            if error_type == "AssertionError":
+                error_message_p = self._unittest_assertion_extract_relevant_block(error_message)
+            elif error_type == "NameError":
+                error_message_p = self.name_error_prompt(error_message)
+            elif error_type == "RecursionError":
+                error_message_p = self.recursion_error_prompt()
+            else:
+                error_message_p = self.all_other_error_prompt(error_message)
+            processed_error_messages.append(error_message_p)
+            processed_error_messages.append("-"*50)
             
-        # Individual error messages
-        # individual_error_messages = "\n".join(processed_error_messages)
-        individual_error_messages = "\n".join(processed_error_messages[:4]) + "-"*50
+        # error_messages = "\n".join(processed_error_messages[:5])
+        error_messages = "\n".join(processed_error_messages)
         
         # unittest_error_prompt = (
         #     f"Your generated code had issues in {error_count} test cases.\n"
@@ -496,9 +503,28 @@ class ErrorHandling():
         unittest_error_prompt = (
             "Please check the following error messages from the python compiler "
             "for your generated solution - \n"
-            f"{individual_error_messages}"
+            f"{error_messages}"
         )
         return unittest_error_prompt.strip()
+
+
+    def _unittest_assertion_extract_relevant_block(self, traceback_block: str) -> str:
+        """
+        Extract the relevant portion of a traceback block.
+        Keeps the last main.py frame and everything after it
+        (error line and diff if present).
+        
+        Args:
+            traceback_block (str): A single traceback block.
+        
+        Returns:
+            str: The relevant portion of the traceback block.
+        """
+        target_file_name = re.escape(self.target_file_name)
+        pattern = r'(File "%s".*)'  % target_file_name
+        matches = re.findall(pattern, traceback_block, re.DOTALL)
+        
+        return matches[-1].strip() if matches else traceback_block.strip()
 
 
     def __call__(self,
@@ -534,6 +560,8 @@ class ErrorHandling():
             return self.unittest_error_prompt(error_message)
         
         error_type, error_message_concise = self.remove_generic_and_external_file_error(error_message)
+        # Storing error type for error analysis
+        self.current_error_type = [error_type]
         
         if error_type == "AssertionError":
             return self.assertion_error_prompt(error_message_concise, 
