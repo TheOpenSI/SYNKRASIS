@@ -23,11 +23,12 @@ from data.BigCodeBench.BigCodeBench import BigCodeBench
 def main():
     print_synkrasis_logo()
     try:
-        llm = OllamaContainer(model_name="phi4:14b", 
-                              enable_chat_history=True,
-                              max_history=1,
-                              verbose_switch=True,
-                              container_name="ollama",
+        llm_name = "devstral:24b"
+        llm = OllamaContainer(model_name = llm_name, 
+                              enable_chat_history = True,
+                              max_history = 1,
+                              verbose_switch = True,
+                              container_name = "ollama",
                               local_port=11434)
         
         container = Container(container_name = "synk_bigcode", 
@@ -38,8 +39,8 @@ def main():
                                            llm = llm,
                                            maximum_attempts = 5)
         
-        dataloader = BigCodeBench(model_name="phi4:14b",
-                                  is_resuming=False)
+        dataloader = BigCodeBench(model_name = llm_name,
+                                  is_resuming=True)
         
         pycapsule.run_pycapsule_experiment(dataloader)
 
