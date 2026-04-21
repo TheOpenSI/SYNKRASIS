@@ -23,7 +23,7 @@ from data.BigCodeBench.BigCodeBench import BigCodeBench
 def main():
     print_synkrasis_logo()
     try:
-        llm_name = "devstral:24b"
+        llm_name = "qwen2.5-coder:32b"
         llm = OllamaContainer(model_name = llm_name, 
                               enable_chat_history = True,
                               max_history = 1,
@@ -40,7 +40,7 @@ def main():
                                            maximum_attempts = 5)
         
         dataloader = BigCodeBench(model_name = llm_name,
-                                  is_resuming=True)
+                                  is_resuming = True)
         
         pycapsule.run_pycapsule_experiment(dataloader)
 
