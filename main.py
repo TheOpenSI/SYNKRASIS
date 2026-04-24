@@ -23,7 +23,7 @@ from data.BigCodeBench.BigCodeBench import BigCodeBench
 def main():
     print_synkrasis_logo()
     try:
-        llm_name = "qwen2.5-coder:32b"
+        llm_name = "qwen2.5-coder:14b"
         llm = OllamaContainer(model_name = llm_name, 
                               enable_chat_history = True,
                               max_history = 1,

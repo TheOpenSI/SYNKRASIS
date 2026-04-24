@@ -125,7 +125,7 @@ class ErrorHandling():
         
         pattern = re.compile(
             r"""(Traceback[\s\S]*?"""
-            r"""(?:[A-Za-z\.]+[Ee]rror(?::\s*.*?)?|Exception(?::\s*.*?)?|StopIteration)""" # stopitertion encountered in bigcode.
+            r"""(?:[A-Za-z\.]+[Ee]rror(?::\s*.*?)?|Exception(?::\s*.*?)?|StopIteration|gzip\.BadGzipFile)""" # stopitertion encountered in bigcode.
             r"""(?=\s*Traceback|\n\s*\n|\n\s*$|$))""",
             re.VERBOSE | re.DOTALL
         )
