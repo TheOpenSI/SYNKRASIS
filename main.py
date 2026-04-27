@@ -40,7 +40,7 @@ def main():
                                            maximum_attempts = 5)
         
         dataloader = BigCodeBench(model_name = llm_name,
-                                  is_resuming = True)
+                                  is_resuming = False)
         
         pycapsule.run_pycapsule_experiment(dataloader)
 
