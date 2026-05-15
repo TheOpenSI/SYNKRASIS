@@ -9,6 +9,7 @@ from services.LLM.Ollama.Ollama import Ollama
 from services.LLM.Ollama.OllamaContainer import OllamaContainer
 from services.Container.Container import Container
 from services.PyCapsule.PyCapsule_BigCodeBench import PyCapsule_BigCodeBench
+from services.PyCapsule.PyCapsule_MBPP import PyCapsule_MBPP
 
 # Utils
 from utils.output_message_format.output_colour import print_model_output, print_info, print_error 
@@ -18,6 +19,7 @@ from utils.ascii.synkrasis import print_synkrasis_logo
 
 # data
 from data.BigCodeBench.BigCodeBench import BigCodeBench
+from data.MBPP.MBPP import MBPP
 
 
 def main():
@@ -35,12 +37,12 @@ def main():
                               mount_dir_name = "synk_bigcode_mount",
                               shell_script_name = "start_rm_req.sh")
 
-        pycapsule = PyCapsule_BigCodeBench(pycapsule_container = container,
+        pycapsule = PyCapsule_MBPP(pycapsule_container = container,
                                            llm = llm,
                                            maximum_attempts = 5)
         
-        dataloader = BigCodeBench(model_name = llm_name,
-                                  is_resuming = False)
+        dataloader = MBPP(model_name = llm_name,
+                           is_resuming = False)
         
         pycapsule.run_pycapsule_experiment(dataloader)
 

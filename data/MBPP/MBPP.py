@@ -32,7 +32,7 @@ class MBPP(DatasetBase):
         self.load_data_helper_json()
         
     
-    def log_to_csv(self, model_name: str) -> None:
+    def log_to_csv(self) -> None:
         self.log_to_csv_helper(column_names = ["task_id", "fix_mode_attempt_count", "status", "error_trace"])
         
         
@@ -60,9 +60,3 @@ class MBPP(DatasetBase):
         self.solved_count = 0
         self.unsolved_count = 0
         self.results = []
-        
-
-if __name__ == "__main__":
-    mbpp = MBPP(model_name="test_model")
-    for key, value in mbpp.get_next().items():
-        print(f"{key}: {value}")

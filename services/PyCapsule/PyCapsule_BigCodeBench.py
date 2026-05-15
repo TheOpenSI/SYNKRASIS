@@ -25,8 +25,8 @@ class PyCapsule_BigCodeBench(PyCapsuleBase):
             maximum_attempts (int, optional): Maximum attempts to fix the code. Defaults to 5.
         """
         super().__init__(pycapsule_container, llm, maximum_attempts)
-        self.create_requirements_txt(requirements=[]) # BigCode uses fixed requirements list.
-        
+        self.create_requirements_txt(requirements=[])
+                
     
     def _set_prompt_paths(self):
         return self.helper_set_prompt_paths()
@@ -72,7 +72,10 @@ class PyCapsule_BigCodeBench(PyCapsuleBase):
         return self.error_handling(response.stderr)
 
 
-    def _update_code(self, fix_mode_query: str, suppress_conversation_history: bool, meta_data: dict) -> None:
+    def _update_code(self, 
+                     fix_mode_query: str, 
+                     suppress_conversation_history: bool, 
+                     meta_data: dict) -> None:
         data_point = meta_data.copy()
         data_point["prompt"] = fix_mode_query
         self._generate_code(data_point, suppress_conversation_history)
