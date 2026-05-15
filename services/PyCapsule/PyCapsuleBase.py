@@ -149,10 +149,8 @@ class PyCapsuleBase(ServiceBase):
     @abstractmethod
     def _get_fix_mode_query(self, response: CompletedProcess, meta_data: dict) -> str:
         """
-        Apply necessary error handling using the self.error_handling object to get 
-            the fix mode query.
-        Use the self.error_handling object to extract the error message from the response.
-        
+        Apply necessary error handling using the self.error_handling object to get the fix mode query.
+                
         Args:
             response (CompletedProcess): Response from the container with error code, 
                 stdout and stderr.
@@ -171,10 +169,9 @@ class PyCapsuleBase(ServiceBase):
                      meta_data: dict) -> None:
         """
         Only gets activated in Fix mode.\n
-        Use self._generate_code() to generate fix mode response and 
-            update main.py file in the container.\n
-        If self._generated_code() expects a dict, update metadata's prompt.\n
-
+        Use self._generate_code() to generate fix mode response and update main.py file in the container.\n
+        If self._generate_code() expects a dict, update metadata's prompt.\n
+        This function was not added to the base class initially because the parameters can be different for different datasets.
         Args:
             fix_mode_query (Union[str, dict]): Can be the query itself as str or 
                 a dict with metadata.

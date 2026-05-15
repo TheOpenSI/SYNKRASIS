@@ -24,7 +24,7 @@ class BigCodeBench(DatasetBase):
     
 
     def log_to_csv(self) -> None:
-        super().log_to_csv_helper(column_names = ["task_id", "fix_mode_attempt_count", "status", "error_trace"])
+        self.log_to_csv_helper(column_names = ["task_id", "fix_mode_attempt_count", "status", "error_trace"])
         
         
     def process(self, data_point: dict) -> dict :
@@ -38,27 +38,6 @@ class BigCodeBench(DatasetBase):
             "libs": ast.literal_eval(data_point["libs"]),
             "metadata": data_point["doc_struct"],
         }
-        
-        
-    def append_result(self, task_id: str, 
-                      fix_mode_attempt_count: int,
-                      status: str,
-                      error_trace: list[str]) -> None:
-        """
-        Append the experiment result to the results list.
-
-        Args:
-            task_id (str): Task ID.
-            fix_mode_attempt_count (int): Debug attempt count.
-            status (str): pass or fail.
-            error_trace (list[str]): List of error types encountered.
-        """
-        self.results.append({
-            "task_id": task_id,
-            "fix_mode_attempt_count": fix_mode_attempt_count,
-            "status": status,
-            "error_trace": error_trace
-        })
 
 
     def reset(self) -> None:
@@ -69,4 +48,3 @@ class BigCodeBench(DatasetBase):
         self.solved_count = 0
         self.unsolved_count = 0
         self.results = []
-        

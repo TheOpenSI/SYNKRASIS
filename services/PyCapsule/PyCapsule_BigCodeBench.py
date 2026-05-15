@@ -25,7 +25,7 @@ class PyCapsule_BigCodeBench(PyCapsuleBase):
             maximum_attempts (int, optional): Maximum attempts to fix the code. Defaults to 5.
         """
         super().__init__(pycapsule_container, llm, maximum_attempts)
-        self.create_requirements_txt(requirements=[])
+        self.create_requirements_txt(requirements=[]) # BigCode uses fixed requirements list.
         
     
     def _set_prompt_paths(self):
@@ -45,16 +45,16 @@ class PyCapsule_BigCodeBench(PyCapsuleBase):
         code = self.example_call_detection.extract_code_blocks(code)
         
         # Content
-        code_to_write = suppress_warning + "\n\n" + code + "\n\n" + user_query["test"] + "\n\n" + timeout_code
+        py_file_content = suppress_warning + "\n\n" + code + "\n\n" + user_query["test"] + "\n\n" + timeout_code
         
         # Main
         main_py_path = os.path.join(self.MOUNT_DIR, "main.py")
-        self.create_py_file(main_py_path, code_to_write)
+        self.create_py_file(main_py_path, py_file_content)
 
         # Task file
         task_file_name = user_query["task_id"].replace("/", "_") + ".py"
         task_file_path = os.path.join(self.MOUNT_DIR, task_file_name)
-        self.create_py_file(task_file_path, code_to_write)
+        self.create_py_file(task_file_path, py_file_content)
         
            
     def _generate_code(self, user_query: dict, suppress_conversation_history: bool = True) -> None: 

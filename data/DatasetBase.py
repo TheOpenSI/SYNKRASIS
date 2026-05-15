@@ -96,7 +96,8 @@ class DatasetBase(ABC):
     @abstractmethod
     def _load_data(self) -> None:
         """
-        Load data from self.file_path to self.data
+        Load data from self.file_path to self.data.
+        self.data must be in pandas DataFrame format for the get_next function to work properly.
         """
         pass
 
@@ -208,12 +209,12 @@ class DatasetBase(ABC):
     def load_data_helper_json(self) -> None:
         """
         _load_data helper.\n
-        Loads JSON data from self.file_path with specified subset size.
+        Loads JSON data from self.file_path to self.data.
         """
         with open(self.file_path, "r") as file:
             all_data = [json.loads(line.strip()) for line in file]
 
-        self.data = all_data
+        self.data = pd.DataFrame(all_data)
             
             
     def log_to_csv_helper(self,
@@ -267,6 +268,27 @@ class DatasetBase(ABC):
         else:
             print_warning("No more datapoints available")
             return None
+        
+        
+    def append_result(self, task_id: str, 
+                      fix_mode_attempt_count: int,
+                      status: str,
+                      error_trace: list[str]) -> None:
+        """
+        Append the experiment result to the results list.
+
+        Args:
+            task_id (str): Task ID.
+            fix_mode_attempt_count (int): Debug attempt count.
+            status (str): pass or fail.
+            error_trace (list[str]): List of error types encountered.
+        """
+        self.results.append({
+            "task_id": task_id,
+            "fix_mode_attempt_count": fix_mode_attempt_count,
+            "status": status,
+            "error_trace": error_trace
+        })
             
             
     def __len__(self) -> int:
