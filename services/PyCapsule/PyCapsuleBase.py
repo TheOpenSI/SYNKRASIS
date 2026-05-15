@@ -412,8 +412,8 @@ class PyCapsuleBase(ServiceBase):
         error_trace: list[str] = []
 
         if response.returncode != 0:
-            print_error("Generated code returned a non-zero exit code. \
-                Starting pycapsule in fix mode.")
+            print_error("Generated code returned a non-zero exit code. "
+                        "Starting pycapsule in fix mode.")
             # Fix mode
             flag, fix_mode_attempts, error_trace = self._call_fix_code(response, user_query)
 

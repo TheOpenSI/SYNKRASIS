@@ -284,8 +284,8 @@ class DatasetBase(ABC):
             error_trace (list[str]): List of error types encountered.
         """
         self.results.append({
-            "task_id": task_id,
-            "fix_mode_attempt_count": fix_mode_attempt_count,
+            "task_id": int(task_id),
+            "fix_mode_attempt_count": int(fix_mode_attempt_count),
             "status": status,
             "error_trace": error_trace
         })
