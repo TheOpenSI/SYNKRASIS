@@ -1,5 +1,7 @@
 # =============================================================================================
 # Usage:
+# - validate_metadata(expected_type: type, meta_data: any, check_dict_keys: list[str])
+#       Helper function to check meta data compatibility.
 # - helper_set_prompt_paths()
 #       Helper function to set the default prompt paths for code generation and 
 #       code fix system prompts.
@@ -113,7 +115,7 @@ class PyCapsuleBase(ServiceBase):
     def _create_main_py(self, 
                         code: str, 
                         test_cases: str, 
-                        meta_data: dict = None) -> None:
+                        user_query: dict = None) -> None:
         """
         Curate the main.py file.
         Process all its content here, e.g. add suppress warning code, timeout code, test cases etc.
@@ -122,8 +124,8 @@ class PyCapsuleBase(ServiceBase):
         Args:
             code (str): Function definition IDEALLY WITH AN EXAMPLE.
             test_cases (str): Test cases either generated using llm or custom. Defaults to "".
-            meta_data (dict): Pass the whole problem data point here, 
-                useful for dataset specific implementation.
+            user_query (dict): Pass the whole problem data point here, useful for dataset specific implementation.
+                (used as meta data)
         """
         # NOTE: For child classes, create task specific py file here.
         pass
@@ -211,6 +213,32 @@ class PyCapsuleBase(ServiceBase):
             data_point (Union[str, dict]): Either a datapoint as dict or string query.
         """
         pass
+
+
+    def validate_metadata(self,
+                            expected_type: type,
+                            meta_data: any,
+                            check_dict_keys: list[str] = ["task_id", "prompt", "entry_point", "test"]) -> None:
+        """
+        Helper function to check meta data compatibility.
+        Prints and raises error if meta data is not provided or not in dict.
+
+        Args:
+            expected_type (type): The expected type of the meta data, e.g. dict.
+            meta_data (dict): Meta data dictionary.
+            check_dict_keys (list[str]): List of keys to check in the meta data dictionary.
+        """
+        if meta_data is None:
+            print_error(f"Meta data is required but was not provided, expected type: {expected_type}")
+            raise ValueError(f"Meta data is required but was not provided, expected type: {expected_type}")
+        
+        if not isinstance(meta_data, expected_type):
+            print_error(f"Meta data must be a type of {expected_type.__name__}")
+            raise ValueError(f"Meta data must be a type of {expected_type.__name__}")
+        
+        if missing := next((k for k in check_dict_keys if k not in meta_data), None):
+            print_error(f"Meta data is missing the required key: {missing}")
+            raise ValueError(f"Meta data is missing the required key: {missing}")
     
     
     def helper_set_prompt_paths(self) -> None:
@@ -343,7 +371,6 @@ class PyCapsuleBase(ServiceBase):
         return return_code, attempt_count, error_trace
     
     
-    @deprecated(version='0.1', reason="Experimental use only.")
     def _fresh_start(self) -> Tuple[str, bool]:
         """
         Clear chat history but keep the original question

@@ -29,8 +29,8 @@ class PyCapsule_MBPP(PyCapsuleBase):
         
     def _set_prompt_paths(self) -> None:
         return self.helper_set_prompt_paths()
-        
-        
+
+
     def _create_test_function(self, test_list: list) -> str:
         """
         Create the test function using the test list.
@@ -72,9 +72,9 @@ class PyCapsule_MBPP(PyCapsuleBase):
                            code + "\n\n" +
                            test_function + "\n\n" +
                            timeout_code)
-        
+        # file path
         main_py_path = os.path.join(self.MOUNT_DIR, "main.py")
-        task_file_path = os.path.join(self.MOUNT_DIR, f"task_{user_query['task_id']}.py")
+        task_file_path = os.path.join(self.MOUNT_DIR, f"mbpp_task_{user_query['task_id']}.py")
         
         self.create_py_file(main_py_path, py_file_content)
         self.create_py_file(task_file_path, py_file_content)
@@ -83,21 +83,11 @@ class PyCapsule_MBPP(PyCapsuleBase):
     def _generate_code(self, 
                        user_query: dict, 
                        suppress_conversation_history: bool = True) -> None:
-        """
-        FOR MBPP.
-        User query is a dictionary.
-        Generates the raw LLM response and parses the response to get the code. 
-        Parser being used - utils.code_parsing.code_parser.parse_response for requirements, code
-
-        Args:
-            user_query (dict): Original user query dictionary.
-            suppress_conversation_history (bool, optional): Omit conversation history. Defaults to True.
-        """
-        if type(user_query) != dict:
-            raise ValueError("user_query must be a dictionary for MBPP.")
+        self.validate_metadata(expected_type = dict,
+                               meta_data = user_query)
         
-        llm_response = self.llm.generate_response(user_query["prompt"],
-                                              suppress_conversation_history = suppress_conversation_history)
+        llm_response = self.llm.generate_response(user_prompt = user_query["prompt"],
+                                                  suppress_conversation_history = suppress_conversation_history)
         
         requirements, code = parse_response(llm_response)
         self._create_main_py(code, user_query)
@@ -118,18 +108,10 @@ class PyCapsule_MBPP(PyCapsuleBase):
         
         
     def _set_original_question(self, user_query: dict) -> str:
-        """
-        For MBPP, LLM query is stored in user_query["prompt"].
-        Overriden to handle dict user_query.
-
-        Args:
-            user_query (dict): user_query["prompt"] for MBPP.
-
-        Returns:
-            str: Original question extracted from user_query dict.
-        """
         return user_query["prompt"]
     
     
-    def _call_fix_code(self, response: CompletedProcess, data_point: dict) -> tuple[int, int]:
-        return self.fix_code(response, data_point)
+    def _call_fix_code(self, 
+                       response: CompletedProcess, 
+                       user_query: dict) -> tuple[int, int]:
+        return self.fix_code(response, user_query)

@@ -29,7 +29,7 @@ class BigCodeBench(DatasetBase):
         
     def process(self, data_point: dict) -> dict :
         return {
-            "task_id": data_point["task_id"].replace("/", "_"),
+            "task_id": self._process_task_id(data_point["task_id"]),
             "prompt": data_point["instruct_prompt"] + "\n\n" +
                       "The function signature, docstring and import statements are given below - \n" +
                       data_point["complete_prompt"],
@@ -38,6 +38,20 @@ class BigCodeBench(DatasetBase):
             "libs": ast.literal_eval(data_point["libs"]),
             "metadata": data_point["doc_struct"],
         }
+        
+        
+    def _process_task_id(self, task_id: str) -> int:
+        """
+        Extract the task id from the given task_id string.
+        For BigCodeBench, the task_id is in the format "bigcode_bench/{task_id}".
+
+        Args:
+            task_id (str): The original task_id string.
+
+        Returns:
+            int: The extracted task id.
+        """
+        return int(task_id.split("/")[-1])
 
 
     def reset(self) -> None:

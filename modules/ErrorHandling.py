@@ -553,17 +553,21 @@ class ErrorHandling():
         Returns:
             Query_prompt (str): The error prompt.
         """
+        if send_original:
+            return error_message.strip()
+        
         # Process Process - n: issue
         error_message = re.sub(r"Process Process-[\d]+:", "", error_message).strip()
-        # Unit test error
-        if self.is_unittest_error(error_message):
-            return self.unittest_error_prompt(error_message)
         
         error_type, error_message_concise = self.remove_generic_and_external_file_error(error_message)
+        
         # Storing error type for error analysis
         self.current_error_type = [error_type]
         
-        if error_type == "AssertionError":
+        if self.is_unittest_error(error_message):
+            return self.unittest_error_prompt(error_message)
+        
+        elif error_type == "AssertionError":
             return self.assertion_error_prompt(error_message_concise, 
                                                extract_test_case, 
                                                change_test_case_entry, 
@@ -577,6 +581,4 @@ class ErrorHandling():
             return self.recursion_error_prompt()
         
         else:
-            return (error_message
-                    if send_original
-                    else self.all_other_error_prompt(error_message_concise))
+            return self.all_other_error_prompt(error_message_concise)

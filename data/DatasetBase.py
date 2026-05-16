@@ -23,6 +23,12 @@
 #   - log_to_csv_helper (log_to_csv helper to log the results to a csv file)
 #   - append_result_helper (helper function to append results to the results list)
 #   - __len__
+#
+# Note: Expected keys are "task_id", "prompt", "entry_point", "test" in the meta data for the PyCapsule implementation/
+#      - task_id  shold be int or str, but will be converted to int in the append_result function.
+#      - prompt should be str, the original question prompt.
+#      - entry_point should be str, no parentheses.
+#      - test should be str, the test function code, use dedicated test function builder if needed. e.g. MBPP test function builder.
 # ===================================================================================================================================
 
 import os
@@ -276,6 +282,7 @@ class DatasetBase(ABC):
                       error_trace: list[str]) -> None:
         """
         Append the experiment result to the results list.
+        Override to add more fields to the result as needed.
 
         Args:
             task_id (str): Task ID.

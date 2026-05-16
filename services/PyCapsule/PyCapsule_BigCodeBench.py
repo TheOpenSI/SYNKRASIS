@@ -32,7 +32,7 @@ class PyCapsule_BigCodeBench(PyCapsuleBase):
         return self.helper_set_prompt_paths()
     
     
-    def _create_main_py(self, code: str, user_query: dict) -> None: 
+    def _create_main_py(self, code: str, user_query: dict) -> None:
         # Suppress warning
         suppress_warning = self.suppress_warning_code()
         
@@ -52,13 +52,14 @@ class PyCapsule_BigCodeBench(PyCapsuleBase):
         self.create_py_file(main_py_path, py_file_content)
 
         # Task file
-        task_file_name = user_query["task_id"].replace("/", "_") + ".py"
-        task_file_path = os.path.join(self.MOUNT_DIR, task_file_name)
+        task_file_path = os.path.join(self.MOUNT_DIR, f"bcb_task_{user_query['task_id']}.py")
         self.create_py_file(task_file_path, py_file_content)
         
            
-    def _generate_code(self, user_query: dict, suppress_conversation_history: bool = True) -> None: 
-        response = self.llm.generate_response(user_query["prompt"], 
+    def _generate_code(self, user_query: dict, suppress_conversation_history: bool = True) -> None:
+        self.validate_metadata(expected_type = dict,
+                               meta_data = user_query)
+        response = self.llm.generate_response(user_prompt = user_query["prompt"],
                                               suppress_conversation_history = suppress_conversation_history)
         
         # Parse the response
@@ -85,8 +86,10 @@ class PyCapsule_BigCodeBench(PyCapsuleBase):
         return user_query["prompt"]
     
     
-    def _call_fix_code(self, response: CompletedProcess, data_point: dict) -> tuple[int, int, list[str]]:
-        return self.fix_code(response, data_point)
+    def _call_fix_code(self, 
+                       response: CompletedProcess, 
+                       user_query: dict) -> tuple[int, int, list[str]]:
+        return self.fix_code(response, user_query)
     
     
     def create_requirements_txt(self, requirements: list) -> None:
