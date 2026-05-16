@@ -71,10 +71,11 @@ class PyCapsule_HE(PyCapsuleBase):
                             response: CompletedProcess, 
                             meta_data: dict) -> str:
         return self.error_handling(error_message = response.stderr,
-                                extract_test_case = True,
-                                change_test_case_entry = True,
-                                to_replace = "candidate", # Specific to HumanEval.
-                                entry_point = meta_data["entry_point"])
+                                   send_original = True,
+                                   extract_test_case = True,
+                                   change_test_case_entry = True,
+                                   to_replace = "candidate", # Specific to HumanEval.
+                                   entry_point = meta_data["entry_point"])
         
         
     def _update_code(self, 

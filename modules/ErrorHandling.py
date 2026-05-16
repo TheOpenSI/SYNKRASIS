@@ -554,7 +554,9 @@ class ErrorHandling():
             Query_prompt (str): The error prompt.
         """
         if send_original:
-            return error_message.strip()
+            removed_generic_error_message = self.remove_multithread_generic_error(error_message)
+            self.current_error_type = [None] # for generic error, error type is not extracted, set to None.
+            return removed_generic_error_message.strip()
         
         # Process Process - n: issue
         error_message = re.sub(r"Process Process-[\d]+:", "", error_message).strip()
