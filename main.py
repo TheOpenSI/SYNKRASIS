@@ -29,7 +29,7 @@ def main():
         llm = OllamaContainer(model_name = llm_name, 
                               enable_chat_history = True,
                               max_history = 1,
-                              verbose_switch = True,
+                              verbose_switch = False,
                               container_name = "ollama",
                               local_port=11434)
         
