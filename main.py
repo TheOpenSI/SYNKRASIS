@@ -33,9 +33,9 @@ def main():
                               container_name = "ollama",
                               local_port=11434)
         
-        container = Container(container_name = "synk_bigcode", 
-                              mount_dir_name = "synk_bigcode_mount",
-                              shell_script_name = "start_rm_req.sh")
+        container = Container(container_name = "synk_he", 
+                              mount_dir_name = "synk_humaneval_mount",
+                              shell_script_name = "start.sh")
 
         pycapsule = PyCapsule_MBPP(pycapsule_container = container,
                                            llm = llm,

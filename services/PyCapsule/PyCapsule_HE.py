@@ -98,4 +98,3 @@ class PyCapsule_HE(PyCapsuleBase):
                                check_dict_keys=["task_id", "prompt", "entry_point", "test"])
         
         return self.fix_code(response, user_query)
-        
