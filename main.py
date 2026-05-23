@@ -31,20 +31,20 @@ def main():
         llm = OllamaContainer(model_name = llm_name, 
                               enable_chat_history = True,
                               max_history = 1,
-                              verbose_switch = True,
+                              verbose_switch = False,
                               container_name = "ollama",
                               local_port=11434)
         
-        container = Container(container_name = "synk_he", 
-                              mount_dir_name = "synk_humaneval_mount",
+        container = Container(container_name = "synk_mbpp", 
+                              mount_dir_name = "synk_mbpp_mount",
                               shell_script_name = "start.sh")
 
-        pycapsule = PyCapsule_HE(pycapsule_container = container,
+        pycapsule = PyCapsule_MBPP(pycapsule_container = container,
                                  llm = llm,
                                  maximum_attempts = 5)
         
-        dataloader = HumanEval(model_name = llm_name,
-                               is_resuming = False)
+        dataloader = MBPP(model_name = llm_name,
+                                  is_resuming = False)
         
         pycapsule.run_pycapsule_experiment(dataloader)
 

@@ -71,7 +71,7 @@ class PyCapsule_HE(PyCapsuleBase):
                             response: CompletedProcess, 
                             meta_data: dict) -> str:
         return self.error_handling(error_message = response.stderr,
-                                   send_original = True,
+                                   send_original = False,
                                    extract_test_case = True,
                                    change_test_case_entry = True,
                                    to_replace = "candidate", # Specific to HumanEval.

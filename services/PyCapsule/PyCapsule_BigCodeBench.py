@@ -70,7 +70,7 @@ class PyCapsule_BigCodeBench(PyCapsuleBase):
         
         
     def _get_fix_mode_query(self, response: CompletedProcess, meta_data: dict) -> str:
-        return self.error_handling(response.stderr)
+        return self.error_handling(response.stderr, send_original = True)
 
 
     def _update_code(self, 
