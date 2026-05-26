@@ -39,7 +39,6 @@ class RAG(ServiceBase):
     def query(self, user_query: str) -> Optional[str]:
         try:
             context = self.vector_db.query(user_query)
-            print_info(f"Retrieved {len(context)} relevant chunks from vector database for the query.\n Context: {context}")
             response = self.llm.generate_response(user_query, context)
             
             if response is None:

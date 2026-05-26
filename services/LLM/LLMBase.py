@@ -26,7 +26,7 @@ import os, sys
 sys.path.append(f"{os.path.dirname(os.path.abspath(__file__))}/../..")
 
 from abc import abstractmethod
-from typing import List, Optional, Dict
+from typing import List, Optional, Dict, Union
 from jinja2 import Template
 
 from services.Base import ServiceBase
@@ -82,17 +82,20 @@ class LLMBase(ServiceBase):
         return rendered_prompt
 
 
-    def _prepare_context(self, context: List[str]) -> Optional[str]:
+    def _prepare_context(self, context: Union[str, List[str]]) -> Optional[str]:
         """
         Prepare context for the prompt if context is provided.
         Args:
-            context (List[str]): List of context strings
+            context (Union[str, List[str]]): Context string or list of context strings
         """
-        context_str = ""
-        if context:
-            context_str = "\n".join([f"\t{ctx}" for ctx in context])
-
-        return context_str
+        if isinstance(context, str) and context:
+            return context
+        
+        elif isinstance(context, list) and context:
+            return "\n".join([f"\t{ctx}" for ctx in context if isinstance(ctx, str)])   
+        
+        else:
+            raise ValueError("Context must be a non-empty string or a non-empty list of strings.")
 
         
     def _prepare_conversation_history(self, user_query: str) -> str:
