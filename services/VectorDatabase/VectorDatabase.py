@@ -198,6 +198,37 @@ class VectorDatabase(ServiceBase):
         return new_paths
     
     
+    def _format_context(self, results: List[dict]) -> str:
+        """
+        Format the list of retrieved chunks into a single context string
+        for the LLM prompt. Each chunk is numbered and prefixed with its
+        citation metadata. Internal fields such as score, chunk_index, and
+        chunk_method are omitted.
+
+        Args:
+            results (List[dict]): The list of dicts returned by vector_db.query().
+
+        Returns:
+            str: A formatted context string ready to be passed to the LLM.
+        """
+        blocks = []
+        for i, result in enumerate(results, start=1):
+            headings = " > ".join(
+                result[level]
+                for level in ("heading_1", "heading_2", "heading_3")
+                if result.get(level)
+            )
+            header = f"[{i}] {result['document_title']} — p.{result['page_start']}"
+            if result['page_end'] != result['page_start']:
+                header += f"-{result['page_end']}"
+            if headings:
+                header += f" ({headings})"
+
+            blocks.append(f"{header}\n{result['text']}")
+
+        return "\n\n".join(blocks)
+    
+    
     def list_documents(self) -> List[str]:
         """
         Return the names of all documents currently in the vector store.
@@ -255,7 +286,7 @@ class VectorDatabase(ServiceBase):
             print_success(f"Added {len(chunk_list)} chunks from {doc_name}.")
 
 
-    def query(self, query: str, top_k: int = 3) -> List[dict]:
+    def query(self, query: str, top_k: int = 3) -> str:
         """
         Query the vector store with the given query and return the top K most relevant chunks along with their metadata.
 
@@ -267,7 +298,7 @@ class VectorDatabase(ServiceBase):
             RuntimeError: If the vector store is empty or not initialised.
 
         Returns:
-            List[dict]: A list of dictionaries, each containing the text of a relevant chunk, its relevance score, and associated metadata.
+            str: A formatted context string ready to be passed to the LLM.
         """
         if self.vector_store is None:
             raise RuntimeError("Vector store is empty. Add documents before querying.")
@@ -292,8 +323,7 @@ class VectorDatabase(ServiceBase):
                 **meta
             })
 
-        return output
-    
+        return self._format_context(output)
 
     def cleanup(self):
         """

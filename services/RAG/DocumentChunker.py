@@ -39,7 +39,7 @@ class DocumentChunker:
     def __init__(
         self,
         chunk_size: int = 1000,
-        overlap_chars: int = 200,
+        chunk_overlap: int = 200,
         heading_levels: int = 3,
         threshold: int | float = 0.005,
     ) -> None:
@@ -48,7 +48,7 @@ class DocumentChunker:
 
         Args:
             chunk_size: Target character count per chunk.
-            overlap_chars: Number of characters to carry over from the
+            chunk_overlap: Number of characters to carry over from the
                 end of one chunk into the start of the next.
             heading_levels: Number of heading levels to detect, passed
                 through to FontInspector.classify_sizes().
@@ -57,7 +57,7 @@ class DocumentChunker:
                 fraction of body char count; int is absolute.
         """
         self._chunk_size: int = chunk_size
-        self._overlap_chars: int = overlap_chars
+        self._overlap_chars: int = chunk_overlap
         self._heading_levels: int = heading_levels
         self._threshold: int | float = threshold
         self._inspector: PymuProcessor = PymuProcessor()

@@ -1,48 +1,45 @@
 import os
 import sys
-from typing import Union, Optional
-
 sys.path.append(f"{os.path.dirname(os.path.abspath(__file__))}/../..")
+
+from typing import Union, Optional, List
+from pathlib import Path
 
 from services.Base import ServiceBase
 from services.VectorDatabase.VectorDatabase import VectorDatabase
+from services.LLM.LLMBase import LLMBase
 from services.LLM.HF_LLM.HF_LLM import HF_LLM
 from services.LLM.Ollama.Ollama import Ollama
 from utils.output_message_format.output_colour import print_error, print_info, print_success
 
 class RAG(ServiceBase):
-    def __init__(self, vector_db: VectorDatabase, llm: Union[HF_LLM, Ollama]): # TODO: LLMBase
+    def __init__(self, 
+                 vector_db: VectorDatabase, 
+                 llm: LLMBase):
         """
         Initialize the RAG service, Requires LLM or Ollama and VectorDatabase to be initialized
         Args:
             vector_db (VectorDatabase): The vector database to use
-            llm (Union[LLM, Ollama]): The LLM or Ollama model to use
+            llm (LLMBase): The language model to use, can be HF_LLM or Ollama
         """
         super().__init__()
-        self.vector_db = vector_db  # vector db has the embedding model
-        self.llm = llm # can be LLM or Ollama
-
-        self.system_prompt = self.set_system_prompt() # RAG prompt
+        self.vector_db = vector_db
+        self.llm = llm
         
-        # Changing the system prompt for RAG
-        self.llm.set_system_prompt(self.system_prompt)
-
-    def set_system_prompt(self, system_prompt: str = None) -> str:
+        
+    def add_documents(self, file_paths: Union[str, Path, List[Union[str, Path]]]) -> None:
         """
-        Setting RAG system prompt
+        Add documents to the vector database by chunking them and generating embeddings.
         Args:
-            system_prompt (str, optional): If None, will use the default system prompt.
-
-        Returns:
-            str: The system prompt for RAG
+            file_paths (Union[str, Path, List[Union[str, Path]]]): A single file path or a list of file paths to add to the vector database.
         """
-        if system_prompt is None:
-            system_prompt = "You are a document search assistant. Answer the following question based on the provided context only."
-        return system_prompt
+        self.vector_db.add_documents(file_paths)
+        
 
     def query(self, user_query: str) -> Optional[str]:
         try:
             context = self.vector_db.query(user_query)
+            print_info(f"Retrieved {len(context)} relevant chunks from vector database for the query.\n Context: {context}")
             response = self.llm.generate_response(user_query, context)
             
             if response is None:
