@@ -1,3 +1,8 @@
+# ============================================================================================================================================
+# Usage:
+#   chunk_documents(file_paths: Union[str, Path, List[Union[str, Path]]) -> List[List[Chunk]]
+# ============================================================================================================================================
+
 from __future__ import annotations
 
 import os, sys
@@ -7,8 +12,8 @@ from pathlib import Path
 
 import fitz
 
-from services.RAG.DocumentProcessor.PymuProcessor import PymuProcessor
-from services.RAG.models import Chunk
+from services.DocumentProcessors.PymuProcessor import PymuProcessor
+from services.DocumentProcessors.doc_data_models import Chunk
 
 
 class DocumentChunker:
@@ -58,7 +63,22 @@ class DocumentChunker:
         self._inspector: PymuProcessor = PymuProcessor()
 
 
-    def chunk(self, filepath: str | Path) -> list[Chunk]:
+    def chunk_documents(self, filepaths: list[str | Path]) -> list[list[Chunk]]:
+        """
+        Chunk multiple documents, returning a list of chunk lists.
+
+        Args:
+            filepaths (list[str  |  Path]): List of file paths to chunk.
+
+        Returns:
+            list[list[Chunk]]: A list where each element is a list of Chunks corresponding to a document.
+        """
+        if isinstance(filepaths, (str, Path)):
+            filepaths = [filepaths]
+        return [self._chunk_single_file(filepath) for filepath in filepaths]
+
+
+    def _chunk_single_file(self, filepath: str | Path) -> list[Chunk]:
         """
         Process a PDF into a list of Chunks with citation metadata.
 
@@ -77,11 +97,7 @@ class DocumentChunker:
             FileNotFoundError: If the file does not exist.
             ValueError: If the file cannot be opened as a PDF.
         """
-        filepath = Path(filepath)
-
-        if not filepath.exists():
-            raise FileNotFoundError(f"PDF not found: {filepath}")
-        
+        filepath = Path(filepath) # file check is handled in PymuProcessor
         variants = self._inspector.inspect(filepath)
         roles: dict[int, str] = self._inspector.classify_sizes(
             variants,
@@ -239,19 +255,3 @@ class DocumentChunker:
 
         doc.close()
         return " ".join(title_candidates) if title_candidates else filepath.stem
-
-
-if __name__ == "__main__":
-    chunker = DocumentChunker(chunk_size=3000)
-    chunks = chunker.chunk("services/RAG/sample/Academic Governance Handbook 2025.pdf")
-
-    for chunk in chunks[:20]:
-        print(f"--- chunk {chunk.chunk_index} | pages {chunk.page_start}-{chunk.page_end} ---")
-        print(f"h1: {chunk.heading_1}")
-        print(f"h2: {chunk.heading_2}")
-        print(f"h3: {chunk.heading_3}")
-        print(f"title: {chunk.document_title}")
-        print(f"name: {chunk.document_name}")
-        print()
-        print(chunk.text[:200])
-        print()

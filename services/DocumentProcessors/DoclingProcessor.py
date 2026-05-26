@@ -1,3 +1,5 @@
+## TEST ONLY, DO NOT USE ##
+
 from __future__ import annotations
 
 import os, sys
@@ -8,7 +10,7 @@ from pathlib import Path
 from docling.document_converter import DocumentConverter
 from docling_core.types.doc import DocItemLabel
 
-from services.RAG.models import ExtractedItem
+from services.DocumentProcessors.doc_data_models import ExtractedItem
 
 
 class DocumentProcessor:

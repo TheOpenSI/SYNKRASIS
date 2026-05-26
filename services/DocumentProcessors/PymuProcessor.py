@@ -6,14 +6,47 @@ sys.path.append(f"{os.path.dirname(os.path.abspath(__file__))}/../../..")
 from pathlib import Path
 import fitz
 
-from services.RAG.models import FontVariant
+from services.DocumentProcessors.doc_data_models import FontVariant
 
 
 class PymuProcessor:
+    # PyMuPDF returns a single integer for each character or spans.
+    # The bits in this integer represent boolean font flags.
     BOLD_FLAG: int = 1 << 4
     ITALIC_FLAG: int = 1 << 1
+    
+    
+    def _check_file(self, filepath: str | Path) -> fitz.Document:
+        """
+        Check that the file exists and can be opened as a PDF.
 
+        Args:
+            filepath: Path to the PDF file.
+        
+        Returns:
+            An open fitz.Document object if the file is valid.
+        
+        Raises:
+            FileNotFoundError: If the file does not exist.
+            ValueError: If the file cannot be opened as a PDF.
+        """
+        filepath = Path(filepath)
 
+        if not filepath.exists():
+            raise FileNotFoundError(f"PDF not found: {filepath}")
+
+        try:
+            doc: fitz.Document = fitz.open(str(filepath))
+            
+            if doc.is_encrypted:
+                raise ValueError(f"PDF is encrypted and cannot be processed: {filepath}")
+            
+            return doc
+            
+        except Exception as e:
+            raise ValueError(f"Error opening PDF: {e}")
+    
+    
     def inspect(self, filepath: str | Path) -> list[FontVariant]:
         """
         Extract all font variants from a PDF, ranked by character count
@@ -33,19 +66,11 @@ class PymuProcessor:
             ValueError: If the file cannot be opened as a PDF.
         """
         filepath = Path(filepath)
-
-        if not filepath.exists():
-            raise FileNotFoundError(f"PDF not found: {filepath}")
-
-        doc: fitz.Document = fitz.open(str(filepath))
-
-        if doc.is_encrypted:
-            raise ValueError(f"PDF is encrypted and cannot be processed: {filepath}")
-
+        doc = self._check_file(filepath)
         variants: dict[tuple, FontVariant] = {}
 
         for page in doc:
-            blocks = page.get_text("dict")["blocks"]
+            blocks = page.get_text("dict")["blocks"] # spatial hierarchy: page > block > line > span
 
             for block in blocks:
                 if block.get("type") != 0:
@@ -192,15 +217,7 @@ class PymuProcessor:
             ValueError: If the file cannot be opened as a PDF.
         """
         filepath = Path(filepath)
-
-        if not filepath.exists():
-            raise FileNotFoundError(f"PDF not found: {filepath}")
-
-        doc: fitz.Document = fitz.open(str(filepath))
-
-        if doc.is_encrypted:
-            raise ValueError(f"PDF is encrypted and cannot be processed: {filepath}")
-
+        doc = self._check_file(filepath)
         texts: dict[tuple, list[str]] = {}
 
         for page in doc:
@@ -290,7 +307,7 @@ class PymuProcessor:
             "body":      "  ",
         }
 
-        doc: fitz.Document = fitz.open(str(filepath))
+        doc: fitz.Document = self._check_file(filepath)
 
         last_printed_body_after: str | None = None
 
@@ -403,19 +420,3 @@ class PymuProcessor:
                         )
 
         doc.close()
-        
-if __name__ == "__main__":
-    pm = PymuProcessor()
-    pm.print_structure(
-        filepath="services/RAG/sample/Academic Governance Handbook 2025.pdf",
-        heading_levels=3,
-        threshold=0.005,
-    )
-    # pm.dump_spans(
-    #     filepath="services/RAG/sample/Academic Governance Handbook 2025.pdf",
-    #     pages=[1]
-    # )
-    
-    # variants = pm.inspect(filepath="services/RAG/sample/Academic Governance Handbook 2025.pdf")
-    # for v in variants:
-    #     print(v)

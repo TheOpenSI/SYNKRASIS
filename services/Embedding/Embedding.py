@@ -19,9 +19,9 @@ class EmbeddingModel(ServiceBase):
         super().__init__()
         self.model_name = model_name
         self.device = device
-        self.model = self._initialize_model()
+        self.model = self._initialise_model()
 
-    def _initialize_model(self):
+    def _initialise_model(self):
         return HuggingFaceEmbeddings(
             model_name=self.model_name,
             model_kwargs={"device": self.device},
@@ -45,8 +45,3 @@ class EmbeddingModel(ServiceBase):
             del self.model
             self.model = None
         print_success("EmbeddingModel resources cleaned up.")
- 
-# ===================================================================================================
-# if __name__ == '__main__':
-#     emb = EmbeddingModel()
-#     print(emb.model.__config__)
