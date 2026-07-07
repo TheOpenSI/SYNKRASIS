@@ -7,6 +7,7 @@ os.environ["TOKENIZERS_PARALLELISM"] = "false"
 # Services
 from services.LLM.Ollama.Ollama import Ollama
 from services.LLM.Ollama.OllamaContainer import OllamaContainer
+from services.STT.Whisper.Whisper import Whisper
 from services.Container.Container import Container
 
 # Utils
@@ -20,16 +21,24 @@ def main():
     print_synkrasis_logo()
     try:
         llm = Ollama()
+        stt = None  # loaded lazily on first 'voice' command
         while True:
-            query = input("Enter your query (or 'exit' to quit): ")
+            query = input("Enter your query (or 'exit' to quit, 'voice' to speak): ")
             if query.lower() == 'exit':
                 break
+            if query.lower() == 'voice':
+                if stt is None:
+                    stt = Whisper()
+                query = stt.listen()
+                if not query:
+                    continue
+                print_info(f"You said: {query}")
             llm.generate_response(query)
 
-        
+
     finally:
         # Warning resource_tracker: There appear to be .* leaked semaphore objects"
-        call_cleanup([llm])
+        call_cleanup([llm, stt])
 
 if __name__ == '__main__':
     main()
