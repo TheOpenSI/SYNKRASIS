@@ -8,6 +8,7 @@ os.environ["TOKENIZERS_PARALLELISM"] = "false"
 from services.LLM.Ollama.Ollama import Ollama
 from services.LLM.Ollama.OllamaContainer import OllamaContainer
 from services.Container.Container import Container
+from services.QueryAnalyser.QueryAnalyser import QueryAnalyser
 
 # Utils
 from utils.output_message_format.output_colour import print_model_output, print_info, print_error 
@@ -19,12 +20,11 @@ from utils.ascii.synkrasis import print_synkrasis_logo
 def main():
     print_synkrasis_logo()
     try:
-        llm = Ollama()
-        while True:
-            query = input("Enter your query (or 'exit' to quit): ")
-            if query.lower() == 'exit':
-                break
-            llm.generate_response(query)
+        llms = ["qwen2.5-coder:7b", "qwen2.5-coder:14b"]
+        for llm in llms:
+            llm = Ollama(model_name = llm, verbose_switch= True)
+            query_analyser = QueryAnalyser(llm=llm)
+            query_analyser.run_test()
 
         
     finally:
