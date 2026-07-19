@@ -126,7 +126,7 @@ class QueryAnalyser:
         data_paths = glob.glob(f"{data_path}/*.csv")
         same_model_all_df_rsults = defaultdict(dict)
         for data_path in data_paths:
-            file_name = Path(data_path).name
+            file_name = Path(data_path).stem
             print(f"Running test for {file_name}...")
             df = pd.read_csv(data_path)
             services_in_df = self._get_services(df)

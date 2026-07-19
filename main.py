@@ -21,19 +21,21 @@ from utils.ascii.synkrasis import print_synkrasis_logo
 def main():
     print_synkrasis_logo()
     try:
-        llms = ["qwen2.5-coder:1.5b", 
-                "qwen2.5-coder:7b", 
-                "qwen2.5-coder:14b", 
-                # "gpt-oss:20b",
-                "phi4:14b",
-                "phi4-reasoning:14b",
-                "phi4-mini:3.8b",
+        llms = [
+                # "qwen2.5-coder:1.5b", 
+                # "qwen2.5-coder:7b", 
+                # "qwen2.5-coder:14b", 
+                # # "gpt-oss:20b",
+                # "phi4:14b",
+                # "phi4-reasoning:14b",
+                # "phi4-mini:3.8b",
                 "gemma3:4b",
                 "gemma3:12b",
                 "llama3.2:3b",
                 "nemotron-3-nano:4b"]
-        
-        acc = []
+        with open("data/QueryAnalyser/accuracy_results.json", "r") as f:
+            acc: list = json.load(f)
+
         for llm in llms:
             verbose_switch = False
             if llm == "qwen2.5-coder:1.5b":
