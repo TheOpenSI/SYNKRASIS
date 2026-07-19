@@ -1,6 +1,7 @@
 import os
 import sys
 import pandas as pd
+import json
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 os.environ["TOKENIZERS_PARALLELISM"] = "false"
 
@@ -20,11 +21,30 @@ from utils.ascii.synkrasis import print_synkrasis_logo
 def main():
     print_synkrasis_logo()
     try:
-        llms = ["qwen2.5-coder:7b", "qwen2.5-coder:14b"]
+        llms = ["qwen2.5-coder:1.5b", 
+                "qwen2.5-coder:7b", 
+                "qwen2.5-coder:14b", 
+                # "gpt-oss:20b",
+                "phi4:14b",
+                "phi4-reasoning:14b",
+                "phi4-mini:3.8b",
+                "gemma3:4b",
+                "gemma3:12b",
+                "llama3.2:3b",
+                "nemotron-3-nano:4b"]
+        
+        acc = []
         for llm in llms:
-            llm = Ollama(model_name = llm, verbose_switch= True)
+            verbose_switch = False
+            if llm == "qwen2.5-coder:1.5b":
+                verbose_switch = True
+            llm = Ollama(model_name = llm, verbose_switch= verbose_switch)
             query_analyser = QueryAnalyser(llm=llm)
-            query_analyser.run_test()
+            llm_acc_result = query_analyser.run_test()
+            acc.append(llm_acc_result)
+            
+            with open("data/QueryAnalyser/accuracy_results.json", "w") as f:
+                json.dump(acc, f, indent=4)
 
         
     finally:

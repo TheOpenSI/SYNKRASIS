@@ -20,15 +20,14 @@ class QueryAnalyser:
     def _get_system_prompt(self) -> str:
         return (
             "You are a query router for a multi-service assistant system. "
-            "On each turn you will be given a numbered list of available services with short "
-            "descriptions, followed by a user query. Decide which single service is best "
-            "suited to handle that query, using only the descriptions provided for this turn "
-            "- never assume a service exists beyond what is listed.\n\n"
+            "On each turn you will be given a list of available services with short descriptions, followed by a user query. "
+            "Decide which single service is best suited to handle that query, using only the descriptions provided for this turn "
+            "Never assume a service exists beyond what is listed.\n\n"
             "Rules:\n"
             "- Match the query against the core intent of each service description, not just surface keywords.\n"
             "- If more than one service seems plausible, choose the one whose description is the more specific and direct match.\n"
             "- If none of the listed services are a reasonable match, respond with 'service -1'.\n"
-            "- Respond with only the service identifier in the exact form - 'service N', where N is the number given for that service.\n"
+            "- Respond with only the service name in the exact form - 'service $name', where 'name' is the exact name given for that service.\n"
             "Do not include any explanation or additional text."
         )
 
@@ -85,7 +84,7 @@ class QueryAnalyser:
     def _run_llm_inference(self,
                            file_name: str,
                            df: pd.DataFrame,
-                           service_prompt: str) -> None:
+                           service_prompt: str) -> float:
         result = []
         correct_count = 0
         
@@ -114,14 +113,17 @@ class QueryAnalyser:
                 json.dump(result, f, indent=4)
         
         accuracy = correct_count / len(df) if len(df) > 0 else 0
-        print(f"Accuracy: {accuracy:.2%} ({correct_count}/{len(df)})")
+        print(f"Model: {self.llm.model_name} | Dataset: {file_name} | Accuracy: {accuracy:.2%} ({correct_count}/{len(df)})")
+        
+        return accuracy
         
 
 
 
     def run_test(self,
-                 data_path: str = "data/QueryAnalyser") -> None:
+                 data_path: str = "data/QueryAnalyser") -> dict[str, dict[str, float]]:
         data_paths = glob.glob(f"{data_path}/*.csv")
+        same_model_all_df_rsults = {}
         for data_path in data_paths:
             file_name = Path(data_path).name
             print(f"Running test for {file_name}...")
@@ -129,4 +131,9 @@ class QueryAnalyser:
             services_in_df = self._get_services(df)
             active_services = self._get_selected_service_descriptions(services_in_df)
             service_prompt = self._generate_service_description_prompt(active_services)
-            self._run_llm_inference(file_name, df, service_prompt)
+            accuracy = self._run_llm_inference(file_name, df, service_prompt)
+            same_model_all_df_rsults[self.llm.model_name] = {
+                file_name: accuracy
+            }
+            
+        return same_model_all_df_rsults
