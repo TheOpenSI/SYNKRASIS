@@ -2,6 +2,7 @@ import pandas as pd
 import json
 import glob
 from pathlib import Path
+from collections import defaultdict
 
 from services.LLM.LLMBase import LLMBase
 
@@ -123,7 +124,7 @@ class QueryAnalyser:
     def run_test(self,
                  data_path: str = "data/QueryAnalyser") -> dict[str, dict[str, float]]:
         data_paths = glob.glob(f"{data_path}/*.csv")
-        same_model_all_df_rsults = {}
+        same_model_all_df_rsults = defaultdict(dict)
         for data_path in data_paths:
             file_name = Path(data_path).name
             print(f"Running test for {file_name}...")
