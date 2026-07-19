@@ -132,8 +132,6 @@ class QueryAnalyser:
             active_services = self._get_selected_service_descriptions(services_in_df)
             service_prompt = self._generate_service_description_prompt(active_services)
             accuracy = self._run_llm_inference(file_name, df, service_prompt)
-            same_model_all_df_rsults[self.llm.model_name] = {
-                file_name: accuracy
-            }
-            
+            same_model_all_df_rsults[self.llm.model_name][file_name] = accuracy
+
         return same_model_all_df_rsults
