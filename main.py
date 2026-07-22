@@ -35,17 +35,16 @@ def main():
                               container_name = "ollama",
                               local_port=11434)
         
-        container = Container(container_name = "synk_mbpp", 
-                              mount_dir_name = "synk_mbpp_mount",
+        container = Container(container_name = "synk_bcb", 
+                              mount_dir_name = "synk_bcb_mount",
                               shell_script_name = "start.sh")
 
-        pycapsule = PyCapsule_MBPP(pycapsule_container = container,
+        pycapsule = PyCapsule_BigCodeBench(pycapsule_container = container,
                                  llm = llm,
                                  maximum_attempts = 5)
         
-        dataloader = MBPP(model_name = llm_name,
-                                  is_resuming = False)
-        
+        dataloader = BigCodeBench(model_name = llm_name,
+                                  is_resuming = True)
         pycapsule.run_pycapsule_experiment(dataloader)
 
         
