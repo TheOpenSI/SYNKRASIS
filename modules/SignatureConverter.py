@@ -10,6 +10,8 @@
 #     - evaluate_argument(arg: str) -> Any: Evaluate an argument and determine its type or structure.
 #     - get_type_name(arg: Any) -> str: Determine the type of an argument.
 # =====================================================================================================
+import os,sys
+sys.path.append(f"{os.path.dirname(os.path.abspath(__file__))}/..")
 
 import re
 import keyword
