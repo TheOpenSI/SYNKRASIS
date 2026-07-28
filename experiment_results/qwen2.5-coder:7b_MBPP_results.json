@@ -81,13 +81,9 @@
     },
     {
         "task_id": 9,
-        "fix_mode_attempt_count": 1,
+        "fix_mode_attempt_count": 0,
         "status": "pass",
-        "error_trace": [
-            [
-                "AssertionError"
-            ]
-        ]
+        "error_trace": []
     },
     {
         "task_id": 10,
@@ -131,9 +127,25 @@
     },
     {
         "task_id": 14,
-        "fix_mode_attempt_count": 0,
-        "status": "pass",
-        "error_trace": []
+        "fix_mode_attempt_count": 5,
+        "status": "fail",
+        "error_trace": [
+            [
+                "TypeError"
+            ],
+            [
+                "TypeError"
+            ],
+            [
+                "TypeError"
+            ],
+            [
+                "TypeError"
+            ],
+            [
+                "TypeError"
+            ]
+        ]
     },
     {
         "task_id": 15,
@@ -159,15 +171,9 @@
     },
     {
         "task_id": 16,
-        "fix_mode_attempt_count": 5,
-        "status": "fail",
+        "fix_mode_attempt_count": 3,
+        "status": "pass",
         "error_trace": [
-            [
-                "AssertionError"
-            ],
-            [
-                "AssertionError"
-            ],
             [
                 "AssertionError"
             ],
@@ -227,9 +233,13 @@
     },
     {
         "task_id": 24,
-        "fix_mode_attempt_count": 0,
+        "fix_mode_attempt_count": 1,
         "status": "pass",
-        "error_trace": []
+        "error_trace": [
+            [
+                "AssertionError"
+            ]
+        ]
     },
     {
         "task_id": 25,
@@ -313,21 +323,9 @@
     },
     {
         "task_id": 33,
-        "fix_mode_attempt_count": 5,
-        "status": "fail",
+        "fix_mode_attempt_count": 1,
+        "status": "pass",
         "error_trace": [
-            [
-                "AssertionError"
-            ],
-            [
-                "AssertionError"
-            ],
-            [
-                "AssertionError"
-            ],
-            [
-                "AssertionError"
-            ],
             [
                 "AssertionError"
             ]
@@ -363,25 +361,9 @@
     },
     {
         "task_id": 36,
-        "fix_mode_attempt_count": 5,
+        "fix_mode_attempt_count": 0,
         "status": "pass",
-        "error_trace": [
-            [
-                "AssertionError"
-            ],
-            [
-                "AssertionError"
-            ],
-            [
-                "AssertionError"
-            ],
-            [
-                "AssertionError"
-            ],
-            [
-                "AssertionError"
-            ]
-        ]
+        "error_trace": []
     },
     {
         "task_id": 37,
@@ -397,14 +379,11 @@
     },
     {
         "task_id": 39,
-        "fix_mode_attempt_count": 2,
+        "fix_mode_attempt_count": 1,
         "status": "pass",
         "error_trace": [
             [
-                "AssertionError"
-            ],
-            [
-                "NameError"
+                "UnboundLocalError"
             ]
         ]
     },
@@ -422,44 +401,12 @@
     },
     {
         "task_id": 42,
-        "fix_mode_attempt_count": 5,
-        "status": "fail",
-        "error_trace": [
-            [
-                "AssertionError"
-            ],
-            [
-                "AssertionError"
-            ],
-            [
-                "AssertionError"
-            ],
-            [
-                "AssertionError"
-            ],
-            [
-                "AssertionError"
-            ]
-        ]
+        "fix_mode_attempt_count": 0,
+        "status": "pass",
+        "error_trace": []
     },
     {
         "task_id": 43,
-        "fix_mode_attempt_count": 3,
-        "status": "pass",
-        "error_trace": [
-            [
-                "AssertionError"
-            ],
-            [
-                "AssertionError"
-            ],
-            [
-                "AssertionError"
-            ]
-        ]
-    },
-    {
-        "task_id": 44,
         "fix_mode_attempt_count": 2,
         "status": "pass",
         "error_trace": [
@@ -470,6 +417,12 @@
                 "AssertionError"
             ]
         ]
+    },
+    {
+        "task_id": 44,
+        "fix_mode_attempt_count": 0,
+        "status": "pass",
+        "error_trace": []
     },
     {
         "task_id": 45,
@@ -491,13 +444,9 @@
     },
     {
         "task_id": 48,
-        "fix_mode_attempt_count": 1,
+        "fix_mode_attempt_count": 0,
         "status": "pass",
-        "error_trace": [
-            [
-                "AssertionError"
-            ]
-        ]
+        "error_trace": []
     },
     {
         "task_id": 49,
@@ -507,9 +456,21 @@
     },
     {
         "task_id": 50,
-        "fix_mode_attempt_count": 1,
-        "status": "pass",
+        "fix_mode_attempt_count": 5,
+        "status": "fail",
         "error_trace": [
+            [
+                "AssertionError"
+            ],
+            [
+                "AssertionError"
+            ],
+            [
+                "AssertionError"
+            ],
+            [
+                "AssertionError"
+            ],
             [
                 "AssertionError"
             ]
@@ -601,21 +562,9 @@
     },
     {
         "task_id": 61,
-        "fix_mode_attempt_count": 5,
-        "status": "fail",
+        "fix_mode_attempt_count": 1,
+        "status": "pass",
         "error_trace": [
-            [
-                "AssertionError"
-            ],
-            [
-                "AssertionError"
-            ],
-            [
-                "AssertionError"
-            ],
-            [
-                "AssertionError"
-            ],
             [
                 "AssertionError"
             ]
@@ -635,25 +584,9 @@
     },
     {
         "task_id": 64,
-        "fix_mode_attempt_count": 5,
-        "status": "fail",
-        "error_trace": [
-            [
-                "AssertionError"
-            ],
-            [
-                "AssertionError"
-            ],
-            [
-                "AssertionError"
-            ],
-            [
-                "AssertionError"
-            ],
-            [
-                "AssertionError"
-            ]
-        ]
+        "fix_mode_attempt_count": 0,
+        "status": "pass",
+        "error_trace": []
     },
     {
         "task_id": 65,
@@ -669,21 +602,9 @@
     },
     {
         "task_id": 67,
-        "fix_mode_attempt_count": 5,
-        "status": "fail",
+        "fix_mode_attempt_count": 1,
+        "status": "pass",
         "error_trace": [
-            [
-                "AssertionError"
-            ],
-            [
-                "AssertionError"
-            ],
-            [
-                "AssertionError"
-            ],
-            [
-                "AssertionError"
-            ],
             [
                 "AssertionError"
             ]
@@ -697,25 +618,9 @@
     },
     {
         "task_id": 69,
-        "fix_mode_attempt_count": 5,
-        "status": "fail",
-        "error_trace": [
-            [
-                "AssertionError"
-            ],
-            [
-                "AssertionError"
-            ],
-            [
-                "AssertionError"
-            ],
-            [
-                "AssertionError"
-            ],
-            [
-                "AssertionError"
-            ]
-        ]
+        "fix_mode_attempt_count": 0,
+        "status": "pass",
+        "error_trace": []
     },
     {
         "task_id": 70,
@@ -781,9 +686,21 @@
     },
     {
         "task_id": 75,
-        "fix_mode_attempt_count": 1,
-        "status": "pass",
+        "fix_mode_attempt_count": 5,
+        "status": "fail",
         "error_trace": [
+            [
+                "AssertionError"
+            ],
+            [
+                "AssertionError"
+            ],
+            [
+                "AssertionError"
+            ],
+            [
+                "TypeError"
+            ],
             [
                 "AssertionError"
             ]
@@ -819,16 +736,9 @@
     },
     {
         "task_id": 78,
-        "fix_mode_attempt_count": 2,
+        "fix_mode_attempt_count": 0,
         "status": "pass",
-        "error_trace": [
-            [
-                "AssertionError"
-            ],
-            [
-                "AssertionError"
-            ]
-        ]
+        "error_trace": []
     },
     {
         "task_id": 79,
@@ -912,9 +822,18 @@
     },
     {
         "task_id": 87,
-        "fix_mode_attempt_count": 2,
-        "status": "pass",
+        "fix_mode_attempt_count": 5,
+        "status": "fail",
         "error_trace": [
+            [
+                "AssertionError"
+            ],
+            [
+                "AssertionError"
+            ],
+            [
+                "AssertionError"
+            ],
             [
                 "AssertionError"
             ],
@@ -1013,9 +932,18 @@
     },
     {
         "task_id": 102,
-        "fix_mode_attempt_count": 1,
+        "fix_mode_attempt_count": 4,
         "status": "pass",
         "error_trace": [
+            [
+                "AssertionError"
+            ],
+            [
+                "AssertionError"
+            ],
+            [
+                "AssertionError"
+            ],
             [
                 "AssertionError"
             ]
@@ -1033,7 +961,7 @@
         "status": "pass",
         "error_trace": [
             [
-                "TypeError"
+                "AssertionError"
             ]
         ]
     },
@@ -1045,9 +973,13 @@
     },
     {
         "task_id": 106,
-        "fix_mode_attempt_count": 0,
+        "fix_mode_attempt_count": 1,
         "status": "pass",
-        "error_trace": []
+        "error_trace": [
+            [
+                "AssertionError"
+            ]
+        ]
     },
     {
         "task_id": 107,
@@ -1157,11 +1089,27 @@
     },
     {
         "task_id": 114,
+        "fix_mode_attempt_count": 3,
+        "status": "pass",
+        "error_trace": [
+            [
+                "AssertionError"
+            ],
+            [
+                "AssertionError"
+            ],
+            [
+                "AssertionError"
+            ]
+        ]
+    },
+    {
+        "task_id": 115,
         "fix_mode_attempt_count": 5,
         "status": "fail",
         "error_trace": [
             [
-                "AssertionError"
+                "ValueError"
             ],
             [
                 "AssertionError"
@@ -1176,12 +1124,6 @@
                 "AssertionError"
             ]
         ]
-    },
-    {
-        "task_id": 115,
-        "fix_mode_attempt_count": 0,
-        "status": "pass",
-        "error_trace": []
     },
     {
         "task_id": 116,
@@ -1213,16 +1155,9 @@
     },
     {
         "task_id": 118,
-        "fix_mode_attempt_count": 2,
+        "fix_mode_attempt_count": 0,
         "status": "pass",
-        "error_trace": [
-            [
-                "AssertionError"
-            ],
-            [
-                "AssertionError"
-            ]
-        ]
+        "error_trace": []
     },
     {
         "task_id": 119,
@@ -1245,13 +1180,13 @@
                 "TypeError"
             ],
             [
-                "TypeError"
+                "AssertionError"
             ],
             [
-                "TypeError"
+                "AssertionError"
             ],
             [
-                "TypeError"
+                "AssertionError"
             ],
             [
                 "TypeError"
@@ -1314,19 +1249,19 @@
         "status": "fail",
         "error_trace": [
             [
-                "TypeError"
+                "AssertionError"
             ],
             [
-                "TypeError"
+                "AssertionError"
             ],
             [
-                "TypeError"
+                "AssertionError"
             ],
             [
-                "TypeError"
+                "AssertionError"
             ],
             [
-                "TypeError"
+                "AssertionError"
             ]
         ]
     },
@@ -1366,17 +1301,14 @@
     },
     {
         "task_id": 129,
-        "fix_mode_attempt_count": 0,
-        "status": "pass",
-        "error_trace": []
-    },
-    {
-        "task_id": 130,
         "fix_mode_attempt_count": 5,
         "status": "fail",
         "error_trace": [
             [
-                "AssertionError"
+                "TypeError"
+            ],
+            [
+                "TypeError"
             ],
             [
                 "AssertionError"
@@ -1386,7 +1318,14 @@
             ],
             [
                 "AssertionError"
-            ],
+            ]
+        ]
+    },
+    {
+        "task_id": 130,
+        "fix_mode_attempt_count": 1,
+        "status": "pass",
+        "error_trace": [
             [
                 "AssertionError"
             ]
@@ -1394,25 +1333,9 @@
     },
     {
         "task_id": 131,
-        "fix_mode_attempt_count": 5,
-        "status": "fail",
-        "error_trace": [
-            [
-                "AssertionError"
-            ],
-            [
-                "AssertionError"
-            ],
-            [
-                "AssertionError"
-            ],
-            [
-                "AssertionError"
-            ],
-            [
-                "AssertionError"
-            ]
-        ]
+        "fix_mode_attempt_count": 0,
+        "status": "pass",
+        "error_trace": []
     },
     {
         "task_id": 132,
@@ -1428,21 +1351,9 @@
     },
     {
         "task_id": 134,
-        "fix_mode_attempt_count": 5,
-        "status": "fail",
+        "fix_mode_attempt_count": 1,
+        "status": "pass",
         "error_trace": [
-            [
-                "AssertionError"
-            ],
-            [
-                "AssertionError"
-            ],
-            [
-                "AssertionError"
-            ],
-            [
-                "AssertionError"
-            ],
             [
                 "AssertionError"
             ]
@@ -1594,15 +1505,35 @@
     },
     {
         "task_id": 144,
-        "fix_mode_attempt_count": 0,
+        "fix_mode_attempt_count": 1,
         "status": "pass",
-        "error_trace": []
+        "error_trace": [
+            [
+                "AssertionError"
+            ]
+        ]
     },
     {
         "task_id": 145,
-        "fix_mode_attempt_count": 0,
-        "status": "pass",
-        "error_trace": []
+        "fix_mode_attempt_count": 5,
+        "status": "fail",
+        "error_trace": [
+            [
+                "TypeError"
+            ],
+            [
+                "TypeError"
+            ],
+            [
+                "TypeError"
+            ],
+            [
+                "TypeError"
+            ],
+            [
+                "TypeError"
+            ]
+        ]
     },
     {
         "task_id": 146,
@@ -1672,12 +1603,6 @@
     },
     {
         "task_id": 149,
-        "fix_mode_attempt_count": 0,
-        "status": "pass",
-        "error_trace": []
-    },
-    {
-        "task_id": 150,
         "fix_mode_attempt_count": 5,
         "status": "fail",
         "error_trace": [
@@ -1697,6 +1622,12 @@
                 "TypeError"
             ]
         ]
+    },
+    {
+        "task_id": 150,
+        "fix_mode_attempt_count": 0,
+        "status": "pass",
+        "error_trace": []
     },
     {
         "task_id": 151,
@@ -1706,25 +1637,9 @@
     },
     {
         "task_id": 152,
-        "fix_mode_attempt_count": 5,
-        "status": "fail",
-        "error_trace": [
-            [
-                "AssertionError"
-            ],
-            [
-                "AssertionError"
-            ],
-            [
-                "AssertionError"
-            ],
-            [
-                "AssertionError"
-            ],
-            [
-                "AssertionError"
-            ]
-        ]
+        "fix_mode_attempt_count": 0,
+        "status": "pass",
+        "error_trace": []
     },
     {
         "task_id": 153,
@@ -1747,7 +1662,7 @@
                 "AssertionError"
             ],
             [
-                "AssertionError"
+                "Infinite Loop"
             ],
             [
                 "AssertionError"
@@ -1768,9 +1683,18 @@
     },
     {
         "task_id": 157,
-        "fix_mode_attempt_count": 2,
-        "status": "pass",
+        "fix_mode_attempt_count": 5,
+        "status": "fail",
         "error_trace": [
+            [
+                "AssertionError"
+            ],
+            [
+                "AssertionError"
+            ],
+            [
+                "AssertionError"
+            ],
             [
                 "AssertionError"
             ],
@@ -1829,13 +1753,13 @@
         "status": "fail",
         "error_trace": [
             [
-                "AssertionError"
+                "ValueError"
             ],
             [
-                "AssertionError"
+                "NameError"
             ],
             [
-                "AssertionError"
+                "ValueError"
             ],
             [
                 "AssertionError"
@@ -1871,9 +1795,25 @@
     },
     {
         "task_id": 165,
-        "fix_mode_attempt_count": 0,
-        "status": "pass",
-        "error_trace": []
+        "fix_mode_attempt_count": 5,
+        "status": "fail",
+        "error_trace": [
+            [
+                "AssertionError"
+            ],
+            [
+                "AssertionError"
+            ],
+            [
+                "AssertionError"
+            ],
+            [
+                "AssertionError"
+            ],
+            [
+                "AssertionError"
+            ]
+        ]
     },
     {
         "task_id": 166,
@@ -1883,9 +1823,25 @@
     },
     {
         "task_id": 167,
-        "fix_mode_attempt_count": 0,
-        "status": "pass",
-        "error_trace": []
+        "fix_mode_attempt_count": 5,
+        "status": "fail",
+        "error_trace": [
+            [
+                "AssertionError"
+            ],
+            [
+                "AssertionError"
+            ],
+            [
+                "AssertionError"
+            ],
+            [
+                "AssertionError"
+            ],
+            [
+                "AssertionError"
+            ]
+        ]
     },
     {
         "task_id": 168,
@@ -1919,9 +1875,25 @@
     },
     {
         "task_id": 173,
-        "fix_mode_attempt_count": 0,
-        "status": "pass",
-        "error_trace": []
+        "fix_mode_attempt_count": 5,
+        "status": "fail",
+        "error_trace": [
+            [
+                "AssertionError"
+            ],
+            [
+                "AssertionError"
+            ],
+            [
+                "AssertionError"
+            ],
+            [
+                "AssertionError"
+            ],
+            [
+                "AssertionError"
+            ]
+        ]
     },
     {
         "task_id": 174,
@@ -1965,9 +1937,15 @@
     },
     {
         "task_id": 178,
-        "fix_mode_attempt_count": 1,
+        "fix_mode_attempt_count": 3,
         "status": "pass",
         "error_trace": [
+            [
+                "AssertionError"
+            ],
+            [
+                "AssertionError"
+            ],
             [
                 "AssertionError"
             ]
@@ -1988,7 +1966,7 @@
                 "AssertionError"
             ],
             [
-                "AssertionError"
+                "ModuleNotFoundError"
             ],
             [
                 "AssertionError"
@@ -1997,7 +1975,7 @@
                 "AssertionError"
             ],
             [
-                "NameError"
+                "AssertionError"
             ]
         ]
     },
@@ -2025,9 +2003,21 @@
     },
     {
         "task_id": 182,
-        "fix_mode_attempt_count": 1,
-        "status": "pass",
+        "fix_mode_attempt_count": 5,
+        "status": "fail",
         "error_trace": [
+            [
+                "AssertionError"
+            ],
+            [
+                "AssertionError"
+            ],
+            [
+                "AssertionError"
+            ],
+            [
+                "AssertionError"
+            ],
             [
                 "AssertionError"
             ]
@@ -2035,9 +2025,25 @@
     },
     {
         "task_id": 183,
-        "fix_mode_attempt_count": 0,
-        "status": "pass",
-        "error_trace": []
+        "fix_mode_attempt_count": 5,
+        "status": "fail",
+        "error_trace": [
+            [
+                "TypeError"
+            ],
+            [
+                "TypeError"
+            ],
+            [
+                "TypeError"
+            ],
+            [
+                "TypeError"
+            ],
+            [
+                "TypeError"
+            ]
+        ]
     },
     {
         "task_id": 184,
@@ -2082,13 +2088,9 @@
     },
     {
         "task_id": 187,
-        "fix_mode_attempt_count": 1,
+        "fix_mode_attempt_count": 0,
         "status": "pass",
-        "error_trace": [
-            [
-                "AssertionError"
-            ]
-        ]
+        "error_trace": []
     },
     {
         "task_id": 188,
@@ -2238,13 +2240,9 @@
     },
     {
         "task_id": 199,
-        "fix_mode_attempt_count": 1,
+        "fix_mode_attempt_count": 0,
         "status": "pass",
-        "error_trace": [
-            [
-                "AssertionError"
-            ]
-        ]
+        "error_trace": []
     },
     {
         "task_id": 200,
@@ -2304,13 +2302,9 @@
     },
     {
         "task_id": 206,
-        "fix_mode_attempt_count": 1,
+        "fix_mode_attempt_count": 0,
         "status": "pass",
-        "error_trace": [
-            [
-                "AssertionError"
-            ]
-        ]
+        "error_trace": []
     },
     {
         "task_id": 207,
@@ -2326,9 +2320,21 @@
     },
     {
         "task_id": 209,
-        "fix_mode_attempt_count": 1,
-        "status": "pass",
+        "fix_mode_attempt_count": 5,
+        "status": "fail",
         "error_trace": [
+            [
+                "AssertionError"
+            ],
+            [
+                "AssertionError"
+            ],
+            [
+                "AssertionError"
+            ],
+            [
+                "AssertionError"
+            ],
             [
                 "AssertionError"
             ]
@@ -2342,9 +2348,25 @@
     },
     {
         "task_id": 211,
-        "fix_mode_attempt_count": 0,
-        "status": "pass",
-        "error_trace": []
+        "fix_mode_attempt_count": 5,
+        "status": "fail",
+        "error_trace": [
+            [
+                "AssertionError"
+            ],
+            [
+                "AssertionError"
+            ],
+            [
+                "AssertionError"
+            ],
+            [
+                "AssertionError"
+            ],
+            [
+                "AssertionError"
+            ]
+        ]
     },
     {
         "task_id": 212,
@@ -2383,16 +2405,16 @@
                 "TypeError"
             ],
             [
-                "AssertionError"
+                "ValueError"
             ],
             [
-                "AssertionError"
+                "TypeError"
             ],
             [
-                "AssertionError"
+                "TypeError"
             ],
             [
-                "AssertionError"
+                "TypeError"
             ]
         ]
     },
@@ -2464,9 +2486,25 @@
     },
     {
         "task_id": 220,
-        "fix_mode_attempt_count": 0,
-        "status": "pass",
-        "error_trace": []
+        "fix_mode_attempt_count": 5,
+        "status": "fail",
+        "error_trace": [
+            [
+                "AssertionError"
+            ],
+            [
+                "AssertionError"
+            ],
+            [
+                "AssertionError"
+            ],
+            [
+                "AssertionError"
+            ],
+            [
+                "AssertionError"
+            ]
+        ]
     },
     {
         "task_id": 221,
@@ -2500,9 +2538,13 @@
     },
     {
         "task_id": 226,
-        "fix_mode_attempt_count": 0,
+        "fix_mode_attempt_count": 1,
         "status": "pass",
-        "error_trace": []
+        "error_trace": [
+            [
+                "AssertionError"
+            ]
+        ]
     },
     {
         "task_id": 227,
@@ -2512,9 +2554,25 @@
     },
     {
         "task_id": 228,
-        "fix_mode_attempt_count": 0,
-        "status": "pass",
-        "error_trace": []
+        "fix_mode_attempt_count": 5,
+        "status": "fail",
+        "error_trace": [
+            [
+                "AssertionError"
+            ],
+            [
+                "AssertionError"
+            ],
+            [
+                "AssertionError"
+            ],
+            [
+                "AssertionError"
+            ],
+            [
+                "AssertionError"
+            ]
+        ]
     },
     {
         "task_id": 229,
@@ -2546,25 +2604,9 @@
     },
     {
         "task_id": 231,
-        "fix_mode_attempt_count": 5,
-        "status": "fail",
-        "error_trace": [
-            [
-                "TypeError"
-            ],
-            [
-                "TypeError"
-            ],
-            [
-                "TypeError"
-            ],
-            [
-                "TypeError"
-            ],
-            [
-                "TypeError"
-            ]
-        ]
+        "fix_mode_attempt_count": 0,
+        "status": "pass",
+        "error_trace": []
     },
     {
         "task_id": 232,
@@ -2628,13 +2670,13 @@
         "status": "fail",
         "error_trace": [
             [
-                "AssertionError"
+                "ValueError"
             ],
             [
                 "AssertionError"
             ],
             [
-                "AssertionError"
+                "UnboundLocalError"
             ],
             [
                 "AssertionError"
@@ -2650,19 +2692,19 @@
         "status": "fail",
         "error_trace": [
             [
-                "NameError"
+                "AssertionError"
             ],
             [
-                "NameError"
+                "AssertionError"
             ],
             [
-                "NameError"
+                "AssertionError"
             ],
             [
-                "NameError"
+                "AssertionError"
             ],
             [
-                "NameError"
+                "AssertionError"
             ]
         ]
     },
@@ -2696,13 +2738,9 @@
     },
     {
         "task_id": 240,
-        "fix_mode_attempt_count": 1,
+        "fix_mode_attempt_count": 0,
         "status": "pass",
-        "error_trace": [
-            [
-                "AssertionError"
-            ]
-        ]
+        "error_trace": []
     },
     {
         "task_id": 241,
@@ -2768,12 +2806,6 @@
     },
     {
         "task_id": 246,
-        "fix_mode_attempt_count": 0,
-        "status": "pass",
-        "error_trace": []
-    },
-    {
-        "task_id": 247,
         "fix_mode_attempt_count": 5,
         "status": "fail",
         "error_trace": [
@@ -2795,10 +2827,32 @@
         ]
     },
     {
-        "task_id": 248,
+        "task_id": 247,
         "fix_mode_attempt_count": 0,
         "status": "pass",
         "error_trace": []
+    },
+    {
+        "task_id": 248,
+        "fix_mode_attempt_count": 5,
+        "status": "fail",
+        "error_trace": [
+            [
+                "AssertionError"
+            ],
+            [
+                "AssertionError"
+            ],
+            [
+                "AssertionError"
+            ],
+            [
+                "AssertionError"
+            ],
+            [
+                "AssertionError"
+            ]
+        ]
     },
     {
         "task_id": 249,
@@ -2854,43 +2908,6 @@
     },
     {
         "task_id": 255,
-        "fix_mode_attempt_count": 0,
-        "status": "pass",
-        "error_trace": []
-    },
-    {
-        "task_id": 256,
-        "fix_mode_attempt_count": 0,
-        "status": "pass",
-        "error_trace": []
-    },
-    {
-        "task_id": 257,
-        "fix_mode_attempt_count": 4,
-        "status": "pass",
-        "error_trace": [
-            [
-                "AssertionError"
-            ],
-            [
-                "AssertionError"
-            ],
-            [
-                "AssertionError"
-            ],
-            [
-                "AssertionError"
-            ]
-        ]
-    },
-    {
-        "task_id": 258,
-        "fix_mode_attempt_count": 0,
-        "status": "pass",
-        "error_trace": []
-    },
-    {
-        "task_id": 259,
         "fix_mode_attempt_count": 5,
         "status": "fail",
         "error_trace": [
@@ -2910,6 +2927,30 @@
                 "AssertionError"
             ]
         ]
+    },
+    {
+        "task_id": 256,
+        "fix_mode_attempt_count": 0,
+        "status": "pass",
+        "error_trace": []
+    },
+    {
+        "task_id": 257,
+        "fix_mode_attempt_count": 0,
+        "status": "pass",
+        "error_trace": []
+    },
+    {
+        "task_id": 258,
+        "fix_mode_attempt_count": 0,
+        "status": "pass",
+        "error_trace": []
+    },
+    {
+        "task_id": 259,
+        "fix_mode_attempt_count": 0,
+        "status": "pass",
+        "error_trace": []
     },
     {
         "task_id": 260,
@@ -2959,18 +3000,6 @@
     },
     {
         "task_id": 265,
-        "fix_mode_attempt_count": 0,
-        "status": "pass",
-        "error_trace": []
-    },
-    {
-        "task_id": 266,
-        "fix_mode_attempt_count": 0,
-        "status": "pass",
-        "error_trace": []
-    },
-    {
-        "task_id": 267,
         "fix_mode_attempt_count": 5,
         "status": "fail",
         "error_trace": [
@@ -2992,10 +3021,45 @@
         ]
     },
     {
-        "task_id": 268,
+        "task_id": 266,
         "fix_mode_attempt_count": 0,
         "status": "pass",
         "error_trace": []
+    },
+    {
+        "task_id": 267,
+        "fix_mode_attempt_count": 2,
+        "status": "pass",
+        "error_trace": [
+            [
+                "AssertionError"
+            ],
+            [
+                "AssertionError"
+            ]
+        ]
+    },
+    {
+        "task_id": 268,
+        "fix_mode_attempt_count": 5,
+        "status": "fail",
+        "error_trace": [
+            [
+                "AssertionError"
+            ],
+            [
+                "AssertionError"
+            ],
+            [
+                "AssertionError"
+            ],
+            [
+                "AssertionError"
+            ],
+            [
+                "AssertionError"
+            ]
+        ]
     },
     {
         "task_id": 269,
@@ -3070,7 +3134,7 @@
                 "AssertionError"
             ],
             [
-                "AssertionError"
+                "NameError"
             ],
             [
                 "AssertionError"
@@ -3085,12 +3149,6 @@
     },
     {
         "task_id": 278,
-        "fix_mode_attempt_count": 0,
-        "status": "pass",
-        "error_trace": []
-    },
-    {
-        "task_id": 279,
         "fix_mode_attempt_count": 5,
         "status": "fail",
         "error_trace": [
@@ -3110,6 +3168,12 @@
                 "AssertionError"
             ]
         ]
+    },
+    {
+        "task_id": 279,
+        "fix_mode_attempt_count": 0,
+        "status": "pass",
+        "error_trace": []
     },
     {
         "task_id": 280,
@@ -3222,31 +3286,21 @@
     },
     {
         "task_id": 291,
-        "fix_mode_attempt_count": 5,
-        "status": "fail",
-        "error_trace": [
-            [
-                "AssertionError"
-            ],
-            [
-                "AssertionError"
-            ],
-            [
-                "AssertionError"
-            ],
-            [
-                "AssertionError"
-            ],
-            [
-                "AssertionError"
-            ]
-        ]
+        "fix_mode_attempt_count": 0,
+        "status": "pass",
+        "error_trace": []
     },
     {
         "task_id": 292,
-        "fix_mode_attempt_count": 1,
+        "fix_mode_attempt_count": 3,
         "status": "pass",
         "error_trace": [
+            [
+                "AssertionError"
+            ],
+            [
+                "AssertionError"
+            ],
             [
                 "AssertionError"
             ]
@@ -3254,9 +3308,13 @@
     },
     {
         "task_id": 293,
-        "fix_mode_attempt_count": 0,
+        "fix_mode_attempt_count": 1,
         "status": "pass",
-        "error_trace": []
+        "error_trace": [
+            [
+                "AssertionError"
+            ]
+        ]
     },
     {
         "task_id": 294,
@@ -3300,23 +3358,14 @@
     },
     {
         "task_id": 298,
-        "fix_mode_attempt_count": 5,
+        "fix_mode_attempt_count": 2,
         "status": "pass",
         "error_trace": [
             [
                 "AssertionError"
             ],
             [
-                "AssertionError"
-            ],
-            [
-                "AssertionError"
-            ],
-            [
-                "AssertionError"
-            ],
-            [
-                "AssertionError"
+                "TypeError"
             ]
         ]
     },
@@ -3338,15 +3387,35 @@
     },
     {
         "task_id": 301,
-        "fix_mode_attempt_count": 0,
-        "status": "pass",
-        "error_trace": []
+        "fix_mode_attempt_count": 5,
+        "status": "fail",
+        "error_trace": [
+            [
+                "AssertionError"
+            ],
+            [
+                "AssertionError"
+            ],
+            [
+                "AssertionError"
+            ],
+            [
+                "AssertionError"
+            ],
+            [
+                "AssertionError"
+            ]
+        ]
     },
     {
         "task_id": 302,
-        "fix_mode_attempt_count": 0,
+        "fix_mode_attempt_count": 1,
         "status": "pass",
-        "error_trace": []
+        "error_trace": [
+            [
+                "AssertionError"
+            ]
+        ]
     },
     {
         "task_id": 303,
@@ -3372,25 +3441,9 @@
     },
     {
         "task_id": 304,
-        "fix_mode_attempt_count": 5,
-        "status": "fail",
-        "error_trace": [
-            [
-                "AssertionError"
-            ],
-            [
-                "AssertionError"
-            ],
-            [
-                "AssertionError"
-            ],
-            [
-                "AssertionError"
-            ],
-            [
-                "AssertionError"
-            ]
-        ]
+        "fix_mode_attempt_count": 0,
+        "status": "pass",
+        "error_trace": []
     },
     {
         "task_id": 305,
@@ -3438,9 +3491,15 @@
     },
     {
         "task_id": 307,
-        "fix_mode_attempt_count": 3,
-        "status": "pass",
+        "fix_mode_attempt_count": 5,
+        "status": "fail",
         "error_trace": [
+            [
+                "AssertionError"
+            ],
+            [
+                "AssertionError"
+            ],
             [
                 "AssertionError"
             ],
@@ -3554,9 +3613,16 @@
     },
     {
         "task_id": 314,
-        "fix_mode_attempt_count": 0,
+        "fix_mode_attempt_count": 2,
         "status": "pass",
-        "error_trace": []
+        "error_trace": [
+            [
+                "TypeError"
+            ],
+            [
+                "AssertionError"
+            ]
+        ]
     },
     {
         "task_id": 315,
@@ -3576,12 +3642,9 @@
     },
     {
         "task_id": 317,
-        "fix_mode_attempt_count": 2,
+        "fix_mode_attempt_count": 1,
         "status": "pass",
         "error_trace": [
-            [
-                "AssertionError"
-            ],
             [
                 "AssertionError"
             ]
@@ -3589,9 +3652,21 @@
     },
     {
         "task_id": 318,
-        "fix_mode_attempt_count": 1,
-        "status": "pass",
+        "fix_mode_attempt_count": 5,
+        "status": "fail",
         "error_trace": [
+            [
+                "AssertionError"
+            ],
+            [
+                "AssertionError"
+            ],
+            [
+                "AssertionError"
+            ],
+            [
+                "AssertionError"
+            ],
             [
                 "AssertionError"
             ]
@@ -3611,18 +3686,9 @@
     },
     {
         "task_id": 321,
-        "fix_mode_attempt_count": 5,
-        "status": "fail",
+        "fix_mode_attempt_count": 2,
+        "status": "pass",
         "error_trace": [
-            [
-                "AssertionError"
-            ],
-            [
-                "AssertionError"
-            ],
-            [
-                "AssertionError"
-            ],
             [
                 "AssertionError"
             ],
@@ -3639,23 +3705,17 @@
     },
     {
         "task_id": 323,
-        "fix_mode_attempt_count": 5,
-        "status": "fail",
+        "fix_mode_attempt_count": 3,
+        "status": "pass",
         "error_trace": [
             [
                 "AssertionError"
             ],
             [
-                "NameError"
+                "IndexError"
             ],
             [
-                "TypeError"
-            ],
-            [
-                "TypeError"
-            ],
-            [
-                "TypeError"
+                "AssertionError"
             ]
         ]
     },
@@ -3665,7 +3725,7 @@
         "status": "fail",
         "error_trace": [
             [
-                "TypeError"
+                "AssertionError"
             ],
             [
                 "AssertionError"
@@ -3695,9 +3755,21 @@
     },
     {
         "task_id": 327,
-        "fix_mode_attempt_count": 1,
-        "status": "pass",
+        "fix_mode_attempt_count": 5,
+        "status": "fail",
         "error_trace": [
+            [
+                "AssertionError"
+            ],
+            [
+                "AssertionError"
+            ],
+            [
+                "AssertionError"
+            ],
+            [
+                "AssertionError"
+            ],
             [
                 "AssertionError"
             ]
@@ -3712,16 +3784,16 @@
                 "AssertionError"
             ],
             [
-                "TypeError"
+                "AssertionError"
             ],
             [
                 "TypeError"
             ],
             [
-                "TypeError"
+                "AssertionError"
             ],
             [
-                "TypeError"
+                "AssertionError"
             ]
         ]
     },
@@ -3739,9 +3811,13 @@
     },
     {
         "task_id": 331,
-        "fix_mode_attempt_count": 0,
+        "fix_mode_attempt_count": 1,
         "status": "pass",
-        "error_trace": []
+        "error_trace": [
+            [
+                "AssertionError"
+            ]
+        ]
     },
     {
         "task_id": 332,
@@ -3751,13 +3827,9 @@
     },
     {
         "task_id": 333,
-        "fix_mode_attempt_count": 1,
+        "fix_mode_attempt_count": 0,
         "status": "pass",
-        "error_trace": [
-            [
-                "AssertionError"
-            ]
-        ]
+        "error_trace": []
     },
     {
         "task_id": 334,
@@ -3773,15 +3845,22 @@
     },
     {
         "task_id": 336,
-        "fix_mode_attempt_count": 0,
+        "fix_mode_attempt_count": 1,
         "status": "pass",
-        "error_trace": []
+        "error_trace": [
+            [
+                "EOFError"
+            ]
+        ]
     },
     {
         "task_id": 337,
-        "fix_mode_attempt_count": 2,
+        "fix_mode_attempt_count": 3,
         "status": "pass",
         "error_trace": [
+            [
+                "AssertionError"
+            ],
             [
                 "AssertionError"
             ],
@@ -3858,9 +3937,25 @@
     },
     {
         "task_id": 343,
-        "fix_mode_attempt_count": 0,
-        "status": "pass",
-        "error_trace": []
+        "fix_mode_attempt_count": 5,
+        "status": "fail",
+        "error_trace": [
+            [
+                "AssertionError"
+            ],
+            [
+                "AssertionError"
+            ],
+            [
+                "AssertionError"
+            ],
+            [
+                "AssertionError"
+            ],
+            [
+                "AssertionError"
+            ]
+        ]
     },
     {
         "task_id": 344,
@@ -3880,7 +3975,7 @@
         "status": "fail",
         "error_trace": [
             [
-                "RecursionError"
+                "AssertionError"
             ],
             [
                 "AssertionError"
@@ -3905,7 +4000,7 @@
     {
         "task_id": 348,
         "fix_mode_attempt_count": 5,
-        "status": "pass",
+        "status": "fail",
         "error_trace": [
             [
                 "AssertionError"
@@ -3942,9 +4037,25 @@
     },
     {
         "task_id": 351,
-        "fix_mode_attempt_count": 0,
-        "status": "pass",
-        "error_trace": []
+        "fix_mode_attempt_count": 5,
+        "status": "fail",
+        "error_trace": [
+            [
+                "AssertionError"
+            ],
+            [
+                "AssertionError"
+            ],
+            [
+                "AssertionError"
+            ],
+            [
+                "AssertionError"
+            ],
+            [
+                "AssertionError"
+            ]
+        ]
     },
     {
         "task_id": 352,
@@ -4080,25 +4191,9 @@
     },
     {
         "task_id": 368,
-        "fix_mode_attempt_count": 5,
-        "status": "fail",
-        "error_trace": [
-            [
-                "AssertionError"
-            ],
-            [
-                "AssertionError"
-            ],
-            [
-                "AssertionError"
-            ],
-            [
-                "AssertionError"
-            ],
-            [
-                "AssertionError"
-            ]
-        ]
+        "fix_mode_attempt_count": 0,
+        "status": "pass",
+        "error_trace": []
     },
     {
         "task_id": 369,
@@ -4130,21 +4225,9 @@
     },
     {
         "task_id": 371,
-        "fix_mode_attempt_count": 5,
-        "status": "fail",
+        "fix_mode_attempt_count": 1,
+        "status": "pass",
         "error_trace": [
-            [
-                "AssertionError"
-            ],
-            [
-                "TypeError"
-            ],
-            [
-                "TypeError"
-            ],
-            [
-                "TypeError"
-            ],
             [
                 "TypeError"
             ]
@@ -4186,18 +4269,9 @@
     },
     {
         "task_id": 375,
-        "fix_mode_attempt_count": 5,
-        "status": "fail",
+        "fix_mode_attempt_count": 2,
+        "status": "pass",
         "error_trace": [
-            [
-                "AssertionError"
-            ],
-            [
-                "AssertionError"
-            ],
-            [
-                "AssertionError"
-            ],
             [
                 "AssertionError"
             ],
@@ -4208,12 +4282,9 @@
     },
     {
         "task_id": 376,
-        "fix_mode_attempt_count": 2,
+        "fix_mode_attempt_count": 1,
         "status": "pass",
         "error_trace": [
-            [
-                "AssertionError"
-            ],
             [
                 "AssertionError"
             ]
@@ -4249,25 +4320,9 @@
     },
     {
         "task_id": 381,
-        "fix_mode_attempt_count": 5,
+        "fix_mode_attempt_count": 0,
         "status": "pass",
-        "error_trace": [
-            [
-                "ValueError"
-            ],
-            [
-                "ValueError"
-            ],
-            [
-                "ValueError"
-            ],
-            [
-                "ValueError"
-            ],
-            [
-                "ValueError"
-            ]
-        ]
+        "error_trace": []
     },
     {
         "task_id": 382,
@@ -4323,9 +4378,25 @@
     },
     {
         "task_id": 388,
-        "fix_mode_attempt_count": 0,
-        "status": "pass",
-        "error_trace": []
+        "fix_mode_attempt_count": 5,
+        "status": "fail",
+        "error_trace": [
+            [
+                "AssertionError"
+            ],
+            [
+                "AssertionError"
+            ],
+            [
+                "AssertionError"
+            ],
+            [
+                "AssertionError"
+            ],
+            [
+                "AssertionError"
+            ]
+        ]
     },
     {
         "task_id": 389,
@@ -4454,9 +4525,21 @@
     },
     {
         "task_id": 402,
-        "fix_mode_attempt_count": 1,
-        "status": "pass",
+        "fix_mode_attempt_count": 5,
+        "status": "fail",
         "error_trace": [
+            [
+                "AssertionError"
+            ],
+            [
+                "AssertionError"
+            ],
+            [
+                "AssertionError"
+            ],
+            [
+                "AssertionError"
+            ],
             [
                 "AssertionError"
             ]
@@ -4492,9 +4575,12 @@
     },
     {
         "task_id": 407,
-        "fix_mode_attempt_count": 1,
+        "fix_mode_attempt_count": 2,
         "status": "pass",
         "error_trace": [
+            [
+                "AssertionError"
+            ],
             [
                 "AssertionError"
             ]
@@ -4502,13 +4588,9 @@
     },
     {
         "task_id": 408,
-        "fix_mode_attempt_count": 1,
+        "fix_mode_attempt_count": 0,
         "status": "pass",
-        "error_trace": [
-            [
-                "AssertionError"
-            ]
-        ]
+        "error_trace": []
     },
     {
         "task_id": 409,
@@ -4518,19 +4600,27 @@
     },
     {
         "task_id": 410,
-        "fix_mode_attempt_count": 1,
+        "fix_mode_attempt_count": 0,
         "status": "pass",
-        "error_trace": [
-            [
-                "TypeError"
-            ]
-        ]
+        "error_trace": []
     },
     {
         "task_id": 411,
-        "fix_mode_attempt_count": 1,
+        "fix_mode_attempt_count": 5,
         "status": "pass",
         "error_trace": [
+            [
+                "AssertionError"
+            ],
+            [
+                "AssertionError"
+            ],
+            [
+                "AssertionError"
+            ],
+            [
+                "AssertionError"
+            ],
             [
                 "AssertionError"
             ]
@@ -4612,13 +4702,9 @@
     },
     {
         "task_id": 419,
-        "fix_mode_attempt_count": 1,
+        "fix_mode_attempt_count": 0,
         "status": "pass",
-        "error_trace": [
-            [
-                "AssertionError"
-            ]
-        ]
+        "error_trace": []
     },
     {
         "task_id": 420,
@@ -4628,9 +4714,18 @@
     },
     {
         "task_id": 421,
-        "fix_mode_attempt_count": 2,
-        "status": "pass",
+        "fix_mode_attempt_count": 5,
+        "status": "fail",
         "error_trace": [
+            [
+                "AssertionError"
+            ],
+            [
+                "AssertionError"
+            ],
+            [
+                "AssertionError"
+            ],
             [
                 "AssertionError"
             ],
@@ -4665,16 +4760,9 @@
     },
     {
         "task_id": 426,
-        "fix_mode_attempt_count": 2,
+        "fix_mode_attempt_count": 0,
         "status": "pass",
-        "error_trace": [
-            [
-                "SyntaxError"
-            ],
-            [
-                "SyntaxError"
-            ]
-        ]
+        "error_trace": []
     },
     {
         "task_id": 427,
@@ -4684,15 +4772,18 @@
     },
     {
         "task_id": 428,
-        "fix_mode_attempt_count": 0,
-        "status": "pass",
-        "error_trace": []
-    },
-    {
-        "task_id": 429,
-        "fix_mode_attempt_count": 2,
-        "status": "pass",
+        "fix_mode_attempt_count": 5,
+        "status": "fail",
         "error_trace": [
+            [
+                "AssertionError"
+            ],
+            [
+                "AssertionError"
+            ],
+            [
+                "AssertionError"
+            ],
             [
                 "AssertionError"
             ],
@@ -4700,6 +4791,12 @@
                 "AssertionError"
             ]
         ]
+    },
+    {
+        "task_id": 429,
+        "fix_mode_attempt_count": 0,
+        "status": "pass",
+        "error_trace": []
     },
     {
         "task_id": 430,
@@ -4725,18 +4822,9 @@
     },
     {
         "task_id": 431,
-        "fix_mode_attempt_count": 4,
+        "fix_mode_attempt_count": 1,
         "status": "pass",
         "error_trace": [
-            [
-                "AssertionError"
-            ],
-            [
-                "AssertionError"
-            ],
-            [
-                "AssertionError"
-            ],
             [
                 "AssertionError"
             ]
@@ -4829,21 +4917,9 @@
     },
     {
         "task_id": 437,
-        "fix_mode_attempt_count": 5,
-        "status": "fail",
+        "fix_mode_attempt_count": 1,
+        "status": "pass",
         "error_trace": [
-            [
-                "AssertionError"
-            ],
-            [
-                "AssertionError"
-            ],
-            [
-                "AssertionError"
-            ],
-            [
-                "AssertionError"
-            ],
             [
                 "AssertionError"
             ]
@@ -4929,9 +5005,15 @@
     },
     {
         "task_id": 443,
-        "fix_mode_attempt_count": 3,
-        "status": "pass",
+        "fix_mode_attempt_count": 5,
+        "status": "fail",
         "error_trace": [
+            [
+                "AssertionError"
+            ],
+            [
+                "AssertionError"
+            ],
             [
                 "AssertionError"
             ],
@@ -4967,9 +5049,13 @@
     },
     {
         "task_id": 445,
-        "fix_mode_attempt_count": 0,
+        "fix_mode_attempt_count": 1,
         "status": "pass",
-        "error_trace": []
+        "error_trace": [
+            [
+                "AssertionError"
+            ]
+        ]
     },
     {
         "task_id": 446,
@@ -4989,25 +5075,9 @@
     },
     {
         "task_id": 448,
-        "fix_mode_attempt_count": 5,
-        "status": "fail",
-        "error_trace": [
-            [
-                "AssertionError"
-            ],
-            [
-                "AssertionError"
-            ],
-            [
-                "AssertionError"
-            ],
-            [
-                "AssertionError"
-            ],
-            [
-                "AssertionError"
-            ]
-        ]
+        "fix_mode_attempt_count": 0,
+        "status": "pass",
+        "error_trace": []
     },
     {
         "task_id": 449,
@@ -5021,25 +5091,9 @@
     },
     {
         "task_id": 450,
-        "fix_mode_attempt_count": 5,
-        "status": "fail",
-        "error_trace": [
-            [
-                "AssertionError"
-            ],
-            [
-                "AssertionError"
-            ],
-            [
-                "AssertionError"
-            ],
-            [
-                "AssertionError"
-            ],
-            [
-                "AssertionError"
-            ]
-        ]
+        "fix_mode_attempt_count": 0,
+        "status": "pass",
+        "error_trace": []
     },
     {
         "task_id": 451,
@@ -5049,25 +5103,9 @@
     },
     {
         "task_id": 452,
-        "fix_mode_attempt_count": 5,
-        "status": "fail",
-        "error_trace": [
-            [
-                "AssertionError"
-            ],
-            [
-                "AssertionError"
-            ],
-            [
-                "AssertionError"
-            ],
-            [
-                "AssertionError"
-            ],
-            [
-                "AssertionError"
-            ]
-        ]
+        "fix_mode_attempt_count": 0,
+        "status": "pass",
+        "error_trace": []
     },
     {
         "task_id": 453,
@@ -5170,35 +5208,15 @@
     },
     {
         "task_id": 463,
-        "fix_mode_attempt_count": 5,
-        "status": "fail",
-        "error_trace": [
-            [
-                "AssertionError"
-            ],
-            [
-                "AssertionError"
-            ],
-            [
-                "AssertionError"
-            ],
-            [
-                "AssertionError"
-            ],
-            [
-                "AssertionError"
-            ]
-        ]
+        "fix_mode_attempt_count": 0,
+        "status": "pass",
+        "error_trace": []
     },
     {
         "task_id": 464,
-        "fix_mode_attempt_count": 1,
+        "fix_mode_attempt_count": 0,
         "status": "pass",
-        "error_trace": [
-            [
-                "TypeError"
-            ]
-        ]
+        "error_trace": []
     },
     {
         "task_id": 465,
@@ -5214,18 +5232,9 @@
     },
     {
         "task_id": 467,
-        "fix_mode_attempt_count": 5,
-        "status": "fail",
+        "fix_mode_attempt_count": 2,
+        "status": "pass",
         "error_trace": [
-            [
-                "AssertionError"
-            ],
-            [
-                "AssertionError"
-            ],
-            [
-                "AssertionError"
-            ],
             [
                 "AssertionError"
             ],
@@ -5266,15 +5275,9 @@
     },
     {
         "task_id": 473,
-        "fix_mode_attempt_count": 5,
-        "status": "fail",
+        "fix_mode_attempt_count": 3,
+        "status": "pass",
         "error_trace": [
-            [
-                "AssertionError"
-            ],
-            [
-                "AssertionError"
-            ],
             [
                 "AssertionError"
             ],
@@ -5328,9 +5331,16 @@
     },
     {
         "task_id": 480,
-        "fix_mode_attempt_count": 0,
+        "fix_mode_attempt_count": 2,
         "status": "pass",
-        "error_trace": []
+        "error_trace": [
+            [
+                "AssertionError"
+            ],
+            [
+                "AssertionError"
+            ]
+        ]
     },
     {
         "task_id": 481,
@@ -5340,9 +5350,12 @@
     },
     {
         "task_id": 482,
-        "fix_mode_attempt_count": 1,
+        "fix_mode_attempt_count": 2,
         "status": "pass",
         "error_trace": [
+            [
+                "AssertionError"
+            ],
             [
                 "AssertionError"
             ]
@@ -5360,7 +5373,7 @@
                 "AssertionError"
             ],
             [
-                "Infinite Loop"
+                "AssertionError"
             ],
             [
                 "AssertionError"
@@ -5484,6 +5497,28 @@
     },
     {
         "task_id": 494,
+        "fix_mode_attempt_count": 1,
+        "status": "pass",
+        "error_trace": [
+            [
+                "AssertionError"
+            ]
+        ]
+    },
+    {
+        "task_id": 495,
+        "fix_mode_attempt_count": 0,
+        "status": "pass",
+        "error_trace": []
+    },
+    {
+        "task_id": 496,
+        "fix_mode_attempt_count": 0,
+        "status": "pass",
+        "error_trace": []
+    },
+    {
+        "task_id": 497,
         "fix_mode_attempt_count": 5,
         "status": "fail",
         "error_trace": [
@@ -5505,24 +5540,6 @@
         ]
     },
     {
-        "task_id": 495,
-        "fix_mode_attempt_count": 0,
-        "status": "pass",
-        "error_trace": []
-    },
-    {
-        "task_id": 496,
-        "fix_mode_attempt_count": 0,
-        "status": "pass",
-        "error_trace": []
-    },
-    {
-        "task_id": 497,
-        "fix_mode_attempt_count": 0,
-        "status": "pass",
-        "error_trace": []
-    },
-    {
         "task_id": 498,
         "fix_mode_attempt_count": 0,
         "status": "pass",
@@ -5536,15 +5553,9 @@
     },
     {
         "task_id": 500,
-        "fix_mode_attempt_count": 5,
-        "status": "fail",
+        "fix_mode_attempt_count": 3,
+        "status": "pass",
         "error_trace": [
-            [
-                "AssertionError"
-            ],
-            [
-                "AssertionError"
-            ],
             [
                 "AssertionError"
             ],
@@ -5586,9 +5597,18 @@
     },
     {
         "task_id": 503,
-        "fix_mode_attempt_count": 2,
-        "status": "pass",
+        "fix_mode_attempt_count": 5,
+        "status": "fail",
         "error_trace": [
+            [
+                "AssertionError"
+            ],
+            [
+                "AssertionError"
+            ],
+            [
+                "AssertionError"
+            ],
             [
                 "AssertionError"
             ],
@@ -5623,9 +5643,13 @@
     },
     {
         "task_id": 508,
-        "fix_mode_attempt_count": 0,
+        "fix_mode_attempt_count": 1,
         "status": "pass",
-        "error_trace": []
+        "error_trace": [
+            [
+                "AssertionError"
+            ]
+        ]
     },
     {
         "task_id": 509,
@@ -5685,9 +5709,21 @@
     },
     {
         "task_id": 513,
-        "fix_mode_attempt_count": 1,
-        "status": "pass",
+        "fix_mode_attempt_count": 5,
+        "status": "fail",
         "error_trace": [
+            [
+                "AssertionError"
+            ],
+            [
+                "AssertionError"
+            ],
+            [
+                "AssertionError"
+            ],
+            [
+                "AssertionError"
+            ],
             [
                 "AssertionError"
             ]
@@ -5701,12 +5737,9 @@
     },
     {
         "task_id": 515,
-        "fix_mode_attempt_count": 5,
-        "status": "fail",
+        "fix_mode_attempt_count": 4,
+        "status": "pass",
         "error_trace": [
-            [
-                "AssertionError"
-            ],
             [
                 "AssertionError"
             ],
@@ -5757,9 +5790,15 @@
     },
     {
         "task_id": 519,
-        "fix_mode_attempt_count": 2,
+        "fix_mode_attempt_count": 4,
         "status": "pass",
         "error_trace": [
+            [
+                "AssertionError"
+            ],
+            [
+                "AssertionError"
+            ],
             [
                 "AssertionError"
             ],
@@ -5824,16 +5863,16 @@
         "status": "fail",
         "error_trace": [
             [
-                "ValueError"
+                "AssertionError"
             ],
             [
-                "ValueError"
+                "AssertionError"
             ],
             [
-                "ValueError"
+                "AssertionError"
             ],
             [
-                "ValueError"
+                "IndexError"
             ],
             [
                 "ValueError"
@@ -5848,19 +5887,21 @@
     },
     {
         "task_id": 527,
-        "fix_mode_attempt_count": 1,
+        "fix_mode_attempt_count": 0,
         "status": "pass",
-        "error_trace": [
-            [
-                "AssertionError"
-            ]
-        ]
+        "error_trace": []
     },
     {
         "task_id": 528,
-        "fix_mode_attempt_count": 3,
-        "status": "pass",
+        "fix_mode_attempt_count": 5,
+        "status": "fail",
         "error_trace": [
+            [
+                "AssertionError"
+            ],
+            [
+                "AssertionError"
+            ],
             [
                 "AssertionError"
             ],
@@ -5896,9 +5937,18 @@
     },
     {
         "task_id": 530,
-        "fix_mode_attempt_count": 1,
+        "fix_mode_attempt_count": 4,
         "status": "pass",
         "error_trace": [
+            [
+                "AssertionError"
+            ],
+            [
+                "AssertionError"
+            ],
+            [
+                "AssertionError"
+            ],
             [
                 "AssertionError"
             ]
@@ -5906,25 +5956,9 @@
     },
     {
         "task_id": 531,
-        "fix_mode_attempt_count": 5,
-        "status": "fail",
-        "error_trace": [
-            [
-                "TypeError"
-            ],
-            [
-                "TypeError"
-            ],
-            [
-                "TypeError"
-            ],
-            [
-                "TypeError"
-            ],
-            [
-                "TypeError"
-            ]
-        ]
+        "fix_mode_attempt_count": 0,
+        "status": "pass",
+        "error_trace": []
     },
     {
         "task_id": 532,
@@ -5934,9 +5968,18 @@
     },
     {
         "task_id": 533,
-        "fix_mode_attempt_count": 2,
-        "status": "pass",
+        "fix_mode_attempt_count": 5,
+        "status": "fail",
         "error_trace": [
+            [
+                "AssertionError"
+            ],
+            [
+                "AssertionError"
+            ],
+            [
+                "AssertionError"
+            ],
             [
                 "AssertionError"
             ],
@@ -5947,18 +5990,9 @@
     },
     {
         "task_id": 534,
-        "fix_mode_attempt_count": 5,
-        "status": "fail",
+        "fix_mode_attempt_count": 2,
+        "status": "pass",
         "error_trace": [
-            [
-                "AssertionError"
-            ],
-            [
-                "AssertionError"
-            ],
-            [
-                "AssertionError"
-            ],
             [
                 "AssertionError"
             ],
@@ -5991,12 +6025,9 @@
     },
     {
         "task_id": 536,
-        "fix_mode_attempt_count": 2,
+        "fix_mode_attempt_count": 1,
         "status": "pass",
         "error_trace": [
-            [
-                "AssertionError"
-            ],
             [
                 "AssertionError"
             ]
@@ -6004,21 +6035,9 @@
     },
     {
         "task_id": 537,
-        "fix_mode_attempt_count": 5,
-        "status": "fail",
+        "fix_mode_attempt_count": 1,
+        "status": "pass",
         "error_trace": [
-            [
-                "AssertionError"
-            ],
-            [
-                "AssertionError"
-            ],
-            [
-                "AssertionError"
-            ],
-            [
-                "AssertionError"
-            ],
             [
                 "AssertionError"
             ]
@@ -6042,7 +6061,7 @@
                 "AssertionError"
             ],
             [
-                "ValueError"
+                "AssertionError"
             ]
         ]
     },
@@ -6072,19 +6091,9 @@
     },
     {
         "task_id": 543,
-        "fix_mode_attempt_count": 3,
+        "fix_mode_attempt_count": 0,
         "status": "pass",
-        "error_trace": [
-            [
-                "AssertionError"
-            ],
-            [
-                "AssertionError"
-            ],
-            [
-                "AssertionError"
-            ]
-        ]
+        "error_trace": []
     },
     {
         "task_id": 544,
@@ -6098,9 +6107,25 @@
     },
     {
         "task_id": 545,
-        "fix_mode_attempt_count": 0,
-        "status": "pass",
-        "error_trace": []
+        "fix_mode_attempt_count": 5,
+        "status": "fail",
+        "error_trace": [
+            [
+                "AssertionError"
+            ],
+            [
+                "NameError"
+            ],
+            [
+                "AssertionError"
+            ],
+            [
+                "AssertionError"
+            ],
+            [
+                "AssertionError"
+            ]
+        ]
     },
     {
         "task_id": 546,
@@ -6126,25 +6151,9 @@
     },
     {
         "task_id": 547,
-        "fix_mode_attempt_count": 5,
-        "status": "fail",
-        "error_trace": [
-            [
-                "AssertionError"
-            ],
-            [
-                "AssertionError"
-            ],
-            [
-                "AssertionError"
-            ],
-            [
-                "AssertionError"
-            ],
-            [
-                "AssertionError"
-            ]
-        ]
+        "fix_mode_attempt_count": 0,
+        "status": "pass",
+        "error_trace": []
     },
     {
         "task_id": 548,
@@ -6160,21 +6169,9 @@
     },
     {
         "task_id": 550,
-        "fix_mode_attempt_count": 5,
-        "status": "fail",
+        "fix_mode_attempt_count": 1,
+        "status": "pass",
         "error_trace": [
-            [
-                "AssertionError"
-            ],
-            [
-                "AssertionError"
-            ],
-            [
-                "AssertionError"
-            ],
-            [
-                "AssertionError"
-            ],
             [
                 "AssertionError"
             ]
@@ -6210,9 +6207,18 @@
     },
     {
         "task_id": 553,
-        "fix_mode_attempt_count": 2,
-        "status": "pass",
+        "fix_mode_attempt_count": 5,
+        "status": "fail",
         "error_trace": [
+            [
+                "AssertionError"
+            ],
+            [
+                "AssertionError"
+            ],
+            [
+                "AssertionError"
+            ],
             [
                 "AssertionError"
             ],
@@ -6253,25 +6259,9 @@
     },
     {
         "task_id": 559,
-        "fix_mode_attempt_count": 5,
-        "status": "fail",
-        "error_trace": [
-            [
-                "TypeError"
-            ],
-            [
-                "TypeError"
-            ],
-            [
-                "TypeError"
-            ],
-            [
-                "TypeError"
-            ],
-            [
-                "TypeError"
-            ]
-        ]
+        "fix_mode_attempt_count": 0,
+        "status": "pass",
+        "error_trace": []
     },
     {
         "task_id": 560,
@@ -6291,7 +6281,7 @@
                 "AssertionError"
             ],
             [
-                "AssertionError"
+                "NameError"
             ],
             [
                 "AssertionError"
@@ -6380,7 +6370,7 @@
                 "AssertionError"
             ],
             [
-                "AssertionError"
+                "IndexError"
             ],
             [
                 "AssertionError"
@@ -6395,25 +6385,9 @@
     },
     {
         "task_id": 572,
-        "fix_mode_attempt_count": 5,
-        "status": "fail",
-        "error_trace": [
-            [
-                "AssertionError"
-            ],
-            [
-                "AssertionError"
-            ],
-            [
-                "AssertionError"
-            ],
-            [
-                "AssertionError"
-            ],
-            [
-                "AssertionError"
-            ]
-        ]
+        "fix_mode_attempt_count": 0,
+        "status": "pass",
+        "error_trace": []
     },
     {
         "task_id": 573,
@@ -6449,43 +6423,37 @@
         "status": "fail",
         "error_trace": [
             [
-                "TypeError"
+                "AssertionError"
             ],
             [
-                "Infinite Loop"
+                "AssertionError"
             ],
             [
-                "Infinite Loop"
+                "AssertionError"
             ],
             [
-                "Infinite Loop"
+                "AssertionError"
             ],
             [
-                "Infinite Loop"
+                "AssertionError"
             ]
         ]
     },
     {
         "task_id": 576,
-        "fix_mode_attempt_count": 0,
-        "status": "pass",
-        "error_trace": []
-    },
-    {
-        "task_id": 577,
-        "fix_mode_attempt_count": 3,
+        "fix_mode_attempt_count": 1,
         "status": "pass",
         "error_trace": [
             [
                 "AssertionError"
-            ],
-            [
-                "AssertionError"
-            ],
-            [
-                "AssertionError"
             ]
         ]
+    },
+    {
+        "task_id": 577,
+        "fix_mode_attempt_count": 0,
+        "status": "pass",
+        "error_trace": []
     },
     {
         "task_id": 578,
@@ -6495,27 +6463,22 @@
     },
     {
         "task_id": 579,
-        "fix_mode_attempt_count": 0,
+        "fix_mode_attempt_count": 2,
         "status": "pass",
-        "error_trace": []
-    },
-    {
-        "task_id": 580,
-        "fix_mode_attempt_count": 5,
-        "status": "fail",
         "error_trace": [
             [
                 "AssertionError"
             ],
             [
                 "AssertionError"
-            ],
-            [
-                "AssertionError"
-            ],
-            [
-                "AssertionError"
-            ],
+            ]
+        ]
+    },
+    {
+        "task_id": 580,
+        "fix_mode_attempt_count": 1,
+        "status": "pass",
+        "error_trace": [
             [
                 "AssertionError"
             ]
@@ -6529,9 +6492,22 @@
     },
     {
         "task_id": 582,
-        "fix_mode_attempt_count": 0,
+        "fix_mode_attempt_count": 4,
         "status": "pass",
-        "error_trace": []
+        "error_trace": [
+            [
+                "ValueError"
+            ],
+            [
+                "ValueError"
+            ],
+            [
+                "ValueError"
+            ],
+            [
+                "ValueError"
+            ]
+        ]
     },
     {
         "task_id": 583,
@@ -6625,7 +6601,7 @@
                 "AssertionError"
             ],
             [
-                "AssertionError"
+                "ValueError"
             ]
         ]
     },
@@ -6643,11 +6619,20 @@
     },
     {
         "task_id": 595,
-        "fix_mode_attempt_count": 2,
-        "status": "pass",
+        "fix_mode_attempt_count": 5,
+        "status": "fail",
         "error_trace": [
             [
-                "TypeError"
+                "ValueError"
+            ],
+            [
+                "AssertionError"
+            ],
+            [
+                "AssertionError"
+            ],
+            [
+                "AssertionError"
             ],
             [
                 "AssertionError"
@@ -6678,9 +6663,25 @@
     },
     {
         "task_id": 597,
-        "fix_mode_attempt_count": 0,
-        "status": "pass",
-        "error_trace": []
+        "fix_mode_attempt_count": 5,
+        "status": "fail",
+        "error_trace": [
+            [
+                "AssertionError"
+            ],
+            [
+                "AssertionError"
+            ],
+            [
+                "AssertionError"
+            ],
+            [
+                "AssertionError"
+            ],
+            [
+                "AssertionError"
+            ]
+        ]
     },
     {
         "task_id": 598,
@@ -6709,24 +6710,36 @@
                 "NameError"
             ],
             [
-                "NameError"
+                "TypeError"
             ],
             [
-                "NameError"
+                "TypeError"
             ],
             [
-                "NameError"
+                "TypeError"
             ],
             [
-                "NameError"
+                "TypeError"
             ]
         ]
     },
     {
         "task_id": 602,
-        "fix_mode_attempt_count": 1,
-        "status": "pass",
+        "fix_mode_attempt_count": 5,
+        "status": "fail",
         "error_trace": [
+            [
+                "AssertionError"
+            ],
+            [
+                "AssertionError"
+            ],
+            [
+                "AssertionError"
+            ],
+            [
+                "AssertionError"
+            ],
             [
                 "AssertionError"
             ]
@@ -6738,7 +6751,7 @@
         "status": "fail",
         "error_trace": [
             [
-                "IndexError"
+                "AssertionError"
             ],
             [
                 "AssertionError"
@@ -6757,7 +6770,7 @@
     {
         "task_id": 604,
         "fix_mode_attempt_count": 5,
-        "status": "fail",
+        "status": "pass",
         "error_trace": [
             [
                 "AssertionError"
@@ -6790,9 +6803,12 @@
     },
     {
         "task_id": 607,
-        "fix_mode_attempt_count": 2,
+        "fix_mode_attempt_count": 3,
         "status": "pass",
         "error_trace": [
+            [
+                "AssertionError"
+            ],
             [
                 "AssertionError"
             ],
@@ -6803,25 +6819,9 @@
     },
     {
         "task_id": 608,
-        "fix_mode_attempt_count": 5,
-        "status": "fail",
-        "error_trace": [
-            [
-                "IndexError"
-            ],
-            [
-                "IndexError"
-            ],
-            [
-                "IndexError"
-            ],
-            [
-                "IndexError"
-            ],
-            [
-                "IndexError"
-            ]
-        ]
+        "fix_mode_attempt_count": 0,
+        "status": "pass",
+        "error_trace": []
     },
     {
         "task_id": 609,
@@ -6829,36 +6829,27 @@
         "status": "fail",
         "error_trace": [
             [
-                "NotImplementedError"
+                "AssertionError"
             ],
             [
-                "NotImplementedError"
+                "AssertionError"
             ],
             [
-                "NotImplementedError"
+                "AssertionError"
             ],
             [
-                "NotImplementedError"
+                "AssertionError"
             ],
             [
-                "NotImplementedError"
+                "AssertionError"
             ]
         ]
     },
     {
         "task_id": 610,
-        "fix_mode_attempt_count": 5,
-        "status": "fail",
+        "fix_mode_attempt_count": 2,
+        "status": "pass",
         "error_trace": [
-            [
-                "AssertionError"
-            ],
-            [
-                "AssertionError"
-            ],
-            [
-                "AssertionError"
-            ],
             [
                 "AssertionError"
             ],
@@ -6897,9 +6888,15 @@
     },
     {
         "task_id": 613,
-        "fix_mode_attempt_count": 1,
+        "fix_mode_attempt_count": 3,
         "status": "pass",
         "error_trace": [
+            [
+                "AssertionError"
+            ],
+            [
+                "AssertionError"
+            ],
             [
                 "AssertionError"
             ]
@@ -6945,7 +6942,7 @@
         "status": "fail",
         "error_trace": [
             [
-                "AssertionError"
+                "TypeError"
             ],
             [
                 "TypeError"
@@ -6969,9 +6966,12 @@
     },
     {
         "task_id": 619,
-        "fix_mode_attempt_count": 1,
+        "fix_mode_attempt_count": 2,
         "status": "pass",
         "error_trace": [
+            [
+                "AssertionError"
+            ],
             [
                 "AssertionError"
             ]
@@ -6991,21 +6991,9 @@
     },
     {
         "task_id": 622,
-        "fix_mode_attempt_count": 5,
-        "status": "fail",
+        "fix_mode_attempt_count": 1,
+        "status": "pass",
         "error_trace": [
-            [
-                "AssertionError"
-            ],
-            [
-                "AssertionError"
-            ],
-            [
-                "AssertionError"
-            ],
-            [
-                "AssertionError"
-            ],
             [
                 "AssertionError"
             ]
@@ -7031,9 +7019,12 @@
     },
     {
         "task_id": 626,
-        "fix_mode_attempt_count": 1,
+        "fix_mode_attempt_count": 2,
         "status": "pass",
         "error_trace": [
+            [
+                "AssertionError"
+            ],
             [
                 "AssertionError"
             ]
@@ -7041,9 +7032,21 @@
     },
     {
         "task_id": 627,
-        "fix_mode_attempt_count": 1,
+        "fix_mode_attempt_count": 5,
         "status": "pass",
         "error_trace": [
+            [
+                "AssertionError"
+            ],
+            [
+                "AssertionError"
+            ],
+            [
+                "AssertionError"
+            ],
+            [
+                "AssertionError"
+            ],
             [
                 "AssertionError"
             ]
@@ -7181,27 +7184,25 @@
     },
     {
         "task_id": 641,
-        "fix_mode_attempt_count": 0,
+        "fix_mode_attempt_count": 3,
         "status": "pass",
-        "error_trace": []
-    },
-    {
-        "task_id": 642,
-        "fix_mode_attempt_count": 5,
-        "status": "fail",
         "error_trace": [
             [
                 "AssertionError"
             ],
             [
-                "TypeError"
-            ],
-            [
                 "AssertionError"
             ],
             [
                 "AssertionError"
-            ],
+            ]
+        ]
+    },
+    {
+        "task_id": 642,
+        "fix_mode_attempt_count": 1,
+        "status": "pass",
+        "error_trace": [
             [
                 "AssertionError"
             ]
@@ -7243,25 +7244,9 @@
     },
     {
         "task_id": 646,
-        "fix_mode_attempt_count": 5,
-        "status": "fail",
-        "error_trace": [
-            [
-                "AssertionError"
-            ],
-            [
-                "AssertionError"
-            ],
-            [
-                "AssertionError"
-            ],
-            [
-                "AssertionError"
-            ],
-            [
-                "AssertionError"
-            ]
-        ]
+        "fix_mode_attempt_count": 0,
+        "status": "pass",
+        "error_trace": []
     },
     {
         "task_id": 647,
@@ -7293,25 +7278,9 @@
     },
     {
         "task_id": 651,
-        "fix_mode_attempt_count": 5,
-        "status": "fail",
-        "error_trace": [
-            [
-                "AssertionError"
-            ],
-            [
-                "AssertionError"
-            ],
-            [
-                "AssertionError"
-            ],
-            [
-                "AssertionError"
-            ],
-            [
-                "AssertionError"
-            ]
-        ]
+        "fix_mode_attempt_count": 0,
+        "status": "pass",
+        "error_trace": []
     },
     {
         "task_id": 652,
@@ -7349,16 +7318,9 @@
     },
     {
         "task_id": 655,
-        "fix_mode_attempt_count": 2,
+        "fix_mode_attempt_count": 0,
         "status": "pass",
-        "error_trace": [
-            [
-                "AssertionError"
-            ],
-            [
-                "AssertionError"
-            ]
-        ]
+        "error_trace": []
     },
     {
         "task_id": 656,
@@ -7380,9 +7342,22 @@
     },
     {
         "task_id": 659,
-        "fix_mode_attempt_count": 0,
+        "fix_mode_attempt_count": 4,
         "status": "pass",
-        "error_trace": []
+        "error_trace": [
+            [
+                "AssertionError"
+            ],
+            [
+                "AssertionError"
+            ],
+            [
+                "AssertionError"
+            ],
+            [
+                "AssertionError"
+            ]
+        ]
     },
     {
         "task_id": 660,
@@ -7443,7 +7418,7 @@
                 "TypeError"
             ],
             [
-                "AssertionError"
+                "TypeError"
             ],
             [
                 "TypeError"
@@ -7520,18 +7495,9 @@
     },
     {
         "task_id": 671,
-        "fix_mode_attempt_count": 5,
-        "status": "fail",
+        "fix_mode_attempt_count": 2,
+        "status": "pass",
         "error_trace": [
-            [
-                "AssertionError"
-            ],
-            [
-                "AssertionError"
-            ],
-            [
-                "AssertionError"
-            ],
             [
                 "AssertionError"
             ],
@@ -7584,25 +7550,9 @@
     },
     {
         "task_id": 679,
-        "fix_mode_attempt_count": 5,
-        "status": "fail",
-        "error_trace": [
-            [
-                "AssertionError"
-            ],
-            [
-                "AssertionError"
-            ],
-            [
-                "AssertionError"
-            ],
-            [
-                "AssertionError"
-            ],
-            [
-                "AssertionError"
-            ]
-        ]
+        "fix_mode_attempt_count": 0,
+        "status": "pass",
+        "error_trace": []
     },
     {
         "task_id": 680,
@@ -7634,19 +7584,19 @@
         "status": "fail",
         "error_trace": [
             [
-                "AssertionError"
+                "TypeError"
             ],
             [
-                "AssertionError"
+                "TypeError"
             ],
             [
-                "AssertionError"
+                "TypeError"
             ],
             [
-                "AssertionError"
+                "TypeError"
             ],
             [
-                "AssertionError"
+                "TypeError"
             ]
         ]
     },
@@ -7686,19 +7636,27 @@
     },
     {
         "task_id": 690,
-        "fix_mode_attempt_count": 1,
+        "fix_mode_attempt_count": 0,
         "status": "pass",
-        "error_trace": [
-            [
-                "AssertionError"
-            ]
-        ]
+        "error_trace": []
     },
     {
         "task_id": 691,
-        "fix_mode_attempt_count": 1,
-        "status": "pass",
+        "fix_mode_attempt_count": 5,
+        "status": "fail",
         "error_trace": [
+            [
+                "AssertionError"
+            ],
+            [
+                "AssertionError"
+            ],
+            [
+                "AssertionError"
+            ],
+            [
+                "AssertionError"
+            ],
             [
                 "AssertionError"
             ]
@@ -7718,9 +7676,18 @@
     },
     {
         "task_id": 694,
-        "fix_mode_attempt_count": 2,
-        "status": "pass",
+        "fix_mode_attempt_count": 5,
+        "status": "fail",
         "error_trace": [
+            [
+                "AssertionError"
+            ],
+            [
+                "AssertionError"
+            ],
+            [
+                "AssertionError"
+            ],
             [
                 "AssertionError"
             ],
@@ -7731,15 +7698,23 @@
     },
     {
         "task_id": 695,
-        "fix_mode_attempt_count": 0,
+        "fix_mode_attempt_count": 1,
         "status": "pass",
-        "error_trace": []
+        "error_trace": [
+            [
+                "AssertionError"
+            ]
+        ]
     },
     {
         "task_id": 696,
-        "fix_mode_attempt_count": 0,
+        "fix_mode_attempt_count": 1,
         "status": "pass",
-        "error_trace": []
+        "error_trace": [
+            [
+                "AssertionError"
+            ]
+        ]
     },
     {
         "task_id": 697,
@@ -7801,9 +7776,19 @@
     },
     {
         "task_id": 704,
-        "fix_mode_attempt_count": 0,
+        "fix_mode_attempt_count": 3,
         "status": "pass",
-        "error_trace": []
+        "error_trace": [
+            [
+                "AssertionError"
+            ],
+            [
+                "AssertionError"
+            ],
+            [
+                "AssertionError"
+            ]
+        ]
     },
     {
         "task_id": 705,
@@ -7817,15 +7802,21 @@
     },
     {
         "task_id": 706,
-        "fix_mode_attempt_count": 5,
-        "status": "fail",
+        "fix_mode_attempt_count": 0,
+        "status": "pass",
+        "error_trace": []
+    },
+    {
+        "task_id": 707,
+        "fix_mode_attempt_count": 0,
+        "status": "pass",
+        "error_trace": []
+    },
+    {
+        "task_id": 708,
+        "fix_mode_attempt_count": 3,
+        "status": "pass",
         "error_trace": [
-            [
-                "AssertionError"
-            ],
-            [
-                "AssertionError"
-            ],
             [
                 "AssertionError"
             ],
@@ -7838,22 +7829,13 @@
         ]
     },
     {
-        "task_id": 707,
-        "fix_mode_attempt_count": 0,
-        "status": "pass",
-        "error_trace": []
-    },
-    {
-        "task_id": 708,
-        "fix_mode_attempt_count": 0,
-        "status": "pass",
-        "error_trace": []
-    },
-    {
         "task_id": 709,
-        "fix_mode_attempt_count": 1,
+        "fix_mode_attempt_count": 2,
         "status": "pass",
         "error_trace": [
+            [
+                "AssertionError"
+            ],
             [
                 "AssertionError"
             ]
@@ -7877,27 +7859,30 @@
         "status": "fail",
         "error_trace": [
             [
-                "TypeError"
+                "AssertionError"
             ],
             [
                 "AssertionError"
             ],
             [
-                "NameError"
+                "AssertionError"
             ],
             [
-                "NameError"
+                "AssertionError"
             ],
             [
-                "NameError"
+                "AssertionError"
             ]
         ]
     },
     {
         "task_id": 713,
-        "fix_mode_attempt_count": 4,
-        "status": "pass",
+        "fix_mode_attempt_count": 5,
+        "status": "fail",
         "error_trace": [
+            [
+                "AssertionError"
+            ],
             [
                 "AssertionError"
             ],
@@ -7948,18 +7933,9 @@
     },
     {
         "task_id": 717,
-        "fix_mode_attempt_count": 5,
-        "status": "fail",
+        "fix_mode_attempt_count": 2,
+        "status": "pass",
         "error_trace": [
-            [
-                "AssertionError"
-            ],
-            [
-                "AssertionError"
-            ],
-            [
-                "AssertionError"
-            ],
             [
                 "AssertionError"
             ],
@@ -7976,12 +7952,9 @@
     },
     {
         "task_id": 719,
-        "fix_mode_attempt_count": 2,
+        "fix_mode_attempt_count": 1,
         "status": "pass",
         "error_trace": [
-            [
-                "AssertionError"
-            ],
             [
                 "AssertionError"
             ]
@@ -7995,41 +7968,15 @@
     },
     {
         "task_id": 721,
-        "fix_mode_attempt_count": 3,
+        "fix_mode_attempt_count": 0,
         "status": "pass",
-        "error_trace": [
-            [
-                "RecursionError"
-            ],
-            [
-                "AssertionError"
-            ],
-            [
-                "AssertionError"
-            ]
-        ]
+        "error_trace": []
     },
     {
         "task_id": 722,
-        "fix_mode_attempt_count": 5,
-        "status": "fail",
-        "error_trace": [
-            [
-                "AssertionError"
-            ],
-            [
-                "AssertionError"
-            ],
-            [
-                "AssertionError"
-            ],
-            [
-                "AssertionError"
-            ],
-            [
-                "AssertionError"
-            ]
-        ]
+        "fix_mode_attempt_count": 0,
+        "status": "pass",
+        "error_trace": []
     },
     {
         "task_id": 723,
@@ -8127,37 +8074,6 @@
     },
     {
         "task_id": 738,
-        "fix_mode_attempt_count": 2,
-        "status": "pass",
-        "error_trace": [
-            [
-                "AssertionError"
-            ],
-            [
-                "AssertionError"
-            ]
-        ]
-    },
-    {
-        "task_id": 739,
-        "fix_mode_attempt_count": 0,
-        "status": "pass",
-        "error_trace": []
-    },
-    {
-        "task_id": 740,
-        "fix_mode_attempt_count": 0,
-        "status": "pass",
-        "error_trace": []
-    },
-    {
-        "task_id": 741,
-        "fix_mode_attempt_count": 0,
-        "status": "pass",
-        "error_trace": []
-    },
-    {
-        "task_id": 742,
         "fix_mode_attempt_count": 5,
         "status": "fail",
         "error_trace": [
@@ -8177,6 +8093,40 @@
                 "AssertionError"
             ]
         ]
+    },
+    {
+        "task_id": 739,
+        "fix_mode_attempt_count": 3,
+        "status": "pass",
+        "error_trace": [
+            [
+                "AssertionError"
+            ],
+            [
+                "AssertionError"
+            ],
+            [
+                "AssertionError"
+            ]
+        ]
+    },
+    {
+        "task_id": 740,
+        "fix_mode_attempt_count": 0,
+        "status": "pass",
+        "error_trace": []
+    },
+    {
+        "task_id": 741,
+        "fix_mode_attempt_count": 0,
+        "status": "pass",
+        "error_trace": []
+    },
+    {
+        "task_id": 742,
+        "fix_mode_attempt_count": 0,
+        "status": "pass",
+        "error_trace": []
     },
     {
         "task_id": 743,
@@ -8236,23 +8186,11 @@
     },
     {
         "task_id": 747,
-        "fix_mode_attempt_count": 5,
-        "status": "fail",
+        "fix_mode_attempt_count": 1,
+        "status": "pass",
         "error_trace": [
             [
-                "TypeError"
-            ],
-            [
-                "TypeError"
-            ],
-            [
-                "TypeError"
-            ],
-            [
-                "TypeError"
-            ],
-            [
-                "TypeError"
+                "AssertionError"
             ]
         ]
     },
@@ -8271,9 +8209,16 @@
     },
     {
         "task_id": 749,
-        "fix_mode_attempt_count": 0,
+        "fix_mode_attempt_count": 2,
         "status": "pass",
-        "error_trace": []
+        "error_trace": [
+            [
+                "AssertionError"
+            ],
+            [
+                "AssertionError"
+            ]
+        ]
     },
     {
         "task_id": 750,
@@ -8283,6 +8228,12 @@
     },
     {
         "task_id": 751,
+        "fix_mode_attempt_count": 0,
+        "status": "pass",
+        "error_trace": []
+    },
+    {
+        "task_id": 752,
         "fix_mode_attempt_count": 5,
         "status": "fail",
         "error_trace": [
@@ -8302,12 +8253,6 @@
                 "AssertionError"
             ]
         ]
-    },
-    {
-        "task_id": 752,
-        "fix_mode_attempt_count": 0,
-        "status": "pass",
-        "error_trace": []
     },
     {
         "task_id": 753,
@@ -8327,7 +8272,7 @@
                 "AssertionError"
             ],
             [
-                "AssertionError"
+                "NameError"
             ],
             [
                 "AssertionError"
@@ -8339,7 +8284,7 @@
     },
     {
         "task_id": 755,
-        "fix_mode_attempt_count": 5,
+        "fix_mode_attempt_count": 4,
         "status": "pass",
         "error_trace": [
             [
@@ -8352,10 +8297,7 @@
                 "AssertionError"
             ],
             [
-                "AssertionError"
-            ],
-            [
-                "AssertionError"
+                "ValueError"
             ]
         ]
     },
@@ -8371,9 +8313,21 @@
     },
     {
         "task_id": 757,
-        "fix_mode_attempt_count": 1,
-        "status": "pass",
+        "fix_mode_attempt_count": 5,
+        "status": "fail",
         "error_trace": [
+            [
+                "AssertionError"
+            ],
+            [
+                "AssertionError"
+            ],
+            [
+                "AssertionError"
+            ],
+            [
+                "AssertionError"
+            ],
             [
                 "AssertionError"
             ]
@@ -8435,13 +8389,9 @@
     },
     {
         "task_id": 763,
-        "fix_mode_attempt_count": 1,
+        "fix_mode_attempt_count": 0,
         "status": "pass",
-        "error_trace": [
-            [
-                "AttributeError"
-            ]
-        ]
+        "error_trace": []
     },
     {
         "task_id": 764,
@@ -8451,19 +8401,28 @@
     },
     {
         "task_id": 765,
-        "fix_mode_attempt_count": 0,
-        "status": "pass",
-        "error_trace": []
-    },
-    {
-        "task_id": 766,
-        "fix_mode_attempt_count": 1,
+        "fix_mode_attempt_count": 4,
         "status": "pass",
         "error_trace": [
             [
                 "AssertionError"
+            ],
+            [
+                "AssertionError"
+            ],
+            [
+                "AssertionError"
+            ],
+            [
+                "AssertionError"
             ]
         ]
+    },
+    {
+        "task_id": 766,
+        "fix_mode_attempt_count": 0,
+        "status": "pass",
+        "error_trace": []
     },
     {
         "task_id": 767,
@@ -8479,25 +8438,9 @@
     },
     {
         "task_id": 769,
-        "fix_mode_attempt_count": 5,
-        "status": "fail",
-        "error_trace": [
-            [
-                "AssertionError"
-            ],
-            [
-                "AssertionError"
-            ],
-            [
-                "AssertionError"
-            ],
-            [
-                "AssertionError"
-            ],
-            [
-                "AssertionError"
-            ]
-        ]
+        "fix_mode_attempt_count": 0,
+        "status": "pass",
+        "error_trace": []
     },
     {
         "task_id": 770,
@@ -8551,16 +8494,9 @@
     },
     {
         "task_id": 775,
-        "fix_mode_attempt_count": 2,
+        "fix_mode_attempt_count": 0,
         "status": "pass",
-        "error_trace": [
-            [
-                "AssertionError"
-            ],
-            [
-                "AssertionError"
-            ]
-        ]
+        "error_trace": []
     },
     {
         "task_id": 776,
@@ -8614,21 +8550,9 @@
     },
     {
         "task_id": 779,
-        "fix_mode_attempt_count": 5,
-        "status": "fail",
+        "fix_mode_attempt_count": 1,
+        "status": "pass",
         "error_trace": [
-            [
-                "AssertionError"
-            ],
-            [
-                "AssertionError"
-            ],
-            [
-                "AssertionError"
-            ],
-            [
-                "AssertionError"
-            ],
             [
                 "AssertionError"
             ]
@@ -8640,19 +8564,19 @@
         "status": "fail",
         "error_trace": [
             [
-                "AssertionError"
+                "TypeError"
             ],
             [
-                "AssertionError"
+                "TypeError"
             ],
             [
-                "AssertionError"
+                "TypeError"
             ],
             [
-                "AssertionError"
+                "TypeError"
             ],
             [
-                "AssertionError"
+                "TypeError"
             ]
         ]
     },
@@ -8670,19 +8594,6 @@
     },
     {
         "task_id": 783,
-        "fix_mode_attempt_count": 2,
-        "status": "pass",
-        "error_trace": [
-            [
-                "AssertionError"
-            ],
-            [
-                "AssertionError"
-            ]
-        ]
-    },
-    {
-        "task_id": 784,
         "fix_mode_attempt_count": 5,
         "status": "fail",
         "error_trace": [
@@ -8702,6 +8613,12 @@
                 "AssertionError"
             ]
         ]
+    },
+    {
+        "task_id": 784,
+        "fix_mode_attempt_count": 0,
+        "status": "pass",
+        "error_trace": []
     },
     {
         "task_id": 785,
@@ -8730,25 +8647,9 @@
     },
     {
         "task_id": 788,
-        "fix_mode_attempt_count": 5,
-        "status": "fail",
-        "error_trace": [
-            [
-                "AssertionError"
-            ],
-            [
-                "AssertionError"
-            ],
-            [
-                "AssertionError"
-            ],
-            [
-                "AssertionError"
-            ],
-            [
-                "AssertionError"
-            ]
-        ]
+        "fix_mode_attempt_count": 0,
+        "status": "pass",
+        "error_trace": []
     },
     {
         "task_id": 789,
@@ -8758,31 +8659,19 @@
     },
     {
         "task_id": 790,
-        "fix_mode_attempt_count": 0,
+        "fix_mode_attempt_count": 1,
         "status": "pass",
-        "error_trace": []
-    },
-    {
-        "task_id": 791,
-        "fix_mode_attempt_count": 5,
-        "status": "fail",
         "error_trace": [
-            [
-                "AssertionError"
-            ],
-            [
-                "AssertionError"
-            ],
-            [
-                "AssertionError"
-            ],
-            [
-                "AssertionError"
-            ],
             [
                 "AssertionError"
             ]
         ]
+    },
+    {
+        "task_id": 791,
+        "fix_mode_attempt_count": 0,
+        "status": "pass",
+        "error_trace": []
     },
     {
         "task_id": 792,
@@ -8863,12 +8752,6 @@
     },
     {
         "task_id": 801,
-        "fix_mode_attempt_count": 0,
-        "status": "pass",
-        "error_trace": []
-    },
-    {
-        "task_id": 802,
         "fix_mode_attempt_count": 5,
         "status": "fail",
         "error_trace": [
@@ -8890,6 +8773,28 @@
         ]
     },
     {
+        "task_id": 802,
+        "fix_mode_attempt_count": 5,
+        "status": "fail",
+        "error_trace": [
+            [
+                "TypeError"
+            ],
+            [
+                "TypeError"
+            ],
+            [
+                "TypeError"
+            ],
+            [
+                "TypeError"
+            ],
+            [
+                "TypeError"
+            ]
+        ]
+    },
+    {
         "task_id": 803,
         "fix_mode_attempt_count": 0,
         "status": "pass",
@@ -8897,9 +8802,16 @@
     },
     {
         "task_id": 804,
-        "fix_mode_attempt_count": 0,
+        "fix_mode_attempt_count": 2,
         "status": "pass",
-        "error_trace": []
+        "error_trace": [
+            [
+                "TypeError"
+            ],
+            [
+                "TypeError"
+            ]
+        ]
     },
     {
         "task_id": 805,
@@ -8937,13 +8849,13 @@
         "status": "fail",
         "error_trace": [
             [
-                "NameError"
+                "AssertionError"
             ],
             [
                 "AssertionError"
             ],
             [
-                "NameError"
+                "AssertionError"
             ],
             [
                 "AssertionError"
@@ -8983,25 +8895,9 @@
     },
     {
         "task_id": 815,
-        "fix_mode_attempt_count": 5,
-        "status": "fail",
-        "error_trace": [
-            [
-                "AssertionError"
-            ],
-            [
-                "AssertionError"
-            ],
-            [
-                "AssertionError"
-            ],
-            [
-                "AssertionError"
-            ],
-            [
-                "AssertionError"
-            ]
-        ]
+        "fix_mode_attempt_count": 0,
+        "status": "pass",
+        "error_trace": []
     },
     {
         "task_id": 816,
@@ -9023,9 +8919,12 @@
     },
     {
         "task_id": 819,
-        "fix_mode_attempt_count": 1,
+        "fix_mode_attempt_count": 2,
         "status": "pass",
         "error_trace": [
+            [
+                "AssertionError"
+            ],
             [
                 "AssertionError"
             ]
@@ -9051,12 +8950,9 @@
     },
     {
         "task_id": 823,
-        "fix_mode_attempt_count": 2,
+        "fix_mode_attempt_count": 1,
         "status": "pass",
         "error_trace": [
-            [
-                "AssertionError"
-            ],
             [
                 "AssertionError"
             ]
@@ -9116,7 +9012,7 @@
     },
     {
         "task_id": 830,
-        "fix_mode_attempt_count": 5,
+        "fix_mode_attempt_count": 3,
         "status": "pass",
         "error_trace": [
             [
@@ -9127,27 +9023,14 @@
             ],
             [
                 "AssertionError"
-            ],
-            [
-                "AssertionError"
-            ],
-            [
-                "NameError"
             ]
         ]
     },
     {
         "task_id": 831,
-        "fix_mode_attempt_count": 2,
+        "fix_mode_attempt_count": 0,
         "status": "pass",
-        "error_trace": [
-            [
-                "TypeError"
-            ],
-            [
-                "TypeError"
-            ]
-        ]
+        "error_trace": []
     },
     {
         "task_id": 832,
@@ -9163,9 +9046,25 @@
     },
     {
         "task_id": 834,
-        "fix_mode_attempt_count": 0,
-        "status": "pass",
-        "error_trace": []
+        "fix_mode_attempt_count": 5,
+        "status": "fail",
+        "error_trace": [
+            [
+                "AssertionError"
+            ],
+            [
+                "AssertionError"
+            ],
+            [
+                "AssertionError"
+            ],
+            [
+                "AssertionError"
+            ],
+            [
+                "AssertionError"
+            ]
+        ]
     },
     {
         "task_id": 835,
@@ -9175,9 +9074,25 @@
     },
     {
         "task_id": 836,
-        "fix_mode_attempt_count": 0,
+        "fix_mode_attempt_count": 5,
         "status": "pass",
-        "error_trace": []
+        "error_trace": [
+            [
+                "AssertionError"
+            ],
+            [
+                "AssertionError"
+            ],
+            [
+                "AssertionError"
+            ],
+            [
+                "AssertionError"
+            ],
+            [
+                "AssertionError"
+            ]
+        ]
     },
     {
         "task_id": 837,
@@ -9191,7 +9106,7 @@
         "status": "fail",
         "error_trace": [
             [
-                "IndexError"
+                "AssertionError"
             ],
             [
                 "AssertionError"
@@ -9231,27 +9146,29 @@
     },
     {
         "task_id": 842,
-        "fix_mode_attempt_count": 1,
+        "fix_mode_attempt_count": 0,
         "status": "pass",
-        "error_trace": [
-            [
-                "TypeError"
-            ]
-        ]
+        "error_trace": []
     },
     {
         "task_id": 843,
-        "fix_mode_attempt_count": 3,
-        "status": "pass",
+        "fix_mode_attempt_count": 5,
+        "status": "fail",
         "error_trace": [
             [
-                "IndexError"
+                "NameError"
             ],
             [
                 "IndexError"
             ],
             [
-                "TypeError"
+                "AssertionError"
+            ],
+            [
+                "KeyError"
+            ],
+            [
+                "KeyError"
             ]
         ]
     },
@@ -9264,16 +9181,16 @@
                 "TypeError"
             ],
             [
-                "AssertionError"
+                "ValueError"
             ],
             [
-                "AssertionError"
+                "ValueError"
             ],
             [
-                "AssertionError"
+                "ValueError"
             ],
             [
-                "AssertionError"
+                "ValueError"
             ]
         ]
     },
@@ -9289,7 +9206,7 @@
         "status": "fail",
         "error_trace": [
             [
-                "IndexError"
+                "AssertionError"
             ],
             [
                 "AssertionError"
@@ -9307,9 +9224,13 @@
     },
     {
         "task_id": 847,
-        "fix_mode_attempt_count": 0,
+        "fix_mode_attempt_count": 1,
         "status": "pass",
-        "error_trace": []
+        "error_trace": [
+            [
+                "TypeError"
+            ]
+        ]
     },
     {
         "task_id": 848,
@@ -9383,18 +9304,6 @@
     },
     {
         "task_id": 857,
-        "fix_mode_attempt_count": 0,
-        "status": "pass",
-        "error_trace": []
-    },
-    {
-        "task_id": 858,
-        "fix_mode_attempt_count": 0,
-        "status": "pass",
-        "error_trace": []
-    },
-    {
-        "task_id": 859,
         "fix_mode_attempt_count": 1,
         "status": "pass",
         "error_trace": [
@@ -9404,10 +9313,44 @@
         ]
     },
     {
+        "task_id": 858,
+        "fix_mode_attempt_count": 0,
+        "status": "pass",
+        "error_trace": []
+    },
+    {
+        "task_id": 859,
+        "fix_mode_attempt_count": 5,
+        "status": "fail",
+        "error_trace": [
+            [
+                "AssertionError"
+            ],
+            [
+                "AssertionError"
+            ],
+            [
+                "AssertionError"
+            ],
+            [
+                "AssertionError"
+            ],
+            [
+                "AssertionError"
+            ]
+        ]
+    },
+    {
         "task_id": 860,
-        "fix_mode_attempt_count": 1,
+        "fix_mode_attempt_count": 3,
         "status": "pass",
         "error_trace": [
+            [
+                "AssertionError"
+            ],
+            [
+                "AssertionError"
+            ],
             [
                 "AssertionError"
             ]
@@ -9421,9 +9364,13 @@
     },
     {
         "task_id": 862,
-        "fix_mode_attempt_count": 0,
+        "fix_mode_attempt_count": 1,
         "status": "pass",
-        "error_trace": []
+        "error_trace": [
+            [
+                "AssertionError"
+            ]
+        ]
     },
     {
         "task_id": 863,
@@ -9433,13 +9380,9 @@
     },
     {
         "task_id": 864,
-        "fix_mode_attempt_count": 1,
+        "fix_mode_attempt_count": 0,
         "status": "pass",
-        "error_trace": [
-            [
-                "NameError"
-            ]
-        ]
+        "error_trace": []
     },
     {
         "task_id": 865,
@@ -9499,25 +9442,9 @@
     },
     {
         "task_id": 869,
-        "fix_mode_attempt_count": 5,
-        "status": "fail",
-        "error_trace": [
-            [
-                "AssertionError"
-            ],
-            [
-                "AssertionError"
-            ],
-            [
-                "AssertionError"
-            ],
-            [
-                "AssertionError"
-            ],
-            [
-                "AssertionError"
-            ]
-        ]
+        "fix_mode_attempt_count": 0,
+        "status": "pass",
+        "error_trace": []
     },
     {
         "task_id": 870,
@@ -9591,18 +9518,9 @@
     },
     {
         "task_id": 879,
-        "fix_mode_attempt_count": 5,
-        "status": "fail",
+        "fix_mode_attempt_count": 2,
+        "status": "pass",
         "error_trace": [
-            [
-                "AssertionError"
-            ],
-            [
-                "AssertionError"
-            ],
-            [
-                "AssertionError"
-            ],
             [
                 "AssertionError"
             ],
@@ -9613,9 +9531,12 @@
     },
     {
         "task_id": 880,
-        "fix_mode_attempt_count": 1,
+        "fix_mode_attempt_count": 2,
         "status": "pass",
         "error_trace": [
+            [
+                "AssertionError"
+            ],
             [
                 "AssertionError"
             ]
@@ -9623,25 +9544,9 @@
     },
     {
         "task_id": 881,
-        "fix_mode_attempt_count": 5,
-        "status": "fail",
-        "error_trace": [
-            [
-                "AssertionError"
-            ],
-            [
-                "AssertionError"
-            ],
-            [
-                "AssertionError"
-            ],
-            [
-                "AssertionError"
-            ],
-            [
-                "AssertionError"
-            ]
-        ]
+        "fix_mode_attempt_count": 0,
+        "status": "pass",
+        "error_trace": []
     },
     {
         "task_id": 882,
@@ -9743,9 +9648,13 @@
     },
     {
         "task_id": 895,
-        "fix_mode_attempt_count": 0,
+        "fix_mode_attempt_count": 1,
         "status": "pass",
-        "error_trace": []
+        "error_trace": [
+            [
+                "AssertionError"
+            ]
+        ]
     },
     {
         "task_id": 896,
@@ -9790,7 +9699,7 @@
                 "AssertionError"
             ],
             [
-                "AssertionError"
+                "SyntaxError"
             ],
             [
                 "AssertionError"
@@ -9823,6 +9732,18 @@
     },
     {
         "task_id": 903,
+        "fix_mode_attempt_count": 0,
+        "status": "pass",
+        "error_trace": []
+    },
+    {
+        "task_id": 904,
+        "fix_mode_attempt_count": 0,
+        "status": "pass",
+        "error_trace": []
+    },
+    {
+        "task_id": 905,
         "fix_mode_attempt_count": 5,
         "status": "fail",
         "error_trace": [
@@ -9844,24 +9765,21 @@
         ]
     },
     {
-        "task_id": 904,
-        "fix_mode_attempt_count": 0,
-        "status": "pass",
-        "error_trace": []
-    },
-    {
-        "task_id": 905,
-        "fix_mode_attempt_count": 0,
-        "status": "pass",
-        "error_trace": []
-    },
-    {
         "task_id": 906,
-        "fix_mode_attempt_count": 2,
-        "status": "pass",
+        "fix_mode_attempt_count": 5,
+        "status": "fail",
         "error_trace": [
             [
-                "AssertionError"
+                "ValueError"
+            ],
+            [
+                "ValueError"
+            ],
+            [
+                "ValueError"
+            ],
+            [
+                "ValueError"
             ],
             [
                 "AssertionError"
@@ -9874,19 +9792,19 @@
         "status": "fail",
         "error_trace": [
             [
+                "IndexError"
+            ],
+            [
                 "AssertionError"
             ],
             [
-                "Infinite Loop"
+                "AssertionError"
             ],
             [
-                "Infinite Loop"
+                "AssertionError"
             ],
             [
-                "Infinite Loop"
-            ],
-            [
-                "Infinite Loop"
+                "AssertionError"
             ]
         ]
     },
@@ -9904,23 +9822,31 @@
     },
     {
         "task_id": 910,
-        "fix_mode_attempt_count": 1,
-        "status": "pass",
+        "fix_mode_attempt_count": 5,
+        "status": "fail",
         "error_trace": [
             [
-                "TypeError"
+                "AssertionError"
+            ],
+            [
+                "AssertionError"
+            ],
+            [
+                "AssertionError"
+            ],
+            [
+                "AssertionError"
+            ],
+            [
+                "AssertionError"
             ]
         ]
     },
     {
         "task_id": 911,
-        "fix_mode_attempt_count": 1,
+        "fix_mode_attempt_count": 0,
         "status": "pass",
-        "error_trace": [
-            [
-                "AssertionError"
-            ]
-        ]
+        "error_trace": []
     },
     {
         "task_id": 912,
@@ -9940,7 +9866,7 @@
                 "AssertionError"
             ],
             [
-                "AssertionError"
+                "ValueError"
             ]
         ]
     },
@@ -9958,21 +9884,9 @@
     },
     {
         "task_id": 915,
-        "fix_mode_attempt_count": 5,
-        "status": "fail",
+        "fix_mode_attempt_count": 1,
+        "status": "pass",
         "error_trace": [
-            [
-                "AssertionError"
-            ],
-            [
-                "AssertionError"
-            ],
-            [
-                "AssertionError"
-            ],
-            [
-                "AssertionError"
-            ],
             [
                 "AssertionError"
             ]
@@ -10027,21 +9941,9 @@
     },
     {
         "task_id": 920,
-        "fix_mode_attempt_count": 5,
-        "status": "fail",
+        "fix_mode_attempt_count": 1,
+        "status": "pass",
         "error_trace": [
-            [
-                "AssertionError"
-            ],
-            [
-                "AssertionError"
-            ],
-            [
-                "AssertionError"
-            ],
-            [
-                "AssertionError"
-            ],
             [
                 "AssertionError"
             ]
@@ -10055,21 +9957,9 @@
     },
     {
         "task_id": 922,
-        "fix_mode_attempt_count": 5,
-        "status": "fail",
+        "fix_mode_attempt_count": 1,
+        "status": "pass",
         "error_trace": [
-            [
-                "AssertionError"
-            ],
-            [
-                "AssertionError"
-            ],
-            [
-                "AssertionError"
-            ],
-            [
-                "AssertionError"
-            ],
             [
                 "AssertionError"
             ]
@@ -10095,25 +9985,9 @@
     },
     {
         "task_id": 926,
-        "fix_mode_attempt_count": 5,
-        "status": "fail",
-        "error_trace": [
-            [
-                "AssertionError"
-            ],
-            [
-                "AssertionError"
-            ],
-            [
-                "AssertionError"
-            ],
-            [
-                "AssertionError"
-            ],
-            [
-                "AssertionError"
-            ]
-        ]
+        "fix_mode_attempt_count": 0,
+        "status": "pass",
+        "error_trace": []
     },
     {
         "task_id": 927,
@@ -10151,12 +10025,9 @@
     },
     {
         "task_id": 930,
-        "fix_mode_attempt_count": 3,
+        "fix_mode_attempt_count": 2,
         "status": "pass",
         "error_trace": [
-            [
-                "AssertionError"
-            ],
             [
                 "AssertionError"
             ],
@@ -10173,9 +10044,21 @@
     },
     {
         "task_id": 932,
-        "fix_mode_attempt_count": 1,
-        "status": "pass",
+        "fix_mode_attempt_count": 5,
+        "status": "fail",
         "error_trace": [
+            [
+                "AssertionError"
+            ],
+            [
+                "AssertionError"
+            ],
+            [
+                "AssertionError"
+            ],
+            [
+                "AssertionError"
+            ],
             [
                 "AssertionError"
             ]
@@ -10189,9 +10072,25 @@
     },
     {
         "task_id": 934,
-        "fix_mode_attempt_count": 0,
-        "status": "pass",
-        "error_trace": []
+        "fix_mode_attempt_count": 5,
+        "status": "fail",
+        "error_trace": [
+            [
+                "AssertionError"
+            ],
+            [
+                "AssertionError"
+            ],
+            [
+                "AssertionError"
+            ],
+            [
+                "AssertionError"
+            ],
+            [
+                "AssertionError"
+            ]
+        ]
     },
     {
         "task_id": 935,
@@ -10205,7 +10104,7 @@
         "status": "fail",
         "error_trace": [
             [
-                "KeyError"
+                "IndexError"
             ],
             [
                 "AssertionError"
@@ -10233,27 +10132,39 @@
         "status": "fail",
         "error_trace": [
             [
-                "TypeError"
+                "NameError"
             ],
             [
-                "TypeError"
+                "NameError"
             ],
             [
-                "TypeError"
+                "NameError"
             ],
             [
-                "TypeError"
+                "NameError"
             ],
             [
-                "TypeError"
+                "NameError"
             ]
         ]
     },
     {
         "task_id": 939,
-        "fix_mode_attempt_count": 1,
+        "fix_mode_attempt_count": 5,
         "status": "pass",
         "error_trace": [
+            [
+                "AssertionError"
+            ],
+            [
+                "AssertionError"
+            ],
+            [
+                "AssertionError"
+            ],
+            [
+                "AssertionError"
+            ],
             [
                 "AssertionError"
             ]
@@ -10345,27 +10256,15 @@
         "status": "pass",
         "error_trace": [
             [
-                "IndexError"
+                "ValueError"
             ]
         ]
     },
     {
         "task_id": 949,
-        "fix_mode_attempt_count": 5,
-        "status": "fail",
+        "fix_mode_attempt_count": 1,
+        "status": "pass",
         "error_trace": [
-            [
-                "AssertionError"
-            ],
-            [
-                "AssertionError"
-            ],
-            [
-                "AssertionError"
-            ],
-            [
-                "AssertionError"
-            ],
             [
                 "AssertionError"
             ]
@@ -10395,16 +10294,18 @@
     },
     {
         "task_id": 951,
-        "fix_mode_attempt_count": 1,
+        "fix_mode_attempt_count": 0,
         "status": "pass",
-        "error_trace": [
-            [
-                "AssertionError"
-            ]
-        ]
+        "error_trace": []
     },
     {
         "task_id": 952,
+        "fix_mode_attempt_count": 0,
+        "status": "pass",
+        "error_trace": []
+    },
+    {
+        "task_id": 953,
         "fix_mode_attempt_count": 5,
         "status": "fail",
         "error_trace": [
@@ -10424,12 +10325,6 @@
                 "AssertionError"
             ]
         ]
-    },
-    {
-        "task_id": 953,
-        "fix_mode_attempt_count": 0,
-        "status": "pass",
-        "error_trace": []
     },
     {
         "task_id": 954,
@@ -10445,34 +10340,15 @@
     },
     {
         "task_id": 956,
-        "fix_mode_attempt_count": 5,
-        "status": "fail",
-        "error_trace": [
-            [
-                "AssertionError"
-            ],
-            [
-                "AssertionError"
-            ],
-            [
-                "AssertionError"
-            ],
-            [
-                "AssertionError"
-            ],
-            [
-                "AssertionError"
-            ]
-        ]
+        "fix_mode_attempt_count": 0,
+        "status": "pass",
+        "error_trace": []
     },
     {
         "task_id": 957,
-        "fix_mode_attempt_count": 2,
+        "fix_mode_attempt_count": 1,
         "status": "pass",
         "error_trace": [
-            [
-                "AssertionError"
-            ],
             [
                 "AssertionError"
             ]
@@ -10566,15 +10442,9 @@
     },
     {
         "task_id": 967,
-        "fix_mode_attempt_count": 5,
-        "status": "fail",
+        "fix_mode_attempt_count": 3,
+        "status": "pass",
         "error_trace": [
-            [
-                "AssertionError"
-            ],
-            [
-                "AssertionError"
-            ],
             [
                 "AssertionError"
             ],
@@ -10622,25 +10492,9 @@
     },
     {
         "task_id": 971,
-        "fix_mode_attempt_count": 5,
-        "status": "fail",
-        "error_trace": [
-            [
-                "AssertionError"
-            ],
-            [
-                "AssertionError"
-            ],
-            [
-                "AssertionError"
-            ],
-            [
-                "AssertionError"
-            ],
-            [
-                "AssertionError"
-            ]
-        ]
+        "fix_mode_attempt_count": 0,
+        "status": "pass",
+        "error_trace": []
     },
     {
         "task_id": 972,

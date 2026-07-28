@@ -27,7 +27,7 @@ from data.HumanEval.HumanEval import HumanEval
 def main():
     print_synkrasis_logo()
     
-    llm_model_names = ["phi4:14b"]
+    llm_model_names = ["qwen2.5-coder:7b"]
 
     for llm_model_name in llm_model_names:
         try:
@@ -40,16 +40,16 @@ def main():
                               container_name = "ollama",
                               local_port=11434)
         
-            container = Container(container_name = "synk_bcb", 
-                              mount_dir_name = "synk_bcb_mount",
+            container = Container(container_name = "synk_mbpp", 
+                              mount_dir_name = "synk_mbpp_mount",
                               shell_script_name = "start.sh")
 
-            pycapsule = PyCapsule_BigCodeBench(pycapsule_container = container,
+            pycapsule = PyCapsule_MBPP(pycapsule_container = container,
                                  llm = llm,
                                  maximum_attempts = 5)
         
-            dataloader = BigCodeBench(model_name = llm_name,
-                                  is_resuming = True)
+            dataloader = MBPP(model_name = llm_name,
+                                  is_resuming = False)
             pycapsule.run_pycapsule_experiment(dataloader)
 
         except Exception as e:
