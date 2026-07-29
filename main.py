@@ -26,32 +26,39 @@ from data.HumanEval.HumanEval import HumanEval
 
 def main():
     print_synkrasis_logo()
-    try:
-        llm_name = "qwen2.5-coder:7b"
-        llm = OllamaContainer(model_name = llm_name, 
+    
+    llm_model_names = ["qwen2.5-coder:7b"]
+
+    for llm_model_name in llm_model_names:
+        try:
+            print(f"Running Model Now:",{llm_model_name})
+            llm_name = llm_model_name
+            llm = OllamaContainer(model_name = llm_name, 
                               enable_chat_history = True,
                               max_history = 1,
                               verbose_switch = False,
                               container_name = "ollama",
                               local_port=11434)
         
-        container = Container(container_name = "synk_mbpp", 
+            container = Container(container_name = "synk_mbpp", 
                               mount_dir_name = "synk_mbpp_mount",
                               shell_script_name = "start.sh")
 
-        pycapsule = PyCapsule_MBPP(pycapsule_container = container,
+            pycapsule = PyCapsule_MBPP(pycapsule_container = container,
                                  llm = llm,
                                  maximum_attempts = 5)
         
-        dataloader = MBPP(model_name = llm_name,
+            dataloader = MBPP(model_name = llm_name,
                                   is_resuming = False)
-        
-        pycapsule.run_pycapsule_experiment(dataloader)
+            pycapsule.run_pycapsule_experiment(dataloader)
 
+        except Exception as e:
+            print(f"Run failed for {llm_model_name}: {e}")
+            continue
         
-    finally:
+        finally:
         # Warning resource_tracker: There appear to be .* leaked semaphore objects"
-        call_cleanup([llm, container, pycapsule])
+            call_cleanup([llm, container, pycapsule])
 
 if __name__ == '__main__':
     main()

@@ -14,11 +14,11 @@ class ExperimentAnalyser:
 
     def analyse(self) -> None:
         self._check_accuracy()
-        self._check_fix_mode_distribution()
+        # self._check_fix_mode_distribution()
         self._check_error_frequency()
-        self._check_error_persistence()
-        self._check_turnaround_rate()
-        self._check_per_test_evolution()
+        # self._check_error_persistence()
+        # self._check_turnaround_rate()
+        # self._check_per_test_evolution()
 
     def _check_accuracy(self) -> None:
         """
@@ -330,8 +330,10 @@ if __name__ == "__main__":
         return glob.glob(os.path.join(current_dir, "*.json"))
     paths = get_json_files_in_current_dir()
     for p in paths:
-        print("="*50)
+        if "humaneval" in p.lower() or "bigcodebench" in p.lower():
+            continue
+        print("#"*55)
         print(Path(p).stem)
-        print()
+        print("#"*55)
         analyser = ExperimentAnalyser(file_path = p)
         analyser.analyse()
