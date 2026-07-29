@@ -13,15 +13,15 @@ sys.path.append(f"{os.path.dirname(os.path.abspath(__file__))}/..")
 import ast
 import astor
 from deprecated import deprecated
-from utils.output_message_format.output_colour import print_error, print_warning, print_success
- 
- 
+from utils.output_message_format.output_colour import print_error
+
+
 class ExampleCallDetection():
- 
+
     def extract_code_blocks(self, code: str) -> str:
         """
         Extract specific code blocks according to self.to_keep from the code content.
- 
+
         Args:
             code (str): The code to extract code blocks from.
             target_function_name (str): The name of the target function.
@@ -37,8 +37,7 @@ class ExampleCallDetection():
         except Exception as e:
             print_error(f"Error parsing generated code. Returning original code. Error: {str(e)}")
             return code
- 
-        # print(content_body)
+
         idx = next(
             (
                 i
@@ -48,11 +47,10 @@ class ExampleCallDetection():
             None,  # if no FunctionDef exists
         )
         content_body = content_body[: idx + 1] if idx is not None else content_body
-        # print(content_body)
-        # target = [item for item in content_body if isinstance(item, self.to_keep)]
+        
         return "\n".join([astor.to_source(item) for item in content_body])
- 
- 
+
+
     def get_function_names(self, content_tree: list) -> list[str]:
         """
         Extracts all the DEFINED function names from the code content.
@@ -69,8 +67,8 @@ class ExampleCallDetection():
  
         import_function_names = self._get_function_names_from_import(content_tree)
         return [item for sub_list in [function_names, import_function_names] for item in sub_list]
- 
- 
+
+
     @deprecated(version='0.0.1', reason="This function is under development, use with caution.")
     def does_contain_example_call(self, code: str, target_function_name: str) -> bool:
         """
@@ -104,8 +102,8 @@ class ExampleCallDetection():
                         pass
  
         return False
-    
-    
+
+
     def _get_function_names_from_import(self, content_tree: list) -> list[str]:
         """
         Extracts all the IMPORTED function names from the import statement.
@@ -115,7 +113,6 @@ class ExampleCallDetection():
         Returns:
             Function_names (list[str]): List of function names.
         """
-        to_keep = self.to_keep  # Just to get rid of warning on pycharm
         function_names = []
         for item in content_tree:
             if isinstance(item, ast.ImportFrom):
