@@ -1,4 +1,5 @@
 import ast
+from typing import Union
 
 
 class ExpressionBuilder:
@@ -70,9 +71,15 @@ class ExpressionBuilder:
             return self._build_name(node)
         if isinstance(node, ast.Constant):
             return self._build_constant(node)
+        if isinstance(node, ast.Subscript):
+            return self._build_subscript(node)
+        if isinstance(node, ast.Tuple):
+            return self._build_tuple(node)
+        if isinstance(node, ast.Slice):
+            return self._build_slice(node)
         return self._build_fallback(node)
 
-    def build_annotation(self, annotation: ast.expr) -> dict:
+    def build_annotation(self, annotation: Union[ast.expr, None]) -> dict:
         """
         Builds a structured entry for a type annotation. Returns an explicit
         "unknown" marker when no annotation was written, rather than trying
@@ -172,6 +179,37 @@ class ExpressionBuilder:
             "lineno": node.lineno,
             "value": node.value,
             "value_type": type(node.value).__name__,
+        }
+
+    def _build_subscript(self, node: ast.Subscript) -> dict:
+        # covers both real indexing (data[0], my_list[i:j]) and parametrised
+        # type hints (list[int], dict[str, int]) — both use this same node
+        # type, so "slice" may itself turn out to be a Tuple or a Slice
+        # once built, rather than a single plain expression
+        return {
+            "type": "subscript",
+            "lineno": node.lineno,
+            "value": self.build(node.value),
+            "slice": self.build(node.slice),
+        }
+
+    def _build_tuple(self, node: ast.Tuple) -> dict:
+        # most relevant here for multi-parameter generics, e.g. the
+        # (str, int) pair inside dict[str, int]
+        return {
+            "type": "tuple",
+            "lineno": node.lineno,
+            "elements": [self.build(element) for element in node.elts],
+        }
+
+    def _build_slice(self, node: ast.Slice) -> dict:
+        # a real slice such as my_list[i:j:step] — each part is optional
+        return {
+            "type": "slice",
+            "lineno": node.lineno,
+            "lower": self.build(node.lower) if node.lower is not None else None,
+            "upper": self.build(node.upper) if node.upper is not None else None,
+            "step": self.build(node.step) if node.step is not None else None,
         }
 
     def _build_fallback(self, node: ast.expr) -> dict:
