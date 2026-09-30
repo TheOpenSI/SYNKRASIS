@@ -12,13 +12,12 @@ import os, sys
 
 sys.path.append(f"{os.path.dirname(os.path.abspath(__file__))}/../../..")
 
-from typing import Optional, Dict, List
+from typing import Optional, List
 from openai import OpenAI
 from dotenv import load_dotenv
 
-from services.Base import ServiceBase
 from services.LLM.LLMBase import LLMBase
-from utils.output_message_format.output_colour import print_error, print_info, print_success, print_model_output
+from utils.output_message_format.output_colour import print_info, print_success, print_model_output
 
 
 class OpenAI_GPT(LLMBase):
