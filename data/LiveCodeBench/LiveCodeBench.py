@@ -5,6 +5,7 @@ import base64
 import pickle
 import zlib
 import json
+import ast
 import pandas as pd
 
 from typing import Optional
@@ -180,6 +181,44 @@ class LiveCodeBench(DatasetBase):
             stat += f"Date range in file: {self.file_min_date} to {self.file_max_date}\n"
         if self.start_date or self.end_date:
             stat += (f"Date range applied for filtering: {self.start_date or self.file_min_date} "
-                     f"to {self.end_date or self.file_max_date}")
+                     f"to {self.end_date or self.file_max_date}\n")
+
+        # starter code count
+        starter_code_count = (self.data["starter_code"] != "").sum()
+        stat += f"Data points with starter code: {starter_code_count}\n"
+
+        # meta data count
+        meta_data_count = (self.data["metadata"] != "").sum()
+        stat += f"Data points with meta data: {meta_data_count}\n"
+
+        # test types
+        all_test_types = [
+            self._test_type_stat(ast.literal_eval(entry))
+            for entry in self.data["public_test_cases"].to_list()
+        ]
+        test_types = set(all_test_types)
+        test_type_counts = pd.Series(all_test_types).value_counts()
+        stat += f"Test types: {', '.join(test_types)}\n"
+        stat += "Test type counts -\n"
+        for test_type, count in test_type_counts.items():
+            stat += f"  {test_type}: {count}\n"
+        stat += f"Total data points with multiple test types: {all_test_types.count('Multi')}\n"
         
         return stat
+
+
+    def _test_type_stat(self, test_cases: list[dict]) -> str:
+        """
+        Check if all test cases have the same test type.
+
+        Args:
+            test_cases (list[dict]): A list of test case dictionaries.
+
+        Returns:
+            str: The test type if all test cases have the same type, otherwise "Multi".
+        """
+        test_types = [test_case["testtype"] for test_case in test_cases]
+        is_same_test_type = len(set(test_types)) == 1
+        if not is_same_test_type:
+            return "Multi"
+        return test_types.pop()
