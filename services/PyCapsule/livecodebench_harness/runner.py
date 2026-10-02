@@ -19,6 +19,12 @@ class LiveCodeBenchRunner():
         if self.test_type == "stdin":
             self._run_stdin_tests()
 
+        elif self.test_type == "functional":
+            self._run_functional_tests()
+
+        else:
+            raise ValueError(f"Unknown test type: {self.test_type}")
+
 
     def _run_stdin_tests(self) -> None:
         results = []
@@ -65,6 +71,14 @@ class LiveCodeBenchRunner():
                         f"expected {expected_output.split()!r}, got {actual_output.split()!r}")
         else:
             return "runtime_error", proc.stderr
+
+
+    def _run_functional_tests(self) -> None:
+        pass
+
+
+    def _run_functional_test(self) -> None:
+        pass
 
 
     def _load_test_cases(self) -> None:
