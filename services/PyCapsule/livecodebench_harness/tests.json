@@ -1,11 +1,11 @@
 {
-  "test_type": "stdin",
-  "func_name": null,
+  "test_type": "functional",
+  "func_name": "factorial",
   "tests": [
-    {"input": "0\n",  "output": "1\n"},
-    {"input": "1\n",  "output": "2\n"},
-    {"input": "5\n",  "output": "120\n"},
-    {"input": "10\n", "output": "3628800\n"},
-    {"input": "20\n", "output": "2432902008176640000\n"}
+    {"input": "0",  "output": "1"},
+    {"input": "1",  "output": "1"},
+    {"input": "5",  "output": "120"},
+    {"input": "10", "output": "3628800"},
+    {"input": "20", "output": "2432902008176640000"}
   ]
 }

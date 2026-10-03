@@ -73,12 +73,23 @@ class LiveCodeBenchRunner():
             return "runtime_error", proc.stderr
 
 
-    def _run_functional_tests(self) -> None:
+    def _run_functional_tests(self, test_dict: dict) -> None:
         pass
 
 
-    def _run_functional_test(self) -> None:
-        pass
+    def _run_functional_test(self, test_dict: dict) -> None:
+        test_input, expected_output = self._get_test_case(test_dict)
+        self._add_main_to_solution()
+
+
+    def _add_main_to_solution(self, entrypoint: str) -> bool:
+        with open(self.solution_path, "r") as f:
+            llm_generated_code = f.read()
+        main_code = (
+            f"if __name__ == '__main__':\n"
+            f"    solution = Solution()\n"
+            f"    result = solution.{entrypoint}()\n"
+        )
 
 
     def _load_test_cases(self) -> None:

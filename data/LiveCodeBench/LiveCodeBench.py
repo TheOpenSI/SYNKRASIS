@@ -129,7 +129,7 @@ class LiveCodeBench(DatasetBase):
             return {
                 "task_id": data_point["question_id"],
                 "prompt": data_point["question_content"],
-                "entry_point": metadata["func_name"], # relevant when starter code is present, test is functional.
+                "entry_point": metadata.get("func_name", None), # relevant when starter code is present, test is functional.
                 "public_test": data_point["public_test_cases"],
                 "private_test": self._decode_test_cases(data_point["private_test_cases"]),
                 "starter_code": data_point["starter_code"],
