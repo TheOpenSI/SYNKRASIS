@@ -123,6 +123,7 @@ class LiveCodeBenchRunner():
     def _get_test_type(self, tests: list[dict] | dict) -> str:
         return tests[0]["testtype"] if isinstance(tests, list) else tests["testtype"]
 
+
 if __name__ == "__main__":
     with open("services/PyCapsule/livecodebench_harness/tests.json", "r") as f:
         tests = json.dumps(json.load(f))
