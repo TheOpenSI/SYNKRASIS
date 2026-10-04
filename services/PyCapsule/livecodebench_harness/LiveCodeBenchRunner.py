@@ -6,35 +6,34 @@ import sys
 class LiveCodeBenchRunner():
     def __init__(self,
                  solution_path: str = None,
-                 test_path: str = None,
                  per_test_timeout: int = 60) -> None:
         self.cwd = os.path.dirname(os.path.abspath(__file__))
         self.PER_TEST_TIMEOUT = per_test_timeout
         self.solution_path = solution_path or os.path.join(self.cwd, "solution.py")
-        self.test_path = test_path or os.path.join(self.cwd, "tests.json")
-        self._load_test_cases()
 
 
-    def run_tests(self) -> None:
-        if self.test_type == "stdin":
-            self._run_stdin_tests()
+    def run_tests(self, tests: list[dict], entrypoint: str):
+        test_type = self._get_test_type(tests)
+        if test_type == "functional":
+            self._build_functional_file(entrypoint)
+        results = self._run_all_tests(tests)
 
-        elif self.test_type == "functional":
-            self._run_functional_tests()
-
-        else:
-            raise ValueError(f"Unknown test type: {self.test_type}")
+        return results
 
 
-    def _run_stdin_tests(self) -> None:
+    def _run_all_tests(self, tests: list[dict]) -> list[dict]:
         results = []
+        _failed_count = 0
 
-        for index, test_dict in enumerate(self.tests):
+        for index, test_dict in enumerate(tests):
             try:
-                status, detail = self._run_stdin_test(test_dict)
+                status, detail = self._run_test(test_dict)
 
             except subprocess.TimeoutExpired:
-                status, detail = "timeout", f"exceeded per-test timeout of {self.PER_TEST_TIMEOUT}s"
+                status, detail = "timeout", f"Exceeded per-test timeout of {self.PER_TEST_TIMEOUT}s"
+
+            if status != "pass":
+                _failed_count += 1
 
             results.append(
                 {
@@ -43,134 +42,90 @@ class LiveCodeBenchRunner():
                     "detail": detail
                 }
             )
+
         if all(result["status"] == "pass" for result in results):
             print("All tests passed!")
+
         else:
-            print("Some tests failed:")
+            print(f"{_failed_count} tests failed:")
             for result in results:
                 if result["status"] != "pass":
-                    print(f"Test {result['index']} failed: {result['status']}. Detail: {result['detail']}")
+                    print(f"Test {result['index']} failed: {result['status']}.\nDetail: {result['detail']}")
+
+        return results
 
 
-    def _run_stdin_test(self, test_dict: dict):
+    def _run_test(self, 
+                  test_dict: dict) -> tuple[str, str]:
         test_input, expected_output = self._get_test_case(test_dict)
+        file_to_run = (self.solution_path.replace('.py', '_test.py') 
+                       if self._get_test_type(test_dict) == "functional" 
+                       else self.solution_path)
         proc = subprocess.run(
-            [sys.executable, self.solution_path],
+            [sys.executable, file_to_run],
             input = test_input,
             capture_output = True,
             text = True,
             timeout = self.PER_TEST_TIMEOUT,
             cwd = self.cwd
         )
-        if proc.returncode == 0:
-            actual_output = proc.stdout
-            if actual_output.split() == expected_output.split():
-                return "pass", ""
-            else:
-                return ("AssertionError", 
-                        f"expected {expected_output.split()!r}, got {actual_output.split()!r}")
-        else:
+        if proc.returncode != 0:
             return "runtime_error", proc.stderr
+ 
+        if self._get_test_type(test_dict) == "functional":
+            return self._check_functional(proc.stdout, expected_output)
+        return self._check_stdin(proc.stdout, expected_output)
 
 
-    def _run_functional_tests(self, test_dict: dict) -> None:
-        pass
-
-
-    def _run_functional_test(self, test_dict: dict) -> None:
-        test_input, expected_output = self._get_test_case(test_dict)
-        self._add_main_to_solution()
-
-
-    def _add_main_to_solution(self, entrypoint: str) -> bool:
-        with open(self.solution_path, "r") as f:
-            llm_generated_code = f.read()
-        main_code = (
-            f"if __name__ == '__main__':\n"
-            f"    solution = Solution()\n"
-            f"    result = solution.{entrypoint}()\n"
-        )
-
-
-    def _load_test_cases(self) -> None:
-        with open(self.test_path) as f:
-            test_cases = json.load(f)
-        self.test_type = test_cases["test_type"]
-        self.func_name = test_cases.get("func_name")
-        self.tests = test_cases["tests"]
+    def _check_functional(self, stdout: str, expected_output: str) -> tuple[str, str]:
+        try:
+            actual = json.loads(stdout.strip().splitlines()[-1])
+        except (IndexError, json.JSONDecodeError):
+            return "bad_output", f"could not parse stdout: {stdout!r}"
+ 
+        expected = json.loads(expected_output)
+        if actual == expected:
+            return "pass", ""
+        return "AssertionError", f"expected {expected!r}, got {actual!r}"
+ 
+ 
+    def _check_stdin(self, stdout: str, expected_output: str) -> tuple[str, str]:
+        if stdout.split() == expected_output.split():
+            return "pass", ""
+        return ("AssertionError",
+                f"expected {expected_output.split()!r}, got {stdout.split()!r}")
 
 
     def _get_test_case(self, test_dict: dict) -> tuple[str, str]:
         return test_dict["input"], test_dict["output"]
 
 
-# def run_functional_test(test, func_name):
-#     """Run harness_functional.py, which imports solution.py and calls the method."""
-#     proc = subprocess.run(
-#         [sys.executable, "harness_functional.py", func_name],
-#         input=test["input"],
-#         capture_output=True,
-#         text=True,
-#         timeout=PER_TEST_TIMEOUT,
-#         cwd=HERE,
-#     )
-#     if proc.returncode != 0:
-#         return "runtime_error", os.truncate(proc.stderr)
+    def _build_functional_file(self, entrypoint: str) -> None:
+        with open(self.solution_path, "r") as f:
+            llm_generated_code = f.read()
 
-#     # Only trust the line that starts with the sentinel; anything else the
-#     # solution printed is ignored.
-#     result_line = None
-#     for line in proc.stdout.splitlines():
-#         if line.startswith(SENTINEL):
-#             result_line = line[len(SENTINEL):]
-#     if result_line is None:
-#         return "runtime_error", "harness produced no result"
+        main_block = (
+            "\n\n"
+            "if __name__ == '__main__':\n"
+            "    import json, sys\n"
+            "    _args = [json.loads(line) for line in sys.stdin.read().splitlines()]\n"
+            f"    _result = Solution().{entrypoint}(*_args)\n"
+            "    print(json.dumps(_result))\n"
+        )
 
-#     actual = json.loads(result_line)
-#     expected = json.loads(test["output"])
-#     if actual == expected:
-#         return "pass", ""
-#     return "wrong_answer", f"expected {expected!r}, got {actual!r}"
+        _code = "from typing import *\n\n" + llm_generated_code + main_block
+
+        test_file_path = f"{self.solution_path.replace('.py', '')}_test.py"
+        with open(test_file_path, "w") as f:
+            f.write(_code)
 
 
-# def main():
-#     started = time.time()
-
-#     for index, test in enumerate(spec["tests"]):
-#         # Per-problem budget: stop early and mark the rest as not run.
-#         if time.time() - started > TOTAL_BUDGET:
-#             results.append({"index": index, "status": "not_run", "seconds": 0.0, "detail": ""})
-#             continue
-
-#         t0 = time.time()
-#         try:
-#             if test_type == "stdin":
-#                 status, detail = run_stdin_test(test)
-#             else:
-#                 status, detail = run_functional_test(test, func_name)
-#         except subprocess.TimeoutExpired:
-#             status, detail = "timeout", f"exceeded {PER_TEST_TIMEOUT}s"
-#         results.append({
-#             "index": index,
-#             "status": status,
-#             "seconds": round(time.time() - t0, 3),
-#             "detail": detail,
-#         })
-
-#     summary = {
-#         "test_type": test_type,
-#         "all_passed": all(r["status"] == "pass" for r in results),
-#         "passed": sum(r["status"] == "pass" for r in results),
-#         "total": len(results),
-#         "results": results,
-#     }
-#     with open(os.path.join(HERE, "results.json"), "w") as f:
-#         json.dump(summary, f, indent=2)
-
-#     # A short human-readable line; the host should read results.json instead.
-#     print(f"{summary['passed']}/{summary['total']} passed")
-
+    def _get_test_type(self, tests: list[dict] | dict) -> None:
+        return tests[0]["testtype"] if isinstance(tests, list) else tests["testtype"]
 
 if __name__ == "__main__":
-    lcb = LiveCodeBenchRunner()
-    lcb.run_tests()
+    with open("services/PyCapsule/livecodebench_harness/tests.json", "r") as f:
+        tests = json.dumps(json.load(f))
+    tests = json.loads(tests)
+    lcb = LiveCodeBenchRunner(solution_path = "/root/workspace/SYNKRASIS/services/PyCapsule/livecodebench_harness/solution.py")
+    lcb.run_tests(tests, "factorial")
