@@ -120,7 +120,7 @@ class LiveCodeBenchRunner():
             f.write(_code)
 
 
-    def _get_test_type(self, tests: list[dict] | dict) -> None:
+    def _get_test_type(self, tests: list[dict] | dict) -> str:
         return tests[0]["testtype"] if isinstance(tests, list) else tests["testtype"]
 
 if __name__ == "__main__":
