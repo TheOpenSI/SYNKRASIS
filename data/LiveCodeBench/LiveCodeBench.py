@@ -133,8 +133,22 @@ class LiveCodeBench(DatasetBase):
                 "public_test": data_point["public_test_cases"],
                 "private_test": self._decode_test_cases(data_point["private_test_cases"]),
                 "starter_code": data_point["starter_code"],
-                "metadata": data_point["metadata"]
+                "test_type": self._get_test_type(data_point["public_test_cases"]),
+                # "metadata": data_point["metadata"]
             }
+
+
+    def _get_test_type(self, tests: list[dict] | dict) -> str:
+        """
+        Determine the test type from the provided tests.
+        
+        Args:
+            tests (list[dict] | dict): A list of test case dictionaries or a single test case dictionary.
+        
+        Returns:
+            str: The test type if all test cases have the same type, otherwise "Multi".
+        """
+        return tests[0]["testtype"] if isinstance(tests, list) else tests["testtype"]
 
 
     def _is_date_in_range(self, contest_date: date) -> bool:

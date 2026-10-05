@@ -32,6 +32,23 @@ class PyCapsule_LiveCodeBench(PyCapsuleBase):
         return self.helper_set_prompt_paths()
 
 
+    def _generate_code(self, user_query, suppress_conversation_history = True) -> None:
+        self.validate_metadata(
+            dict, 
+            user_query, 
+            ["task_id", "prompt", "entry_point", "public_test", "private_test", "starter_code", "test_type"]
+        )
+
+        response = self.llm.generate_response(user_prompt = user_query["prompt"],
+                                              suppress_conversation_history = suppress_conversation_history)
+
+        # https://support.leetcode.com/hc/en-us/articles/360011833974-What-are-the-environments-for-the-programming-languages
+        _, code = parse_response(response) # no req, default env set
+
+        self._create_main_py(code, user_query)
+
+
     def _create_main_py(self, code: str, user_query: dict) -> None:
+        # Suppress warning
         suppress_warning = self.suppress_warning_code()
         

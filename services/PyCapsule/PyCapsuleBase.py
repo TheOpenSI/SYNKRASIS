@@ -41,7 +41,6 @@ import subprocess, json
 from subprocess import CompletedProcess
 from typing import Union, Tuple
 from abc import abstractmethod
-from deprecated import deprecated
 
 from services.Base import ServiceBase
 from services.Container.Container import Container
@@ -52,7 +51,6 @@ from utils.output_message_format.output_colour import print_error, print_info, p
 from utils.output_message_format.output_colour import print_success, print_pycapsule
 from modules.ErrorHandling import ErrorHandling
 from modules.ExampleCallDetection import ExampleCallDetection
-from modules.ChatHistory import ChatHistory
 
 
 class PyCapsuleBase(ServiceBase):
