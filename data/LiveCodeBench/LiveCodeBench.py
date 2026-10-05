@@ -126,15 +126,16 @@ class LiveCodeBench(DatasetBase):
 
     def process(self, data_point: pd.Series) -> dict :
             metadata = ast.literal_eval(data_point["metadata"])
+            public_test_cases = json.loads(data_point["public_test_cases"])
             return {
                 "task_id": data_point["question_id"],
                 "prompt": data_point["question_content"],
                 "entry_point": metadata.get("func_name", None), # relevant when starter code is present, test is functional.
-                "public_test": data_point["public_test_cases"],
+                "public_test": public_test_cases,
                 "private_test": self._decode_test_cases(data_point["private_test_cases"]),
                 "starter_code": data_point["starter_code"],
-                "test_type": self._get_test_type(data_point["public_test_cases"]),
-                # "metadata": data_point["metadata"]
+                "test_type": self._get_test_type(public_test_cases),
+                "metadata": data_point["metadata"]
             }
 
 

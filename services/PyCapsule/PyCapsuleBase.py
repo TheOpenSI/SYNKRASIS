@@ -300,6 +300,7 @@ class PyCapsuleBase(ServiceBase):
             path (str): Path to create the file.
             content (str): Content to write in the file.
         """
+        os.makedirs(os.path.dirname(path), exist_ok=True)
         with open(path, "w") as task_file:
             task_file.write(content)
 

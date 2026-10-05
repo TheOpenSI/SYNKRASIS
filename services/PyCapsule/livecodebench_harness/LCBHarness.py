@@ -1,5 +1,5 @@
 class LCBHarness():
-    def _build_factorial_file(self, user_query: dict, llm_generated_code: str) -> None:
+    def _build_factorial_content(self, user_query: dict, llm_generated_code: str) -> None:
         func_name = user_query["entry_point"]
         main_block = (
             "\n\n"
@@ -11,3 +11,7 @@ class LCBHarness():
         )
 
         return "from typing import *\n\n" + llm_generated_code + main_block
+
+
+    def _build_stdin_content(self, llm_generated_code: str) -> None:
+        return "from typing import *\n\n" + llm_generated_code
