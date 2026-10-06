@@ -30,12 +30,12 @@ class PyCapsule_LiveCodeBench(PyCapsuleBase):
     REQUIRED_KEYS = ["task_id", "prompt", "entry_point", "public_test", "private_test", "starter_code", "test_type"]
 
     PRIVATE_FAIL_QUERY = (
-        "Your solution passed all the public test cases, but it failed at least one hidden test case.\n"
-        "Please re-read the problem statement and recheck all edge cases, e.g. minimum and maximum values "
-        "of the constraints, empty/single element inputs, duplicates, negative numbers and "
-        "off-by-one errors. Also make sure your solution is efficient enough for the largest "
-        "input allowed by the constraints, and that the output format matches the statement exactly.\n"
-        "Rewrite the whole solution with the necessary imports."
+        "Your solution passes the public tests but fails a hidden test, so its logic is probably wrong or "
+        "incomplete for inputs the examples do not cover.\n"
+        "Re-derive the approach from the problem statement instead of patching the examples, then check: "
+        "minimum/maximum constraint values and tiny inputs, duplicates and ties, time complexity at the "
+        "maximum input size, and the exact output format.\n"
+        "Rewrite the whole solution."
     )
 
     def __init__(self,

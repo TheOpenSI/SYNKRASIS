@@ -15,11 +15,11 @@ Call __bpd_main__()  [__bpd_main__, lines 88-89]
         Iteration 1 (_ = 0):
           Line 12 `L = int(next(it))`: L = 7
           Line 13 `R = int(next(it))`: R = 8
-          Line 14 `intervals.append((L, R))`: intervals: [] -> [(7, 8)]
+          Line 14 `intervals.append((L, R))`: intervals: appended (7, 8)
         Iteration 2 (_ = 1):
           Line 12 `L = int(next(it))`: L: 7 -> 17
           Line 13 `R = int(next(it))`: R: 8 -> 20
-          Line 14 `intervals.append((L, R))`: intervals: [(7, 8)] -> [(7, 8), (17, 20)]
+          Line 14 `intervals.append((L, R))`: intervals: appended (17, 20)
       Line 15 `prefix_mask = (1 << B - A + 1) - 1`: prefix_mask = 7
       Line 16 `maskB = (1 << B) - 1`: maskB = 31
       Line 17 `current = 1`: current = 1
@@ -38,21 +38,21 @@ Call __bpd_main__()  [__bpd_main__, lines 88-89]
               Line 26 `while current < end:` (current = 1, end = 6) ran 5 iterations
                 Iteration 1 (current = 1, end = 6):
                   Line 27 `if Mstate in seen:` was False (Mstate = 16, seen = {})
-                  Line 47 `seen[Mstate] = current`: seen: {} -> {16: 1}
+                  Line 47 `seen[Mstate] = current`: seen[16] = 1
                   Line 48 `Next = 1 if Mstate & prefix_mask != 0 else 0`: Next = 0
                   Line 49 `Mstate = Mstate >> 1 | Next << B - 1`: Mstate: 16 -> 8
                   Line 50 `current += 1`: current: 1 -> 2
                   Line 51 `if current == N and Next == 1:` was False (current = 2, N = 24, Next = 0)
                 Iteration 2 (current = 2, end = 6):
                   Line 27 `if Mstate in seen:` was False (Mstate = 8, seen = {16: 1})
-                  Line 47 `seen[Mstate] = current`: seen: {16: 1} -> {16: 1, 8: 2}
+                  Line 47 `seen[Mstate] = current`: seen[8] = 2
                   Line 49 `Mstate = Mstate >> 1 | Next << B - 1`: Mstate: 8 -> 4
                   Line 50 `current += 1`: current: 2 -> 3
                   Line 51 `if current == N and Next == 1:` was False (current = 3, N = 24, Next = 0)
                 ... 2 iterations omitted ...
                 Iteration 5 (current = 5, end = 6):
                   Line 27 `if Mstate in seen:` was False (Mstate = 25, seen = {16: 1, 8: 2, 4: 3, 18: 4})
-                  Line 47 `seen[Mstate] = current`: seen: {16: 1, 8: 2, 4: 3, 18: 4} -> {16: 1, 8: 2, 4: 3, 18: 4, 25: 5}
+                  Line 47 `seen[Mstate] = current`: seen[25] = 5
                   Line 49 `Mstate = Mstate >> 1 | Next << B - 1`: Mstate: 25 -> 28
                   Line 50 `current += 1`: current: 5 -> 6
                   Line 51 `if current == N and Next == 1:` was False (current = 6, N = 24, Next = 1)
@@ -86,14 +86,14 @@ Call __bpd_main__()  [__bpd_main__, lines 88-89]
               Line 26 `while current < end:` (current = 8, end = 16) ran 7 iterations
                 Iteration 1 (current = 8, end = 16):
                   Line 27 `if Mstate in seen:` was False (Mstate = 7, seen = {})
-                  Line 47 `seen[Mstate] = current`: seen: {} -> {7: 8}
+                  Line 47 `seen[Mstate] = current`: seen[7] = 8
                   Line 48 `Next = 1 if Mstate & prefix_mask != 0 else 0`: Next = 1
                   Line 49 `Mstate = Mstate >> 1 | Next << B - 1`: Mstate: 7 -> 19
                   Line 50 `current += 1`: current: 8 -> 9
                   Line 51 `if current == N and Next == 1:` was False (current = 9, N = 24, Next = 1)
                 Iteration 2 (current = 9, end = 16):
                   Line 27 `if Mstate in seen:` was False (Mstate = 19, seen = {7: 8})
-                  Line 47 `seen[Mstate] = current`: seen: {7: 8} -> {7: 8, 19: 9}
+                  Line 47 `seen[Mstate] = current`: seen[19] = 9
                   Line 49 `Mstate = Mstate >> 1 | Next << B - 1`: Mstate: 19 -> 25
                   Line 50 `current += 1`: current: 9 -> 10
                   Line 51 `if current == N and Next == 1:` was False (current = 10, N = 24, Next = 1)
@@ -144,14 +144,14 @@ Call __bpd_main__()  [__bpd_main__, lines 88-89]
               Line 26 `while current < end:` (current = 20, end = 24) ran 4 iterations, then returned from inside the loop
                 Iteration 1 (current = 20, end = 24):
                   Line 27 `if Mstate in seen:` was False (Mstate = 1, seen = {})
-                  Line 47 `seen[Mstate] = current`: seen: {} -> {1: 20}
+                  Line 47 `seen[Mstate] = current`: seen[1] = 20
                   Line 48 `Next = 1 if Mstate & prefix_mask != 0 else 0`: Next = 1
                   Line 49 `Mstate = Mstate >> 1 | Next << B - 1`: Mstate: 1 -> 16
                   Line 50 `current += 1`: current: 20 -> 21
                   Line 51 `if current == N and Next == 1:` was False (current = 21, N = 24, Next = 1)
                 Iteration 2 (current = 21, end = 24):
                   Line 27 `if Mstate in seen:` was False (Mstate = 16, seen = {1: 20})
-                  Line 47 `seen[Mstate] = current`: seen: {1: 20} -> {1: 20, 16: 21}
+                  Line 47 `seen[Mstate] = current`: seen[16] = 21
                   Line 48 `Next = 1 if Mstate & prefix_mask != 0 else 0`: Next: 1 -> 0
                   Line 49 `Mstate = Mstate >> 1 | Next << B - 1`: Mstate: 16 -> 8
                   Line 50 `current += 1`: current: 21 -> 22
@@ -159,7 +159,7 @@ Call __bpd_main__()  [__bpd_main__, lines 88-89]
                 ... 1 iterations omitted ...
                 Iteration 4 (current = 23, end = 24):
                   Line 27 `if Mstate in seen:` was False (Mstate = 4, seen = {1: 20, 16: 21, 8: 22})
-                  Line 47 `seen[Mstate] = current`: seen: {1: 20, 16: 21, 8: 22} -> {1: 20, 16: 21, 8: 22, 4: 23}
+                  Line 47 `seen[Mstate] = current`: seen[4] = 23
                   Line 48 `Next = 1 if Mstate & prefix_mask != 0 else 0`: Next: 0 -> 1
                   Line 49 `Mstate = Mstate >> 1 | Next << B - 1`: Mstate: 4 -> 18
                   Line 50 `current += 1`: current: 23 -> 24

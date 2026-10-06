@@ -17,27 +17,27 @@ Call __bpd_main__()  [__bpd_main__, lines 80-81]
           Line 62 `for j in range(N):` (N = 2) ran 2 iterations
             Iteration 1:
               Line 63 `val = int(next(it)) % p`: val = 0
-              Line 64 `row.append(val)`: row: [] -> [0]
+              Line 64 `row.append(val)`: row: appended 0
               Line 65 `if val == 0:` was True (val = 0)
-              Line 66 `zeros.append((i, j))`: zeros: [] -> [(0, 0)]
+              Line 66 `zeros.append((i, j))`: zeros: appended (0, 0)
             Iteration 2:
               Line 63 `val = int(next(it)) % p`: val: 0 -> 1
-              Line 64 `row.append(val)`: row: [0] -> [0, 1]
+              Line 64 `row.append(val)`: row: appended 1
               Line 65 `if val == 0:` was False (val = 1)
-          Line 67 `A.append(row)`: A: [] -> [[0, 1]]
+          Line 67 `A.append(row)`: A: appended [0, 1]
         Iteration 2:
-          Line 61 `row = []`: row: [0, 1] -> []
+          Line 61 `row = []`: row: removed 0, 1 from the end
           Line 62 `for j in range(N):` (N = 2) ran 2 iterations
             Iteration 1:
               Line 63 `val = int(next(it)) % p`: val: 1 -> 0
-              Line 64 `row.append(val)`: row: [] -> [0]
+              Line 64 `row.append(val)`: row: appended 0
               Line 65 `if val == 0:` was True (val = 0)
-              Line 66 `zeros.append((i, j))`: zeros: [(0, 0)] -> [(0, 0), (1, 0)]
+              Line 66 `zeros.append((i, j))`: zeros: appended (1, 0)
             Iteration 2:
               Line 63 `val = int(next(it)) % p`: val: 0 -> 2
-              Line 64 `row.append(val)`: row: [0] -> [0, 2]
+              Line 64 `row.append(val)`: row: appended 2
               Line 65 `if val == 0:` was False (val = 2)
-          Line 67 `A.append(row)`: A: [[0, 1]] -> [[0, 1], [0, 2]]
+          Line 67 `A.append(row)`: A: appended [0, 2]
       Line 68 `K = len(zeros)`: K = 2
       Line 69 `if K == 0:` was False (K = 2)
       Line 74 `Ap = mat_pow(A, p, p)`:
@@ -45,14 +45,14 @@ Call __bpd_main__()  [__bpd_main__, lines 80-81]
           Line 33 `n = len(A)`: n = 2
           Line 34 `R = [[0] * n for _ in range(n)]`: R = [[0, 0], [0, 0]]
           Line 35 `for i in range(n):` (n = 2) ran 2 iterations
-            Iteration 1 (i = 0): line 36 `R[i][i] = 1 % mod`: R: [[0, 0], [0, 0]] -> [[1, 0], [0, 0]]
-            Iteration 2 (i = 1): line 36 `R[i][i] = 1 % mod`: R: [[1, 0], [0, 0]] -> [[1, 0], [0, 1]]
+            Iteration 1 (i = 0): line 36 `R[i][i] = 1 % mod`: R[0]: [0, 0] -> [1, 0]
+            Iteration 2 (i = 1): line 36 `R[i][i] = 1 % mod`: R[1]: [0, 0] -> [0, 1]
           Line 37 `X = [row[:] for row in A]`: X = [[0, 1], [0, 2]]
           Line 38 `while e > 0:` (e = 3) ran 2 iterations
             Iteration 1 (e = 3):
               Line 39 `if e & 1:` was True (e = 3)
-              Line 40 `R = mat_mul(R, X, mod)`: called mat_mul(A=[[1, 0], [0, 1]], B=[[0, 1], [0, 2]], mod=3) -> [[0, 1], [0, 2]] (nested details omitted: depth limit); R: [[1, 0], [0, 1]] -> [[0, 1], [0, 2]]
-              Line 41 `X = mat_mul(X, X, mod)`: called mat_mul(A=[[0, 1], [0, 2]], B=[[0, 1], [0, 2]], mod=3) -> [[0, 2], [0, 1]] (nested details omitted: depth limit); X: [[0, 1], [0, 2]] -> [[0, 2], [0, 1]]
+              Line 40 `R = mat_mul(R, X, mod)`: called mat_mul(A=[[1, 0], [0, 1]], B=[[0, 1], [0, 2]], mod=3) -> [[0, 1], [0, 2]] (nested details omitted: depth limit); R[0]: [1, 0] -> [0, 1]; R[1]: [0, 1] -> [0, 2]
+              Line 41 `X = mat_mul(X, X, mod)`: called mat_mul(A=[[0, 1], [0, 2]], B=[[0, 1], [0, 2]], mod=3) -> [[0, 2], [0, 1]] (nested details omitted: depth limit); X[0]: [0, 1] -> [0, 2]; X[1]: [0, 2] -> [0, 1]
               Line 42 `e >>= 1`: e: 3 -> 1
             Iteration 2 (e = 1):
               Line 39 `if e & 1:` was True (e = 1)

@@ -12,12 +12,12 @@ Call __bpd_main__()  [__bpd_main__, lines 23-24]
       Line 9 `pos = []`: pos = []
       Line 10 `for idx, ch in enumerate(S, start=1):` (S = '0101001') ran 7 iterations
         Iteration 1 (idx = 1, ch = '0'): line 11 `if ch == '1':` was False (ch = '0')
-        Iteration 2 (idx = 2, ch = '1'): line 11 `if ch == '1':` was True (ch = '1'); line 12 `pos.append(idx)`: pos: [] -> [2]
+        Iteration 2 (idx = 2, ch = '1'): line 11 `if ch == '1':` was True (ch = '1'); line 12 `pos.append(idx)`: pos: appended 2
         Iteration 3 (idx = 3, ch = '0'): line 11 `if ch == '1':` was False (ch = '0')
-        Iteration 4 (idx = 4, ch = '1'): line 11 `if ch == '1':` was True (ch = '1'); line 12 `pos.append(idx)`: pos: [2] -> [2, 4]
+        Iteration 4 (idx = 4, ch = '1'): line 11 `if ch == '1':` was True (ch = '1'); line 12 `pos.append(idx)`: pos: appended 4
         ... 1 iterations omitted ...
         Iteration 6 (idx = 6, ch = '0'): line 11 `if ch == '1':` was False (ch = '0')
-        Iteration 7 (idx = 7, ch = '1'): line 11 `if ch == '1':` was True (ch = '1'); line 12 `pos.append(idx)`: pos: [2, 4] -> [2, 4, 7]
+        Iteration 7 (idx = 7, ch = '1'): line 11 `if ch == '1':` was True (ch = '1'); line 12 `pos.append(idx)`: pos: appended 7
         After the loop: pos = [2, 4, 7]
       Line 13 `k = len(pos)`: k = 3
       Line 14 `if k <= 1:` was False (k = 3)

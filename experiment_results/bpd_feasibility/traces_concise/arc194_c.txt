@@ -24,21 +24,21 @@ Call __bpd_main__()  [__bpd_main__, lines 41-42]
           Line 20 `if Di == 1:` was True (Di = 1)
           Line 21 `d += 1`: d: 0 -> 1
           Line 22 `if A_i == 1:` was True (A_i = 1)
-          Line 23 `neg.append(Ci)`: neg: [] -> [52]
+          Line 23 `neg.append(Ci)`: neg: appended 52
         Iteration 2 (i = 1):
           Line 17 `Ci = C[i]`: Ci: 52 -> 73
           Line 18 `S0 += A_i * Ci`: S0: 52 -> 125
           Line 20 `if Di == 1:` was True (Di = 1)
           Line 21 `d += 1`: d: 1 -> 2
           Line 22 `if A_i == 1:` was True (A_i = 1)
-          Line 23 `neg.append(Ci)`: neg: [52] -> [52, 73]
+          Line 23 `neg.append(Ci)`: neg: appended 73
         Iteration 3 (i = 2):
           Line 17 `Ci = C[i]`: Ci: 73 -> 97
           Line 18 `S0 += A_i * Ci`: S0: 125 -> 222
           Line 20 `if Di == 1:` was True (Di = 1)
           Line 21 `d += 1`: d: 2 -> 3
           Line 22 `if A_i == 1:` was True (A_i = 1)
-          Line 23 `neg.append(Ci)`: neg: [52, 73] -> [52, 73, 97]
+          Line 23 `neg.append(Ci)`: neg: appended 97
         Iteration 4 (i = 3):
           Line 16 `B_i = B[i]`: B_i: 0 -> 1
           Line 17 `Ci = C[i]`: Ci: 97 -> 72
@@ -54,7 +54,7 @@ Call __bpd_main__()  [__bpd_main__, lines 41-42]
           Line 20 `if Di == 1:` was True (Di = 1)
           Line 21 `d += 1`: d: 11 -> 12
           Line 22 `if A_i == 1:` was True (A_i = 1)
-          Line 23 `neg.append(Ci)`: neg: [52, 73, 97, 79, 22, 90, 1] -> [52, 73, 97, 79, 22, 90, 1, 27]
+          Line 23 `neg.append(Ci)`: neg: appended 27
         Iteration 20 (i = 19):
           Line 15 `A_i = A[i]`: A_i: 1 -> 0
           Line 17 `Ci = C[i]`: Ci: 27 -> 8

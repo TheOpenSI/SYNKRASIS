@@ -9,6 +9,6 @@ Call __bpd_main__()  [__bpd_main__, lines 12-13]
       Line 5 `if not data:` was False (data = ['3', 'tc', 'oder', 'a'])
       Line 7 `n = int(data[0])`: n = 3
       Line 8 `strings = data[1:1 + n]`: strings = ['tc', 'oder', 'a']
-      Line 9 `strings.sort(key=len)`: strings: ['tc', 'oder', 'a'] -> ['a', 'tc', 'oder']
+      Line 9 `strings.sort(key=len)`: strings[0]: 'tc' -> 'a'; strings[1]: 'oder' -> 'tc'; strings[2]: 'a' -> 'oder'
       End of function reached: main returned None
   End of function reached: __bpd_main__ returned None

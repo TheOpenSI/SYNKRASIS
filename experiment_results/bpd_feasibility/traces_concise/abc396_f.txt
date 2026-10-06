@@ -27,9 +27,9 @@ Call __bpd_main__()  [__bpd_main__, lines 47-48]
             called bit_add(idx=2, delta=1, bit=[0, 0, 0, 0], size=3):
               Line 12 `i = idx + 1`: i = 3
               Line 13 `while i <= size:` (i = 3, size = 3) ran 1 iteration
-                Iteration 1 (i = 3, size = 3): line 14 `bit[i] += delta`: bit: [0, 0, 0, 0] -> [0, 0, 0, 1]; line 15 `i += i & -i`: i: 3 -> 4
+                Iteration 1 (i = 3, size = 3): line 14 `bit[i] += delta`: bit[3]: 0 -> 1; line 15 `i += i & -i`: i: 3 -> 4
               End of function reached: bit_add returned None
-            bit: [0, 0, 0, 0] -> [0, 0, 0, 1]
+            bit[3]: 0 -> 1
         Iteration 2 (i = 1, val = 1):
           Line 26 `s = bit_sum(val)`:
             called bit_sum(idx=1, bit=[0, 0, 0, 1]):
@@ -43,9 +43,9 @@ Call __bpd_main__()  [__bpd_main__, lines 47-48]
             called bit_add(idx=1, delta=1, bit=[0, 0, 0, 1], size=3):
               Line 12 `i = idx + 1`: i = 2
               Line 13 `while i <= size:` (i = 2, size = 3) ran 1 iteration
-                Iteration 1 (i = 2, size = 3): line 14 `bit[i] += delta`: bit: [0, 0, 0, 1] -> [0, 0, 1, 1]; line 15 `i += i & -i`: i: 2 -> 4
+                Iteration 1 (i = 2, size = 3): line 14 `bit[i] += delta`: bit[2]: 0 -> 1; line 15 `i += i & -i`: i: 2 -> 4
               End of function reached: bit_add returned None
-            bit: [0, 0, 0, 1] -> [0, 0, 1, 1]
+            bit[2]: 0 -> 1
         Iteration 3 (i = 2, val = 0):
           Line 26 `s = bit_sum(val)`:
             called bit_sum(idx=0, bit=[0, 0, 1, 1]):
@@ -59,25 +59,25 @@ Call __bpd_main__()  [__bpd_main__, lines 47-48]
             called bit_add(idx=0, delta=1, bit=[0, 0, 1, 1], size=3):
               Line 12 `i = idx + 1`: i = 1
               Line 13 `while i <= size:` (i = 1, size = 3) ran 2 iterations
-                Iteration 1 (i = 1, size = 3): line 14 `bit[i] += delta`: bit: [0, 0, 1, 1] -> [0, 1, 1, 1]; line 15 `i += i & -i`: i: 1 -> 2
-                Iteration 2 (i = 2, size = 3): line 14 `bit[i] += delta`: bit: [0, 1, 1, 1] -> [0, 1, 2, 1]; line 15 `i += i & -i`: i: 2 -> 4
+                Iteration 1 (i = 1, size = 3): line 14 `bit[i] += delta`: bit[1]: 0 -> 1; line 15 `i += i & -i`: i: 1 -> 2
+                Iteration 2 (i = 2, size = 3): line 14 `bit[i] += delta`: bit[2]: 1 -> 2; line 15 `i += i & -i`: i: 2 -> 4
               End of function reached: bit_add returned None
-            bit: [0, 0, 1, 1] -> [0, 1, 2, 1]
+            bit[1]: 0 -> 1; bit[2]: 1 -> 2
       Line 29 `m = [0] * M`: m = [0, 0, 0]
       Line 30 `sum_pos = [0] * M`: sum_pos = [0, 0, 0]
       Line 31 `for idx, val in enumerate(A, start=1):` (A = [2, 1, 0]) ran 3 iterations
-        Iteration 1 (idx = 1, val = 2): line 32 `m[val] += 1`: m: [0, 0, 0] -> [0, 0, 1]; line 33 `sum_pos[val] += idx`: sum_pos: [0, 0, 0] -> [0, 0, 1]
-        Iteration 2 (idx = 2, val = 1): line 32 `m[val] += 1`: m: [0, 0, 1] -> [0, 1, 1]; line 33 `sum_pos[val] += idx`: sum_pos: [0, 0, 1] -> [0, 2, 1]
-        Iteration 3 (idx = 3, val = 0): line 32 `m[val] += 1`: m: [0, 1, 1] -> [1, 1, 1]; line 33 `sum_pos[val] += idx`: sum_pos: [0, 2, 1] -> [3, 2, 1]
+        Iteration 1 (idx = 1, val = 2): line 32 `m[val] += 1`: m[2]: 0 -> 1; line 33 `sum_pos[val] += idx`: sum_pos[2]: 0 -> 1
+        Iteration 2 (idx = 2, val = 1): line 32 `m[val] += 1`: m[1]: 0 -> 1; line 33 `sum_pos[val] += idx`: sum_pos[1]: 0 -> 2
+        Iteration 3 (idx = 3, val = 0): line 32 `m[val] += 1`: m[0]: 0 -> 1; line 33 `sum_pos[val] += idx`: sum_pos[0]: 0 -> 3
       Line 34 `delta = [0] * M`: delta = [0, 0, 0]
       Line 35 `for v in range(M):` (M = 3) ran 3 iterations
-        Iteration 1 (v = 0): line 36 `if m[v] == 0:` was False (m = [1, 1, 1], v = 0); line 39 `delta[v] = 2 * sum_pos[v] - m[v] * N - m[v]`: delta: [0, 0, 0] -> [2, 0, 0]
+        Iteration 1 (v = 0): line 36 `if m[v] == 0:` was False (m = [1, 1, 1], v = 0); line 39 `delta[v] = 2 * sum_pos[v] - m[v] * N - m[v]`: delta[0]: 0 -> 2
         Iteration 2 (v = 1): line 36 `if m[v] == 0:` was False (m = [1, 1, 1], v = 1)
-        Iteration 3 (v = 2): line 36 `if m[v] == 0:` was False (m = [1, 1, 1], v = 2); line 39 `delta[v] = 2 * sum_pos[v] - m[v] * N - m[v]`: delta: [2, 0, 0] -> [2, 0, -2]
+        Iteration 3 (v = 2): line 36 `if m[v] == 0:` was False (m = [1, 1, 1], v = 2); line 39 `delta[v] = 2 * sum_pos[v] - m[v] * N - m[v]`: delta[2]: 0 -> -2
       Line 40 `ans = [0] * M`: ans = [0, 0, 0]
-      Line 41 `ans[0] = inv0`: ans: [0, 0, 0] -> [3, 0, 0]
+      Line 41 `ans[0] = inv0`: ans[0]: 0 -> 3
       Line 42 `for k in range(0, M - 1):` (M = 3) ran 2 iterations
-        Iteration 1 (k = 0): line 44 `ans[k + 1] = ans[k] + delta[v]`: ans: [3, 0, 0] -> [3, 1, 0]
-        Iteration 2 (k = 1): line 43 `v = M - 1 - k`: v: 2 -> 1; line 44 `ans[k + 1] = ans[k] + delta[v]`: ans: [3, 1, 0] -> [3, 1, 1]
+        Iteration 1 (k = 0): line 44 `ans[k + 1] = ans[k] + delta[v]`: ans[1]: 0 -> 1
+        Iteration 2 (k = 1): line 43 `v = M - 1 - k`: v: 2 -> 1; line 44 `ans[k + 1] = ans[k] + delta[v]`: ans[2]: 0 -> 1
       End of function reached: main returned None
   End of function reached: __bpd_main__ returned None

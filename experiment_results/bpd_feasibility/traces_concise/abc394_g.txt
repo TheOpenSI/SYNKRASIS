@@ -18,7 +18,7 @@ Call __bpd_main__()  [__bpd_main__, lines 137-138]
             Iteration 1 (j = 0):
               Line 16 `v = int(next(it))`: v = 12
               Line 17 `idx = i * W + j`: idx = 0
-              Line 18 `F_list[idx] = v`: F_list: [0, 0, 0, 0, 0, 0, 0, 0, 0] -> [12, 0, 0, 0, 0, 0, 0, 0, 0]
+              Line 18 `F_list[idx] = v`: F_list[0]: 0 -> 12
               Line 19 `if v > maxF:` was True (v = 12, maxF = 0)
               Line 20 `maxF = v`: maxF: 0 -> 12
               Line 21 `cells_by_value[v].append(idx)`: cells_by_value: defaultdict(<class 'list'>,... -> defaultdict(<class 'list'>,...
@@ -26,7 +26,7 @@ Call __bpd_main__()  [__bpd_main__, lines 137-138]
             Iteration 3 (j = 2):
               Line 16 `v = int(next(it))`: v: 10 -> 6
               Line 17 `idx = i * W + j`: idx: 1 -> 2
-              Line 18 `F_list[idx] = v`: F_list: [12, 10, 0, 0, 0, 0, 0, 0, 0] -> [12, 10, 6, 0, 0, 0, 0, 0, 0]
+              Line 18 `F_list[idx] = v`: F_list[2]: 0 -> 6
               Line 19 `if v > maxF:` was False (v = 6, maxF = 12)
               Line 21 `cells_by_value[v].append(idx)`: cells_by_value: defaultdict(<class 'list'>,... -> defaultdict(<class 'list'>,...
             After the loop: F_list = [12, 10, 6, 0, 0, 0, 0, 0, 0], maxF = 12, cells_by_value = defaultdict(<class 'list'>,..., v = 6, idx = 2
@@ -36,14 +36,14 @@ Call __bpd_main__()  [__bpd_main__, lines 137-138]
             Iteration 1 (j = 0):
               Line 16 `v = int(next(it))`: v: 3 -> 8
               Line 17 `idx = i * W + j`: idx: 5 -> 6
-              Line 18 `F_list[idx] = v`: F_list: [12, 10, 6, 1, 1, 3, 0, 0, 0] -> [12, 10, 6, 1, 1, 3, 8, 0, 0]
+              Line 18 `F_list[idx] = v`: F_list[6]: 0 -> 8
               Line 19 `if v > maxF:` was False (v = 8, maxF = 12)
               Line 21 `cells_by_value[v].append(idx)`: cells_by_value: defaultdict(<class 'list'>,... -> defaultdict(<class 'list'>,...
             ... 1 iterations omitted ...
             Iteration 3 (j = 2):
               Line 16 `v = int(next(it))`: v: 6 -> 7
               Line 17 `idx = i * W + j`: idx: 7 -> 8
-              Line 18 `F_list[idx] = v`: F_list: [12, 10, 6, 1, 1, 3, 8, 6, 0] -> [12, 10, 6, 1, 1, 3, 8, 6, 7]
+              Line 18 `F_list[idx] = v`: F_list[8]: 0 -> 7
               Line 19 `if v > maxF:` was False (v = 7, maxF = 12)
               Line 21 `cells_by_value[v].append(idx)`: cells_by_value: defaultdict(<class 'list'>,... -> defaultdict(<class 'list'>,...
             After the loop: F_list = [12, 10, 6, 1, 1, 3, 8, 6, 7], cells_by_value = defaultdict(<class 'list'>,..., v = 7, idx = 8
@@ -60,18 +60,18 @@ Call __bpd_main__()  [__bpd_main__, lines 137-138]
               Line 29 `idx = base + c`: idx: 8 -> 0
               Line 30 `if r > 0:` was False (r = 0)
               Line 32 `if r < H - 1:` was True (r = 0, H = 3)
-              Line 33 `neigh1[idx] = (r + 1) * W + c`: neigh1: [-1, -1, -1, -1, -1, -1, -1... -> [3, -1, -1, -1, -1, -1, -1,...
+              Line 33 `neigh1[idx] = (r + 1) * W + c`: neigh1[0]: -1 -> 3
               Line 34 `if c > 0:` was False (c = 0)
               Line 36 `if c < W - 1:` was True (c = 0, W = 3)
-              Line 37 `neigh3[idx] = base + (c + 1)`: neigh3: [-1, -1, -1, -1, -1, -1, -1... -> [1, -1, -1, -1, -1, -1, -1,...
+              Line 37 `neigh3[idx] = base + (c + 1)`: neigh3[0]: -1 -> 1
             ... 1 iterations omitted ...
             Iteration 3 (c = 2):
               Line 29 `idx = base + c`: idx: 1 -> 2
               Line 30 `if r > 0:` was False (r = 0)
               Line 32 `if r < H - 1:` was True (r = 0, H = 3)
-              Line 33 `neigh1[idx] = (r + 1) * W + c`: neigh1: [3, 4, -1, -1, -1, -1, -1, ... -> [3, 4, 5, -1, -1, -1, -1, -...
+              Line 33 `neigh1[idx] = (r + 1) * W + c`: neigh1[2]: -1 -> 5
               Line 34 `if c > 0:` was True (c = 2)
-              Line 35 `neigh2[idx] = base + (c - 1)`: neigh2: [-1, 0, -1, -1, -1, -1, -1,... -> [-1, 0, 1, -1, -1, -1, -1, ...
+              Line 35 `neigh2[idx] = base + (c - 1)`: neigh2[2]: -1 -> 1
               Line 36 `if c < W - 1:` was False (c = 2, W = 3)
             After the loop: idx = 2, neigh1 = [3, 4, 5, -1, -1, -1, -1, -..., neigh2 = [-1, 0, 1, -1, -1, -1, -1, ..., neigh3 = [1, 2, -1, -1, -1, -1, -1, ...
         ... 1 iterations omitted ...
@@ -81,19 +81,19 @@ Call __bpd_main__()  [__bpd_main__, lines 137-138]
             Iteration 1 (c = 0):
               Line 29 `idx = base + c`: idx: 5 -> 6
               Line 30 `if r > 0:` was True (r = 2)
-              Line 31 `neigh0[idx] = (r - 1) * W + c`: neigh0: [-1, -1, -1, 0, 1, 2, -1, -... -> [-1, -1, -1, 0, 1, 2, 3, -1...
+              Line 31 `neigh0[idx] = (r - 1) * W + c`: neigh0[6]: -1 -> 3
               Line 32 `if r < H - 1:` was False (r = 2, H = 3)
               Line 34 `if c > 0:` was False (c = 0)
               Line 36 `if c < W - 1:` was True (c = 0, W = 3)
-              Line 37 `neigh3[idx] = base + (c + 1)`: neigh3: [1, 2, -1, 4, 5, -1, -1, -1... -> [1, 2, -1, 4, 5, -1, 7, -1,...
+              Line 37 `neigh3[idx] = base + (c + 1)`: neigh3[6]: -1 -> 7
             ... 1 iterations omitted ...
             Iteration 3 (c = 2):
               Line 29 `idx = base + c`: idx: 7 -> 8
               Line 30 `if r > 0:` was True (r = 2)
-              Line 31 `neigh0[idx] = (r - 1) * W + c`: neigh0: [-1, -1, -1, 0, 1, 2, 3, 4,... -> [-1, -1, -1, 0, 1, 2, 3, 4, 5]
+              Line 31 `neigh0[idx] = (r - 1) * W + c`: neigh0[8]: -1 -> 5
               Line 32 `if r < H - 1:` was False (r = 2, H = 3)
               Line 34 `if c > 0:` was True (c = 2)
-              Line 35 `neigh2[idx] = base + (c - 1)`: neigh2: [-1, 0, 1, -1, 3, 4, -1, 6,... -> [-1, 0, 1, -1, 3, 4, -1, 6, 7]
+              Line 35 `neigh2[idx] = base + (c - 1)`: neigh2[8]: -1 -> 7
               Line 36 `if c < W - 1:` was False (c = 2, W = 3)
             After the loop: idx = 8, neigh0 = [-1, -1, -1, 0, 1, 2, 3, 4, 5], neigh2 = [-1, 0, 1, -1, 3, 4, -1, 6, 7], neigh3 = [1, 2, -1, 4, 5, -1, 7, 8, -1]
         After the loop: neigh0 = [-1, -1, -1, 0, 1, 2, 3, 4, 5], neigh1 = [3, 4, 5, 6, 7, 8, -1, -1, -1], neigh2 = [-1, 0, 1, -1, 3, 4, -1, 6, 7], neigh3 = [1, 2, -1, 4, 5, -1, 7, 8, -1], base = 6
@@ -113,17 +113,17 @@ Call __bpd_main__()  [__bpd_main__, lines 137-138]
 ... 76 trace lines omitted (size limit) ...
                   Line 105 `v = neigh0[u]`: v: 4 -> 1
                   Line 106 `if v != -1 and active[v]:` was True (v = 1, active = [True, True, True, True, Tr...)
-                  Line 107 `union(u, v)`: called union(a=4, b=1, parent=[1, 1, 1, 1, 4, 1, 1, 1, 7], size=[1, 8, 1, 1, 1, 1, 1, 3, 1]) -> None (nested details omitted: depth limit); parent: [1, 1, 1, 1, 4, 1, 1, 1, 7] -> [1, 1, 1, 1, 1, 1, 1, 1, 7]; size: [1, 8, 1, 1, 1, 1, 1, 3, 1] -> [1, 9, 1, 1, 1, 1, 1, 3, 1]
+                  Line 107 `union(u, v)`: called union(a=4, b=1, parent=[1, 1, 1, 1, 4, 1, 1, 1, 7], size=[1, 8, 1, 1, 1, 1, 1, 3, 1]) -> None (nested details omitted: depth limit); parent[4]: 4 -> 1; size[1]: 8 -> 9
                   Line 108 `v = neigh1[u]`: v: 1 -> 7
-                  Line 109 `if v != -1 and active[v]:` was True (v = 7, active = [True, True, True, True, Tr...)
+                  Line 109 `if v != -1 and active[v]:` was True (v = 7)
                   Line 110 `union(u, v)`: called union(a=4, b=7, parent=[1, 1, 1, 1, 1, 1, 1, 1, 7], size=[1, 9, 1, 1, 1, 1, 1, 3, 1]) -> None (nested details omitted: depth limit)
                   Line 111 `v = neigh2[u]`: v: 7 -> 3
-                  Line 112 `if v != -1 and active[v]:` was True (v = 3, active = [True, True, True, True, Tr...)
+                  Line 112 `if v != -1 and active[v]:` was True (v = 3)
                   Line 113 `union(u, v)`: called union(a=4, b=3, parent=[1, 1, 1, 1, 1, 1, 1, 1, 7], size=[1, 9, 1, 1, 1, 1, 1, 3, 1]) -> None (nested details omitted: depth limit)
                   Line 114 `v = neigh3[u]`: v: 3 -> 5
-                  Line 115 `if v != -1 and active[v]:` was True (v = 5, active = [True, True, True, True, Tr...)
+                  Line 115 `if v != -1 and active[v]:` was True (v = 5)
                   Line 116 `union(u, v)`: called union(a=4, b=5, parent=[1, 1, 1, 1, 1, 1, 1, 1, 7], size=[1, 9, 1, 1, 1, 1, 1, 3, 1]) -> None (nested details omitted: depth limit)
-              Line 117 `if val in bucket:` was False (val = 1, bucket = defaultdict(<class 'list'>,...)
+              Line 117 `if val in bucket:` was False (val = 1)
             After the loop: v = 5, low = [1, 7], high = [6, 12], active = [True, True, True, True, Tr..., parent = [1, 1, 1, 1, 1, 1, 1, 1, 7], size = [1, 9, 1, 1, 1, 1, 1, 3, 1], lst = [3, 4]
         ... 3 iterations omitted ...
         Iteration 5:
@@ -144,7 +144,7 @@ Call __bpd_main__()  [__bpd_main__, lines 137-138]
           Line 129 `b = z if y < z else y`: b: 0 -> 10
           Line 130 `if tstar >= a:` was False (tstar = 3, a = 6)
           Line 133 `ans = abs(y - tstar) + abs(z - tstar)`: ans = 10
-          Line 134 `out.append(str(ans))`: out: [] -> ['10']
+          Line 134 `out.append(str(ans))`: out: appended '10'
         Iteration 2 (qi = 1):
           Line 125 `tstar = low[qi]`: tstar: 3 -> 10
           Line 126 `y = Y[qi]`: y: 10 -> 6
@@ -153,6 +153,6 @@ Call __bpd_main__()  [__bpd_main__, lines 137-138]
           Line 129 `b = z if y < z else y`: b: 10 -> 6
           Line 130 `if tstar >= a:` was True (tstar = 10, a = 4)
           Line 131 `ans = b - a`: ans: 10 -> 2
-          Line 134 `out.append(str(ans))`: out: ['10'] -> ['10', '2']
+          Line 134 `out.append(str(ans))`: out: appended '2'
       End of function reached: main returned None
   End of function reached: __bpd_main__ returned None
