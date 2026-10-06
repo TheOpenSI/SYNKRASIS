@@ -1,0 +1,84 @@
+### Step-by-step reasoning
+- The previous approach counted pairings that ensure every cut between blocks is crossed by at least one edge in the forward direction (left to right). However, to have the final graph strongly connected, we must ensure that every such cut is crossed in both directions: there exists at least one edge left-to-right and at least one edge right-to-left across every cut. This leads to a double inclusion-exclusion over two types of “bad events” (no forward crossing across a cut, no backward crossing across a cut).
+- A careful inclusion-exclusion over the union of cuts shows that the final count depends only on the union of cut positions, not on which particular subsets caused the union. This reduces to summing over all partitions of the blocks (formed by the S string) into consecutive segments, with a weight determined by the number of segments.
+- Let a_i be the number of white vertices in the i-th block (a block is a maximal consecutive segment of the vertex sequence where the number of Ws equals the number of Bs). Let L be the number of blocks, and let s[i] = a_1 + a_2 + ... + a_i (prefix sum of whites through block i).
+- Consider a partition of the first i blocks into segments; for a segment covering blocks [j..i], the number of whites in that segment is W(j,i) = s[i] - s[j-1], and the number of ways to pair whites to blacks within that segment is (W(j,i))!. The contribution of a partition is the product of these factorials over its segments, multiplied by a sign: (-1)^(number_of_segments - 1).
+- Define F[i] as the total contribution (modulo MOD) for partitioning the first i blocks, with F[0] = -1 (as -1 is represented modulo MOD). Then for i >= 1:
+  F[i] = sum_{j=1..i} (-1) * F[j-1] * (W(j,i))!
+  where W(j,i) = s[i] - s[j-1].
+- The answer is F[L].
+
+This yields an O(L^2) dynamic programming solution, where L is the number of blocks (L ≤ 2N in the worst case, but typically smaller in practice for many inputs). We also add a simple quick check: if the string starts with B and ends with W (a necessary condition observed in samples), otherwise the answer is 0.
+
+### Requirements
+None
+
+### Code
+```
+import sys
+
+MOD = 998244353
+
+def solve():
+    input = sys.stdin.readline
+    line = input().strip()
+    while line == "":
+        line = input().strip()
+    N = int(line)
+    S = input().strip()
+
+    total_len = 2 * N
+    if len(S) != total_len:
+        print(0)
+        return
+
+    # A practical necessary condition observed in samples
+    if S[0] != 'B' or S[-1] != 'W':
+        print(0)
+        return
+
+    # Build blocks: split when the prefix diff (#W - #B) returns to zero
+    diff = 0
+    curr_w = 0
+    a = []
+    for i in range(1, total_len + 1):
+        ch = S[i - 1]
+        if ch == 'W':
+            diff += 1
+            curr_w += 1
+        else:
+            diff -= 1
+        if i != total_len and diff == 0:
+            a.append(curr_w)
+            curr_w = 0
+    a.append(curr_w)
+
+    L = len(a)
+    # Prefix sums of whites
+    s = [0] * (L + 1)
+    for i in range(1, L + 1):
+        s[i] = s[i - 1] + a[i - 1]
+
+    # Precompute factorials up to N
+    fact = [1] * (N + 1)
+    for i in range(1, N + 1):
+        fact[i] = fact[i - 1] * i % MOD
+
+    # DP: F[i] = total contribution for first i blocks
+    F = [0] * (L + 1)
+    F[0] = MOD - 1  # represents -1
+
+    for i in range(1, L + 1):
+        total = 0
+        for j in range(1, i + 1):
+            W = s[i] - s[j - 1]
+            # add (-1) * F[j-1] * (W)!
+            total = (total - F[j - 1] * fact[W]) % MOD
+        F[i] = total
+
+    print(F[L] % MOD)
+
+
+if __name__ == "__main__":
+    solve()
+```

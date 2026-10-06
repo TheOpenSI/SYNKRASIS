@@ -1,0 +1,136 @@
+Your generated code failed a test case.
+Please update the function logic so all test cases will pass. Error message added for your reference - 
+AssertionError: wrong answer on test case 3. Input: '9\nBWWBWBBBWWBWBBWWBW', expected output: '240792', your output: '277752\n'
+
+Execution trace of your code on public test case 3, recorded line by line like a debugger session:
+Execution report for `__bpd_main__()`
+Outcome: returned None
+
+Trace:
+Call __bpd_main__()  [__bpd_main__, lines 159-163]
+  Line 161 `MOD = 998244353`: MOD (global) = 998244353
+  Line 162 `ROOT = 3`: ROOT (global) = 3
+  Line 163 `solve()`:
+    called solve():
+      Line 91 `line = input().strip()`: line = '9'
+      Line 92 `while line == '':` (line = '9') ran 0 iterations (body never executed)
+      Line 94 `N = int(line)`: N = 9
+      Line 95 `S = input().strip()`: S = 'BWWBWBBBWWBWBBWWBW'
+      Line 96 `total_len = 2 * N`: total_len = 18
+      Line 97 `if len(S) != total_len:` was False (total_len = 18, S = 'BWWBWBBBWWBWBBWWBW')
+      Line 100 `if S[0] != 'B' or S[-1] != 'W':` was False (S = 'BWWBWBBBWWBWBBWWBW')
+      Line 103 `diff = 0`: diff = 0
+      Line 104 `curr_w = 0`: curr_w = 0
+      Line 105 `a = []`: a = []
+      Line 106 `for i in range(1, total_len + 1):` (total_len = 18) ran 18 iterations
+        Iteration 1 (i = 1):
+          Line 107 `ch = S[i - 1]`: ch = 'B'
+          Line 108 `if ch == 'W':` was False (ch = 'B')
+          Line 112 `diff -= 1`: diff: 0 -> -1
+          Line 113 `if i != total_len and diff == 0:` was False (i = 1, total_len = 18, diff = -1)
+        Iteration 2 (i = 2):
+          Line 107 `ch = S[i - 1]`: ch: 'B' -> 'W'
+          Line 108 `if ch == 'W':` was True (ch = 'W')
+          Line 109 `diff += 1`: diff: -1 -> 0
+          Line 110 `curr_w += 1`: curr_w: 0 -> 1
+          Line 113 `if i != total_len and diff == 0:` was True (i = 2, total_len = 18, diff = 0)
+          Line 114 `a.append(curr_w)`: a: appended 1
+          Line 115 `curr_w = 0`: curr_w: 1 -> 0
+        Iteration 3 (i = 3):
+          Line 108 `if ch == 'W':` was True (ch = 'W')
+          Line 109 `diff += 1`: diff: 0 -> 1
+          Line 110 `curr_w += 1`: curr_w: 0 -> 1
+          Line 113 `if i != total_len and diff == 0:` was False (i = 3, total_len = 18, diff = 1)
+        Iteration 4 (i = 4):
+          Line 107 `ch = S[i - 1]`: ch: 'W' -> 'B'
+          Line 108 `if ch == 'W':` was False (ch = 'B')
+          Line 112 `diff -= 1`: diff: 1 -> 0
+          Line 113 `if i != total_len and diff == 0:` was True (i = 4, total_len = 18, diff = 0)
+          Line 114 `a.append(curr_w)`: a: appended 1
+          Line 115 `curr_w = 0`: curr_w: 1 -> 0
+        ... 12 iterations omitted ...
+        Iteration 17 (i = 17):
+          Line 107 `ch = S[i - 1]`: ch: 'W' -> 'B'
+          Line 108 `if ch == 'W':` was False (ch = 'B')
+          Line 112 `diff -= 1`: diff: 0 -> -1
+          Line 113 `if i != total_len and diff == 0:` was False (i = 17, total_len = 18, diff = -1)
+        Iteration 18 (i = 18):
+          Line 107 `ch = S[i - 1]`: ch: 'B' -> 'W'
+          Line 108 `if ch == 'W':` was True (ch = 'W')
+          Line 109 `diff += 1`: diff: -1 -> 0
+          Line 110 `curr_w += 1`: curr_w: 0 -> 1
+          Line 113 `if i != total_len and diff == 0:` was False (i = 18, total_len = 18, diff = 0)
+        After the loop: curr_w = 1, a = [1, 1, 1, 2, 1, 2], ch = 'W'
+      Line 116 `a.append(curr_w)`: a: appended 1
+      Line 117 `L = len(a)`: L = 7
+      Line 118 `pref = [0] * (L + 1)`: pref = [0, 0, 0, 0, 0, 0, 0, 0]
+      Line 119 `for i in range(1, L + 1):` (L = 7) ran 7 iterations
+        Iteration 1 (i = 1): line 120 `pref[i] = pref[i - 1] + a[i - 1]`: pref[1]: 0 -> 1
+        Iteration 2 (i = 2): line 120 `pref[i] = pref[i - 1] + a[i - 1]`: pref[2]: 0 -> 2
+        Iteration 3 (i = 3): line 120 `pref[i] = pref[i - 1] + a[i - 1]`: pref[3]: 0 -> 3
+        Iteration 4 (i = 4): line 120 `pref[i] = pref[i - 1] + a[i - 1]`: pref[4]: 0 -> 5
+        ... 1 iterations omitted ...
+        Iteration 6 (i = 6): line 120 `pref[i] = pref[i - 1] + a[i - 1]`: pref[6]: 0 -> 8
+        Iteration 7 (i = 7): line 120 `pref[i] = pref[i - 1] + a[i - 1]`: pref[7]: 0 -> 9
+        After the loop: pref = [0, 1, 2, 3, 5, 6, 8, 9]
+      Line 121 `fact = [1] * (N + 1)`: fact = [1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
+      Line 122 `for i in range(1, N + 1):` (N = 9) ran 9 iterations
+        Iteration 1 (i = 1): no variable changes
+        Iteration 2 (i = 2): line 123 `fact[i] = fact[i - 1] * i % MOD`: fact[2]: 1 -> 2
+        Iteration 3 (i = 3): line 123 `fact[i] = fact[i - 1] * i % MOD`: fact[3]: 1 -> 6
+        Iteration 4 (i = 4): line 123 `fact[i] = fact[i - 1] * i % MOD`: fact[4]: 1 -> 24
+        ... 3 iterations omitted ...
+        Iteration 8 (i = 8): line 123 `fact[i] = fact[i - 1] * i % MOD`: fact[8]: 1 -> 40320
+        Iteration 9 (i = 9): line 123 `fact[i] = fact[i - 1] * i % MOD`: fact[9]: 1 -> 362880
+        After the loop: fact = [1, 1, 2, 6, 24, 120, 720, 5040, 40320, 362880]
+      Line 124 `NAIVE_LIMIT = 1000`: NAIVE_LIMIT = 1000
+      Line 125 `if L <= NAIVE_LIMIT:` was True (L = 7, NAIVE_LIMIT = 1000)
+      Line 126 `dp = [0] * (L + 1)`: dp = [0, 0, 0, 0, 0, 0, 0, 0]
+      Line 127 `for i in range(1, L + 1):` (L = 7) ran 7 iterations
+        Iteration 1 (i = 1):
+          Line 128 `val = fact[pref[i]]`: val = 1
+          Line 129 `for j in range(1, i):` (i = 1) ran 0 iterations (body never executed)
+          Line 132 `dp[i] = val`: dp[1]: 0 -> 1
+        Iteration 2 (i = 2):
+          Line 128 `val = fact[pref[i]]`: val: 1 -> 2
+          Line 129 `for j in range(1, i):` (i = 2) ran 1 iteration
+            Iteration 1 (j = 1): line 130 `diff = pref[i] - pref[j]`: diff: 0 -> 1; line 131 `val = (val - dp[j] * fact[diff]) % MOD`: val: 2 -> 1
+          Line 132 `dp[i] = val`: dp[2]: 0 -> 1
+        Iteration 3 (i = 3):
+          Line 128 `val = fact[pref[i]]`: val: 1 -> 6
+          Line 129 `for j in range(1, i):` (i = 3) ran 2 iterations
+            Iteration 1 (j = 1): line 130 `diff = pref[i] - pref[j]`: diff: 1 -> 2; line 131 `val = (val - dp[j] * fact[diff]) % MOD`: val: 6 -> 4
+            Iteration 2 (j = 2): line 130 `diff = pref[i] - pref[j]`: diff: 2 -> 1; line 131 `val = (val - dp[j] * fact[diff]) % MOD`: val: 4 -> 3
+          Line 132 `dp[i] = val`: dp[3]: 0 -> 3
+        Iteration 4 (i = 4):
+          Line 128 `val = fact[pref[i]]`: val: 3 -> 120
+          Line 129 `for j in range(1, i):` (i = 4) ran 3 iterations
+            Iteration 1 (j = 1): line 130 `diff = pref[i] - pref[j]`: diff: 1 -> 4; line 131 `val = (val - dp[j] * fact[diff]) % MOD`: val: 120 -> 96
+            Iteration 2 (j = 2): line 130 `diff = pref[i] - pref[j]`: diff: 4 -> 3; line 131 `val = (val - dp[j] * fact[diff]) % MOD`: val: 96 -> 90
+            Iteration 3 (j = 3): line 130 `diff = pref[i] - pref[j]`: diff: 3 -> 2; line 131 `val = (val - dp[j] * fact[diff]) % MOD`: val: 90 -> 84
+          Line 132 `dp[i] = val`: dp[4]: 0 -> 84
+        ... 1 iterations omitted ...
+        Iteration 6 (i = 6):
+          Line 128 `val = fact[pref[i]]`: val: 474 -> 40320
+          Line 129 `for j in range(1, i):` (i = 6) ran 5 iterations
+            Iteration 1 (j = 1): line 130 `diff = pref[i] - pref[j]`: diff: 1 -> 7; line 131 `val = (val - dp[j] * fact[diff]) % MOD`: val: 40320 -> 35280
+            Iteration 2 (j = 2): line 130 `diff = pref[i] - pref[j]`: diff: 7 -> 6; line 131 `val = (val - dp[j] * fact[diff]) % MOD`: val: 35280 -> 34560
+            Iteration 3 (j = 3): line 130 `diff = pref[i] - pref[j]`: diff: 6 -> 5; line 131 `val = (val - dp[j] * fact[diff]) % MOD`: val: 34560 -> 34200
+            Iteration 4 (j = 4): line 130 `diff = pref[i] - pref[j]`: diff: 5 -> 3; line 131 `val = (val - dp[j] * fact[diff]) % MOD`: val: 34200 -> 33696
+            Iteration 5 (j = 5): line 130 `diff = pref[i] - pref[j]`: diff: 3 -> 2; line 131 `val = (val - dp[j] * fact[diff]) % MOD`: val: 33696 -> 32748
+          Line 132 `dp[i] = val`: dp[6]: 0 -> 32748
+        Iteration 7 (i = 7):
+          Line 128 `val = fact[pref[i]]`: val: 32748 -> 362880
+          Line 129 `for j in range(1, i):` (i = 7) ran 6 iterations
+            Iteration 1 (j = 1): line 130 `diff = pref[i] - pref[j]`: diff: 2 -> 8; line 131 `val = (val - dp[j] * fact[diff]) % MOD`: val: 362880 -> 322560
+            Iteration 2 (j = 2): line 130 `diff = pref[i] - pref[j]`: diff: 8 -> 7; line 131 `val = (val - dp[j] * fact[diff]) % MOD`: val: 322560 -> 317520
+            Iteration 3 (j = 3): line 130 `diff = pref[i] - pref[j]`: diff: 7 -> 6; line 131 `val = (val - dp[j] * fact[diff]) % MOD`: val: 317520 -> 315360
+            Iteration 4 (j = 4): line 130 `diff = pref[i] - pref[j]`: diff: 6 -> 4; line 131 `val = (val - dp[j] * fact[diff]) % MOD`: val: 315360 -> 313344
+            Iteration 5 (j = 5): line 130 `diff = pref[i] - pref[j]`: diff: 4 -> 3; line 131 `val = (val - dp[j] * fact[diff]) % MOD`: val: 313344 -> 310500
+            Iteration 6 (j = 6): line 130 `diff = pref[i] - pref[j]`: diff: 3 -> 1; line 131 `val = (val - dp[j] * fact[diff]) % MOD`: val: 310500 -> 277752
+          Line 132 `dp[i] = val`: dp[7]: 0 -> 277752
+        After the loop: diff = 1, dp = [0, 1, 1, 3, 84, 474, 32748, 277752], val = 277752
+      Line 134 `return`: solve returned None
+  End of function reached: __bpd_main__ returned None
+
+Find the first point where the behaviour differs from what the problem requires and fix that logic.
