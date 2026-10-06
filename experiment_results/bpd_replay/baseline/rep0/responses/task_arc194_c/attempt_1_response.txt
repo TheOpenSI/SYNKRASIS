@@ -1,0 +1,80 @@
+### Step-by-step reasoning
+- Let S0 be the initial sum: S0 = sum_i A_i * C_i.
+- Each operation flips one A_i and costs the new sum S' = sum_k A_k^{(after)} * C_k.
+- If we flip an index i:
+  - If A_i was 0, flipping makes A_i = 1 and S increases by C_i, so S' = S + C_i.
+  - If A_i was 1, flipping makes A_i = 0 and S decreases by C_i, so S' = S - C_i.
+- We only need to flip indices where A_i != B_i (D_i = A_i XOR B_i = 1). Flipping any index not in this set would increase the total number of flips and cannot reduce the cost (since S is always nonnegative and extra flips only add nonnegative cost).
+- Therefore, we have a fixed multiset of deltas:
+  - For indices with A_i = 1 and D_i = 1 (we flip 1 -> 0): delta_i = -C_i.
+  - For indices with A_i = 0 and D_i = 1 (we flip 0 -> 1): delta_i = +C_i.
+- If we perform the flips in some order, the total cost is:
+  Total = d * S0 + sum_{j=1..d} delta_j * (d - j + 1),
+  where d is the number of indices with D_i = 1, and delta_j is the delta for the j-th flip in the chosen order.
+- To minimize this, we should assign the largest deltas to the largest weights. Since weights (d - j + 1) are strictly decreasing with j, the optimal order is to sort the deltas by their value in non-increasing order of delta_i (i.e., place most negative deltas first, then less negative, then positive deltas last).
+  An equivalent and convenient way is:
+  - Build a single list of deltas with their associated sign:
+    - For A_i = 1, D_i = 1: delta = -C_i, coef = +C_i
+    - For A_i = 0, D_i = 1: delta = +C_i, coef = -C_i
+  - Sort by coef in descending order, and assign positions j = 1..d in that order. Then accumulate sum delta_j * (d - j + 1) and add d*S0.
+- This approach yields an O(N log N) solution and uses only Python integers (no external libraries).
+
+### Code
+```
+import sys
+
+def main():
+    data = sys.stdin.read().strip().split()
+    it = iter(data)
+    N = int(next(it))
+
+    A = [int(next(it)) for _ in range(N)]
+    B = [int(next(it)) for _ in range(N)]
+    C = [int(next(it)) for _ in range(N)]
+
+    # Initial sum S0
+    S0 = 0
+    # Collect deltas for indices where A_i != B_i
+    deltas = []  # list of (delta, coef) where coef is used for ordering
+    d = 0
+
+    for i in range(N):
+        Ai = A[i]
+        Bi = B[i]
+        Ci = C[i]
+        if Ai == 1:
+            S0 += Ci  # A_i * Ci contributes to S0
+        # if A_i != B_i, this index must be flipped exactly once
+        if Ai ^ Bi == 1:
+            d += 1
+            if Ai == 1:
+                # flipping 1 -> 0
+                delta = -Ci
+                coef = Ci  # for ordering: negative delta -> larger coef
+            else:
+                # flipping 0 -> 1
+                delta = Ci
+                coef = -Ci  # for ordering: positive delta -> smaller coef
+            deltas.append((delta, coef))
+
+    if d == 0:
+        print(0)
+        return
+
+    # Sort by coef descending (largest first)
+    deltas.sort(key=lambda x: x[1], reverse=True)
+
+    total = d * S0
+    # Apply deltas in this order with weights (d, d-1, ..., 1)
+    for idx, (delta, _) in enumerate(deltas):
+        weight = d - idx
+        total += delta * weight
+
+    print(total)
+
+if __name__ == "__main__":
+    main()
+```
+
+### Requirements
+None

@@ -1,0 +1,106 @@
+### Step-by-step reasoning
+- We need to compute, modulo p, the sum over all matrices B obtained from A by replacing zeros with values in {1,...,p-1} of B^p (matrix power), where B is N×N.
+- Let Z be the set of zero positions in A. For each B, B equals A plus adjustments at positions in Z.
+- Expand B^p in terms of the entries of B. When summing over all fillings of Z, only terms whose total exponent of each variable (the value assigned to a zero position) is a multiple of p−1 survive modulo p. This follows from the standard fact that for any r, sum_{t in {1,...,p-1}} t^r ≡ 0 (mod p) unless (p−1) | r, in which case the sum is p−1 ≡ −1 (mod p).
+- From this observation, it becomes tractable to identify the surviving contributions:
+  - If we consider only edges corresponding to nonzero entries of A (i.e., treat zeros as 0 for the purpose of counting paths), the only terms that survive that do not involve any zero-edges correspond to p-step walks that use only nonzero edges. These contribute exactly the (i,j) entry of M^p, where M is the matrix formed by taking M[i][j] = A[i][j] (mod p) if A[i][j] ≠ 0, and M[i][j] = 0 otherwise.
+  - There are extra surviving terms that involve zeros. A careful path-counting argument shows that, for p being prime, the only additional surviving contributions come from zero diagonal entries (i,i) in A that are zeros (i.e., A[i][i] = 0) where a length-p walk uses that zero diagonal edge p−1 times and a single nonzero final edge. The aggregate contribution of all such paths to the (i,j) entry equals −A[i][j] for every j with A[i][j] ≠ 0. Summing over all such i gives a correction matrix D with D[i][j] = A[i][j] if A[i][i] = 0 and A[i][j] ≠ 0; otherwise D[i][j] = 0.
+- Therefore, the total sum over all B of B^p, modulo p, is:
+  Sum(B^p) over all fillings = M^p − D (mod p),
+  where:
+  - M[i][j] = A[i][j] mod p if A[i][j] ≠ 0, else 0
+  - D[i][j] = A[i][j] mod p if A[i][i] = 0 and A[i][j] ≠ 0, else 0
+- This also covers the case with K = 0 zeros, since D = 0 and Sum = A^p mod p.
+
+This approach uses two matrix operations:
+- Compute M^p modulo p
+- Subtract the correction matrix D modulo p
+
+This yields the required N×N matrix, printed row by row.
+
+### Requirements
+None
+
+### Code
+```
+import sys
+
+def mat_mul(A, B, mod):
+    n = len(A)
+    m = len(B[0])
+    p = len(B)
+    R = [[0] * m for _ in range(n)]
+    for i in range(n):
+        Ai = A[i]
+        Ri = R[i]
+        for k in range(p):
+            aik = Ai[k]
+            if aik == 0:
+                continue
+            Bk = B[k]
+            for j in range(m):
+                Ri[j] = (Ri[j] + aik * Bk[j]) % mod
+    return R
+
+def mat_pow(A, e, mod):
+    n = len(A)
+    # Identity matrix
+    R = [[0] * n for _ in range(n)]
+    for i in range(n):
+        R[i][i] = 1 % mod
+    X = [row[:] for row in A]
+    while e > 0:
+        if e & 1:
+            R = mat_mul(R, X, mod)
+        X = mat_mul(X, X, mod)
+        e >>= 1
+    return R
+
+def solve():
+    data = sys.stdin.read().strip().split()
+    if not data:
+        return
+    it = iter(data)
+    N = int(next(it))
+    p = int(next(it))
+
+    A = []
+    M = [[0] * N for _ in range(N)]
+    zeros_indices = []
+    for i in range(N):
+        row = []
+        for j in range(N):
+            val = int(next(it)) % p
+            row.append(val)
+            if val == 0:
+                # zero in A
+                M[i][j] = 0
+            else:
+                M[i][j] = val
+            if val == 0:
+                zeros_indices.append((i, j))  # store zeros if needed (not used later)
+        A.append(row)
+
+    # Build correction matrix D:
+    D = [[0] * N for _ in range(N)]
+    for i in range(N):
+        if A[i][i] == 0:
+            for j in range(N):
+                if A[i][j] != 0:
+                    D[i][j] = A[i][j] % p
+
+    # Compute M^p modulo p
+    Mp = mat_pow(M, p, p)
+
+    # Sum = Mp - D (mod p)
+    Sum = [[(Mp[i][j] - D[i][j]) % p for j in range(N)] for i in range(N)]
+
+    # Output
+    out = []
+    for i in range(N):
+        out.append(' '.join(str(Sum[i][j] % p) for j in range(N)))
+    print('\n'.join(out))
+
+if __name__ == "__main__":
+    solve()
+```
