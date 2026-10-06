@@ -1,0 +1,135 @@
+### Step-by-step reasoning
+- We are given a tree with NK vertices and must decide if it can be partitioned into N disjoint paths each of length K (in vertices), i.e., each path has exactly K vertices and K-1 edges.
+- A bottom-up dynamic programming on the tree can determine if such a partition exists. Root the tree at node 1 and process children before parents.
+- For each node u, we consider incomplete paths that end at u and come from its subtrees. We denote by rem(v) the length (in vertices) of the unfinished path that ends at child v and is to be extended through edge (v, u) to reach u. For a leaf, the unfinished path is just the leaf itself, so rem(leaf) = 1.
+- At node u, collect all rem(v) from its children where rem(v) > 0. These are paths that want to reach u and possibly form longer paths by either pairing through u or extending to the parent.
+- Two ways to complete a path of length K:
+  1) Pair two child remainders a and b such that a + b = K - 1. This forms a path going from one leaf in one subtree to another leaf in another subtree through u.
+  2) Take a single child remainder a and extend by including u, giving length a + 1. If a + 1 = K, this path ends at u and is completed here.
+- After handling all possible pairings (maximize pairings), remaining unfinished paths (remainders) that reach u must be passed upward to the parent. Each remaining remainder r becomes r' = r + 1 when considering the edge (u, parent). If r' equals K, it completes at u. If r' < K, it would become a single unfinished path ending at u that must be propagated further up. Importantly, from any node there can be at most one such unfinished path to propagate to the parent; otherwise the vertex u would be part of more than one unfinished path, which is invalid. If more than one remainder remains to propagate, decomposition is impossible.
+- Special case: K = 1. Every vertex is its own path; always Yes.
+- Implementation outline:
+  - Build adjacency list for NK vertices.
+  - Root at 1 and compute a parent array and a postorder (iterative DFS).
+  - Process nodes in reverse postorder. For each node:
+    - Build L = [rem(child) for each child with rem(child) > 0].
+    - If L is empty, set rem(u) = 1 (start a new unfinished path at u).
+    - Else, pair remainders efficiently:
+      - Use a multiset (Counter) of L. For each element in L (iterate through L to ensure each occurrence is considered exactly once), try to pair it with a value K-1 - val if available; otherwise mark it as unpaired.
+      - Convert unpaired values r into r' = r + 1. If r' == K, it completes here. If r' < K, collect as potential remainder to propagate. If more than one such remainder exists, return No.
+      - If exactly one remainder remains to propagate, set rem(u) to that value; if none, rem(u) = 0.
+  - After processing all nodes, check rem(root) == 0; if yes, print Yes; otherwise No.
+
+Edge cases:
+- Large trees: iterative DFS used to avoid recursion depth issues.
+- K = 1 handled separately (always Yes).
+- If at any node more than one remainder must be propagated upward, answer is No.
+
+ Complexity: O(NK) vertices, each edge is handled a constant number of times; overall O(NK) time and O(NK) memory, within constraints NK <= 2e5.
+
+### Requirements
+None
+
+### Code
+```
+import sys
+from collections import Counter
+
+def main():
+    data = sys.stdin.read().strip().split()
+    if not data:
+        print("No")
+        return
+    it = iter(data)
+    N = int(next(it))
+    K = int(next(it))
+    n = N * K
+    adj = [[] for _ in range(n + 1)]
+    for _ in range(n - 1):
+        u = int(next(it))
+        v = int(next(it))
+        adj[u].append(v)
+        adj[v].append(u)
+
+    # Special case: K == 1 -> each vertex is its own path
+    if K == 1:
+        print("Yes")
+        return
+
+    # Root the tree at 1 and build parent array and order
+    parent = [0] * (n + 1)
+    order = []
+    stack = [1]
+    parent[1] = -1  # mark as root
+    while stack:
+        u = stack.pop()
+        order.append(u)
+        for v in adj[u]:
+            if v == parent[u]:
+                continue
+            parent[v] = u
+            stack.append(v)
+
+    # DP array: rem[u] is the length of unfinished path that ends at u and should be
+    # extended to its parent. 0 means there is no unfinished path from this subtree.
+    rem = [0] * (n + 1)
+
+    # Process in postorder
+    for u in reversed(order):
+        # collect remainders from children
+        L = []
+        for v in adj[u]:
+            if v == parent[u]:
+                continue
+            if rem[v] > 0:
+                L.append(rem[v])
+
+        if not L:
+            # No unfinished path from children: start a new unfinished path at u
+            rem[u] = 1
+            continue
+
+        # Pair remainders to form complete paths via u
+        cnt = Counter(L)
+        unpaired = []
+
+        # Process each occurrence by scanning L to ensure each element is considered once
+        for val in L:
+            if cnt[val] <= 0:
+                continue
+            cnt[val] -= 1
+            need = (K - 1) - val
+            if need >= 0 and cnt[need] > 0:
+                cnt[need] -= 1
+                # formed a pair (val, need)
+            else:
+                unpaired.append(val)
+
+        # Those unpaired remainders will attempt to extend to u
+        to_prop = []
+        for r in unpaired:
+            r2 = r + 1
+            if r2 == K:
+                # completes path ending at u
+                continue
+            else:
+                to_prop.append(r2)
+
+        if len(to_prop) > 1:
+            print("No")
+            return
+
+        if len(to_prop) == 1:
+            rem[u] = to_prop[0]
+        else:
+            rem[u] = 0
+
+    # After processing all, root must not have an unfinished path
+    if rem[1] == 0:
+        print("Yes")
+    else:
+        print("No")
+
+if __name__ == "__main__":
+    main()
+```
