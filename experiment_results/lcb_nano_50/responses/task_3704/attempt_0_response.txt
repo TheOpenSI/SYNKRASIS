@@ -1,0 +1,24 @@
+### Step-by-step reasoning
+- For a partition at index i (0 <= i < n-1), the left sum L is sum(nums[0..i]) and the right sum R is sum(nums[i+1..n-1]). The difference is D = L - R.
+- Since R = total - L, D = L - (total - L) = 2L - total.
+- The term 2L is always even, so the parity of D is the same as the parity of total. Therefore:
+  - If total sum is even, D is even for every possible partition.
+  - If total sum is odd, D is odd for every partition.
+- Consequently, the number of valid partitions is:
+  - n - 1 partitions (all possible splits) if total is even.
+  - 0 partitions if total is odd.
+- Edge cases: n >= 2 by constraints. The solution runs in O(n) time to compute total and O(1) to return the result; uses O(1) extra space.
+
+### Requirements
+None
+
+### Code
+```python
+class Solution:
+    def countPartitions(self, nums: List[int]) -> int:
+        total = sum(nums)
+        if total % 2 == 0:
+            return len(nums) - 1
+        else:
+            return 0
+```
