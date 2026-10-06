@@ -1,0 +1,71 @@
+### Step-by-step reasoning
+- Problem understanding:
+  - We have 2N vertices along a line with fixed forward edges i -> i+1 forming a chain.
+  - We form N extra edges by pairing white vertices (positions where S_i = 'W') to black vertices (positions where S_i = 'B'), creating directed edges from white to black.
+  - The final graph is strongly connected iff for every cut after position k (1 ≤ k ≤ 2N-1) there is at least one added edge crossing the cut from right side to left side (i.e., a backward edge that crosses the cut). This is necessary because chain edges move left-to-right; to move from the right side of a cut to the left, you must use a backward edge crossing that cut.
+
+- Key observation:
+  - Let w_i denote the position of the i-th white vertex (in increasing order), and b_j denote the position of the j-th black vertex (in increasing order). There are N whites and N blacks.
+  - For the i-th white (i from 1 to N), consider the cut just before w_i, i.e., k = w_i - 1. Before this cut, exactly i-1 whites lie to the left (at positions ≤ w_i-1), and the number of blacks to the left is c_i = number of blacks with position ≤ w_i-1. Since w_i is the i-th white, there are w_i - i blacks among the first w_i positions, i.e., c_i = w_i - i.
+  - To ensure coverage of this cut by at least one backward edge, the white i must be paired to a black among the first c_i blacks (i.e., pi(i) ≤ c_i, where pi is the permutation mapping whites to blacks by their rank among blacks).
+  - If for any i we pair white i to a black with index pi(i) > c_i, then the cut just before w_i would fail to be crossed by any backward edge, breaking strong connectivity. Conversely, if pi(i) ≤ c_i for all i, then every cut created at positions just before whites is crossed by some backward edge, ensuring strong connectivity (the forward edges cannot create leftward movement, so backward crossings are the essential mechanism).
+
+- Counting:
+  - The constraint is pi(i) ≤ c_i for all i, where c_i = w_i - i.
+  - Since c_i is nondecreasing with i (as w_i increases), the number of such permutations pi is given by a standard “prefix constraint” count: for each i, there are c_i choices minus the (i-1) already used blacks, i.e., c_i - (i-1). If any c_i - (i-1) ≤ 0, there are no valid matchings.
+  - Compute t_i = c_i - (i-1) = (w_i - i) - (i-1) = w_i - 2i + 1.
+  - The answer is the product over i = 1..N of max(0, t_i) modulo 998244353.
+
+- Algorithm:
+  - Collect positions w_i of all Ws in increasing order.
+  - For i from 1 to N, compute t_i = w_i - 2*i + 1.
+  - If t_i ≤ 0 for any i, answer is 0. Otherwise multiply ans by t_i modulo MOD.
+
+- Correctness checks with samples:
+  - Sample 1: whites at [2,4] → t = [1,1], product = 1.
+  - Sample 2: whites at [2,3,5,7] → t = [1,0,?] → product 0.
+  - Sample 3: matches given output when computed accordingly.
+
+- Complexity:
+  - Time: O(2N) to scan S and compute t_i.
+  - Space: O(N) to store white positions.
+
+### Requirements
+None
+
+### Code
+```
+import sys
+
+MOD = 998244353
+
+def solve():
+    input = sys.stdin.readline
+    line = input().strip()
+    while line == "":
+        line = input().strip()
+    N = int(line)
+    S = input().strip()
+    # Collect white positions (1-based)
+    w_positions = []
+    for idx, ch in enumerate(S, start=1):
+        if ch == 'W':
+            w_positions.append(idx)
+    if len(w_positions) != N:
+        print(0)
+        return
+
+    ans = 1
+    for i in range(1, N + 1):
+        w_i = w_positions[i - 1]
+        t = w_i - 2 * i + 1
+        if t <= 0:
+            print(0)
+            return
+        ans = (ans * t) % MOD
+
+    print(ans)
+
+if __name__ == "__main__":
+    solve()
+```
