@@ -1,0 +1,31 @@
+### Step-by-step reasoning
+- Let D be the number of days to eat all pizzas, D = n / 4.
+- Each day you form a group of 4 pizzas and gain either Z (the largest in the group) on odd days or Y (the second largest in the group) on even days.
+- If you sort the weights in descending order, the largest values are a0 >= a1 >= a2 >= a3 >= ...
+- Across all days, you want to maximize the sum of the counted values (Z on odd days and Y on even days). The optimal arrangement can be achieved by ensuring that the top 2D elements are placed so that exactly D of them contribute, specifically the elements at even indices in the descending order: a0, a2, a4, ..., a_{2(D-1)}.
+- Therefore the maximum total weight is the sum of pizzas sorted in descending order at indices 0, 2, 4, ..., 2(D-1).
+- This yields a simple O(n log n) solution due to sorting, with O(1) extra space beyond the input array.
+
+### Requirements
+None
+
+### Code
+```
+from typing import List
+
+class Solution:
+    def maxWeight(self, pizzas: List[int]) -> int:
+        n = len(pizzas)
+        if n == 0:
+            return 0
+
+        # Sort weights in descending order
+        pizzas.sort(reverse=True)
+
+        D = n // 4
+        ans = 0
+        for i in range(D):
+            ans += pizzas[2 * i]
+
+        return ans
+```

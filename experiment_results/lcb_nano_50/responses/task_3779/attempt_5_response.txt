@@ -1,0 +1,31 @@
+### Step-by-step reasoning
+- Understand the problem: For n pizzas (n is a multiple of 4), every day you pick 4 pizzas and gain the weight of either the largest (on odd days) or the second largest (on even days) among those four. You want to maximize total gain over all days.
+- Known optimal strategy: Sort all pizza weights in descending order. If you take the top 4 each day in order, the gains over all days consolidate into summing every 2nd element starting from the first in the sorted list. Specifically, with D = n/4 days, the maximum total weight is sum of elements at positions 0, 2, 4, ..., 2*(D-1) in the sorted (descending) array.
+- Robustness considerations:
+  - Do not mutate the input array; use a sorted copy.
+  - Handle edge cases defensively (e.g., empty input, though constraints guarantee n >= 4).
+  - Time complexity: O(n log n) due to sorting; memory complexity: O(n) for the copy.
+- Implementation plan:
+  - Sort pizzas in descending order using sorted(pizzas, reverse=True).
+  - Compute D = len(pizzas) // 4.
+  - Return sum(sorted_arr[2*i] for i in range(D)).
+
+### Requirements
+None
+
+### Code
+```
+from typing import List
+
+class Solution:
+    def maxWeight(self, pizzas: List[int]) -> int:
+        n = len(pizzas)
+        if n == 0:
+            return 0
+
+        # Sort without mutating the input
+        arr = sorted(pizzas, reverse=True)
+
+        D = n // 4
+        return sum(arr[2 * i] for i in range(D))
+```

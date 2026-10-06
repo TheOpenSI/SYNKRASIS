@@ -1,0 +1,51 @@
+### Step-by-step reasoning
+- We need to maximize the total weight gained over n/4 days. Each day we pick 4 pizzas with weights W <= X <= Y <= Z. On odd days we gain Z, on even days we gain Y.
+- A constructive greedy strategy exists and is efficient:
+  - Sort the pizza weights in descending order.
+  - Use two pointers (left at the start, right at the end) to simulate forming groups of 4 for each day.
+  - For day i (0-based):
+    - Take the current largest remaining as the group’s maximum Z (max_val = arr[left]); move left forward.
+    - If day i is even (i % 2 == 0, corresponding to odd day 1, 3, ...): gain max_val (Z) and remove the three smallest remaining by moving the right pointer left by 3.
+    - If day i is odd (even day 2, 4, ...): after removing the max, the three largest remaining will form the rest of the group. The largest among these three will be arr[left]. Add that to the answer, and remove these three by advancing left by 3.
+  - Each day effectively consumes 4 pizzas, so after D = n/4 days the pool is exhausted.
+- This approach uses O(n log n) time for sorting and O(1) extra space (besides the input array). It handles duplicates and all edge cases under the given constraints (n is multiple of 4, n >= 4, weights >= 1).
+
+### Requirements
+None
+
+### Code
+```
+from typing import List
+
+class Solution:
+    def maxWeight(self, pizzas: List[int]) -> int:
+        n = len(pizzas)
+        if n == 0:
+            return 0
+
+        # Sort in descending order
+        pizzas.sort(reverse=True)
+
+        D = n // 4
+        left = 0
+        right = n - 1
+        ans = 0
+
+        for i in range(D):
+            # Take the largest remaining as the group max (Z)
+            max_val = pizzas[left]
+            left += 1
+
+            if i % 2 == 0:
+                # Odd day: gain Z, remove three smallest
+                ans += max_val
+                right -= 3
+            else:
+                # Even day: maximize the second largest in the group
+                # The three largest remaining are at positions left, left+1, left+2
+                first = pizzas[left]  # the largest among the three
+                ans += first
+                left += 3  # remove the three largest from consideration
+
+        return ans
+```

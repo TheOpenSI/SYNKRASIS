@@ -1,0 +1,52 @@
+### Step-by-step reasoning
+- The problem requires maximizing the total weight gained by repeatedly forming groups of 4 pizzas, where in each group the gain is Z on odd days (largest in the group) and Y on even days (second largest in the group).
+- A known optimal greedy approach is:
+  - Sort the weights in descending order.
+  - On each day, take the current largest remaining as Z and pair it with three smallest remaining weights to satisfy W <= X <= Y <= Z, thus gaining Z for that day.
+  - On the next day, take the next four largest remaining; the gain is Y, which is the second largest among those four.
+- Implementing this with two pointers over the sorted array is efficient and handles duplicates correctly:
+  - Maintain left (points to the largest unpicked) and right (points to the smallest unpicked).
+  - For each day i from 0 to n/4 - 1:
+    - Take max_val = pizzas[left], increment left by 1.
+    - If i is even (day 1,3,...): gain max_val (Z) and remove the three smallest by decrementing right by 3.
+    - If i is odd (day 2,4,...): the four largest remaining are at indices left, left+1, left+2, left+3; Y is pizzas[left] after the initial shift, so add pizzas[left] and then remove the next three largest by advancing left by 3 (since those three are consumed in this day).
+- This approach guarantees all elements are consumed exactly once over D = n/4 days, and runs in O(n log n) time due to sorting, with O(1) extra space.
+
+### Requirements
+None
+
+### Code
+```
+from typing import List
+
+class Solution:
+    def maxWeight(self, pizzas: List[int]) -> int:
+        n = len(pizzas)
+        if n == 0:
+            return 0
+
+        # Sort in descending order
+        pizzas.sort(reverse=True)
+
+        D = n // 4
+        left = 0
+        right = n - 1
+        ans = 0
+
+        for i in range(D):
+            # Take the largest remaining as the group max (Z)
+            max_val = pizzas[left]
+            left += 1
+
+            if i % 2 == 0:
+                # Odd day (1,3,...) gain Z, remove three smallest
+                ans += max_val
+                right -= 3
+            else:
+                # Even day (2,4,...) gain Y, which is the next largest among remaining four
+                first = pizzas[left]  # the largest among the three remaining after taking Z
+                ans += first
+                left += 3  # remove the three largest among the remaining
+
+        return ans
+```
