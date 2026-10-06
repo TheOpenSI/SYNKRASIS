@@ -48,7 +48,7 @@ def main() -> None:
     print(f"Selected {len(dataloader.data)} problems: {dataloader.data['question_id'].tolist()}")
 
     llm = OpenAI_GPT(model_name = args.model, enable_chat_history = True, max_history = 1)
-    container = LocalContainer(mount_dir_name = "synk_lcb_local", timeout = 600)
+    container = LocalContainer(mount_dir_name = "synk_lcb_local", timeout = 1800)  # public + private tests
     pycapsule = PyCapsule_LiveCodeBench(pycapsule_container = container,
                                         llm = llm,
                                         maximum_attempts = args.max_attempts,

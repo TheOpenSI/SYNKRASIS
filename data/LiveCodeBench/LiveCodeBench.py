@@ -121,21 +121,36 @@ class LiveCodeBench(DatasetBase):
 
 
     def log_to_csv(self) -> None:
-        self.log_to_csv_helper(column_names = ["task_id", "fix_mode_attempt_count", "status", "error_trace"])
+        self.log_to_csv_helper(column_names = ["task_id", "fix_mode_attempt_count", "status", "error_trace",
+                                               "public_cleared", "public_cleared_attempt",
+                                               "private_cleared", "private_cleared_attempt",
+                                               "private_failure_types"])
 
 
     def append_result(self, task_id: str,
                       fix_mode_attempt_count: int,
                       status: str,
-                      error_trace: list[str]) -> None:
+                      error_trace: list[str],
+                      public_cleared: Optional[bool] = None,
+                      public_cleared_attempt: Optional[int] = None,
+                      private_cleared: Optional[bool] = None,
+                      private_cleared_attempt: Optional[int] = None,
+                      private_failure_types: Optional[list[str]] = None) -> None:
         """
         LiveCodeBench task ids are strings (e.g. abc387_b), the base class converts them to int.
+        Also stores whether (and at which attempt, 0 = initial generation) the public and private 
+        tests were cleared. status is "pass" only if the private tests were cleared.
         """
         self.results.append({
             "task_id": str(task_id),
             "fix_mode_attempt_count": int(fix_mode_attempt_count),
             "status": status,
-            "error_trace": error_trace
+            "error_trace": error_trace,
+            "public_cleared": public_cleared,
+            "public_cleared_attempt": public_cleared_attempt,
+            "private_cleared": private_cleared,
+            "private_cleared_attempt": private_cleared_attempt,
+            "private_failure_types": private_failure_types or []
         })
 
 
