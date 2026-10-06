@@ -1,0 +1,106 @@
+### Step-by-step reasoning
+- Movement is vertical within each column; blocks never move between columns.
+- If any column is empty at time 0, that column will always be empty (no blocks can move into it), so the bottom row can never be fully filled. Hence no removals will ever occur.
+- If all columns are non-empty:
+  - Let b_x be the initial bottom Y in column x (the minimum Y among blocks in that column).
+  - The bottom row can become fully occupied only after every column has its bottom-most block reach y = 1. This happens at time B = max_x b_x (the first time step when the bottom row is full and a removal occurs).
+  - There can be at most m removals, where m is the minimum column height (the smallest number of blocks in any column). After m removals, some column is empty, so the bottom row can no longer be full.
+  - Blocks in a column are removed in order of increasing initial Y within that column. If a block has rank r in its column (1 for the lowest block), it is removed after s removals iff r ≤ s.
+- For a query at time T + 0.5:
+  - Let s be the number of removals that have occurred by that time:
+    - s = 0 if T < B
+    - s = min(T - B + 1, m) if B ≤ T ≤ B + m - 1
+    - s = m if T > B + m - 1
+  - A block with rank r in its column exists at time T + 0.5 iff r > s.
+- Implementation outline:
+  - If any column is empty, answer Yes for all queries.
+  - Otherwise, compute B = max bottom Y per column, m = min column height, and for each block its rank within its column (sorted by initial Y).
+  - Answer each query in O(1) using the formula above.
+
+### Requirements
+None
+
+### Code
+```
+import sys
+
+def solve():
+    data = list(map(int, sys.stdin.buffer.read().split()))
+    if not data:
+        return
+    it = iter(data)
+
+    N = next(it)
+    W = next(it)
+
+    X = [0] * N
+    Y = [0] * N
+    for i in range(N):
+        X[i] = next(it)
+        Y[i] = next(it)
+
+    Q = next(it)
+
+    T_arr = [0] * Q
+    A_arr = [0] * Q
+    for j in range(Q):
+        T_arr[j] = next(it)
+        A_arr[j] = next(it) - 1  # 0-based index for blocks
+
+    # Build per-column blocks
+    cols = [[] for _ in range(W + 1)]  # 1..W are used
+    for i in range(N):
+        cols[X[i]].append((Y[i], i))
+
+    # If any column is empty, no removals ever happen; all blocks survive
+    has_empty = False
+    for c in range(1, W + 1):
+        if len(cols[c]) == 0:
+            has_empty = True
+            break
+
+    if has_empty:
+        sys.stdout.write("\n".join(["Yes"] * Q))
+        return
+
+    # All columns non-empty: compute B and m
+    B = 0  # earliest time when bottom row could be full
+    m = None  # maximum number of removals possible (min column height)
+    for c in range(1, W + 1):
+        col = cols[c]
+        minY = min(y for (y, _) in col)
+        if minY > B:
+            B = minY
+        if m is None:
+            m = len(col)
+        else:
+            if len(col) < m:
+                m = len(col)
+
+    # Assign rank within each column (ascending by initial Y)
+    rank = [0] * N
+    for c in range(1, W + 1):
+        col = cols[c]
+        col.sort(key=lambda t: t[0])  # sort by initial Y
+        for pos, (_, idx) in enumerate(col, start=1):
+            rank[idx] = pos
+
+    # Answer queries
+    out_lines = []
+    for j in range(Q):
+        t = T_arr[j]
+        a = A_arr[j]
+        r = rank[a]
+        if t < B:
+            out_lines.append("Yes")
+        elif t <= B + m - 1:
+            s = t - B + 1
+            out_lines.append("Yes" if r > s else "No")
+        else:
+            out_lines.append("Yes" if r > m else "No")
+
+    sys.stdout.write("\n".join(out_lines))
+
+if __name__ == "__main__":
+    solve()
+```

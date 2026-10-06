@@ -1,0 +1,32 @@
+### Step-by-step reasoning
+- Since B is a permutation of A, the condition B1 × B2 = B3 means that one of the three numbers is the product of the other two.
+- Therefore, given A = (a, b, c), the condition is satisfied if any of:
+  - a * b == c
+  - a * c == b
+  - b * c == a
+  holds true.
+- If none of these equations hold, no permutation will satisfy B1 × B2 = B3.
+- All numbers are positive (1 to 100), so there are no edge cases with zero or negative values.
+
+### Requirements
+None
+
+### Code
+```
+import sys
+
+def main():
+    data = sys.stdin.read().strip().split()
+    if len(data) < 3:
+        print("No")
+        return
+    a, b, c = map(int, data[:3])
+
+    if a * b == c or a * c == b or b * c == a:
+        print("Yes")
+    else:
+        print("No")
+
+if __name__ == "__main__":
+    main()
+```
