@@ -17,7 +17,8 @@ class PyCapsule_LiveCodeBench(PyCapsuleBase):
                  pycapsule_container: Container,
                  llm: LLMBase,
                  maximum_attempts: int = 5,
-                 timeout: int = 10) -> None:
+                 timeout: int = 10,
+                 response_log_dir: str = None) -> None:
         """
         PyCapsule_LiveCodeBench constructor.
         Only the public tests are used, both to drive the fix mode and to decide pass/fail.
@@ -27,8 +28,12 @@ class PyCapsule_LiveCodeBench(PyCapsuleBase):
             llm (LLMBase): LLM object.
             maximum_attempts (int, optional): Maximum attempts to fix the code. Defaults to 5.
             timeout (int, optional): Timeout in seconds for each test case. Defaults to 10.
+            response_log_dir (str, optional): If set, every LLM query/raw response is saved under
+                response_log_dir/task_<id>/attempt_<n>_{query,response}.txt. Defaults to None.
         """
         super().__init__(pycapsule_container, llm, maximum_attempts, timeout = timeout)
+        self.response_log_dir = response_log_dir
+        self._generation_count = 0
         self.harness = LCBHarness()
 
 
@@ -36,11 +41,32 @@ class PyCapsule_LiveCodeBench(PyCapsuleBase):
         return self.helper_set_prompt_paths()
 
 
+    def __call__(self, user_query: dict) -> tuple[int, int, list[str]]:
+        self._generation_count = 0
+        return super().__call__(user_query)
+
+
+    def _save_generation(self, user_query: dict, response: str) -> None:
+        """
+        Save the exact query sent to the LLM and its raw response, one pair per generation.
+        Attempt 0 is the initial generation, 1.. are fix mode attempts.
+        """
+        if self.response_log_dir is None:
+            return
+        task_dir = os.path.join(self.response_log_dir, f"task_{user_query['task_id']}")
+        self.create_py_file(os.path.join(task_dir, f"attempt_{self._generation_count}_query.txt"),
+                            user_query["prompt"])
+        self.create_py_file(os.path.join(task_dir, f"attempt_{self._generation_count}_response.txt"),
+                            response or "")
+        self._generation_count += 1
+
+
     def _generate_code(self, user_query: dict, suppress_conversation_history: bool = True) -> None:
         self.validate_metadata(dict, user_query, self.REQUIRED_KEYS)
 
         response = self.llm.generate_response(user_prompt = user_query["prompt"],
                                               suppress_conversation_history = suppress_conversation_history)
+        self._save_generation(user_query, response)
 
         # https://support.leetcode.com/hc/en-us/articles/360011833974-What-are-the-environments-for-the-programming-languages
         _, code = parse_response(response) # no req, default env set
