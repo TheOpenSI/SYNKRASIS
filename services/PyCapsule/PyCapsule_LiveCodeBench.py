@@ -25,6 +25,7 @@ from data.DatasetBase import DatasetBase
 from utils.code_parsing.code_parser import parse_response
 from utils.output_message_format.output_colour import print_error, print_info, print_success, print_pycapsule
 from services.PyCapsule.livecodebench_harness.LCBHarness import LCBHarness
+from services.BPD.lcb_trace import LCBTracer
 
 class PyCapsule_LiveCodeBench(PyCapsuleBase):
     REQUIRED_KEYS = ["task_id", "prompt", "entry_point", "public_test", "private_test", "starter_code", "test_type"]
@@ -43,7 +44,8 @@ class PyCapsule_LiveCodeBench(PyCapsuleBase):
                  llm: LLMBase,
                  maximum_attempts: int = 5,
                  timeout: int = 10,
-                 response_log_dir: str = None) -> None:
+                 response_log_dir: str = None,
+                 trace_feedback: bool = False) -> None:
         """
         PyCapsule_LiveCodeBench constructor.
 
@@ -55,10 +57,16 @@ class PyCapsule_LiveCodeBench(PyCapsuleBase):
             timeout (int, optional): Timeout in seconds for each test case. Defaults to 10.
             response_log_dir (str, optional): If set, every LLM query/raw response is saved under
                 response_log_dir/task_<id>/attempt_<n>_{query,response}.txt. Defaults to None.
+            trace_feedback (bool, optional): Append a BPD execution trace of the code on the first failing
+                public test to the public failure feedback. Never used for private tests, the trace would 
+                reveal their input. Defaults to False.
         """
         super().__init__(pycapsule_container, llm, maximum_attempts, timeout = timeout)
         self.harness = LCBHarness()
         self.response_log_dir = response_log_dir
+        self.tracer = LCBTracer(self.harness) if trace_feedback else None
+        self.trace_log: list[dict] = []   # one entry per trace attached: task_id, test_index, chars
+        self._last_code = ""
         self._generation_count = 0
         self._reset_task_details()
 
@@ -161,6 +169,7 @@ class PyCapsule_LiveCodeBench(PyCapsuleBase):
         private_tests.json holds the private tests (kept out of main.py, they can be large).
         The driver runs solution.py once per test case.
         """
+        self._last_code = code
         solution_content = self.harness.build_solution_content(user_query, code)
         driver_content = (self.suppress_warning_code() + "\n\n" +
                           self.harness.build_driver_content(user_query["public_test"], self.timeout))
@@ -205,7 +214,25 @@ class PyCapsule_LiveCodeBench(PyCapsuleBase):
 
         query = self.error_handling(response.stderr)
         self._current_error_type = list(self.error_handling.current_error_type)
-        return query
+        return query + self._trace_section(meta_data)
+
+
+    def _trace_section(self, user_query: dict) -> str:
+        """
+        BPD trace of the current code on the first failing public test, empty if not enabled or the code 
+        cannot be traced.
+        """
+        if self.tracer is None:
+            return ""
+        traced = self.tracer.trace_first_failing_public_test(user_query, self._last_code)
+        if traced is None:
+            return ""
+        self.trace_log.append({"task_id": user_query["task_id"], "test_index": traced["test_index"],
+                               "chars": len(traced["report"])})
+        return ("\n\nExecution trace of your code on public test case "
+                f"{traced['test_index'] + 1}, recorded line by line like a debugger session:\n"
+                f"{traced['report']}\n"
+                "Find the first point where the behaviour differs from what the problem requires and fix that logic.")
 
 
     def _update_code(self,

@@ -57,7 +57,6 @@ class LCBHarness():
         if not func_name:
             raise ValueError("Functional test type requires an entry_point (func_name in metadata).")
 
-        code = self.example_call_detection.remove_example_calls(llm_generated_code, self.CLASS_NAME)
         main_block = (
             "\n\n"
             "if __name__ == '__main__':\n"
@@ -67,7 +66,18 @@ class LCBHarness():
             "    print(json.dumps(_result))\n"
         )
 
-        return self._add_prelude(code) + main_block
+        return self.build_traceable_source(user_query, llm_generated_code) + main_block
+
+
+    def build_traceable_source(self, user_query: dict, llm_generated_code: str) -> str:
+        """
+        The solution without the harness main block, example calls removed for functional problems.
+        This is what the BPD tracer runs.
+        """
+        code = llm_generated_code
+        if user_query["test_type"] == "functional":
+            code = self.example_call_detection.remove_example_calls(code, self.CLASS_NAME)
+        return self._add_prelude(code)
 
 
     def build_stdin_content(self, llm_generated_code: str) -> str:
