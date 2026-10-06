@@ -1,0 +1,114 @@
+### Step-by-step reasoning
+- Blocks never move between columns; movement happens only within the same column.
+- At the start of each time t, if the bottom row (y = 1 across all W columns) is completely filled, then one block from the bottom of each non-empty column is removed. After this removal, the remaining blocks in each column cascade downward within that same time step (because the blocks below move away), effectively removing the bottom block and letting the rest shift down by one in that step.
+- If at the start of a time step the bottom row is not full, no removal occurs. However, blocks can still cascade downward within their own column during that step if there is a chain of empty below cells; equivalently, blocks tend to move downward whenever there is no block directly below them (after the prior steps in that time step are accounted for). The important invariant is that removals only happen in time steps where the bottom row is full at the start of the step.
+- Let for each column x (1..W) k_x be the number of blocks initially in that column, and b_x be the minimum initial Y among blocks in that column (the lowest block’s height in that column). If any column is empty (k_x = 0), then the bottom row can never be full, so no removals ever occur and all blocks always exist.
+- If all k_x > 0:
+  - The bottom row becomes full for the first time at time t = B, where B = max_x b_x. Intuitively, in columns with larger bottom-most Y, blocks need more time steps to bring a block down to y = 1; the latest such column dictates when the bottom row becomes fully occupied.
+  - After that, removals happen at time steps t = B, B+1, ..., B+m-1, where m = min_x k_x. In each of these m steps, exactly one block is removed from the bottom of every column that currently has blocks, so in each column the number of blocks decreases by 1 per removal step. After m removals, the column with the smallest initial height becomes empty, so no further removals can occur.
+- For a block i in some column x, let r_i be its rank within that column when blocks are sorted by increasing initial Y (1 = bottom-most in that column, up to k_x).
+  - After s removals (0 ≤ s ≤ m), exactly the blocks with rank ≤ s are removed in that column. The rest survive those s removals with their relative order preserved.
+  - Therefore, at time T (i.e., after T time steps, time T+0.5 is just after those steps), with s = number of removals already performed by then:
+    - If T < B, s = 0, and all blocks exist.
+    - If B ≤ T ≤ B + m − 1, s = T − B + 1, and a block i exists iff r_i > s.
+    - If T ≥ B + m, s = m, and a block i exists iff r_i > m.
+- Algorithm:
+  - Build per-column lists of blocks: for each column x, collect (Y_i, block_index).
+  - If any column is empty (k_x = 0 for some x): answer is always "Yes" for all queries.
+  - Otherwise:
+    - Compute B = max_x min_Y_in_column_x.
+    - Compute m = min_x k_x.
+    - For each column, sort its blocks by Y and assign rank r_i (1-based) to each block i in that column.
+    - For each query (T, A):
+      - If T < B: Yes
+      - Else if T ≤ B + m − 1: s = T − B + 1; Yes if r_A > s, else No
+      - Else: Yes if r_A > m, else No
+
+- Complexity:
+  - Preprocessing: O(N log N) in total (sorting within each column; total blocks is N).
+  - Each query: O(1).
+  - Memory: O(N).
+
+- Output format: Print Q lines with Yes/No.
+
+### Requirements
+None
+
+### Code
+```
+import sys
+
+def solve():
+    data = list(map(int, sys.stdin.buffer.read().split()))
+    it = iter(data)
+
+    N = next(it); W = next(it)
+
+    X = [0] * N
+    Y = [0] * N
+    for i in range(N):
+        X[i] = next(it)
+        Y[i] = next(it)
+
+    Q = next(it)
+    T_arr = [0] * Q
+    A_arr = [0] * Q
+    for j in range(Q):
+        T_arr[j] = next(it)
+        A_arr[j] = next(it) - 1  # 0-based block index
+
+    # Build per-column blocks: columns are 0..W-1
+    cols = [[] for _ in range(W)]
+    for i in range(N):
+        x = X[i] - 1
+        y = Y[i]
+        cols[x].append((y, i))
+
+    # Check if any column is empty
+    hasZero = False
+    for c in cols:
+        if not c:
+            hasZero = True
+            break
+
+    rank = [0] * N  # rank[i] is the rank of block i within its column (1-based)
+    B = 0
+    m = 0
+
+    if not hasZero:
+        # Compute B and m
+        mins = []
+        for col in cols:
+            # col is non-empty
+            minY = min(y for (y, idx) in col)
+            mins.append(minY)
+        B = max(mins)
+        m = min(len(col) for col in cols)
+
+        # Assign ranks within each column
+        for col in cols:
+            col.sort(key=lambda t: t[0])  # sort by Y
+            for pos, (y, idx) in enumerate(col, start=1):
+                rank[idx] = pos
+
+    out_lines = []
+    if hasZero:
+        out_lines = ["Yes"] * Q
+    else:
+        for j in range(Q):
+            t = T_arr[j]
+            a = A_arr[j]
+            r = rank[a]
+            if t < B:
+                out_lines.append("Yes")
+            elif t <= B + m - 1:
+                s = t - B + 1
+                out_lines.append("Yes" if r > s else "No")
+            else:
+                out_lines.append("Yes" if r > m else "No")
+
+    sys.stdout.write("\n".join(out_lines))
+
+if __name__ == "__main__":
+    solve()
+```
