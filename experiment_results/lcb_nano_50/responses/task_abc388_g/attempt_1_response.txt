@@ -1,0 +1,111 @@
+### Step-by-step reasoning
+- Problem essence:
+  - For each query [L, R], we must form as many disjoint pairs (i, j) with L ≤ i < j ≤ R such that A[i] * 2 ≤ A[j], i.e., the left element is at most half of the right one.
+  - Each mochi (index) can be in at most one pair.
+
+- Why the previous approach failed:
+  - A naive greedy that processes i from left to right and always pairs i with the smallest possible partner j can be suboptimal. Example: in subarray [1, 2, 3, 4], pairing 1 with 2 prevents forming two pairs (1,3) and (2,4) later, whereas pairing 1 with 3 and 2 with 4 yields 2 pairs.
+
+- Correct approach (per query):
+  - The graph of possible pairings in a sorted subarray has a special structure: for each i, the set of valid partners j is a suffix [start_i, R], where start_i = max(i+1, t(i)) and t(i) is the smallest j > i with A[j] ≥ 2*A[i].
+  - If we process i in decreasing order (from R-1 down to L) and greedily match i to the smallest unused j ≥ start_i, ensuring j isn’t already used (neither as left nor as right), we obtain a maximum matching for this kind of graph.
+  - To implement efficiently, we:
+    - Precompute t(i) for all i with a two-pointer sweep in O(N). Then start_i = max(i+1, t(i)).
+    - For each query, use a DSU (disjoint-set union) data structure to quickly find the next unused right index j ≥ start_i. We also maintain a set of indices already used (either as left or right) to guarantee that no index is reused.
+    - Iterate i from R-1 down to L. If i is already used, skip. Otherwise, find the smallest available right j ≥ start_i, skipping any j already used; if found, pair i with j, mark both as used, and union j in the DSU.
+
+- Why this works:
+  - Each step either creates a valid pair or eliminates a candidate right index that cannot be used anymore (due to previous pairings). Since we always try the smallest available right for the current left, and we go from largest left to smallest, we ensure that no potential cross-boundary pairing is overlooked, which yields a maximum number of disjoint pairs.
+
+- Complexity:
+  - Precomputation of t(i) for all i is O(N).
+  - For a query of length m = R-L+1, the per-query work is roughly O(m α(m)) due to DSU operations plus a set membership check. In practice this is efficient enough for typical test data and avoids O(m^2) behavior.
+
+- Implementation notes:
+  - We store t[i] globally and compute start_i = max(i+1, t[i]).
+  - For each query, we build a small DSU of size m+1 (m = R-L+1) to track the next available right index, mapped to DSU indices 0..m. We also track used indices with a Python set.
+  - We do not rely on any external libraries.
+
+### Requirements
+None
+
+### Code
+```
+import sys
+
+def solve():
+    data = list(map(int, sys.stdin.buffer.read().split()))
+    it = iter(data)
+    N = next(it)
+    A = [next(it) for _ in range(N)]
+    Q = next(it)
+    queries = []
+    for _ in range(Q):
+        L = next(it) - 1
+        R = next(it) - 1
+        queries.append((L, R))
+
+    # Precompute t[i] = first index j > i with A[j] >= 2*A[i], or N if none
+    t = [N] * N
+    j = 0
+    for i in range(N):
+        if j <= i:
+            j = i + 1
+        while j < N and A[j] < 2 * A[i]:
+            j += 1
+        t[i] = j
+
+    # start_i = max(i+1, t[i])
+    start = [0] * N
+    for i in range(N):
+        start[i] = max(i + 1, t[i])
+
+    out_lines = []
+    for L, R in queries:
+        m = R - L + 1
+        if m < 2:
+            out_lines.append("0")
+            continue
+
+        # DSU over rights: indices L..R map to DSU indices 0..m-1; sentinel m marks end
+        parent = list(range(m + 1))
+
+        def find(x):
+            while parent[x] != x:
+                parent[x] = parent[parent[x]]
+                x = parent[x]
+            return x
+
+        used = set()  # indices that are already used (as left or right)
+
+        ans = 0
+        # Iterate left indices i from R-1 down to L
+        for i in range(R - 1, L - 1, -1):
+            if i in used:
+                continue
+            si = start[i]
+            if si > R:
+                continue
+            rstart = si - L  # DSU index of the earliest possible right
+            idx = find(rstart)
+            # Skip any rights that are already used as left/right
+            while idx < m and (L + idx) in used:
+                idx = find(idx + 1)
+            if idx >= m:
+                continue
+            jidx = L + idx
+            if jidx > R:
+                continue
+            # Pair i with jidx
+            used.add(i)
+            used.add(jidx)
+            parent[idx] = find(idx + 1)  # mark right as used
+            ans += 1
+
+        out_lines.append(str(ans))
+
+    print("\n".join(out_lines))
+
+if __name__ == "__main__":
+    solve()
+```
