@@ -302,5 +302,42 @@ class BreakpointDebuggerTests(unittest.TestCase):
         self.assertEqual(str(report), report.text)
 
 
+class ConciseReportTests(unittest.TestCase):
+    SRC = """
+def fill(n):
+    items = []
+    seen = {}
+    for i in range(n):
+        items.append(i * i)
+        seen[i] = i
+    items[0] = 99
+    return items
+"""
+
+    def test_collection_updates_are_shown_as_deltas(self) -> None:
+        text = BreakpointDebugger(ReportConfig.concise()).run(self.SRC, "fill", 3).text
+        self.assertIn("items: appended 4", text)
+        self.assertIn("seen[2] = 2", text)
+        self.assertIn("items[0]: 0 -> 99", text)
+        self.assertNotIn("items: [0, 1] -> [0, 1, 4]", text)
+
+    def test_full_report_is_unchanged_by_default(self) -> None:
+        text = BreakpointDebugger().run(self.SRC, "fill", 3).text
+        self.assertIn("items: [0, 1] -> [0, 1, 4]", text)
+        self.assertIn("Source (line numbers below refer to this listing)", text)
+
+    def test_concise_report_drops_source_listing_and_noise(self) -> None:
+        text = BreakpointDebugger(ReportConfig.concise()).run(self.SRC, "fill", 3).text
+        self.assertNotIn("Source (line numbers", text)
+        self.assertNotIn("After the loop", text)       # all iterations shown, nothing omitted
+
+    def test_size_budget_is_respected(self) -> None:
+        source = "def big(n):\n    t = 0\n    for i in range(n):\n        for j in range(n):\n            t += i * j\n    return t\n"
+        config = ReportConfig.concise(max_chars=1500)
+        text = BreakpointDebugger(config).run(source, "big", 40).text
+        self.assertLessEqual(len(text), 1500)
+        self.assertIn("Outcome: returned", text)
+
+
 if __name__ == "__main__":
     unittest.main()

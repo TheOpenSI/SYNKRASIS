@@ -1,0 +1,67 @@
+Execution report for `__bpd_main__()`
+Outcome: returned None
+
+Trace:
+Call __bpd_main__()  [__bpd_main__, lines 120-121]
+  Line 121 `main()`:
+    called main():
+      Line 5 `data = list(map(int, sys.stdin.buffer.read().split()))`: data = [5, 1, 5, 1, 3, 3, 6, 2, 4,...
+      Line 7 `N = next(it)`: N = 5
+      Line 8 `L = [0] * N`: L = [0, 0, 0, 0, 0]
+      Line 9 `R = [0] * N`: R = [0, 0, 0, 0, 0]
+      Line 10 `for i in range(N):` (N = 5) ran 5 iterations
+        Iteration 1 (i = 0): line 11 `L[i] = next(it)`: L: [0, 0, 0, 0, 0] -> [1, 0, 0, 0, 0]; line 12 `R[i] = next(it)`: R: [0, 0, 0, 0, 0] -> [5, 0, 0, 0, 0]
+        ... 3 iterations omitted ...
+        Iteration 5 (i = 4): line 11 `L[i] = next(it)`: L: [1, 1, 3, 2, 0] -> [1, 1, 3, 2, 4]; line 12 `R[i] = next(it)`: R: [5, 3, 6, 4, 0] -> [5, 3, 6, 4, 7]
+        After the loop: L = [1, 1, 3, 2, 4], R = [5, 3, 6, 4, 7]
+      Line 13 `Q = next(it)`: Q = 3
+      Line 14 `queries = [0] * Q`: queries = [0, 0, 0]
+      Line 15 `maxX = 0`: maxX = 0
+      Line 16 `for i in range(Q):` (Q = 3) ran 3 iterations
+        Iteration 1 (i = 0):
+          Line 17 `x = next(it)`: x = 3
+          Line 18 `queries[i] = x`: queries: [0, 0, 0] -> [3, 0, 0]
+          Line 19 `if x > maxX:` was True (x = 3, maxX = 0)
+          Line 20 `maxX = x`: maxX: 0 -> 3
+        ... 1 iterations omitted ...
+        Iteration 3 (i = 2):
+          Line 17 `x = next(it)`: x: 2 -> 5
+          Line 18 `queries[i] = x`: queries: [3, 2, 0] -> [3, 2, 5]
+          Line 19 `if x > maxX:` was True (x = 5, maxX = 3)
+          Line 20 `maxX = x`: maxX: 3 -> 5
+        After the loop: queries = [3, 2, 5], maxX = 5
+      Line 21 `MAXY = maxX`: MAXY = 5
+      Line 22 `if MAXY < 1:` was False (MAXY = 5)
+      Line 24 `size = 4 * MAXY + 5`: size = 25
+      Line 25 `maxv = array('i', [0]) * size`: maxv = array('i', [0, 0, 0, 0, 0, ...
+      Line 26 `lazy = array('i', [0]) * size`: lazy = array('i', [0, 0, 0, 0, 0, ...
+      Line 103 `build(1, 1, MAXY)`: called build(node=1, l=1, r=5, maxv=array('i', [0, 0, 0, 0, 0, ...) -> None (nested details omitted: depth limit); maxv: array('i', [0, 0, 0, 0, 0, ... -> array('i', [0, 5, 3, 5, 2, ...
+      Line 104 `for i in range(N):` (N = 5) ran 5 iterations
+        Iteration 1 (i = 0):
+          Line 105 `Li = L[i]`: Li = 1
+          Line 106 `Ri = R[i]`: Ri = 5
+          Line 107 `start = find_first_ge(1, 1, MAXY, Li)`: called find_first_ge(node=1, l=1, r=5, t=1, maxv=array('i', [0, 5, 3, 5, 2, ...) -> 1 (nested details omitted: depth limit); start = 1
+          Line 108 `if start == -1:` was False (start = 1)
+          Line 110 `idx_gt = find_first_gt(1, 1, MAXY, Ri)`: called find_first_gt(node=1, l=1, r=5, t=5, maxv=array('i', [0, 5, 3, 5, 2, ...) -> -1 (nested details omitted: depth limit); idx_gt = -1
+          Line 111 `end = MAXY if idx_gt == -1 else idx_gt - 1`: end = 5
+          Line 112 `if start <= end:` was True (start = 1, end = 5)
+          Line 113 `range_add(1, 1, MAXY, start, end, 1)`: called range_add(node=1, l=1, r=5, ql=1, qr=5, val=1, lazy=array('i', [0, 0, 0, 0, 0, ..., maxv=array('i', [0, 5, 3, 5, 2, ...) -> None (nested details omitted: depth limit); maxv: array('i', [0, 5, 3, 5, 2, ... -> array('i', [0, 6, 3, 5, 2, ...; lazy: array('i', [0, 0, 0, 0, 0, ... -> array('i', [0, 1, 0, 0, 0, ...
+        ... 3 iterations omitted ...
+        Iteration 5 (i = 4):
+          Line 105 `Li = L[i]`: Li: 2 -> 4
+          Line 106 `Ri = R[i]`: Ri: 4 -> 7
+          Line 107 `start = find_first_ge(1, 1, MAXY, Li)`: called find_first_ge(node=1, l=1, r=5, t=4, maxv=array('i', [0, 7, 5, 7, 5, ...) -> 1 (nested details omitted: depth limit)
+          Line 108 `if start == -1:` was False (start = 1)
+          Line 110 `idx_gt = find_first_gt(1, 1, MAXY, Ri)`: called find_first_gt(node=1, l=1, r=5, t=7, maxv=array('i', [0, 7, 5, 7, 5, ...) -> -1 (nested details omitted: depth limit); idx_gt: 2 -> -1
+          Line 111 `end = MAXY if idx_gt == -1 else idx_gt - 1`: end: 1 -> 5
+          Line 112 `if start <= end:` was True (start = 1, end = 5)
+          Line 113 `range_add(1, 1, MAXY, start, end, 1)`: called range_add(node=1, l=1, r=5, ql=1, qr=5, val=1, lazy=array('i', [0, 0, 0, 2, 0, ..., maxv=array('i', [0, 7, 5, 7, 5, ...) -> None (nested details omitted: depth limit); maxv: array('i', [0, 7, 5, 7, 5, ... -> array('i', [0, 8, 5, 7, 5, ...; lazy: array('i', [0, 0, 0, 2, 0, ... -> array('i', [0, 1, 0, 2, 0, ...
+        After the loop: maxv = array('i', [0, 8, 5, 7, 5, ..., lazy = array('i', [0, 1, 0, 2, 0, ..., Li = 4, Ri = 7, start = 1, idx_gt = -1, end = 5
+      Line 114 `out_lines = []`: out_lines = []
+      Line 115 `for x in queries:` (queries = [3, 2, 5]) ran 3 iterations
+        Iteration 1 (x = 3): line 116 `val = point_query(1, 1, MAXY, x) if 1 <= x <= MAXY else x`: called point_query(node=1, l=1, r=5, idx=3, maxv=array('i', [0, 8, 5, 7, 5, ...) -> 6 (nested details omitted: depth limit); maxv: array('i', [0, 8, 5, 7, 5, ... -> array('i', [0, 8, 6, 8, 6, ...; lazy: array('i', [0, 1, 0, 2, 0, ... -> array('i', [0, 0, 0, 3, 1, ...; val = 6; line 117 `out_lines.append(str(val))`: out_lines: [] -> ['6']
+        ... 1 iterations omitted ...
+        Iteration 3 (x = 5): line 116 `val = point_query(1, 1, MAXY, x) if 1 <= x <= MAXY else x`: called point_query(node=1, l=1, r=5, idx=5, maxv=array('i', [0, 8, 6, 8, 6, ...) -> 8 (nested details omitted: depth limit); maxv: array('i', [0, 8, 6, 8, 6, ... -> array('i', [0, 8, 6, 8, 6, ...; lazy: array('i', [0, 0, 0, 3, 0, ... -> array('i', [0, 0, 0, 0, 0, ...; val: 6 -> 8; line 117 `out_lines.append(str(val))`: out_lines: ['6', '6'] -> ['6', '6', '8']
+        After the loop: maxv = array('i', [0, 8, 6, 8, 6, ..., lazy = array('i', [0, 0, 0, 0, 0, ..., out_lines = ['6', '6', '8'], val = 8
+      End of function reached: main returned None
+  End of function reached: __bpd_main__ returned None

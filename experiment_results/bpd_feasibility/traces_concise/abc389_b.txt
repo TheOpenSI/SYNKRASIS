@@ -1,0 +1,17 @@
+Execution report for `__bpd_main__()`
+Outcome: returned None
+
+Trace:
+Call __bpd_main__()  [__bpd_main__, lines 15-16]
+  Line 16 `main()`:
+    called main():
+      Line 4 `data = sys.stdin.read().strip()`: data = '6'
+      Line 5 `if not data:` was False (data = '6')
+      Line 7 `X = int(data)`: X = 6
+      Line 8 `i = 1`: i = 1
+      Line 9 `f = 1`: f = 1
+      Line 10 `while f < X:` (f = 1, X = 6) ran 2 iterations
+        Iteration 1 (f = 1, X = 6): line 11 `i += 1`: i: 1 -> 2; line 12 `f *= i`: f: 1 -> 2
+        Iteration 2 (f = 2, X = 6): line 11 `i += 1`: i: 2 -> 3; line 12 `f *= i`: f: 2 -> 6
+      End of function reached: main returned None
+  End of function reached: __bpd_main__ returned None

@@ -117,11 +117,31 @@ class BreakpointDebugger:
         return target
 
 
+    def _render_within_budget(self, structure: CodeStructure, description: str,
+                              roots: list[Invocation], result: Any, error: Optional[Exception]) -> str:
+        """Renders the report, tightening the detail (fewer iterations/calls, shorter values) until it
+        fits config.max_chars. As a last resort the middle of the trace is cut."""
+        text = ReportBuilder(structure, self.config).build(description, roots, result, error)
+        limit = self.config.max_chars
+        if limit is None or len(text) <= limit:
+            return text
+        for level in (1, 2, 3):
+            text = ReportBuilder(structure, self.config.tightened(level)).build(description, roots, result, error)
+            if len(text) <= limit:
+                return text
+        lines = text.split("\n")
+        head, tail = int(len(lines) * 0.6), int(len(lines) * 0.25)
+        while len("\n".join(lines[:head] + lines[-tail:])) > limit and head > 10:
+            head, tail = int(head * 0.8), int(tail * 0.8)
+        omitted = len(lines) - head - tail
+        return "\n".join(lines[:head] + [f"... {omitted} trace lines omitted (size limit) ..."] + lines[-tail:])
+
+
     def _execute(self, structure: CodeStructure, filename: str, description: str,
                  thunk: Callable[[], Any]) -> DebugReport:
         collector = TraceCollector(filename, structure, self.config.max_value_length)
         result, error, roots = collector.run(thunk)
-        text = ReportBuilder(structure, self.config).build(description, roots, result, error)
+        text = self._render_within_budget(structure, description, roots, result, error)
         return DebugReport(text=text, call_description=description, result=result,
                            exception=error, invocations=roots)
         

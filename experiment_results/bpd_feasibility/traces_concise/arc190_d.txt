@@ -1,0 +1,70 @@
+Execution report for `__bpd_main__()`
+Outcome: returned None
+
+Trace:
+Call __bpd_main__()  [__bpd_main__, lines 80-81]
+  Line 81 `solve()`:
+    called solve():
+      Line 52 `data = sys.stdin.read().strip().split()`: data = ['2', '3', '0', '1', '0', '2']
+      Line 53 `if not data:` was False (data = ['2', '3', '0', '1', '0', '2'])
+      Line 56 `N = int(next(it))`: N = 2
+      Line 57 `p = int(next(it))`: p = 3
+      Line 58 `A = []`: A = []
+      Line 59 `zeros = []`: zeros = []
+      Line 60 `for i in range(N):` (N = 2) ran 2 iterations
+        Iteration 1:
+          Line 61 `row = []`: row = []
+          Line 62 `for j in range(N):` (N = 2) ran 2 iterations
+            Iteration 1:
+              Line 63 `val = int(next(it)) % p`: val = 0
+              Line 64 `row.append(val)`: row: [] -> [0]
+              Line 65 `if val == 0:` was True (val = 0)
+              Line 66 `zeros.append((i, j))`: zeros: [] -> [(0, 0)]
+            Iteration 2:
+              Line 63 `val = int(next(it)) % p`: val: 0 -> 1
+              Line 64 `row.append(val)`: row: [0] -> [0, 1]
+              Line 65 `if val == 0:` was False (val = 1)
+          Line 67 `A.append(row)`: A: [] -> [[0, 1]]
+        Iteration 2:
+          Line 61 `row = []`: row: [0, 1] -> []
+          Line 62 `for j in range(N):` (N = 2) ran 2 iterations
+            Iteration 1:
+              Line 63 `val = int(next(it)) % p`: val: 1 -> 0
+              Line 64 `row.append(val)`: row: [] -> [0]
+              Line 65 `if val == 0:` was True (val = 0)
+              Line 66 `zeros.append((i, j))`: zeros: [(0, 0)] -> [(0, 0), (1, 0)]
+            Iteration 2:
+              Line 63 `val = int(next(it)) % p`: val: 0 -> 2
+              Line 64 `row.append(val)`: row: [0] -> [0, 2]
+              Line 65 `if val == 0:` was False (val = 2)
+          Line 67 `A.append(row)`: A: [[0, 1]] -> [[0, 1], [0, 2]]
+      Line 68 `K = len(zeros)`: K = 2
+      Line 69 `if K == 0:` was False (K = 2)
+      Line 74 `Ap = mat_pow(A, p, p)`:
+        called mat_pow(A=[[0, 1], [0, 2]], e=3, mod=3):
+          Line 33 `n = len(A)`: n = 2
+          Line 34 `R = [[0] * n for _ in range(n)]`: R = [[0, 0], [0, 0]]
+          Line 35 `for i in range(n):` (n = 2) ran 2 iterations
+            Iteration 1 (i = 0): line 36 `R[i][i] = 1 % mod`: R: [[0, 0], [0, 0]] -> [[1, 0], [0, 0]]
+            Iteration 2 (i = 1): line 36 `R[i][i] = 1 % mod`: R: [[1, 0], [0, 0]] -> [[1, 0], [0, 1]]
+          Line 37 `X = [row[:] for row in A]`: X = [[0, 1], [0, 2]]
+          Line 38 `while e > 0:` (e = 3) ran 2 iterations
+            Iteration 1 (e = 3):
+              Line 39 `if e & 1:` was True (e = 3)
+              Line 40 `R = mat_mul(R, X, mod)`: called mat_mul(A=[[1, 0], [0, 1]], B=[[0, 1], [0, 2]], mod=3) -> [[0, 1], [0, 2]] (nested details omitted: depth limit); R: [[1, 0], [0, 1]] -> [[0, 1], [0, 2]]
+              Line 41 `X = mat_mul(X, X, mod)`: called mat_mul(A=[[0, 1], [0, 2]], B=[[0, 1], [0, 2]], mod=3) -> [[0, 2], [0, 1]] (nested details omitted: depth limit); X: [[0, 1], [0, 2]] -> [[0, 2], [0, 1]]
+              Line 42 `e >>= 1`: e: 3 -> 1
+            Iteration 2 (e = 1):
+              Line 39 `if e & 1:` was True (e = 1)
+              Line 40 `R = mat_mul(R, X, mod)`: called mat_mul(A=[[0, 1], [0, 2]], B=[[0, 2], [0, 1]], mod=3) -> [[0, 1], [0, 2]] (nested details omitted: depth limit)
+              Line 41 `X = mat_mul(X, X, mod)`: called mat_mul(A=[[0, 2], [0, 1]], B=[[0, 2], [0, 1]], mod=3) -> [[0, 2], [0, 1]] (nested details omitted: depth limit)
+              Line 42 `e >>= 1`: e: 1 -> 0
+          Line 43 `return R`: mat_pow returned [[0, 1], [0, 2]]
+        Ap = [[0, 1], [0, 2]]
+      Line 75 `total_all = pow(p, K, p)`: total_all = 0
+      Line 76 `S_all = [[Ap[i][j] * total_all % p for j in range(N)] for i in range(N)]`: S_all = [[0, 0], [0, 0]]
+      Line 77 `for i in range(N):` (N = 2) ran 2 iterations
+        Iteration 1: no variable changes
+        Iteration 2: no variable changes
+      End of function reached: solve returned None
+  End of function reached: __bpd_main__ returned None

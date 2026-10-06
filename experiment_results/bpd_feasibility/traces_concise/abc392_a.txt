@@ -1,0 +1,13 @@
+Execution report for `__bpd_main__()`
+Outcome: returned None
+
+Trace:
+Call __bpd_main__()  [__bpd_main__, lines 14-15]
+  Line 15 `main()`:
+    called main():
+      Line 4 `data = sys.stdin.read().strip().split()`: data = ['3', '15', '5']
+      Line 5 `if len(data) < 3:` was False (data = ['3', '15', '5'])
+      Line 8 `a, b, c = map(int, data[:3])`: a = 3; b = 15; c = 5
+      Line 9 `if a * b == c or a * c == b or b * c == a:` was True (c = 5, b = 15, a = 3)
+      End of function reached: main returned None
+  End of function reached: __bpd_main__ returned None

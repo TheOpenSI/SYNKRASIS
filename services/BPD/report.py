@@ -12,6 +12,7 @@ is a loop header opens or continues an iteration, a step whose line is an
 """
 from __future__ import annotations
 
+import ast
 from dataclasses import dataclass
 from typing import Any, Optional
 
@@ -28,6 +29,33 @@ class ReportConfig:
     max_value_length: int = 200      # longer reprs are truncated
     include_source: bool = True      # prefix the report with a numbered source listing
     indent: str = "  "
+    # -- options to shrink the report (defaults keep the full report) --
+    display_value_length: Optional[int] = None  # clip displayed values to this length, None = no extra clipping
+    after_loop: str = "always"       # "always" | "when_omitted" (only if iterations were skipped) | "never"
+    show_call_location: bool = True  # "[name, lines a-b]" on every nested call
+    hide_noise_values: bool = False  # drop functions, classes, modules and "object at 0x.." values
+    compact_collections: bool = False  # show list/dict/set updates as deltas, e.g. "X[1]: 0 -> 1", "appended 4"
+    dedupe_values: bool = False      # a long value already shown for a name is not repeated in conditions
+    max_chars: Optional[int] = None  # BreakpointDebugger tightens the detail until the report fits
+
+    @classmethod
+    def concise(cls, max_chars: int = 12000) -> "ReportConfig":
+        """Compact report meant to be read by an LLM that already has the source code."""
+        return cls(max_iterations_shown=6, iterations_tail=2, max_call_depth=3, max_calls_per_step=3,
+                   include_source=False, display_value_length=60, after_loop="when_omitted",
+                   show_call_location=False, hide_noise_values=True, compact_collections=True,
+                   dedupe_values=True, max_chars=max_chars)
+
+    def tightened(self, level: int) -> "ReportConfig":
+        """Less detail for level 1, 2, ... used to fit max_chars."""
+        from dataclasses import replace
+        steps = [(4, 2, 3, 2, 50), (3, 1, 2, 2, 40), (2, 1, 1, 1, 30)]
+        iterations, tail, depth, calls, length = steps[min(level, len(steps)) - 1]
+        return replace(self, max_iterations_shown=min(self.max_iterations_shown, iterations),
+                       iterations_tail=min(self.iterations_tail, tail),
+                       max_call_depth=min(self.max_call_depth, depth),
+                       max_calls_per_step=min(self.max_calls_per_step, calls),
+                       display_value_length=min(self.display_value_length or length, length))
 
 
 class ReportBuilder:
@@ -37,6 +65,7 @@ class ReportBuilder:
         self.config = config or ReportConfig()
         self._items_cache: dict[int, list[dict]] = {}
         self._executed: dict[int, FunctionInfo] = {}
+        self._shown: dict[str, str] = {}   # name -> last value displayed in a condition, see dedupe_values
 
     # -- public ---------------------------------------------------------------
 
@@ -44,6 +73,7 @@ class ReportBuilder:
               result: Any, error: Optional[Exception]) -> str:
         self._items_cache = {}
         self._executed = {}
+        self._shown = {}
         body: list[str] = []
         for root in roots:
             body.extend(self._render_root(root))
@@ -53,7 +83,7 @@ class ReportBuilder:
         if error is not None:
             lines.append(f"Outcome: raised {type(error).__name__}: {error}")
         else:
-            lines.append(f"Outcome: returned {safe_repr(result, self.config.max_value_length)}")
+            lines.append(f"Outcome: returned {self._clip(safe_repr(result, self.config.max_value_length))}")
         lines.append("")
         if self.config.include_source:
             lines.append("Source (line numbers below refer to this listing):")
@@ -288,21 +318,90 @@ class ReportBuilder:
     def _pad(self, indent: int, text: str) -> str:
         return self.config.indent * indent + text
 
-    def _values(self, values: dict[str, Any]) -> str:
-        return ", ".join(f"{k} = {v}" for k, v in values.items())
+    def _clip(self, text: Optional[str]) -> Optional[str]:
+        limit = self.config.display_value_length
+        if text is None or limit is None or len(text) <= limit:
+            return text
+        return text[:limit - 3] + "..."
+
+    def _is_noise(self, value: str) -> bool:
+        return self.config.hide_noise_values and (
+            value.startswith(("<function", "<class", "<module", "<built-in", "<bound method"))
+            or " object at 0x" in value)
+
+    def _values(self, values: dict[str, Any], dedupe: bool = False) -> str:
+        shown = []
+        for name, value in values.items():
+            if self._is_noise(value):
+                continue
+            if dedupe and self.config.dedupe_values and len(value) > 20:
+                if self._shown.get(name) == value:
+                    continue          # same long value as the last time it was displayed
+                self._shown[name] = value
+            shown.append(f"{name} = {self._clip(value)}")
+        return ", ".join(shown)
 
     def _changes(self, changes: dict[str, tuple[Optional[str], str]]) -> list[str]:
-        return [f"{name} = {after}" if before is None else f"{name}: {before} -> {after}"
-                for name, (before, after) in changes.items()]
+        lines = []
+        for name, (before, after) in changes.items():
+            if self._is_noise(after):
+                continue
+            delta = self._delta(name, before, after) if self.config.compact_collections else None
+            if delta is not None:
+                lines.append(delta)
+            elif before is None:
+                lines.append(f"{name} = {self._clip(after)}")
+            else:
+                lines.append(f"{name}: {self._clip(before)} -> {self._clip(after)}")
+        return lines
 
-    def _location(self, inv: Invocation) -> str:
+    def _delta(self, name: str, before: Optional[str], after: str) -> Optional[str]:
+        """Update of a list/dict/set as a small delta instead of both full values, None if not applicable."""
+        if before is None:
+            return None
+        try:
+            old, new = ast.literal_eval(before), ast.literal_eval(after)
+        except Exception:
+            return None
+        show = lambda value: self._clip(repr(value))
+        parts: list[str] = []
+        if isinstance(old, list) and isinstance(new, list):
+            if len(old) == len(new):
+                parts = [f"{name}[{i}]: {show(o)} -> {show(n)}" for i, (o, n) in enumerate(zip(old, new)) if o != n]
+            elif len(new) > len(old) and new[:len(old)] == old:
+                parts = [f"{name}: appended {', '.join(show(x) for x in new[len(old):])}"]
+            elif len(new) < len(old) and old[:len(new)] == new:
+                parts = [f"{name}: removed {', '.join(show(x) for x in old[len(new):])} from the end"]
+        elif isinstance(old, dict) and isinstance(new, dict):
+            for key in new:
+                if key not in old:
+                    parts.append(f"{name}[{key!r}] = {show(new[key])}")
+                elif old[key] != new[key]:
+                    parts.append(f"{name}[{key!r}]: {show(old[key])} -> {show(new[key])}")
+            parts += [f"{name}: removed key {key!r}" for key in old if key not in new]
+        elif isinstance(old, set) and isinstance(new, set):
+            if new - old:
+                parts.append(f"{name}: added {', '.join(show(x) for x in sorted(new - old, key=repr))}")
+            if old - new:
+                parts.append(f"{name}: removed {', '.join(show(x) for x in sorted(old - new, key=repr))}")
+        if not parts or len(parts) > 3:
+            return None
+        return "; ".join(parts)
+
+    def _signature(self, inv: Invocation) -> str:
+        args = ", ".join(f"{k}={self._clip(v)}" for k, v in inv.args.items() if not self._is_noise(v))
+        return f"{inv.name}({args})"
+
+    def _location(self, inv: Invocation, root: bool = False) -> str:
+        if not root and not self.config.show_call_location:
+            return ""
         info = self.structure.function_for(inv.name, inv.first_line)
         if info is None:
             return ""
         return f"  [{info.qualname}, lines {info.def_line}-{info.end_line}]"
 
     def _render_root(self, inv: Invocation) -> list[str]:
-        lines = [f"Call {inv.signature()}{self._location(inv)}"]
+        lines = [f"Call {self._signature(inv)}{self._location(inv, root=True)}"]
         lines.extend(self._render_body(inv, 1))
         return lines
 
@@ -337,19 +436,19 @@ class ReportBuilder:
         return interesting <= 1
 
     def _inline_call(self, inv: Invocation) -> str:
-        text = f"called {inv.signature()}"
+        text = f"called {self._signature(inv)}"
         if inv.raised is not None:
             return f"{text} -> raised {inv.raised}"
         if inv.is_generator:
             return f"{text} -> yielded {', '.join(inv.yields) if inv.yields else 'nothing'}"
         if inv.finished:
-            text += f" -> {inv.return_value}"
+            text += f" -> {self._clip(inv.return_value)}"
         if inv.depth > self.config.max_call_depth:
             text += " (nested details omitted: depth limit)"
         return text
 
     def _render_child_block(self, inv: Invocation, indent: int) -> list[str]:
-        lines = [self._pad(indent, f"called {inv.signature()}:{self._location(inv)}")]
+        lines = [self._pad(indent, f"called {self._signature(inv)}:{self._location(inv)}")]
         lines.extend(self._render_body(inv, indent + 1))
         return lines
 
@@ -380,7 +479,7 @@ class ReportBuilder:
 
         source = self.structure.line_source(item["line"])
         if kind == "return" and item.get("implicit"):
-            return [self._pad(indent, f"End of function reached: {item['function']} returned {item['value']}")]
+            return [self._pad(indent, f"End of function reached: {item['function']} returned {self._clip(item['value'])}")]
 
         inline, nested, notes = self._split_calls(item.get("calls", []), item.get("exception"))
         head = f"Line {item['line']} `{source}`"
@@ -389,14 +488,15 @@ class ReportBuilder:
             outcome = item["outcome"]
             verdict = "True" if outcome else ("False" if outcome is False else "evaluated (outcome not visible in trace)")
             head += f" was {verdict}"
-            if item["values"]:
-                head += f" ({self._values(item['values'])})"
+            values_text = self._values(item["values"], dedupe=True) if item["values"] else ""
+            if values_text:
+                head += f" ({values_text})"
             if item.get("returns"):
-                tail.append(f"{item['function']} returned {item['value']}")
+                tail.append(f"{item['function']} returned {self._clip(item['value'])}")
         else:
             tail.extend(self._changes(item.get("changes", {})))
             if kind == "return":
-                tail.append(f"{item['function']} returned {item['value']}")
+                tail.append(f"{item['function']} returned {self._clip(item['value'])}")
 
         if not nested:
             parts = inline + notes + tail
@@ -443,7 +543,9 @@ class ReportBuilder:
                 continue
             lines.extend(self._render_iteration(number, iteration, indent + 1))
 
-        if item["exit"] in ("completed", "break"):
+        omitted = len(iterations) > self.config.max_iterations_shown
+        wanted = {"always": True, "when_omitted": omitted, "never": False}[self.config.after_loop]
+        if item["exit"] in ("completed", "break") and wanted:
             after = self._values(item["after"]) or "no variables changed"
             lines.append(self._pad(indent + 1, f"After the loop: {after}"))
         return lines

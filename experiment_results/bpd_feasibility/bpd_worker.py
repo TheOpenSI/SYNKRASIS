@@ -65,7 +65,7 @@ def hoist_script(code: str) -> str:
 def main():
     req = json.load(sys.stdin)
     counter = install_step_cap(req["max_steps"])
-    config = ReportConfig(include_source=req["include_source"])
+    config = ReportConfig.concise(req["max_chars"]) if req.get("concise") else ReportConfig(include_source=req["include_source"])
     debugger = BreakpointDebugger(config)
     out = {"ok": False, "report": "", "output": "", "matches": None, "error": None, "steps": 0}
     captured = io.StringIO()

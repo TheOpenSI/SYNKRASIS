@@ -1,0 +1,87 @@
+Execution report for `__bpd_main__()`
+Outcome: returned None
+
+Trace:
+Call __bpd_main__()  [__bpd_main__, lines 41-42]
+  Line 42 `main()`:
+    called main():
+      Line 35 `data = sys.stdin.read().strip().split()`: data = ['97', '210']
+      Line 36 `L = int(data[0])`: L = 97
+      Line 37 `R = int(data[1])`: R = 210
+      Line 38 `ans = count_snake_upto(R) - count_snake_upto(L - 1)`:
+        called count_snake_upto(N=210):
+          Line 4 `if N < 10:` was False (N = 210)
+          Line 6 `s = str(N)`: s = '210'
+          Line 7 `L = len(s)`: L = 3
+          Line 8 `total = 0`: total = 0
+          Line 9 `for k in range(2, L):` (L = 3) ran 1 iteration
+            Iteration 1 (k = 2): line 10 `p = k - 1`: p = 1; line 11 `total += sum((a ** p for a in range(1, 10)))`: total: 0 -> 45
+          Line 12 `first = int(s[0])`: first = 2
+          Line 13 `for a in range(1, first):` (first = 2) ran 1 iteration
+            Iteration 1: line 14 `total += a ** (L - 1)`: total: 45 -> 46
+          Line 15 `a_lim = first - 1`: a_lim = 1
+          Line 16 `B = [int(ch) for ch in s[1:]]`: B = [1, 0]
+          Line 17 `dp_tight = 1`: dp_tight = 1
+          Line 18 `dp_loose = 0`: dp_loose = 0
+          Line 19 `for bi in B:` (B = [1, 0]) ran 2 iterations
+            Iteration 1 (bi = 1):
+              Line 20 `new_tight = 0`: new_tight = 0
+              Line 21 `new_loose = 0`: new_loose = 0
+              Line 22 `if dp_tight:` was True (dp_tight = 1)
+              Line 23 `max_less = min(a_lim, bi - 1)`: max_less = 0
+              Line 24 `if max_less >= 0:` was True (max_less = 0)
+              Line 25 `new_loose += dp_tight * (max_less + 1)`: new_loose: 0 -> 1
+              Line 26 `if bi <= a_lim:` was True (bi = 1, a_lim = 1)
+              Line 27 `new_tight += dp_tight`: new_tight: 0 -> 1
+              Line 28 `if dp_loose:` was False (dp_loose = 0)
+              Line 30 `dp_tight, dp_loose = (new_tight, new_loose)`: dp_loose: 0 -> 1
+            Iteration 2 (bi = 0):
+              Line 20 `new_tight = 0`: new_tight: 1 -> 0
+              Line 21 `new_loose = 0`: new_loose: 1 -> 0
+              Line 22 `if dp_tight:` was True (dp_tight = 1)
+              Line 23 `max_less = min(a_lim, bi - 1)`: max_less: 0 -> -1
+              Line 24 `if max_less >= 0:` was False (max_less = -1)
+              Line 26 `if bi <= a_lim:` was True (bi = 0, a_lim = 1)
+              Line 27 `new_tight += dp_tight`: new_tight: 0 -> 1
+              Line 28 `if dp_loose:` was True (dp_loose = 1)
+              Line 29 `new_loose += dp_loose * (a_lim + 1)`: new_loose: 0 -> 2
+              Line 30 `dp_tight, dp_loose = (new_tight, new_loose)`: dp_loose: 1 -> 2
+          Line 31 `total += dp_tight + dp_loose`: total: 46 -> 49
+          Line 32 `return total`: count_snake_upto returned 49
+        called count_snake_upto(N=96):
+          Line 4 `if N < 10:` was False (N = 96)
+          Line 6 `s = str(N)`: s = '96'
+          Line 7 `L = len(s)`: L = 2
+          Line 8 `total = 0`: total = 0
+          Line 9 `for k in range(2, L):` (L = 2) ran 0 iterations (body never executed)
+          Line 12 `first = int(s[0])`: first = 9
+          Line 13 `for a in range(1, first):` (first = 9) ran 8 iterations
+            Iteration 1: line 14 `total += a ** (L - 1)`: total: 0 -> 1
+            Iteration 2: line 14 `total += a ** (L - 1)`: total: 1 -> 3
+            Iteration 3: line 14 `total += a ** (L - 1)`: total: 3 -> 6
+            Iteration 4: line 14 `total += a ** (L - 1)`: total: 6 -> 10
+            ... 2 iterations omitted ...
+            Iteration 7: line 14 `total += a ** (L - 1)`: total: 21 -> 28
+            Iteration 8: line 14 `total += a ** (L - 1)`: total: 28 -> 36
+            After the loop: total = 36
+          Line 15 `a_lim = first - 1`: a_lim = 8
+          Line 16 `B = [int(ch) for ch in s[1:]]`: B = [6]
+          Line 17 `dp_tight = 1`: dp_tight = 1
+          Line 18 `dp_loose = 0`: dp_loose = 0
+          Line 19 `for bi in B:` (B = [6]) ran 1 iteration
+            Iteration 1 (bi = 6):
+              Line 20 `new_tight = 0`: new_tight = 0
+              Line 21 `new_loose = 0`: new_loose = 0
+              Line 22 `if dp_tight:` was True (dp_tight = 1)
+              Line 23 `max_less = min(a_lim, bi - 1)`: max_less = 5
+              Line 24 `if max_less >= 0:` was True (max_less = 5)
+              Line 25 `new_loose += dp_tight * (max_less + 1)`: new_loose: 0 -> 6
+              Line 26 `if bi <= a_lim:` was True (bi = 6, a_lim = 8)
+              Line 27 `new_tight += dp_tight`: new_tight: 0 -> 1
+              Line 28 `if dp_loose:` was False (dp_loose = 0)
+              Line 30 `dp_tight, dp_loose = (new_tight, new_loose)`: dp_loose: 0 -> 6
+          Line 31 `total += dp_tight + dp_loose`: total: 36 -> 43
+          Line 32 `return total`: count_snake_upto returned 43
+        ans = 6
+      End of function reached: main returned None
+  End of function reached: __bpd_main__ returned None

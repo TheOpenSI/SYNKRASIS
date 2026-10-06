@@ -6,8 +6,10 @@ from data.LiveCodeBench.LiveCodeBench import LiveCodeBench
 from utils.code_parsing.code_parser import parse_response
 from services.PyCapsule.livecodebench_harness.LCBHarness import LCBHarness
 
-S = os.path.dirname(__file__)
-RUN = "experiment_results/lcb_nano_30"
+S = os.path.dirname(os.path.abspath(__file__))
+CONCISE = len(sys.argv) > 1 and sys.argv[1] == "concise"
+SUFFIX = "_concise" if CONCISE else ""
+RUN = "/home/ad/workspace/SYNKRASIS/experiment_results/lcb_nano_30"
 H = LCBHarness()
 results = json.load(open(f"{RUN}/gpt-5-nano-2025-08-07_LiveCodeBench_results.json"))
 ds = LiveCodeBench("x", output_dir="/tmp/claude-1000/scratch_ds")
@@ -17,7 +19,7 @@ for i in range(len(ds)):
 
 def trace(code, dp, test, include_source):
     req = dict(code=code, mode=dp["test_type"], entry_point=dp["entry_point"], input=test["input"],
-               expected=test["output"], include_source=include_source, max_steps=300000)
+               expected=test["output"], include_source=include_source, max_steps=300000, concise=CONCISE, max_chars=12000)
     t = time.time()
     try:
         p = subprocess.run([sys.executable, f"{S}/bpd_worker.py"], input=json.dumps(req), capture_output=True, text=True, timeout=90)
@@ -45,6 +47,6 @@ for r in results:
                chars=len(o.get("report", "")), lines=o.get("report", "").count("\n"), chars_with_src=len(full.get("report", "")))
     rows.append(row); print(row, flush=True)
     if o.get("ok"):
-        os.makedirs(f"{S}/traces", exist_ok=True)
-        open(f"{S}/traces/{tid}.txt", "w").write(o["report"])
-json.dump(rows, open(f"{S}/bpd_feasibility.json", "w"), indent=1)
+        os.makedirs(f"{S}/traces{SUFFIX}", exist_ok=True)
+        open(f"{S}/traces{SUFFIX}/{tid}.txt", "w").write(o["report"])
+json.dump(rows, open(f"{S}/bpd_feasibility{SUFFIX}.json", "w"), indent=1)

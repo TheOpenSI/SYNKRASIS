@@ -1,0 +1,29 @@
+Execution report for `__bpd_main__()`
+Outcome: returned None
+
+Trace:
+Call __bpd_main__()  [__bpd_main__, lines 23-24]
+  Line 24 `main()`:
+    called main():
+      Line 4 `data = sys.stdin.read().split()`: data = ['7', '0101001']
+      Line 5 `if not data:` was False (data = ['7', '0101001'])
+      Line 7 `N = int(data[0])`: N = 7
+      Line 8 `S = data[1].strip()`: S = '0101001'
+      Line 9 `pos = []`: pos = []
+      Line 10 `for idx, ch in enumerate(S, start=1):` (S = '0101001') ran 7 iterations
+        Iteration 1 (idx = 1, ch = '0'): line 11 `if ch == '1':` was False (ch = '0')
+        Iteration 2 (idx = 2, ch = '1'): line 11 `if ch == '1':` was True (ch = '1'); line 12 `pos.append(idx)`: pos: [] -> [2]
+        Iteration 3 (idx = 3, ch = '0'): line 11 `if ch == '1':` was False (ch = '0')
+        Iteration 4 (idx = 4, ch = '1'): line 11 `if ch == '1':` was True (ch = '1'); line 12 `pos.append(idx)`: pos: [2] -> [2, 4]
+        ... 1 iterations omitted ...
+        Iteration 6 (idx = 6, ch = '0'): line 11 `if ch == '1':` was False (ch = '0')
+        Iteration 7 (idx = 7, ch = '1'): line 11 `if ch == '1':` was True (ch = '1'); line 12 `pos.append(idx)`: pos: [2, 4] -> [2, 4, 7]
+        After the loop: pos = [2, 4, 7]
+      Line 13 `k = len(pos)`: k = 3
+      Line 14 `if k <= 1:` was False (k = 3)
+      Line 17 `q = [pos[i] - i for i in range(k)]`: q = [2, 3, 5]
+      Line 18 `q_sorted = sorted(q)`: q_sorted = [2, 3, 5]
+      Line 19 `median = q_sorted[k // 2]`: median = 3
+      Line 20 `ans = sum((abs(v - median) for v in q))`: ans = 3
+      End of function reached: main returned None
+  End of function reached: __bpd_main__ returned None
