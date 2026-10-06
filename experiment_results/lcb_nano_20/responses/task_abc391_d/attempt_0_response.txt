@@ -1,0 +1,124 @@
+### Step-by-step reasoning
+
+- The blocks never move sideways, only vertically within their column. A bottom-row removal happens only when every column 1..W has a block at y=1 at the start of a time step.
+- Let c_x be the number of blocks initially in column x. If any column is empty (c_x = 0), then the bottom row can never be full and no removals ever happen.
+- If all columns have at least one block initially (c_x > 0 for all x), removals can happen in rounds. Whether the first round happens at time t=1 or t=2 depends on the initial positions:
+  - If every column has a block at y=1 initially, the first removal round happens at t=1.
+  - Otherwise, the first removal round happens at t=2 (after the first step where blocks fall but no removals occur).
+- Let M = min_x c_x. If M > 0, there will be exactly M rounds of removals in total (the process stops after M rounds because some column becomes empty).
+- In the r-th removal round (r = 1..M), the blocks removed are exactly the blocks that were r-th from the bottom within their own column when blocks are ordered by initial Y (ascending). If a column has fewer than r blocks, it doesn’t contribute to that round.
+- If there is at least one empty column initially, or if any column has 0 blocks, there are no removals at all; all blocks exist forever.
+
+From this, for each block i:
+- Let X_i be its column, and r_i be its rank within its column when blocks are sorted by Y ascending (i.e., r_i = 1 for the lowest block in that column, 2 for the next, etc.).
+- Let M = min_x c_x. If M = 0, there are no removals.
+- Let t0 be the time of the first removal round: t0 = 1 if all columns have a block at Y=1 initially; otherwise t0 = 2. If there is any empty column initially, there are no removals at all.
+- Block i is removed if r_i <= M; the time of its removal is t_i = t0 + r_i - 1.
+- Therefore:
+  - If M = 0 or r_i > M: block i never gets removed.
+  - If r_i <= M: block i exists after time T if T < t_i; otherwise it is already removed.
+
+We can answer all queries in O(1) each after a preprocessing step:
+- Build per-column blocks as (Y, index).
+- Compute c_x for all columns and M = min c_x.
+- If M = 0, all answers are Yes.
+- Compute t0:
+  - If every column has at least one block and every column has a block with Y = 1, then t0 = 1.
+  - Else if every column has at least one block (and not all have Y=1), then t0 = 2.
+  - If any column is empty, there are no removals (handled by M = 0).
+- Sort each column’s blocks by Y and assign ranks r_i to blocks.
+- For each query (T, A): apply the rules above to decide Yes/No.
+
+Edge cases:
+- If any column is empty initially (M = 0), answer Yes for all queries.
+- If all columns non-empty and all have Y=1 blocks, removals start at t=1 and block i with r_i <= M is removed at t_i = r_i.
+- If all columns non-empty but some column lacks Y=1, removals start at t=2 and t_i = 1 + r_i.
+
+Now the implementation.
+
+### Requirements
+None
+
+### Code
+```
+import sys
+
+def main():
+    input = sys.stdin.readline
+    N, W = map(int, input().split())
+
+    # Collect blocks per column: for each column x (0-based), store list of (Y, block_id)
+    cols = [[] for _ in range(W)]
+    X = [0]*(N+1)  # column for each block (1-based index)
+    Y = [0]*(N+1)  # initial Y for each block (1-based index)
+
+    for i in range(1, N+1):
+        x, y = map(int, input().split())
+        x -= 1  # make 0-based
+        X[i] = x
+        Y[i] = y
+        cols[x].append((y, i))
+
+    # Compute c_x per column and M
+    c = [len(col) for col in cols]
+    M = min(c)  # min blocks per column; if any column is empty, M == 0
+
+    # Preprocessing for answer logic
+    # If M == 0, there will be no removals; all blocks exist forever
+    if M == 0:
+        Q = int(input())
+        for _ in range(Q):
+            input()  # T A
+            print("Yes")
+        return
+
+    # Determine t0
+    # If all columns have at least one block initially (they do since M>0),
+    # check if every column has a block with Y == 1
+    all_have_y1 = True
+    any_empty = False
+    y1_all = True
+    for x in range(W):
+        if c[x] == 0:
+            any_empty = True
+            break
+        has_y1 = any(block_y == 1 for block_y, _ in cols[x])
+        if not has_y1:
+            y1_all = False
+    # If any_empty would be caught by M == 0 earlier; here all columns non-empty
+    t0 = 1 if y1_all else 2
+
+    # Compute ranks r_i for all blocks
+    r = [0]*(N+1)  # rank within its column (1-based)
+    for x in range(W):
+        # Sort by Y ascending
+        if not cols[x]:
+            continue
+        cols[x].sort()  # sorts by first (Y), then block id
+        for rank, (_, bid) in enumerate(cols[x], start=1):
+            r[bid] = rank
+
+        # We can discard cols[x] further if memory needed; not necessary though
+
+    # Prepare to answer queries
+    Q = int(input())
+    for _ in range(Q):
+        T_str, A_str = input().split()
+        T = int(T_str)
+        A = int(A_str)
+
+        # If there are no removals (M == 0) handled above
+        # If this block never gets removed
+        if r[A] > M:
+            print("Yes")
+        else:
+            # It may be removed in some round
+            t_i = t0 + r[A] - 1
+            if T < t_i:
+                print("Yes")
+            else:
+                print("No")
+
+if __name__ == "__main__":
+    main()
+```

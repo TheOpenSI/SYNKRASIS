@@ -1,0 +1,34 @@
+### Step-by-step reasoning
+- Let n be the length of S. We are looking for triples (i, j, k) with i < j < k and equal gaps, i.e., j - i = k - j = d for some d > 0.
+- If we fix the middle position j (where S[j] must be 'B'), then possible i and k are i = j - d and k = j + d for d = 1, 2, ..., as long as i and k are within bounds (i >= 0 and k < n).
+- For each such (i, j, k), we check if S[i] == 'A' and S[k] == 'C'. If yes, we count it.
+- This approach is O(n^2) time which is fine for n up to 100.
+- Edge cases:
+  - Smallest valid string length 3: handles correctly when it's "ABC".
+  - Strings with no 'B' yield 0.
+  - Strings with characters beyond A/B/C are simply ignored unless they are in the exact A/B/C positions required.
+- Implementation uses 0-based indices internally, iterating over j where S[j] == 'B' and exploring symmetric distances d.
+
+### Requirements
+None
+
+### Code
+```
+import sys
+
+def main():
+    S = sys.stdin.readline().strip()
+    n = len(S)
+    ans = 0
+    for j, ch in enumerate(S):
+        if ch != 'B':
+            continue
+        maxd = min(j, n - 1 - j)
+        for d in range(1, maxd + 1):
+            if S[j - d] == 'A' and S[j + d] == 'C':
+                ans += 1
+    print(ans)
+
+if __name__ == "__main__":
+    main()
+```

@@ -1,0 +1,40 @@
+### Step-by-step reasoning
+- We need to find the shortest non-empty subarray that contains a repeated value, i.e., two equal elements within that subarray.
+- The shortest subarray that contains a duplicate for a particular value v occurs between two consecutive occurrences of v in the array. If v occurs at positions i1 < i2 < i3 ..., the subarray i1..i2 has length i2-i1+1, i2..i3 has length i3-i2+1, etc. Any longer gap (e.g., i1..i3) will have length >= the adjacent-gap lengths.
+- Therefore, as we scan the array from left to right, we can keep the last seen index for each value in a dictionary. When we encounter a value that has appeared before, we compute the candidate subarray length as current_index - last_index + 1, and update the minimum answer.
+- If no value repeats (i.e., we never find a value in the dictionary), the answer is -1.
+- Edge cases:
+  - N = 1: no subarray with duplicates -> -1.
+  - All elements unique: -1.
+  - Large N up to 2e5: O(N) time and O(U) space where U is the number of distinct values (≤ N).
+
+### Requirements
+None
+
+### Code
+```
+import sys
+
+def main():
+    data = list(map(int, sys.stdin.buffer.read().split()))
+    if not data:
+        print(-1)
+        return
+    N = data[0]
+    A = data[1:1+N]
+
+    last_index = {}  # value -> last seen index
+    ans = None
+
+    for i, v in enumerate(A):
+        if v in last_index:
+            length = i - last_index[v] + 1
+            if ans is None or length < ans:
+                ans = length
+        last_index[v] = i
+
+    print(ans if ans is not None else -1)
+
+if __name__ == "__main__":
+    main()
+```

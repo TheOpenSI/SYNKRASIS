@@ -1,0 +1,45 @@
+### Step-by-step reasoning
+- Read N and M, followed by M distinct integers A_i in the range [1, N].
+- Compute the set of numbers from 1 to N that are not present in A.
+- Output:
+  - First line: the count C of missing numbers.
+  - Second line: the missing numbers in ascending order, separated by spaces. If C is 0, print an empty second line.
+- Edge cases:
+  - All numbers from 1 to N appear in A (C = 0): print 0 and an empty second line.
+  - M equals N (A contains every number 1..N): same as above.
+  - M is minimal (e.g., 1) or other values: the algorithm should still correctly compute the missing set.
+- Complexity: O(N) time to scan 1..N, and O(M) to build the set; total O(N + M) with O(N) extra space for the missing list/set.
+
+### Requirements
+None
+
+### Code
+```
+#!/usr/bin/env python3
+import sys
+
+def main():
+    data = sys.stdin.read().strip().split()
+    if not data:
+        # No input; nothing to do
+        print(0)
+        print()
+        return
+
+    N = int(data[0])
+    M = int(data[1])
+
+    A = list(map(int, data[2:2 + M]))
+    Aset = set(A)
+
+    missing = [i for i in range(1, N + 1) if i not in Aset]
+
+    print(len(missing))
+    if missing:
+        print(' '.join(map(str, missing)))
+    else:
+        print()
+
+if __name__ == "__main__":
+    main()
+```

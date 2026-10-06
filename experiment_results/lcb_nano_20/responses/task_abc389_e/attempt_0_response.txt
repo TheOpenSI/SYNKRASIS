@@ -1,0 +1,143 @@
+### Step-by-step reasoning
+- Let k_i be the number of units bought of product i. The cost is sum_i P_i * k_i^2 and we need this ≤ M, maximizing sum_i k_i.
+- The marginal cost to add the t-th unit of i is c_i,t = P_i * (2t - 1). The optimal allocation buys units in order of increasing marginal cost, i.e., it takes a prefix of all marginal costs across all i.
+- If we sort all marginal costs across all products, the total cost of the smallest T marginal costs is the minimal cost to buy T units.
+- For a fixed threshold lambda, define n_i(lambda) as the number of units from product i with marginal cost ≤ lambda. Since the k-th unit for i has cost P_i*(2k-1), we have:
+  n_i(lambda) = max k such that P_i*(2k-1) ≤ lambda = floor((lambda + P_i) / (2 P_i)).
+  Then total units with marginal cost ≤ lambda is N(lambda) = sum_i n_i(lambda), and the total cost of those N(lambda) units is S(lambda) = sum_i P_i * n_i(lambda)^2.
+- To get the exact minimal cost for buying T units, find the smallest lambda such that N(lambda) ≥ T. Let lambda* be this value. Let N0 = N(lambda*-1) and S0 = S(lambda*-1). Then the remaining (T - N0) units have marginal cost exactly lambda*, so:
+  cost(T) = S0 + lambda* * (T - N0).
+- We can compute N(lambda) quickly in O(N) using n_i(lambda) = (lambda + P_i) // (2 * P_i).
+- We binary search T (total units) to maximize T with cost(T) ≤ M. We need an upper bound for T; by Cauchy-Schwarz,
+  (sum k_i)^2 ≤ (sum P_i k_i^2) * (sum 1/P_i) ≤ M * sum(1/P_i).
+  So T ≤ sqrt(M * sum(1/P_i)). We compute this bound (via a float) and add a small safety margin.
+- Overall approach:
+  - Precompute arrays for P_i and 2*P_i to speed up divisions.
+  - Implement cost(T) as described (with a preliminary binary search on lambda to find the smallest lambda with N(lambda) ≥ T, using a fast count function with early exit when surpassing T).
+  - Binary search T in [0, T_upper], returning the maximum T with cost(T) ≤ M.
+
+Edge cases:
+- M = 0 -> answer 0.
+- N as large as 2e5 -> ensure O(N) operations per inner loop and minimize Python overhead.
+- Large values of P_i and M handled via Python int.
+
+### Requirements
+None
+
+### Code
+```
+import sys
+import math
+
+def main():
+    data = sys.stdin.read().strip().split()
+    if not data:
+        print(0)
+        return
+    it = iter(data)
+    N = int(next(it))
+    M = int(next(it))
+    P = [int(next(it)) for _ in range(N)]
+
+    # Precompute denominators to speed (2*P_i)
+    twoP = [2 * p for p in P]
+
+    # Special case
+    if M <= 0:
+        print(0)
+        return
+
+    # Upper bound for total units using Cauchy-Schwarz: (sum k_i)^2 <= M * sum(1/P_i)
+    sum_invP = 0.0
+    for p in P:
+        sum_invP += 1.0 / p
+    if sum_invP <= 0.0:
+        T_upper = 0
+    else:
+        T_upper = int(math.sqrt(M * sum_invP)) + 5
+        if T_upper < 0:
+            T_upper = 0
+
+    # Helper to compute N(lambda) = sum_i floor((lambda + P_i) / (2 P_i))
+    # and cost(lambda) = sum_i P_i * n_i(lambda)^2 if needed
+    # We'll implement inside cost_T to reuse P and twoP.
+
+    # Cost to buy T units (minimal) using the threshold lambda trick
+    def cost_T(T):
+        if T <= 0:
+            return 0
+        # Find smallest lambda such that N(lambda) >= T
+        # Heuristic initial upper bound for lambda using a rough estimate:
+        # For each i, n_i(lambda) ~ lambda/(2 P_i). Sum ~ lambda/2 * sum(1/P_i)
+        # So lambda ~ 2*T / sum(1/P_i)
+        # Use a conservative start
+        sum_inv = sum_invP
+        if sum_inv <= 0.0:
+            # Fallback, shouldn't happen with valid input
+            lam_hi = max(P)  # at least cover
+        else:
+            lam_hi = int((2.0 * T) / (sum_inv + 1e-18))  # rough estimate
+            if lam_hi < 1:
+                lam_hi = 1
+
+        # Function to count N(lambda) with early stop at T
+        def count_N(lam, cap):
+            s = 0
+            # local references for speed
+            P_local = P
+            for p in P_local:
+                s += (lam + p) // (2 * p)
+                if s >= cap:
+                    return cap
+            return s
+
+        # Ensure lam_hi is adequate
+        if count_N(lam_hi, T) < T:
+            # Double until enough
+            while True:
+                lam_hi <<= 1
+                if count_N(lam_hi, T) >= T:
+                    break
+
+        # Binary search for smallest lam with N(lam) >= T
+        lam_lo = 0
+        lam_hi0 = lam_hi
+        while lam_lo < lam_hi0:
+            mid = (lam_lo + lam_hi0) // 2
+            if count_N(mid, T) >= T:
+                lam_hi0 = mid
+            else:
+                lam_lo = mid + 1
+        lam = lam_lo
+        lam_prev = lam - 1
+
+        # Compute N(lam-1) and S(lam-1)
+        N0 = 0
+        S0 = 0
+        for p in P:
+            n = (lam_prev + p) // (2 * p)
+            N0 += n
+            S0 += p * n * n
+
+        remaining = T - N0
+        # remaining should be <= number of units with marginal cost exactly lam
+        return S0 + lam * remaining
+
+    # Binary search on total units T
+    lo = 0
+    hi = max(0, T_upper)
+    # Ensure hi is feasible upper bound
+    # If cost_T(hi) <= M, we could try to raise hi a bit, but hi is already an upper bound.
+    # We'll perform standard binary search for the maximum feasible T.
+    while lo < hi:
+        mid = (lo + hi + 1) // 2
+        if cost_T(mid) <= M:
+            lo = mid
+        else:
+            hi = mid - 1
+
+    print(lo)
+
+if __name__ == "__main__":
+    main()
+```

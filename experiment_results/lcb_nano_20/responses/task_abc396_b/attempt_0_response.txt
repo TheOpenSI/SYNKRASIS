@@ -1,0 +1,44 @@
+### Step-by-step reasoning
+- We start with a stack containing 100 cards, all labeled 0.
+- For each query:
+  - If the query type is 1 x, we push x onto the top of the stack.
+  - If the query type is 2, we pop the top card from the stack and record its value to output.
+- The problem guarantees that a type 2 query will never occur when the stack is empty, so we don’t need extra checks for underflow.
+- After processing all queries, print all recorded outputs, each on its own line.
+- Edge cases:
+  - A sequence of type 2 queries before any type 1: the stack still has 100 zeros initially, so outputs will be 0 accordingly.
+  - Repeated pushes and pops: standard stack behavior is preserved.
+  - Maximum bounds are small (Q ≤ 100), so a simple Python list as a stack is sufficient.
+
+### Requirements
+None
+
+### Code
+```
+import sys
+
+def main():
+    data = sys.stdin.read().strip().split()
+    if not data:
+        return
+    it = iter(data)
+    Q = int(next(it))
+    # Initialize stack with 100 zeros
+    stack = [0] * 100
+    outputs = []
+    for _ in range(Q):
+        c = int(next(it))
+        if c == 1:
+            x = int(next(it))
+            stack.append(x)
+        elif c == 2:
+            outputs.append(stack.pop())
+        else:
+            # According to problem statement, only 1 or 2 appear
+            pass
+
+    print("\n".join(map(str, outputs)))
+
+if __name__ == "__main__":
+    main()
+```
