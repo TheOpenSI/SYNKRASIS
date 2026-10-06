@@ -1,0 +1,20 @@
+Execution report for `__bpd_main__()`
+Outcome: returned None
+
+Trace:
+Call __bpd_main__()  [__bpd_main__, lines 15-16]
+  Line 16 `solve()`:
+    called solve():  [solve, lines 3-13]
+      Line 4 `data = sys.stdin.read().strip().split()`: data = ['sick', 'fine']
+      Line 5 `if not data:` was False (data = ['sick', 'fine'])
+      Line 7 `S1, S2 = (data[0], data[1])`: S1 = 'sick'; S2 = 'fine'
+      Line 8 `for x in range(1, 5):` ran 2 iterations, then returned from inside the loop
+        Iteration 1 (x = 1):
+          Line 9 `sick1 = x in (1, 2)`: sick1 = True
+          Line 10 `sick2 = x in (1, 3)`: sick2 = True
+          Line 11 `if (S1 == 'sick') == sick1 and (S2 == 'sick') == sick2:` was False (sick1 = True, sick2 = True, S1 = 'sick', S2 = 'fine')
+        Iteration 2 (x = 2):
+          Line 10 `sick2 = x in (1, 3)`: sick2: True -> False
+          Line 11 `if (S1 == 'sick') == sick1 and (S2 == 'sick') == sick2:` was True (sick1 = True, sick2 = False, S1 = 'sick', S2 = 'fine')
+          Line 13 `return`: solve returned None
+  End of function reached: __bpd_main__ returned None

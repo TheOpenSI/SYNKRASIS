@@ -1,0 +1,120 @@
+Execution report for `__bpd_main__()`
+Outcome: returned None
+
+Trace:
+Call __bpd_main__()  [__bpd_main__, lines 62-63]
+  Line 63 `solve()`:
+    called solve():  [solve, lines 3-60]
+      Line 4 `data = list(map(int, sys.stdin.buffer.read().split()))`: data = [5, 3, 1, 1, 1, 2, 2, 2, 3, 2, 2, 3, 6, 1, 1, 1, 2, 2, 3, 2, 5, 3, 4, 3, 5]
+      Line 5 `it = iter(data)`: it = <list_iterator object at 0x7279c0d1e140>
+      Line 6 `N = next(it)`: N = 5
+      Line 7 `W = next(it)`: W = 3
+      Line 8 `X = [0] * N`: X = [0, 0, 0, 0, 0]
+      Line 9 `Y = [0] * N`: Y = [0, 0, 0, 0, 0]
+      Line 10 `for i in range(N):` (N = 5) ran 5 iterations
+        Iteration 1 (i = 0): line 11 `X[i] = next(it)`: X: [0, 0, 0, 0, 0] -> [1, 0, 0, 0, 0]; line 12 `Y[i] = next(it)`: Y: [0, 0, 0, 0, 0] -> [1, 0, 0, 0, 0]
+        Iteration 2 (i = 1): line 11 `X[i] = next(it)`: X: [1, 0, 0, 0, 0] -> [1, 1, 0, 0, 0]; line 12 `Y[i] = next(it)`: Y: [1, 0, 0, 0, 0] -> [1, 2, 0, 0, 0]
+        Iteration 3 (i = 2): line 11 `X[i] = next(it)`: X: [1, 1, 0, 0, 0] -> [1, 1, 2, 0, 0]; line 12 `Y[i] = next(it)`: Y: [1, 2, 0, 0, 0] -> [1, 2, 2, 0, 0]
+        Iteration 4 (i = 3): line 11 `X[i] = next(it)`: X: [1, 1, 2, 0, 0] -> [1, 1, 2, 3, 0]; line 12 `Y[i] = next(it)`: Y: [1, 2, 2, 0, 0] -> [1, 2, 2, 2, 0]
+        Iteration 5 (i = 4): line 11 `X[i] = next(it)`: X: [1, 1, 2, 3, 0] -> [1, 1, 2, 3, 2]; line 12 `Y[i] = next(it)`: Y: [1, 2, 2, 2, 0] -> [1, 2, 2, 2, 3]
+        After the loop: X = [1, 1, 2, 3, 2], Y = [1, 2, 2, 2, 3]
+      Line 13 `Q = next(it)`: Q = 6
+      Line 14 `T_arr = [0] * Q`: T_arr = [0, 0, 0, 0, 0, 0]
+      Line 15 `A_arr = [0] * Q`: A_arr = [0, 0, 0, 0, 0, 0]
+      Line 16 `for j in range(Q):` (Q = 6) ran 6 iterations
+        Iteration 1 (j = 0): line 17 `T_arr[j] = next(it)`: T_arr: [0, 0, 0, 0, 0, 0] -> [1, 0, 0, 0, 0, 0]
+        Iteration 2 (j = 1): line 17 `T_arr[j] = next(it)`: T_arr: [1, 0, 0, 0, 0, 0] -> [1, 1, 0, 0, 0, 0]; line 18 `A_arr[j] = next(it) - 1`: A_arr: [0, 0, 0, 0, 0, 0] -> [0, 1, 0, 0, 0, 0]
+        Iteration 3 (j = 2): line 17 `T_arr[j] = next(it)`: T_arr: [1, 1, 0, 0, 0, 0] -> [1, 1, 2, 0, 0, 0]; line 18 `A_arr[j] = next(it) - 1`: A_arr: [0, 1, 0, 0, 0, 0] -> [0, 1, 2, 0, 0, 0]
+        Iteration 4 (j = 3): line 17 `T_arr[j] = next(it)`: T_arr: [1, 1, 2, 0, 0, 0] -> [1, 1, 2, 2, 0, 0]; line 18 `A_arr[j] = next(it) - 1`: A_arr: [0, 1, 2, 0, 0, 0] -> [0, 1, 2, 4, 0, 0]
+        Iteration 5 (j = 4): line 17 `T_arr[j] = next(it)`: T_arr: [1, 1, 2, 2, 0, 0] -> [1, 1, 2, 2, 3, 0]; line 18 `A_arr[j] = next(it) - 1`: A_arr: [0, 1, 2, 4, 0, 0] -> [0, 1, 2, 4, 3, 0]
+        Iteration 6 (j = 5): line 17 `T_arr[j] = next(it)`: T_arr: [1, 1, 2, 2, 3, 0] -> [1, 1, 2, 2, 3, 3]; line 18 `A_arr[j] = next(it) - 1`: A_arr: [0, 1, 2, 4, 3, 0] -> [0, 1, 2, 4, 3, 4]
+        After the loop: T_arr = [1, 1, 2, 2, 3, 3], A_arr = [0, 1, 2, 4, 3, 4]
+      Line 19 `cols = [[] for _ in range(W + 1)]`: cols = [[], [], [], []]
+      Line 20 `for i in range(N):` (N = 5) ran 5 iterations
+        Iteration 1 (i = 0): line 21 `x = X[i]`: x = 1; line 23 `cols[x].append((y, i))`: cols: [[], [], [], []] -> [[], [(1, 0)], [], []]
+        Iteration 2 (i = 1): line 23 `cols[x].append((y, i))`: cols: [[], [(1, 0)], [], []] -> [[], [(1, 0), (2, 1)], [], []]
+        Iteration 3 (i = 2): line 21 `x = X[i]`: x: 1 -> 2; line 23 `cols[x].append((y, i))`: cols: [[], [(1, 0), (2, 1)], [], []] -> [[], [(1, 0), (2, 1)], [(2, 2)], []]
+        Iteration 4 (i = 3): line 21 `x = X[i]`: x: 2 -> 3; line 23 `cols[x].append((y, i))`: cols: [[], [(1, 0), (2, 1)], [(2, 2)], []] -> [[], [(1, 0), (2, 1)], [(2, 2)], [(2, 3)]]
+        Iteration 5 (i = 4): line 21 `x = X[i]`: x: 3 -> 2; line 23 `cols[x].append((y, i))`: cols: [[], [(1, 0), (2, 1)], [(2, 2)], [(2, 3)]] -> [[], [(1, 0), (2, 1)], [(2, 2), (3, 4)], [(2, 3)]]
+        After the loop: cols = [[], [(1, 0), (2, 1)], [(2, 2), (3, 4)], [(2, 3)]]
+      Line 24 `rank = [0] * N`: rank = [0, 0, 0, 0, 0]
+      Line 25 `hasZero = False`: hasZero = False
+      Line 26 `for x in range(1, W + 1):` (W = 3) ran 3 iterations
+        Iteration 1 (x = 1): line 27 `if len(cols[x]) == 0:` was False (cols = [[], [(1, 0), (2, 1)], [(2, 2), (3, 4)], [(2, 3)]], x = 1)
+        Iteration 2 (x = 2): line 27 `if len(cols[x]) == 0:` was False (cols = [[], [(1, 0), (2, 1)], [(2, 2), (3, 4)], [(2, 3)]], x = 2)
+        Iteration 3 (x = 3): line 27 `if len(cols[x]) == 0:` was False (cols = [[], [(1, 0), (2, 1)], [(2, 2), (3, 4)], [(2, 3)]], x = 3)
+        After the loop: no variables changed
+      Line 30 `if not hasZero:` was True (hasZero = False)
+      Line 31 `mins = []`: mins = []
+      Line 32 `m = None`: m = None
+      Line 33 `B = 0`: B = 0
+      Line 34 `for x in range(1, W + 1):` (W = 3) ran 3 iterations
+        Iteration 1 (x = 1): line 36 `minY = min((y for y, idx in col))`: minY = 1; line 37 `mins.append(minY)`: mins: [] -> [1]
+        Iteration 2 (x = 2): line 36 `minY = min((y for y, idx in col))`: minY: 1 -> 2; line 37 `mins.append(minY)`: mins: [1] -> [1, 2]
+        Iteration 3 (x = 3): line 37 `mins.append(minY)`: mins: [1, 2] -> [1, 2, 2]
+        After the loop: mins = [1, 2, 2], minY = 2
+      Line 38 `B = max(mins)`: B: 0 -> 2
+      Line 39 `m = min((len(col) for col in cols[1:]))`: m: None -> 1
+      Line 40 `for x in range(1, W + 1):` (W = 3) ran 3 iterations
+        Iteration 1 (x = 1):
+          Line 42 `col.sort(key=lambda t: t[0])`: called <lambda>(t=(1, 0)) -> 1; called <lambda>(t=(2, 1)) -> 2
+          Line 43 `for pos, (y, idx) in enumerate(col, start=1):` ran 2 iterations
+            Iteration 1 (pos = 1): line 44 `rank[idx] = pos`: rank: [0, 0, 0, 0, 0] -> [1, 0, 0, 0, 0]
+            Iteration 2 (pos = 2): line 44 `rank[idx] = pos`: rank: [1, 0, 0, 0, 0] -> [1, 2, 0, 0, 0]
+            After the loop: rank = [1, 2, 0, 0, 0]
+        Iteration 2 (x = 2):
+          Line 42 `col.sort(key=lambda t: t[0])`: called <lambda>(t=(2, 2)) -> 2; called <lambda>(t=(3, 4)) -> 3
+          Line 43 `for pos, (y, idx) in enumerate(col, start=1):` ran 2 iterations
+            Iteration 1 (pos = 1): line 44 `rank[idx] = pos`: rank: [1, 2, 0, 0, 0] -> [1, 2, 1, 0, 0]
+            Iteration 2 (pos = 2): line 44 `rank[idx] = pos`: rank: [1, 2, 1, 0, 0] -> [1, 2, 1, 0, 2]
+            After the loop: rank = [1, 2, 1, 0, 2]
+        Iteration 3 (x = 3):
+          Line 42 `col.sort(key=lambda t: t[0])`: called <lambda>(t=(2, 3)) -> 2
+          Line 43 `for pos, (y, idx) in enumerate(col, start=1):` ran 1 iteration
+            Iteration 1 (pos = 1): line 44 `rank[idx] = pos`: rank: [1, 2, 1, 0, 2] -> [1, 2, 1, 1, 2]
+            After the loop: rank = [1, 2, 1, 1, 2]
+        After the loop: rank = [1, 2, 1, 1, 2]
+      Line 45 `out_lines = []`: out_lines = []
+      Line 46 `if hasZero:` was False (hasZero = False)
+      Line 49 `for j in range(Q):` (Q = 6) ran 6 iterations
+        Iteration 1 (j = 0):
+          Line 50 `t = T_arr[j]`: t = 1
+          Line 51 `a = A_arr[j]`: a = 0
+          Line 52 `r = rank[a]`: r = 1
+          Line 53 `if t < B:` was True (t = 1, B = 2)
+          Line 54 `out_lines.append('Yes')`: out_lines: [] -> ['Yes']
+        Iteration 2 (j = 1):
+          Line 51 `a = A_arr[j]`: a: 0 -> 1
+          Line 52 `r = rank[a]`: r: 1 -> 2
+          Line 53 `if t < B:` was True (t = 1, B = 2)
+          Line 54 `out_lines.append('Yes')`: out_lines: ['Yes'] -> ['Yes', 'Yes']
+        Iteration 3 (j = 2):
+          Line 50 `t = T_arr[j]`: t: 1 -> 2
+          Line 51 `a = A_arr[j]`: a: 1 -> 2
+          Line 52 `r = rank[a]`: r: 2 -> 1
+          Line 53 `if t < B:` was False (t = 2, B = 2)
+          Line 55 `elif t <= B + m - 1:` was True (t = 2, B = 2, m = 1)
+          Line 56 `s = t - B + 1`: s = 1
+          Line 57 `out_lines.append('Yes' if r > s else 'No')`: out_lines: ['Yes', 'Yes'] -> ['Yes', 'Yes', 'No']
+        Iteration 4 (j = 3):
+          Line 51 `a = A_arr[j]`: a: 2 -> 4
+          Line 52 `r = rank[a]`: r: 1 -> 2
+          Line 53 `if t < B:` was False (t = 2, B = 2)
+          Line 55 `elif t <= B + m - 1:` was True (t = 2, B = 2, m = 1)
+          Line 57 `out_lines.append('Yes' if r > s else 'No')`: out_lines: ['Yes', 'Yes', 'No'] -> ['Yes', 'Yes', 'No', 'Yes']
+        Iteration 5 (j = 4):
+          Line 50 `t = T_arr[j]`: t: 2 -> 3
+          Line 51 `a = A_arr[j]`: a: 4 -> 3
+          Line 52 `r = rank[a]`: r: 2 -> 1
+          Line 53 `if t < B:` was False (t = 3, B = 2)
+          Line 55 `elif t <= B + m - 1:` was False (t = 3, B = 2, m = 1)
+          Line 59 `out_lines.append('Yes' if r > m else 'No')`: out_lines: ['Yes', 'Yes', 'No', 'Yes'] -> ['Yes', 'Yes', 'No', 'Yes', 'No']
+        Iteration 6 (j = 5):
+          Line 51 `a = A_arr[j]`: a: 3 -> 4
+          Line 52 `r = rank[a]`: r: 1 -> 2
+          Line 53 `if t < B:` was False (t = 3, B = 2)
+          Line 55 `elif t <= B + m - 1:` was False (t = 3, B = 2, m = 1)
+          Line 59 `out_lines.append('Yes' if r > m else 'No')`: out_lines: ['Yes', 'Yes', 'No', 'Yes', 'No'] -> ['Yes', 'Yes', 'No', 'Yes', 'No', 'Yes']
+        After the loop: out_lines = ['Yes', 'Yes', 'No', 'Yes', 'No', 'Yes'], t = 3, a = 4, r = 2, s = 1
+      End of function reached: solve returned None
+  End of function reached: __bpd_main__ returned None

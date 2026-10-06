@@ -1,0 +1,14 @@
+Execution report for `__bpd_main__()`
+Outcome: returned None
+
+Trace:
+Call __bpd_main__()  [__bpd_main__, lines 12-13]
+  Line 13 `main()`:
+    called main():  [main, lines 3-10]
+      Line 4 `data = sys.stdin.read().split()`: data = ['3', 'tc', 'oder', 'a']
+      Line 5 `if not data:` was False (data = ['3', 'tc', 'oder', 'a'])
+      Line 7 `n = int(data[0])`: n = 3
+      Line 8 `strings = data[1:1 + n]`: strings = ['tc', 'oder', 'a']
+      Line 9 `strings.sort(key=len)`: strings: ['tc', 'oder', 'a'] -> ['a', 'tc', 'oder']
+      End of function reached: main returned None
+  End of function reached: __bpd_main__ returned None

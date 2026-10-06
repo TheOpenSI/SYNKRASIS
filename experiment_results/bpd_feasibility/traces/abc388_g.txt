@@ -1,0 +1,602 @@
+Execution report for `__bpd_main__()`
+Outcome: returned None
+
+Trace:
+Call __bpd_main__()  [__bpd_main__, lines 67-68]
+  Line 68 `solve()`:
+    called solve():  [solve, lines 4-65]
+      Line 5 `data = sys.stdin.read().strip().split()`: data = ['11', '1', '1', '2', '3', '4', '4', '7', '10', '11', '12', '20', '5', '2', '5', '3', '8', '7', '11', '1', '2', '1', '11']
+      Line 6 `it = iter(data)`: it = <list_iterator object at 0x718ef7be4f10>
+      Line 7 `N = int(next(it))`: N = 11
+      Line 8 `A = [int(next(it)) for _ in range(N)]`: A = [1, 1, 2, 3, 4, 4, 7, 10, 11, 12, 20]
+      Line 9 `Q = int(next(it))`: Q = 5
+      Line 10 `queries = []`: queries = []
+      Line 11 `for _ in range(Q):` (Q = 5) ran 5 iterations
+        Iteration 1:
+          Line 12 `L = int(next(it))`: L = 2
+          Line 13 `R = int(next(it))`: R = 5
+          Line 14 `queries.append((L - 1, R - 1))`: queries: [] -> [(1, 4)]
+        Iteration 2:
+          Line 12 `L = int(next(it))`: L: 2 -> 3
+          Line 13 `R = int(next(it))`: R: 5 -> 8
+          Line 14 `queries.append((L - 1, R - 1))`: queries: [(1, 4)] -> [(1, 4), (2, 7)]
+        Iteration 3:
+          Line 12 `L = int(next(it))`: L: 3 -> 7
+          Line 13 `R = int(next(it))`: R: 8 -> 11
+          Line 14 `queries.append((L - 1, R - 1))`: queries: [(1, 4), (2, 7)] -> [(1, 4), (2, 7), (6, 10)]
+        Iteration 4:
+          Line 12 `L = int(next(it))`: L: 7 -> 1
+          Line 13 `R = int(next(it))`: R: 11 -> 2
+          Line 14 `queries.append((L - 1, R - 1))`: queries: [(1, 4), (2, 7), (6, 10)] -> [(1, 4), (2, 7), (6, 10), (0, 1)]
+        Iteration 5: line 13 `R = int(next(it))`: R: 2 -> 11; line 14 `queries.append((L - 1, R - 1))`: queries: [(1, 4), (2, 7), (6, 10), (0, 1)] -> [(1, 4), (2, 7), (6, 10), (0, 1), (0, 10)]
+        After the loop: queries = [(1, 4), (2, 7), (6, 10), (0, 1), (0, 10)]
+      Line 15 `p_eff = [0] * N`: p_eff = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+      Line 16 `for i in range(N):` (N = 11) ran 11 iterations
+        Iteration 1 (i = 0):
+          Line 17 `two_ai = 2 * A[i]`: two_ai = 2
+          Line 18 `j0 = bisect_left(A, two_ai)`: j0 = 2
+          Line 19 `if j0 <= i:` was False (j0 = 2, i = 0)
+          Line 21 `p_eff[i] = j0`: p_eff: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0] -> [2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+        Iteration 2 (i = 1): line 19 `if j0 <= i:` was False (j0 = 2, i = 1); line 21 `p_eff[i] = j0`: p_eff: [2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0] -> [2, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+        Iteration 3 (i = 2):
+          Line 17 `two_ai = 2 * A[i]`: two_ai: 2 -> 4
+          Line 18 `j0 = bisect_left(A, two_ai)`: j0: 2 -> 4
+          Line 19 `if j0 <= i:` was False (j0 = 4, i = 2)
+          Line 21 `p_eff[i] = j0`: p_eff: [2, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0] -> [2, 2, 4, 0, 0, 0, 0, 0, 0, 0, 0]
+        Iteration 4 (i = 3):
+          Line 17 `two_ai = 2 * A[i]`: two_ai: 4 -> 6
+          Line 18 `j0 = bisect_left(A, two_ai)`: j0: 4 -> 6
+          Line 19 `if j0 <= i:` was False (j0 = 6, i = 3)
+          Line 21 `p_eff[i] = j0`: p_eff: [2, 2, 4, 0, 0, 0, 0, 0, 0, 0, 0] -> [2, 2, 4, 6, 0, 0, 0, 0, 0, 0, 0]
+        Iteration 5 (i = 4):
+          Line 17 `two_ai = 2 * A[i]`: two_ai: 6 -> 8
+          Line 18 `j0 = bisect_left(A, two_ai)`: j0: 6 -> 7
+          Line 19 `if j0 <= i:` was False (j0 = 7, i = 4)
+          Line 21 `p_eff[i] = j0`: p_eff: [2, 2, 4, 6, 0, 0, 0, 0, 0, 0, 0] -> [2, 2, 4, 6, 7, 0, 0, 0, 0, 0, 0]
+        Iteration 6 (i = 5): line 19 `if j0 <= i:` was False (j0 = 7, i = 5); line 21 `p_eff[i] = j0`: p_eff: [2, 2, 4, 6, 7, 0, 0, 0, 0, 0, 0] -> [2, 2, 4, 6, 7, 7, 0, 0, 0, 0, 0]
+        Iteration 7 (i = 6):
+          Line 17 `two_ai = 2 * A[i]`: two_ai: 8 -> 14
+          Line 18 `j0 = bisect_left(A, two_ai)`: j0: 7 -> 10
+          Line 19 `if j0 <= i:` was False (j0 = 10, i = 6)
+          Line 21 `p_eff[i] = j0`: p_eff: [2, 2, 4, 6, 7, 7, 0, 0, 0, 0, 0] -> [2, 2, 4, 6, 7, 7, 10, 0, 0, 0, 0]
+        Iteration 8 (i = 7):
+          Line 17 `two_ai = 2 * A[i]`: two_ai: 14 -> 20
+          Line 19 `if j0 <= i:` was False (j0 = 10, i = 7)
+          Line 21 `p_eff[i] = j0`: p_eff: [2, 2, 4, 6, 7, 7, 10, 0, 0, 0, 0] -> [2, 2, 4, 6, 7, 7, 10, 10, 0, 0, 0]
+        Iteration 9 (i = 8):
+          Line 17 `two_ai = 2 * A[i]`: two_ai: 20 -> 22
+          Line 18 `j0 = bisect_left(A, two_ai)`: j0: 10 -> 11
+          Line 19 `if j0 <= i:` was False (j0 = 11, i = 8)
+          Line 21 `p_eff[i] = j0`: p_eff: [2, 2, 4, 6, 7, 7, 10, 10, 0, 0, 0] -> [2, 2, 4, 6, 7, 7, 10, 10, 11, 0, 0]
+        Iteration 10 (i = 9):
+          Line 17 `two_ai = 2 * A[i]`: two_ai: 22 -> 24
+          Line 19 `if j0 <= i:` was False (j0 = 11, i = 9)
+          Line 21 `p_eff[i] = j0`: p_eff: [2, 2, 4, 6, 7, 7, 10, 10, 11, 0, 0] -> [2, 2, 4, 6, 7, 7, 10, 10, 11, 11, 0]
+        Iteration 11 (i = 10):
+          Line 17 `two_ai = 2 * A[i]`: two_ai: 24 -> 40
+          Line 19 `if j0 <= i:` was False (j0 = 11, i = 10)
+          Line 21 `p_eff[i] = j0`: p_eff: [2, 2, 4, 6, 7, 7, 10, 10, 11, 11, 0] -> [2, 2, 4, 6, 7, 7, 10, 10, 11, 11, 11]
+        After the loop: p_eff = [2, 2, 4, 6, 7, 7, 10, 10, 11, 11, 11], two_ai = 40, j0 = 11
+      Line 22 `out_lines = []`: out_lines = []
+      Line 23 `for L, R in queries:` (queries = [(1, 4), (2, 7), (6, 10), (0, 1), (0, 10)]) ran 5 iterations
+        Iteration 1 (L = 1, R = 4):
+          Line 24 `m = R - L + 1`: m = 4
+          Line 25 `if m < 2:` was False (m = 4)
+          Line 28 `size = m + 1`: size = 5
+          Line 29 `parent = list(range(size))`: parent = [0, 1, 2, 3, 4]
+          Line 31 `def find(x):`: find = <function solve.<locals>.find>
+          Line 37 `def use(pos):`: use = <function solve.<locals>.use>
+          Line 40 `used = [False] * N`: used = [False, False, False, False, False, False, False, False, False, False, False]
+          Line 41 `ans = 0`: ans = 0
+          Line 42 `for i in range(L, R):` (L = 1, R = 4) ran 3 iterations
+            Iteration 1 (i = 1):
+              Line 43 `if used[i]:` was False (used = [False, False, False, False, False, False, False, False, False, False, False], i = 1)
+              Line 45 `jstart = p_eff[i]`: jstart = 2
+              Line 46 `if jstart < L:` was False (jstart = 2, L = 1)
+              Line 48 `if jstart > R:` was False (jstart = 2, R = 4)
+              Line 50 `jdsu = find(jstart - L)`:
+                called find(x=1, parent=[0, 1, 2, 3, 4]):  [solve.find, lines 31-35]
+                  Line 32 `while parent[x] != x:` (x = 1, parent = [0, 1, 2, 3, 4]) ran 0 iterations (body never executed)
+                    After the loop: no variables changed
+                  Line 35 `return x`: find returned 1
+                jdsu = 1
+              Line 51 `j = jstart if jdsu == jstart - L else jstart`: j = 2
+              Line 52 `x = jstart`: x = 2
+              Line 53 `fj = find(x - L)`:
+                called find(x=1, parent=[0, 1, 2, 3, 4]):  [solve.find, lines 31-35]
+                  Line 32 `while parent[x] != x:` (x = 1, parent = [0, 1, 2, 3, 4]) ran 0 iterations (body never executed)
+                    After the loop: no variables changed
+                  Line 35 `return x`: find returned 1
+                fj = 1
+              Line 55 `idx = find(jstart - L)`:
+                called find(x=1, parent=[0, 1, 2, 3, 4]):  [solve.find, lines 31-35]
+                  Line 32 `while parent[x] != x:` (x = 1, parent = [0, 1, 2, 3, 4]) ran 0 iterations (body never executed)
+                    After the loop: no variables changed
+                  Line 35 `return x`: find returned 1
+                idx = 1
+              Line 56 `if idx > R - L:` was False (idx = 1, R = 4, L = 1)
+              Line 59 `if j <= R:` was True (j = 2, R = 4)
+              Line 60 `used[i] = True`: used: [False, False, False, False, False, False, False, False, False, False, False] -> [False, True, False, False, False, False, False, False, False, False, False]
+              Line 61 `used[j] = True`: used: [False, True, False, False, False, False, False, False, False, False, False] -> [False, True, True, False, False, False, False, False, False, False, False]
+              Line 62 `use(j)`:
+                called use(pos=2, L=1, find=<function solve.<locals>.find>, parent=[0, 1, 2, 3, 4]):  [solve.use, lines 37-39]
+                  Line 38 `x = pos - L`: x = 1
+                  Line 39 `parent[x] = find(x + 1)`:
+                    called find(x=2, parent=[0, 1, 2, 3, 4]):  [solve.find, lines 31-35]
+                      Line 32 `while parent[x] != x:` (x = 2, parent = [0, 1, 2, 3, 4]) ran 0 iterations (body never executed)
+                        After the loop: no variables changed
+                      Line 35 `return x`: find returned 2
+                    parent: [0, 1, 2, 3, 4] -> [0, 2, 2, 3, 4]
+                  End of function reached: use returned None
+                parent: [0, 1, 2, 3, 4] -> [0, 2, 2, 3, 4]
+              Line 63 `ans += 1`: ans: 0 -> 1
+            Iteration 2 (i = 2): line 43 `if used[i]:` was True (used = [False, True, True, False, False, False, False, False, False, False, False], i = 2)
+            Iteration 3 (i = 3):
+              Line 43 `if used[i]:` was False (used = [False, True, True, False, False, False, False, False, False, False, False], i = 3)
+              Line 45 `jstart = p_eff[i]`: jstart: 2 -> 6
+              Line 46 `if jstart < L:` was False (jstart = 6, L = 1)
+              Line 48 `if jstart > R:` was True (jstart = 6, R = 4)
+            After the loop: parent = [0, 2, 2, 3, 4], used = [False, True, True, False, False, False, False, False, False, False, False], ans = 1, jstart = 6, jdsu = 1, j = 2, x = 2, fj = 1, idx = 1
+          Line 64 `out_lines.append(str(ans))`: out_lines: [] -> ['1']
+        Iteration 2 (L = 2, R = 7):
+          Line 24 `m = R - L + 1`: m: 4 -> 6
+          Line 25 `if m < 2:` was False (m = 6)
+          Line 28 `size = m + 1`: size: 5 -> 7
+          Line 29 `parent = list(range(size))`: parent: [0, 2, 2, 3, 4] -> [0, 1, 2, 3, 4, 5, 6]
+          Line 40 `used = [False] * N`: used: [False, True, True, False, False, False, False, False, False, False, False] -> [False, False, False, False, False, False, False, False, False, False, False]
+          Line 41 `ans = 0`: ans: 1 -> 0
+          Line 42 `for i in range(L, R):` (L = 2, R = 7) ran 5 iterations
+            Iteration 1 (i = 2):
+              Line 43 `if used[i]:` was False (used = [False, False, False, False, False, False, False, False, False, False, False], i = 2)
+              Line 45 `jstart = p_eff[i]`: jstart: 6 -> 4
+              Line 46 `if jstart < L:` was False (jstart = 4, L = 2)
+              Line 48 `if jstart > R:` was False (jstart = 4, R = 7)
+              Line 50 `jdsu = find(jstart - L)`:
+                called find(x=2, parent=[0, 1, 2, 3, 4, 5, 6]):  [solve.find, lines 31-35]
+                  Line 32 `while parent[x] != x:` (x = 2, parent = [0, 1, 2, 3, 4, 5, 6]) ran 0 iterations (body never executed)
+                    After the loop: no variables changed
+                  Line 35 `return x`: find returned 2
+                jdsu: 1 -> 2
+              Line 51 `j = jstart if jdsu == jstart - L else jstart`: j: 2 -> 4
+              Line 52 `x = jstart`: x: 2 -> 4
+              Line 53 `fj = find(x - L)`:
+                called find(x=2, parent=[0, 1, 2, 3, 4, 5, 6]):  [solve.find, lines 31-35]
+                  Line 32 `while parent[x] != x:` (x = 2, parent = [0, 1, 2, 3, 4, 5, 6]) ran 0 iterations (body never executed)
+                    After the loop: no variables changed
+                  Line 35 `return x`: find returned 2
+                fj: 1 -> 2
+              Line 55 `idx = find(jstart - L)`:
+                called find(x=2, parent=[0, 1, 2, 3, 4, 5, 6]):  [solve.find, lines 31-35]
+                  Line 32 `while parent[x] != x:` (x = 2, parent = [0, 1, 2, 3, 4, 5, 6]) ran 0 iterations (body never executed)
+                    After the loop: no variables changed
+                  Line 35 `return x`: find returned 2
+                idx: 1 -> 2
+              Line 56 `if idx > R - L:` was False (idx = 2, R = 7, L = 2)
+              Line 59 `if j <= R:` was True (j = 4, R = 7)
+              Line 60 `used[i] = True`: used: [False, False, False, False, False, False, False, False, False, False, False] -> [False, False, True, False, False, False, False, False, False, False, False]
+              Line 61 `used[j] = True`: used: [False, False, True, False, False, False, False, False, False, False, False] -> [False, False, True, False, True, False, False, False, False, False, False]
+              Line 62 `use(j)`:
+                called use(pos=4, L=2, find=<function solve.<locals>.find>, parent=[0, 1, 2, 3, 4, 5, 6]):  [solve.use, lines 37-39]
+                  Line 38 `x = pos - L`: x = 2
+                  Line 39 `parent[x] = find(x + 1)`:
+                    called find(x=3, parent=[0, 1, 2, 3, 4, 5, 6]):  [solve.find, lines 31-35]
+                      Line 32 `while parent[x] != x:` (x = 3, parent = [0, 1, 2, 3, 4, 5, 6]) ran 0 iterations (body never executed)
+                        After the loop: no variables changed
+                      Line 35 `return x`: find returned 3
+                    parent: [0, 1, 2, 3, 4, 5, 6] -> [0, 1, 3, 3, 4, 5, 6]
+                  End of function reached: use returned None
+                parent: [0, 1, 2, 3, 4, 5, 6] -> [0, 1, 3, 3, 4, 5, 6]
+              Line 63 `ans += 1`: ans: 0 -> 1
+            Iteration 2 (i = 3):
+              Line 43 `if used[i]:` was False (used = [False, False, True, False, True, False, False, False, False, False, False], i = 3)
+              Line 45 `jstart = p_eff[i]`: jstart: 4 -> 6
+              Line 46 `if jstart < L:` was False (jstart = 6, L = 2)
+              Line 48 `if jstart > R:` was False (jstart = 6, R = 7)
+              Line 50 `jdsu = find(jstart - L)`:
+                called find(x=4, parent=[0, 1, 3, 3, 4, 5, 6]):  [solve.find, lines 31-35]
+                  Line 32 `while parent[x] != x:` (x = 4, parent = [0, 1, 3, 3, 4, 5, 6]) ran 0 iterations (body never executed)
+                    After the loop: no variables changed
+                  Line 35 `return x`: find returned 4
+                jdsu: 2 -> 4
+              Line 51 `j = jstart if jdsu == jstart - L else jstart`: j: 4 -> 6
+              Line 52 `x = jstart`: x: 4 -> 6
+              Line 53 `fj = find(x - L)`:
+                called find(x=4, parent=[0, 1, 3, 3, 4, 5, 6]):  [solve.find, lines 31-35]
+                  Line 32 `while parent[x] != x:` (x = 4, parent = [0, 1, 3, 3, 4, 5, 6]) ran 0 iterations (body never executed)
+                    After the loop: no variables changed
+                  Line 35 `return x`: find returned 4
+                fj: 2 -> 4
+              Line 55 `idx = find(jstart - L)`:
+                called find(x=4, parent=[0, 1, 3, 3, 4, 5, 6]):  [solve.find, lines 31-35]
+                  Line 32 `while parent[x] != x:` (x = 4, parent = [0, 1, 3, 3, 4, 5, 6]) ran 0 iterations (body never executed)
+                    After the loop: no variables changed
+                  Line 35 `return x`: find returned 4
+                idx: 2 -> 4
+              Line 56 `if idx > R - L:` was False (idx = 4, R = 7, L = 2)
+              Line 59 `if j <= R:` was True (j = 6, R = 7)
+              Line 60 `used[i] = True`: used: [False, False, True, False, True, False, False, False, False, False, False] -> [False, False, True, True, True, False, False, False, False, False, False]
+              Line 61 `used[j] = True`: used: [False, False, True, True, True, False, False, False, False, False, False] -> [False, False, True, True, True, False, True, False, False, False, False]
+              Line 62 `use(j)`:
+                called use(pos=6, L=2, find=<function solve.<locals>.find>, parent=[0, 1, 3, 3, 4, 5, 6]):  [solve.use, lines 37-39]
+                  Line 38 `x = pos - L`: x = 4
+                  Line 39 `parent[x] = find(x + 1)`:
+                    called find(x=5, parent=[0, 1, 3, 3, 4, 5, 6]):  [solve.find, lines 31-35]
+                      Line 32 `while parent[x] != x:` (x = 5, parent = [0, 1, 3, 3, 4, 5, 6]) ran 0 iterations (body never executed)
+                        After the loop: no variables changed
+                      Line 35 `return x`: find returned 5
+                    parent: [0, 1, 3, 3, 4, 5, 6] -> [0, 1, 3, 3, 5, 5, 6]
+                  End of function reached: use returned None
+                parent: [0, 1, 3, 3, 4, 5, 6] -> [0, 1, 3, 3, 5, 5, 6]
+              Line 63 `ans += 1`: ans: 1 -> 2
+            Iteration 3 (i = 4): line 43 `if used[i]:` was True (used = [False, False, True, True, True, False, True, False, False, False, False], i = 4)
+            Iteration 4 (i = 5):
+              Line 43 `if used[i]:` was False (used = [False, False, True, True, True, False, True, False, False, False, False], i = 5)
+              Line 45 `jstart = p_eff[i]`: jstart: 6 -> 7
+              Line 46 `if jstart < L:` was False (jstart = 7, L = 2)
+              Line 48 `if jstart > R:` was False (jstart = 7, R = 7)
+              Line 50 `jdsu = find(jstart - L)`:
+                called find(x=5, parent=[0, 1, 3, 3, 5, 5, 6]):  [solve.find, lines 31-35]
+                  Line 32 `while parent[x] != x:` (x = 5, parent = [0, 1, 3, 3, 5, 5, 6]) ran 0 iterations (body never executed)
+                    After the loop: no variables changed
+                  Line 35 `return x`: find returned 5
+                jdsu: 4 -> 5
+              Line 51 `j = jstart if jdsu == jstart - L else jstart`: j: 6 -> 7
+              Line 52 `x = jstart`: x: 6 -> 7
+              Line 53 `fj = find(x - L)`:
+                called find(x=5, parent=[0, 1, 3, 3, 5, 5, 6]):  [solve.find, lines 31-35]
+                  Line 32 `while parent[x] != x:` (x = 5, parent = [0, 1, 3, 3, 5, 5, 6]) ran 0 iterations (body never executed)
+                    After the loop: no variables changed
+                  Line 35 `return x`: find returned 5
+                fj: 4 -> 5
+              Line 55 `idx = find(jstart - L)`:
+                called find(x=5, parent=[0, 1, 3, 3, 5, 5, 6]):  [solve.find, lines 31-35]
+                  Line 32 `while parent[x] != x:` (x = 5, parent = [0, 1, 3, 3, 5, 5, 6]) ran 0 iterations (body never executed)
+                    After the loop: no variables changed
+                  Line 35 `return x`: find returned 5
+                idx: 4 -> 5
+              Line 56 `if idx > R - L:` was False (idx = 5, R = 7, L = 2)
+              Line 59 `if j <= R:` was True (j = 7, R = 7)
+              Line 60 `used[i] = True`: used: [False, False, True, True, True, False, True, False, False, False, False] -> [False, False, True, True, True, True, True, False, False, False, False]
+              Line 61 `used[j] = True`: used: [False, False, True, True, True, True, True, False, False, False, False] -> [False, False, True, True, True, True, True, True, False, False, False]
+              Line 62 `use(j)`:
+                called use(pos=7, L=2, find=<function solve.<locals>.find>, parent=[0, 1, 3, 3, 5, 5, 6]):  [solve.use, lines 37-39]
+                  Line 38 `x = pos - L`: x = 5
+                  Line 39 `parent[x] = find(x + 1)`:
+                    called find(x=6, parent=[0, 1, 3, 3, 5, 5, 6]):  [solve.find, lines 31-35]
+                      Line 32 `while parent[x] != x:` (x = 6, parent = [0, 1, 3, 3, 5, 5, 6]) ran 0 iterations (body never executed)
+                        After the loop: no variables changed
+                      Line 35 `return x`: find returned 6
+                    parent: [0, 1, 3, 3, 5, 5, 6] -> [0, 1, 3, 3, 5, 6, 6]
+                  End of function reached: use returned None
+                parent: [0, 1, 3, 3, 5, 5, 6] -> [0, 1, 3, 3, 5, 6, 6]
+              Line 63 `ans += 1`: ans: 2 -> 3
+            Iteration 5 (i = 6): line 43 `if used[i]:` was True (used = [False, False, True, True, True, True, True, True, False, False, False], i = 6)
+            After the loop: parent = [0, 1, 3, 3, 5, 6, 6], used = [False, False, True, True, True, True, True, True, False, False, False], ans = 3, jstart = 7, jdsu = 5, j = 7, x = 7, fj = 5, idx = 5
+          Line 64 `out_lines.append(str(ans))`: out_lines: ['1'] -> ['1', '3']
+        Iteration 3 (L = 6, R = 10):
+          Line 24 `m = R - L + 1`: m: 6 -> 5
+          Line 25 `if m < 2:` was False (m = 5)
+          Line 28 `size = m + 1`: size: 7 -> 6
+          Line 29 `parent = list(range(size))`: parent: [0, 1, 3, 3, 5, 6, 6] -> [0, 1, 2, 3, 4, 5]
+          Line 40 `used = [False] * N`: used: [False, False, True, True, True, True, True, True, False, False, False] -> [False, False, False, False, False, False, False, False, False, False, False]
+          Line 41 `ans = 0`: ans: 3 -> 0
+          Line 42 `for i in range(L, R):` (L = 6, R = 10) ran 4 iterations
+            Iteration 1 (i = 6):
+              Line 43 `if used[i]:` was False (used = [False, False, False, False, False, False, False, False, False, False, False], i = 6)
+              Line 45 `jstart = p_eff[i]`: jstart: 7 -> 10
+              Line 46 `if jstart < L:` was False (jstart = 10, L = 6)
+              Line 48 `if jstart > R:` was False (jstart = 10, R = 10)
+              Line 50 `jdsu = find(jstart - L)`:
+                called find(x=4, parent=[0, 1, 2, 3, 4, 5]):  [solve.find, lines 31-35]
+                  Line 32 `while parent[x] != x:` (x = 4, parent = [0, 1, 2, 3, 4, 5]) ran 0 iterations (body never executed)
+                    After the loop: no variables changed
+                  Line 35 `return x`: find returned 4
+                jdsu: 5 -> 4
+              Line 51 `j = jstart if jdsu == jstart - L else jstart`: j: 7 -> 10
+              Line 52 `x = jstart`: x: 7 -> 10
+              Line 53 `fj = find(x - L)`:
+                called find(x=4, parent=[0, 1, 2, 3, 4, 5]):  [solve.find, lines 31-35]
+                  Line 32 `while parent[x] != x:` (x = 4, parent = [0, 1, 2, 3, 4, 5]) ran 0 iterations (body never executed)
+                    After the loop: no variables changed
+                  Line 35 `return x`: find returned 4
+                fj: 5 -> 4
+              Line 55 `idx = find(jstart - L)`:
+                called find(x=4, parent=[0, 1, 2, 3, 4, 5]):  [solve.find, lines 31-35]
+                  Line 32 `while parent[x] != x:` (x = 4, parent = [0, 1, 2, 3, 4, 5]) ran 0 iterations (body never executed)
+                    After the loop: no variables changed
+                  Line 35 `return x`: find returned 4
+                idx: 5 -> 4
+              Line 56 `if idx > R - L:` was False (idx = 4, R = 10, L = 6)
+              Line 59 `if j <= R:` was True (j = 10, R = 10)
+              Line 60 `used[i] = True`: used: [False, False, False, False, False, False, False, False, False, False, False] -> [False, False, False, False, False, False, True, False, False, False, False]
+              Line 61 `used[j] = True`: used: [False, False, False, False, False, False, True, False, False, False, False] -> [False, False, False, False, False, False, True, False, False, False, True]
+              Line 62 `use(j)`:
+                called use(pos=10, L=6, find=<function solve.<locals>.find>, parent=[0, 1, 2, 3, 4, 5]):  [solve.use, lines 37-39]
+                  Line 38 `x = pos - L`: x = 4
+                  Line 39 `parent[x] = find(x + 1)`:
+                    called find(x=5, parent=[0, 1, 2, 3, 4, 5]):  [solve.find, lines 31-35]
+                      Line 32 `while parent[x] != x:` (x = 5, parent = [0, 1, 2, 3, 4, 5]) ran 0 iterations (body never executed)
+                        After the loop: no variables changed
+                      Line 35 `return x`: find returned 5
+                    parent: [0, 1, 2, 3, 4, 5] -> [0, 1, 2, 3, 5, 5]
+                  End of function reached: use returned None
+                parent: [0, 1, 2, 3, 4, 5] -> [0, 1, 2, 3, 5, 5]
+              Line 63 `ans += 1`: ans: 0 -> 1
+            Iteration 2 (i = 7):
+              Line 43 `if used[i]:` was False (used = [False, False, False, False, False, False, True, False, False, False, True], i = 7)
+              Line 46 `if jstart < L:` was False (jstart = 10, L = 6)
+              Line 48 `if jstart > R:` was False (jstart = 10, R = 10)
+              Line 50 `jdsu = find(jstart - L)`:
+                called find(x=4, parent=[0, 1, 2, 3, 5, 5]):  [solve.find, lines 31-35]
+                  Line 32 `while parent[x] != x:` (x = 4, parent = [0, 1, 2, 3, 5, 5]) ran 1 iteration
+                    Iteration 1 (x = 4, parent = [0, 1, 2, 3, 5, 5]): line 34 `x = parent[x]`: x: 4 -> 5
+                    After the loop: x = 5
+                  Line 35 `return x`: find returned 5
+                jdsu: 4 -> 5
+              Line 53 `fj = find(x - L)`:
+                called find(x=4, parent=[0, 1, 2, 3, 5, 5]):  [solve.find, lines 31-35]
+                  Line 32 `while parent[x] != x:` (x = 4, parent = [0, 1, 2, 3, 5, 5]) ran 1 iteration
+                    Iteration 1 (x = 4, parent = [0, 1, 2, 3, 5, 5]): line 34 `x = parent[x]`: x: 4 -> 5
+                    After the loop: x = 5
+                  Line 35 `return x`: find returned 5
+                fj: 4 -> 5
+              Line 55 `idx = find(jstart - L)`:
+                called find(x=4, parent=[0, 1, 2, 3, 5, 5]):  [solve.find, lines 31-35]
+                  Line 32 `while parent[x] != x:` (x = 4, parent = [0, 1, 2, 3, 5, 5]) ran 1 iteration
+                    Iteration 1 (x = 4, parent = [0, 1, 2, 3, 5, 5]): line 34 `x = parent[x]`: x: 4 -> 5
+                    After the loop: x = 5
+                  Line 35 `return x`: find returned 5
+                idx: 4 -> 5
+              Line 56 `if idx > R - L:` was True (idx = 5, R = 10, L = 6)
+            Iteration 3 (i = 8):
+              Line 43 `if used[i]:` was False (used = [False, False, False, False, False, False, True, False, False, False, True], i = 8)
+              Line 45 `jstart = p_eff[i]`: jstart: 10 -> 11
+              Line 46 `if jstart < L:` was False (jstart = 11, L = 6)
+              Line 48 `if jstart > R:` was True (jstart = 11, R = 10)
+            Iteration 4 (i = 9):
+              Line 43 `if used[i]:` was False (used = [False, False, False, False, False, False, True, False, False, False, True], i = 9)
+              Line 46 `if jstart < L:` was False (jstart = 11, L = 6)
+              Line 48 `if jstart > R:` was True (jstart = 11, R = 10)
+            After the loop: parent = [0, 1, 2, 3, 5, 5], used = [False, False, False, False, False, False, True, False, False, False, True], ans = 1, jstart = 11, j = 10, x = 10
+          Line 64 `out_lines.append(str(ans))`: out_lines: ['1', '3'] -> ['1', '3', '1']
+        Iteration 4 (L = 0, R = 1):
+          Line 24 `m = R - L + 1`: m: 5 -> 2
+          Line 25 `if m < 2:` was False (m = 2)
+          Line 28 `size = m + 1`: size: 6 -> 3
+          Line 29 `parent = list(range(size))`: parent: [0, 1, 2, 3, 5, 5] -> [0, 1, 2]
+          Line 40 `used = [False] * N`: used: [False, False, False, False, False, False, True, False, False, False, True] -> [False, False, False, False, False, False, False, False, False, False, False]
+          Line 41 `ans = 0`: ans: 1 -> 0
+          Line 42 `for i in range(L, R):` (L = 0, R = 1) ran 1 iteration
+            Iteration 1 (i = 0):
+              Line 43 `if used[i]:` was False (used = [False, False, False, False, False, False, False, False, False, False, False], i = 0)
+              Line 45 `jstart = p_eff[i]`: jstart: 11 -> 2
+              Line 46 `if jstart < L:` was False (jstart = 2, L = 0)
+              Line 48 `if jstart > R:` was True (jstart = 2, R = 1)
+            After the loop: jstart = 2
+          Line 64 `out_lines.append(str(ans))`: out_lines: ['1', '3', '1'] -> ['1', '3', '1', '0']
+        Iteration 5 (L = 0, R = 10):
+          Line 24 `m = R - L + 1`: m: 2 -> 11
+          Line 25 `if m < 2:` was False (m = 11)
+          Line 28 `size = m + 1`: size: 3 -> 12
+          Line 29 `parent = list(range(size))`: parent: [0, 1, 2] -> [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]
+          Line 42 `for i in range(L, R):` (L = 0, R = 10) ran 10 iterations
+            Iteration 1 (i = 0):
+              Line 43 `if used[i]:` was False (used = [False, False, False, False, False, False, False, False, False, False, False], i = 0)
+              Line 46 `if jstart < L:` was False (jstart = 2, L = 0)
+              Line 48 `if jstart > R:` was False (jstart = 2, R = 10)
+              Line 50 `jdsu = find(jstart - L)`:
+                called find(x=2, parent=[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]):  [solve.find, lines 31-35]
+                  Line 32 `while parent[x] != x:` (x = 2, parent = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]) ran 0 iterations (body never executed)
+                    After the loop: no variables changed
+                  Line 35 `return x`: find returned 2
+                jdsu: 5 -> 2
+              Line 51 `j = jstart if jdsu == jstart - L else jstart`: j: 10 -> 2
+              Line 52 `x = jstart`: x: 10 -> 2
+              Line 53 `fj = find(x - L)`:
+                called find(x=2, parent=[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]):  [solve.find, lines 31-35]
+                  Line 32 `while parent[x] != x:` (x = 2, parent = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]) ran 0 iterations (body never executed)
+                    After the loop: no variables changed
+                  Line 35 `return x`: find returned 2
+                fj: 5 -> 2
+              Line 55 `idx = find(jstart - L)`:
+                called find(x=2, parent=[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]):  [solve.find, lines 31-35]
+                  Line 32 `while parent[x] != x:` (x = 2, parent = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]) ran 0 iterations (body never executed)
+                    After the loop: no variables changed
+                  Line 35 `return x`: find returned 2
+                idx: 5 -> 2
+              Line 56 `if idx > R - L:` was False (idx = 2, R = 10, L = 0)
+              Line 59 `if j <= R:` was True (j = 2, R = 10)
+              Line 60 `used[i] = True`: used: [False, False, False, False, False, False, False, False, False, False, False] -> [True, False, False, False, False, False, False, False, False, False, False]
+              Line 61 `used[j] = True`: used: [True, False, False, False, False, False, False, False, False, False, False] -> [True, False, True, False, False, False, False, False, False, False, False]
+              Line 62 `use(j)`:
+                called use(pos=2, L=0, find=<function solve.<locals>.find>, parent=[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]):  [solve.use, lines 37-39]
+                  Line 38 `x = pos - L`: x = 2
+                  Line 39 `parent[x] = find(x + 1)`:
+                    called find(x=3, parent=[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]):  [solve.find, lines 31-35]
+                      Line 32 `while parent[x] != x:` (x = 3, parent = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]) ran 0 iterations (body never executed)
+                        After the loop: no variables changed
+                      Line 35 `return x`: find returned 3
+                    parent: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11] -> [0, 1, 3, 3, 4, 5, 6, 7, 8, 9, 10, 11]
+                  End of function reached: use returned None
+                parent: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11] -> [0, 1, 3, 3, 4, 5, 6, 7, 8, 9, 10, 11]
+              Line 63 `ans += 1`: ans: 0 -> 1
+            Iteration 2 (i = 1):
+              Line 43 `if used[i]:` was False (used = [True, False, True, False, False, False, False, False, False, False, False], i = 1)
+              Line 46 `if jstart < L:` was False (jstart = 2, L = 0)
+              Line 48 `if jstart > R:` was False (jstart = 2, R = 10)
+              Line 50 `jdsu = find(jstart - L)`:
+                called find(x=2, parent=[0, 1, 3, 3, 4, 5, 6, 7, 8, 9, 10, 11]):  [solve.find, lines 31-35]
+                  Line 32 `while parent[x] != x:` (x = 2, parent = [0, 1, 3, 3, 4, 5, 6, 7, 8, 9, 10, 11]) ran 1 iteration
+                    Iteration 1 (x = 2, parent = [0, 1, 3, 3, 4, 5, 6, 7, 8, 9, 10, 11]): line 34 `x = parent[x]`: x: 2 -> 3
+                    After the loop: x = 3
+                  Line 35 `return x`: find returned 3
+                jdsu: 2 -> 3
+              Line 53 `fj = find(x - L)`:
+                called find(x=2, parent=[0, 1, 3, 3, 4, 5, 6, 7, 8, 9, 10, 11]):  [solve.find, lines 31-35]
+                  Line 32 `while parent[x] != x:` (x = 2, parent = [0, 1, 3, 3, 4, 5, 6, 7, 8, 9, 10, 11]) ran 1 iteration
+                    Iteration 1 (x = 2, parent = [0, 1, 3, 3, 4, 5, 6, 7, 8, 9, 10, 11]): line 34 `x = parent[x]`: x: 2 -> 3
+                    After the loop: x = 3
+                  Line 35 `return x`: find returned 3
+                fj: 2 -> 3
+              Line 55 `idx = find(jstart - L)`:
+                called find(x=2, parent=[0, 1, 3, 3, 4, 5, 6, 7, 8, 9, 10, 11]):  [solve.find, lines 31-35]
+                  Line 32 `while parent[x] != x:` (x = 2, parent = [0, 1, 3, 3, 4, 5, 6, 7, 8, 9, 10, 11]) ran 1 iteration
+                    Iteration 1 (x = 2, parent = [0, 1, 3, 3, 4, 5, 6, 7, 8, 9, 10, 11]): line 34 `x = parent[x]`: x: 2 -> 3
+                    After the loop: x = 3
+                  Line 35 `return x`: find returned 3
+                idx: 2 -> 3
+              Line 56 `if idx > R - L:` was False (idx = 3, R = 10, L = 0)
+              Line 58 `j = L + idx`: j: 2 -> 3
+              Line 59 `if j <= R:` was True (j = 3, R = 10)
+              Line 60 `used[i] = True`: used: [True, False, True, False, False, False, False, False, False, False, False] -> [True, True, True, False, False, False, False, False, False, False, False]
+              Line 61 `used[j] = True`: used: [True, True, True, False, False, False, False, False, False, False, False] -> [True, True, True, True, False, False, False, False, False, False, False]
+              Line 62 `use(j)`:
+                called use(pos=3, L=0, find=<function solve.<locals>.find>, parent=[0, 1, 3, 3, 4, 5, 6, 7, 8, 9, 10, 11]):  [solve.use, lines 37-39]
+                  Line 38 `x = pos - L`: x = 3
+                  Line 39 `parent[x] = find(x + 1)`:
+                    called find(x=4, parent=[0, 1, 3, 3, 4, 5, 6, 7, 8, 9, 10, 11]):  [solve.find, lines 31-35]
+                      Line 32 `while parent[x] != x:` (x = 4, parent = [0, 1, 3, 3, 4, 5, 6, 7, 8, 9, 10, 11]) ran 0 iterations (body never executed)
+                        After the loop: no variables changed
+                      Line 35 `return x`: find returned 4
+                    parent: [0, 1, 3, 3, 4, 5, 6, 7, 8, 9, 10, 11] -> [0, 1, 3, 4, 4, 5, 6, 7, 8, 9, 10, 11]
+                  End of function reached: use returned None
+                parent: [0, 1, 3, 3, 4, 5, 6, 7, 8, 9, 10, 11] -> [0, 1, 3, 4, 4, 5, 6, 7, 8, 9, 10, 11]
+              Line 63 `ans += 1`: ans: 1 -> 2
+            Iteration 3 (i = 2): line 43 `if used[i]:` was True (used = [True, True, True, True, False, False, False, False, False, False, False], i = 2)
+            Iteration 4 (i = 3): line 43 `if used[i]:` was True (used = [True, True, True, True, False, False, False, False, False, False, False], i = 3)
+            Iteration 5 (i = 4):
+              Line 43 `if used[i]:` was False (used = [True, True, True, True, False, False, False, False, False, False, False], i = 4)
+              Line 45 `jstart = p_eff[i]`: jstart: 2 -> 7
+              Line 46 `if jstart < L:` was False (jstart = 7, L = 0)
+              Line 48 `if jstart > R:` was False (jstart = 7, R = 10)
+              Line 50 `jdsu = find(jstart - L)`:
+                called find(x=7, parent=[0, 1, 3, 4, 4, 5, 6, 7, 8, 9, 10, 11]):  [solve.find, lines 31-35]
+                  Line 32 `while parent[x] != x:` (x = 7, parent = [0, 1, 3, 4, 4, 5, 6, 7, 8, 9, 10, 11]) ran 0 iterations (body never executed)
+                    After the loop: no variables changed
+                  Line 35 `return x`: find returned 7
+                jdsu: 3 -> 7
+              Line 51 `j = jstart if jdsu == jstart - L else jstart`: j: 3 -> 7
+              Line 52 `x = jstart`: x: 2 -> 7
+              Line 53 `fj = find(x - L)`:
+                called find(x=7, parent=[0, 1, 3, 4, 4, 5, 6, 7, 8, 9, 10, 11]):  [solve.find, lines 31-35]
+                  Line 32 `while parent[x] != x:` (x = 7, parent = [0, 1, 3, 4, 4, 5, 6, 7, 8, 9, 10, 11]) ran 0 iterations (body never executed)
+                    After the loop: no variables changed
+                  Line 35 `return x`: find returned 7
+                fj: 3 -> 7
+              Line 55 `idx = find(jstart - L)`:
+                called find(x=7, parent=[0, 1, 3, 4, 4, 5, 6, 7, 8, 9, 10, 11]):  [solve.find, lines 31-35]
+                  Line 32 `while parent[x] != x:` (x = 7, parent = [0, 1, 3, 4, 4, 5, 6, 7, 8, 9, 10, 11]) ran 0 iterations (body never executed)
+                    After the loop: no variables changed
+                  Line 35 `return x`: find returned 7
+                idx: 3 -> 7
+              Line 56 `if idx > R - L:` was False (idx = 7, R = 10, L = 0)
+              Line 59 `if j <= R:` was True (j = 7, R = 10)
+              Line 60 `used[i] = True`: used: [True, True, True, True, False, False, False, False, False, False, False] -> [True, True, True, True, True, False, False, False, False, False, False]
+              Line 61 `used[j] = True`: used: [True, True, True, True, True, False, False, False, False, False, False] -> [True, True, True, True, True, False, False, True, False, False, False]
+              Line 62 `use(j)`:
+                called use(pos=7, L=0, find=<function solve.<locals>.find>, parent=[0, 1, 3, 4, 4, 5, 6, 7, 8, 9, 10, 11]):  [solve.use, lines 37-39]
+                  Line 38 `x = pos - L`: x = 7
+                  Line 39 `parent[x] = find(x + 1)`:
+                    called find(x=8, parent=[0, 1, 3, 4, 4, 5, 6, 7, 8, 9, 10, 11]):  [solve.find, lines 31-35]
+                      Line 32 `while parent[x] != x:` (x = 8, parent = [0, 1, 3, 4, 4, 5, 6, 7, 8, 9, 10, 11]) ran 0 iterations (body never executed)
+                        After the loop: no variables changed
+                      Line 35 `return x`: find returned 8
+                    parent: [0, 1, 3, 4, 4, 5, 6, 7, 8, 9, 10, 11] -> [0, 1, 3, 4, 4, 5, 6, 8, 8, 9, 10, 11]
+                  End of function reached: use returned None
+                parent: [0, 1, 3, 4, 4, 5, 6, 7, 8, 9, 10, 11] -> [0, 1, 3, 4, 4, 5, 6, 8, 8, 9, 10, 11]
+              Line 63 `ans += 1`: ans: 2 -> 3
+            Iteration 6 (i = 5):
+              Line 43 `if used[i]:` was False (used = [True, True, True, True, True, False, False, True, False, False, False], i = 5)
+              Line 46 `if jstart < L:` was False (jstart = 7, L = 0)
+              Line 48 `if jstart > R:` was False (jstart = 7, R = 10)
+              Line 50 `jdsu = find(jstart - L)`:
+                called find(x=7, parent=[0, 1, 3, 4, 4, 5, 6, 8, 8, 9, 10, 11]):  [solve.find, lines 31-35]
+                  Line 32 `while parent[x] != x:` (x = 7, parent = [0, 1, 3, 4, 4, 5, 6, 8, 8, 9, 10, 11]) ran 1 iteration
+                    Iteration 1 (x = 7, parent = [0, 1, 3, 4, 4, 5, 6, 8, 8, 9, 10, 11]): line 34 `x = parent[x]`: x: 7 -> 8
+                    After the loop: x = 8
+                  Line 35 `return x`: find returned 8
+                jdsu: 7 -> 8
+              Line 53 `fj = find(x - L)`:
+                called find(x=7, parent=[0, 1, 3, 4, 4, 5, 6, 8, 8, 9, 10, 11]):  [solve.find, lines 31-35]
+                  Line 32 `while parent[x] != x:` (x = 7, parent = [0, 1, 3, 4, 4, 5, 6, 8, 8, 9, 10, 11]) ran 1 iteration
+                    Iteration 1 (x = 7, parent = [0, 1, 3, 4, 4, 5, 6, 8, 8, 9, 10, 11]): line 34 `x = parent[x]`: x: 7 -> 8
+                    After the loop: x = 8
+                  Line 35 `return x`: find returned 8
+                fj: 7 -> 8
+              Line 55 `idx = find(jstart - L)`:
+                called find(x=7, parent=[0, 1, 3, 4, 4, 5, 6, 8, 8, 9, 10, 11]):  [solve.find, lines 31-35]
+                  Line 32 `while parent[x] != x:` (x = 7, parent = [0, 1, 3, 4, 4, 5, 6, 8, 8, 9, 10, 11]) ran 1 iteration
+                    Iteration 1 (x = 7, parent = [0, 1, 3, 4, 4, 5, 6, 8, 8, 9, 10, 11]): line 34 `x = parent[x]`: x: 7 -> 8
+                    After the loop: x = 8
+                  Line 35 `return x`: find returned 8
+                idx: 7 -> 8
+              Line 56 `if idx > R - L:` was False (idx = 8, R = 10, L = 0)
+              Line 58 `j = L + idx`: j: 7 -> 8
+              Line 59 `if j <= R:` was True (j = 8, R = 10)
+              Line 60 `used[i] = True`: used: [True, True, True, True, True, False, False, True, False, False, False] -> [True, True, True, True, True, True, False, True, False, False, False]
+              Line 61 `used[j] = True`: used: [True, True, True, True, True, True, False, True, False, False, False] -> [True, True, True, True, True, True, False, True, True, False, False]
+              Line 62 `use(j)`:
+                called use(pos=8, L=0, find=<function solve.<locals>.find>, parent=[0, 1, 3, 4, 4, 5, 6, 8, 8, 9, 10, 11]):  [solve.use, lines 37-39]
+                  Line 38 `x = pos - L`: x = 8
+                  Line 39 `parent[x] = find(x + 1)`:
+                    called find(x=9, parent=[0, 1, 3, 4, 4, 5, 6, 8, 8, 9, 10, 11]):  [solve.find, lines 31-35]
+                      Line 32 `while parent[x] != x:` (x = 9, parent = [0, 1, 3, 4, 4, 5, 6, 8, 8, 9, 10, 11]) ran 0 iterations (body never executed)
+                        After the loop: no variables changed
+                      Line 35 `return x`: find returned 9
+                    parent: [0, 1, 3, 4, 4, 5, 6, 8, 8, 9, 10, 11] -> [0, 1, 3, 4, 4, 5, 6, 8, 9, 9, 10, 11]
+                  End of function reached: use returned None
+                parent: [0, 1, 3, 4, 4, 5, 6, 8, 8, 9, 10, 11] -> [0, 1, 3, 4, 4, 5, 6, 8, 9, 9, 10, 11]
+              Line 63 `ans += 1`: ans: 3 -> 4
+            Iteration 7 (i = 6):
+              Line 43 `if used[i]:` was False (used = [True, True, True, True, True, True, False, True, True, False, False], i = 6)
+              Line 45 `jstart = p_eff[i]`: jstart: 7 -> 10
+              Line 46 `if jstart < L:` was False (jstart = 10, L = 0)
+              Line 48 `if jstart > R:` was False (jstart = 10, R = 10)
+              Line 50 `jdsu = find(jstart - L)`:
+                called find(x=10, parent=[0, 1, 3, 4, 4, 5, 6, 8, 9, 9, 10, 11]):  [solve.find, lines 31-35]
+                  Line 32 `while parent[x] != x:` (x = 10, parent = [0, 1, 3, 4, 4, 5, 6, 8, 9, 9, 10, 11]) ran 0 iterations (body never executed)
+                    After the loop: no variables changed
+                  Line 35 `return x`: find returned 10
+                jdsu: 8 -> 10
+              Line 51 `j = jstart if jdsu == jstart - L else jstart`: j: 8 -> 10
+              Line 52 `x = jstart`: x: 7 -> 10
+              Line 53 `fj = find(x - L)`:
+                called find(x=10, parent=[0, 1, 3, 4, 4, 5, 6, 8, 9, 9, 10, 11]):  [solve.find, lines 31-35]
+                  Line 32 `while parent[x] != x:` (x = 10, parent = [0, 1, 3, 4, 4, 5, 6, 8, 9, 9, 10, 11]) ran 0 iterations (body never executed)
+                    After the loop: no variables changed
+                  Line 35 `return x`: find returned 10
+                fj: 8 -> 10
+              Line 55 `idx = find(jstart - L)`:
+                called find(x=10, parent=[0, 1, 3, 4, 4, 5, 6, 8, 9, 9, 10, 11]):  [solve.find, lines 31-35]
+                  Line 32 `while parent[x] != x:` (x = 10, parent = [0, 1, 3, 4, 4, 5, 6, 8, 9, 9, 10, 11]) ran 0 iterations (body never executed)
+                    After the loop: no variables changed
+                  Line 35 `return x`: find returned 10
+                idx: 8 -> 10
+              Line 56 `if idx > R - L:` was False (idx = 10, R = 10, L = 0)
+              Line 59 `if j <= R:` was True (j = 10, R = 10)
+              Line 60 `used[i] = True`: used: [True, True, True, True, True, True, False, True, True, False, False] -> [True, True, True, True, True, True, True, True, True, False, False]
+              Line 61 `used[j] = True`: used: [True, True, True, True, True, True, True, True, True, False, False] -> [True, True, True, True, True, True, True, True, True, False, True]
+              Line 62 `use(j)`:
+                called use(pos=10, L=0, find=<function solve.<locals>.find>, parent=[0, 1, 3, 4, 4, 5, 6, 8, 9, 9, 10, 11]):  [solve.use, lines 37-39]
+                  Line 38 `x = pos - L`: x = 10
+                  Line 39 `parent[x] = find(x + 1)`:
+                    called find(x=11, parent=[0, 1, 3, 4, 4, 5, 6, 8, 9, 9, 10, 11]):  [solve.find, lines 31-35]
+                      Line 32 `while parent[x] != x:` (x = 11, parent = [0, 1, 3, 4, 4, 5, 6, 8, 9, 9, 10, 11]) ran 0 iterations (body never executed)
+                        After the loop: no variables changed
+                      Line 35 `return x`: find returned 11
+                    parent: [0, 1, 3, 4, 4, 5, 6, 8, 9, 9, 10, 11] -> [0, 1, 3, 4, 4, 5, 6, 8, 9, 9, 11, 11]
+                  End of function reached: use returned None
+                parent: [0, 1, 3, 4, 4, 5, 6, 8, 9, 9, 10, 11] -> [0, 1, 3, 4, 4, 5, 6, 8, 9, 9, 11, 11]
+              Line 63 `ans += 1`: ans: 4 -> 5
+            Iteration 8 (i = 7): line 43 `if used[i]:` was True (used = [True, True, True, True, True, True, True, True, True, False, True], i = 7)
+            Iteration 9 (i = 8): line 43 `if used[i]:` was True (used = [True, True, True, True, True, True, True, True, True, False, True], i = 8)
+            Iteration 10 (i = 9):
+              Line 43 `if used[i]:` was False (used = [True, True, True, True, True, True, True, True, True, False, True], i = 9)
+              Line 45 `jstart = p_eff[i]`: jstart: 10 -> 11
+              Line 46 `if jstart < L:` was False (jstart = 11, L = 0)
+              Line 48 `if jstart > R:` was True (jstart = 11, R = 10)
+            After the loop: parent = [0, 1, 3, 4, 4, 5, 6, 8, 9, 9, 11, 11], used = [True, True, True, True, True, True, True, True, True, False, True], ans = 5, jstart = 11, jdsu = 10, fj = 10, idx = 10
+          Line 64 `out_lines.append(str(ans))`: out_lines: ['1', '3', '1', '0'] -> ['1', '3', '1', '0', '5']
+        After the loop: out_lines = ['1', '3', '1', '0', '5'], m = 11, size = 12, parent = [0, 1, 3, 4, 4, 5, 6, 8, 9, 9, 11, 11], find = <function solve.<locals>.find>, use = <function solve.<locals>.use>, used = [True, True, True, True, True, True, True, True, True, False, True], ans = 5, jstart = 11, jdsu = 10, j = 10, x = 10, fj = 10, idx = 10
+      End of function reached: solve returned None
+  End of function reached: __bpd_main__ returned None

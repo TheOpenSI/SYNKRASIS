@@ -1,0 +1,151 @@
+Execution report for `__bpd_main__()`
+Outcome: returned None
+
+Trace:
+Call __bpd_main__()  [__bpd_main__, lines 53-54]
+  Line 54 `main()`:
+    called main():  [main, lines 24-51]
+      Line 25 `data = sys.stdin.read().strip().split()`: data = ['4', '4', '1', '2', '1', '3', '2', '4', '3', '4']
+      Line 26 `if not data:` was False (data = ['4', '4', '1', '2', '1', '3', '2', '4', '3', '4'])
+      Line 29 `it = iter(data)`: it = <list_iterator object at 0x7068622d4070>
+      Line 31 `n = int(next(it))`: n = 4
+      Line 32 `m = int(next(it))`: m = 4
+      Line 36 `dsu = DSU(n)`:
+        called __init__(self=DSU(), n=4):  [DSU.__init__, lines 5-7]
+          Line 6 `self.parent = list(range(n + 1))`: self: DSU() -> DSU(parent=[0, 1, 2, 3, 4])
+          Line 7 `self.size = [1] * (n + 1)`: self: DSU(parent=[0, 1, 2, 3, 4]) -> DSU(parent=[0, 1, 2, 3, 4], size=[1, 1, 1, 1, 1])
+          End of function reached: __init__ returned None
+        dsu = DSU(parent=[0, 1, 2, 3, 4], size=[1, 1, 1, 1, 1])
+      Line 37 `for _ in range(m):` (m = 4) ran 4 iterations
+        Iteration 1 (_ = 0):
+          Line 39 `u = int(next(it))`: u = 1
+          Line 40 `v = int(next(it))`: v = 2
+          Line 43 `dsu.union(u, v)`:
+            called union(self=DSU(parent=[0, 1, 2, 3, 4], size=[1, 1, 1, 1, 1]), a=1, b=2):  [DSU.union, lines 14-22]
+              Line 15 `ra = self.find(a)`:
+                called find(self=DSU(parent=[0, 1, 2, 3, 4], size=[1, 1, 1, 1, 1]), x=1):  [DSU.find, lines 9-12]
+                  Line 10 `if self.parent[x] != x:` was False (x = 1, self = DSU(parent=[0, 1, 2, 3, 4], size=[1, 1, 1, 1, 1]))
+                  Line 12 `return self.parent[x]`: find returned 1
+                ra = 1
+              Line 16 `rb = self.find(b)`:
+                called find(self=DSU(parent=[0, 1, 2, 3, 4], size=[1, 1, 1, 1, 1]), x=2):  [DSU.find, lines 9-12]
+                  Line 10 `if self.parent[x] != x:` was False (x = 2, self = DSU(parent=[0, 1, 2, 3, 4], size=[1, 1, 1, 1, 1]))
+                  Line 12 `return self.parent[x]`: find returned 2
+                rb = 2
+              Line 17 `if ra == rb:` was False (ra = 1, rb = 2)
+              Line 19 `if self.size[ra] < self.size[rb]:` was False (ra = 1, rb = 2, self = DSU(parent=[0, 1, 2, 3, 4], size=[1, 1, 1, 1, 1]))
+              Line 21 `self.parent[rb] = ra`: self: DSU(parent=[0, 1, 2, 3, 4], size=[1, 1, 1, 1, 1]) -> DSU(parent=[0, 1, 1, 3, 4], size=[1, 1, 1, 1, 1])
+              Line 22 `self.size[ra] += self.size[rb]`: self: DSU(parent=[0, 1, 1, 3, 4], size=[1, 1, 1, 1, 1]) -> DSU(parent=[0, 1, 1, 3, 4], size=[1, 2, 1, 1, 1])
+              End of function reached: union returned None
+            dsu: DSU(parent=[0, 1, 2, 3, 4], size=[1, 1, 1, 1, 1]) -> DSU(parent=[0, 1, 1, 3, 4], size=[1, 2, 1, 1, 1])
+        Iteration 2 (_ = 1):
+          Line 40 `v = int(next(it))`: v: 2 -> 3
+          Line 43 `dsu.union(u, v)`:
+            called union(self=DSU(parent=[0, 1, 1, 3, 4], size=[1, 2, 1, 1, 1]), a=1, b=3):  [DSU.union, lines 14-22]
+              Line 15 `ra = self.find(a)`:
+                called find(self=DSU(parent=[0, 1, 1, 3, 4], size=[1, 2, 1, 1, 1]), x=1):  [DSU.find, lines 9-12]
+                  Line 10 `if self.parent[x] != x:` was False (x = 1, self = DSU(parent=[0, 1, 1, 3, 4], size=[1, 2, 1, 1, 1]))
+                  Line 12 `return self.parent[x]`: find returned 1
+                ra = 1
+              Line 16 `rb = self.find(b)`:
+                called find(self=DSU(parent=[0, 1, 1, 3, 4], size=[1, 2, 1, 1, 1]), x=3):  [DSU.find, lines 9-12]
+                  Line 10 `if self.parent[x] != x:` was False (x = 3, self = DSU(parent=[0, 1, 1, 3, 4], size=[1, 2, 1, 1, 1]))
+                  Line 12 `return self.parent[x]`: find returned 3
+                rb = 3
+              Line 17 `if ra == rb:` was False (ra = 1, rb = 3)
+              Line 19 `if self.size[ra] < self.size[rb]:` was False (ra = 1, rb = 3, self = DSU(parent=[0, 1, 1, 3, 4], size=[1, 2, 1, 1, 1]))
+              Line 21 `self.parent[rb] = ra`: self: DSU(parent=[0, 1, 1, 3, 4], size=[1, 2, 1, 1, 1]) -> DSU(parent=[0, 1, 1, 1, 4], size=[1, 2, 1, 1, 1])
+              Line 22 `self.size[ra] += self.size[rb]`: self: DSU(parent=[0, 1, 1, 1, 4], size=[1, 2, 1, 1, 1]) -> DSU(parent=[0, 1, 1, 1, 4], size=[1, 3, 1, 1, 1])
+              End of function reached: union returned None
+            dsu: DSU(parent=[0, 1, 1, 3, 4], size=[1, 2, 1, 1, 1]) -> DSU(parent=[0, 1, 1, 1, 4], size=[1, 3, 1, 1, 1])
+        Iteration 3 (_ = 2):
+          Line 39 `u = int(next(it))`: u: 1 -> 2
+          Line 40 `v = int(next(it))`: v: 3 -> 4
+          Line 43 `dsu.union(u, v)`:
+            called union(self=DSU(parent=[0, 1, 1, 1, 4], size=[1, 3, 1, 1, 1]), a=2, b=4):  [DSU.union, lines 14-22]
+              Line 15 `ra = self.find(a)`:
+                called find(self=DSU(parent=[0, 1, 1, 1, 4], size=[1, 3, 1, 1, 1]), x=2):  [DSU.find, lines 9-12]
+                  Line 10 `if self.parent[x] != x:` was True (x = 2, self = DSU(parent=[0, 1, 1, 1, 4], size=[1, 3, 1, 1, 1]))
+                  Line 11 `self.parent[x] = self.find(self.parent[x])`:
+                    called find(self=DSU(parent=[0, 1, 1, 1, 4], size=[1, 3, 1, 1, 1]), x=1):  [DSU.find, lines 9-12]
+                      Line 10 `if self.parent[x] != x:` was False (x = 1, self = DSU(parent=[0, 1, 1, 1, 4], size=[1, 3, 1, 1, 1]))
+                      Line 12 `return self.parent[x]`: find returned 1
+                  Line 12 `return self.parent[x]`: find returned 1
+                ra = 1
+              Line 16 `rb = self.find(b)`:
+                called find(self=DSU(parent=[0, 1, 1, 1, 4], size=[1, 3, 1, 1, 1]), x=4):  [DSU.find, lines 9-12]
+                  Line 10 `if self.parent[x] != x:` was False (x = 4, self = DSU(parent=[0, 1, 1, 1, 4], size=[1, 3, 1, 1, 1]))
+                  Line 12 `return self.parent[x]`: find returned 4
+                rb = 4
+              Line 17 `if ra == rb:` was False (ra = 1, rb = 4)
+              Line 19 `if self.size[ra] < self.size[rb]:` was False (ra = 1, rb = 4, self = DSU(parent=[0, 1, 1, 1, 4], size=[1, 3, 1, 1, 1]))
+              Line 21 `self.parent[rb] = ra`: self: DSU(parent=[0, 1, 1, 1, 4], size=[1, 3, 1, 1, 1]) -> DSU(parent=[0, 1, 1, 1, 1], size=[1, 3, 1, 1, 1])
+              Line 22 `self.size[ra] += self.size[rb]`: self: DSU(parent=[0, 1, 1, 1, 1], size=[1, 3, 1, 1, 1]) -> DSU(parent=[0, 1, 1, 1, 1], size=[1, 4, 1, 1, 1])
+              End of function reached: union returned None
+            dsu: DSU(parent=[0, 1, 1, 1, 4], size=[1, 3, 1, 1, 1]) -> DSU(parent=[0, 1, 1, 1, 1], size=[1, 4, 1, 1, 1])
+        Iteration 4 (_ = 3):
+          Line 39 `u = int(next(it))`: u: 2 -> 3
+          Line 43 `dsu.union(u, v)`:
+            called union(self=DSU(parent=[0, 1, 1, 1, 1], size=[1, 4, 1, 1, 1]), a=3, b=4):  [DSU.union, lines 14-22]
+              Line 15 `ra = self.find(a)`:
+                called find(self=DSU(parent=[0, 1, 1, 1, 1], size=[1, 4, 1, 1, 1]), x=3):  [DSU.find, lines 9-12]
+                  Line 10 `if self.parent[x] != x:` was True (x = 3, self = DSU(parent=[0, 1, 1, 1, 1], size=[1, 4, 1, 1, 1]))
+                  Line 11 `self.parent[x] = self.find(self.parent[x])`:
+                    called find(self=DSU(parent=[0, 1, 1, 1, 1], size=[1, 4, 1, 1, 1]), x=1):  [DSU.find, lines 9-12]
+                      Line 10 `if self.parent[x] != x:` was False (x = 1, self = DSU(parent=[0, 1, 1, 1, 1], size=[1, 4, 1, 1, 1]))
+                      Line 12 `return self.parent[x]`: find returned 1
+                  Line 12 `return self.parent[x]`: find returned 1
+                ra = 1
+              Line 16 `rb = self.find(b)`:
+                called find(self=DSU(parent=[0, 1, 1, 1, 1], size=[1, 4, 1, 1, 1]), x=4):  [DSU.find, lines 9-12]
+                  Line 10 `if self.parent[x] != x:` was True (x = 4, self = DSU(parent=[0, 1, 1, 1, 1], size=[1, 4, 1, 1, 1]))
+                  Line 11 `self.parent[x] = self.find(self.parent[x])`:
+                    called find(self=DSU(parent=[0, 1, 1, 1, 1], size=[1, 4, 1, 1, 1]), x=1):  [DSU.find, lines 9-12]
+                      Line 10 `if self.parent[x] != x:` was False (x = 1, self = DSU(parent=[0, 1, 1, 1, 1], size=[1, 4, 1, 1, 1]))
+                      Line 12 `return self.parent[x]`: find returned 1
+                  Line 12 `return self.parent[x]`: find returned 1
+                rb = 1
+              Line 17 `if ra == rb:` was True (ra = 1, rb = 1)
+              Line 18 `return`: union returned None
+        After the loop: dsu = DSU(parent=[0, 1, 1, 1, 1], size=[1, 4, 1, 1, 1]), u = 3, v = 4
+      Line 44 `roots = set()`: roots = set()
+      Line 45 `for i in range(1, n + 1):` (n = 4) ran 4 iterations
+        Iteration 1 (i = 1):
+          Line 46 `roots.add(dsu.find(i))`:
+            called find(self=DSU(parent=[0, 1, 1, 1, 1], size=[1, 4, 1, 1, 1]), x=1):  [DSU.find, lines 9-12]
+              Line 10 `if self.parent[x] != x:` was False (x = 1, self = DSU(parent=[0, 1, 1, 1, 1], size=[1, 4, 1, 1, 1]))
+              Line 12 `return self.parent[x]`: find returned 1
+            roots: set() -> {1}
+        Iteration 2 (i = 2):
+          Line 46 `roots.add(dsu.find(i))`:
+            called find(self=DSU(parent=[0, 1, 1, 1, 1], size=[1, 4, 1, 1, 1]), x=2):  [DSU.find, lines 9-12]
+              Line 10 `if self.parent[x] != x:` was True (x = 2, self = DSU(parent=[0, 1, 1, 1, 1], size=[1, 4, 1, 1, 1]))
+              Line 11 `self.parent[x] = self.find(self.parent[x])`:
+                called find(self=DSU(parent=[0, 1, 1, 1, 1], size=[1, 4, 1, 1, 1]), x=1):  [DSU.find, lines 9-12]
+                  Line 10 `if self.parent[x] != x:` was False (x = 1, self = DSU(parent=[0, 1, 1, 1, 1], size=[1, 4, 1, 1, 1]))
+                  Line 12 `return self.parent[x]`: find returned 1
+              Line 12 `return self.parent[x]`: find returned 1
+        Iteration 3 (i = 3):
+          Line 46 `roots.add(dsu.find(i))`:
+            called find(self=DSU(parent=[0, 1, 1, 1, 1], size=[1, 4, 1, 1, 1]), x=3):  [DSU.find, lines 9-12]
+              Line 10 `if self.parent[x] != x:` was True (x = 3, self = DSU(parent=[0, 1, 1, 1, 1], size=[1, 4, 1, 1, 1]))
+              Line 11 `self.parent[x] = self.find(self.parent[x])`:
+                called find(self=DSU(parent=[0, 1, 1, 1, 1], size=[1, 4, 1, 1, 1]), x=1):  [DSU.find, lines 9-12]
+                  Line 10 `if self.parent[x] != x:` was False (x = 1, self = DSU(parent=[0, 1, 1, 1, 1], size=[1, 4, 1, 1, 1]))
+                  Line 12 `return self.parent[x]`: find returned 1
+              Line 12 `return self.parent[x]`: find returned 1
+        Iteration 4 (i = 4):
+          Line 46 `roots.add(dsu.find(i))`:
+            called find(self=DSU(parent=[0, 1, 1, 1, 1], size=[1, 4, 1, 1, 1]), x=4):  [DSU.find, lines 9-12]
+              Line 10 `if self.parent[x] != x:` was True (x = 4, self = DSU(parent=[0, 1, 1, 1, 1], size=[1, 4, 1, 1, 1]))
+              Line 11 `self.parent[x] = self.find(self.parent[x])`:
+                called find(self=DSU(parent=[0, 1, 1, 1, 1], size=[1, 4, 1, 1, 1]), x=1):  [DSU.find, lines 9-12]
+                  Line 10 `if self.parent[x] != x:` was False (x = 1, self = DSU(parent=[0, 1, 1, 1, 1], size=[1, 4, 1, 1, 1]))
+                  Line 12 `return self.parent[x]`: find returned 1
+              Line 12 `return self.parent[x]`: find returned 1
+        After the loop: roots = {1}
+      Line 47 `components = len(roots)`: components = 1
+      Line 48 `answer = m - (n - components)`: answer = 1
+      Line 49 `if answer < 0:` was False (answer = 1)
+      End of function reached: main returned None
+  End of function reached: __bpd_main__ returned None

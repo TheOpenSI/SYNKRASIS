@@ -1,0 +1,165 @@
+Execution report for `__bpd_main__()`
+Outcome: returned None
+
+Trace:
+Call __bpd_main__()  [__bpd_main__, lines 38-39]
+  Line 39 `main()`:
+    called main():  [main, lines 3-36]
+      Line 4 `data = list(map(int, sys.stdin.buffer.read().split()))`: data = [3, 2, 5, 7]
+      Line 5 `N = data[0]`: N = 3
+      Line 6 `A = data[1:]`: A = [2, 5, 7]
+      Line 7 `size = 1 << N`: size = 8
+      Line 8 `sums = [0] * size`: sums = [0, 0, 0, 0, 0, 0, 0, 0]
+      Line 9 `bit_index = {1 << i: i for i in range(N)}`: bit_index = {1: 0, 2: 1, 4: 2}
+      Line 10 `for mask in range(1, size):` (size = 8) ran 7 iterations
+        Iteration 1 (mask = 1): line 11 `lsb = mask & -mask`: lsb = 1; line 12 `sums[mask] = sums[mask ^ lsb] + A[bit_index[lsb]]`: sums: [0, 0, 0, 0, 0, 0, 0, 0] -> [0, 2, 0, 0, 0, 0, 0, 0]
+        Iteration 2 (mask = 2): line 11 `lsb = mask & -mask`: lsb: 1 -> 2; line 12 `sums[mask] = sums[mask ^ lsb] + A[bit_index[lsb]]`: sums: [0, 2, 0, 0, 0, 0, 0, 0] -> [0, 2, 5, 0, 0, 0, 0, 0]
+        Iteration 3 (mask = 3): line 11 `lsb = mask & -mask`: lsb: 2 -> 1; line 12 `sums[mask] = sums[mask ^ lsb] + A[bit_index[lsb]]`: sums: [0, 2, 5, 0, 0, 0, 0, 0] -> [0, 2, 5, 7, 0, 0, 0, 0]
+        Iteration 4 (mask = 4): line 11 `lsb = mask & -mask`: lsb: 1 -> 4; line 12 `sums[mask] = sums[mask ^ lsb] + A[bit_index[lsb]]`: sums: [0, 2, 5, 7, 0, 0, 0, 0] -> [0, 2, 5, 7, 7, 0, 0, 0]
+        Iteration 5 (mask = 5): line 11 `lsb = mask & -mask`: lsb: 4 -> 1; line 12 `sums[mask] = sums[mask ^ lsb] + A[bit_index[lsb]]`: sums: [0, 2, 5, 7, 7, 0, 0, 0] -> [0, 2, 5, 7, 7, 9, 0, 0]
+        Iteration 6 (mask = 6): line 11 `lsb = mask & -mask`: lsb: 1 -> 2; line 12 `sums[mask] = sums[mask ^ lsb] + A[bit_index[lsb]]`: sums: [0, 2, 5, 7, 7, 9, 0, 0] -> [0, 2, 5, 7, 7, 9, 12, 0]
+        Iteration 7 (mask = 7): line 11 `lsb = mask & -mask`: lsb: 2 -> 1; line 12 `sums[mask] = sums[mask ^ lsb] + A[bit_index[lsb]]`: sums: [0, 2, 5, 7, 7, 9, 12, 0] -> [0, 2, 5, 7, 7, 9, 12, 14]
+        After the loop: sums = [0, 2, 5, 7, 7, 9, 12, 14], lsb = 1
+      Line 13 `memo = {}`: memo = {}
+      Line 15 `def dfs(mask):`: dfs = <function main.<locals>.dfs>
+      Line 34 `full = (1 << N) - 1`: full = 7
+      Line 35 `ans = dfs(full)`:
+        called dfs(mask=7, dfs=<function main.<locals>.dfs>, memo={}, sums=[0, 2, 5, 7, 7, 9, 12, 14]):  [main.dfs, lines 15-33]
+          Line 16 `if mask == 0:` was False (mask = 7)
+          Line 18 `if mask in memo:` was False (mask = 7, memo = {})
+          Line 20 `first_bit = mask & -mask`: first_bit = 1
+          Line 21 `rest_mask = mask ^ first_bit`: rest_mask = 6
+          Line 22 `res = set()`: res = set()
+          Line 23 `t = rest_mask`: t = 6
+          Line 24 `while True:` ran 4 iterations, then exited via break
+            Iteration 1:
+              Line 25 `s = t | first_bit`: s = 7
+              Line 26 `rest = mask ^ s`: rest = 0
+              Line 27 `for x in dfs(rest):` (dfs = <function main.<locals>.dfs>, rest = 0) ran 1 iteration
+                Iteration 1 (x = 0):
+                  Line 27 `for x in dfs(rest):`:
+                    called dfs(mask=0, dfs=<function main.<locals>.dfs>, memo={}, sums=[0, 2, 5, 7, 7, 9, 12, 14]):  [main.dfs, lines 15-33]
+                      Line 16 `if mask == 0:` was True (mask = 0)
+                      Line 17 `return {0}`: dfs returned {0}
+                  Line 28 `res.add(x ^ sums[s])`: res: set() -> {14}
+                After the loop: res = {14}
+              Line 29 `if t == 0:` was False (t = 6)
+              Line 31 `t = t - 1 & rest_mask`: t: 6 -> 4
+            Iteration 2:
+              Line 25 `s = t | first_bit`: s: 7 -> 5
+              Line 26 `rest = mask ^ s`: rest: 0 -> 2
+              Line 27 `for x in dfs(rest):` (dfs = <function main.<locals>.dfs>, rest = 2) ran 1 iteration
+                Iteration 1 (x = 5):
+                  Line 27 `for x in dfs(rest):`:
+                    called dfs(mask=2, dfs=<function main.<locals>.dfs>, memo={}, sums=[0, 2, 5, 7, 7, 9, 12, 14]):  [main.dfs, lines 15-33]
+                      Line 16 `if mask == 0:` was False (mask = 2)
+                      Line 18 `if mask in memo:` was False (mask = 2, memo = {})
+                      Line 20 `first_bit = mask & -mask`: first_bit = 2
+                      Line 21 `rest_mask = mask ^ first_bit`: rest_mask = 0
+                      Line 22 `res = set()`: res = set()
+                      Line 23 `t = rest_mask`: t = 0
+                      Line 24 `while True:` ran 1 iteration, then exited via break
+                        Iteration 1:
+                          Line 25 `s = t | first_bit`: s = 2
+                          Line 26 `rest = mask ^ s`: rest = 0
+                          Line 27 `for x in dfs(rest):` (dfs = <function main.<locals>.dfs>, rest = 0) ran 1 iteration
+                            Iteration 1 (x = 0):
+                              Line 27 `for x in dfs(rest):`:
+                                called dfs(mask=0, dfs=<function main.<locals>.dfs>, memo={}, sums=[0, 2, 5, 7, 7, 9, 12, 14]):  [main.dfs, lines 15-33]
+                                  Line 16 `if mask == 0:` was True (mask = 0)
+                                  Line 17 `return {0}`: dfs returned {0}
+                              Line 28 `res.add(x ^ sums[s])`: res: set() -> {5}
+                            After the loop: res = {5}
+                          Line 29 `if t == 0:` was True (t = 0)
+                        After the loop: res = {5}, s = 2, rest = 0
+                      Line 32 `memo[mask] = res`: memo: {} -> {2: {5}}
+                      Line 33 `return res`: dfs returned {5}
+                  Line 28 `res.add(x ^ sums[s])`: res: {14} -> {12, 14}
+                After the loop: memo = {2: {5}}, res = {12, 14}
+              Line 29 `if t == 0:` was False (t = 4)
+              Line 31 `t = t - 1 & rest_mask`: t: 4 -> 2
+            Iteration 3:
+              Line 25 `s = t | first_bit`: s: 5 -> 3
+              Line 26 `rest = mask ^ s`: rest: 2 -> 4
+              Line 27 `for x in dfs(rest):` (dfs = <function main.<locals>.dfs>, rest = 4) ran 1 iteration
+                Iteration 1 (x = 7):
+                  Line 27 `for x in dfs(rest):`:
+                    called dfs(mask=4, dfs=<function main.<locals>.dfs>, memo={2: {5}}, sums=[0, 2, 5, 7, 7, 9, 12, 14]):  [main.dfs, lines 15-33]
+                      Line 16 `if mask == 0:` was False (mask = 4)
+                      Line 18 `if mask in memo:` was False (mask = 4, memo = {2: {5}})
+                      Line 20 `first_bit = mask & -mask`: first_bit = 4
+                      Line 21 `rest_mask = mask ^ first_bit`: rest_mask = 0
+                      Line 22 `res = set()`: res = set()
+                      Line 23 `t = rest_mask`: t = 0
+                      Line 24 `while True:` ran 1 iteration, then exited via break
+                        Iteration 1:
+                          Line 25 `s = t | first_bit`: s = 4
+                          Line 26 `rest = mask ^ s`: rest = 0
+                          Line 27 `for x in dfs(rest):` (dfs = <function main.<locals>.dfs>, rest = 0) ran 1 iteration
+                            Iteration 1 (x = 0):
+                              Line 27 `for x in dfs(rest):`:
+                                called dfs(mask=0, dfs=<function main.<locals>.dfs>, memo={2: {5}}, sums=[0, 2, 5, 7, 7, 9, 12, 14]):  [main.dfs, lines 15-33]
+                                  Line 16 `if mask == 0:` was True (mask = 0)
+                                  Line 17 `return {0}`: dfs returned {0}
+                              Line 28 `res.add(x ^ sums[s])`: res: set() -> {7}
+                            After the loop: res = {7}
+                          Line 29 `if t == 0:` was True (t = 0)
+                        After the loop: res = {7}, s = 4, rest = 0
+                      Line 32 `memo[mask] = res`: memo: {2: {5}} -> {2: {5}, 4: {7}}
+                      Line 33 `return res`: dfs returned {7}
+                  Line 28 `res.add(x ^ sums[s])`: res: {12, 14} -> {0, 12, 14}
+                After the loop: memo = {2: {5}, 4: {7}}, res = {0, 12, 14}
+              Line 29 `if t == 0:` was False (t = 2)
+              Line 31 `t = t - 1 & rest_mask`: t: 2 -> 0
+            Iteration 4:
+              Line 25 `s = t | first_bit`: s: 3 -> 1
+              Line 26 `rest = mask ^ s`: rest: 4 -> 6
+              Line 27 `for x in dfs(rest):` (dfs = <function main.<locals>.dfs>, rest = 6) ran 2 iterations
+                Iteration 1 (x = 2):
+                  Line 27 `for x in dfs(rest):`:
+                    called dfs(mask=6, dfs=<function main.<locals>.dfs>, memo={2: {5}, 4: {7}}, sums=[0, 2, 5, 7, 7, 9, 12, 14]):  [main.dfs, lines 15-33]
+                      Line 16 `if mask == 0:` was False (mask = 6)
+                      Line 18 `if mask in memo:` was False (mask = 6, memo = {2: {5}, 4: {7}})
+                      Line 20 `first_bit = mask & -mask`: first_bit = 2
+                      Line 21 `rest_mask = mask ^ first_bit`: rest_mask = 4
+                      Line 22 `res = set()`: res = set()
+                      Line 23 `t = rest_mask`: t = 4
+                      Line 24 `while True:` ran 2 iterations, then exited via break
+                        Iteration 1:
+                          Line 25 `s = t | first_bit`: s = 6
+                          Line 26 `rest = mask ^ s`: rest = 0
+                          Line 27 `for x in dfs(rest):` (dfs = <function main.<locals>.dfs>, rest = 0) ran 1 iteration
+                            Iteration 1 (x = 0):
+                              Line 27 `for x in dfs(rest):`:
+                                called dfs(mask=0, dfs=<function main.<locals>.dfs>, memo={2: {5}, 4: {7}}, sums=[0, 2, 5, 7, 7, 9, 12, 14]):  [main.dfs, lines 15-33]
+                                  Line 16 `if mask == 0:` was True (mask = 0)
+                                  Line 17 `return {0}`: dfs returned {0}
+                              Line 28 `res.add(x ^ sums[s])`: res: set() -> {12}
+                            After the loop: res = {12}
+                          Line 29 `if t == 0:` was False (t = 4)
+                          Line 31 `t = t - 1 & rest_mask`: t: 4 -> 0
+                        Iteration 2:
+                          Line 25 `s = t | first_bit`: s: 6 -> 2
+                          Line 26 `rest = mask ^ s`: rest: 0 -> 4
+                          Line 27 `for x in dfs(rest):` (dfs = <function main.<locals>.dfs>, rest = 4) ran 1 iteration
+                            Iteration 1 (x = 7):
+                              Line 27 `for x in dfs(rest):`:
+                                called dfs(mask=4, dfs=<function main.<locals>.dfs>, memo={2: {5}, 4: {7}}, sums=[0, 2, 5, 7, 7, 9, 12, 14]):  [main.dfs, lines 15-33]
+                                  Line 16 `if mask == 0:` was False (mask = 4)
+                                  Line 18 `if mask in memo:` was True (mask = 4, memo = {2: {5}, 4: {7}})
+                                  Line 19 `return memo[mask]`: dfs returned {7}
+                              Line 28 `res.add(x ^ sums[s])`: res: {12} -> {2, 12}
+                            After the loop: res = {2, 12}
+                          Line 29 `if t == 0:` was True (t = 0)
+                        After the loop: res = {2, 12}, t = 0, s = 2, rest = 4
+                      Line 32 `memo[mask] = res`: memo: {2: {5}, 4: {7}} -> {2: {5}, 4: {7}, 6: {2, 12}}
+                      Line 33 `return res`: dfs returned {2, 12}
+                Iteration 2 (x = 12): no variable changes
+                After the loop: memo = {2: {5}, 4: {7}, 6: {2, 12}}
+              Line 29 `if t == 0:` was True (t = 0)
+            After the loop: memo = {2: {5}, 4: {7}, 6: {2, 12}}, res = {0, 12, 14}, t = 0, s = 1, rest = 6
+          Line 32 `memo[mask] = res`: memo: {2: {5}, 4: {7}, 6: {2, 12}} -> {2: {5}, 4: {7}, 6: {2, 12}, 7: {0, 12, 14}}
+          Line 33 `return res`: dfs returned {0, 12, 14}
+        memo: {} -> {2: {5}, 4: {7}, 6: {2, 12}, 7: {0, 12, 14}}; ans = {0, 12, 14}
+      End of function reached: main returned None
+  End of function reached: __bpd_main__ returned None

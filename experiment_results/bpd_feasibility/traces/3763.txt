@@ -1,0 +1,243 @@
+Execution report for `Solution().separateSquares([[0, 0, 2], [1, 1, 1]])`
+Outcome: returned 1.1666666666666665
+
+Trace:
+Call separateSquares(self=Solution(), squares=[[0, 0, 2], [1, 1, 1]])  [Solution.separateSquares, lines 7-36]
+  Line 8 `n = len(squares)`: n = 2
+  Line 9 `ys = [s[1] for s in squares]`: ys = [0, 1]
+  Line 10 `ls = [s[2] for s in squares]`: ls = [2, 1]
+  Line 11 `ends = [ys[i] + ls[i] for i in range(n)]`: ends = [2, 2]
+  Line 12 `min_y = min(ys)`: min_y = 0
+  Line 13 `max_y_plus = max(ends)`: max_y_plus = 2
+  Line 14 `total_area = 0.0`: total_area = 0.0
+  Line 15 `for l in ls:` (ls = [2, 1]) ran 2 iterations
+    Iteration 1 (l = 2): line 16 `total_area += l * l`: total_area: 0.0 -> 4.0
+    Iteration 2 (l = 1): line 16 `total_area += l * l`: total_area: 4.0 -> 5.0
+    After the loop: total_area = 5.0
+  Line 17 `half_area = total_area / 2.0`: half_area = 2.5
+  Line 18 `lo, hi = (min_y, max_y_plus)`: lo = 0; hi = 2
+  Line 19 `for _ in range(60):` ran 60 iterations
+    Iteration 1 (_ = 0):
+      Line 20 `mid = (lo + hi) / 2.0`: mid = 1.0
+      Line 21 `below = 0.0`: below = 0.0
+      Line 22 `for i in range(n):` (n = 2) ran 2 iterations
+        Iteration 1:
+          Line 23 `yi = ys[i]`: yi = 0
+          Line 24 `li = ls[i]`: li = 2
+          Line 25 `if mid <= yi:` was False (mid = 1.0, yi = 0)
+          Line 27 `end_i = ends[i]`: end_i = 2
+          Line 28 `if mid >= end_i:` was False (mid = 1.0, end_i = 2)
+          Line 31 `below += (mid - yi) * li`: below: 0.0 -> 2.0
+        Iteration 2:
+          Line 23 `yi = ys[i]`: yi: 0 -> 1
+          Line 24 `li = ls[i]`: li: 2 -> 1
+          Line 25 `if mid <= yi:` was True (mid = 1.0, yi = 1)
+        After the loop: below = 2.0, yi = 1, li = 1, end_i = 2
+      Line 32 `if below < half_area:` was True (below = 2.0, half_area = 2.5)
+      Line 33 `lo = mid`: lo: 0 -> 1.0
+    Iteration 2 (_ = 1):
+      Line 20 `mid = (lo + hi) / 2.0`: mid: 1.0 -> 1.5
+      Line 21 `below = 0.0`: below: 2.0 -> 0.0
+      Line 22 `for i in range(n):` (n = 2) ran 2 iterations
+        Iteration 1:
+          Line 23 `yi = ys[i]`: yi: 1 -> 0
+          Line 24 `li = ls[i]`: li: 1 -> 2
+          Line 25 `if mid <= yi:` was False (mid = 1.5, yi = 0)
+          Line 28 `if mid >= end_i:` was False (mid = 1.5, end_i = 2)
+          Line 31 `below += (mid - yi) * li`: below: 0.0 -> 3.0
+        Iteration 2:
+          Line 23 `yi = ys[i]`: yi: 0 -> 1
+          Line 24 `li = ls[i]`: li: 2 -> 1
+          Line 25 `if mid <= yi:` was False (mid = 1.5, yi = 1)
+          Line 28 `if mid >= end_i:` was False (mid = 1.5, end_i = 2)
+          Line 31 `below += (mid - yi) * li`: below: 3.0 -> 3.5
+        After the loop: below = 3.5
+      Line 32 `if below < half_area:` was False (below = 3.5, half_area = 2.5)
+      Line 35 `hi = mid`: hi: 2 -> 1.5
+    Iteration 3 (_ = 2):
+      Line 20 `mid = (lo + hi) / 2.0`: mid: 1.5 -> 1.25
+      Line 21 `below = 0.0`: below: 3.5 -> 0.0
+      Line 22 `for i in range(n):` (n = 2) ran 2 iterations
+        Iteration 1:
+          Line 23 `yi = ys[i]`: yi: 1 -> 0
+          Line 24 `li = ls[i]`: li: 1 -> 2
+          Line 25 `if mid <= yi:` was False (mid = 1.25, yi = 0)
+          Line 28 `if mid >= end_i:` was False (mid = 1.25, end_i = 2)
+          Line 31 `below += (mid - yi) * li`: below: 0.0 -> 2.5
+        Iteration 2:
+          Line 23 `yi = ys[i]`: yi: 0 -> 1
+          Line 24 `li = ls[i]`: li: 2 -> 1
+          Line 25 `if mid <= yi:` was False (mid = 1.25, yi = 1)
+          Line 28 `if mid >= end_i:` was False (mid = 1.25, end_i = 2)
+          Line 31 `below += (mid - yi) * li`: below: 2.5 -> 2.75
+        After the loop: below = 2.75
+      Line 32 `if below < half_area:` was False (below = 2.75, half_area = 2.5)
+      Line 35 `hi = mid`: hi: 1.5 -> 1.25
+    Iteration 4 (_ = 3):
+      Line 20 `mid = (lo + hi) / 2.0`: mid: 1.25 -> 1.125
+      Line 21 `below = 0.0`: below: 2.75 -> 0.0
+      Line 22 `for i in range(n):` (n = 2) ran 2 iterations
+        Iteration 1:
+          Line 23 `yi = ys[i]`: yi: 1 -> 0
+          Line 24 `li = ls[i]`: li: 1 -> 2
+          Line 25 `if mid <= yi:` was False (mid = 1.125, yi = 0)
+          Line 28 `if mid >= end_i:` was False (mid = 1.125, end_i = 2)
+          Line 31 `below += (mid - yi) * li`: below: 0.0 -> 2.25
+        Iteration 2:
+          Line 23 `yi = ys[i]`: yi: 0 -> 1
+          Line 24 `li = ls[i]`: li: 2 -> 1
+          Line 25 `if mid <= yi:` was False (mid = 1.125, yi = 1)
+          Line 28 `if mid >= end_i:` was False (mid = 1.125, end_i = 2)
+          Line 31 `below += (mid - yi) * li`: below: 2.25 -> 2.375
+        After the loop: below = 2.375
+      Line 32 `if below < half_area:` was True (below = 2.375, half_area = 2.5)
+      Line 33 `lo = mid`: lo: 1.0 -> 1.125
+    Iteration 5 (_ = 4):
+      Line 20 `mid = (lo + hi) / 2.0`: mid: 1.125 -> 1.1875
+      Line 21 `below = 0.0`: below: 2.375 -> 0.0
+      Line 22 `for i in range(n):` (n = 2) ran 2 iterations
+        Iteration 1:
+          Line 23 `yi = ys[i]`: yi: 1 -> 0
+          Line 24 `li = ls[i]`: li: 1 -> 2
+          Line 25 `if mid <= yi:` was False (mid = 1.1875, yi = 0)
+          Line 28 `if mid >= end_i:` was False (mid = 1.1875, end_i = 2)
+          Line 31 `below += (mid - yi) * li`: below: 0.0 -> 2.375
+        Iteration 2:
+          Line 23 `yi = ys[i]`: yi: 0 -> 1
+          Line 24 `li = ls[i]`: li: 2 -> 1
+          Line 25 `if mid <= yi:` was False (mid = 1.1875, yi = 1)
+          Line 28 `if mid >= end_i:` was False (mid = 1.1875, end_i = 2)
+          Line 31 `below += (mid - yi) * li`: below: 2.375 -> 2.5625
+        After the loop: below = 2.5625
+      Line 32 `if below < half_area:` was False (below = 2.5625, half_area = 2.5)
+      Line 35 `hi = mid`: hi: 1.25 -> 1.1875
+    Iteration 6 (_ = 5):
+      Line 20 `mid = (lo + hi) / 2.0`: mid: 1.1875 -> 1.15625
+      Line 21 `below = 0.0`: below: 2.5625 -> 0.0
+      Line 22 `for i in range(n):` (n = 2) ran 2 iterations
+        Iteration 1:
+          Line 23 `yi = ys[i]`: yi: 1 -> 0
+          Line 24 `li = ls[i]`: li: 1 -> 2
+          Line 25 `if mid <= yi:` was False (mid = 1.15625, yi = 0)
+          Line 28 `if mid >= end_i:` was False (mid = 1.15625, end_i = 2)
+          Line 31 `below += (mid - yi) * li`: below: 0.0 -> 2.3125
+        Iteration 2:
+          Line 23 `yi = ys[i]`: yi: 0 -> 1
+          Line 24 `li = ls[i]`: li: 2 -> 1
+          Line 25 `if mid <= yi:` was False (mid = 1.15625, yi = 1)
+          Line 28 `if mid >= end_i:` was False (mid = 1.15625, end_i = 2)
+          Line 31 `below += (mid - yi) * li`: below: 2.3125 -> 2.46875
+        After the loop: below = 2.46875
+      Line 32 `if below < half_area:` was True (below = 2.46875, half_area = 2.5)
+      Line 33 `lo = mid`: lo: 1.125 -> 1.15625
+    Iteration 7 (_ = 6):
+      Line 20 `mid = (lo + hi) / 2.0`: mid: 1.15625 -> 1.171875
+      Line 21 `below = 0.0`: below: 2.46875 -> 0.0
+      Line 22 `for i in range(n):` (n = 2) ran 2 iterations
+        Iteration 1:
+          Line 23 `yi = ys[i]`: yi: 1 -> 0
+          Line 24 `li = ls[i]`: li: 1 -> 2
+          Line 25 `if mid <= yi:` was False (mid = 1.171875, yi = 0)
+          Line 28 `if mid >= end_i:` was False (mid = 1.171875, end_i = 2)
+          Line 31 `below += (mid - yi) * li`: below: 0.0 -> 2.34375
+        Iteration 2:
+          Line 23 `yi = ys[i]`: yi: 0 -> 1
+          Line 24 `li = ls[i]`: li: 2 -> 1
+          Line 25 `if mid <= yi:` was False (mid = 1.171875, yi = 1)
+          Line 28 `if mid >= end_i:` was False (mid = 1.171875, end_i = 2)
+          Line 31 `below += (mid - yi) * li`: below: 2.34375 -> 2.515625
+        After the loop: below = 2.515625
+      Line 32 `if below < half_area:` was False (below = 2.515625, half_area = 2.5)
+      Line 35 `hi = mid`: hi: 1.1875 -> 1.171875
+    Iteration 8 (_ = 7):
+      Line 20 `mid = (lo + hi) / 2.0`: mid: 1.171875 -> 1.1640625
+      Line 21 `below = 0.0`: below: 2.515625 -> 0.0
+      Line 22 `for i in range(n):` (n = 2) ran 2 iterations
+        Iteration 1:
+          Line 23 `yi = ys[i]`: yi: 1 -> 0
+          Line 24 `li = ls[i]`: li: 1 -> 2
+          Line 25 `if mid <= yi:` was False (mid = 1.1640625, yi = 0)
+          Line 28 `if mid >= end_i:` was False (mid = 1.1640625, end_i = 2)
+          Line 31 `below += (mid - yi) * li`: below: 0.0 -> 2.328125
+        Iteration 2:
+          Line 23 `yi = ys[i]`: yi: 0 -> 1
+          Line 24 `li = ls[i]`: li: 2 -> 1
+          Line 25 `if mid <= yi:` was False (mid = 1.1640625, yi = 1)
+          Line 28 `if mid >= end_i:` was False (mid = 1.1640625, end_i = 2)
+          Line 31 `below += (mid - yi) * li`: below: 2.328125 -> 2.4921875
+        After the loop: below = 2.4921875
+      Line 32 `if below < half_area:` was True (below = 2.4921875, half_area = 2.5)
+      Line 33 `lo = mid`: lo: 1.15625 -> 1.1640625
+    Iteration 9 (_ = 8):
+      Line 20 `mid = (lo + hi) / 2.0`: mid: 1.1640625 -> 1.16796875
+      Line 21 `below = 0.0`: below: 2.4921875 -> 0.0
+      Line 22 `for i in range(n):` (n = 2) ran 2 iterations
+        Iteration 1:
+          Line 23 `yi = ys[i]`: yi: 1 -> 0
+          Line 24 `li = ls[i]`: li: 1 -> 2
+          Line 25 `if mid <= yi:` was False (mid = 1.16796875, yi = 0)
+          Line 28 `if mid >= end_i:` was False (mid = 1.16796875, end_i = 2)
+          Line 31 `below += (mid - yi) * li`: below: 0.0 -> 2.3359375
+        Iteration 2:
+          Line 23 `yi = ys[i]`: yi: 0 -> 1
+          Line 24 `li = ls[i]`: li: 2 -> 1
+          Line 25 `if mid <= yi:` was False (mid = 1.16796875, yi = 1)
+          Line 28 `if mid >= end_i:` was False (mid = 1.16796875, end_i = 2)
+          Line 31 `below += (mid - yi) * li`: below: 2.3359375 -> 2.50390625
+        After the loop: below = 2.50390625
+      Line 32 `if below < half_area:` was False (below = 2.50390625, half_area = 2.5)
+      Line 35 `hi = mid`: hi: 1.171875 -> 1.16796875
+    ... 48 iterations omitted ...
+    Iteration 58 (_ = 57):
+      Line 21 `below = 0.0`: below: 2.4999999999999996 -> 0.0
+      Line 22 `for i in range(n):` (n = 2) ran 2 iterations
+        Iteration 1:
+          Line 23 `yi = ys[i]`: yi: 1 -> 0
+          Line 24 `li = ls[i]`: li: 1 -> 2
+          Line 25 `if mid <= yi:` was False (mid = 1.1666666666666665, yi = 0)
+          Line 28 `if mid >= end_i:` was False (mid = 1.1666666666666665, end_i = 2)
+          Line 31 `below += (mid - yi) * li`: below: 0.0 -> 2.333333333333333
+        Iteration 2:
+          Line 23 `yi = ys[i]`: yi: 0 -> 1
+          Line 24 `li = ls[i]`: li: 2 -> 1
+          Line 25 `if mid <= yi:` was False (mid = 1.1666666666666665, yi = 1)
+          Line 28 `if mid >= end_i:` was False (mid = 1.1666666666666665, end_i = 2)
+          Line 31 `below += (mid - yi) * li`: below: 2.333333333333333 -> 2.4999999999999996
+        After the loop: below = 2.4999999999999996
+      Line 32 `if below < half_area:` was True (below = 2.4999999999999996, half_area = 2.5)
+    Iteration 59 (_ = 58):
+      Line 21 `below = 0.0`: below: 2.4999999999999996 -> 0.0
+      Line 22 `for i in range(n):` (n = 2) ran 2 iterations
+        Iteration 1:
+          Line 23 `yi = ys[i]`: yi: 1 -> 0
+          Line 24 `li = ls[i]`: li: 1 -> 2
+          Line 25 `if mid <= yi:` was False (mid = 1.1666666666666665, yi = 0)
+          Line 28 `if mid >= end_i:` was False (mid = 1.1666666666666665, end_i = 2)
+          Line 31 `below += (mid - yi) * li`: below: 0.0 -> 2.333333333333333
+        Iteration 2:
+          Line 23 `yi = ys[i]`: yi: 0 -> 1
+          Line 24 `li = ls[i]`: li: 2 -> 1
+          Line 25 `if mid <= yi:` was False (mid = 1.1666666666666665, yi = 1)
+          Line 28 `if mid >= end_i:` was False (mid = 1.1666666666666665, end_i = 2)
+          Line 31 `below += (mid - yi) * li`: below: 2.333333333333333 -> 2.4999999999999996
+        After the loop: below = 2.4999999999999996
+      Line 32 `if below < half_area:` was True (below = 2.4999999999999996, half_area = 2.5)
+    Iteration 60 (_ = 59):
+      Line 21 `below = 0.0`: below: 2.4999999999999996 -> 0.0
+      Line 22 `for i in range(n):` (n = 2) ran 2 iterations
+        Iteration 1:
+          Line 23 `yi = ys[i]`: yi: 1 -> 0
+          Line 24 `li = ls[i]`: li: 1 -> 2
+          Line 25 `if mid <= yi:` was False (mid = 1.1666666666666665, yi = 0)
+          Line 28 `if mid >= end_i:` was False (mid = 1.1666666666666665, end_i = 2)
+          Line 31 `below += (mid - yi) * li`: below: 0.0 -> 2.333333333333333
+        Iteration 2:
+          Line 23 `yi = ys[i]`: yi: 0 -> 1
+          Line 24 `li = ls[i]`: li: 2 -> 1
+          Line 25 `if mid <= yi:` was False (mid = 1.1666666666666665, yi = 1)
+          Line 28 `if mid >= end_i:` was False (mid = 1.1666666666666665, end_i = 2)
+          Line 31 `below += (mid - yi) * li`: below: 2.333333333333333 -> 2.4999999999999996
+        After the loop: below = 2.4999999999999996
+      Line 32 `if below < half_area:` was True (below = 2.4999999999999996, half_area = 2.5)
+    After the loop: lo = 1.1666666666666665, hi = 1.1666666666666667, mid = 1.1666666666666665, below = 2.4999999999999996, yi = 1, li = 1, end_i = 2
+  Line 36 `return (lo + hi) / 2.0`: separateSquares returned 1.1666666666666665
