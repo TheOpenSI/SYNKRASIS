@@ -1,0 +1,110 @@
+### Step-by-step reasoning
+- The problem asks, for each query [L, R], to form as many kagamimochi as possible by pairing mochi i (left) with mochi j (right) such that A[j] ≥ 2*A[i], using each mochi at most once, and only mochi within the subarray [L, R].
+- A known greedy approach is to precompute for each i the earliest index t[i] > i with A[t[i]] ≥ 2*A[i] (or N if none), and then, for a given query, try to pair each left index i with the smallest available right index j ≥ max(i+1, t[i]). A Disjoint Set Union (DSU) over the right-slot indices helps to efficiently find the next available right slot.
+- A tricky part is ensuring a mochi isn’t used both as a left and as a right in different pairs within the same query. If some index x is used as a right endpoint in an earlier pairing, it cannot be used again (either as left or right).
+- The previous approach tried to track used right endpoints with a set (used_right). While correct, using a set can be slow in worst-case scenarios with many queries and long ranges. A more efficient technique is to mark used right endpoints with a per-query timestamp, avoiding per-query set allocations and clears.
+- Fix plan:
+  - Precompute t[i] and lval[i] as before (lval[i] = max(i+1, t[i])).
+  - For each query, use a DSU over the right-slot indices (base = L+1 to R). Track used-right endpoints with a timestamped array (no per-query clears). Specifically, maintain an array mark of length N; for query q, use a unique stamp value to mark all indices used as right endpoints. An index i is used as right if mark[i] equals the current stamp.
+  - Iterate i from L to R-1; skip if mark[i] equals current stamp (i was used as a right endpoint). Compute s_min = max(0, lval[i] - base). Use DSU to find the smallest available right slot idx ≥ s_min. If found, pair i with jpos = base + idx, mark jpos with current stamp, and remove the slot from DSU. Stop early if we’ve exhausted all possible left indices.
+- This approach maintains correctness and improves performance by avoiding Python sets and resets per query.
+
+### Requirements
+None
+
+### Code
+```
+import sys
+
+def solve():
+    data = list(map(int, sys.stdin.buffer.read().split()))
+    it = iter(data)
+
+    N = next(it)
+    A = [next(it) for _ in range(N)]
+    Q = next(it)
+    queries = []
+    for _ in range(Q):
+        L = next(it) - 1  # 0-based
+        R = next(it) - 1
+        queries.append((L, R))
+
+    # Precompute t[i]: first index j > i with A[j] >= 2*A[i], or N if none
+    t = [N] * N
+    j = 0
+    for i in range(N):
+        if j <= i:
+            j = i + 1
+        while j < N and A[j] < 2 * A[i]:
+            j += 1
+        t[i] = j
+
+    # Precompute lval[i] = max(i+1, t[i])
+    lval = [0] * N
+    for i in range(N):
+        li = t[i]
+        if li < i + 1:
+            li = i + 1
+        lval[i] = li
+
+    # Used-right tracking with timestamp to avoid per-query clears
+    mark = [0] * N
+    stamp = 1
+
+    out_lines = []
+    for (L, R) in queries:
+        m = R - L  # number of possible right slots
+        if m <= 0:
+            out_lines.append("0")
+            stamp += 1
+            continue
+
+        base = L + 1  # first possible right index
+        # DSU over right slots indices 0..m-1, with sentinel at m
+        parent = list(range(m + 1))
+
+        def find(x):
+            # Iterative path-compressed find
+            while parent[x] != x:
+                parent[x] = parent[parent[x]]
+                x = parent[x]
+            return x
+
+        ans = 0
+        cur = stamp
+        stamp += 1
+
+        for i in range(L, R):  # i in [L, R-1]
+            if mark[i] == cur:
+                # i already used as a right endpoint in a previous pair
+                continue
+
+            li = lval[i]
+            if li > R:
+                continue
+            s_min = li - base  # 0-based index into right-slot space
+            if s_min < 0:
+                s_min = 0
+            if s_min >= m:
+                continue
+
+            idx = find(s_min)
+            if idx >= m:
+                continue
+
+            jpos = base + idx  # actual mochi index for the right endpoint
+            ans += 1
+            mark[jpos] = cur  # mark this index as used as right in this query
+            # remove slot idx
+            parent[idx] = find(idx + 1)
+
+            if ans == m:
+                break
+
+        out_lines.append(str(ans))
+
+    sys.stdout.write("\n".join(out_lines))
+
+if __name__ == "__main__":
+    solve()
+```

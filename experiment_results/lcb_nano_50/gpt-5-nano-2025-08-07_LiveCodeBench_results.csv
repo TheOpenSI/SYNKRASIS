@@ -1,3 +1,4 @@
 task_id,fix_mode_attempt_count,status,error_trace,public_cleared,public_cleared_attempt,private_cleared,private_cleared_attempt,private_failure_types
-abc387_b,0,pass,[],True,0,True,0,[]
-abc387_c,0,pass,[],True,0,True,0,[]
+abc387_b,0,pass,[],True,0,True,0.0,[]
+abc387_c,0,pass,[],True,0,True,0.0,[]
+abc388_g,5,fail,"[['AssertionError'], ['PrivateTestFailed'], ['PublicTestRegression'], ['PublicTestRegression'], ['PublicTestRegression']]",True,1,False,,['wrong_answer']
