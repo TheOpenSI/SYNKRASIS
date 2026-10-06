@@ -1,0 +1,40 @@
+### Step-by-step reasoning
+- Issue analysis: The error NameError: name 'Solution' is not defined indicates that the class Solution (which should contain the maxWeight method) was not properly defined in the executed code. This can happen due to syntax issues, misplacement, or formatting artifacts (e.g., stray code fences) that prevent the class from being parsed.
+- Correct approach: Implement the solution in a clean, self-contained block with proper imports and a properly defined class Solution containing the required method maxWeight(self, pizzas: List[int]) -> int.
+- Efficient plan:
+  - Sort the weights to access smallest and largest values easily.
+  - There are n/4 days. For day indices (0-based) i:
+    - If i is even (1st, 3rd, ... day): take the current largest value Z (list[R]), add it to the answer, and reduce the available largest index by 1.
+    - If i is odd (2nd, 4th, ... day): take the second largest among the four largest remaining numbers, which is list[R-1], add it to the answer, and reduce the available range by 4 (consume the four largest).
+  - Time complexity: O(n log n) due to sorting; O(n) extra space is avoided by operating in-place (aside from the input list).
+
+### Requirements
+None
+
+### Code
+```
+```python
+from typing import List
+
+class Solution:
+    def maxWeight(self, pizzas: List[int]) -> int:
+        n = len(pizzas)
+        days = n // 4
+
+        # Sort to easily access largest/smallest values
+        pizzas.sort()
+        R = n - 1  # index of current largest
+
+        ans = 0
+        for i in range(days):
+            if i % 2 == 0:
+                # Day 1, 3, ...: take the largest as Z
+                ans += pizzas[R]
+                R -= 1
+            else:
+                # Day 2, 4, ...: take the second largest among the four largest remaining
+                ans += pizzas[R - 1]
+                R -= 4
+
+        return ans
+```

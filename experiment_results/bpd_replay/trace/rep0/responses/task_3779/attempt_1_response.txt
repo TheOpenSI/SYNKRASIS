@@ -1,0 +1,77 @@
+### Step-by-step reasoning
+- Problem recap: We have n pizzas (n is multiple of 4). Each day we eat 4 pizzas. After sorting the group W <= X <= Y <= Z, the day contributes Z on odd-numbered days and Y on even-numbered days. We need to maximize the total sum over all days.
+
+- Key observations:
+  - Only the top two values in each 4-pizza group matter for the total; the two smallest in the group never contribute.
+  - Therefore, the problem effectively assigns, for each day:
+    - an odd day: the group’s maximum Z should be as large as possible to maximize the day’s contribution.
+    - an even day: the day’s contribution is the group’s second largest Y. To maximize Y, the best is to arrange the day’s group so that its three other members are as large as possible (so that the second largest among all four is as large as possible), given that the largest in that group will not contribute on an even day.
+
+- Greedy strategy (constructive exchange argument):
+  - Sort all pizzas in descending order.
+  - Maintain a pool of remaining weights (a deque works well because we repeatedly need the largest/ smallest values).
+  - For each day i from 0 to D-1 (D = n/4):
+    - Take the current largest remaining value as the group’s maximum max_val (dq.popleft()).
+    - If i is even (i.e., day 1, 3, ...):
+      - This is an odd day, so you gain max_val. To avoid wasting large values on future days, fill the rest of the group with the three smallest remaining values. Since the deque is sorted in descending order, these are taken from the right end.
+      - Implementation: add max_val to the answer, then remove three values from the right end.
+    - If i is odd (i.e., day 2, 4, ...):
+      - This is an even day; you do not gain max_val. To maximize the day’s gain, fill the group with the three largest remaining values. The second largest among these three will be the day’s gain (the first of these three removed).
+      - Implementation: remove the next three values from the left; add the first of them to the answer, and discard the other two.
+
+- Why this is correct:
+  - On an odd day, any arrangement that does not use the current largest as the day’s maximum cannot beat using that largest as the maximum due to monotonicity; swapping a larger value into the maximal position strictly increases or preserves the day’s contribution without reducing future opportunities since the three fillers (the smallest ones) don’t contribute anyway.
+  - On an even day, the day’s contribution comes from the second largest in the day’s group. To maximize it, you want the day’s three other numbers to be as large as possible so that the largest among those three (which becomes the day’s second largest) is maximized. Using the three largest remaining values achieves this, and removing them ensures they aren’t used again.
+  - The process repeats independently for each day, and by induction preserves optimality.
+
+- Edge cases and constraints:
+  - n is a multiple of 4; n up to 2e5; values up to 1e5. Sorting dominates time complexity: O(n log n). Deque operations are O(n). Memory usage is O(n).
+  - Tiny cases (n=4) yield the maximum of the four values on day 1, which the algorithm handles.
+  - Duplicates and ties are naturally handled by the greedy approach since it only relies on relative ordering.
+
+- Output format: The function returns an integer; no extraneous output is produced.
+
+- Complexity:
+  - Time: O(n log n) due to sorting.
+  - Space: O(n) for the deque.
+
+### Requirements
+None
+
+### Code
+```
+from typing import List
+from collections import deque
+
+class Solution:
+    def maxWeight(self, pizzas: List[int]) -> int:
+        # Number of days
+        n = len(pizzas)
+        days = n // 4
+
+        # Sort in descending order and store in a deque for efficient pops from ends
+        dq = deque(sorted(pizzas, reverse=True))
+
+        ans = 0
+        for i in range(days):
+            # Group max (largest remaining)
+            max_val = dq.popleft()
+
+            if i % 2 == 0:
+                # Odd day: gain the group max
+                ans += max_val
+                # Fill with three smallest remaining (from the right)
+                dq.pop()
+                dq.pop()
+                dq.pop()
+            else:
+                # Even day: do not gain the group max
+                # Fill with three largest remaining (from the left)
+                first = dq.popleft()  # largest among the three fillers
+                ans += first
+                # Remove the other two fillers
+                dq.popleft()
+                dq.popleft()
+
+        return ans
+```
