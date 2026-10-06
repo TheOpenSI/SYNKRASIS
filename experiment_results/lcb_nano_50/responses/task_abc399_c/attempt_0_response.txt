@@ -1,0 +1,77 @@
+### Step-by-step reasoning
+- A forest on N vertices with c connected components can have at most N - c edges (each component is a tree with size_i - 1 edges, summing to N - c).
+- For the given graph with M edges and c connected components, the minimum number of edges to delete to obtain a forest is M minus the maximum number of edges a forest on the same vertices could have, which is M - (N - c).
+- Therefore, the problem reduces to finding the number of connected components c in the input graph.
+- We can compute c efficiently using a Disjoint Set Union (Union-Find): initially each vertex is its own component, union endpoints of each edge, then count distinct roots among all vertices.
+- Finally, compute and output M - (N - c). This value is always non-negative.
+
+Edge cases:
+- No edges: c = N, answer 0.
+- Graph already a forest: M = N - c, answer 0.
+- Large N and M up to 2e5: DSU provides near-constant time operations, total O((N+M) α(N)).
+
+### Requirements
+None
+
+### Code
+```
+import sys
+
+class DSU:
+    def __init__(self, n):
+        self.parent = list(range(n + 1))
+        self.size = [1] * (n + 1)
+
+    def find(self, x):
+        # Path compression
+        if self.parent[x] != x:
+            self.parent[x] = self.find(self.parent[x])
+        return self.parent[x]
+
+    def union(self, a, b):
+        ra = self.find(a)
+        rb = self.find(b)
+        if ra == rb:
+            return
+        # Union by size
+        if self.size[ra] < self.size[rb]:
+            ra, rb = rb, ra
+        self.parent[rb] = ra
+        self.size[ra] += self.size[rb]
+
+def main():
+    data = sys.stdin.read().strip().split()
+    if not data:
+        print(0)
+        return
+    it = iter(data)
+    try:
+        n = int(next(it))
+        m = int(next(it))
+    except StopIteration:
+        print(0)
+        return
+
+    dsu = DSU(n)
+    for _ in range(m):
+        try:
+            u = int(next(it))
+            v = int(next(it))
+        except StopIteration:
+            break
+        dsu.union(u, v)
+
+    # Count number of connected components
+    roots = set()
+    for i in range(1, n + 1):
+        roots.add(dsu.find(i))
+    components = len(roots)
+
+    answer = m - (n - components)
+    if answer < 0:
+        answer = 0
+    print(answer)
+
+if __name__ == "__main__":
+    main()
+```
