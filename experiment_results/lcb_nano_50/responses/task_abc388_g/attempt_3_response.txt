@@ -1,0 +1,105 @@
+### Step-by-step reasoning
+- The problem asks, for each query [L, R], to select 2K mochi from the subarray A[L..R] and pair them into K kagamimochi, where in each pair the smaller mochi is at most half the size of the larger one. If A is sorted, a valid pair must be (i, j) with i < j and A[j] >= 2*A[i].
+- This becomes a bipartite matching problem on a specific graph: left vertices are i ∈ [L, R-1], right vertices are j ∈ [L+1, R], and there is an edge i -> j iff j > i and A[j] >= 2*A[i].
+- The graph has a special structure: for each i, all eligible j form a suffix [l[i], R], where l[i] = max(i+1, t[i]) and t[i] is the smallest index > i with A[t[i]] >= 2*A[i] (or N if none). Because l[i] is nondecreasing in i, a greedy matching works: process i from L to R-1 and give i the smallest available j >= l[i]. This maximizes the number of disjoint pairs.
+- To implement efficiently, we precompute t[i] for all i in O(N) using a two-pointer sweep (A is nondecreasing). Then we compute l[i] = max(i+1, t[i]).
+- For each query, we maintain a Disjoint Set Union (DSU) over the right-side slots j ∈ [L+1, R], represented as indices 0..m-1 where m = R-L. We also have a sentinel at m. For each i from L to R-1:
+  - If l[i] > R, i cannot pair within this query -> skip.
+  - Let s_min = l[i] - (L+1). This is the earliest slot index for j. Clamp to 0.
+  - If s_min >= m, skip.
+  - Find the first free slot idx = find(s_min). If idx == m, no slot available -> skip.
+  - Pair i with j = (L+1) + idx; mark the slot as used by setting parent[idx] = find(idx+1).
+- This yields the maximum number of kagamimochi for the query.
+
+- Edge cases handled:
+  - Duplicates in A are fine since the condition uses A[j] >= 2*A[i].
+  - When no pair is possible in the subarray, answer is 0.
+  - Indices are carefully managed with 0-based internal indexing.
+
+- Time complexity notes:
+  - Precomputation: O(N).
+  - Each query: O(length of subarray) in the worst case, due to iterating over i in [L, R-1] and a near-constant-time DSU operation per i. This is acceptable with careful implementation and is typical for this problem structure. If needed, an optimization is to terminate early when the current answer hits the available slots m.
+
+### Requirements
+None
+
+### Code
+```
+import sys
+
+def solve():
+    data = list(map(int, sys.stdin.buffer.read().split()))
+    it = iter(data)
+
+    N = next(it)
+    A = [next(it) for _ in range(N)]
+    Q = next(it)
+    queries = []
+    for _ in range(Q):
+        L = next(it) - 1  # convert to 0-based
+        R = next(it) - 1
+        queries.append((L, R))
+
+    # Precompute t[i]: first index j > i with A[j] >= 2*A[i], or N if none
+    t = [N] * N
+    j = 0
+    for i in range(N):
+        if j <= i:
+            j = i + 1
+        while j < N and A[j] < 2 * A[i]:
+            j += 1
+        t[i] = j
+
+    # Precompute l[i] = max(i+1, t[i])
+    lval = [0] * N
+    for i in range(N):
+        li = t[i]
+        if li < i + 1:
+            li = i + 1
+        lval[i] = li
+
+    out_lines = []
+    for L, R in queries:
+        m = R - L  # number of right slots (j ∈ [L+1, R])
+        if m <= 0:
+            out_lines.append("0")
+            continue
+
+        # DSU over right slots indices 0..m (m is sentinel)
+        parent = list(range(m + 1))
+
+        def find(x):
+            # Iterative path-compressed find
+            while parent[x] != x:
+                parent[x] = parent[parent[x]]
+                x = parent[x]
+            return x
+
+        ans = 0
+        base = L + 1  # first possible right index
+        for i in range(L, R):
+            li = lval[i]
+            if li > R:
+                continue
+            s_min = li - base  # 0-based slot index
+            if s_min < 0:
+                s_min = 0
+            if s_min >= m:
+                continue
+            idx = find(s_min)
+            if idx >= m:
+                continue
+            # Pair i with j = base + idx
+            ans += 1
+            # Mark slot idx as used
+            parent[idx] = find(idx + 1)
+            if ans == m:
+                break
+
+        out_lines.append(str(ans))
+
+    sys.stdout.write("\n".join(out_lines))
+
+if __name__ == "__main__":
+    solve()
+```

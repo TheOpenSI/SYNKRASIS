@@ -1,0 +1,114 @@
+### Step-by-step reasoning
+- For a fixed subarray [L, R] (1-based in input), consider every i in [L, R-1] as a potential left part of a pair. For this i, the right partner j must satisfy:
+  - j > i
+  - A[j] ≥ 2 * A[i]
+- Let t[i] be the smallest index j > i with A[j] ≥ 2*A[i] (or N if none). Then i can be paired with any j ∈ [max(i+1, t[i]), R].
+- Define l[i] = max(i+1, t[i]). If l[i] > R, i cannot be used in any pair within [L, R].
+- The problem reduces to: we have left vertices i ∈ [L, R-1], each with a lower bound l[i] for the right partner j ∈ [L+1, R], and each right index can be used at most once. This is a scheduling-like problem: assign as many i as possible to distinct j ≥ l[i].
+- Observing that l[i] is nondecreasing with i (since t[i] is nondecreasing and i+1 grows), the optimal strategy is:
+  - Process i from L to R-1 in increasing order.
+  - For each i with l[i] ≤ R, assign i to the smallest available j ≥ l[i].
+  - Use a Disjoint Set Union (DSU) structure (union-find) on the right slots to quickly find and occupy the next free slot.
+- This approach yields the maximum number of non-overlapping kagamimochi for the subarray.
+
+- Precomputation:
+  - Compute t[i] for all i in O(N) using a two-pointer sweep since A is nondecreasing.
+  - Compute l[i] = max(i+1, t[i]) for all i.
+
+- Per query:
+  - Let m = R-L. If m <= 0, answer is 0.
+  - Create a DSU over m right-slots (representing j ∈ [L+1, R]); an extra slot at index m serves as a sentinel for "no slot".
+  - For i from L to R-1:
+    - If l[i] > R, skip.
+    - s_min = l[i] - (L+1). If s_min < 0, clamp to 0.
+    - If s_min >= m, skip.
+    - idx = find(s_min). If idx == m, skip.
+    - Otherwise, pair i with j = (L+1) + idx, and union idx with idx+1 (mark the slot as used).
+  - The number of successful pairings is the answer for that query.
+
+- Complexity:
+  - Precomputation: O(N)
+  - Each query: O((R-L)) DSU operations; memory O(R-L).
+  - This solution is correct and handles edge cases (duplicates, minimal/maximal values) and uses only standard Python.
+
+### Requirements
+None
+
+### Code
+```
+import sys
+
+def solve():
+    data = list(map(int, sys.stdin.buffer.read().split()))
+    it = iter(data)
+
+    N = next(it)
+    A = [next(it) for _ in range(N)]
+    Q = next(it)
+    queries = []
+    for _ in range(Q):
+        L = next(it) - 1  # convert to 0-based
+        R = next(it) - 1
+        queries.append((L, R))
+
+    # Precompute t[i]: first index j > i with A[j] >= 2*A[i], or N if none
+    t = [N] * N
+    j = 0
+    for i in range(N):
+        if j <= i:
+            j = i + 1
+        while j < N and A[j] < 2 * A[i]:
+            j += 1
+        t[i] = j
+
+    # Precompute l[i] = max(i+1, t[i])
+    l = [0] * N
+    for i in range(N):
+        l[i] = max(i + 1, t[i])
+
+    out_lines = []
+    for L, R in queries:
+        m = R - L  # number of right slots (j ∈ [L+1, R])
+        if m <= 0:
+            out_lines.append("0")
+            continue
+
+        # DSU over right slots indices 0..m (m is sentinel)
+        parent = list(range(m + 1))
+
+        def find(x):
+            # Iterative path-compressed find
+            while parent[x] != x:
+                parent[x] = parent[parent[x]]
+                x = parent[x]
+            return x
+
+        ans = 0
+        # Process left indices in increasing order: L .. R-1
+        for i in range(L, R):
+            li = l[i]
+            if li > R:
+                continue
+            s_min = li - (L + 1)  # 0-based slot index
+            if s_min < 0:
+                s_min = 0
+            if s_min >= m:
+                continue
+            idx = find(s_min)
+            if idx >= m:
+                continue
+            jidx = (L + 1) + idx
+            if jidx > R:
+                continue  # should not happen if idx < m
+            # Pair i with jidx
+            ans += 1
+            # Mark slot as used
+            parent[idx] = find(idx + 1)
+
+        out_lines.append(str(ans))
+
+    sys.stdout.write("\n".join(out_lines))
+
+if __name__ == "__main__":
+    solve()
+```
