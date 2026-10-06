@@ -1,0 +1,76 @@
+### Step-by-step reasoning
+- Problem understanding: We have N dice. The i-th die has Ki faces with values A_{i,1} ... A_{i,Ki}. When rolling two dice, each face of its die is equally likely. We can choose any two distinct dice to maximize the probability that both show the same number.
+- For any fixed pair (i, j), let freq_i[v] be how many times value v appears on die i, and freq_j[v] similarly for die j. The probability that both show value v is (freq_i[v]/Ki) * (freq_j[v]/Kj). Summing over all possible v gives:
+  P(i, j) = sum_v (freq_i[v] / Ki) * (freq_j[v] / Kj) = (1 / (Ki * Kj)) * sum_v freq_i[v] * freq_j[v].
+  So P(i, j) is the dot product of the count vectors divided by Ki * Kj.
+- To get the final answer, compute P(i, j) for all i < j and take the maximum.
+- Implementation notes:
+  - Use dictionaries to store freq_i[v] for each die to handle large value range efficiently (values up to 1e5, total faces sum Ki ≤ 1e5).
+  - When computing the dot product for a pair (i, j), iterate over the smaller dictionary to minimize operations, and look up counts in the other dictionary.
+  - Use double precision floats (Python float) for the final probability; format with high precision (e.g., 15 decimal places) to satisfy error requirements.
+- Edge cases considerations:
+  - If two dice share no common value, probability is 0.
+  - Duplicates on a die are handled via frequencies.
+  - Total work is acceptable: building frequency maps is O(sum Ki); pairwise dot products are sum over pairs of min(len(freq_i), len(freq_j)), which is efficient for the given constraints.
+- Output format: print the maximum probability with at least 1e-8 accuracy; we format to 15 decimals to be safe.
+
+### Requirements
+None
+
+### Code
+```
+import sys
+
+def main():
+    data = list(map(int, sys.stdin.buffer.read().split()))
+    if not data:
+        print("0.0")
+        return
+
+    it = iter(data)
+    N = next(it)
+
+    freq_maps = []
+    Ks = []
+
+    for _ in range(N):
+        Ki = next(it)
+        Ks.append(Ki)
+        freq = {}
+        for _ in range(Ki):
+            v = next(it)
+            freq[v] = freq.get(v, 0) + 1
+        freq_maps.append(freq)
+
+    max_prob = 0.0
+
+    for i in range(N):
+        fi = freq_maps[i]
+        Ki = Ks[i]
+        for j in range(i + 1, N):
+            fj = freq_maps[j]
+            Kj = Ks[j]
+
+            # Compute dot product efficiently by iterating over the smaller map
+            if len(fi) < len(fj):
+                dot = 0
+                for val, cnt_i in fi.items():
+                    cnt_j = fj.get(val, 0)
+                    if cnt_j:
+                        dot += cnt_i * cnt_j
+            else:
+                dot = 0
+                for val, cnt_j in fj.items():
+                    cnt_i = fi.get(val, 0)
+                    if cnt_i:
+                        dot += cnt_i * cnt_j
+
+            prob = dot / (Ki * Kj)
+            if prob > max_prob:
+                max_prob = prob
+
+    print("{:.15f}".format(max_prob))
+
+if __name__ == "__main__":
+    main()
+```

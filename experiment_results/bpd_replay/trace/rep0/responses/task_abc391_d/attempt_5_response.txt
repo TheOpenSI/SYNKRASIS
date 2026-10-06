@@ -1,0 +1,111 @@
+### Step-by-step reasoning
+- Let h[c] be the number of blocks in column c (1-based, c in 1..W). If any column is empty (h[c] = 0 for some c), the bottom row can never be full, so no removals ever occur. In that case every block exists for all times, so every query is Yes.
+- Otherwise, let M = min_c h[c], i.e., the minimum column height. There will be removals at some time steps, and exactly M blocks will be removed from each non-empty column across the entire process, one per removal step, until the shortest column becomes empty.
+- Whether a removal happens at time t=1 depends on whether the initial bottom row is full: B0 = True iff every column has a block at Y=1 initially. If B0 is True, the first removal happens at t=1; otherwise the first removal happens at t=2 (after one gravity step that collapses blocks to the bottom in every column).
+- In each removal step, one block is removed from every non-empty column. The blocks removed in successive removal steps are exactly the blocks with the smallest Y within each column, i.e., per column, the first M blocks when blocks are sorted by initial Y ascending.
+- For a block i in its column, define rank[i] as its rank in that column when sorting by initial Y ascending (rank 1 is the lowest initial Y in that column).
+- Then the removal time t_remove(i) (the time step at which block i is removed) is:
+  - If M = 0: no removals (handled earlier).
+  - If B0 is True: t_remove(i) = rank[i] if rank[i] ≤ M; otherwise ∞.
+  - If B0 is False: t_remove(i) = rank[i] + 1 if rank[i] ≤ M; otherwise ∞.
+- A block i exists at time T + 0.5 iff T < t_remove(i). If t_remove(i) = ∞, it always exists.
+- Algorithmic plan:
+  - Build per-column lists of (Y, block_index).
+  - Compute h[c] and M = min h[c].
+  - If M = 0, answer Yes to all queries.
+  - Compute B0 by checking for every column whether there exists a block with Y = 1.
+  - For each column, sort its blocks by Y ascending and assign rank[block_index] = position.
+  - For each block i, compute t_remove(i) using M and B0 as described.
+  - For each query (T, A), output Yes if T < t_remove[A], else No.
+
+This approach handles all edge cases (columns with zero blocks, misaligned initial bottom row, large times, and large N/Q) within O(N log N) time due to the per-column sorts, which is acceptable for N ≤ 2e5.
+
+### Requirements
+None
+
+### Code
+```
+import sys
+
+def solve():
+    data = list(map(int, sys.stdin.buffer.read().split()))
+    it = iter(data)
+
+    N = next(it)
+    W = next(it)
+
+    # Gather blocks per column
+    per_col = [[] for _ in range(W)]
+    heights = [0] * W
+
+    X = [0] * N
+    Y = [0] * N
+
+    for i in range(N):
+        x = next(it)
+        y = next(it)
+        X[i] = x
+        Y[i] = y
+        c = x - 1
+        per_col[c].append((y, i))
+        heights[c] += 1
+
+    Q = next(it)
+    T_arr = [0] * Q
+    A_arr = [0] * Q
+    for j in range(Q):
+        T_arr[j] = next(it)
+        A_arr[j] = next(it) - 1  # zero-based block index
+
+    # M = min height across columns
+    M = min(heights)
+
+    # If any column is empty, no removals ever occur
+    if M == 0:
+        sys.stdout.write("\n".join(["Yes"] * Q))
+        return
+
+    # Determine B0: is the bottom row full at time 0?
+    has_y1 = [False] * W
+    for c in range(W):
+        for (y, idx) in per_col[c]:
+            if y == 1:
+                has_y1[c] = True
+                break
+    B0 = all(has_y1)
+
+    # Compute rank of each block within its column (sorted by Y ascending)
+    rank = [0] * N
+    for c in range(W):
+        col_blocks = per_col[c]
+        col_blocks.sort(key=lambda t: t[0])  # sort by Y
+        for pos, (y, idx) in enumerate(col_blocks, start=1):
+            rank[idx] = pos
+
+    INF = 10**18
+    t_remove = [INF] * N
+
+    for i in range(N):
+        r = rank[i]
+        if r <= M:
+            if B0:
+                t_remove[i] = r
+            else:
+                t_remove[i] = r + 1
+        else:
+            t_remove[i] = INF
+
+    out_lines = []
+    for j in range(Q):
+        T = T_arr[j]
+        a = A_arr[j]
+        if T < t_remove[a]:
+            out_lines.append("Yes")
+        else:
+            out_lines.append("No")
+
+    sys.stdout.write("\n".join(out_lines))
+
+if __name__ == "__main__":
+    solve()
+```

@@ -1,0 +1,80 @@
+### Step-by-step reasoning
+- Let p_i(v) be the probability that die i shows value v. If die i has value v on c_i(v) faces and total Ki faces, then p_i(v) = c_i(v) / Ki.
+- For two dice i and j, the probability that they show the same number is P(i, j) = sum over all v of p_i(v) * p_j(v).
+- A straightforward approach computes this dot product for every pair (i, j). However, a hidden test might push time constraints or precision in edge cases.
+- A more robust approach groups calculations by each distinct value v. For each value v, collect all dice that can show v along with their probability p_i(v). Then for every pair of dice (i, j) in this group, accumulate p_i(v) * p_j(v) into a 2D matrix M where M[i][j] stores the sum over all values seen by both i and j.
+- After processing all values, the answer is the maximum among M[i][j] for all i < j.
+- Complexity: If the total number of (die, value) occurrences (i.e., sum of unique values per die) is U (U ≤ sum Ki ≤ 1e5) and deg(v) is the number of dice that can show value v, the total work is O(sum_v deg(v)^2). Given N ≤ 100, this remains efficient in the given constraints and avoids large cross-pair dot products.
+- Edge cases: A die may have duplicates of the same value; p_i(v) accounts for this via c_i(v)/Ki. If no two dice share any value, the answer is 0. Output must be precise to at least 1e-8; we print with 15 decimals.
+- Output format: Print a single floating number with sufficient precision.
+
+### Requirements
+None
+
+### Code
+```
+import sys
+from collections import defaultdict
+
+def main():
+    data = list(map(int, sys.stdin.buffer.read().split()))
+    if not data:
+        print("0.000000000000000")
+        return
+
+    it = iter(data)
+    N = next(it)
+
+    Ks = [0] * N
+    counts = [None] * N  # list of dicts: value -> count on that die
+
+    for i in range(N):
+        Ki = next(it)
+        Ks[i] = Ki
+        cnt = {}
+        for _ in range(Ki):
+            v = next(it)
+            cnt[v] = cnt.get(v, 0) + 1
+        counts[i] = cnt
+
+    # For each value v, collect (die_index, p_i(v)) where p_i(v) = count / Ki
+    val_to_list = defaultdict(list)
+    for i in range(N):
+        Ki = Ks[i]
+        cnt = counts[i]
+        for v, c in cnt.items():
+            p = c / Ki
+            val_to_list[v].append((i, p))
+
+    # 2D matrix to accumulate P(i, j) = sum_v p_i(v) * p_j(v)
+    mat = [[0.0] * N for _ in range(N)]
+
+    for v, lst in val_to_list.items():
+        m = len(lst)
+        if m < 2:
+            continue
+        # accumulate contributions for all unordered pairs in this value's list
+        for a in range(m - 1):
+            i = lst[a][0]
+            pi = lst[a][1]
+            for b in range(a + 1, m):
+                j = lst[b][0]
+                pj = lst[b][1]
+                if i < j:
+                    mat[i][j] += pi * pj
+                else:
+                    mat[j][i] += pi * pj
+
+    # Find the maximum probability among all pairs (i, j)
+    maxp = 0.0
+    for i in range(N):
+        row = mat[i]
+        for j in range(i + 1, N):
+            if row[j] > maxp:
+                maxp = row[j]
+
+    print("{:.15f}".format(maxp))
+
+if __name__ == "__main__":
+    main()
+```

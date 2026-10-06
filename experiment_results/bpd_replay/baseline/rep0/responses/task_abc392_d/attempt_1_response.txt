@@ -1,0 +1,67 @@
+### Step-by-step reasoning
+- For two dice i and j, each face of i shows value v with probability count_i(v) / Ki, and similarly for j. The probability that both show the same value v is (count_i(v)/Ki) * (count_j(v)/Kj). Summing over all possible values v gives the probability that the two dice show the same number:
+  P(i, j) = sum_v (count_i(v) / Ki) * (count_j(v) / Kj) = (1 / (Ki * Kj)) * sum_v count_i(v) * count_j(v).
+- For each die, build a mapping from value v to its frequency on that die (counts). The dot product sum_v count_i(v) * count_j(v) can be computed efficiently by iterating over the smaller of the two value-count mappings and looking up in the other.
+- We need the maximum P(i, j) over all pairs i < j. Iterate all pairs, compute the dot product efficiently, divide by Ki * Kj, and track the maximum.
+- Edge cases and considerations:
+  - A value may appear multiple times on a die; the counts reflect that.
+  - If two dice share no common values, the probability is 0.
+  - The number of faces across all dice is at most 1e5, so the pairwise approach with iteration over the smaller mapping is fast enough.
+  - Output must have sufficient precision; print with at least 1e-8 accuracy.
+
+### Requirements
+None
+
+### Code
+```
+import sys
+
+def main():
+    data = list(map(int, sys.stdin.buffer.read().split()))
+    if not data:
+        print("0.0")
+        return
+
+    it = iter(data)
+    N = next(it)
+
+    dicts = []
+    Ks = []
+
+    for _ in range(N):
+        Ki = next(it)
+        Ks.append(Ki)
+        counts = {}
+        for _ in range(Ki):
+            v = next(it)
+            counts[v] = counts.get(v, 0) + 1
+        dicts.append(counts)
+
+    max_prob = 0.0
+
+    for i in range(N):
+        di = dicts[i]
+        Ki = Ks[i]
+        for j in range(i + 1, N):
+            dj = dicts[j]
+            Kj = Ks[j]
+
+            # Compute dot product efficiently by iterating over the smaller mapping
+            if len(di) < len(dj):
+                dot = 0
+                for v, c in di.items():
+                    dot += c * dj.get(v, 0)
+            else:
+                dot = 0
+                for v, c in dj.items():
+                    dot += c * di.get(v, 0)
+
+            prob = dot / (Ki * Kj)
+            if prob > max_prob:
+                max_prob = prob
+
+    print("{:.15f}".format(max_prob))
+
+if __name__ == "__main__":
+    main()
+```
