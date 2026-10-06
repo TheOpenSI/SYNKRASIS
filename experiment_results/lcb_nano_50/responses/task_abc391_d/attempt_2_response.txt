@@ -1,0 +1,118 @@
+### Step-by-step reasoning
+- The problem decouples movement across columns: blocks never move between columns, only downward within their own column.
+- If any column is empty initially, the bottom row can never be fully filled, so no removals ever happen. All blocks survive for all queries.
+- If every column has at least one block, removals happen in synchronized steps. Let:
+  - b_x be the minimum initial Y in column x (the lowest block in that column).
+  - B = max_x b_x. This is the first time the bottom row can possibly be fully occupied.
+  - k_x be the number of blocks in column x. Let m = min_x k_x. There can be at most m removal steps (one per column per step) before some column becomes empty.
+- Within a column, blocks are removed in increasing order of their initial Y (lower blocks first). If a block has rank r_x in its column (rank 1 = lowest initial Y in that column):
+  - It is removed after s removal steps if r_x <= s.
+  - After s removals (0 <= s <= m), the block exists if r_x > s.
+- At time T (integer), the number of removals that have happened is:
+  - 0 if T < B
+  - min(T - B + 1, m) if B <= T <= B + m - 1
+  - m if T > B + m - 1
+  An answer for block A_j at time T_j + 0.5 is:
+  - Yes if its rank r > s (where s is the number of removals so far) in the active interval, or if no removals have happened yet.
+- Implementation plan:
+  - Build per-column lists of blocks with their initial Y and original index.
+  - If any column is empty, output Yes for all queries.
+  - Otherwise compute:
+    - B = max over columns of their minimum Y
+    - m = min over columns of their counts
+  - For each column, sort by initial Y and assign ranks to blocks.
+  - For each query, decide Yes/No using the rules above.
+
+Potential edge cases:
+- Some column empty → all answers Yes.
+- Large Y values and T values are handled with Python ints.
+- Large inputs require linearithmic preprocessing per column (total O(N log N)) and O(1) per query.
+
+### Requirements
+None
+
+### Code
+```
+import sys
+
+def solve():
+    data = list(map(int, sys.stdin.buffer.read().split()))
+    if not data:
+        return
+    it = iter(data)
+
+    N = next(it)
+    W = next(it)
+
+    X = [0] * N
+    Y = [0] * N
+    for i in range(N):
+        X[i] = next(it)
+        Y[i] = next(it)
+
+    Q = next(it)
+
+    T_arr = [0] * Q
+    A_arr = [0] * Q
+    for j in range(Q):
+        T_arr[j] = next(it)
+        A_arr[j] = next(it) - 1  # 0-based block index
+
+    # Collect blocks per column (1-based column index)
+    cols = [[] for _ in range(W + 1)]
+    for i in range(N):
+        cols[X[i]].append((Y[i], i))
+
+    # Check if any column is empty
+    has_empty = False
+    for c in range(1, W + 1):
+        if len(cols[c]) == 0:
+            has_empty = True
+            break
+
+    if has_empty:
+        # Bottom row can never be fully filled; all blocks always exist
+        sys.stdout.write("\n".join(["Yes"] * Q))
+        return
+
+    # All columns non-empty: compute B and m
+    B = 0  # first time bottom row can be full
+    m = None  # number of removal steps possible (min blocks per column)
+    for c in range(1, W + 1):
+        col = cols[c]
+        minY = min(y for (y, idx) in col)
+        if minY > B:
+            B = minY
+        if m is None:
+            m = len(col)
+        else:
+            if len(col) < m:
+                m = len(col)
+
+    # Assign rank within each column (ascending by initial Y)
+    rank = [0] * N
+    for c in range(1, W + 1):
+        col = cols[c]
+        col.sort(key=lambda t: t[0])  # sort by Y
+        for pos, (y, idx) in enumerate(col, start=1):
+            rank[idx] = pos
+
+    # Answer queries
+    out = []
+    for j in range(Q):
+        t = T_arr[j]
+        a = A_arr[j]
+        r = rank[a]
+        if t < B:
+            out.append("Yes")
+        elif t <= B + m - 1:
+            s = t - B + 1
+            out.append("Yes" if r > s else "No")
+        else:
+            out.append("Yes" if r > m else "No")
+
+    sys.stdout.write("\n".join(out))
+
+if __name__ == "__main__":
+    solve()
+```
