@@ -1,0 +1,70 @@
+### Step-by-step reasoning
+- We model the operation as flipping one bit i and paying the sum of A_k * C_k after the flip (i.e., the current weighted sum S after the flip).
+- If we plan to reach B from A, we must flip each index i where A_i != B_i an odd number of times, and indices where A_i == B_i an even number of times. However, performing extra pairs of flips on any index (to alter intermediate states) does not reduce the total cost in the best possible plan; the optimal strategy can be achieved by flipping exactly once each index with A_i != B_i, and never flipping indices with A_i == B_i.
+- Let d be the number of indices with A_i != B_i. For those indices, the flip delta on the sum S after flipping i is:
+  - delta_i = -C_i if A_i = 1 (since flipping 1 -> 0 reduces S by C_i)
+  - delta_i = +C_i if A_i = 0 (since flipping 0 -> 1 increases S by C_i)
+- The total cost for a fixed order of performing these d flips is:
+  T = d * S0 + sum_{k=1..d} delta_k * (d - k + 1)
+  where S0 = sum_i A_i * C_i is the initial weighted sum, and delta_k is the k-th delta in the chosen order.
+- To minimize T:
+  - Put all negative deltas first, with the most negative (largest |C_i|) delta earlier. Since delta = -C_i for those, this means sort their C_i in descending order.
+  - Put all positive deltas after, with the smallest positives assigned to the largest weights. Since delta = +C_i for those, sort their C_i in ascending order.
+- This yields the optimal sequence: negative deltas sorted by decreasing C_i, followed by positive deltas sorted by increasing C_i.
+- Finally, we compute T using the formula above and print it.
+
+### Requirements
+None
+
+### Code
+```python
+import sys
+
+def main():
+    data = sys.stdin.buffer.read().split()
+    it = iter(data)
+    N = int(next(it))
+
+    A = [int(next(it)) for _ in range(N)]
+    B = [int(next(it)) for _ in range(N)]
+    C = [int(next(it)) for _ in range(N)]
+
+    S0 = 0
+    Neg = []  # Ci for (A_i = 1) and (A_i != B_i) -> delta = -Ci
+    Pos = []  # Ci for (A_i = 0) and (A_i != B_i) -> delta = +Ci
+
+    d = 0
+    for i in range(N):
+        ai = A[i]
+        bi = B[i]
+        ci = C[i]
+        S0 += ai * ci
+        di = ai ^ bi
+        if di == 1:
+            d += 1
+            if ai == 1:
+                Neg.append(ci)
+            else:
+                Pos.append(ci)
+
+    if d == 0:
+        print(0)
+        return
+
+    # Prepare deltas in the optimal order: most negative first, then smallest positives
+    Neg.sort(reverse=True)  # largest Ci first -> most negative delta
+    Pos.sort()              # smallest Ci first
+
+    Deltas = [-ci for ci in Neg] + [ci for ci in Pos]
+
+    # Compute total cost
+    T = d * S0
+    for idx, delta in enumerate(Deltas, start=1):
+        weight = d - idx + 1
+        T += delta * weight
+
+    print(T)
+
+if __name__ == "__main__":
+    main()
+```

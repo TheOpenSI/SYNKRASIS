@@ -328,5 +328,32 @@
         "private_cleared": true,
         "private_cleared_attempt": 4,
         "private_failure_types": []
+    },
+    {
+        "task_id": "arc194_c",
+        "fix_mode_attempt_count": 5,
+        "status": "fail",
+        "error_trace": [
+            [
+                "AssertionError"
+            ],
+            [
+                "SyntaxError"
+            ],
+            [
+                "AssertionError"
+            ],
+            [
+                "AssertionError"
+            ],
+            [
+                "AssertionError"
+            ]
+        ],
+        "public_cleared": false,
+        "public_cleared_attempt": null,
+        "private_cleared": false,
+        "private_cleared_attempt": null,
+        "private_failure_types": []
     }
 ]
