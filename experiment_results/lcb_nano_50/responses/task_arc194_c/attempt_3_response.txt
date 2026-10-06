@@ -1,0 +1,70 @@
+### Step-by-step reasoning
+- The operation sequence that can lower the total cost is to flip each index where A_i XOR B_i = 1 exactly once (i.e., indices that must change). Flipping an index with D_i = 0 (where A_i already equals B_i) would introduce extra flips that do not help reach the target and generally increase the total cost, so they can be ignored in an optimal plan.
+- For D_i = 1, the cost delta for flipping i is determined by A_i before the flip:
+  - If A_i = 1, delta = -C_i (since A_i becomes 0, decreasing the sum by C_i)
+  - If A_i = 0, delta = +C_i (since A_i becomes 1, increasing the sum by C_i)
+- Thus, we obtain a multiset of deltas:
+  - For indices with A_i = 1 and D_i = 1: deltas = -C_i
+  - For indices with A_i = 0 and D_i = 1: deltas = +C_i
+- To minimize the total cost when applying these flips in some order, place more negative deltas earlier and smaller positive deltas later. That means:
+  - Sort the negative deltas by their absolute value in decreasing order (largest C_i first gives most negative first)
+  - Sort the positive deltas in increasing order
+- Build the final deltas sequence by concatenating the sorted negative deltas (as -C_i) followed by the sorted positive deltas (+C_i). Let d be the number of required flips. The total cost is:
+  - T = d * S0 + sum_{k=1..d} delta_k * (d - k + 1), where S0 = sum_i A_i * C_i and delta_k is the k-th element of the constructed deltas sequence.
+- Implement accordingly. Do not attempt to add extra flips on D_i = 0 indices.
+
+### Requirements
+None
+
+### Code
+```
+import sys
+
+def main():
+    data = sys.stdin.buffer.read().split()
+    it = iter(data)
+    N = int(next(it))
+
+    A = [int(next(it)) for _ in range(N)]
+    B = [int(next(it)) for _ in range(N)]
+    C = [int(next(it)) for _ in range(N)]
+
+    S0 = 0
+    Neg = []  # Ci for A_i=1, D_i=1 -> delta = -Ci
+    Pos = []  # Ci for A_i=0, D_i=1 -> delta = +Ci
+
+    d = 0
+    for i in range(N):
+        ai = A[i]
+        bi = B[i]
+        ci = C[i]
+        S0 += ai * ci
+        di = ai ^ bi
+        if di == 1:
+            d += 1
+            if ai == 1:
+                Neg.append(ci)
+            else:
+                Pos.append(ci)
+
+    if d == 0:
+        print(0)
+        return
+
+    # Prepare deltas in the optimal order: most negative first, then smallest positives
+    Neg.sort(reverse=True)  # largest Ci first -> most negative delta
+    Pos.sort()              # smallest Ci first
+
+    Deltas = [-ci for ci in Neg] + [ci for ci in Pos]
+
+    # Compute total cost
+    T = d * S0
+    for idx, delta in enumerate(Deltas, start=1):
+        weight = d - idx + 1
+        T += delta * weight
+
+    print(T)
+
+if __name__ == "__main__":
+    main()
+```
