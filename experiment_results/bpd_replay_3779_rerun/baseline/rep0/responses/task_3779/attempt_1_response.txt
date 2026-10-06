@@ -1,0 +1,46 @@
+### Step-by-step reasoning
+- Problem recap: We partition n pizzas (n is multiple of 4) into D = n/4 days. Each day uses 4 pizzas with weights W <= X <= Y <= Z. On odd days you gain Z, on even days you gain Y. We want to maximize total gain.
+- Key observation: To maximize the total, we should separate the largest numbers into positions where they contribute to the sum.
+  - On odd days (where we gain Z, the largest in the group), it is best to assign the overall largest remaining pizza as Z.
+  - On the following even day, to maximize Y (the second largest in that group), we should fill the rest of the group with the three largest remaining pizzas. Then Y will be the largest among those three, i.e., the second largest overall after removing Z.
+- Therefore, a clean greedy strategy emerges:
+  - Sort weights increasingly (or decreasingly, but we'll implement with two pointers on an ascending array).
+  - Maintain two ends: l (smallest) and r (largest).
+  - For day 1,1-indexed (odd day):
+    - Take the largest remaining as Z: add pizzas[r] to the answer.
+    - Remove that element and also remove the three smallest elements from the pool (to keep large numbers for future Y values): r -= 1; l += 3.
+  - For day 2 (even day):
+    - The largest remaining is Z, but it does not contribute. To maximize Y, take the next three largest as W,X,Y; the second largest among them is pizzas[r-1], which will be Y.
+    - Add pizzas[r-1] to the answer.
+    - Remove these four elements: r -= 4.
+- Repeat for all D days. This runs in O(n log n) time due to sorting and O(1) extra memory.
+
+This approach matches the sample tests and is robust against duplicates and edge cases (e.g., tiny inputs, large n).
+
+### Requirements
+None
+
+### Code
+```
+from typing import List
+
+class Solution:
+    def maxWeight(self, pizzas: List[int]) -> int:
+        n = len(pizzas)
+        pizzas.sort()  # ascending
+        l = 0
+        r = n - 1
+        days = n // 4
+        ans = 0
+
+        for day in range(days):
+            if day % 2 == 0:  # odd-numbered day (1-indexed)
+                ans += pizzas[r]
+                r -= 1
+                l += 3
+            else:  # even-numbered day
+                ans += pizzas[r - 1]
+                r -= 4
+
+        return ans
+```

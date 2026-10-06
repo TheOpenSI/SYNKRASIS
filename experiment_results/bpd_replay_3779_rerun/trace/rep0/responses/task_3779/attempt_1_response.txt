@@ -1,0 +1,56 @@
+### Step-by-step reasoning
+- We need to form D = n/4 groups of 4 pizzas. For each day:
+  - Day 1 (odd): we gain Z, the maximum of its group.
+  - Day 2 (even): we gain Y, the second largest of its group.
+- A clean optimal strategy can be reasoned by considering the sorted order of weights:
+  - For the odd days, to maximize the total sum, the group’s maximum should be as large as possible. After taking the current maximum, we should not waste other large numbers in the same day; thus we should pair the maximum with the three smallest remaining numbers.
+  - For the even days, after removing the previous day’s group, the largest remaining numbers are the best choice for maximizing the second largest (Y) in the current group. So, after taking the day’s maximum, we should fill the remaining three spots with the next three largest numbers.
+- Implementing this idea with a simple two-pointer approach on a single sorted list is efficient and robust:
+  - Sort pizzas in descending order.
+  - Maintain two indices:
+    - r points to the next largest not yet used (start at 0).
+    - l points to the smallest not yet used (start at n-1). We only need to know how many smallest values we’re discarding on odd days.
+  - For each day i from 0 to D-1:
+    - Take Z = a[r], advance r by 1.
+    - If i is even (Day 1, 3, ...): add Z to the answer and remove three smallest numbers from the right by moving l left by 3.
+    - If i is odd (Day 2, 4, ...): take Y = a[r] (the next largest), add Y to the answer, and remove three largest remaining numbers by moving r right by 3.
+- This ensures correct grouping and yields the maximum total weight. The time complexity is O(n log n) due to sorting, and the memory usage is O(1) extra beyond the input.
+
+### Requirements
+None
+
+### Code
+```
+from typing import List
+
+class Solution:
+    def maxWeight(self, pizzas: List[int]) -> int:
+        n = len(pizzas)
+        D = n // 4
+
+        # Sort in descending order for greedy processing
+        a = sorted(pizzas, reverse=True)
+
+        ans = 0
+        r = 0          # index for the next largest not yet used
+        l = n - 1      # index for the smallest not yet used
+
+        for day in range(D):
+            # Take the group maximum Z
+            z = a[r]
+            r += 1
+
+            if day % 2 == 0:
+                # Odd day (1st, 3rd, ...): gain Z
+                ans += z
+                # Remove three smallest remaining
+                l -= 3
+            else:
+                # Even day: do not gain Z; we maximize Y by taking the next three largest
+                y = a[r]
+                ans += y
+                # Remove the three largest remaining (including Y)
+                r += 3
+
+        return ans
+```
