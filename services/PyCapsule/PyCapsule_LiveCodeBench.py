@@ -5,6 +5,8 @@
 #   1. Public tests  - failures get a detailed error analysis (ErrorHandling).
 #   2. Private tests - only run once the public tests pass. A failure only tells the LLM that a
 #                      hidden test case failed, no test data or error details are shared.
+#                      If a later fix breaks the public tests again, that is a stage 1 failure 
+#                      with the detailed error again.
 # Failing the public tests within the budget is a fail. Pass means the final code passed both.
 # Whether/when the public and private tests were cleared is kept in self.last_task_details.
 # =============================================================================================
@@ -34,13 +36,6 @@ class PyCapsule_LiveCodeBench(PyCapsuleBase):
         "off-by-one errors. Also make sure your solution is efficient enough for the largest "
         "input allowed by the constraints, and that the output format matches the statement exactly.\n"
         "Rewrite the whole solution with the necessary imports."
-    )
-
-    PUBLIC_REGRESSION_QUERY = (
-        "Your previous solution passed all the public test cases, but your updated solution fails at least "
-        "one of them.\n"
-        "Please re-read the problem statement and the examples carefully, keep the logic that worked, "
-        "and recheck all edge cases before rewriting the whole solution with the necessary imports."
     )
 
     def __init__(self,
@@ -189,18 +184,15 @@ class PyCapsule_LiveCodeBench(PyCapsuleBase):
 
     def _get_fix_mode_query(self, response: CompletedProcess, meta_data: dict) -> str:
         """
-        Private test failure or a regression after the public tests were cleared -> generic query.
-        Otherwise detailed error handling of the public test failure.
+        Private test failure -> generic query, nothing about the hidden tests is shared.
+        Public test failure -> detailed error handling, also when the public tests had cleared before 
+        (a regression), the public tests are the samples already in the prompt.
         """
         stage = self.harness.classify_response(response)
 
         if stage == "private_fail":
             self._current_error_type = ["PrivateTestFailed"]
             return self.PRIVATE_FAIL_QUERY
-
-        if self.last_task_details["public_cleared"]:
-            self._current_error_type = ["PublicTestRegression"]
-            return self.PUBLIC_REGRESSION_QUERY
 
         if "Generated code is running infinite loop" in response.stderr:
             # On LiveCodeBench this is mostly an inefficient algorithm, not an infinite loop.
