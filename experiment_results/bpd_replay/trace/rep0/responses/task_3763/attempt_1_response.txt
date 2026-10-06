@@ -1,0 +1,51 @@
+### Step-by-step reasoning
+- The algorithm computes a horizontal line y = t such that the total area of all squares below t equals half of the total area of all squares. This is achieved via a binary search over t.
+- The test failure shows an exact numeric value is correct (1.1666666666666665) but the expected output is formatted to 5 decimal places as 1.16667. The underlying value is within 1e-5 of the correct answer, but the test harness compares the string representation, which requires consistent formatting.
+- To satisfy the formatting expectations while preserving the required precision, round the final result to 5 decimal places before returning. This will produce 1.16667 for the test case and maintain the required tolerance for all cases.
+- The core binary search logic remains correct and efficient: compute the area below mid, compare to half the total area, and adjust bounds accordingly.
+- Edge cases (overlaps, multiple squares, boundaries) are already handled by summing each square’s below-line contribution independently.
+
+### Requirements
+None
+
+### Code
+```
+from typing import List
+
+class Solution:
+    def separateSquares(self, squares: List[List[int]]) -> float:
+        n = len(squares)
+        ys = [s[1] for s in squares]
+        ls = [s[2] for s in squares]
+        ends = [ys[i] + ls[i] for i in range(n)]
+        
+        min_y = min(ys)
+        max_y_plus = max(ends)
+        total_area = 0.0
+        for l in ls:
+            total_area += l * l
+        half_area = total_area / 2.0
+
+        lo, hi = min_y, max_y_plus
+        # Perform binary search to find t such that area below(t) ≈ half_area
+        for _ in range(60):
+            mid = (lo + hi) / 2.0
+            below = 0.0
+            for i in range(n):
+                yi = ys[i]
+                li = ls[i]
+                if mid <= yi:
+                    continue
+                end_i = ends[i]
+                if mid >= end_i:
+                    below += li * li
+                else:
+                    below += (mid - yi) * li
+            if below < half_area:
+                lo = mid
+            else:
+                hi = mid
+        ans = (lo + hi) / 2.0
+        # Round to 5 decimals for consistent formatting with expected outputs
+        return round(ans, 5)
+```
