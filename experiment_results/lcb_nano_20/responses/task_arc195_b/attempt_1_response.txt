@@ -1,0 +1,128 @@
+### Step-by-step reasoning
+- The problem allows replacing -1s with any non-negative integers and permuting A. After operations we want A and B non-negative and A_i + B_i equal for all i.
+- Let A_fixed be the multiset of fixed A values (non -1) and B_fixed be the multiset of fixed B values (non -1). Let a_minus and b_minus be the counts of -1s in A and B respectively.
+- If B has no fixed values (B_fixed empty), we can always fill B and A to make all sums equal by choosing appropriate values, so the answer is Yes. Similarly, if A has no fixed values, we can fill A to match B for any S as long as we have enough -1 slots in A; specifically Yes iff a_minus >= N_B_fixed.
+- In the general case where both A_fixed and B_fixed exist, we search for a common sum S such that after filling -1s in A and B and permuting A, the multisets satisfy A_final = {S - b | b in B_final}. A necessary and sufficient condition is that there exists S with:
+  t_min(S) <= a_minus
+  where t_min(S) is the minimal number of A_-1 values needed to cover deficits coming from fixed B values:
+  t_min(S) = sum over y in B_fixed of max(0, b_cnt[y] - a_cnt[S - y])
+  Here a_cnt[t] is the count of fixed A values equal to t, and b_cnt[y] is the count of fixed B values equal to y.
+- We must check S in a feasible range. If both A_fixed and B_fixed exist, S must be in [S_min, S_max] where:
+  S_min = max(max A_fixed, max B_fixed)
+  S_max = max A_fixed + max B_fixed
+- A straightforward approach to test S is to sweep S from S_min to S_max and compute t_min(S). But t_min(S) changes as S changes. A direct per-S recomputation would be heavy.
+- We implement an event-based update. For each y in B_fixed and each a in A_fixed, t_min(S) changes when S = a + y. We model these as events that update t_min by delta(S, a, y) = max(0, b_cnt[y] - a_cnt[S - y] change) as S crosses a + y.
+- A complication arises for the case when S - y exceeds max A_fixed (i.e., t goes beyond all fixed A values). To capture this, we add a virtual A value a = maxA + 1 with count 0. This ensures the event system accounts for the drop of a_cnt beyond the maximum A value (e.g., transitioning from t = maxA to t = maxA+1).
+- Implementation plan:
+  - Build counts for A_fixed and B_fixed.
+  - Handle edge cases where B_fixed or A_fixed are empty as described.
+  - Extend A counts with a virtual value maxA+1 with count 0, and create a list of A_keys including this virtual value.
+  - Compute initial t_min at S_min using the extended A counts.
+  - If a_minus >= t_min at S_min, answer Yes.
+  - Build a heap of events. For each a in A_keys, find the first y in B_keys such that S_min - a < y (i.e., y > S_min - a) and push event (S = a + y, a, index_of_y).
+  - Process events in increasing S up to S_max. For a batch of events with the same S, accumulate total delta:
+    delta = sum of (max(0, b_cnt[y] - a_cnt[a]) - max(0, b_cnt[y] - a_cnt[a-1]))
+    where a_cnt is the extended A count (including virtual maxA+1 with 0 count).
+  - Update t_min by the total delta. If a_minus >= t_min after processing a batch, answer Yes.
+  - If no S in [S_min, S_max] satisfies the condition, answer No.
+
+This fix specifically addresses incorrect behavior on test case with no -1s in A or B by accurately accounting for deficits when S changes, including transitions past the maximum fixed A value.
+
+### Requirements
+None
+
+### Code
+```
+import sys
+import heapq
+from collections import Counter
+import bisect
+
+def main():
+    data = sys.stdin.read().strip().split()
+    if not data:
+        return
+    it = iter(data)
+    N = int(next(it))
+    A = [int(next(it)) for _ in range(N)]
+    B = [int(next(it)) for _ in range(N)]
+
+    a_minus = A.count(-1)
+    b_minus = B.count(-1)
+
+    A_fixed_vals = [x for x in A if x != -1]
+    B_fixed_vals = [x for x in B if x != -1]
+
+    counts_A = Counter(A_fixed_vals)
+    counts_B = Counter(B_fixed_vals)
+
+    # Edge cases
+    if not counts_B:
+        # No fixed B values, always feasible
+        print("Yes")
+        return
+    if not counts_A:
+        # No fixed A values
+        N_B_fixed = sum(counts_B.values())
+        print("Yes" if a_minus >= N_B_fixed else "No")
+        return
+
+    maxA = max(counts_A.keys())
+    maxB = max(counts_B.keys())
+
+    S_min = max(maxA, maxB)
+    S_max = maxA + maxB
+
+    # Extend A counts with virtual (maxA+1) value to capture drop beyond maxA
+    counts_A_ext = counts_A.copy()
+    a_plus1 = maxA + 1
+    counts_A_ext[a_plus1] = 0  # zero count at this virtual value
+    A_keys = sorted(counts_A_ext.keys())
+    B_keys = sorted(counts_B.keys())
+
+    # initial t_min at S_min
+    t_min = 0
+    for y, by in counts_B.items():
+        a_needed = S_min - y
+        t_min += max(0, by - counts_A_ext.get(a_needed, 0))
+    if a_minus >= t_min:
+        print("Yes")
+        return
+
+    # Build events: For each a in A_keys, find first y with y > S_min - a
+    events_heap = []
+    for a in A_keys:
+        pos = bisect.bisect_right(B_keys, S_min - a)
+        if pos < len(B_keys):
+            heapq.heappush(events_heap, (a + B_keys[pos], a, pos))
+
+    # Process events by increasing S
+    while events_heap:
+        S_event = events_heap[0][0]
+        if S_event > S_max:
+            break
+
+        total_delta = 0
+        while events_heap and events_heap[0][0] == S_event:
+            Sval, a, idx = heapq.heappop(events_heap)
+            y = B_keys[idx]
+            by = counts_B[y]
+            ca = counts_A_ext[a]
+            ca_prev = counts_A_ext.get(a - 1, 0)
+            delta = max(0, by - ca) - max(0, by - ca_prev)
+            total_delta += delta
+            if idx + 1 < len(B_keys):
+                next_S = a + B_keys[idx + 1]
+                if next_S <= S_max:
+                    heapq.heappush(events_heap, (next_S, a, idx + 1))
+
+        t_min += total_delta
+        if a_minus >= t_min:
+            print("Yes")
+            return
+
+    print("No")
+
+if __name__ == "__main__":
+    main()
+```

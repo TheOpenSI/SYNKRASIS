@@ -1,0 +1,32 @@
+### Step-by-step reasoning
+- Let total be the sum of all elements in nums.
+- For a partition at index i (0 <= i < n-1), the left sum is prefix = sum(nums[:i+1]) and the right sum is total - prefix.
+- The difference between left and right sums is: diff = prefix - (total - prefix) = 2*prefix - total.
+- Since 2*prefix is always even, the parity of diff is determined solely by total:
+  - If total is even: diff is even for every i, so all n-1 partitions are valid.
+  - If total is odd: diff is odd for every i, so no partition is valid.
+- Therefore, the answer is:
+  - n - 1 if sum(nums) is even
+  - 0 if sum(nums) is odd
+- Time complexity: O(n) to compute the total sum; space complexity: O(1).
+
+Edge cases:
+- n = 2: there is exactly one partition; the logic still holds.
+- All elements positive (as per constraints) does not affect parity reasoning.
+- Large sums: handled fine since Python integers are unbounded.
+
+### Requirements
+None
+
+### Code
+```python
+from typing import List
+
+class Solution:
+    def countPartitions(self, nums: List[int]) -> int:
+        total = sum(nums)
+        if total % 2 == 0:
+            return len(nums) - 1
+        else:
+            return 0
+```

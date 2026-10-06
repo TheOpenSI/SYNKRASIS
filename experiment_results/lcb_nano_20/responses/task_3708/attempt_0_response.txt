@@ -1,0 +1,39 @@
+### Step-by-step reasoning
+- We traverse the grid in zigzag order: for row 0 go left-to-right, for row 1 go right-to-left, and so on (alternating direction by row index).
+- While traversing, we skip every alternate cell in the visitation order. That means we include the first visited cell, skip the second, include the third, etc.
+- Implementation details:
+  - Loop over rows i from 0 to m-1.
+  - If i is even, traverse columns j from 0 to n-1; if i is odd, traverse j from n-1 to 0.
+  - Maintain a boolean flag include starting as True. For each visited cell, if include is True, append grid[i][j] to the result; then flip include.
+- Edge cases:
+  - Non-empty grids guaranteed by constraints, but handle empty input defensively by returning [].
+  - Rectangular grids as per problem statement (same number of columns per row).
+- Time complexity: O(m*n) since every cell is visited once.
+- Space complexity: O(k) for the result, where k roughly equals ceil(m*n/2).
+
+### Requirements
+None
+
+### Code
+```python
+from typing import List
+
+class Solution:
+    def zigzagTraversal(self, grid: List[List[int]]) -> List[int]:
+        if not grid or not grid[0]:
+            return []
+        m = len(grid)
+        n = len(grid[0])
+        result: List[int] = []
+        include = True  # include the first visited cell, then alternate
+        for i in range(m):
+            if i % 2 == 0:
+                cols = range(0, n)
+            else:
+                cols = range(n - 1, -1, -1)
+            for j in cols:
+                if include:
+                    result.append(grid[i][j])
+                include = not include
+        return result
+```

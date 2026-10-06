@@ -1,0 +1,145 @@
+### Step-by-step reasoning
+- We have two sequences A and B with possible -1 values which can be replaced with any non-negative integers, and we can permute A arbitrarily. We want A_i + B_i to be the same for all i after operations (let this common sum be S), with all elements non-negative.
+
+- Let A_fixed be the multiset of non -1 values in A, and B_fixed the multiset of non -1 values in B.
+  - Let a_minus be the number of -1s in A, and b_minus the number of -1s in B.
+
+- After filling, A' (the final A multiset) equals A_fixed plus a_minus extra values (chosen by us, non-negative).
+  B' (the final B multiset) equals B_fixed plus b_minus extra values (chosen by us, non-negative).
+
+- Since A can be permuted to pair with B, we must have B' = {S - a' : a' ∈ A'}. Equivalently, for each value x, the count of A' equal to x must equal the count of B' equal to S - x.
+
+- Focusing on fixed values only and how many -1s we must allocate:
+  For a fixed B value y with count by, we must provide enough A' values equal to S - y to pair with those B values. Some of these A' values can come from A_fixed if S - y is present in A_fixed; the remaining must come from A_-1. Let a_cnt[t] be the count of A_fixed equal to t, and b_cnt[y] be the count of B_fixed equal to y.
+  The minimal number of A_-1 values needed, for a given S, is:
+    t_min(S) = sum over y in B_fixed of max(0, b_cnt[y] - a_cnt[S - y])
+  where a_cnt[S - y] is 0 if S - y is not present in A_fixed.
+
+- Feasibility for a given S requires a_minus ≥ t_min(S). If this holds, we can allocate the A_-1 values to fill the missing A' values so that the sums match.
+
+- Observations to bound S:
+  - S must be at least max_fixed where max_fixed is the maximum value among all fixed A and fixed B values, otherwise some fixed element would need a negative partner.
+  - If B_fixed is empty, t_min(S) = 0 for all S, so always feasible as long as a_minus ≥ 0 (true). Answer Yes.
+  - If A_fixed is empty, t_min(S) = N_B_fixed for all S, so feasibility requires a_minus ≥ N_B_fixed. Answer Yes iff a_minus ≥ N_B_fixed.
+  - If both A_fixed and B_fixed are non-empty, S must be in [S_min, S_max] where:
+    S_min = max(max value in A_fixed, max value in B_fixed)
+    S_max = (max value in A_fixed) + (max value in B_fixed)
+    For S > S_max, t_min(S) becomes N_B_fixed and if a_minus < N_B_fixed, no larger S can help; thus checking up to S_max is sufficient.
+
+- We need to determine if there exists any S in [S_min, S_max] with a_minus ≥ t_min(S). A direct loop over every S could be too slow if the values are large. However t_min(S) only changes when for some y ∈ B_fixed and a ∈ A_fixed we have S = a + y. So t_min(S) changes only at those sums.
+
+- We implement an efficient event-based approach:
+  - Compute initial t_min at S = S_min: t_min = sum over y in B_fixed of max(0, b_cnt[y] - a_cnt[S_min - y]).
+  - If a_minus ≥ t_min at S_min, answer Yes.
+  - For every pair (a ∈ A_fixed_values, y ∈ B_fixed_values), there is a potential event at S = a + y. At S = a + y, t_min changes by:
+    delta_y = max(0, b_cnt[y] - a_cnt[a]) - max(0, b_cnt[y] - a_cnt[a-1])
+    (a-1 may be non-existent in A_fixed, in which case a_cnt[a-1] = 0)
+  - We process events in increasing S using a min-heap to avoid storing all events. We only consider events with S > S_min and S ≤ S_max. After applying all deltas for a given S, we get t_min(S). If at any such S we have a_minus ≥ t_min(S), answer Yes.
+  - If no such S works, answer No.
+
+Edge cases:
+- All A elements are -1: A_fixed empty → Yes iff a_minus ≥ N_B_fixed.
+- All B elements are -1: B_fixed empty → Yes (t_min = 0) if a_minus ≥ 0 (always true).
+- If both have fixed elements, we use the event-based method described.
+
+This approach uses only standard libraries.
+
+### Requirements
+None
+
+### Code
+```
+import sys
+import heapq
+from collections import Counter
+import bisect
+
+def main():
+    data = sys.stdin.read().strip().split()
+    it = iter(data)
+    N = int(next(it))
+    A = [int(next(it)) for _ in range(N)]
+    B = [int(next(it)) for _ in range(N)]
+
+    # Count -1s and fixed values
+    a_minus = A.count(-1)
+    b_minus = B.count(-1)
+
+    A_fixed_vals = [x for x in A if x != -1]
+    B_fixed_vals = [x for x in B if x != -1]
+
+    counts_A = Counter(A_fixed_vals)
+    counts_B = Counter(B_fixed_vals)
+
+    # Quick edge cases
+    if not counts_B:
+        # No fixed B values, always feasible
+        print("Yes")
+        return
+    if not counts_A:
+        # No fixed A values
+        N_B_fixed = sum(counts_B.values())
+        print("Yes" if a_minus >= N_B_fixed else "No")
+        return
+
+    # S bounds
+    maxA = max(counts_A.keys())
+    maxB = max(counts_B.keys())
+    S_min = max(maxA, maxB)
+    S_max = maxA + maxB
+
+    # Initial t_min at S_min
+    t_min = 0
+    for y, by in counts_B.items():
+        a_needed = S_min - y
+        t_min += max(0, by - counts_A.get(a_needed, 0))
+
+    if a_minus >= t_min:
+        print("Yes")
+        return
+
+    # Prepare A keys and B keys sorted
+    A_keys = sorted(counts_A.keys())
+    B_keys = sorted(counts_B.keys())
+
+    # Build a min-heap of events for (a, y) pairs
+    # For each a in A_keys, find smallest y such that a + y > S_min
+    events_heap = []
+    for a in A_keys:
+        # smallest index in B_keys with y > S_min - a
+        pos = bisect.bisect_right(B_keys, S_min - a)
+        if pos < len(B_keys):
+            heapq.heappush(events_heap, (a + B_keys[pos], a, pos))
+
+    # Process events in increasing S
+    while events_heap:
+        S_event = events_heap[0][0]
+        if S_event > S_max:
+            break
+
+        total_delta = 0
+        # Collect all events with the same S
+        while events_heap and events_heap[0][0] == S_event:
+            Sval, a, idx = heapq.heappop(events_heap)
+            y = B_keys[idx]
+            by = counts_B[y]
+            ca = counts_A[a]
+            ca_prev = counts_A.get(a - 1, 0)
+            delta = max(0, by - ca) - max(0, by - ca_prev)
+            total_delta += delta
+            # Push next y for this a, if any
+            if idx + 1 < len(B_keys):
+                next_S = a + B_keys[idx + 1]
+                if next_S <= S_max:  # only push if within range
+                    heapq.heappush(events_heap, (next_S, a, idx + 1))
+
+        t_min += total_delta
+        if a_minus >= t_min:
+            print("Yes")
+            return
+
+    print("No")
+
+if __name__ == "__main__":
+    main()
+```
