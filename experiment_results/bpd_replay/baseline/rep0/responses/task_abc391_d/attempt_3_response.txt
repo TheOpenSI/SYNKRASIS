@@ -1,0 +1,109 @@
+### Step-by-step reasoning
+- Each block stays in its own column (x is fixed). Blocks never move between columns.
+- A removal happens at the start of a time step if and only if every column currently has a block at y = 1 (the bottom row is full). In that case, all bottom-row blocks are removed in that step.
+- After the potential removals at the start of a step, all remaining blocks in every column settle downward as needed due to gravity within the same step (the algorithm processes blocks from bottom to top; blocks can cascade downward if the below cell becomes empty as blocks move).
+- Key observations for the evolution:
+  - If any column is initially empty, the bottom row can never be full in any step, so no removals ever happen. All blocks exist for all times.
+  - If all columns have at least one block initially, the bottom row becomes full for the first time at time B = max_x minY_x, where minY_x is the smallest Y in column x (the bottom-most block in that column). After this, removals can happen in subsequent steps as long as every column still has at least one block.
+  - Let m be the minimum number of blocks in any column: m = min_x k_x, where k_x is the number of blocks in column x. Removals continue for exactly m steps (one per column per step) and stop afterwards once a column becomes empty.
+- After s removal steps (0 ≤ s ≤ m), a block in column x with initial rank r (1-based, counting from bottom in that column) has been removed if r ≤ s. If r > s, that block still exists.
+- Therefore, for a query (T, A):
+  - If any column is empty initially: answer is Yes for all queries (no removals ever happen).
+  - Otherwise:
+    - Define B = max(minY_x) across all columns, and m = min(k_x) across all columns.
+    - For each block i, compute rank[i] = its rank within its column (1-based, bottom to top).
+    - If T < B: no removals yet; block A exists.
+    - If B ≤ T ≤ B + m - 1: s = T - B + 1 removals have occurred; block A exists iff rank[A] > s.
+    - If T > B + m - 1: all removals finished; block A exists iff rank[A] > m.
+- Complexity: Building per-column lists and sorting within each column is O(N log N) in total. Answering Q queries is O(Q). Memory is O(N + W).
+
+Edge considerations:
+- Indices: Blocks are given 1-based in input. Queries refer to block indices 1..N. Convert to 0-based indices for internal arrays.
+- Large values: Y coordinates and times can be up to 1e9, but Python ints handle it easily.
+
+If you want a robust, self-contained solution, I’ll implement exactly this approach.
+
+### Requirements
+None
+
+### Code
+```
+import sys
+
+def solve():
+    data = list(map(int, sys.stdin.buffer.read().split()))
+    it = iter(data)
+    N = next(it)
+    W = next(it)
+
+    X = [0] * N
+    Y = [0] * N
+    for i in range(N):
+        X[i] = next(it)
+        Y[i] = next(it)
+
+    Q = next(it)
+    T_arr = [0] * Q
+    A_arr = [0] * Q
+    for j in range(Q):
+        T_arr[j] = next(it)
+        A_arr[j] = next(it) - 1  # convert to 0-based index for block
+
+    # Build per-column lists of (Y, block_index)
+    cols = [[] for _ in range(W + 1)]
+    for i in range(N):
+        x = X[i]
+        y = Y[i]
+        cols[x].append((y, i))
+
+    # If any column is empty, bottom row can never be full; no removals occur
+    hasZero = False
+    for x in range(1, W + 1):
+        if len(cols[x]) == 0:
+            hasZero = True
+            break
+
+    rank = [0] * N  # 1-based rank of each block within its column
+    B = 0
+    m = 0
+
+    if not hasZero:
+        # Compute B = max(minY_x) over columns
+        minYs = []
+        for x in range(1, W + 1):
+            col = cols[x]
+            minY = min(y for (y, idx) in col)
+            minYs.append(minY)
+        B = max(minYs)
+
+        # Compute m = min number of blocks in any column
+        m = min(len(col) for col in cols[1:])
+
+        # Assign ranks within each column (by increasing Y)
+        for x in range(1, W + 1):
+            col = cols[x]
+            col.sort(key=lambda t: t[0])  # sort by Y
+            for pos, (y, idx) in enumerate(col, start=1):
+                rank[idx] = pos
+
+    out_lines = []
+    if hasZero:
+        out_lines = ["Yes"] * Q
+    else:
+        for j in range(Q):
+            t = T_arr[j]
+            a = A_arr[j]
+            r = rank[a]
+            if t < B:
+                out_lines.append("Yes")
+            elif t <= B + m - 1:
+                s = t - B + 1
+                out_lines.append("Yes" if r > s else "No")
+            else:
+                out_lines.append("Yes" if r > m else "No")
+
+    sys.stdout.write("\n".join(out_lines))
+
+if __name__ == "__main__":
+    solve()
+```
