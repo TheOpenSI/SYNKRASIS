@@ -160,5 +160,72 @@
         "private_cleared": true,
         "private_cleared_attempt": 0,
         "private_failure_types": []
+    },
+    {
+        "task_id": "abc392_d",
+        "fix_mode_attempt_count": 5,
+        "status": "fail",
+        "error_trace": [
+            [
+                "PrivateTestFailed"
+            ],
+            [
+                "PrivateTestFailed"
+            ],
+            [
+                "PrivateTestFailed"
+            ],
+            [
+                "PrivateTestFailed"
+            ],
+            [
+                "PrivateTestFailed"
+            ]
+        ],
+        "public_cleared": true,
+        "public_cleared_attempt": 0,
+        "private_cleared": false,
+        "private_cleared_attempt": null,
+        "private_failure_types": [
+            "wrong_answer",
+            "wrong_answer",
+            "wrong_answer",
+            "wrong_answer",
+            "wrong_answer",
+            "wrong_answer"
+        ]
+    },
+    {
+        "task_id": "abc393_a",
+        "fix_mode_attempt_count": 0,
+        "status": "pass",
+        "error_trace": [],
+        "public_cleared": true,
+        "public_cleared_attempt": 0,
+        "private_cleared": true,
+        "private_cleared_attempt": 0,
+        "private_failure_types": []
+    },
+    {
+        "task_id": "abc393_d",
+        "fix_mode_attempt_count": 0,
+        "status": "pass",
+        "error_trace": [],
+        "public_cleared": true,
+        "public_cleared_attempt": 0,
+        "private_cleared": true,
+        "private_cleared_attempt": 0,
+        "private_failure_types": []
+    },
+    {
+        "task_id": "abc394_b",
+        "fix_mode_attempt_count": 0,
+        "status": "pass",
+        "error_trace": [],
+        "public_cleared": true,
+        "public_cleared_attempt": 0,
+        "private_cleared": true,
+        "private_cleared_attempt": 0,
+        "private_failure_types": []
     }
 ]

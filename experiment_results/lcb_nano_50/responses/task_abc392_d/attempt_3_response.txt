@@ -1,0 +1,70 @@
+### Step-by-step reasoning
+- The probability that two fixed dice i and j show the same number is:
+  P(i, j) = sum over all values v of (count_i(v)/Ki) * (count_j(v)/Kj)
+  This equals (sum_v count_i(v) * count_j(v)) / (Ki * Kj).
+- We need to maximize P(i, j) over all pairs (i < j).
+- To compute efficiently, for each die we store a frequency map: count_i(v) = how many faces show value v.
+- For each pair (i, j), we compute the dot product dot = sum_v count_i(v) * count_j(v) efficiently by iterating over the smaller frequency map and looking up counts in the other map.
+- Finally, probability = dot / (Ki * Kj). Track the maximum probability across all pairs.
+- Edge cases handled:
+  - If two dice share no common values, dot = 0 and probability is 0.
+  - Duplicates on a die are naturally handled via counts.
+  - Ki and Kj are at least 1, so Ki*Kj is never zero.
+- Output uses high precision (15 decimal places) to satisfy the required error tolerance.
+
+### Requirements
+None
+
+### Code
+```
+import sys
+
+def solve():
+    data = list(map(int, sys.stdin.buffer.read().split()))
+    if not data:
+        print("0.0")
+        return
+
+    it = iter(data)
+    N = next(it)
+
+    counts = []
+    Ks = []
+
+    for _ in range(N):
+        Ki = next(it)
+        Ks.append(Ki)
+        d = {}
+        for _ in range(Ki):
+            v = next(it)
+            d[v] = d.get(v, 0) + 1
+        counts.append(d)
+
+    max_prob = 0.0
+
+    for i in range(N):
+        di = counts[i]
+        Ki = Ks[i]
+        for j in range(i + 1, N):
+            dj = counts[j]
+            Kj = Ks[j]
+
+            # Compute dot product efficiently by iterating over the smaller map
+            if len(di) <= len(dj):
+                dot = 0
+                for v, c in di.items():
+                    dot += c * dj.get(v, 0)
+            else:
+                dot = 0
+                for v, c in dj.items():
+                    dot += c * di.get(v, 0)
+
+            prob = dot / (Ki * Kj)
+            if prob > max_prob:
+                max_prob = prob
+
+    print("{:.15f}".format(max_prob))
+
+if __name__ == "__main__":
+    solve()
+```

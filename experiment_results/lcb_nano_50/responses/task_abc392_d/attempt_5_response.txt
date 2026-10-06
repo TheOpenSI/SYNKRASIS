@@ -1,0 +1,67 @@
+### Step-by-step reasoning
+- For two fixed dice i and j, the probability that their rolled numbers match is sum over all values v of P_i(v) * P_j(v), where P_i(v) = count_i(v) / K_i and P_j(v) = count_j(v) / K_j.
+- This can be computed as (sum_v count_i(v) * count_j(v)) / (K_i * K_j). We denote this dot product as dot(i, j).
+- To maximize the final probability, we need to consider all pairs (i, j) with i < j and take the maximum of dot(i, j) / (K_i * K_j).
+- Implementing this efficiently: store each die as a frequency map value -> count. For a pair (i, j), compute the dot product by iterating over the smaller frequency map and accumulating counts from the other die’s map when the value is present.
+- Edge cases:
+  - If two dice share no common values, the dot is 0 and the probability is 0.
+  - Duplicates on a die are naturally handled via counts.
+  - Ki and Kj are always at least 1, so the denominator Ki*Kj is never zero.
+- Output with high precision (15 decimal places) to satisfy the error tolerance.
+
+### Requirements
+None
+
+### Code
+```
+import sys
+
+def solve():
+    data = list(map(int, sys.stdin.buffer.read().split()))
+    if not data:
+        print("0.0")
+        return
+
+    it = iter(data)
+    N = next(it)
+
+    counts = []
+    Ks = []
+
+    for _ in range(N):
+        Ki = next(it)
+        Ks.append(Ki)
+        freq = {}
+        for _ in range(Ki):
+            v = next(it)
+            freq[v] = freq.get(v, 0) + 1
+        counts.append(freq)
+
+    max_prob = 0.0
+
+    for i in range(N):
+        di = counts[i]
+        Ki = Ks[i]
+        for j in range(i + 1, N):
+            dj = counts[j]
+            Kj = Ks[j]
+
+            # Compute dot product efficiently by iterating over the smaller map
+            if len(di) <= len(dj):
+                dot = 0
+                for v, c in di.items():
+                    dot += c * dj.get(v, 0)
+            else:
+                dot = 0
+                for v, c in dj.items():
+                    dot += c * di.get(v, 0)
+
+            prob = dot / (Ki * Kj)
+            if prob > max_prob:
+                max_prob = prob
+
+    print("{:.15f}".format(max_prob))
+
+if __name__ == "__main__":
+    solve()
+```
