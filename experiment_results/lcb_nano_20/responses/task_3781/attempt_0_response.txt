@@ -1,0 +1,159 @@
+### Step-by-step reasoning
+- We are given points on the boundary of a square with side length equal to side. We need to pick k points so that the minimum Manhattan distance between any two chosen points is maximized.
+- A useful identity for Manhattan distance in 2D is:
+  distance((x1, y1), (x2, y2)) = max(|(x1+y1) - (x2+y2)|, |(x1-y1) - (x2-y2)|).
+  So if we transform each point to (u = x+y, v = x-y), the distance becomes Chebyshev distance in (u, v): max(|Δu|, |Δv|).
+- For a fixed candidate distance d, the problem reduces to: does there exist a subset of k points such that every pair has Chebyshev distance at least d? Equivalently, the graph G where we connect two points if their Chebyshev distance is < d should have an independent set of size k.
+- We perform a binary search on d from 0 to 2*side (the maximum possible Manhattan distance between boundary points).
+- For a given d:
+  - If d == 0, it is always feasible as long as there are at least k points.
+  - Build the adjacency graph efficiently using bucketing in (u, v) space:
+    - Use cell width d in both u and v axes. Two points can have distance < d only if their (u, v) cells are the same or neighbors (difference in cell indices up to 1 in each axis).
+    - Compute u = x+y and v = x-y for all points, and assign each point to a bucket by (u//d, v//d).
+    - For each point i, check points j in the 9 neighboring buckets; if max(|u_i-u_j|, |v_i-v_j|) < d, add an edge between i and j.
+  - Early feasibility checks:
+    - Run a fast greedy independent-set builder in a few deterministic orders (e.g., by increasing degree, then decreasing degree). If we can pick k points greedily, return True.
+  - If greed fails, run a backtracking search to decide if there exists an independent set of size k:
+    - Prepare an order of vertices (preferably by decreasing degree to prune faster).
+    - Use a depth-first search that picks vertices in increasing order of this fixed sequence, including a vertex v only if none of its already chosen neighbors are chosen.
+    - Maintain a state array: 0 = unblocked, 1 = blocked by a chosen neighbor, 2 = chosen.
+    - When including a vertex, block its neighbors (and revert on backtracking). If we reach chosen_count == k, return True. Use pruning: if chosen_count + (n - current_index) < k, prune (best-case remaining).
+- If any feasible arrangement is found for d, the binary search moves the lower bound up; otherwise, it moves the upper bound down.
+- Edge cases:
+  - side up to 1e9; u and v can be as large as 2e9 in magnitude, but Python ints handle it.
+  - k is guaranteed by constraints to be at least 4 and at most 25, and k <= len(points).
+  - When d == 0, always feasible if k <= len(points).
+
+This approach uses O(n) memory for point transforms and the bucket structure, and tries to prune via greedy checks before a heavier DFS. It leverages the fact that k is small (<= 25) even though n can be up to 15k.
+
+### Requirements
+None
+
+### Code
+```
+from typing import List
+
+class Solution:
+    def maxDistance(self, side: int, points: List[List[int]], k: int) -> int:
+        # Helper: check if distance d is feasible
+        def feasible(d: int) -> bool:
+            n = len(points)
+            if d <= 0:
+                return k <= n
+
+            # Transform points: u = x+y, v = x-y
+            u = [p[0] + p[1] for p in points]
+            v = [p[0] - p[1] for p in points]
+
+            # Bucketing by (u//d, v//d)
+            buckets = {}
+            cu = [ui // d for ui in u]
+            cv = [vi // d for vi in v]
+            for i in range(n):
+                key = (cu[i], cv[i])
+                if key not in buckets:
+                    buckets[key] = []
+                buckets[key].append(i)
+
+            # Build adjacency: edge if distance < d
+            adj = [[] for _ in range(n)]
+            for i in range(n):
+                ui, vi = u[i], v[i]
+                cui, cvi = cu[i], cv[i]
+                for du in (-1, 0, 1):
+                    for dv in (-1, 0, 1):
+                        nbkey = (cui + du, cvi + dv)
+                        if nbkey not in buckets:
+                            continue
+                        for j in buckets[nbkey]:
+                            if j <= i:
+                                continue
+                            if max(abs(ui - u[j]), abs(vi - v[j])) < d:
+                                adj[i].append(j)
+                                adj[j].append(i)
+
+            # Quick greedy checks (deterministic orders)
+            deg = [len(adj[i]) for i in range(n)]
+            order_deg_asc = sorted(range(n), key=lambda x: deg[x])
+            chosen = [False] * n
+            cnt = 0
+            for vtx in order_deg_asc:
+                ok = True
+                for nb in adj[vtx]:
+                    if chosen[nb]:
+                        ok = False
+                        break
+                if ok:
+                    chosen[vtx] = True
+                    cnt += 1
+                    if cnt >= k:
+                        return True
+            if cnt >= k:
+                return True
+
+            order_deg_desc = sorted(range(n), key=lambda x: -deg[x])
+            chosen = [False] * n
+            cnt = 0
+            for vtx in order_deg_desc:
+                ok = True
+                for nb in adj[vtx]:
+                    if chosen[nb]:
+                        ok = False
+                        break
+                if ok:
+                    chosen[vtx] = True
+                    cnt += 1
+                    if cnt >= k:
+                        return True
+            if cnt >= k:
+                return True
+
+            # DFS backtracking to find independent set of size k
+            order = order_deg_desc  # heuristic: high-degree first
+            state = [0] * n  # 0 = free, 1 = blocked, 2 = chosen
+            import sys
+            sys.setrecursionlimit(1000000)
+
+            def dfs(start_index: int, chosen_count: int) -> bool:
+                if chosen_count == k:
+                    return True
+                if start_index >= n:
+                    return False
+                # Upper bound pruning: even if we take all remaining, can't reach k
+                if chosen_count + (n - start_index) < k:
+                    return False
+                for idx in range(start_index, n):
+                    vtx = order[idx]
+                    if state[vtx] != 0:
+                        continue
+                    # Include vtx
+                    if chosen_count + 1 == k:
+                        return True
+                    changed = []
+                    state[vtx] = 2
+                    for nb in adj[vtx]:
+                        if state[nb] == 0:
+                            state[nb] = 1
+                            changed.append(nb)
+                    if dfs(idx + 1, chosen_count + 1):
+                        return True
+                    # Revert
+                    for nb in changed:
+                        state[nb] = 0
+                    state[vtx] = 0
+                return False
+
+            return dfs(0, 0)
+
+        # Binary search on distance d
+        left, right = 0, 2 * side
+        best = 0
+        while left <= right:
+            mid = (left + right) // 2
+            if feasible(mid):
+                best = mid
+                left = mid + 1
+            else:
+                right = mid - 1
+        return best
+```

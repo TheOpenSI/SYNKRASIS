@@ -1,0 +1,32 @@
+### Step-by-step reasoning
+- Observing the examples shows a pattern: for each position i, the minimum cost to reach that position equals the minimum cost among cost[0], cost[1], ..., cost[i].
+- Intuition: to reach position i, you can choose to swap with some person j in front of you (0 <= j <= i) at cost cost[j]. After paying the smallest such cost, you can reach i (and potentially further positions) because any necessary subsequent swaps with people behind you can be done for free.
+- Therefore, for each i, answer[i] = min(cost[0..i]).
+- Algorithm:
+  - Initialize a running minimum variable best = +infinity.
+  - Iterate i from 0 to n-1:
+    - best = min(best, cost[i])
+    - answer[i] = best
+- Edge cases:
+  - Minimum size: cost length 1 -> answer has one element equal to cost[0].
+  - All costs equal or increasing/decreasing: the prefix minimum handles all cases.
+  - Constraints are small; time complexity is O(n) and space O(n).
+
+### Requirements
+None
+
+### Code
+```python
+from typing import List
+
+class Solution:
+    def minCosts(self, cost: List[int]) -> List[int]:
+        n = len(cost)
+        ans: List[int] = []
+        best = float('inf')
+        for c in cost:
+            if c < best:
+                best = c
+            ans.append(best)
+        return ans
+```

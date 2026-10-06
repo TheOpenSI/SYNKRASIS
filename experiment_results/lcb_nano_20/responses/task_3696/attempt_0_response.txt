@@ -1,0 +1,49 @@
+### Step-by-step reasoning
+- We need to count substrings s[i..j] such that the last digit s[j] is non-zero and the numeric value of the substring is divisible by that last digit.
+- If the last digit d = s[j] is 0, the substring is not considered (problem states divisibility by a non-zero last digit).
+- Substrings of length 1 (i = j) are always divisible by their non-zero last digit, so those contribute automatically.
+- A straightforward O(n^2) approach is too slow for n up to 1e5. We need a faster technique.
+- For a fixed end index j with non-zero last digit d:
+  - We can count valid substrings ending at j by scanning i from j downwards and maintaining the value of s[i..j] modulo d.
+  - If d > 1, the remainders can be computed incrementally:
+    rem(i..j) = (digit(s[i]) * 10^{j-i} + rem((i+1)..j)) mod d
+    We can compute this by looping i from j down to max(0, j-19) and updating:
+      rem = (digit * pow10 + rem) mod d
+      pow10 = (pow10 * 10) mod d
+    We cap the look-back at 20 digits (a common safe bound given d <= 9) to keep the algorithm O(n * 20).
+  - For d = 1, every substring ending at j is divisible by 1. To be correct, add (j+1) substrings for each j with s[j] == '1' and skip the 20-bound loop for that end.
+- This yields O(n * 20) time (with a special case for d == 1) and O(1) extra space.
+
+Edge cases:
+- Substrings ending with 0 are ignored.
+- Substrings of length 1 with non-zero digits are counted automatically (covered by the general loop, but optimized via d == 1 case).
+- Leading zeros in substrings are allowed, no special handling needed.
+
+### Requirements
+None
+
+### Code
+```
+class Solution:
+    def countSubstrings(self, s: str) -> int:
+        n = len(s)
+        ans = 0
+        for j in range(n):
+            d = ord(s[j]) - ord('0')
+            if d == 0:
+                continue
+            if d == 1:
+                # All substrings ending at j are divisible by 1
+                ans += (j + 1)
+                continue
+            rem = 0
+            pow10 = 1  # 10^0 mod d
+            limit = max(0, j - 19)
+            for i in range(j, limit - 1, -1):
+                digit = ord(s[i]) - ord('0')
+                rem = (digit * pow10 + rem) % d
+                if rem == 0:
+                    ans += 1
+                pow10 = (pow10 * 10) % d
+        return ans
+```

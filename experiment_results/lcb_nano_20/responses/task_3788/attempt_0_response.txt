@@ -1,0 +1,34 @@
+### Step-by-step reasoning
+- After deletions, you can choose any subarray of the remaining array. Deletions can remove any elements between chosen elements, so the final subarray can consist of any subset of the original elements, as long as their values are all distinct (since the subarray must have unique elements).
+- Therefore, the problem reduces to selecting a subset of indices such that all values are distinct and the sum is maximized.
+- Since including any positive value increases the sum and does not conflict with including other distinct values, you should include every distinct positive value that appears in nums (one occurrence per value).
+- If there are no positive values:
+  - If zero exists, you can select [0] to get sum 0.
+  - Otherwise, all values are negative; you must pick at least one element, and the best you can do is pick the largest (least negative) value.
+
+Edge cases:
+- All numbers negative: return the maximum value (least negative).
+- Zeros present but no positives: return 0.
+- Duplicates: only one instance per value can be used, hence use distinct values.
+
+### Requirements
+None
+
+### Code
+```python
+class Solution:
+    def maxSum(self, nums: List[int]) -> int:
+        distinct_vals = set(nums)
+        
+        # Sum all distinct positive values
+        positives = [v for v in distinct_vals if v > 0]
+        if positives:
+            return sum(positives)
+        
+        # No positive values
+        if 0 in distinct_vals:
+            return 0
+        
+        # All values are negative; pick the largest (least negative)
+        return max(nums)
+```
