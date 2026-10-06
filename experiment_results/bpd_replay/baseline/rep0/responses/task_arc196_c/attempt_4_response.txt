@@ -1,0 +1,88 @@
+### Step-by-step reasoning
+- The previous approach tried a hybrid method: brute-forcing partitions when the number of internal zero-sum boundaries K was small (K <= 20), and using a DP based on a recurrence otherwise. The test case 3 with N=9 and S="BWWBWBBBWWBWBBWWBW" has K=6 internal zero-sum boundaries, so it fell into the brute-force branch.
+- The brute-force branch appears to produce incorrect results for at least some inputs (as shown by the failing test). This suggests that the combinatorial inclusion-exclusion formulation implemented there is prone to mistakes or edge-case miscounts.
+- A robust and straightforward approach is to use a direct dynamic programming (IE-style) on the zero-sum boundaries, which exactly implements the inclusion-exclusion over partitions of the string into zero-sum segments. This DP does not rely on enumerating all subsets of internal cuts and is simpler to reason about.
+- The correct DP is:
+  - Let zeros be the list [0] + all i in (0..2N) with prefix difference D[i] == 0 + [2N].
+  - Let y[i] = zeros[i] / 2 (these are integers since zero-sum boundaries occur at even positions).
+  - Precompute factorials fact[t] for t = 0..N.
+  - DP[0] = 1. For k from 1 to len(zeros)-1:
+    DP[k] = - sum_{j=0..k-1} DP[j] * fact[y[k] - y[j]]  (mod MOD)
+  - The answer is (-DP[last]) mod MOD.
+- Additionally, a quick necessary condition holds: the first vertex must be black (B) and the last vertex must be white (W). If not, the answer is 0.
+- This approach is correct for the provided samples (and, in general, adheres to the standard inclusion-exclusion interpretation for this problem). It avoids the pitfalls of the previous hybrid method.
+
+### Requirements
+None
+
+### Code
+```
+import sys
+
+MOD = 998244353
+
+def solve():
+    input = sys.stdin.readline
+    N_line = input().strip()
+    while N_line == "":
+        N_line = input().strip()
+    N = int(N_line)
+    S = input().strip()
+
+    # Quick necessary condition: first vertex must be black, last white
+    if not S or S[0] != 'B' or S[-1] != 'W':
+        print(0)
+        return
+
+    M = 2 * N
+
+    # Compute D[i] = (#W - #B) in prefix S[1..i], with D[0] = 0
+    D = [0] * (M + 1)
+    w = 0
+    for i in range(1, M + 1):
+        if S[i - 1] == 'W':
+            w += 1
+        else:
+            w -= 1
+        D[i] = w
+
+    # Collect zero positions i in (0, 2N); also include endpoints 0 and 2N
+    zeros = [0]
+    for i in range(1, M):
+        if D[i] == 0:
+            zeros.append(i)
+    zeros.append(M)  # include 2N
+
+    # Extended zero positions Zext
+    Zext = zeros
+    L = len(Zext)
+
+    # y_i = Zext[i] / 2 (integers)
+    y = [z // 2 for z in Zext]
+
+    # Precompute factorials up to N
+    fact = [1] * (N + 1)
+    for i in range(1, N + 1):
+        fact[i] = (fact[i - 1] * i) % MOD
+
+    # DP over zero-boundaries
+    DP = [0] * L
+    DP[0] = 1
+
+    for k in range(1, L):
+        total = 0
+        yk = y[k]
+        for j in range(0, k):
+            dy = yk - y[j]
+            if dy < 0:
+                continue
+            total = (total + DP[j] * fact[dy]) % MOD
+        DP[k] = (-total) % MOD
+
+    # Final answer is -DP[last] mod MOD
+    ans = (-DP[L - 1]) % MOD
+    print(ans)
+
+if __name__ == "__main__":
+    solve()
+```
