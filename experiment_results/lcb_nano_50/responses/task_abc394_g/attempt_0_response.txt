@@ -1,0 +1,202 @@
+### Step-by-step reasoning
+- Model the problem as a shortest-path on a huge 3D graph (block, floor). However, we can reason about it in a different way to be efficient.
+- For a fixed floor t, consider the graph consisting of all blocks with F[i][j] >= t, with edges between cardinally adjacent blocks. At floor t you can move freely (cost 0) along this graph.
+- If Takahashi wants to move from (A,B,Y) to (C,D,Z), and he chooses to cross every walkway at floor t, then he must:
+  - Move from Y down/up to t within the start block (cost |Y - t|),
+  - Walk from start block to end block on floor t (cost 0),
+  - From floor t in the end block move to Z (cost |Z - t|).
+  The total stairs cost for that plan is |Y - t| + |Z - t|. This plan is feasible iff the start and end blocks are connected in the subgraph of blocks with F >= t.
+- The total stairs cost is minimized by choosing t as close as possible to the interval [min(Y, Z), max(Y, Z)]. If there exists a t in that interval with connectivity, the answer is simply |Y - Z|.
+- Connectivity as a function of t is monotone: if two blocks are connected at floor t, they are connected for all smaller t as well (more blocks become available when t decreases).
+- Therefore, for each query, the maximal t* such that start and end are connected in the graph of blocks with F >= t* is well-defined. The answer is:
+  - If t* >= min(Y, Z): answer = |Y - Z|
+  - Otherwise: answer = |Y - t*| + |Z - t*|
+- To compute t* efficiently for all Q queries, use offline processing with a parallel binary search (PBS) over t. We process thresholds t in decreasing order, maintaining a DSU (union-find) over the grid blocks that are active (F >= t). For each query we binary-search the largest t for which its two blocks are connected.
+- PBS outline:
+  - Let maxF be the maximum F value on the grid. All t in [1, maxF] are possible.
+  - For each query q, keep low[q] = 1 and high[q] = maxF. While there exists q with low[q] < high[q], compute mid[q] = (low+high+1)//2 for all such q.
+  - Note: connectivity only depends on t values that are present as F values. Map mid to the smallest F value t' that is >= mid. If no such t' exists (mid > maxF), connectivity is false.
+  - Group queries by their mapped t' and process thresholds t' from largest to smallest. Build DSU by activating blocks with F >= t' (processing blocks in descending F). For all queries mapped to t', test if their start and end blocks are connected; update low/high accordingly.
+  - Repeat until all low[q] == high[q].
+- After obtaining t* = low[q] for every query, compute the answer with the formula above.
+
+Edge cases to handle:
+- All blocks have F >= 1, grid is connected at t = 1, so t* >= 1 for all queries.
+- Large H, W up to 500 give up to 250k blocks; PBS runs in about O((N + Q) log maxF) with a DSU per iteration, which fits time if implemented efficiently.
+- Efficient neighborhood checks: precompute fixed neighbor indices to avoid repeated bound checks.
+
+Performance notes:
+- Use a DSU with path compression and union by size.
+- Avoid Python object overhead in inner loops by using flat arrays and fixed neighbor indices (neigh0..neigh3).
+- Use Python’s bisect to map mid to the nearest available F threshold.
+- Each PBS iteration rebuilds the DSU from scratch; the number of iterations is O(log maxF) (about 20).
+
+### Requirements
+None
+
+### Code
+```
+import sys
+from bisect import bisect_left
+from collections import defaultdict
+
+def main():
+    data = sys.stdin.buffer.read().split()
+    it = iter(data)
+
+    H = int(next(it)); W = int(next(it))
+    N = H * W
+
+    # Read F grid, flatten, track maxF, and group cells by value
+    F_list = [0] * N
+    maxF = 0
+    cells_by_value = defaultdict(list)
+    for i in range(H):
+        for j in range(W):
+            v = int(next(it))
+            idx = i * W + j
+            F_list[idx] = v
+            if v > maxF:
+                maxF = v
+            cells_by_value[v].append(idx)
+
+    # Precompute 4-neighborhood indices for each cell
+    neigh0 = [-1] * N  # up
+    neigh1 = [-1] * N  # down
+    neigh2 = [-1] * N  # left
+    neigh3 = [-1] * N  # right
+    for r in range(H):
+        base = r * W
+        for c in range(W):
+            idx = base + c
+            if r > 0:
+                neigh0[idx] = (r - 1) * W + c
+            if r < H - 1:
+                neigh1[idx] = (r + 1) * W + c
+            if c > 0:
+                neigh2[idx] = base + (c - 1)
+            if c < W - 1:
+                neigh3[idx] = base + (c + 1)
+
+    Q = int(next(it))
+
+    A = [0] * Q
+    B = [0] * Q
+    Y = [0] * Q
+    C = [0] * Q
+    D = [0] * Q
+    Z = [0] * Q
+    start_id = [0] * Q
+    end_id = [0] * Q
+
+    for qi in range(Q):
+        a = int(next(it)) - 1
+        b = int(next(it)) - 1
+        y = int(next(it))
+        c = int(next(it)) - 1
+        d = int(next(it)) - 1
+        z = int(next(it))
+
+        A[qi] = a; B[qi] = b
+        Y[qi] = y
+        C[qi] = c; D[qi] = d; Z[qi] = z
+
+        start_id[qi] = a * W + b
+        end_id[qi] = c * W + d
+
+    # Prepare distinct F values ascending for mapping mid to threshold
+    vals_asc = sorted(set(F_list))
+
+    # PBS arrays
+    low = [1] * Q
+    high = [maxF] * Q
+
+    # DSU data structures (recreated each PBS iteration)
+    active = [False] * N
+    parent = [0] * N
+    size = [0] * N
+
+    def find(x):
+        # Path compression
+        while parent[x] != x:
+            parent[x] = parent[parent[x]]
+            x = parent[x]
+        return x
+
+    def union(a, b):
+        ra = find(a)
+        rb = find(b)
+        if ra == rb:
+            return
+        if size[ra] < size[rb]:
+            ra, rb = rb, ra
+        parent[rb] = ra
+        size[ra] += size[rb]
+
+    # Parallel Binary Search iterations
+    while True:
+        any_update = False
+        bucket = defaultdict(list)  # threshold value -> list of (qi, mid)
+
+        for qi in range(Q):
+            if low[qi] < high[qi]:
+                any_update = True
+                mid = (low[qi] + high[qi] + 1) >> 1  # upper mid to find max feasible
+                # Map mid to the smallest threshold t' in vals_asc such that t' >= mid
+                idx = bisect_left(vals_asc, mid)
+                tval = vals_asc[idx]  # valid since mid <= maxF
+                bucket[tval].append((qi, mid))
+
+        if not any_update:
+            break
+
+        # Reset DSU and activation array for this PBS iteration
+        for i in range(N):
+            active[i] = False
+            parent[i] = i
+            size[i] = 1
+
+        # Activate cells in decreasing F value order and answer queries
+        for val in reversed(vals_asc):  # from max to min
+            lst = cells_by_value.get(val)
+            if lst:
+                for u in lst:
+                    active[u] = True
+                    v = neigh0[u]
+                    if v != -1 and active[v]:
+                        union(u, v)
+                    v = neigh1[u]
+                    if v != -1 and active[v]:
+                        union(u, v)
+                    v = neigh2[u]
+                    if v != -1 and active[v]:
+                        union(u, v)
+                    v = neigh3[u]
+                    if v != -1 and active[v]:
+                        union(u, v)
+            if val in bucket:
+                for (qi, mid) in bucket[val]:
+                    if find(start_id[qi]) == find(end_id[qi]):
+                        low[qi] = mid
+                    else:
+                        high[qi] = mid - 1
+
+    # Compute final answers for all queries
+    out = []
+    for qi in range(Q):
+        tstar = low[qi]
+        y = Y[qi]
+        z = Z[qi]
+        a = y if y < z else z
+        b = z if y < z else y
+        if tstar >= a:
+            ans = b - a
+        else:
+            ans = abs(y - tstar) + abs(z - tstar)
+        out.append(str(ans))
+
+    sys.stdout.write("\n".join(out))
+
+if __name__ == "__main__":
+    main()
+```
