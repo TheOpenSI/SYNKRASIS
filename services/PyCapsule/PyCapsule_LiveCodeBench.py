@@ -16,6 +16,7 @@ import sys
 sys.path.append(f"{os.path.dirname(os.path.abspath(__file__))}/../..")
 
 import json
+import re
 from subprocess import CompletedProcess
 
 from services.PyCapsule.PyCapsuleBase import PyCapsuleBase
@@ -158,9 +159,25 @@ class PyCapsule_LiveCodeBench(PyCapsuleBase):
         self._save_generation(user_query, response)
 
         # https://support.leetcode.com/hc/en-us/articles/360011833974-What-are-the-environments-for-the-programming-languages
-        _, code = parse_response(response) # no req, default env set
+        code = self._extract_code(response) # no req, default env set
 
         self._create_main_py(code, user_query)
+
+
+    def _extract_code(self, response: str) -> str:
+        """
+        parse_response, plus a fallback for a repeated code fence, e.g. "### Code\\n```\\n```python\\n...```"
+        which parse_response reads as empty code.
+        """
+        _, code = parse_response(response)
+        if code.strip():
+            return code
+        lines = response.split("### Code")[-1].split("\n")
+        fences = [i for i, line in enumerate(lines) if re.match(r"^\s*```", line)]
+        if len(fences) < 2:
+            return ""
+        body = [line for line in lines[fences[0] + 1:fences[-1]] if not re.match(r"^\s*```\w*\s*$", line)]
+        return "\n".join(body).strip()
 
 
     def _create_main_py(self, code: str, user_query: dict) -> None:
@@ -198,6 +215,11 @@ class PyCapsule_LiveCodeBench(PyCapsuleBase):
         (a regression), the public tests are the samples already in the prompt.
         """
         stage = self.harness.classify_response(response)
+
+        if not self._last_code.strip():
+            self._current_error_type = ["NoCodeFound"]
+            return ("Your response did not contain any code. Put the complete solution in the '### Code' "
+                    "section, inside a single pair of triple backticks.")
 
         if stage == "private_fail":
             self._current_error_type = ["PrivateTestFailed"]
