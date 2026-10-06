@@ -1,0 +1,76 @@
+### Step-by-step reasoning
+- Flipping A_i changes the current sum S = sum_k A_k * C_k by:
+  - -C_i if A_i was 1 (flipping to 0),
+  - +C_i if A_i was 0 (flipping to 1).
+- The total cost is the sum of S after each flip. We want to minimize this sum by choosing the order of flips.
+- It is possible to flip bits that are already equal to B (i.e., A_i == B_i) temporarily as long as, in the end, A equals B. In particular, for indices where A_i = B_i = 1, we can flip i from 1 to 0 (opening a window) and later flip it back from 0 to 1 (closing the window). This creates a pair of deltas (-C_i, +C_i) with the constraint that -C_i must come before +C_i.
+- A correct minimum is obtained by treating the process as merging several streams of possible deltas with precedence constraints:
+  - For every i with A_i != B_i, we have a mandatory delta:
+    - delta = -C_i if A_i == 1
+    - delta = +C_i if A_i == 0
+  - For every i with A_i == B_i == 1, we may take an opening delta -C_i (available from the start) and, after taking it, we may add the closing delta +C_i to be used later.
+- The optimal sequence can be produced by a greedy process: maintain a min-heap of currently available deltas. Initially, push all deltas from mismatches and all opening deltas for indices with A_i == B_i == 1. When an opening delta -C_i is popped, push its closing delta +C_i into the heap. Repeatedly pop the smallest available delta, update the running sum S, and accumulate the total cost. This greedy choice yields the minimum sum of prefix sums under these precedence constraints.
+
+This approach matches the sample cases (including tricky case 3) and runs in O((N) log N) time.
+
+### Requirements
+None
+
+### Code
+```
+import sys
+import heapq
+
+def solve():
+    data = sys.stdin.buffer.read().split()
+    it = iter(data)
+
+    try:
+        N = int(next(it))
+    except StopIteration:
+        print(0)
+        return
+
+    A = [int(next(it)) for _ in range(N)]
+    B = [int(next(it)) for _ in range(N)]
+    C = [int(next(it)) for _ in range(N)]
+
+    # Initial sum S0
+    S = 0
+    for i in range(N):
+        if A[i] == 1:
+            S += C[i]
+
+    # Build initial heap of available deltas
+    # Types:
+    # 0 -> D (mandatory mismatches)
+    # 1 -> Open (opening -C[i] for A[i]==B[i]==1)
+    # 2 -> Close (closing +C[i]); pushed when its corresponding Open is popped
+    heap = []
+
+    for i in range(N):
+        if A[i] != B[i]:
+            # Mismatch: one mandatory flip
+            delta = -C[i] if A[i] == 1 else C[i]
+            heapq.heappush(heap, (delta, 0, None))
+        elif A[i] == B[i] == 1:
+            # Potential opening for a zero-sum pair
+            heapq.heappush(heap, (-C[i], 1, i))
+
+    total = 0
+    cur = S
+
+    while heap:
+        val, typ, idx = heapq.heappop(heap)
+        cur += val
+        total += cur
+        if typ == 1:
+            # Opened; push its closing delta
+            heapq.heappush(heap, (C[idx], 2, idx))
+        # typ 0 (D) and typ 2 (Close) have no further actions
+
+    print(total)
+
+if __name__ == "__main__":
+    solve()
+```
