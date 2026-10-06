@@ -51,6 +51,59 @@ class ExampleCallDetection():
         return "\n".join([astor.to_source(item) for item in content_body])
 
 
+    def remove_example_calls(self, code: str, class_name: str = "Solution") -> str:
+        """
+        Remove example calls from a class based solution (e.g. LeetCode style `class Solution`).
+        extract_code_blocks only understands top level functions, it would keep example calls
+        after a class and drop a class that follows a helper function.
+
+        Keeps imports, function/class definitions and module level statements that do not
+        touch the class under test. Drops `if __name__ == "__main__":` blocks, statements that
+        reference class_name and statements that use a name assigned by a dropped statement,
+        e.g. `sol = Solution()` followed by `print(sol.f(1))`.
+
+        Args:
+            code (str): The code to clean.
+            class_name (str): Name of the class under test. Defaults to "Solution".
+
+        Returns:
+            str: Code without example calls, original code if it cannot be parsed.
+        """
+        try:
+            body = ast.parse(code).body
+        except Exception as e:
+            print_error(f"Error parsing generated code. Returning original code. Error: {str(e)}")
+            return code
+
+        definitions = (ast.Import, ast.ImportFrom, ast.FunctionDef, ast.AsyncFunctionDef, ast.ClassDef)
+        dropped_names: set[str] = set()
+        kept = []
+
+        for item in body:
+            if isinstance(item, definitions):
+                kept.append(item)
+                continue
+
+            names = {n.id for n in ast.walk(item) if isinstance(n, ast.Name)}
+            if self._is_main_guard(item) or class_name in names or names & dropped_names:
+                dropped_names |= {n.id for n in ast.walk(item)
+                                  if isinstance(n, ast.Name) and isinstance(n.ctx, ast.Store)}
+                continue
+            kept.append(item)
+
+        return "\n\n".join(ast.unparse(item) for item in kept)
+
+
+    def _is_main_guard(self, node: ast.AST) -> bool:
+        """
+        Check if the node is an `if __name__ == "__main__":` block.
+        """
+        return (isinstance(node, ast.If)
+                and isinstance(node.test, ast.Compare)
+                and isinstance(node.test.left, ast.Name)
+                and node.test.left.id == "__name__")
+
+
     def get_function_names(self, content_tree: list) -> list[str]:
         """
         Extracts all the DEFINED function names from the code content.

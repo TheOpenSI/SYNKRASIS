@@ -124,17 +124,48 @@ class LiveCodeBench(DatasetBase):
         self.log_to_csv_helper(column_names = ["task_id", "fix_mode_attempt_count", "status", "error_trace"])
 
 
+    def append_result(self, task_id: str,
+                      fix_mode_attempt_count: int,
+                      status: str,
+                      error_trace: list[str]) -> None:
+        """
+        LiveCodeBench task ids are strings (e.g. abc387_b), the base class converts them to int.
+        """
+        self.results.append({
+            "task_id": str(task_id),
+            "fix_mode_attempt_count": int(fix_mode_attempt_count),
+            "status": status,
+            "error_trace": error_trace
+        })
+
+
+    def _build_prompt(self, question: str, starter_code: str, test_type: str) -> str:
+        """
+        Build the prompt, follows the LiveCodeBench code generation prompt format.
+        Starter code is present only when the tests are functional.
+        """
+        if test_type == "functional":
+            return (f"{question}\n\n"
+                    "You will use the following starter code to write the solution to the problem.\n"
+                    f"```python\n{starter_code}\n```")
+
+        return (f"{question}\n\n"
+                "Read the input from standard input and write the answer to standard output. "
+                "The code must be a complete standalone program, do not hard code the sample inputs.")
+
+
     def process(self, data_point: pd.Series) -> dict :
             metadata = ast.literal_eval(data_point["metadata"])
             public_test_cases = json.loads(data_point["public_test_cases"])
+            test_type = self._get_test_type(public_test_cases)
             return {
                 "task_id": data_point["question_id"],
-                "prompt": data_point["question_content"],
+                "prompt": self._build_prompt(data_point["question_content"], data_point["starter_code"], test_type),
                 "entry_point": metadata.get("func_name", None), # relevant when starter code is present, test is functional.
                 "public_test": public_test_cases,
                 "private_test": self._decode_test_cases(data_point["private_test_cases"]),
                 "starter_code": data_point["starter_code"],
-                "test_type": self._get_test_type(public_test_cases),
+                "test_type": test_type,
                 "metadata": data_point["metadata"]
             }
 
