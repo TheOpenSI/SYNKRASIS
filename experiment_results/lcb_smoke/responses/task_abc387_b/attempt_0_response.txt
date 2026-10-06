@@ -1,0 +1,37 @@
+### Step-by-step reasoning
+- The 9x9 multiplication grid contains the numbers i*j for i, j in 1..9. The total sum of all 81 entries equals (sum of 1..9) squared, i.e., 45 * 45 = 2025.
+- We need the sum of all entries except those equal to X. If a cell equals X, it contributes X to the total; we must subtract those contributions.
+- The number of occurrences of X in the grid equals the number of ordered pairs (i, j) with i, j in {1,...,9} such that i*j = X. This can be found by counting i from 1 to 9 for which X % i == 0 and X//i is between 1 and 9.
+- Therefore, answer = 2025 - X * count_of_occurrences_of_X.
+- Edge cases:
+  - If X has no factorization with both factors in 1..9, count = 0 and answer = 2025.
+  - If X = 1, only (1,1) produces 1, so answer = 2024.
+  - If X = 81, only (9,9) produces 81, so answer = 2025 - 81 = 1944.
+
+### Requirements
+None
+
+### Code
+```
+import sys
+
+def solve():
+    data = sys.stdin.read().strip().split()
+    if not data:
+        return
+    X = int(data[0])
+
+    total = 2025  # sum of all i*j for i,j in 1..9
+    count = 0
+    for i in range(1, 10):
+        if X % i == 0:
+            j = X // i
+            if 1 <= j <= 9:
+                count += 1
+
+    ans = total - X * count
+    print(ans)
+
+if __name__ == "__main__":
+    solve()
+```
