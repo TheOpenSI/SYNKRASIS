@@ -1,0 +1,46 @@
+### Step-by-step reasoning
+- The problem asks, for each query range [L, R] in a globally nondecreasing array A, how many disjoint pairs (a, b) can be formed such that a ≤ b/2.
+- Since A is globally sorted, every subarray A[L..R] is also sorted. This allows a simple and optimal greedy using two pointers on halves of the subarray.
+- Let m = R - L + 1 and half = floor(m/2). Consider the left half indices [L, L+half-1] as potential small elements and the right half indices [L+half, R] as potential large elements.
+- Use i to index the left half and j to index the right half. Increase i and j together when A[i]*2 ≤ A[j] (forming a pair). If A[i]*2 > A[j], move j forward to find a larger partner for A[i].
+- This greedy is optimal because it always tries to pair the smallest remaining element with the smallest possible partner that satisfies the condition, ensuring maximum total pairs.
+- Complexity per query is O(m) since we scan each element at most once.
+
+### Requirements
+None
+
+### Code
+```
+import sys
+
+def solve():
+    data = sys.stdin.buffer.read().split()
+    it = iter(data)
+    N = int(next(it))
+    A = [int(next(it)) for _ in range(N)]
+    Q = int(next(it))
+    out_lines = []
+    for _ in range(Q):
+        L = int(next(it)) - 1  # 0-based
+        R = int(next(it)) - 1  # 0-based
+        m = R - L + 1
+        if m < 2:
+            out_lines.append("0")
+            continue
+        half = m // 2
+        i = L
+        j = L + half
+        ans = 0
+        while i < L + half and j <= R:
+            if A[i] * 2 <= A[j]:
+                ans += 1
+                i += 1
+                j += 1
+            else:
+                j += 1
+        out_lines.append(str(ans))
+    sys.stdout.write("\n".join(out_lines))
+
+if __name__ == "__main__":
+    solve()
+```

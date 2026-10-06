@@ -1,0 +1,90 @@
+### Step-by-step reasoning
+- Problem insight:
+  - For a query [L, R], we must form as many disjoint pairs (i, j) with L ≤ i < j ≤ R such that A[i] ≤ A[j] / 2.
+  - Amochi cannot be reused across pairs, so this is a maximum matching problem on a simple threshold graph where edges exist from earlier indices to later indices if A[i] ≤ A[j]/2.
+
+- Why a simple left-to-right greedy (always pairing the smallest available j with the current i) can fail:
+  - Using the smallest possible partner for each left element can consume a mochi that would be better used as a left member in another pair, reducing the total number of pairs.
+  - Example: In [1,1,2,3,4], pairing (1,2) blocks forming two pairs, whereas the optimal is (1,3) and (2,4).
+
+- Correct approach per query:
+  - Sweep the subarray A[L..R] from left to right.
+  - Maintain a multiset (pool) of previously seen, currently unused elements which could still serve as the left side of a pair.
+  - For each new value b = A[i], try to pair it with the largest a in the pool such that a ≤ b/2. If such a exists, form a pair and remove that a from the pool. If not, insert b into the pool (so it can be used as a left element for future rights).
+  - Why this works: processing rights in order and always using the largest feasible left preserves smaller elements for future bigger rights, which tends to maximize the total number of matches in this monotone-threshold structure.
+
+- Data structure details:
+  - pool is a multiset of values, stored as:
+    - a dictionary counts[value] = number of occurrences currently available as lefts,
+    - a sorted list keys of distinct values currently in the pool (in increasing order).
+  - To pick the largest a ≤ threshold, we binary-search on keys to find the rightmost value ≤ threshold and then check counts. If its count is zero, we skip to the previous key with a positive count.
+
+- Complexity:
+  - For a query with length m = R-L+1, each element is processed once, and each operation uses O(log distinct_values_in_pool) due to the binary search on keys. In practice this is efficient for typical inputs.
+
+- Implementation notes:
+  - We do not rely on external libraries beyond Python standard library (bisect).
+  - We implement as a standalone program that reads stdin and prints the answers.
+
+### Requirements
+None
+
+### Code
+```
+import sys
+import bisect
+
+def solve():
+    data = sys.stdin.buffer.read().split()
+    it = iter(data)
+    N = int(next(it))
+    A = [int(next(it)) for _ in range(N)]
+    Q = int(next(it))
+    queries = []
+    for _ in range(Q):
+        L = int(next(it)); R = int(next(it))
+        queries.append((L-1, R-1))  # to 0-based indices
+
+    out_lines = []
+    for L, R in queries:
+        m = R - L + 1
+        if m < 2:
+            out_lines.append("0")
+            continue
+
+        # pool of unused left elements values
+        counts = {}  # value -> count
+        keys = []     # distinct values currently in pool, sorted increasingly
+
+        ans = 0
+
+        for i in range(L, R + 1):
+            v = A[i]
+            thr = v // 2  # a <= v/2
+
+            # find largest a <= thr with positive count
+            idx = bisect.bisect_right(keys, thr) - 1
+            while idx >= 0 and counts.get(keys[idx], 0) == 0:
+                idx -= 1
+
+            if idx >= 0:
+                a = keys[idx]
+                counts[a] -= 1
+                ans += 1
+                # do not add v to pool since it's used as right in a pair
+            else:
+                # add v to pool as a potential left for future rights
+                if v in counts:
+                    counts[v] += 1
+                else:
+                    counts[v] = 1
+                    # since A is nondecreasing and we traverse left-to-right, v >= last key
+                    keys.append(v)
+
+        out_lines.append(str(ans))
+
+    print("\n".join(out_lines))
+
+if __name__ == "__main__":
+    solve()
+```
