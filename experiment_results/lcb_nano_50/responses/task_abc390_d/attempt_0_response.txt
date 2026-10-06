@@ -1,0 +1,62 @@
+### Step-by-step reasoning
+- Each operation moves all stones from one bag A into another bag B, leaving A empty. Repeating this process essentially forms a forest of moves where every non-root bag’s content eventually ends up in some root bag. The final nonempty bags are exactly the roots of these forests, and the value in a root bag equals the sum of stones in all bags that are in its subtree.
+- Therefore, any achievable final configuration corresponds to partitioning the N bags into blocks, where each block has a designated root bag (one of the bags in the block). The final B_i for a root i is the sum of A_j over all bags j in its block; all non-root bags end up with 0. The overall XOR is the XOR over the sums of all blocks.
+- Consequently, the problem reduces to: given A_1..A_N, consider all partitions of the set {1..N} into blocks, and compute the XOR of the sums of A over each block. Count the number of distinct such XOR values.
+- With N ≤ 12, we can solve this with a dynamic programming over bitmasks. Precompute sums[sub] = sum of A_j for j in sub (where sub is a bitmask). Let dfs(mask) return the set of all possible XOR values achievable by partitioning exactly the elements in mask into blocks and XOR-ing the sums of those blocks.
+- To avoid counting equivalent partitions multiple times, enforce that in each recursion step the chosen block must contain the least-significant set bit of mask. This is done by enumerating submasks s of mask that contain the first bit; equivalently, enumerate t as a subset of the remaining bits and set s = t ∪ {first_bit}. Then rest = mask \ s, and we combine x ∈ dfs(rest) with sums[s] via x ^ sums[s].
+- Base case: dfs(0) = {0}.
+- The answer is the size of dfs((1<<N) - 1).
+
+Edge cases:
+- Large A_i up to 1e17; sums can be up to 12 * 1e17, well within Python int range.
+- N up to 12 keeps the number of submask enumerations manageable: around 2^(N-1) per mask in the worst case, with memoization reusing results.
+
+### Requirements
+None
+
+### Code
+```
+import sys
+
+def main():
+    data = list(map(int, sys.stdin.buffer.read().split()))
+    N = data[0]
+    A = data[1:]
+    size = 1 << N
+
+    # Precompute sums for all submasks
+    sums = [0] * size
+    bit_index = {1 << i: i for i in range(N)}
+    for mask in range(1, size):
+        lsb = mask & -mask
+        sums[mask] = sums[mask ^ lsb] + A[bit_index[lsb]]
+
+    memo = {}
+
+    def dfs(mask):
+        if mask == 0:
+            return {0}
+        if mask in memo:
+            return memo[mask]
+        first_bit = mask & -mask
+        rest_mask = mask ^ first_bit
+        res = set()
+        t = rest_mask
+        while True:
+            s = t | first_bit
+            rest = mask ^ s
+            for x in dfs(rest):
+                res.add(x ^ sums[s])
+            if t == 0:
+                break
+            t = (t - 1) & rest_mask
+        memo[mask] = res
+        return res
+
+    full = (1 << N) - 1
+    ans = dfs(full)
+    print(len(ans))
+
+if __name__ == "__main__":
+    main()
+```
