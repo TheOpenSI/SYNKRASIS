@@ -1,0 +1,95 @@
+### Step-by-step reasoning
+- Each constraint A_{X_i} xor A_{Y_i} = Z_i imposes, for every bit k, a relation between the k-th bits of A at positions X_i and Y_i: b_{X_i} xor b_{Y_i} = z_i_k, where z_i_k is the k-th bit of Z_i.
+- This yields a system of linear equations over GF(2) per bit, on a graph with N vertices and M edges. Each connected component is independent across bits.
+- For a fixed bit:
+  - If the system is inconsistent on any component (a cycle imposes conflicting XORs), there is no solution: output -1.
+  - If consistent, each component has exactly two possible assignments (global flip): one with the root bit 0, and one with the root bit 1.
+  - To minimize the sum of A_i, for each component we should choose the orientation (root bit 0 or 1) that yields fewer 1s in that bit across the component.
+- We can process bits independently:
+  - Build an undirected graph with edge data including the Z value. For each bit k, BFS/DFS a component assuming root bit 0, record provisional bits, and check consistency along edges.
+  - Count how many nodes have bit 1 in this provisional assignment; decide whether to flip the entire component based on whether cnt1 <= comp_size - cnt1.
+  - After determining the orientation for a component, apply bit k to A_i as (provisional_bit[i] xor orientation[component_of_i]).
+- Complexity: O((N + M) * maxbit) where maxbit ≤ 30 (since Z_i ≤ 10^9). This is feasible for N ≤ 2e5 and M ≤ 1e5.
+- Edge cases:
+  - M = 0: all A_i can be 0.
+  - Self-loops (X_i = Y_i) reduce to 0 = Z_i; allowed by the approach (the BFS detects inconsistency if Z_i has a 1 bit).
+  - Parallel edges: handled naturally; inconsistencies across duplicates will be detected.
+  - Bits above the maximum Z are unconstrained; setting them to 0 minimizes the sum.
+
+### Requirements
+None
+
+### Code
+```
+import sys
+from collections import deque
+
+def main():
+    data = list(map(int, sys.stdin.buffer.read().split()))
+    if not data:
+        return
+    it = iter(data)
+    N = next(it)
+    M = next(it)
+
+    # Build adjacency: for every edge, store (neighbor, Z_value)
+    adj = [[] for _ in range(N)]
+    maxZ = 0
+    for _ in range(M):
+        x = next(it) - 1
+        y = next(it) - 1
+        z = next(it)
+        adj[x].append((y, z))
+        adj[y].append((x, z))
+        if z > maxZ:
+            maxZ = z
+
+    maxbit = maxZ.bit_length()
+    A = [0] * N
+
+    for bit in range(maxbit):
+        comp_id = [-1] * N
+        val = [0] * N  # provisional bit values when root of component is 0
+        orient = []    # orientation per component: 0 or 1
+        comp_cnt = 0
+
+        for s in range(N):
+            if comp_id[s] != -1:
+                continue
+
+            dq = deque([s])
+            comp_id[s] = comp_cnt
+            val[s] = 0
+            comp_size = 0
+            cnt1 = 0
+
+            while dq:
+                u = dq.popleft()
+                comp_size += 1
+                if val[u] == 1:
+                    cnt1 += 1
+                for (v, z) in adj[u]:
+                    zbit = (z >> bit) & 1
+                    if comp_id[v] == -1:
+                        comp_id[v] = comp_cnt
+                        val[v] = val[u] ^ zbit
+                        dq.append(v)
+                    else:
+                        if val[v] != (val[u] ^ zbit):
+                            print(-1)
+                            return
+
+            orient.append(0 if cnt1 <= comp_size - cnt1 else 1)
+            comp_cnt += 1
+
+        # Apply bits with the chosen orientations
+        for i in range(N):
+            b = val[i] ^ orient[comp_id[i]]
+            if b:
+                A[i] |= (1 << bit)
+
+    print(' '.join(map(str, A)))
+
+if __name__ == "__main__":
+    main()
+```

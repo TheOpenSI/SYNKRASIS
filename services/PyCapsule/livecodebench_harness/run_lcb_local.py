@@ -36,15 +36,22 @@ def main() -> None:
     parser.add_argument("--num-problems", type=int, default=20)
     parser.add_argument("--model", default="gpt-5-nano-2025-08-07")
     parser.add_argument("--output-dir", default="experiment_results/lcb_local")
+    parser.add_argument("--problem-ids", default=None,
+                        help="comma separated question ids, in run order. Overrides the even spacing sample.")
+    parser.add_argument("--resume", action="store_true", help="resume from the results file in --output-dir")
     parser.add_argument("--max-attempts", type=int, default=5)
     parser.add_argument("--timeout", type=int, default=10, help="seconds per test case")
     args = parser.parse_args()
 
-    dataloader = LiveCodeBench(model_name = args.model, output_dir = args.output_dir)
+    dataloader = LiveCodeBench(model_name = args.model, output_dir = args.output_dir, is_resuming = args.resume)
 
-    # Evenly spaced sample so we get a natural mix of AtCoder (stdin) and LeetCode (functional).
-    step = max(1, len(dataloader.data) // args.num_problems)
-    dataloader.data = dataloader.data.iloc[::step].head(args.num_problems).reset_index(drop=True)
+    if args.problem_ids:
+        data = dataloader.data.set_index("question_id", drop=False)
+        dataloader.data = data.loc[args.problem_ids.split(",")].reset_index(drop=True)
+    else:
+        # Evenly spaced sample so we get a natural mix of AtCoder (stdin) and LeetCode (functional).
+        step = max(1, len(dataloader.data) // args.num_problems)
+        dataloader.data = dataloader.data.iloc[::step].head(args.num_problems).reset_index(drop=True)
     print(f"Selected {len(dataloader.data)} problems: {dataloader.data['question_id'].tolist()}")
 
     llm = OpenAI_GPT(model_name = args.model, enable_chat_history = True, max_history = 1)
