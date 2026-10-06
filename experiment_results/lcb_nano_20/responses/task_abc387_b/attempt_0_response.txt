@@ -1,0 +1,36 @@
+### Step-by-step reasoning
+- The 9x9 grid contains numbers i*j for i, j in {1,2,...,9}. The total sum of all 81 numbers is (sum of 1..9)^2 = 45^2 = 2025.
+- If a value X appears in the grid, it appears as many times as there are pairs (i, j) in 1..9 with i*j = X. We can count these frequencies by checking each i from 1 to 9: if X is divisible by i and the corresponding j = X // i lies in 1..9, then (i, j) is a valid cell containing X.
+- The required sum is the total sum minus X times its frequency: answer = 2025 - freq(X) * X.
+- Edge cases:
+  - If X does not appear (freq = 0), answer is 2025.
+  - If X appears multiple times (e.g., X = 24 appears for (3,8), (4,6), (6,4), (8,3)), those contributions are subtracted accordingly.
+  - For extreme X values within 1..81, the logic still holds (e.g., X = 1 appears once, X = 81 appears once).
+
+### Requirements
+None
+
+### Code
+```
+import sys
+
+def main():
+    data = sys.stdin.read().strip()
+    if not data:
+        return
+    X = int(data)
+
+    total = 2025  # (sum 1..9)^2
+    freq = 0
+    for i in range(1, 10):
+        if X % i == 0:
+            j = X // i
+            if 1 <= j <= 9:
+                freq += 1
+
+    ans = total - freq * X
+    print(ans)
+
+if __name__ == "__main__":
+    main()
+```

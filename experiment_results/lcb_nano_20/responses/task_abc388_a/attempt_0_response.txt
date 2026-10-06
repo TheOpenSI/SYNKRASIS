@@ -1,0 +1,20 @@
+### Step-by-step reasoning
+- Read the input string S. According to the problem, S[0] is an uppercase letter and the rest (if any) are lowercase letters.
+- The required output is the concatenation of the first character of S and the string "UPC", in that order.
+- Edge case: if S has length 1, the output is just the first character followed by "UPC" (e.g., "A" -> "AUPC"). This is naturally handled by taking S[0].
+- Implementation detail: read from standard input, strip any trailing newline, and print S[0] + "UPC".
+
+### Requirements
+None
+
+### Code
+```
+import sys
+
+def main():
+    s = sys.stdin.readline().strip()
+    print(s[0] + "UPC")
+
+if __name__ == "__main__":
+    main()
+```
