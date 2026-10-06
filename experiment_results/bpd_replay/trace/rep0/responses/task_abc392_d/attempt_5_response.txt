@@ -1,0 +1,73 @@
+### Step-by-step reasoning
+- Problem recap: For each die i, it has Ki faces labeled with values A_{i,1}, ..., A_{i,Ki}. If we pick two distinct dice i and j and roll them, the probability that the two outcomes are equal is P(i,j) = sum over all values v of P_i(v) * P_j(v), where P_i(v) is the probability die i shows value v, i.e. (count of v on die i) / Ki. We want the maximum P(i,j) over all pairs i < j.
+- Representation: For each die i, build a mapping value -> probability P_i(v) = count_i(v) / Ki. Duplicates on the same die are counted, so the distribution sums to 1.
+- Dot-product view: P(i,j) equals the dot product of the two distributions, restricted to values present in at least one of the two dice (effectively, only common values contribute).
+- Efficient pair processing: To compute P(i,j) efficiently, iterate over the smaller support (fewer distinct values) of the two dice and accumulate p_i(v) * p_j(v) for values that exist in the other die. This minimizes work per pair.
+- Correctness concerns addressed:
+  - Duplicates within a die are handled by counting occurrences before converting to probabilities.
+  - Values not present in both dice contribute 0, so they are naturally skipped.
+  - We examine all pairs i < j and take the maximum.
+  - Numeric stability: use Python float (double precision) and print with sufficient precision (e.g., 15 decimal places) to meet 1e-8 tolerance.
+- Complexity: Let dist_i be the number of distinct values on die i. Total faces across all dice is at most 1e5, so sum dist_i ≤ sum Ki ≤ 1e5. The algorithm processes each pair in O(min(dist_i, dist_j)). In typical worst-case scenarios under the given constraints, this remains practical for N ≤ 100.
+- Edge cases:
+  - No common values between a pair → contribution 0.
+  - Two dice with identical distributions → probability equals sum_v P_i(v)^2, which is correctly computed.
+  - Large identical dice or many duplicates are handled via the counting step.
+
+### Requirements
+None
+
+### Code
+```
+import sys
+
+def main():
+    data = list(map(int, sys.stdin.buffer.read().split()))
+    if not data:
+        print("{:.15f}".format(0.0))
+        return
+
+    it = iter(data)
+    N = next(it)
+
+    # For each die, compute a mapping value -> probability
+    dice = []
+    for _ in range(N):
+        Ki = next(it)
+        counts = {}
+        for _ in range(Ki):
+            v = next(it)
+            counts[v] = counts.get(v, 0) + 1
+        Ki_float = float(Ki)
+        prob = {v: cnt / Ki_float for v, cnt in counts.items()}
+        dice.append((Ki_float, prob))
+
+    maxp = 0.0
+    for i in range(N - 1):
+        Ki_f, pi = dice[i]
+        for j in range(i + 1, N):
+            Kj_f, pj = dice[j]
+
+            # Compute P(i, j) as dot product over common values,
+            # by iterating over the smaller distribution
+            if len(pi) <= len(pj):
+                s = 0.0
+                for v, p_i in pi.items():
+                    p_j = pj.get(v)
+                    if p_j is not None:
+                        s += p_i * p_j
+            else:
+                s = 0.0
+                for v, p_j in pj.items():
+                    p_i = pi.get(v)
+                    if p_i is not None:
+                        s += p_i * p_j
+
+            if s > maxp:
+                maxp = s
+
+    print("{:.15f}".format(maxp))
+
+if __name__ == "__main__":
+    main()
+```

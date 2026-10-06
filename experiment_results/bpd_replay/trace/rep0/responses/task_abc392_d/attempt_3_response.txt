@@ -1,0 +1,66 @@
+### Step-by-step reasoning
+- For two dice i and j, the probability that their outcomes are equal is the sum over all values v that appear on either die of p_i(v) * p_j(v), where p_i(v) is the probability that die i shows v. Since each face is equally likely, p_i(v) = (number of faces on die i labeled with v) / K_i.
+- Therefore, for dice i and j, the probability of equal outcomes is sum over v of (count_i(v)/K_i) * (count_j(v)/K_j).
+- To compute this efficiently, store for each die:
+  - K_i (its number of faces)
+  - counts_i: a mapping from value v to the number of faces labeled with v on die i
+- For each pair (i, j), compute the sum only over the smaller set of distinct values between the two dice (to minimize work). For each value v in the smaller dict, if v exists in the other die's dict, accumulate (count_i(v)/K_i) * (count_j(v)/K_j).
+- Track the maximum such probability over all pairs and print with high precision (1e-15 formatting suffices).
+- This approach handles duplicates on a die, large Ki, and large total input size within given constraints.
+
+### Requirements
+None
+
+### Code
+```
+import sys
+
+def main():
+    data = list(map(int, sys.stdin.buffer.read().split()))
+    if not data:
+        print("0.000000000000000")
+        return
+
+    it = iter(data)
+    N = next(it)
+
+    # For each die: store (K_i, counts_dict)
+    dies = []
+    for _ in range(N):
+        Ki = next(it)
+        counts = {}
+        for _ in range(Ki):
+            v = next(it)
+            counts[v] = counts.get(v, 0) + 1
+        dies.append((Ki, counts))
+
+    maxp = 0.0
+    for i in range(N - 1):
+        Ki, ci = dies[i]
+        Ki_f = float(Ki)
+        for j in range(i + 1, N):
+            Kj, cj = dies[j]
+            Kj_f = float(Kj)
+
+            # Iterate over the smaller map of value->count to minimize work
+            if len(ci) <= len(cj):
+                s = 0.0
+                for v, cnt_i in ci.items():
+                    cnt_j = cj.get(v)
+                    if cnt_j is not None:
+                        s += (cnt_i / Ki_f) * (cnt_j / Kj_f)
+            else:
+                s = 0.0
+                for v, cnt_j in cj.items():
+                    cnt_i = ci.get(v)
+                    if cnt_i is not None:
+                        s += (cnt_i / Ki_f) * (cnt_j / Kj_f)
+
+            if s > maxp:
+                maxp = s
+
+    print("{:.15f}".format(maxp))
+
+if __name__ == "__main__":
+    main()
+```

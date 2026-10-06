@@ -1,0 +1,71 @@
+### Step-by-step reasoning
+- Problem restatement: We have N dice. The i-th die has Ki faces with labels A_{i,1}, ..., A_{i,Ki}. When rolling a die, each face is equally likely. We choose two distinct dice to roll. We must maximize the probability that the two outcomes are the same by choosing the best pair of dice.
+- Correct probability for a fixed pair (i, j): For every value v that appears on either die, let cnt_i(v) be the number of faces on die i labeled v, and cnt_j(v) similarly for die j. The probability that die i shows v is cnt_i(v)/Ki and die j shows v is cnt_j(v)/Kj. Since rolls are independent, the probability that both show v is (cnt_i(v)/Ki) * (cnt_j(v)/Kj). Summing over all possible v gives:
+  P(i, j) = sum_v (cnt_i(v) / Ki) * (cnt_j(v) / Kj)
+- Observations:
+  - We can treat each die as a probability distribution over values: p_i(v) = cnt_i(v) / Ki.
+  - Then P(i, j) = sum_v p_i(v) * p_j(v) over all v present in at least one of the two dice. This is the dot product of the two distributions, restricted to the intersection of their supports.
+  - To be efficient, for each die store a map value -> probability. When evaluating a pair, iterate over the smaller distribution and accumulate p_i(v) * p_j(v) for values that exist in the other die.
+  - We must consider all pairs i < j and take the maximum.
+- Potential hidden pitfalls and fixes:
+  - Duplicates on a die must be handled correctly by counting occurrences per value before converting to probabilities.
+  - The total number of faces is at most 1e5, so the total number of distinct (value) entries across all dice is at most 1e5; pairwise processing with the smaller map ensures feasible time complexity.
+  - Floating-point precision: use double precision (Python float) and print with sufficient digits (15 after the decimal) to meet 1e-8 error tolerance.
+  - Ensure two distinct dice are chosen (i < j).
+
+### Requirements
+None
+
+### Code
+```
+import sys
+
+def main():
+    data = list(map(int, sys.stdin.buffer.read().split()))
+    if not data:
+        print("{:.15f}".format(0.0))
+        return
+
+    it = iter(data)
+    N = next(it)
+
+    # For each die: store (Ki, prob_dict) where prob_dict[v] = P_i(v) = count(v) / Ki
+    dice = []
+    for _ in range(N):
+        Ki = next(it)
+        counts = {}
+        for _ in range(Ki):
+            v = next(it)
+            counts[v] = counts.get(v, 0) + 1
+        Ki_f = float(Ki)
+        prob = {v: cnt / Ki_f for v, cnt in counts.items()}
+        dice.append((Ki_f, prob))
+
+    maxp = 0.0
+    for i in range(N - 1):
+        Ki_f, pi = dice[i]
+        for j in range(i + 1, N):
+            Kj_f, pj = dice[j]
+
+            # Iterate over the smaller support to minimize work
+            if len(pi) <= len(pj):
+                s = 0.0
+                for v, p_i in pi.items():
+                    p_j = pj.get(v)
+                    if p_j is not None:
+                        s += p_i * p_j
+            else:
+                s = 0.0
+                for v, p_j in pj.items():
+                    p_i = pi.get(v)
+                    if p_i is not None:
+                        s += p_i * p_j
+
+            if s > maxp:
+                maxp = s
+
+    print("{:.15f}".format(maxp))
+
+if __name__ == "__main__":
+    main()
+```
