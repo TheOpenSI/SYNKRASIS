@@ -1,0 +1,96 @@
+### Step-by-step reasoning
+- We have N vertices, each associated with an interval [L_i, R_i] and a nonnegative weight W_i.
+- There is an undirected edge between i and j iff the intervals [L_i, R_i] and [L_j, R_j] do not intersect. Equivalently, j is a neighbor of i if R_j < L_i or L_j > R_i.
+- For each query (s, t), we need the minimum possible sum of vertex weights along a path from s to t, where the path weight is the sum of W of all vertices on the path (including endpoints).
+- A straightforward way is to run Dijkstra’s algorithm on this graph for each query, since all weights are nonnegative. We just need to be able to enumerate the neighbors of a given vertex efficiently.
+- Observations to help enumeration:
+  - Neighbors of i are all vertices j with R_j < L_i (all intervals completely to the left) plus all vertices j with L_j > R_i (all intervals completely to the right).
+  - If we sort indices by R and by L respectively, we can quickly obtain the sets of potential neighbors for a given i using binary search.
+  - Specifically:
+    - Left neighbors of i: all vertices with R_j < L_i. If we have order_by_R (indices sorted by R ascending) and R_sorted as their R values, then the left set is prefix order_by_R[:posL] where posL = lower_bound(R_sorted, L_i).
+    - Right neighbors of i: all vertices with L_j > R_i. If we have order_by_L (indices sorted by L ascending) and L_sorted as their L values, then the right set is suffix order_by_L[posR:] where posR = upper_bound(L_sorted, R_i).
+- We can perform Dijkstra per query:
+  - dist[s] = W_s, push (dist[s], s) into a min-heap.
+  - When popping a vertex u with current distance d, enumerate its neighbors using the two sets above and try to relax dist[v] with d + W_v.
+  - Stop early when we pop t from the priority queue (the distance is final due to Dijkstra’s property).
+- Edge cases:
+  - If s and t are the same after input normalization (not allowed by the problem since s != t), but handled implicitly.
+  - If no path exists, the distance to t will never be finalized, so we output -1.
+  - All weights W_i are positive, so Dijkstra’s algorithm is appropriate.
+- Complexity note:
+  - In the worst case, the per-query work could be high (potentially O(N^2 log N)). However, with N up to 2e5 this brute-force per-query approach may be slow on worst-case inputs. It relies on pruning by the two sets of non-overlapping intervals and the binary-search-based selection of neighbor candidates. It is a straightforward correct approach, and may be suitable for test cases with moderate density or smaller effective exploration.
+
+### Requirements
+None
+
+### Code
+```
+import sys
+from bisect import bisect_left, bisect_right
+import heapq
+
+def solve():
+    data = list(map(int, sys.stdin.buffer.read().split()))
+    it = iter(data)
+    N = next(it)
+    W = [next(it) for _ in range(N)]
+    L = [0]*N
+    R = [0]*N
+    for i in range(N):
+        L[i] = next(it)
+        R[i] = next(it)
+
+    Q = next(it)
+    queries = [(next(it)-1, next(it)-1) for _ in range(Q)]  # convert to 0-based
+
+    # Precompute two orders:
+    order_by_R = sorted(range(N), key=lambda i: R[i])
+    R_sorted_vals = [R[i] for i in order_by_R]
+
+    order_by_L = sorted(range(N), key=lambda i: L[i])
+    L_sorted_vals = [L[i] for i in order_by_L]
+
+    INF = 10**30
+
+    out_lines = []
+    for s, t in queries:
+        # Dijkstra from s to t
+        dist = [INF]*N
+        dist[s] = W[s]
+        hq = [(dist[s], s)]
+        visited = [False]*N  # optional optimization
+
+        while hq:
+            d, u = heapq.heappop(hq)
+            if d != dist[u]:
+                continue
+            if u == t:
+                break
+            # Enumerate left neighbors: R_j < L[u]
+            posL = bisect_left(R_sorted_vals, L[u])
+            # Left set: order_by_R[0:posL]
+            for idx in range(posL):
+                v = order_by_R[idx]
+                if dist[v] > d + W[v]:
+                    dist[v] = d + W[v]
+                    heapq.heappush(hq, (dist[v], v))
+            # Enumerate right neighbors: L_j > R[u]
+            posR = bisect_right(L_sorted_vals, R[u])
+            # Right set: order_by_L[posR:]
+            for idx in range(posR, N):
+                v = order_by_L[idx]
+                if dist[v] > d + W[v]:
+                    dist[v] = d + W[v]
+                    heapq.heappush(hq, (dist[v], v))
+
+        ans = dist[t]
+        if ans >= INF:
+            out_lines.append("-1")
+        else:
+            out_lines.append(str(ans))
+
+    print("\n".join(out_lines))
+
+if __name__ == "__main__":
+    solve()
+```

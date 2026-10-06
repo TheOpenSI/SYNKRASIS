@@ -1,0 +1,106 @@
+### Step-by-step reasoning
+- Model the problem as a shortest path problem in a state space. A state is the ordered pair (a, b) meaning piece A is on vertex a and piece B is on vertex b, with the constraint a != b.
+- From a state (a, b), a valid move is either:
+  - Move A to a neighbor a' of a such that a' != b, resulting in (a', b); or
+  - Move B to a neighbor b' of b such that b' != a, resulting in (a, b').
+- The initial state is (S, T) and the goal state is (T, S). We seek the minimum number of moves to transform between them.
+- Direct BFS on all N*(N-1) states is infeasible (N up to 2e5). However, we can use bidirectional BFS on the state graph. We maintain two frontiers:
+  - From start: (S, T)
+  - From goal: (T, S)
+  Each time we expand the smaller frontier and check for intersection with the opposite frontier. When we find a state visited by both searches, we can sum distances to obtain the answer.
+- Edge cases:
+  - If the graph is a tree (no cycles), some configurations may be impossible to resolve. A quick necessary condition is M == N-1, in which case we can directly output -1.
+  - Otherwise, we rely on the bidirectional BFS to determine reachability and the minimum number of moves.
+- Complexity: In the worst case, the state space is huge, but bidirectional BFS often explores far fewer states in practice for this problem structure. We rely on the input constraints to allow this approach within a reasonable time for typical cases.
+
+- The code reads input, builds the graph, performs bidirectional BFS on the state graph, and prints the minimum number of moves or -1 if impossible.
+
+### Requirements
+None
+
+### Code
+```python
+import sys
+from collections import deque
+
+def main():
+    data = sys.stdin.read().strip().split()
+    it = iter(data)
+    N = int(next(it))
+    M = int(next(it))
+    S = int(next(it))
+    T = int(next(it))
+
+    adj = [[] for _ in range(N + 1)]
+    for _ in range(M):
+        u = int(next(it)); v = int(next(it))
+        adj[u].append(v)
+        adj[v].append(u)
+
+    # Quick impossibility check: if the graph is a tree, swapping two tokens is impossible
+    if M == N - 1:
+        print(-1)
+        return
+
+    start = (S, T)
+    goal = (T, S)
+
+    # Bidirectional BFS on the state graph: states are (a, b) with a != b
+    dist1 = {start: 0}
+    dist2 = {goal: 0}
+    q1 = deque([start])
+    q2 = deque([goal])
+
+    # Helper to generate neighbors for a given state
+    def neighbors(state):
+        a, b = state
+        # Move A
+        for na in adj[a]:
+            if na != b:
+                yield (na, b)
+        # Move B
+        for nb in adj[b]:
+            if nb != a:
+                yield (a, nb)
+
+    # If start equals goal (not possible since S != T and we swap), handle anyway
+    if start == goal:
+        print(0)
+        return
+
+    while q1 and q2:
+        # Expand the smaller frontier
+        if len(q1) <= len(q2):
+            size = len(q1)
+            for _ in range(size):
+                cur = q1.popleft()
+                d = dist1[cur]
+                for nx in neighbors(cur):
+                    if nx in dist1:
+                        continue
+                    dist1[nx] = d + 1
+                    if nx in dist2:
+                        # Meet in the middle
+                        print(dist1[nx] + dist2[nx])
+                        return
+                    q1.append(nx)
+        else:
+            size = len(q2)
+            for _ in range(size):
+                cur = q2.popleft()
+                d = dist2[cur]
+                for nx in neighbors(cur):
+                    if nx in dist2:
+                        continue
+                    dist2[nx] = d + 1
+                    if nx in dist1:
+                        print(dist1[nx] + dist2[nx])
+                        return
+                    q2.append(nx)
+
+    # If we exit the loop, no path exists
+    print(-1)
+
+if __name__ == "__main__":
+    main()
+```

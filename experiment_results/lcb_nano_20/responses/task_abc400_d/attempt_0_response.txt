@@ -1,0 +1,131 @@
+### Step-by-step reasoning
+- Model:
+  - The grid has roads '.' and walls '#'.
+  - You can move to an adjacent road cell at zero cost.
+  - A front kick in one of the 4 directions costs 1 and turns up to 2 cells in that direction into roads (if inside the grid). After the kick, you can move through those newly opened roads with zero extra kicks.
+- Observation:
+  - From any cell u, performing a front kick in a direction allows you to reach (after the kick):
+    - The 1-step cell in that direction, and
+    - The 2-step cell in that direction (if they exist inside the grid).
+  - So from u, you can reach those up to 8 cells (2 distances × 4 directions) with a cost of 1 kick.
+  - You can also move freely through existing roads without kicks via standard 4-neighborhood moves (cost 0).
+- Reduction to graph problem:
+  - Nodes: grid cells.
+  - Edges:
+    - 0-cost edges to 4-neighbors if the neighbor is currently a road ('.').
+    - 1-cost edges to the 1-step and 2-step cells in each of the 4 directions (if inside grid). These correspond to performing one kick and then moving along the newly opened roads.
+  - The minimum number of kicks to reach the fish shop is the shortest path cost from start to target in this graph.
+- Algorithm:
+  - Use 0-1 BFS (deque-based) on the flattened grid to compute minimum kicks to every cell.
+  - Distances stored in a flattened 1D array for memory efficiency (N = H*W <= 1e6).
+  - For each popped cell, relax:
+    - 0-cost 4-neighborhood moves to adjacent roads.
+    - 1-cost moves to 1-step and 2-step cells in each direction.
+  - Early exit when popping the target cell since 0-1 BFS processes nodes in nondecreasing distance order.
+- Edge cases:
+  - Start and target could be adjacent or 0/1/2 steps away.
+  - Kick moves that go off-grid are ignored; only targets inside the grid are considered.
+  - The problem guarantees start and target are roads; the graph model handles all cases.
+
+Time complexity: O(H*W) nodes, up to about 12 edges per node, so roughly O(H*W) operations, which is acceptable for H, W up to 1000.
+Memory: dist array of size H*W using an efficient integer array.
+
+### Requirements
+None
+
+### Code
+```python
+import sys
+from collections import deque
+from array import array
+
+def main():
+    data = sys.stdin.buffer.read().split()
+    it = iter(data)
+    H = int(next(it))
+    W = int(next(it))
+    grid = [next(it).decode() for _ in range(H)]
+    A = int(next(it)); B = int(next(it)); C = int(next(it)); D = int(next(it))
+    a = A - 1
+    b = B - 1
+    c = C - 1
+    dpos = D - 1
+
+    N = H * W
+    INF = 10**9
+    dist = array('i', [INF]) * N
+
+    start = a * W + b
+    target = c * W + dpos
+
+    dq = deque()
+    dist[start] = 0
+    dq.append(start)
+
+    # Directions: up, down, left, right
+    dr = (-1, 1, 0, 0)
+    dc = (0, 0, -1, 1)
+
+    while dq:
+        idx = dq.popleft()
+        curd = dist[idx]
+        if idx == target:
+            print(curd)
+            return
+
+        r = idx // W
+        col = idx - r * W
+
+        # 0-cost moves to adjacent roads
+        nr = r - 1
+        if nr >= 0:
+            nidx = nr * W + col
+            if grid[nr][col] == '.' and dist[nidx] > curd:
+                dist[nidx] = curd
+                dq.appendleft(nidx)
+
+        nr = r + 1
+        if nr < H:
+            nidx = nr * W + col
+            if grid[nr][col] == '.' and dist[nidx] > curd:
+                dist[nidx] = curd
+                dq.appendleft(nidx)
+
+        nc = col - 1
+        if nc >= 0:
+            nidx = r * W + nc
+            if grid[r][nc] == '.' and dist[nidx] > curd:
+                dist[nidx] = curd
+                dq.appendleft(nidx)
+
+        nc = col + 1
+        if nc < W:
+            nidx = r * W + nc
+            if grid[r][nc] == '.' and dist[nidx] > curd:
+                dist[nidx] = curd
+                dq.appendleft(nidx)
+
+        # 1-cost moves: 1-step and 2-step cells in each direction
+        for k in range(4):
+            rr1 = r + dr[k]
+            cc1 = col + dc[k]
+            if 0 <= rr1 < H and 0 <= cc1 < W:
+                nidx = rr1 * W + cc1
+                if dist[nidx] > curd + 1:
+                    dist[nidx] = curd + 1
+                    dq.append(nidx)
+
+            rr2 = r + 2 * dr[k]
+            cc2 = col + 2 * dc[k]
+            if 0 <= rr2 < H and 0 <= cc2 < W:
+                nidx = rr2 * W + cc2
+                if dist[nidx] > curd + 1:
+                    dist[nidx] = curd + 1
+                    dq.append(nidx)
+
+    # If somehow not reached (shouldn't happen per problem guarantees)
+    print(-1)
+
+if __name__ == "__main__":
+    main()
+```
