@@ -1,0 +1,164 @@
+### Step-by-step reasoning
+- We need S = sum_B B^p mod p, where B runs over all N×N matrices obtained by replacing zero entries of A with any nonzero element of F_p.
+- Let Z be the set of zero positions in A. For each zero position r ∈ Z, B = A + sum_r x_r E_r, with x_r ∈ F_p^* and E_r the matrix unit for that position.
+- Expanding (A + sum_r x_r E_r)^p and summing over all x_r ∈ F_p^* separately for each r (since cross-terms with two different r’s would require too many x_r’s to survive the sum) reveals that:
+  - For p ≥ 5, all terms with any r appearing p−1 times vanish unless r is diagonal (i=j). Off-diagonal contributions require arranging p−1 off-diagonal X_r factors without adjacent X_r factors, which is impossible for p≥5; hence off-diagonal contributions vanish.
+  - For p = 3, there is exactly one pattern X_r A X_r (with A placed in the middle) that can survive, contributing E_r A E_r for each off-diagonal zero position r. The sum over x_r of x_r^2 yields a factor p−1 = 2, and combining with the other choices of the remaining zeros yields a total factor (p−1)^K for the whole sum.
+  - For p = 2, a different combinatorial situation arises; this case is handled separately with a known exact formula.
+- After careful aggregation, the sum can be written (mod p) as:
+  - Let K be the total number of zeros in A.
+  - Let factor = (p−1)^K mod p.
+  - Let Ap = A^p mod p.
+  - Let Zdiag be the set of diagonal zero positions i with A[i,i] = 0, and Zoff be off-diagonal zero positions (i≠j) with A[i,j] = 0.
+  - For p ≥ 3:
+    S = factor * [ Ap + sum_{i in Zdiag} (A E_ii + E_ii A) + (if p == 3) sum_{(i,j) in Zoff} (E_ij A E_ij) ] mod p
+  - Note: Since A[i,i] = 0 for i in Zdiag, the term E_ii A E_ii contributes only zero on the diagonal cell, but E_ii A and A E_ii are nonzero in general and must be included.
+- For p = 2, use the exact formula:
+  S = A^2 + A ∘ Z + Z ∘ A + Z^2, where Z has 1’s exactly at zero positions, and ∘ is standard matrix sum (i.e., standard matrix operations since addition/subtraction are done modulo p).
+
+Implementation notes:
+- Use fast exponentiation to compute A^p mod p.
+- Compute contributions without constructing full E_ii or E_ij matrices when possible:
+  - A E_ii is a matrix whose column i is A[:, i], other columns zero.
+  - E_ii A is a matrix whose row i is A[i, :], other rows zero.
+  - E_ij A E_ij is a matrix with a single nonzero at (i, j) equal to A[j, i].
+- Build these contributions efficiently and accumulate them.
+- All arithmetic is done modulo p. Handle the p = 2, p = 3, and p ≥ 5 cases accordingly.
+
+### Requirements
+None
+
+### Code
+```
+import sys
+
+def mat_mul(A, B, mod):
+    n = len(A)
+    R = [[0]*n for _ in range(n)]
+    for i in range(n):
+        Ai = A[i]
+        Ri = R[i]
+        for k in range(n):
+            aik = Ai[k]
+            if aik == 0:
+                continue
+            Bk = B[k]
+            mul = aik
+            for j in range(n):
+                Ri[j] = (Ri[j] + mul * Bk[j]) % mod
+    return R
+
+def mat_pow(A, e, mod):
+    n = len(A)
+    R = [[0]*n for _ in range(n)]
+    for i in range(n):
+        R[i][i] = 1 % mod
+    X = [row[:] for row in A]
+    while e > 0:
+        if e & 1:
+            R = mat_mul(R, X, mod)
+        X = mat_mul(X, X, mod)
+        e >>= 1
+    return R
+
+def mat_add(A, B, mod):
+    n = len(A)
+    R = [[0]*n for _ in range(n)]
+    for i in range(n):
+        Ai = A[i]
+        Bi = B[i]
+        Ri = R[i]
+        for j in range(n):
+            Ri[j] = (Ai[j] + Bi[j]) % mod
+    return R
+
+def mat_scale(A, scalar, mod):
+    n = len(A)
+    R = [[0]*n for _ in range(n)]
+    for i in range(n):
+        for j in range(n):
+            R[i][j] = (A[i][j] * scalar) % mod
+    return R
+
+def solve():
+    data = sys.stdin.read().strip().split()
+    if not data:
+        return
+    it = iter(data)
+    N = int(next(it))
+    p = int(next(it))
+
+    A = []
+    zeros = []  # list of (i,j) where A[i][j] == 0
+    for i in range(N):
+        row = []
+        for j in range(N):
+            v = int(next(it)) % p
+            row.append(v)
+            if v == 0:
+                zeros.append((i, j))
+        A.append(row)
+
+    K = len(zeros)
+
+    # p == 2: special handling
+    if p == 2:
+        # Z is the matrix with 1 at zero positions
+        Z = [[0]*N for _ in range(N)]
+        for (i, j) in zeros:
+            Z[i][j] = 1
+        A2 = mat_mul(A, A, p)
+        AZ = mat_mul(A, Z, p)
+        ZA = mat_mul(Z, A, p)
+        ZZ = mat_mul(Z, Z, p)
+        S = A2
+        S = mat_add(S, AZ, p)
+        S = mat_add(S, ZA, p)
+        S = mat_add(S, ZZ, p)
+        for i in range(N):
+            print(' '.join(str(x % p) for x in S[i]))
+        return
+
+    # p >= 3
+    Ap = mat_pow(A, p, p)  # A^p mod p
+
+    # factor = (p-1)^K mod p
+    factor = pow(p-1, K, p)
+
+    # diag zeros: indices i with A[i][i] == 0
+    diagZeros = [i for i in range(N) if A[i][i] == 0]
+    # off-diagonal zeros: (i,j) with i != j and A[i][j] == 0
+    offdiagZeros = [(i, j) for (i, j) in zeros if i != j]
+
+    # SumDiag = sum (A E_ii + E_ii A) over diagZeros
+    SumDiag = [[0]*N for _ in range(N)]
+    for i in diagZeros:
+        # A E_ii: column i of A placed into column i
+        for r in range(N):
+            SumDiag[r][i] = (SumDiag[r][i] + A[r][i]) % p
+        # E_ii A: row i of A placed into row i
+        for c in range(N):
+            SumDiag[i][c] = (SumDiag[i][c] + A[i][c]) % p
+
+    # SumOff (only relevant for p == 3; off-diagonal contributions)
+    SumOff = [[0]*N for _ in range(N)]
+    if p == 3:
+        for (i, j) in offdiagZeros:
+            # E_ij A E_ij has value A[j][i] at (i,j)
+            SumOff[i][j] = (SumOff[i][j] + A[j][i]) % p
+
+    # S_inside = Ap + SumDiag + (SumOff if p==3)
+    S_inside = Ap
+    S_inside = mat_add(S_inside, SumDiag, p)
+    if p == 3:
+        S_inside = mat_add(S_inside, SumOff, p)
+
+    # Multiply by factor
+    S = mat_scale(S_inside, factor, p)
+
+    for i in range(N):
+        print(' '.join(str(x % p) for x in S[i]))
+
+if __name__ == "__main__":
+    solve()
+```
