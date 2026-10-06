@@ -1,0 +1,222 @@
+### Step-by-step reasoning
+- We have binary arrays A and B and costs C. An operation flips one A_i and costs the sum S = sum_k A_k * C_k after the flip.
+- To reach B, indices where A_i != B_i must be flipped an odd number of times; indices where A_i == B_i can be flipped 0 or even times (to keep final value).
+- Flipping an A_i = 1 to 0 reduces S by C_i; flipping an A_i = 0 to 1 increases S by C_i.
+- A known optimal strategy is to flip all “negative” indices (A_i = 1, B_i = 0) first, in descending order of C_i, then flip some “positive” indices (A_i = 0, B_i = 1) in ascending order of C_i. Indices with A_i = B_i = 1 can be used to form paired flips: they can be flipped in both phases (a two-flip pair) and their effect cancels in net, but may reduce total cost depending on the order.
+- Let:
+  - neg: multiset of C_i for indices with A_i = 1, B_i = 0 (must flip once in Phase 1)
+  - pos: multiset of C_i for indices with A_i = 0, B_i = 1 (must flip once in Phase 2)
+  - Z: multiset of C_i for indices with A_i = 1, B_i = 1 (optional to form a pair of flips)
+- For a chosen subset of Z of size k (we’ll take the k largest C_i from Z):
+  - Phase 1 flips: all in neg plus the k chosen from Z (in descending order of C). The total cost contributed by Phase 1 equals sum over each step of the current S. This can be computed efficiently using the prefix sums of the sorted neg list.
+  - Phase 2 flips: all in pos plus the same k Z elements (in ascending order of C). The total cost contributed by Phase 2 depends on the current S after Phase 1 and the prefix sums of the sorted pos list.
+- We can compute the total cost for each k by maintaining:
+  - old_sum_neg: sum of all prefix sums of neg in descending order
+  - old_sum_pos: sum of all prefix sums of pos in ascending order
+  - sum_neg and sum_pos: total sums of neg and pos sets
+  - counts and sums via Fenwick trees to support dynamic updates and to query:
+    - sum of the largest t elements in neg (sum_top_k_neg)
+    - sum of the smallest t elements in pos (sum_smallest_k_pos)
+- For each additional z from Z (taken in descending order), we update:
+  - neg: insert z at the correct position, update old_sum_neg using pref_old (sum of top p-1 elements) and the proper weight
+  - pos: insert z similarly, update old_sum_pos using pref_before (sum of smallest p-1 elements) and the proper weight
+- After each insertion, recompute:
+  - TotalNeg = d * S0 - old_sum_neg
+  - S_after_neg = S0 - sum_neg
+  - TotalPos = m * S_after_neg + old_sum_pos
+  - Total = TotalNeg + TotalPos
+  - Track the minimum Total
+- This yields an O((N + |Z|) log N) solution suitable for N up to 2e5.
+
+### Requirements
+None
+
+### Code
+```python
+import sys
+
+class Fenwick:
+    def __init__(self, n):
+        self.n = n
+        self.bit = [0] * (n + 1)
+
+    def add(self, i, delta):
+        while i <= self.n:
+            self.bit[i] += delta
+            i += i & -i
+
+    def sum(self, i):
+        s = 0
+        while i > 0:
+            s += self.bit[i]
+            i -= i & -i
+        return s
+
+    def find_by_order(self, k):
+        # Finds smallest index idx such that prefix count >= k
+        # Assumes 1 <= k <= total_count
+        idx = 0
+        bit_mask = 1 << (self.n.bit_length())
+        while bit_mask:
+            t = idx + bit_mask
+            if t <= self.n and self.bit[t] < k:
+                idx = t
+                k -= self.bit[t]
+            bit_mask >>= 1
+        return idx + 1
+
+def main():
+    data = sys.stdin.read().strip().split()
+    if not data:
+        print(0)
+        return
+    it = iter(data)
+    N = int(next(it))
+
+    A = [int(next(it)) for _ in range(N)]
+    B = [int(next(it)) for _ in range(N)]
+    C = [int(next(it)) for _ in range(N)]
+
+    # Base sum S0
+    S0 = 0
+    neg_vals = []
+    pos_vals = []
+    Z_vals = []
+
+    for i in range(N):
+        ai = A[i]
+        bi = B[i]
+        ci = C[i]
+        S0 += ai * ci
+        if ai == 1 and bi == 0:
+            neg_vals.append(ci)
+        elif ai == 0 and bi == 1:
+            pos_vals.append(ci)
+        elif ai == 1 and bi == 1:
+            Z_vals.append(ci)
+        else:
+            pass
+
+    # Early zero-case
+    if not neg_vals and not pos_vals and not Z_vals:
+        print(0)
+        return
+
+    # Coordinate compression for all values
+    all_vals = sorted(set(neg_vals + pos_vals + Z_vals))
+    comp = {v: i + 1 for i, v in enumerate(all_vals)}  # 1-based
+
+    # Initial sortings and sums
+    neg_sorted = sorted(neg_vals, reverse=True)
+    old_sum_neg = 0
+    running = 0
+    for v in neg_sorted:
+        running += v
+        old_sum_neg += running
+    sum_neg = sum(neg_vals)
+    d = len(neg_vals)
+
+    pos_sorted = sorted(pos_vals)
+    old_sum_pos = 0
+    running = 0
+    for v in pos_sorted:
+        running += v
+        old_sum_pos += running
+    sum_pos = sum(pos_vals)
+    m = len(pos_vals)
+
+    # Fenwicks for neg
+    fenw_neg_cnt = Fenwick(len(all_vals))
+    fenw_neg_sum = Fenwick(len(all_vals))
+    for v in neg_vals:
+        idx = comp[v]
+        fenw_neg_cnt.add(idx, 1)
+        fenw_neg_sum.add(idx, v)
+
+    # Fenwicks for pos
+    fenw_pos_cnt = Fenwick(len(all_vals))
+    fenw_pos_sum = Fenwick(len(all_vals))
+    for v in pos_vals:
+        idx = comp[v]
+        fenw_pos_cnt.add(idx, 1)
+        fenw_pos_sum.add(idx, v)
+
+    # Helpers to compute sum of top-k in neg and bottom-k in pos
+    def sum_top_k_neg(k, d_count, sum_neg_current):
+        if k <= 0:
+            return 0
+        total = d_count
+        # t-th smallest index corresponding to (total - k + 1)-th smallest element
+        t = total - k + 1
+        idx = fenw_neg_cnt.find_by_order(t)
+        thresh = all_vals[idx - 1]
+        cnt_leq = fenw_neg_cnt.sum(idx)
+        sum_leq = fenw_neg_sum.sum(idx)
+        cnt_gt = total - cnt_leq
+        sum_gt = sum_neg_current - sum_leq
+        take_eq = k - cnt_gt
+        return sum_gt + take_eq * thresh
+
+    def sum_smallest_k_pos(k, m_count, pos_sum_current):
+        if k <= 0:
+            return 0
+        idx = fenw_pos_cnt.find_by_order(k)
+        thresh = all_vals[idx - 1]
+        cnt_less = fenw_pos_cnt.sum(idx - 1)
+        sum_less = fenw_pos_sum.sum(idx - 1)
+        take_eq = k - cnt_less
+        return sum_less + take_eq * thresh
+
+    # Current answer with k = 0
+    TotalNeg = d * S0 - old_sum_neg
+    S_after_neg = S0 - sum_neg
+    TotalPos = m * S_after_neg + old_sum_pos
+    ans = TotalNeg + TotalPos
+
+    # Process Z values in descending order (selecting k largest)
+    Z_desc = sorted(Z_vals, reverse=True)
+
+    for z in Z_desc:
+        idx_z = comp[z]
+
+        # Insert into neg (descending order)
+        cnt_leq = fenw_neg_cnt.sum(idx_z)
+        total_neg = d
+        count_greater = total_neg - cnt_leq
+        p = count_greater + 1  # insertion position in 1-based
+
+        pref_old = sum_top_k_neg(p - 1, d, sum_neg)
+
+        old_sum_neg += pref_old + z * (d - p + 2)
+
+        fenw_neg_cnt.add(idx_z, 1)
+        fenw_neg_sum.add(idx_z, z)
+        sum_neg += z
+        d += 1
+
+        # Insert into pos (ascending order)
+        cnt_leq_pos = fenw_pos_cnt.sum(idx_z)
+        p_pos = cnt_leq_pos + 1  # insertion position in ascending
+
+        pref_before_pos = sum_smallest_k_pos(p_pos - 1, m, sum_pos)
+
+        old_sum_pos += pref_before_pos + z * (m - p_pos + 2)
+
+        fenw_pos_cnt.add(idx_z, 1)
+        fenw_pos_sum.add(idx_z, z)
+        sum_pos += z
+        m += 1
+
+        # Recompute total
+        TotalNeg = d * S0 - old_sum_neg
+        S_after_neg = S0 - sum_neg
+        TotalPos = m * S_after_neg + old_sum_pos
+        total = TotalNeg + TotalPos
+        if total < ans:
+            ans = total
+
+    print(ans)
+
+if __name__ == "__main__":
+    main()
+```
