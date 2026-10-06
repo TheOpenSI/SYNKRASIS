@@ -1,0 +1,96 @@
+Your generated code failed a test case.
+Please update the function logic so all test cases will pass. Error message added for your reference - 
+AssertionError: wrong answer on test case 3. Input: '4 13\n0 1 2 0\n3 4 0 5\n0 6 0 7\n8 9 0 0', expected output: '8 0 6 5\n11 1 8 5\n8 0 4 12\n8 0 1 9', your output: '5 12 3 8\n12 12 5 3\n5 7 9 0\n2 4 12 4\n'
+
+Execution trace of your code on public test case 3, recorded line by line like a debugger session:
+Execution report for `__bpd_main__()`
+Outcome: returned None
+
+Trace:
+Call __bpd_main__()  [__bpd_main__, lines 114-115]
+  Line 115 `solve()`:
+    called solve():
+      Line 35 `data = sys.stdin.read().strip().split()`: data = ['4', '13', '0', '1', '2', '0', '3', ...
+      Line 36 `if not data:` was False (data = ['4', '13', '0', '1', '2', '0', '3', ...)
+      Line 39 `N = int(next(it))`: N = 4
+      Line 40 `p = int(next(it))`: p = 13
+      Line 41 `A = []`: A = []
+      Line 42 `zeros = []`: zeros = []
+      Line 43 `for i in range(N):` (N = 4) ran 4 iterations
+        Iteration 1 (i = 0):
+          Line 45 `for j in range(N):` (N = 4) ran 4 iterations
+            Iteration 1:
+              Line 46 `val = int(next(it)) % p`: val = 0
+              Line 48 `if val == 0:` was True (val = 0)
+              Line 49 `zeros.append((i, j))`: zeros: appended (0, 0)
+            Iteration 2: line 46 `val = int(next(it)) % p`: val: 0 -> 1; line 48 `if val == 0:` was False (val = 1)
+            ... 1 iterations omitted ...
+            Iteration 4:
+              Line 46 `val = int(next(it)) % p`: val: 2 -> 0
+              Line 48 `if val == 0:` was True (val = 0)
+              Line 49 `zeros.append((i, j))`: zeros: appended (0, 3)
+            After the loop: zeros = [(0, 0), (0, 3)], val = 0
+          Line 50 `A.append(row)`: A: appended [0, 1, 2, 0]
+        Iteration 2 (i = 1):
+          Line 45 `for j in range(N):` (N = 4) ran 4 iterations
+            Iteration 1: line 46 `val = int(next(it)) % p`: val: 0 -> 3; line 48 `if val == 0:` was False (val = 3)
+            Iteration 2: line 46 `val = int(next(it)) % p`: val: 3 -> 4; line 48 `if val == 0:` was False (val = 4)
+            ... 1 iterations omitted ...
+            Iteration 4: line 46 `val = int(next(it)) % p`: val: 0 -> 5; line 48 `if val == 0:` was False (val = 5)
+            After the loop: zeros = [(0, 0), (0, 3), (1, 2)], val = 5
+          Line 50 `A.append(row)`: A: appended [3, 4, 0, 5]
+        ... 1 iterations omitted ...
+        Iteration 4 (i = 3):
+          Line 45 `for j in range(N):` (N = 4) ran 4 iterations
+            Iteration 1: line 46 `val = int(next(it)) % p`: val: 7 -> 8; line 48 `if val == 0:` was False (val = 8)
+            Iteration 2: line 46 `val = int(next(it)) % p`: val: 8 -> 9; line 48 `if val == 0:` was False (val = 9)
+            ... 1 iterations omitted ...
+            Iteration 4: line 48 `if val == 0:` was True (val = 0); line 49 `zeros.append((i, j))`: zeros: appended (3, 3)
+            After the loop: zeros = [(0, 0), (0, 3), (1, 2), (2, 0), (2, ..., val = 0
+          Line 50 `A.append(row)`: A: appended [8, 9, 0, 0]
+        After the loop: A = [[0, 1, 2, 0], [3, 4, 0, 5], [0, 6, 0..., zeros = [(0, 0), (0, 3), (1, 2), (2, 0), (2, ..., val = 0
+      Line 51 `K = len(zeros)`: K = 7
+      Line 52 `if K == 0:` was False (K = 7)
+      Line 58 `total_fillings = pow(p - 1, K)`: total_fillings = 35831808
+      Line 61 `MAX_BRUTE = 10000`: MAX_BRUTE = 10000
+      Line 62 `if total_fillings <= MAX_BRUTE:` was False (total_fillings = 35831808, MAX_BRUTE = 10000)
+      Line 110 `Ap = mat_pow(A, p, p)`:
+        called mat_pow(A=[[0, 1, 2, 0], [3, 4, 0, 5], [0, 6, 0..., e=13, mod=13):
+          Line 22 `n = len(A)`: n = 4
+          Line 23 `R = [[0] * n for _ in range(n)]`: R = [[0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0...
+          Line 24 `for i in range(n):` (n = 4) ran 4 iterations
+            Iteration 1 (i = 0): line 25 `R[i][i] = 1 % mod`: R[0]: [0, 0, 0, 0] -> [1, 0, 0, 0]
+            Iteration 2 (i = 1): line 25 `R[i][i] = 1 % mod`: R[1]: [0, 0, 0, 0] -> [0, 1, 0, 0]
+            ... 1 iterations omitted ...
+            Iteration 4 (i = 3): line 25 `R[i][i] = 1 % mod`: R[3]: [0, 0, 0, 0] -> [0, 0, 0, 1]
+            After the loop: R = [[1, 0, 0, 0], [0, 1, 0, 0], [0, 0, 1...
+          Line 26 `X = [row[:] for row in A]`: X = [[0, 1, 2, 0], [3, 4, 0, 5], [0, 6, 0...
+          Line 27 `while e > 0:` (e = 13) ran 4 iterations
+            Iteration 1 (e = 13):
+              Line 28 `if e & 1:` was True (e = 13)
+              Line 29 `R = mat_mul(R, X, mod)`: called mat_mul(A=[[1, 0, 0, 0], [0, 1, 0, 0], [0, 0, 1..., B=[[0, 1, 2, 0], [3, 4, 0, 5], [0, 6, 0..., mod=13) -> [[0, 1, 2, 0], [3, 4, 0, 5], [0, 6, 0... (nested details omitted: depth limit); R: [[1, 0, 0, 0], [0, 1, 0, 0], [0, 0, 1... -> [[0, 1, 2, 0], [3, 4, 0, 5], [0, 6, 0...
+              Line 30 `X = mat_mul(X, X, mod)`: called mat_mul(A=[[0, 1, 2, 0], [3, 4, 0, 5], [0, 6, 0..., B=[[0, 1, 2, 0], [3, 4, 0, 5], [0, 6, 0..., mod=13) -> [[3, 3, 0, 6], [0, 12, 6, 7], [9, 9, ... (nested details omitted: depth limit); X: [[0, 1, 2, 0], [3, 4, 0, 5], [0, 6, 0... -> [[3, 3, 0, 6], [0, 12, 6, 7], [9, 9, ...
+              Line 31 `e >>= 1`: e: 13 -> 6
+            Iteration 2 (e = 6):
+              Line 28 `if e & 1:` was False (e = 6)
+              Line 30 `X = mat_mul(X, X, mod)`: called mat_mul(A=[[3, 3, 0, 6], [0, 12, 6, 7], [9, 9, ..., B=[[3, 3, 0, 6], [0, 12, 6, 7], [9, 9, ..., mod=13) -> [[2, 10, 10, 10], [9, 12, 2, 7], [5, ... (nested details omitted: depth limit); X: [[3, 3, 0, 6], [0, 12, 6, 7], [9, 9, ... -> [[2, 10, 10, 10], [9, 12, 2, 7], [5, ...
+              Line 31 `e >>= 1`: e: 6 -> 3
+            ... 1 iterations omitted ...
+            Iteration 4 (e = 1):
+              Line 28 `if e & 1:` was True (e = 1)
+              Line 29 `R = mat_mul(R, X, mod)`: called mat_mul(A=[[6, 10, 4, 3], [1, 2, 5, 9], [7, 2, ..., B=[[10, 4, 10, 11], [11, 6, 10, 0], [12..., mod=13) -> [[5, 12, 3, 8], [12, 12, 5, 3], [5, 7... (nested details omitted: depth limit); R: [[6, 10, 4, 3], [1, 2, 5, 9], [7, 2, ... -> [[5, 12, 3, 8], [12, 12, 5, 3], [5, 7...
+              Line 30 `X = mat_mul(X, X, mod)`: called mat_mul(A=[[10, 4, 10, 11], [11, 6, 10, 0], [12..., B=[[10, 4, 10, 11], [11, 6, 10, 0], [12..., mod=13) -> [[3, 2, 9, 8], [10, 0, 12, 12], [4, 1... (nested details omitted: depth limit); X: [[10, 4, 10, 11], [11, 6, 10, 0], [12... -> [[3, 2, 9, 8], [10, 0, 12, 12], [4, 1...
+              Line 31 `e >>= 1`: e: 1 -> 0
+            After the loop: e = 0, R = [[5, 12, 3, 8], [12, 12, 5, 3], [5, 7..., X = [[3, 2, 9, 8], [10, 0, 12, 12], [4, 1...
+          Line 32 `return R`: mat_pow returned [[5, 12, 3, 8], [12, 12, 5, 3], [5, 7...
+        Ap = [[5, 12, 3, 8], [12, 12, 5, 3], [5, 7...
+      Line 111 `for i in range(N):` (N = 4) ran 4 iterations
+        Iteration 1 (i = 0): no variable changes
+        Iteration 2 (i = 1): no variable changes
+        ... 1 iterations omitted ...
+        Iteration 4 (i = 3): no variable changes
+        After the loop: no variables changed
+      End of function reached: solve returned None
+  End of function reached: __bpd_main__ returned None
+
+Find the first point where the behaviour differs from what the problem requires and fix that logic.
