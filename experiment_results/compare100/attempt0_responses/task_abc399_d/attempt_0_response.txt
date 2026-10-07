@@ -1,0 +1,62 @@
+### Step-by-step reasoning
+- Let pos[x] be the two positions where number x occurs in A (1-based). For a pair (a, b) to satisfy the third condition, the four positions {pos[a][0], pos[a][1], pos[b][0], pos[b][1]} must be partitionable into two adjacent blocks of size 2: {i, i+1} and {j, j+1} (i+1 < j). This is equivalent to saying that after some sequence of swaps between a’s and b’s (moving only within these four positions), we can place a’s on one adjacent pair and b’s on the other adjacent pair.
+- Observing the four positions, this partition into two adjacent pairs happens if and only if there are two disjoint adjacent pairs in A that contain exactly {a, b} (one occurrence of a and one of b in each pair). In other words, there exist two indices i < j such that:
+  - A[i] != A[i+1], A[j] != A[j+1]
+  - {A[i], A[i+1]} = {A[j], A[j+1]} = {a, b}
+  - The two pairs are disjoint, i+1 < j
+- Therefore, (a, b) is valid iff the unordered pair {a, b} appears as the adjacent pair {A[i], A[i+1]} at least twice in the array, in non-overlapping positions.
+
+Algorithm:
+- Scan i from 1 to 2N-1. For each i with A[i] != A[i+1], form the unordered pair p = (min(A[i], A[i+1]), max(A[i], A[i+1])).
+- Keep for each pair p the first position i where it occurs (the earliest AB pair). Also keep a set of pairs already counted.
+- Whenever we encounter another occurrence of the same pair p at position i2, if i2 - first_i >= 2 (non-overlapping) and p not yet counted, then count this pair (increase answer and add p to counted).
+- This works because using the earliest occurrence as an anchor ensures we find a non-overlapping second occurrence if one exists. Each pair is counted at most once.
+
+Complexity:
+- For each test, O(2N) time and O(number of distinct AB-pairs) memory. The sum of N over all test cases is <= 2e5, so this is efficient.
+
+Edge cases:
+- If an AB pair occurs only once, it cannot contribute.
+- If AB pairs overlap (i and i+1), they don’t count toward a valid pair since we need two disjoint AB blocks.
+
+### Requirements
+None
+
+### Code
+```
+import sys
+
+def solve():
+    data = list(map(int, sys.stdin.buffer.read().split()))
+    t = data[0]
+    idx = 1
+    outputs = []
+    for _ in range(t):
+        n = data[idx]; idx += 1
+        A = data[idx: idx + 2 * n]; idx += 2 * n
+
+        first_occ = {}      # key: (min(u,v), max(u,v)) -> first i where AB occurs
+        counted = set()     # set of pairs already counted
+        ans = 0
+
+        for i in range(2 * n - 1):  # i is 0-based index for A[i]
+            x = A[i]
+            y = A[i + 1]
+            if x == y:
+                continue
+            p = (x, y) if x < y else (y, x)
+
+            if p not in first_occ:
+                first_occ[p] = i
+            else:
+                if (i - first_occ[p] >= 2) and (p not in counted):
+                    counted.add(p)
+                    ans += 1
+
+        outputs.append(str(ans))
+
+    print("\n".join(outputs))
+
+if __name__ == "__main__":
+    solve()
+```

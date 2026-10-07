@@ -1,0 +1,107 @@
+### Step-by-step reasoning
+- We traverse an m x n grid from (0,0) to (m-1,n-1) with moves only right or down.
+- Each cell has coins[i][j]. If it is negative, it represents a robber; otherwise, it adds coins.
+- We have at most 2 neutralizations to apply to cells along the path. A neutralization on a cell negates the robber effect, effectively turning the cell contribution into 0 instead of its negative value. Neutralizing a non-robber cell is never beneficial, so we should only consider neutralization when the current cell value is negative.
+- Dynamic programming with a dimension for how many neutralizations have been used (0, 1, or 2) is natural: dp[i][j][k] = maximum coins collected reaching (i,j) having used k neutralizations.
+- Transitions:
+  - From top (i-1, j) with k neutralizations:
+    - Do not neutralize current cell: value = dp[i-1][j][k] + coins[i][j], stays at k.
+    - If coins[i][j] < 0 and k+1 <= 2: neutralize current cell: value = dp[i-1][j][k] (since we add 0), moves to k+1.
+  - From left (i, j-1) with k neutralizations: same two options as above.
+- Initialization: at (0,0) you can either take coins[0][0] with k=0, or neutralize it (if negative) giving 0 with k=1.
+- To meet the constraints (m,n up to 500), we implement a space-optimized DP using only two rows (rolling array) to keep memory O(n*3).
+- Final answer is max(dp[m-1][n-1][k]) for k in {0,1,2}.
+
+Edge cases:
+- All values non-negative: we simply sum along a best path; neutralization isn’t used.
+- Only negative values: neutralize two most impactful robberies along the path.
+- m=1 or n=1: path is a single row or column; the DP handles movement along a single line.
+- Large negative values: use a sufficiently small NEG sentinel to avoid overflow issues.
+
+### Requirements
+None
+
+### Code
+```python
+from typing import List
+
+class Solution:
+    def maximumAmount(self, coins: List[List[int]]) -> int:
+        if not coins or not coins[0]:
+            return 0
+
+        m, n = len(coins), len(coins[0])
+        NEG = -10**18
+
+        # Process first row (i = 0)
+        curr = [ [NEG, NEG, NEG] for _ in range(n) ]
+        # (0,0)
+        curr[0][0] = coins[0][0]
+        if coins[0][0] < 0:
+            curr[0][1] = 0
+        # rest of first row
+        for j in range(1, n):
+            val = coins[0][j]
+            best = [NEG, NEG, NEG]
+            for k in range(3):
+                base = curr[j-1][k]
+                if base == NEG:
+                    continue
+                cand = base + val
+                if cand > best[k]:
+                    best[k] = cand
+                if val < 0 and k + 1 <= 2:
+                    if base > best[k+1]:
+                        best[k+1] = base  # neutralize current cell
+            curr[j] = best
+
+        prev = curr  # previous row
+
+        # Process subsequent rows
+        for i in range(1, m):
+            curr = [ [NEG, NEG, NEG] for _ in range(n) ]
+            # first column (j = 0) from top only
+            val = coins[i][0]
+            best0 = [NEG, NEG, NEG]
+            for k in range(3):
+                base = prev[0][k]
+                if base == NEG:
+                    continue
+                cand = base + val
+                if cand > best0[k]:
+                    best0[k] = cand
+                if val < 0 and k + 1 <= 2:
+                    if base > best0[k+1]:
+                        best0[k+1] = base
+            curr[0] = best0
+
+            # rest of the columns
+            for j in range(1, n):
+                val = coins[i][j]
+                best = [NEG, NEG, NEG]
+                # from top
+                for k in range(3):
+                    base = prev[j][k]
+                    if base != NEG:
+                        cand = base + val
+                        if cand > best[k]:
+                            best[k] = cand
+                        if val < 0 and k + 1 <= 2:
+                            if base > best[k+1]:
+                                best[k+1] = base
+                # from left
+                for k in range(3):
+                    base = curr[j-1][k]
+                    if base != NEG:
+                        cand = base + val
+                        if cand > best[k]:
+                            best[k] = cand
+                        if val < 0 and k + 1 <= 2:
+                            if curr[j-1][k] > best[k+1]:
+                                best[k+1] = curr[j-1][k]
+                curr[j] = best
+
+            prev = curr
+
+        return max(prev[n-1])
+```

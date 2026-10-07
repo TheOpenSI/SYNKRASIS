@@ -1,0 +1,67 @@
+### Step-by-step reasoning
+- A triplet (A, B, C) with A < B < C is a fine triplet iff B - A = C - B. This is equivalent to A + C = 2B.
+- If we let P[x] be 1 when x is in S and 0 otherwise (x ranges from 0 to max(S)), then:
+  - The number of ordered pairs (A, C) in S with A + C = s is given by the convolution Q = P * P, where Q[s] counts such pairs.
+  - For a fixed B in S, the number of triplets with B as the middle element equals the number of A in S such that C = 2B - A is also in S and A < B (which ensures A < B < C). Among all ordered pairs (A, C) with A + C = 2B, exactly one is (B, B) and the remaining come in symmetric pairs (A, C) and (C, A). Hence the count for a fixed B is (Q[2B] - 1) / 2.
+- Therefore the total number of fine triplets is sum over all B in S of (Q[2B] - 1) / 2.
+- We can compute Q efficiently with a fast convolution (FFT). Since max(S_i) ≤ 10^6, the convolution length is at most 2*10^6, which is suitable for a power-of-two FFT length around 2^21.
+- Implementation notes:
+  - Build an indicator array P of length maxV+1.
+  - Compute Q = P * P using FFT (via numpy).
+  - For each B in S, accumulate (Q[2B] - 1) // 2.
+  - Use numpy to handle the convolution efficiently; cast results to integers safely (values fit in 64-bit).
+
+Edge cases:
+- If N < 3, answer is 0.
+- Floating-point FFT may introduce small errors; rounding to nearest integer is used.
+- All values are distinct, as given.
+
+### Requirements
+numpy
+
+### Code
+```
+import sys
+import numpy as np
+
+def main():
+    data = list(map(int, sys.stdin.buffer.read().split()))
+    if not data:
+        print(0)
+        return
+
+    N = data[0]
+    S = data[1:1+N]
+
+    if N < 3:
+        print(0)
+        return
+
+    maxV = max(S)
+
+    # Length for convolution: need indices up to 2*maxV
+    n = 1
+    target = 2 * maxV + 1
+    while n < target:
+        n <<= 1
+
+    # Indicator array P of length n
+    P = np.zeros(n, dtype=np.float64)
+    idxs = np.array(S, dtype=np.int64)
+    P[idxs] = 1.0
+
+    # Convolution Q = P * P via FFT
+    F = np.fft.fft(P)
+    conv = np.fft.ifft(F * F).real
+    conv = np.rint(conv).astype(np.int64)  # Q[s] for s in [0, 2*maxV]
+
+    # Sum over B in S: (Q[2B] - 1) // 2
+    twoB = idxs * 2  # 2*B for each B in S
+    vals = conv[twoB]  # Q[2B] for each B
+    ans = int(np.sum((vals - 1) // 2))
+
+    print(ans)
+
+if __name__ == "__main__":
+    main()
+```

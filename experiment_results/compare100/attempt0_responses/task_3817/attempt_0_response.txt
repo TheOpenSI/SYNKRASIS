@@ -1,0 +1,23 @@
+### Step-by-step reasoning
+- Each container weighs w, so loading k containers consumes k * w weight.
+- The number of containers cannot exceed the total number of deck cells, which is n * n.
+- Therefore, the maximum number of containers is limited by both weight and space:
+  - By weight: max_by_weight = maxWeight // w
+  - By space: total_cells = n * n
+- The answer is the minimum of these two limits: min(max_by_weight, total_cells).
+- Edge cases:
+  - If maxWeight < w, max_by_weight becomes 0, so no containers can be loaded.
+  - If n is large, n^2 could be up to 1e6 (within Python int range).
+  - Constraints guarantee w >= 1, so no division by zero.
+
+### Requirements
+None
+
+### Code
+```
+class Solution:
+    def maxContainers(self, n: int, w: int, maxWeight: int) -> int:
+        max_by_weight = maxWeight // w
+        total_cells = n * n
+        return min(max_by_weight, total_cells)
+```

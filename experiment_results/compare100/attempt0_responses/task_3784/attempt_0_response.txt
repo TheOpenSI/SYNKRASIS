@@ -1,0 +1,146 @@
+### Step-by-step reasoning
+- Build a prefix trie for all words. Each node stores:
+  - depth (prefix length)
+  - cnt: how many words pass through the node (i.e., how many words have that prefix)
+  - children: dictionary mapping next char to child node
+  - words: list of word indices that pass through this node (for quick membership tests later)
+- After building the trie, for each depth d we count how many nodes at that depth have cnt >= k. This gives:
+  - total_count_k[d] = number of nodes at depth d with cnt >= k
+- Let D2 be the maximum depth such that total_count_k[d] >= 2. If D2 exists, then for every i there is at least one node at depth D2 not on i’s path, so B_i (the not-on-path case) is at least D2 for all i. If there are deeper depths with exactly one node (total_count_k[d] == 1), those depths might give a larger LCP length for some i if i does not pass through the unique node at that depth.
+- For depths d with total_count_k[d] == 1, there is a unique node u_d at depth d with cnt >= k. For such depths, a word i contributes to “i passes through u_d” iff i’s prefix of length d equals u_d’s prefix; we can test membership using the word indices stored in that node (S(u_d)).
+- We prepare:
+  - depth1_node_ids: list of (d, node_id) for all d with total_count_k[d] == 1 and d > D2, sorted by d descending.
+  - membership sets: for each such node_id, a set of word indices that pass through that node.
+- For each i, compute:
+  - A_i: the deepest depth along word i’s path where cnt[node] >= k+1. This is the path-based case (we can still pick k strings all sharing that longer prefix).
+  - B_i: start with B = D2 if D2 >= 0 else 0. Then scan depth1_node_ids in descending depth; for each (d, node_id), if i is not in the membership set of node_id, update B = max(B, d) and stop (since we want the maximum such depth). If i is in the set for that depth, continue to the next depth.
+- The final answer for index i is max(A_i, B_i), provided after removing i there are at least k remaining strings (i.e., len(words) - 1 >= k). If not, answer[i] = 0.
+
+Key edge cases:
+- If k > n-1 after removing i, answer[i] = 0. We can handle this upfront: if n - 1 < k, return all zeros.
+- D2 might be absent; then we only rely on depths with total_count_k[d] == 1.
+- Words can repeat; the trie counts handle duplicates correctly.
+
+Time complexity:
+- Building the trie: O(sum of word lengths) <= 1e5
+- Computing A_i for all i: O(sum of word lengths)
+- B_i processing: across all i, the total number of membership checks for the unique-depth nodes is bounded by the total number of (word, depth) associations along prefixes, i.e., O(sum lengths) in practice.
+- Overall, near-linear in the total input size, suitable for constraints.
+
+### Requirements
+None
+
+### Code
+```python
+from typing import List
+
+class Solution:
+    def longestCommonPrefix(self, words: List[str], k: int) -> List[int]:
+        n = len(words)
+        # If after removing any element we have fewer than k strings, answer is 0 for all
+        if n - 1 < k:
+            return [0] * n
+
+        # Build a trie
+        # Each node: dict children, depth, cnt, words (indices)
+        children = [{}]           # node 0 is root
+        depth_arr = [0]
+        cnt = [0]
+        word_indices_per_node = [[]]  # list of word indices passing through node
+
+        def add_node(d: int):
+            idx = len(depth_arr)
+            depth_arr.append(d)
+            cnt.append(0)
+            children.append({})
+            word_indices_per_node.append([])
+            return idx
+
+        # Insert each word, updating cnt and word indices
+        for wi, w in enumerate(words):
+            node = 0
+            for ch in w:
+                c = ord(ch) - 97
+                nxt = children[node].get(c)
+                if nxt is None:
+                    nxt = add_node(depth_arr[node] + 1)
+                    children[node][c] = nxt
+                node = nxt
+                cnt[node] += 1
+                word_indices_per_node[node].append(wi)
+
+        # Precompute counts by depth for cnt >= k
+        from collections import defaultdict
+
+        depth_to_nodes_ge_k = defaultdict(list)  # depth -> list of node ids with cnt >= k
+        max_depth = max(depth_arr) if depth_arr else 0
+        for node_id in range(1, len(depth_arr)):  # skip root
+            if cnt[node_id] >= k:
+                d = depth_arr[node_id]
+                depth_to_nodes_ge_k[d].append(node_id)
+
+        # Find D2 and unique-depth nodes
+        D2 = -1  # max depth with at least 2 nodes having cnt >= k
+        unique_node_at_depth = {}  # depth -> node_id when exactly 1 node has cnt >= k at that depth
+        for d, node_ids in depth_to_nodes_ge_k.items():
+            if len(node_ids) >= 2:
+                if d > D2:
+                    D2 = d
+            elif len(node_ids) == 1:
+                unique_node_at_depth[d] = node_ids[0]
+
+        # Prepare list of depths with exactly one Dk node, and d > D2
+        depth1_pairs = []
+        for d, node_id in unique_node_at_depth.items():
+            if d > D2:
+                depth1_pairs.append((d, node_id))
+        depth1_pairs.sort(reverse=True)  # sort by depth descending
+
+        # For each such node, create a membership set of words that pass through it
+        node_id_to_wordset = {}
+        for d, node_id in depth1_pairs:
+            # Build set of word indices for this node
+            node_wordset = set(word_indices_per_node[node_id])
+            node_id_to_wordset[node_id] = node_wordset
+
+        # Also prepare a quick access for depth -> node_id for those depths
+        # (we already have depth as key; but we need mapping from node_id)
+        depth_to_nodeid_for_depth1 = {d: node_id for d, node_id in depth1_pairs}
+
+        # Compute A_i for each word: deepest depth along its path with cnt >= k+1
+        A = [0] * n
+        for wi, w in enumerate(words):
+            node = 0
+            cur_depth = 0
+            best = 0
+            for ch in w:
+                c = ord(ch) - 97
+                node = children[node][c]
+                cur_depth += 1
+                if cnt[node] >= k + 1:
+                    best = cur_depth
+            A[wi] = best
+
+        # Compute B_i for each word
+        B = [0] * n
+        for wi in range(n):
+            # Start with D2 if exists
+            base = D2 if D2 >= 0 else 0
+            b = base
+            # Check deeper depths with exactly one node (d > D2) in descending order
+            for d, node_id in depth1_pairs:
+                # If wi is NOT in the set of words that pass through this unique node,
+                # then this depth is achievable as a not-on-path case.
+                if wi not in node_id_to_wordset[node_id]:
+                    if d > b:
+                        b = d
+                    break  # we want the maximum such d
+            B[wi] = b
+
+        # Final answers
+        ans = [0] * n
+        for i in range(n):
+            ans[i] = max(A[i], B[i])
+
+        return ans
+```

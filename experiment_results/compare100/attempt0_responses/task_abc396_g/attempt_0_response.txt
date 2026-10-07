@@ -1,0 +1,85 @@
+### Step-by-step reasoning
+- Let A be the initial H x W binary grid. After a sequence of row flips r_i (for each row i) and column flips c_j (for each column j), the final value at (i,j) is A[i][j] XOR r_i XOR c_j.
+- For a fixed column flip pattern c (a W-bit mask), define B_i as the i-th row after applying c: B_i_j = A[i][j] XOR c_j. Then flipping the row i (if desired) results in either B_i as is or its bitwise complement (flip all W bits). The minimum number of 1s in that row is min(popcount(B_i), W - popcount(B_i)).
+- Therefore, for a fixed c, the total number of 1s is:
+  sum_i min(popcount(A_i XOR c), W - popcount(A_i XOR c)).
+- Let dist(p, c) be the Hamming distance between bitmasks p and c, i.e. popcount(p XOR c). Then the above sum becomes:
+  F(c) = sum_i min(dist(A_i, c), W - dist(A_i, c)).
+- Group rows by their original bitmask p. Let cnt[p] be how many rows equal p. Then:
+  F(c) = sum_p cnt[p] * h(dist(p, c)),
+  where h(d) = min(d, W - d).
+- Observe dist(p, c) = popcount(p XOR c). So:
+  F(c) = sum_s cnt[s XOR c] * h(popcount(s)).
+  This is an XOR-convolution of arrays cnt and K, where K[s] = h(popcount(s)).
+- We can compute F for all c efficiently with the Fast Walsh-Hadamard Transform (FWHT) for XOR convolution in O(W * 2^W) time.
+- Steps:
+  - Build cnt array of length N = 2^W with cnt[p] = number of rows equal to p.
+  - Build kernel K of length N with K[s] = min(popcount(s), W - popcount(s)).
+  - Compute FWHT of cnt and K, multiply pointwise, then inverse FWHT to get F(c) for all c.
+  - The answer is min_c F(c).
+
+Edge cases:
+- W <= 18, so N = 2^W <= 262,144, which is feasible.
+- H up to 2e5, so counts fit in 64-bit; use Python int (unbounded) safely.
+- Inverse FWHT requires division by N; ensure it's done exactly.
+
+### Requirements
+None
+
+### Code
+```python
+import sys
+
+def fwht(a, invert=False):
+    n = len(a)
+    h = 1
+    while h < n:
+        for i in range(0, n, h * 2):
+            for j in range(i, i + h):
+                x = a[j]
+                y = a[j + h]
+                a[j] = x + y
+                a[j + h] = x - y
+        h <<= 1
+    if invert:
+        # Divide each element by n (n is a power of two)
+        for i in range(n):
+            a[i] //= n
+
+def main():
+    data = sys.stdin.buffer.read().split()
+    if not data:
+        return
+    H = int(data[0])
+    W = int(data[1])
+    N = 1 << W
+
+    cnt = [0] * N
+
+    idx = 2
+    for _ in range(H):
+        s = data[idx].decode()
+        idx += 1
+        p = int(s, 2)
+        cnt[p] += 1
+
+    K = [0] * N
+    for s in range(N):
+        d = s.bit_count()
+        K[s] = min(d, W - d)
+
+    A = cnt[:]  # copy
+    B = K[:]    # copy
+
+    fwht(A, invert=False)
+    fwht(B, invert=False)
+    for i in range(N):
+        A[i] *= B[i]
+    fwht(A, invert=True)
+
+    ans = min(A)
+    print(ans)
+
+if __name__ == "__main__":
+    main()
+```

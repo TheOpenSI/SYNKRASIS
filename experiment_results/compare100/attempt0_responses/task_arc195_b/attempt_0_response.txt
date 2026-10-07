@@ -1,0 +1,116 @@
+### Step-by-step reasoning
+- We have two sequences A and B with possible -1 placeholders. We may replace -1s with any non-negative integers, and we can permute A arbitrarily.
+- After all operations, we want A_i + B_i to be a constant S for all i, and all entries non-negative.
+
+Key observations:
+- Let A_known be the multiset of known (non -1) values in A, with counts freqA[t] for each value t.
+- Let B_known be the multiset of known (non -1) values in B, with counts freqB[b] for each value b.
+- Let a_neg be the number of -1s in A, and total_B_known be the number of known (non -1) values in B.
+
+Feasibility constraints:
+- All known A values must be paired with some B value so that their sum is S. Therefore, S must be at least max_A_known and at least max_B_known.
+- For a given S, the number of B_known values that can be matched with A_known is sum over b of min(freqB[b], freqA[S - b]) (where freqA[S - b] = 0 if S - b is not in A_known). The remaining B_known values must be provided by filling A via -1s (and possibly pairing with B’s -1s, which we can set appropriately). This leads to:
+  deficits(S) = total_B_known - sum_b min(freqB[b], freqA[S - b])
+  We need deficits(S) <= a_neg for some S.
+
+Efficient computation:
+- If total_B_known <= a_neg, we can always set A’s -1s to match all B_known values (choose S large enough). So answer is Yes in that case.
+- If either A_known or B_known is empty (no constraints from the other side), answer is Yes (the required sums can always be achieved with appropriate replacements and permutation).
+- Otherwise, we need to check whether there exists an S such that deficits(S) <= a_neg. Note that deficits(S) only depends on whether S - b equals some A_known value t; for a given pair (t, b) with t in A_known and b in B_known, S = t + b is a boundary where deficits can change.
+- Let need = total_B_known - a_neg. We need to find S such that sum over b of min(freqB[b], freqA[S - b]) >= need.
+- This can be computed by aggregating contributions for each pair (a_val in A_known, b_val in B_known): for S = a_val + b_val, add min(freqA[a_val], freqB[b_val]) to a accumulator best[S]. If for any S >= L = max(max_A_known, max_B_known) we have best[S] >= need, then deficits(S) <= a_neg and answer is Yes.
+
+Algorithm outline:
+1. Build freqA and freqB for known values, and a_neg, total_B_known.
+2. If total_B_known <= a_neg: Yes.
+3. If B_known is empty or A_known is empty: Yes.
+4. Let need = total_B_known - a_neg; If need <= 0: Yes (already covered, but keep for safety).
+5. For every pair (a_val, freqA[a_val]) and (b_val, freqB[b_val]):
+   - S = a_val + b_val
+   - best[S] += min(freqA[a_val], freqB[b_val])
+   - If S >= L and best[S] >= need: Yes (early exit).
+6. If no S satisfies the condition, answer No.
+
+Edge cases:
+- All entries -1: Yes.
+- B has no known values: Yes.
+- A has no known values: Yes.
+- Large values are possible, but only the counts matter for the feasibility checks.
+
+Time complexity:
+- Let U_A be the number of distinct known A values, U_B the number of distinct known B values (both ≤ N ≤ 2000).
+- In the worst case we evaluate up to U_A * U_B pairs (up to 4e6). Each step is constant time plus a potential early exit. This is acceptable in Python with careful implementation, especially because we can exit early as soon as a feasible S is found.
+
+### Requirements
+None
+
+### Code
+```
+import sys
+from collections import defaultdict
+
+def main():
+    data = sys.stdin.buffer.read().split()
+    it = iter(data)
+    N = int(next(it))
+    A = [int(next(it)) for _ in range(N)]
+    B = [int(next(it)) for _ in range(N)]
+
+    # Counts of known values and -1s
+    A_counts = {}
+    a_neg = 0
+    for x in A:
+        if x == -1:
+            a_neg += 1
+        else:
+            A_counts[x] = A_counts.get(x, 0) + 1
+
+    B_counts = {}
+    total_B_known = 0
+    for x in B:
+        if x != -1:
+            B_counts[x] = B_counts.get(x, 0) + 1
+            total_B_known += 1
+
+    # Quick obvious checks
+    if total_B_known <= a_neg:
+        print("Yes")
+        return
+    if len(B_counts) == 0:
+        print("Yes")
+        return
+    if len(A_counts) == 0:
+        print("Yes")
+        return
+
+    # Prepare data for pair-wise sums
+    A_items = list(A_counts.items())  # (value, freq)
+    B_items = list(B_counts.items())  # (value, freq)
+
+    max_A_known = max(A_counts.keys()) if A_counts else 0
+    max_B_known = max(B_counts.keys()) if B_counts else 0
+    L = max(max_A_known, max_B_known)
+
+    need = total_B_known - a_neg
+    if need <= 0:
+        print("Yes")
+        return
+
+    best = defaultdict(int)
+
+    # Iterate over all pairs (a_val, b_val)
+    for a_val, a_cnt in A_items:
+        for b_val, b_cnt in B_items:
+            S = a_val + b_val
+            add = a_cnt if a_cnt < b_cnt else b_cnt  # min(a_cnt, b_cnt)
+            # Update and early check
+            best[S] += add
+            if S >= L and best[S] >= need:
+                print("Yes")
+                return
+
+    print("No")
+
+if __name__ == "__main__":
+    main()
+```

@@ -1,0 +1,38 @@
+### Step-by-step reasoning
+- Read N and M from input.
+- We need to compute X = sum_{i=0}^M N^i, but X can be enormous. Since we only care whether X ≤ 1e9, we can accumulate the sum iteratively and stop early if the running total exceeds 1e9.
+- Use a running term variable starting at 1 (N^0). In each iteration, add term to the running sum, then multiply term by N to get the next power.
+- If at any point the running sum becomes greater than 1e9, print "inf" and exit.
+- If we finish all M+1 terms without exceeding 1e9, print the computed sum.
+- Edge cases: N ≥ 1 (per constraints). When N = 1, the sum is M+1, which is at most 101, so safe. The loop runs at most 101 iterations, which is trivial.
+
+### Requirements
+None
+
+### Code
+```
+import sys
+
+def main():
+    data = sys.stdin.read().strip().split()
+    if not data:
+        return
+    N = int(data[0])
+    M = int(data[1])
+
+    limit = 1_000_000_000
+    total = 0
+    term = 1  # N^0
+
+    for _ in range(M + 1):
+        total += term
+        if total > limit:
+            print("inf")
+            return
+        term *= N
+
+    print(total)
+
+if __name__ == "__main__":
+    main()
+```

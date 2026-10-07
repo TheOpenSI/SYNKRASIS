@@ -1,0 +1,145 @@
+### Step-by-step reasoning
+- We need the shortest palindromic-labeled path from i to j for all pairs (i, j) in a directed graph with labeled edges (or no edge denoted by '-').
+- A palindrome path can be built by expanding from both ends: at each expansion we add a pair of edges with the same label, one from the left and one from the right.
+- Consider a state (u, v) representing that after k expansions from the ends we are at vertices u (near i) and v (near j). A forward transition is possible if there exists a letter c with edges u -> u' (label c) and v' -> v (label c); the new state is (u', v').
+- Two types of palindromes exist:
+  - Even length: after k expansions we land on a state (x, x) (same vertex). Path length is 2k.
+  - Odd length: after k expansions we land on a state (x, y) where there is an edge x -> y (any label). Path length is 2k + 1.
+- To compute answers for all i, j efficiently, perform BFS on the pair-graph just once for two different sets of starting states, but in reversed direction (multi-source BFS). Reversing transitions does not change path length.
+  - Build reversed BFS to compute dist_to_diag[i][j]: minimal k such that from (i, j) you can reach some diagonal state (d, d) in k forward steps. Start BFS from all diagonal states (d, d) with distance 0.
+  - Build reversed BFS to compute dist_to_odd[i][j]: minimal k such that from (i, j) you can reach some state (u, v) with an edge u -> v in k forward steps. Start BFS from all states (u, v) with an edge u -> v (distance 0).
+- Finally, answer for (i, j) is min( 2 * dist_to_diag[i][j], 2 * dist_to_odd[i][j] + 1 ), with -1 if both are unreachable. The empty path i == i yields length 0 via the diagonal seed.
+
+Key data structures:
+- For each vertex w, out[w][c] = list of destinations reachable by an edge with label c (c ∈ [0..25]).
+- For each vertex w, pred[w][c] = list of sources that have an edge to w with label c.
+- edge_exists[a][b] = True if there is an edge a -> b (needed for odd-term seeds).
+
+The reversed transition from (a, b) to predecessors (u, v) works as:
+- For any letter c, if there is an edge u -> a with label c (u ∈ pred[a][c]) and an edge b -> v with label c (v ∈ out[b][c]), then (u, v) is a predecessor of (a, b).
+
+Complexity:
+- The pair-graph has N^2 nodes. We perform two multi-source BFS on the reversed graph.
+- Each BFS visits each pair (a, b) at most once and enumerates predecessors via all letters. In the worst case, total predecessor generations can be high, but this approach is standard for this problem and fits the constraints (N ≤ 100).
+
+### Requirements
+None
+
+### Code
+```python
+import sys
+from collections import deque
+
+def main():
+    data = sys.stdin.read().strip().split()
+    if not data:
+        return
+    it = iter(data)
+    N = int(next(it))
+    grid = []
+    for _ in range(N):
+        row = next(it).strip()
+        grid.append(row)
+
+    # Map to 0..25 for letters
+    ALPH = 26
+
+    # out[u][c] -> list of v
+    out = [ [ [] for _ in range(ALPH) ] for _ in range(N) ]
+    # pred[v][c] -> list of u
+    pred = [ [ [] for _ in range(ALPH) ] for _ in range(N) ]
+    edge_exists = [ [ False for _ in range(N) ] for _ in range(N) ]
+
+    for i in range(N):
+        row = grid[i]
+        for j in range(N):
+            ch = row[j]
+            if ch != '-':
+                c = ord(ch) - ord('a')
+                out[i][c].append(j)
+                pred[j][c].append(i)
+                edge_exists[i][j] = True
+
+    # Helper: BFS on reversed transitions to diagonal
+    def bfs_to_diag():
+        dist = [-1] * (N * N)
+        q = deque()
+        for d in range(N):
+            idx = d * N + d
+            dist[idx] = 0
+            q.append((d, d))
+        while q:
+            a, b = q.popleft()
+            curr = dist[a * N + b]
+            pred_a = pred[a]
+            # enumerate all c where there is an edge into a with label c
+            for c in range(ALPH):
+                us = pred_a[c]
+                if not us:
+                    continue
+                vs = out[b][c]
+                if not vs:
+                    continue
+                for u in us:
+                    base = u * N
+                    for v in vs:
+                        idx2 = base + v
+                        if dist[idx2] == -1:
+                            dist[idx2] = curr + 1
+                            q.append((u, v))
+        return dist
+
+    # Helper: BFS on reversed transitions to odd-terminals (edges)
+    def bfs_to_odd():
+        dist = [-1] * (N * N)
+        q = deque()
+        for a in range(N):
+            row_edge = edge_exists[a]
+            for b in range(N):
+                if row_edge[b]:
+                    idx = a * N + b
+                    dist[idx] = 0
+                    q.append((a, b))
+        while q:
+            a, b = q.popleft()
+            curr = dist[a * N + b]
+            pred_a = pred[a]
+            for c in range(ALPH):
+                us = pred_a[c]
+                if not us:
+                    continue
+                vs = out[b][c]
+                if not vs:
+                    continue
+                for u in us:
+                    base = u * N
+                    for v in vs:
+                        idx2 = base + v
+                        if dist[idx2] == -1:
+                            dist[idx2] = curr + 1
+                            q.append((u, v))
+        return dist
+
+    dist_diag = bfs_to_diag()
+    dist_odd = bfs_to_odd()
+
+    INF = 10**9
+    out_lines = []
+    for i in range(N):
+        row_vals = []
+        for j in range(N):
+            idx = i * N + j
+            even_len = 2 * dist_diag[idx] if dist_diag[idx] != -1 else INF
+            odd_len = 2 * dist_odd[idx] + 1 if dist_odd[idx] != -1 else INF
+            ans = even_len if even_len < odd_len else odd_len
+            if ans >= INF:
+                row_vals.append("-1")
+            else:
+                row_vals.append(str(ans))
+        out_lines.append(" ".join(row_vals))
+
+    sys.stdout.write("\n".join(out_lines))
+
+if __name__ == "__main__":
+    main()
+```

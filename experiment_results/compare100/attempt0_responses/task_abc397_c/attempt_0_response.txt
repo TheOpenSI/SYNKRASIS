@@ -1,0 +1,62 @@
+### Step-by-step reasoning
+- For each possible split after position i (0-based index, i from 0 to N-2), the left subarray is A[0..i] and the right subarray is A[i+1..N-1].
+- The required value for a split is: number of distinct integers in A[0..i] plus number of distinct integers in A[i+1..N-1].
+- We can precompute:
+  - pref[i] = number of distinct integers in A[0..i] by scanning left to right and marking seen values.
+  - suff[i] = number of distinct integers in A[i..N-1] by scanning right to left and marking seen values.
+- Then the answer is max over i from 0 to N-2 of pref[i] + suff[i+1].
+- Since A_i is in [1, N], we can use boolean arrays of size N+1 for O(1) membership checks, giving O(N) time and O(N) memory.
+- Edge cases:
+  - All elements equal: each split yields left distinct = 1 and right distinct = 1, so answer is 2.
+  - Minimum N = 2: just compute pref[0] + suff[1].
+  - Large N up to 3e5: algorithm is linear and memory is acceptable.
+
+### Requirements
+None
+
+### Code
+```
+import sys
+
+def main():
+    data = list(map(int, sys.stdin.buffer.read().split()))
+    if not data:
+        return
+    it = iter(data)
+    N = next(it)
+    A = [next(it) for _ in range(N)]
+
+    # Prefix distinct counts
+    pref = [0] * N
+    seen_left = [False] * (N + 1)
+    cnt = 0
+    for i in range(N):
+        v = A[i]
+        if not seen_left[v]:
+            seen_left[v] = True
+            cnt += 1
+        pref[i] = cnt
+
+    # Suffix distinct counts
+    suff = [0] * N
+    seen_right = [False] * (N + 1)
+    cnt = 0
+    for i in range(N - 1, -1, -1):
+        v = A[i]
+        if not seen_right[v]:
+            seen_right[v] = True
+            cnt += 1
+        suff[i] = cnt
+
+    # Compute maximum sum over splits after i (i from 0 to N-2)
+    ans = 0
+    for i in range(N - 1):
+        total = pref[i] + suff[i + 1]
+        if total > ans:
+            ans = total
+
+    print(ans)
+
+if __name__ == "__main__":
+    main()
+```

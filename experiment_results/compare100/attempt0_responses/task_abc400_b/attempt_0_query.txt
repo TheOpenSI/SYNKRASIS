@@ -1,0 +1,56 @@
+You are given two positive integers N and M.
+Let X = \displaystyle\sum_{i = 0}^{M} N^i. If X \leq 10^9, print the value of X. If X > 10^9, print inf.
+
+Input
+
+The input is given from Standard Input in the following format:
+N M
+
+Output
+
+Print the value of X or inf as specified by the problem statement.
+
+Constraints
+
+
+- 1 \leq N \leq 10^9
+- 1 \leq M \leq 100
+- All input values are integers.
+
+Sample Input 1
+
+7 3
+
+Sample Output 1
+
+400
+
+X = 1 + 7 + 49 + 343 = 400. Since 400 \leq 10^9, print 400.
+
+Sample Input 2
+
+1000000 2
+
+Sample Output 2
+
+inf
+
+X = 1000001000001 > 10^9, so print inf.
+
+Sample Input 3
+
+999999999 1
+
+Sample Output 3
+
+1000000000
+
+Sample Input 4
+
+998244353 99
+
+Sample Output 4
+
+inf
+
+Read the input from standard input and write the answer to standard output. The code must be a complete standalone program, do not hard code the sample inputs.

@@ -1,0 +1,54 @@
+### Step-by-step reasoning
+- Observing the operation: For each query [l, r, val], we may select any subset of indices within [l, r], and subtract val from those chosen indices. Since the subset can be any combination independently for each query, the problem decouples per index i.
+- For a fixed k (considering the first k queries), let S_i be the set of query values val_j for which i ∈ [l_j, r_j]. We can choose any subset of these values to subtract from nums[i]. Therefore, nums[i] must be representable as a sum of a subset of S_i.
+- The condition must hold for all indices i simultaneously. However, because for each query j the subset decision can include or exclude each index independently, there is no coupling between different i’s decisions. Thus we can test each i independently for a given k; if all i can reach nums[i] via subset sums of their covering queries, k is feasible.
+- We can test feasibility incrementally as k increases: maintain, for each index i, a bitset of achievable sums using the values val_j from the queries seen so far that cover i.
+- Use a bitset represented by Python integers: bit s is 1 if sum s is achievable. Start with only sum 0 achievable (bit 0 set). When a new query [l, r, val] is processed, for each i in [l, r], update bitset_i = bitset_i | (bitset_i << val). We can cap the bitset to the maximum needed target max_target = max(nums) to avoid unbounded growth.
+- Early exit: if all nums are already zero, return 0. Otherwise, after processing each query k (1..m), check for all i if bitset_i has bit nums[i] set. If yes for all i, return k. If no k works after all queries, return -1.
+
+Edge cases:
+- If nums already all zeros, answer is 0.
+- Queries can be large in number; n <= 10 keeps per-query work small.
+- Values are positive; still handle using bitset shifts safely.
+- If some indices are never covered by any query, their nums[i] must be zero to succeed; otherwise, -1.
+
+### Requirements
+None
+
+### Code
+```
+from typing import List
+
+class Solution:
+    def minZeroArray(self, nums: List[int], queries: List[List[int]]) -> int:
+        n = len(nums)
+        m = len(queries)
+
+        # If all numbers already zero, zero queries needed
+        if all(x == 0 for x in nums):
+            return 0
+
+        max_target = max(nums) if nums else 0
+        # Bitsets for each index i; bit s set means sum s is achievable using processed queries covering i
+        bits = [1 for _ in range(n)]  # only sum 0 achievable initially
+
+        # Mask to cap sums to max_target
+        mask = (1 << (max_target + 1)) - 1
+
+        for k in range(1, m + 1):
+            l, r, val = queries[k - 1]
+            for i in range(l, r + 1):
+                bits[i] |= (bits[i] << val)
+                bits[i] &= mask  # keep only up to max_target
+
+            # Check if all indices can reach nums[i] with current processed queries
+            ok = True
+            for i in range(n):
+                if ((bits[i] >> nums[i]) & 1) == 0:
+                    ok = False
+                    break
+            if ok:
+                return k
+
+        return -1
+```

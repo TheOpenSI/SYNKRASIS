@@ -1,0 +1,63 @@
+### Step-by-step reasoning
+- Let X_t, Y_t be the coordinates after t moves of the original string s (without changes). The Manhattan distance at time t is D_t = |X_t| + |Y_t|.
+- A useful representation is to consider, for any p in P = {(1,1), (1,-1), (-1,1), (-1,-1)}, the dot product S_p(t) = p · (X_t, Y_t) = sum of per-move contributions w_i(p), where w_i(p) = p · v_i for the i-th move’s vector v_i.
+- The Manhattan distance at time t equals max over p in P of S_p(t): D_t = max_p S_p(t).
+- When we are allowed to modify up to k moves among the first t, for a fixed p:
+  - Each move i contributes w_i(p) ∈ {+1, -1} originally.
+  - If we modify move i, we can choose a new direction v'_i so that w'_i(p) = p · v'_i = +1 (this is always possible for at least one of the four directions). Therefore, for any move with w_i(p) = -1, we can gain +2 in S_p by modifying that move (changing -1 to +1). If w_i(p) = +1, modifying cannot increase S_p further for that p.
+  - Thus, with up to k modifications, the maximum possible S_p after t moves is S_p(t) + 2 * min(k, N_p(t)), where N_p(t) is the number of i in [1..t] with w_i(p) = -1.
+- Therefore, for each t, the best achievable distance is:
+  D_t_max = max over p in P of [ S_p(t) + 2 * min(k, N_p(t)) ].
+- The final answer is the maximum of D_t_max over t = 1..n (and 0 for t=0).
+
+We can compute this in a single pass over the string by maintaining, for the four p’s, the running sums S_p and counts N_p of how many w_i(p) are -1. For each new character, we update these four values using precomputed per-direction contributions, then compute D_t_max and track the global maximum.
+
+Edge cases:
+- k = 0 should yield the maximum original prefix distance, which this method computes since min(k, N_p) becomes 0.
+- Large n up to 1e5 handled in O(n) time with O(1) extra memory.
+
+### Requirements
+None
+
+### Code
+```
+class Solution:
+    def maxDistance(self, s: str, k: int) -> int:
+        # We track for four corners p in {(1,1),(1,-1),(-1,1),(-1,-1)}
+        # S_p: cumulative sum of w_i(p) = p · v_i
+        # N_minus_p: how many w_i(p) were -1 among first t moves
+        S = [0, 0, 0, 0]        # S_p for p1..p4
+        N_minus = [0, 0, 0, 0]  # counts of w_i(p) == -1 for p1..p4
+
+        ans = 0
+        n = len(s)
+
+        for i, ch in enumerate(s, start=1):
+            # w for each p given current direction ch
+            if ch == 'N':
+                w = [1, -1, 1, -1]
+            elif ch == 'S':
+                w = [-1, 1, -1, 1]
+            elif ch == 'E':
+                w = [1, 1, -1, -1]
+            else:  # ch == 'W'
+                w = [-1, -1, 1, 1]
+
+            # update S and N_minus for all four p
+            for j in range(4):
+                S[j] += w[j]
+                if w[j] == -1:
+                    N_minus[j] += 1
+
+            # compute D_t_max for this t
+            current = 0
+            for j in range(4):
+                val = S[j] + 2 * min(k, N_minus[j])
+                if val > current:
+                    current = val
+
+            if current > ans:
+                ans = current
+
+        return ans
+```

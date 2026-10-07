@@ -1,0 +1,33 @@
+### Step-by-step reasoning
+- Represent the string s as a list of digits (integers 0-9) to enable arithmetic without repeated string indexing.
+- Repeatedly perform the reduction: for i from 0 to len(digits)-2, compute new_digits[i] = (digits[i] + digits[i+1]) % 10. This creates a new list of length len(digits)-1.
+- Replace the current digits with the new_digits and repeat until only two digits remain.
+- Finally, return True if the two remaining digits are equal (digits[0] == digits[1]), otherwise return False.
+- Edge cases:
+  - If input length is already 2 (or becomes 2 after reductions), handle gracefully by the same final check.
+  - Input validation: assuming the problem guarantees a string of digits; if needed, can guard against non-digit chars, but not required per constraints.
+- Time complexity: O(n^2) in the worst case (n initial length), since each pass reduces length by 1 and we do about n passes.
+- Space complexity: O(n) for storing the digits.
+
+### Requirements
+None
+
+### Code
+```
+class Solution:
+    def hasSameDigits(self, s: str) -> bool:
+        # Early guard (not strictly needed given constraints, but safe)
+        if not isinstance(s, str) or len(s) == 0:
+            return False
+
+        # Convert to list of integers for fast arithmetic
+        digits = [ord(ch) - ord('0') for ch in s]
+
+        # Reduce until we have exactly two digits left
+        while len(digits) > 2:
+            new_digits = [(digits[i] + digits[i + 1]) % 10 for i in range(len(digits) - 1)]
+            digits = new_digits
+
+        # Check if the final two digits are equal
+        return digits[0] == digits[1]
+```

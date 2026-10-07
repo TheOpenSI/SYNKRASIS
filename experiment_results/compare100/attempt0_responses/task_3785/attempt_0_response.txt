@@ -1,0 +1,46 @@
+### Step-by-step reasoning
+- Let diff[i] = original[i] - original[i-1] for i = 1..n-1. The copy array must satisfy copy[i] = copy[0] + sum_{k=1..i} diff[k].
+- Define D[i] = sum_{k=1..i} diff[k], with D[0] = 0. Then copy[i] = copy[0] + D[i].
+- For each i, the bound constraint u_i <= copy[i] <= v_i translates to u_i - D[i] <= copy[0] <= v_i - D[i].
+- Therefore, the valid range for copy[0] is the intersection of all intervals [u_i - D[i], v_i - D[i]] across i = 0..n-1.
+- Compute D incrementally while scanning bounds. Initialize L = u_0 - D[0], R = v_0 - D[0] = v_0.
+- For each i from 1 to n-1, update D by original[i] - original[i-1], then update L = max(L, u_i - D) and R = min(R, v_i - D). If at any point L > R, there are zero valid arrays.
+- The number of valid arrays is max(0, R - L + 1).
+
+Edge cases:
+- Large values are handled by Python ints (arbitrary precision).
+- Early termination when L > R optimizes performance for large inputs.
+- n is at least 2 per constraints, but the logic works for any n >= 1.
+
+### Requirements
+None
+
+### Code
+```
+from typing import List
+
+class Solution:
+    def countArrays(self, original: List[int], bounds: List[List[int]]) -> int:
+        n = len(original)
+        if n == 0:
+            return 0
+
+        # D is the cumulative difference sum, starting with D[0] = 0
+        D = 0
+        # Initialize bounds for copy[0]
+        L = bounds[0][0] - D  # u_0 - D[0]
+        R = bounds[0][1] - D  # v_0 - D[0]
+
+        for i in range(1, n):
+            D += original[i] - original[i - 1]
+            low = bounds[i][0] - D
+            high = bounds[i][1] - D
+            if low > L:
+                L = low
+            if high < R:
+                R = high
+            if L > R:
+                return 0  # no valid starting value exists
+
+        return max(0, R - L + 1)
+```

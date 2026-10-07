@@ -1,0 +1,97 @@
+### Step-by-step reasoning
+- Convert each boundary point to a scalar position t along the square’s boundary (perimeter) in a consistent direction. Use:
+  - If y == 0: t = x
+  - Else if x == side: t = side + y
+  - Else if y == side: t = 2*side + (side - x)
+  - Else (x == 0): t = 3*side + (side - y)
+  This yields t in [0, 4*side).
+
+- Observing that for points on the boundary of an axis-aligned square, the Manhattan distance between two points equals the minimum of the two arc lengths along the boundary between them. Therefore, maximizing the minimum Manhattan distance among k points is equivalent to maximizing the minimum circular distance along the boundary between any two chosen points.
+
+- Let P = 4 * side be the boundary circumference. If we place k points on the circle, the minimum circular distance between some pair is at most P // k. Thus we can binary search the answer d in [0, P // k].
+
+- For a fixed d, we need to know if there exist k points with pairwise circular distance at least d. If we order the boundary points by t, and consider distances along the boundary (clockwise), selecting k points such that consecutive gaps are >= d and the overall span from first to last is <= P - d guarantees that any pair has circular distance at least d (the span constraint ensures wrap-around distances are also >= d).
+
+- To efficiently test this for a given d, we:
+  - Create an extended array of length 2n by duplicating the sorted t with an offset P (i.e., t + [ti + P for ti in t]). This helps handle wrap-around.
+  - Build next[i] as the smallest j > i with extended[j] - extended[i] >= d using a two-pointer sweep in O(n).
+  - For each starting index i in [0, n-1], greedily jump k-1 times using next[], but never jump beyond i + n (to avoid wrapping more than once). If we can assemble k points, compute the circular distance between the first and last as d_clock = (extended[last] - extended[first]) % P. If d_clock is in [d, P - d], then such a selection exists, return True.
+
+- Binary search uses high = P // k and checks via the above can(d). Complexity: O(n log(P/k) + n*k) per can call, with n <= 15000 and k <= 25, which is feasible.
+
+Edge cases:
+- k <= 1 would trivially return 0, but constraints give k >= 4.
+- Side large up to 1e9, so use Python int (unbounded).
+- Points lie on boundary, unique, and 4 <= len(points).
+
+### Requirements
+None
+
+### Code
+```
+class Solution:
+    def maxDistance(self, side: int, points: List[List[int]], k: int) -> int:
+        P = 4 * side
+        n = len(points)
+
+        def to_t(p):
+            x, y = p
+            s = side
+            # Map boundary point to a position along the perimeter in [0, 4*side)
+            if y == 0:
+                return x
+            elif x == s:
+                return s + y
+            elif y == s:
+                return 2 * s + (s - x)
+            else:  # x == 0
+                return 3 * s + (s - y)
+
+        t = [to_t(p) for p in points]
+        t.sort()
+
+        if k <= 1:
+            return 0
+
+        # Upper bound for the maximum possible minimum distance
+        hi = P // k
+        lo = 0
+
+        # Prepare extended array to handle wrap-around efficiently
+        extended = t + [ti + P for ti in t]
+        two_n = 2 * n
+
+        def can(d: int) -> bool:
+            # Build next[i]: smallest j > i with extended[j] - extended[i] >= d
+            next_idx = [two_n] * (two_n)
+            j = 0
+            for i in range(two_n):
+                if j <= i:
+                    j = i + 1
+                while j < two_n and extended[j] - extended[i] < d:
+                    j += 1
+                next_idx[i] = j if j < two_n else two_n
+
+            # Try starting from each original point, greedily advance k-1 times
+            for i in range(n):
+                idx = i
+                steps = 1
+                while steps < k and next_idx[idx] < i + n:
+                    idx = next_idx[idx]
+                    steps += 1
+                if steps == k:
+                    # Circular distance between first and last
+                    d_clock = (extended[idx] - extended[i]) % P
+                    if d <= d_clock <= P - d:
+                        return True
+            return False
+
+        while lo < hi:
+            mid = (lo + hi + 1) // 2
+            if can(mid):
+                lo = mid
+            else:
+                hi = mid - 1
+
+        return lo
+```

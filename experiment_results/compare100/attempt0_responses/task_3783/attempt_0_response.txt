@@ -1,0 +1,115 @@
+### Step-by-step reasoning
+- An alternating permutation of 1..n means consecutive elements have opposite parity. Therefore the parity pattern of the whole permutation is determined by the parity of the first element:
+  - If the first element is odd (p = 1), positions 1,3,5,... must be odd and positions 2,4,6,... must be even.
+  - If the first element is even (p = 0), positions 1,3,5,... must be even and positions 2,4,6,... must be odd.
+- For n odd, starting with an even number is impossible because there are more odds than evens in 1..n, so no complete alternating permutation can start with an even.
+- For n even, both starting parities are feasible; for each chosen first element, the rest of the permutation is determined by parity alternation, with the only freedom being the order of remaining odd numbers among odd-required positions and remaining even numbers among even-required positions.
+- Counting completions after fixing a prefix:
+  - Let total_odds = (n+1)//2 and total_evens = n//2.
+  - Let used_odds and used_evens be the number of odd/even numbers used in the current prefix.
+  - If the first element’s parity makes the starting pattern infeasible (i.e., n is odd and first_parity is even), there are 0 completions.
+  - Otherwise, the number of completions is factorial(remaining_odds) * factorial(remaining_evens), where remaining_odds = total_odds - used_odds and remaining_evens = total_evens - used_evens.
+- To find the k-th permutation in lexicographic order:
+  - Build the permutation from left to right. At each position, try remaining numbers in increasing order that satisfy the parity constraint with the previous element (for pos=1, try all numbers but respect the feasibility rule for n odd).
+  - For each candidate, compute how many completions exist if we fix that candidate at the current position (using the counting rule above). If k is larger than that count, skip this candidate and subtract the count from k; otherwise, fix the candidate and move to the next position.
+  - If k becomes larger than the total number of valid permutations, return [].
+- Since k can be up to 1e15, we cap counts to k so we avoid large integers. A small helper computes factorials with early stopping (cap) and multiplies with cap-awareness.
+
+Edge cases:
+- n odd: starting with an even number must yield 0 completions.
+- k larger than total count: return [].
+- n up to 100 but k up to 1e15, so clamping counts is essential for performance.
+
+### Requirements
+None
+
+### Code
+```python
+from typing import List
+
+class Solution:
+    def permute(self, n: int, k: int) -> List[int]:
+        # Helper: factorial with cap
+        def fact_cap(m: int, cap: int) -> int:
+            res = 1
+            for i in range(2, m + 1):
+                res *= i
+                if res > cap:
+                    return cap + 1
+            return res
+
+        # Helper: count completions given remaining counts, with cap
+        def count_completions(rem_odds: int, rem_evens: int, cap: int) -> int:
+            a = fact_cap(rem_odds, cap)
+            if a == cap + 1:
+                return cap + 1
+            b = fact_cap(rem_evens, cap)
+            if b == cap + 1:
+                return cap + 1
+            prod = a * b
+            if prod > cap:
+                return cap + 1
+            return prod
+
+        total_odds = (n + 1) // 2
+        total_evens = n // 2
+
+        used = [False] * (n + 1)
+        res = []
+        first_parity = None  # parity of the first element (1 for odd, 0 for even)
+        used_odds = 0
+        used_evens = 0
+
+        # Build the permutation lexicographically
+        for pos in range(1, n + 1):
+            chosen = False
+            # Try candidates in increasing order
+            for val in range(1, n + 1):
+                if used[val]:
+                    continue
+
+                # Parity constraint
+                if pos > 1:
+                    if val % 2 == res[-1] % 2:
+                        continue  # must alternate parity
+                # Tentative first parity if pos == 1
+                tmp_first_parity = first_parity
+                if pos == 1:
+                    tmp_first_parity = val % 2
+
+                # Feasibility: if n is odd and starting parity would be even, zero completions
+                if n % 2 == 1 and tmp_first_parity == 0:
+                    continue  # cannot start with even when n is odd
+
+                # Compute remaining counts if we pick val here
+                new_used_odds = used_odds + (1 if val % 2 == 1 else 0)
+                new_used_evens = used_evens + (1 if val % 2 == 0 else 0)
+
+                rem_odds = total_odds - new_used_odds
+                rem_evens = total_evens - new_used_evens
+
+                # Cap-based count of completions
+                cap = k
+                count = count_completions(rem_odds, rem_evens, cap)
+
+                if count <= 0:
+                    continue
+                if k > count:
+                    k -= count
+                    continue
+
+                # Choose this value
+                res.append(val)
+                used[val] = True
+                used_odds = new_used_odds
+                used_evens = new_used_evens
+                if pos == 1:
+                    first_parity = tmp_first_parity
+                chosen = True
+                break
+
+            if not chosen:
+                return []
+
+        return res
+```

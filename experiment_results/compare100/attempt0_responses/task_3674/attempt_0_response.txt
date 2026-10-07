@@ -1,0 +1,49 @@
+### Step-by-step reasoning
+- For any subarray, to make it non-decreasing with minimum increments (only increments allowed), you sweep from left to right.
+  - Keep a running maximum `cur_max` initialized to the first element of the subarray.
+  - For each next element `a[i]` in the subarray:
+    - If `a[i] < cur_max`, you need to increment it up to `cur_max`. The cost increases by `cur_max - a[i]`.
+    - If `a[i] >= cur_max`, no increment is needed at this step, and update `cur_max = a[i]`.
+  - The sum of all required increments is the minimal number of operations to make the subarray non-decreasing.
+- To count all subarrays that can be made non-decreasing with at most `k` operations:
+  - For each left index `l`, extend the right boundary `r` from `l` to the end.
+  - Track the running `cost` and `cur_max` as above.
+  - As soon as `cost > k`, no longer subarrays starting at `l` with larger `r` will be valid (since `cost` only increases with `r`). Break and move to the next `l`.
+  - Count each valid subarray (each `(l, r)` with `cost <= k`).
+- Edge cases:
+  - Subarrays of length 1 always have cost 0, so they are always counted.
+  - Large `k` can include longer subarrays, but the algorithm gracefully handles it.
+  - Negative or zero values aren’t in constraints (nums[i] >= 1), but the logic handles any integers.
+- Time complexity: O(n^2) in the worst case, since for each left index we may scan to the end. This is simple and correct, though not optimal for very large inputs. It will work well for moderate input sizes.
+
+### Requirements
+None
+
+### Code
+```
+from typing import List
+
+class Solution:
+    def countNonDecreasingSubarrays(self, nums: List[int], k: int) -> int:
+        n = len(nums)
+        if n == 0:
+            return 0
+        ans = 0
+        for l in range(n):
+            cost = 0
+            cur_max = nums[l]
+            for r in range(l, n):
+                if r == l:
+                    # first element, no cost
+                    pass
+                else:
+                    if nums[r] < cur_max:
+                        cost += cur_max - nums[r]
+                    else:
+                        cur_max = nums[r]
+                if cost <= k:
+                    ans += 1
+                else:
+                    break
+        return ans
+```

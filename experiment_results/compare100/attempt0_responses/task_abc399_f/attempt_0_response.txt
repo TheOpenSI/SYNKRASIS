@@ -1,0 +1,99 @@
+### Step-by-step reasoning
+- Let P[0] = 0 and P[i] = A1 + A2 + ... + Ai (mod M) for i >= 1, where M = 998244353.
+- The target sum equals sum over all subarrays (l, r) of (sum_{i=l}^r A_i)^K.
+  This is equivalent to sum over all 0 <= i < j <= N of (P[j] - P[i])^K, since P[r] - P[l-1] is the subarray sum.
+- Expand (P[j] - P[i])^K using the binomial theorem:
+  (P[j] - P[i])^K = sum_{t=0}^K binom(K, t) (-1)^t P[j]^{K-t} P[i]^t.
+- Sum over all i < j:
+  For fixed j, the contribution is sum_{t=0}^K binom(K, t) (-1)^t P[j]^{K-t} * S_j_t,
+  where S_j_t = sum_{i=0}^{j-1} P[i]^t.
+- We can compute the answer in O(N*K) by traversing j from 1 to N, maintaining S_t = sum_{i=0}^{j-1} P[i]^t for t=0..K.
+- Initialization: P[0] = 0. For i = 0, P[0]^0 = 1, P[0]^t = 0 for t > 0. So initial S_t = (t == 0 ? 1 : 0).
+- For each j:
+  - Compute powers P[j]^m for m = 0..K (easy since K <= 10).
+  - Add to answer: sum_{t=0}^K binom(K, t) * (-1)^t * P[j]^{K-t} * S_t.
+  - Update S_t += P[j]^t for all t (to include i = j for next iterations).
+- All arithmetic is modulo M. Complexity is O(N*K), suitable for N up to 2e5 and K up to 10.
+
+Edge cases:
+- A_i are non-negative, so P is non-decreasing, but the method does not rely on monotonicity aside from correct arithmetic.
+- Handle 0^0 as 1 for i = 0, t = 0; implemented by initializing S_0 = 1 and powers with power[0] = 1.
+- Large N and K are handled within time due to small K.
+
+### Requirements
+None
+
+### Code
+```
+import sys
+
+MOD = 998244353
+
+def binom(n, k):
+    if k < 0 or k > n:
+        return 0
+    k = min(k, n - k)
+    res = 1
+    for i in range(1, k + 1):
+        res = res * (n - k + i) // i
+    return res
+
+def main():
+    data = list(map(int, sys.stdin.read().split()))
+    if not data:
+        print(0)
+        return
+    it = iter(data)
+    N = next(it)
+    K = next(it)
+    A = [next(it) for _ in range(N)]
+
+    # Prefix sums P[0..N], P[0] = 0
+    P = [0] * (N + 1)
+    cur = 0
+    P[0] = 0
+    for i in range(1, N + 1):
+        cur = (cur + A[i - 1]) % MOD
+        P[i] = cur
+
+    # Precompute binomial coefficients C(K, t) for t=0..K
+    C = [binom(K, t) for t in range(K + 1)]
+
+    # Initialize S_t = sum_{i=0}^{j-1} P[i]^t for the current j (start with j=1)
+    # For i=0: P[0]^0 = 1, P[0]^t = 0 for t>0
+    S = [0] * (K + 1)
+    S[0] = 1  # P[0]^0
+    # S[t] for t>0 already 0
+
+    ans = 0
+
+    for j in range(1, N + 1):
+        base = P[j]  # P_j
+
+        # Compute powers base^m for m=0..K
+        power = [0] * (K + 1)
+        power[0] = 1
+        for m in range(1, K + 1):
+            power[m] = (power[m - 1] * base) % MOD
+
+        # Contribution for this j: sum_{t=0}^K C(K,t) * (-1)^t * P_j^{K-t} * S_t
+        part = 0
+        for t in range(0, K + 1):
+            coeff = C[t]
+            if t % 2 == 1:
+                coeff = (MOD - coeff)  # negate for odd t
+            term = (coeff * power[K - t]) % MOD
+            term = (term * S[t]) % MOD
+            part = (part + term) % MOD
+
+        ans = (ans + part) % MOD
+
+        # Update S_t to include i = j for the next iterations
+        for t in range(0, K + 1):
+            S[t] = (S[t] + power[t]) % MOD
+
+    print(ans % MOD)
+
+if __name__ == "__main__":
+    main()
+```

@@ -1,0 +1,60 @@
+### Step-by-step reasoning
+- We need the shortest palindrome that starts with S, i.e., append characters to the right of S to make a palindrome.
+- If we append a suffix T to S, the result S + T should be a palindrome. The minimal such T corresponds to the longest palindromic suffix of S. Let L be the maximum length such that S[n-L:] is a palindrome (n = len(S)).
+- Then we must append the reverse of the prefix S[0:n-L], i.e., append reverse(S[0:n-L]) to S.
+- To compute L efficiently in O(n), observe that S[n-L:] being a palindrome is equivalent to S[n-L:] equals reverse(S[n-L:]). The reverse of that suffix is the prefix of reverse(S) of length L. So L is the longest length such that the suffix of S matches the prefix of reverse(S).
+- This is exactly the longest prefix of pattern P = reverse(S) that matches a suffix of text T = S. We can obtain this via the Knuth-Mordell-Pratt (KMP) algorithm:
+  - Build the prefix-function (pi) for P.
+  - Run KMP matching P against T; the final match length q is L.
+- Finally, output S + reverse(S)[L:], since reverse(S)[L:] equals reverse(S[0:n-L]).
+- Time complexity: O(n), Space: O(n). Works for n up to 500000.
+
+Edge cases:
+- If S is already a palindrome, L = n and we output S (no extra characters).
+- If S has only one character, output S.
+- Large inputs: linear time and memory usage.
+
+### Requirements
+None
+
+### Code
+```
+import sys
+
+def solve():
+    S = sys.stdin.readline().strip()
+    n = len(S)
+    R = S[::-1]  # reverse(S)
+
+    # Build prefix function for pattern R
+    pi = [0] * n
+    j = 0
+    for i in range(1, n):
+        while j > 0 and R[i] != R[j]:
+            j = pi[j - 1]
+        if R[i] == R[j]:
+            j += 1
+            pi[i] = j
+        # else pi[i] remains 0
+
+    # Run KMP of pattern R on text S to get L = length of longest prefix of R
+    # that matches a suffix of S
+    q = 0
+    for ch in S:
+        while q > 0 and ch != R[q]:
+            q = pi[q - 1]
+        if ch == R[q]:
+            q += 1
+            # As explained, q will not reach n before the last iteration for length n
+            # so no need to wrap here
+            # if q == n:
+            #     q = pi[q - 1]
+    L = q
+
+    # Append the suffix of reverse(S) starting from position L
+    result = S + R[L:]
+    print(result)
+
+if __name__ == "__main__":
+    solve()
+```

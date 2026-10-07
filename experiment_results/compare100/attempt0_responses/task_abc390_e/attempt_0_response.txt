@@ -1,0 +1,79 @@
+### Step-by-step reasoning
+- Observing that each food provides vitamin V_i with amount A_i and costs C_i calories, and calories are the only global constraint, we can separate the foods by vitamin type: all type-1 foods, all type-2 foods, and all type-3 foods.
+- For a fixed vitamin type k, with a budget of calories b, the best we can do for that vitamin is the maximum total A obtainable using foods of that type with total calories ≤ b. This is a standard 0-1 knapsack where weight = calories and value = A_i.
+- Let dp1[c], dp2[c], dp3[c] be the maximum vitamin amounts for vitamins 1, 2, and 3 respectively with total calories ≤ c (for c in 0..X). These can be computed in O(NX) overall since each item participates in exactly one type.
+- The problem asks to maximize the minimum among the three vitamin intakes, i.e., max t such that there exists c1+c2+c3 ≤ X with dp1[c1] ≥ t, dp2[c2] ≥ t, dp3[c3] ≥ t.
+- For a fixed t, the minimal calories needed to achieve at least t for each type are:
+  minC1 = the smallest c with dp1[c] ≥ t, similarly minC2, minC3.
+  Because dp arrays are nondecreasing, we can find these minima with binary search (or bisect) on dp1, dp2, dp3.
+- The triple is feasible iff minC1 + minC2 + minC3 ≤ X. If any type cannot reach t (i.e., no c with dp_k[c] ≥ t), it’s impossible.
+- We can binary-search t between 0 and min(dp1[X], dp2[X], dp3[X]) to find the maximum feasible t. This yields an overall time complexity of O(NX log A) where A is the potential maximum vitamin value, which is fine for N ≤ 5000 and X ≤ 5000.
+
+Edge cases:
+- If a type has no items or all A_i values are too small, its maximum is 0, so the answer will be 0.
+- When using bisect, ensure to handle the case where there is no c within 0..X achieving at least t (bisect result may be X+1). In that case it’s infeasible.
+
+### Requirements
+None
+
+### Code
+```
+import sys
+import bisect
+
+def main():
+    data = sys.stdin.read().strip().split()
+    it = iter(data)
+    try:
+        N = int(next(it))
+        X = int(next(it))
+    except StopIteration:
+        return
+
+    # Collect items by vitamin type
+    items = {1: [], 2: [], 3: []}
+    for _ in range(N):
+        v = int(next(it))
+        a = int(next(it))
+        c = int(next(it))
+        if c <= X:  # ignore items that exceed total budget
+            items[v].append((c, a))
+
+    # 0-1 knapsack per type: dp[c] = max A achievable with calories <= c
+    def knapsack_max(values):
+        dp = [0] * (X + 1)
+        for w, val in values:
+            if w > X:
+                continue
+            for cap in range(X, w - 1, -1):
+                nv = dp[cap - w] + val
+                if nv > dp[cap]:
+                    dp[cap] = nv
+        return dp
+
+    dp1 = knapsack_max(items[1])
+    dp2 = knapsack_max(items[2])
+    dp3 = knapsack_max(items[3])
+
+    # Upper bound for t is the minimum of the best achievable per type with total budget X
+    hi = min(dp1[X], dp2[X], dp3[X])
+    lo = 0
+
+    while lo < hi:
+        mid = (lo + hi + 1) // 2  # try to achieve at least mid units for all vitamins
+        i1 = bisect.bisect_left(dp1, mid)
+        i2 = bisect.bisect_left(dp2, mid)
+        i3 = bisect.bisect_left(dp3, mid)
+
+        feasible = (i1 <= X) and (i2 <= X) and (i3 <= X) and (i1 + i2 + i3 <= X)
+
+        if feasible:
+            lo = mid
+        else:
+            hi = mid - 1
+
+    print(lo)
+
+if __name__ == "__main__":
+    main()
+```

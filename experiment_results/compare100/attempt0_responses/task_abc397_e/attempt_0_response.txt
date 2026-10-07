@@ -1,0 +1,119 @@
+### Step-by-step reasoning
+- We need to partition the given tree with NK vertices into N disjoint paths, each containing exactly K vertices (i.e., K-1 edges).
+- A convenient way to solve this on trees is a bottom-up dynamic programming (DP) over a rooted tree.
+- For every node u, consider the lengths of unfinished paths that end at each child’s subtree and would need to be extended through u to reach length K.
+  - Define ret[v] for a child v as the length (in vertices) of an unfinished path that ends at v. If a subtree does not leave any unfinished path to its parent, ret[v] = 0. If something is inconsistent, ret[v] = -1.
+  - For a leaf, there is an unfinished path consisting of just the leaf, so ret[leaf] = 1.
+- At node u, collect all positive ret[v] from its children (these are unfinished paths reaching v and that could be extended through u). Let t_vals be this list.
+- Since a node can belong to only one path, at most two child unfinished paths can be involved with u.
+  - If there are more than two positive t_vals, it's impossible (ret[u] = -1).
+  - If there are exactly two values t1, t2:
+    - They can form a single path passing through u if t1 + t2 + 1 == K. In this case, ret[u] = 0 (the path is completed and no unfinished path is propagated upward).
+    - Otherwise, impossible (ret[u] = -1).
+  - If there is exactly one value t1:
+    - If t1 + 1 == K, the path ends at u; ret[u] = 0.
+    - If t1 + 1 < K, the path can be extended upward through u; ret[u] = t1 + 1.
+    - If t1 + 1 > K, impossible (ret[u] = -1).
+  - If there are no positive t_vals:
+    - Start a new unfinished path at u of length 1; ret[u] = 1.
+- Finally, the root must not have any unfinished path going upward (there is no parent to extend to). Therefore ret[root] must be 0 for a valid decomposition.
+- Special case: If K == 1, every vertex can be its own path, so the answer is always Yes.
+
+- Complexity: We perform a single postorder traversal and simple constant-time checks per node, giving O(NK) time and O(NK) space, which fits NK ≤ 2e5. We implement iteratively to avoid recursion depth issues.
+
+Edge cases:
+- K = 1: Always Yes.
+- Highly branching nodes: The condition “at most two positive t_vals” captures that a node cannot be part of more than one path unless those two parts form the unique path passing through the node.
+- The tree is connected and has NK nodes; root at 1 is fine.
+
+### Requirements
+None
+
+### Code
+```python
+import sys
+from collections import defaultdict, deque
+
+def main():
+    data = sys.stdin.read().strip().split()
+    if not data:
+        print("No")
+        return
+    it = iter(data)
+    N = int(next(it))
+    K = int(next(it))
+    M = N * K  # number of vertices
+    adj = [[] for _ in range(M + 1)]
+    for _ in range(M - 1):
+        u = int(next(it)); v = int(next(it))
+        adj[u].append(v)
+        adj[v].append(u)
+
+    # Special case
+    if K == 1:
+        print("Yes")
+        return
+
+    # Root the tree at 1 and get a postorder
+    parent = [0] * (M + 1)
+    order = []
+    stack = [1]
+    parent[1] = -1
+    while stack:
+        u = stack.pop()
+        order.append(u)
+        for w in adj[u]:
+            if w == parent[u]:
+                continue
+            parent[w] = u
+            stack.append(w)
+
+    ret = [0] * (M + 1)  # ret[u]: unfinished path length ending at u to be extended to parent; -1 means impossible
+
+    for u in reversed(order):
+        # collect unfinished path lengths from children
+        t_vals = []
+        ok = True
+        for v in adj[u]:
+            if v == parent[u]:
+                continue
+            t = ret[v]
+            if t == -1:
+                ret[u] = -1
+                ok = False
+                break
+            if t > 0:
+                t_vals.append(t)
+        if not ok:
+            continue
+
+        if len(t_vals) > 2:
+            ret[u] = -1
+            continue
+        if len(t_vals) == 2:
+            t1, t2 = t_vals[0], t_vals[1]
+            if t1 + t2 + 1 == K:
+                ret[u] = 0
+            else:
+                ret[u] = -1
+        elif len(t_vals) == 1:
+            t1 = t_vals[0]
+            s = t1 + 1
+            if s == K:
+                ret[u] = 0
+            elif s < K:
+                ret[u] = s
+            else:
+                ret[u] = -1
+        else:  # no unfinished path from children
+            ret[u] = 1  # start a new unfinished path at u
+
+    # root must have ret[root] == 0
+    if ret[1] == 0:
+        print("Yes")
+    else:
+        print("No")
+
+if __name__ == "__main__":
+    main()
+```

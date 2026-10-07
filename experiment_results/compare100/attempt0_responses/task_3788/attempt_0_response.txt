@@ -1,0 +1,32 @@
+### Step-by-step reasoning
+- You may delete any number of elements and then choose a subarray consisting of the remaining elements, which means you can effectively select any subsequence of the original array as your final subarray, as long as its elements are all unique.
+- To maximize the sum, you should include at most one occurrence of each distinct value. Including multiple copies of the same value is forbidden by the uniqueness requirement.
+- If there are positive values in the array, you would want to include each distinct positive value exactly once, since adding a positive value increases the sum and there’s no dependency that would force you to include negatives.
+- If there are no positive values, the best you can do is pick a subarray of length 1 consisting of the maximum element in nums (which could be 0 or a negative value). This ensures the highest possible sum under the constraint of non-empty subarray.
+- Therefore:
+  - Let positives be the set of distinct values in nums that are greater than 0. The potential maximum sum is the sum of positives.
+  - If that sum is greater than 0, return it.
+  - Otherwise, return the maximum element in nums.
+
+Edge cases:
+- All elements are non-positive: return max(nums) (which is 0 if a zero exists, or a negative value otherwise).
+- Duplicates: only one instance of each distinct positive value is counted.
+
+### Requirements
+None
+
+### Code
+```python
+from typing import List
+
+class Solution:
+    def maxSum(self, nums: List[int]) -> int:
+        # Sum of distinct positive values
+        positive_values = set(x for x in nums if x > 0)
+        s = sum(positive_values)
+        if s > 0:
+            return s
+        else:
+            # No positive values, best is to take the maximum element (non-empty subarray)
+            return max(nums)
+```

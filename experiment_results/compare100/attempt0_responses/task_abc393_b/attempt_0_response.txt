@@ -1,0 +1,41 @@
+### Step-by-step reasoning
+- We need triples of indices (i, j, k) such that i < j < k and j - i = k - j, meaning the three indices are in arithmetic progression with equal spacing d = j - i.
+- For any i and j, the third index is k = j + d = j + (j - i). We must have k < n (where n = len(S)).
+- The characters at those positions must be S[i] = 'A', S[j] = 'B', S[k] = 'C' (using 0-based indexing in Python).
+- Algorithm:
+  - Iterate i from 0 to n-1.
+  - For each i, iterate j from i+1 to n-1.
+  - Compute d = j - i and k = j + d.
+  - If k >= n, break the inner loop since increasing j will only increase k.
+  - If S[i] == 'A', S[j] == 'B', and S[k] == 'C', increment the count.
+- Edge cases:
+  - Small strings with length < 3 yield 0.
+  - Ensure proper 0-based indexing when accessing characters.
+  - Complexity is O(n^2), which is fine for n up to 100.
+
+### Requirements
+None
+
+### Code
+```
+import sys
+
+def main():
+    s = sys.stdin.readline().strip()
+    n = len(s)
+    count = 0
+
+    for i in range(n):
+        for j in range(i + 1, n):
+            d = j - i
+            k = j + d
+            if k >= n:
+                break
+            if s[i] == 'A' and s[j] == 'B' and s[k] == 'C':
+                count += 1
+
+    print(count)
+
+if __name__ == "__main__":
+    main()
+```

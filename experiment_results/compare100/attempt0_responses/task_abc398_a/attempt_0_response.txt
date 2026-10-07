@@ -1,0 +1,35 @@
+### Step-by-step reasoning
+- The string must be a palindrome and consist only of '-' and '='.
+- It must contain exactly one '=' or exactly two '=' characters that are adjacent.
+- For odd N:
+  - A palindrome with exactly one '=' is possible only if the single '=' sits at the center. Place '=' at index N//2 and fill others with '-'. This yields a unique solution: --...- = -...--.
+- For even N:
+  - A palindrome with exactly two adjacent '=' is possible only if the two '=' occupy the two center positions (N/2 - 1 and N/2). Fill all other positions with '-'. This yields the center pair "==" mirrored around the center.
+- Edge cases:
+  - N = 1 -> "="
+  - N = 2 -> "=="
+  - Large N up to 100 follows the same pattern.
+
+### Requirements
+None
+
+### Code
+```
+import sys
+
+def solve():
+    data = sys.stdin.read().strip().split()
+    if not data:
+        return
+    N = int(data[0])
+    s = ['-'] * N
+    if N % 2 == 1:
+        s[N // 2] = '='
+    else:
+        s[N // 2 - 1] = '='
+        s[N // 2] = '='
+    sys.stdout.write(''.join(s))
+
+if __name__ == "__main__":
+    solve()
+```

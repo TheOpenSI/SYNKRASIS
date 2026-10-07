@@ -1,0 +1,41 @@
+### Step-by-step reasoning
+- We need to count kagamimochi formed by choosing two mochi A (top) and B (bottom) such that a ≤ b/2, where a and b are the sizes of the chosen mochi.
+- Since the order matters (which mochi is on top), we are counting ordered pairs (i, j) with i ≠ j such that A[i] ≤ A[j] / 2.
+- For a fixed bottom mochi j, the number of top mochi i that satisfy A[i] ≤ floor(A[j] / 2) is exactly the count of elements in A that are ≤ floor(A[j]/2).
+- A is sorted nondecreasing, so for each j we can determine this count using a two-pointer approach:
+  - Maintain a pointer p to the number of elements A[i] ≤ floor(A[j]/2).
+  - As j increases, floor(A[j]/2) is nondecreasing, so p never moves backward.
+  - For each j, add p to the answer (since there are p choices for the top mochi).
+- Edge cases:
+  - A[i] ≥ 1, so floor(A[j]/2) < A[j], hence i = j will never be counted, so no extra exclusion is needed.
+  - Large N (up to 5e5) → O(N) time with O(1) extra space beyond the input list.
+  - The total count can be large (up to N*(N-1)), but Python int handles it.
+
+### Requirements
+None
+
+### Code
+```python
+import sys
+
+def main():
+    data = list(map(int, sys.stdin.buffer.read().split()))
+    if not data:
+        print(0)
+        return
+    n = data[0]
+    A = data[1:1+n]
+
+    p = 0
+    ans = 0
+    for j in range(n):
+        half = A[j] // 2
+        while p < n and A[p] <= half:
+            p += 1
+        ans += p
+
+    print(ans)
+
+if __name__ == "__main__":
+    main()
+```

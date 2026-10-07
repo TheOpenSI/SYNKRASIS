@@ -1,0 +1,34 @@
+### Step-by-step reasoning
+- Read the input direction string D from standard input and remove any surrounding whitespace.
+- Create a mapping from each direction to its opposite:
+  - N <-> S
+  - E <-> W
+  - NE <-> SW
+  - NW <-> SE
+- Look up the opposite direction using this dictionary and print it.
+- This covers all eight allowed directions and handles multi-character inputs like NE, NW, SE, SW as well as single-character inputs.
+
+### Requirements
+None
+
+### Code
+```
+import sys
+
+def main():
+    D = sys.stdin.readline().strip()
+    opposites = {
+        'N': 'S',
+        'S': 'N',
+        'E': 'W',
+        'W': 'E',
+        'NE': 'SW',
+        'SW': 'NE',
+        'NW': 'SE',
+        'SE': 'NW'
+    }
+    print(opposites[D])
+
+if __name__ == "__main__":
+    main()
+```
