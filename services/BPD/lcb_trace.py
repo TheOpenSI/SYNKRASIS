@@ -8,6 +8,8 @@
 #       {"test_index", "input", "expected", "report"} for the first one the code gets wrong or crashes
 #       on. None when every public test passes or the code cannot be traced (syntax error, too many
 #       steps, timeout), the normal error feedback is enough then.
+# - feedback_text(traced: dict) -> str
+#       The text appended to the fix mode query, exactly what the LLM reads.
 # =============================================================================================
 
 import os
@@ -53,3 +55,10 @@ class LCBTracer():
             return json.loads(process.stdout.strip().splitlines()[-1])
         except (subprocess.TimeoutExpired, IndexError, json.JSONDecodeError):
             return None
+
+
+    def feedback_text(self, traced: dict) -> str:
+        return ("\n\nExecution trace of your code on public test case "
+                f"{traced['test_index'] + 1}, recorded line by line like a debugger session:\n"
+                f"{traced['report']}\n"
+                "Find the first point where the behaviour differs from what the problem requires and fix that logic.")

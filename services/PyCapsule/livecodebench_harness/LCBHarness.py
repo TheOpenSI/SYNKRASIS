@@ -12,6 +12,8 @@
 # python itself exits with 2 on some launch errors.
 #
 # Usage:
+# - extract_code(response: str) -> str
+#       Code from the raw LLM response (parse_response + a repeated code fence fallback).
 # - build_solution_content(user_query: dict, llm_generated_code: str) -> str
 #       Content of solution.py, dispatches on user_query["test_type"].
 # - build_functional_content(user_query: dict, llm_generated_code: str) -> str
@@ -32,6 +34,7 @@ import json
 import re
 
 from modules.ExampleCallDetection import ExampleCallDetection
+from utils.code_parsing.code_parser import parse_response
 
 
 class LCBHarness():
@@ -44,6 +47,22 @@ class LCBHarness():
 
     def __init__(self) -> None:
         self.example_call_detection = ExampleCallDetection()
+
+
+    def extract_code(self, response: str) -> str:
+        """
+        parse_response, plus a fallback for a repeated code fence, e.g. "### Code\\n```\\n```python\\n...```"
+        which parse_response reads as empty code.
+        """
+        _, code = parse_response(response)
+        if code.strip():
+            return code
+        lines = response.split("### Code")[-1].split("\n")
+        fences = [i for i, line in enumerate(lines) if re.match(r"^\s*```", line)]
+        if len(fences) < 2:
+            return ""
+        body = [line for line in lines[fences[0] + 1:fences[-1]] if not re.match(r"^\s*```\w*\s*$", line)]
+        return "\n".join(body).strip()
 
 
     def build_solution_content(self, user_query: dict, llm_generated_code: str) -> str:

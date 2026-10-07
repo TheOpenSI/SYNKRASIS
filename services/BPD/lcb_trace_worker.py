@@ -1,8 +1,10 @@
 """
-Trace one LiveCodeBench solution on one input with BPD (concise report). Run in a subprocess by
-lcb_trace.LCBTracer, never import it in the main process: it caps memory and executes LLM code.
-stdin (json): {code, mode: functional|stdin, entry_point, input, expected, max_chars, max_steps}
-stdout (json): {ok, report, output, matches, error, steps}
+Trace one LiveCodeBench solution on one input with BPD (concise report).
+- trace_request(request) -> result: does the work, in the current process. Handy for debugging, see lcb_trace_demo.py.
+- main(): the subprocess entry used by lcb_trace.LCBTracer. It caps memory first, because it executes LLM code.
+request: {code, mode: functional|stdin, entry_point, input, expected, max_chars, max_steps, full (optional)}
+result:  {ok, report, output, matches, error, steps}
+  full=True gives the complete default report (source listing included) instead of the concise one.
   ok=False: the code could not be traced (syntax error, step limit, ...), error says why.
   ok=True and error set: the traced code raised, the report shows where.
 Stdin programs have their top level statements moved into __bpd_main__() so the tracer can see them.
@@ -16,8 +18,6 @@ import resource
 import sys
 
 sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", ".."))
-resource.setrlimit(resource.RLIMIT_AS, (4 * 1024 ** 3, 4 * 1024 ** 3))
-sys.setrecursionlimit(5000)
 
 from services.BPD.bpd import BreakpointDebugger
 from services.BPD.report import ReportConfig
@@ -28,15 +28,18 @@ class StepLimit(BaseException):
     pass
 
 
+_ORIGINAL_ON_LINE = tracer_mod.TraceCollector._on_line
+
+
 def install_step_cap(max_steps: int):
+    """Stops a trace with StepLimit after max_steps executed lines, returns the step counter."""
     counter = {"n": 0}
-    original = tracer_mod.TraceCollector._on_line
 
     def capped(self, frame):
         counter["n"] += 1
         if counter["n"] > max_steps:
             raise StepLimit()
-        return original(self, frame)
+        return _ORIGINAL_ON_LINE(self, frame)
 
     tracer_mod.TraceCollector._on_line = capped
     return counter
@@ -66,13 +69,13 @@ def hoist_script(code: str) -> str:
     return ast.unparse(ast.fix_missing_locations(module))
 
 
-def main():
-    req = json.load(sys.stdin)
+def trace_request(req: dict) -> dict:
     counter = install_step_cap(req["max_steps"])
-    config = ReportConfig.concise(req["max_chars"])
+    config = ReportConfig() if req.get("full") else ReportConfig.concise(req["max_chars"])
     debugger = BreakpointDebugger(config)
     out = {"ok": False, "report": "", "output": "", "matches": None, "error": None, "steps": 0}
     captured = io.StringIO()
+    original_stdin = sys.stdin
     try:
         if req["mode"] == "functional":
             args = [json.loads(line) for line in req["input"].splitlines()]
@@ -101,9 +104,16 @@ def main():
         out["error"] = "step_limit"
     except BaseException as exc:  # noqa
         out["error"] = f"{type(exc).__name__}: {exc}"
+    finally:
+        sys.stdin = original_stdin
     out["steps"] = counter["n"]
-    sys.stdout = sys.__stdout__
-    print(json.dumps(out))
+    return out
+
+
+def main():
+    resource.setrlimit(resource.RLIMIT_AS, (4 * 1024 ** 3, 4 * 1024 ** 3))
+    sys.setrecursionlimit(5000)
+    print(json.dumps(trace_request(json.load(sys.stdin))))
 
 
 if __name__ == "__main__":

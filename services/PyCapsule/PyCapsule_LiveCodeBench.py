@@ -16,14 +16,12 @@ import sys
 sys.path.append(f"{os.path.dirname(os.path.abspath(__file__))}/../..")
 
 import json
-import re
 from subprocess import CompletedProcess
 
 from services.PyCapsule.PyCapsuleBase import PyCapsuleBase
 from services.Container.Container import Container
 from services.LLM.LLMBase import LLMBase
 from data.DatasetBase import DatasetBase
-from utils.code_parsing.code_parser import parse_response
 from utils.output_message_format.output_colour import print_error, print_info, print_success, print_pycapsule
 from services.PyCapsule.livecodebench_harness.LCBHarness import LCBHarness
 from services.BPD.lcb_trace import LCBTracer
@@ -159,25 +157,9 @@ class PyCapsule_LiveCodeBench(PyCapsuleBase):
         self._save_generation(user_query, response)
 
         # https://support.leetcode.com/hc/en-us/articles/360011833974-What-are-the-environments-for-the-programming-languages
-        code = self._extract_code(response) # no req, default env set
+        code = self.harness.extract_code(response) # no req, default env set
 
         self._create_main_py(code, user_query)
-
-
-    def _extract_code(self, response: str) -> str:
-        """
-        parse_response, plus a fallback for a repeated code fence, e.g. "### Code\\n```\\n```python\\n...```"
-        which parse_response reads as empty code.
-        """
-        _, code = parse_response(response)
-        if code.strip():
-            return code
-        lines = response.split("### Code")[-1].split("\n")
-        fences = [i for i, line in enumerate(lines) if re.match(r"^\s*```", line)]
-        if len(fences) < 2:
-            return ""
-        body = [line for line in lines[fences[0] + 1:fences[-1]] if not re.match(r"^\s*```\w*\s*$", line)]
-        return "\n".join(body).strip()
 
 
     def _create_main_py(self, code: str, user_query: dict) -> None:
@@ -251,10 +233,7 @@ class PyCapsule_LiveCodeBench(PyCapsuleBase):
             return ""
         self.trace_log.append({"task_id": user_query["task_id"], "test_index": traced["test_index"],
                                "chars": len(traced["report"])})
-        return ("\n\nExecution trace of your code on public test case "
-                f"{traced['test_index'] + 1}, recorded line by line like a debugger session:\n"
-                f"{traced['report']}\n"
-                "Find the first point where the behaviour differs from what the problem requires and fix that logic.")
+        return self.tracer.feedback_text(traced)
 
 
     def _update_code(self,
