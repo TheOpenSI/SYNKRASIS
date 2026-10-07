@@ -1,0 +1,47 @@
+### Step-by-step reasoning
+- The problem asks for the minimum number of adjacent swaps to make all 1s contiguous.
+- If the final arrangement has the k ones in consecutive positions t, t+1, ..., t+k-1, then the i-th original 1 (in order) at position p_i will move to position t + i - 1.
+- The total number of swaps is sum over i of |p_i - (t + i - 1)|.
+- Let a_i = p_i - i. Then the total swaps become sum_i |a_i - t|. This is minimized when t is the median of the a_i values.
+- Therefore:
+  - Compute the indices p_i where S has a '1' (1-based indexing).
+  - Compute a_i = p_i - i for i = 1..k (k = number of ones).
+  - Find the median of the a_i values.
+  - The answer is sum |a_i - median|.
+- The previous solution used k-1 values (ignoring the last 1) due to an off-by-one error, leading to incorrect results (e.g., for 0101001 with p = [2,4,7], a = [1,2,4] yields median 2 and total 3; using only first k-1 values produced an incorrect smaller result).
+
+### Requirements
+None
+
+### Code
+```
+import sys
+
+def main():
+    data = sys.stdin.read().split()
+    if not data:
+        return
+    N = int(data[0])
+    S = data[1].strip()
+
+    pos = []
+    for idx, ch in enumerate(S, start=1):  # 1-based positions
+        if ch == '1':
+            pos.append(idx)
+
+    k = len(pos)
+    if k <= 1:
+        print(0)
+        return
+
+    # a_i = p_i - i, with i starting from 1
+    a = [pos[i] - (i + 1) for i in range(k)]
+    a_sorted = sorted(a)
+    median = a_sorted[k // 2]
+
+    ans = sum(abs(x - median) for x in a)
+    print(ans)
+
+if __name__ == "__main__":
+    main()
+```

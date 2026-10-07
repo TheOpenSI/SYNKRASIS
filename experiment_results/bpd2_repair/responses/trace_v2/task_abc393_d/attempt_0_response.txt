@@ -1,0 +1,33 @@
+### Step-by-step reasoning
+The solution is below.
+
+### Requirements
+None
+
+### Code
+```python
+from typing import *
+import sys
+
+def main():
+    data = sys.stdin.read().split()
+    if not data:
+        return
+    N = int(data[0])
+    S = data[1].strip()
+    pos = []
+    for idx, ch in enumerate(S, start=1):
+        if ch == '1':
+            pos.append(idx)
+    k = len(pos)
+    if k <= 1:
+        print(0)
+        return
+    q = [pos[i] - i for i in range(k - 1)]
+    q_sorted = sorted(q)
+    median = q_sorted[k // 2]
+    ans = sum((abs(v - median) for v in q))
+    print(ans)
+if __name__ == '__main__':
+    main()
+```

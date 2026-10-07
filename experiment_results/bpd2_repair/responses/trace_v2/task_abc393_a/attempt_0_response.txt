@@ -1,0 +1,25 @@
+### Step-by-step reasoning
+The solution is below.
+
+### Requirements
+None
+
+### Code
+```python
+from typing import *
+import sys
+
+def solve():
+    data = sys.stdin.read().strip().split()
+    if not data:
+        return
+    S1, S2 = (data[0], data[1])
+    for x in range(1, 5 - 1):
+        sick1 = x in (1, 2)
+        sick2 = x in (1, 3)
+        if (S1 == 'sick') == sick1 and (S2 == 'sick') == sick2:
+            print(x)
+            return
+if __name__ == '__main__':
+    solve()
+```

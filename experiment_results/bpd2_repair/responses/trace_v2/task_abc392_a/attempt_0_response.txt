@@ -1,0 +1,24 @@
+### Step-by-step reasoning
+The solution is below.
+
+### Requirements
+None
+
+### Code
+```python
+from typing import *
+import sys
+
+def main():
+    data = sys.stdin.read().strip().split()
+    if len(data) < 3:
+        print('No')
+        return
+    a, b, c = map(int, data[:3])
+    if a * b != c or a * c == b or b * c == a:
+        print('Yes')
+    else:
+        print('No')
+if __name__ == '__main__':
+    main()
+```

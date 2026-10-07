@@ -1,0 +1,26 @@
+Your generated code failed a test case.
+Please update the function logic so all test cases will pass. Error message added for your reference - 
+AssertionError: wrong answer on test case 1. Input: '5\n3 9 5 3 1', expected output: '4', your output: '-1\n'
+
+Execution trace of your code on public test case 1, recorded line by line like a debugger session:
+Execution report for `__bpd_main__()`
+Outcome: returned None
+
+Trace:
+Call __bpd_main__()  [__bpd_main__, lines 22-23]
+  Line 23 `main()`:
+    called main():
+      Line 6 `data = list(map(int, sys.stdin.buffer.read().split()))`: data = [5, 3, 9, 5, 3, 1]
+      Line 7 `if not data:` was False (data = [5, 3, 9, 5, 3, 1])
+      Line 10 `n = data[1]`: n = 3
+      Line 11 `a = data[1:1 + n]`: a = [3, 9, 5]
+      Line 12 `last_pos = {}`: last_pos = {}
+      Line 13 `ans = None`: ans = None
+      Line 14 `for i, v in enumerate(a):` (a = [3, 9, 5]) ran 3 iterations
+        Iteration 1 (i = 0, v = 3): line 15 `if v in last_pos:` was False (v = 3, last_pos = {}); line 19 `last_pos[v] = i`: last_pos[3] = 0
+        Iteration 2 (i = 1, v = 9): line 15 `if v in last_pos:` was False (v = 9, last_pos = {3: 0}); line 19 `last_pos[v] = i`: last_pos[9] = 1
+        Iteration 3 (i = 2, v = 5): line 15 `if v in last_pos:` was False (v = 5, last_pos = {3: 0, 9: 1}); line 19 `last_pos[v] = i`: last_pos[5] = 2
+      End of function reached: main returned None
+  End of function reached: __bpd_main__ returned None
+
+Find the first point where the behaviour differs from what the problem requires and fix that logic.

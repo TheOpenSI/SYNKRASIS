@@ -1,0 +1,6 @@
+main()
+  data = sys.stdin.read().strip().split()  # data=['3', '15', '5']
+  if len(data) < 3:  # False (data=['3', '15', '5'])
+  a, b, c = map(int, data[:3])  # a=3; b=15; c=5
+  if a * b == c or a * c == b or b * c == a:  # True (c=5, b=15, a=3)
+printed 'Yes'   (expected Yes)

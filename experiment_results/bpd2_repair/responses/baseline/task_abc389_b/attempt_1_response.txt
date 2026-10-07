@@ -1,0 +1,31 @@
+### Step-by-step reasoning
+- The previous implementation starts with i = 2 and f = 1, then on each iteration it increments i and multiplies f by the new i. This causes an extra multiplication step and results in overshooting the correct N (e.g., for X = 6, it ends up with N = 4 because 1 * 2 * 3 * 4 = 24 is reached after the loop condition fails).
+- A correct approach is to accumulate the factorial starting from 1 and increase N until the factorial equals X. Initialize n = 1 and fact = 1, and in each loop iteration:
+  - increment n by 1
+  - multiply fact by n
+  - stop when fact >= X (since X is guaranteed to be a factorial of some N)
+- This yields the smallest n such that n! >= X; due to the guarantee, that n will satisfy n! = X.
+
+### Requirements
+None
+
+### Code
+```
+import sys
+
+def main():
+    data = sys.stdin.read().strip()
+    if not data:
+        return
+    X = int(data)
+
+    n = 1
+    fact = 1
+    while fact < X:
+        n += 1
+        fact *= n
+    print(n)
+
+if __name__ == "__main__":
+    main()
+```

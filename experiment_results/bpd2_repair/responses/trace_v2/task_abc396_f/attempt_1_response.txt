@@ -1,0 +1,82 @@
+### Step-by-step reasoning
+- The problem asks to compute the inversion count of B where B_i = (A_i + k) mod M for k = 0..M-1.
+- A known efficient approach:
+  - Compute inv0, the inversion count for k = 0, i.e., inversions in the array A since A_i < M.
+  - For each k, the elements with A_i = M-1-k wrap when going from k to k+1. The change in inversion count from k to k+1 can be captured by a precomputed delta value for each original A value v. Specifically, if v = M-1-k, then ans[k+1] = ans[k] + delta[v].
+  - delta[v] = 2 * sum_pos[v] - m[v] * N - m[v], where:
+    - m[v] is the count of A_i == v,
+    - sum_pos[v] is the sum of positions (1-based) i where A_i == v,
+    - N is the length of A.
+  - For values v with m[v] = 0, delta[v] = 0.
+
+- Bug identification:
+  In the original code, A was extracted with A = data[3:2 + N], which omits the first element of the A-sequence when N > 2. The correct extraction should be A = data[2:2 + N].
+
+- Fix plan:
+  1) Correct the slice to A = data[2:2 + N].
+  2) Keep the rest of the logic intact (BIT to compute inv0, computing m and sum_pos, computing delta, and accumulating ans).
+  3) Ensure the code remains a self-contained standalone program with proper imports and I/O.
+
+- After fixing the indexing issue, the sample test N=3, M=3, A=[2,1,0] yields:
+  inv0 = 3, delta = [2, 0, -2], and ans sequence [3, 1, 1], which matches the expected output.
+
+### Requirements
+None
+
+### Code
+```
+from typing import *
+import sys
+
+def main():
+    data = list(map(int, sys.stdin.buffer.read().split()))
+    N = data[0]
+    M = data[1]
+    A = data[2:2 + N]
+    size = M
+    bit = [0] * (size + 1)
+
+    def bit_add(idx, delta):
+        i = idx + 1
+        while i <= size:
+            bit[i] += delta
+            i += i & -i
+
+    def bit_sum(idx):
+        i = idx + 1
+        s = 0
+        while i > 0:
+            s += bit[i]
+            i -= i & -i
+        return s
+
+    inv0 = 0
+    for i, val in enumerate(A):
+        s = bit_sum(val)
+        inv0 += i - s
+        bit_add(val, 1)
+
+    m = [0] * M
+    sum_pos = [0] * M
+    for idx, val in enumerate(A, start=1):
+        m[val] += 1
+        sum_pos[val] += idx
+
+    delta = [0] * M
+    for v in range(M):
+        if m[v] == 0:
+            delta[v] = 0
+        else:
+            delta[v] = 2 * sum_pos[v] - m[v] * N - m[v]
+
+    ans = [0] * M
+    ans[0] = inv0
+    for k in range(0, M - 1):
+        v = M - 1 - k
+        ans[k + 1] = ans[k] + delta[v]
+
+    print('\n'.join(map(str, ans)))
+
+if __name__ == '__main__':
+    main()
+```

@@ -1,0 +1,44 @@
+Your generated code failed a test case.
+Please update the function logic so all test cases will pass. Error message added for your reference - 
+AssertionError: wrong answer on test case 1. Input: '3 3\n2 1 0', expected output: '3\n1\n1', your output: '1\n1\n-1\n'
+
+Execution trace of your code on public test case 1. How to read it: only the lines that ran are listed, with the values after `#`. `x=1,2,3` are the values of x on successive executions of that line, `a..b` a run of consecutive numbers, `T/F` the outcome of a condition on each execution, `F×3` three equal values, `(iters 2,4)` the loop iterations the line ran in, `...` omitted middle values. Nested lines belong to the line above.
+main()
+  data = list(map(int, sys.stdin.buffer.read().split()))  # data=[3, 3, 2, 1, 0]
+  N = data[0]  # N=3
+  M = data[1]  # M=3
+  A = data[3:2 + N]  # A=[1, 0]
+  size = M  # size=3
+  bit = [0] * (size + 1)  # bit=[0, 0, 0, 0]
+  for i, val in enumerate(A):  # 2 iterations; i=0,1; val=1,0
+    s = bit_sum(val)  # s=0,0
+      bit_sum(idx=1, bit=[0, 0, 0, 0]):  [first of 2 calls]
+        i = idx + 1  # i=2
+        while i > 0:  # 1 iteration; i=2
+          s += bit[i]  # s=0
+          i -= i & -i  # i=0
+        return s  # returns 0
+    inv0 += i - s  # inv0=0,1
+    bit_add(val, 1)
+      bit_add(idx=1, delta=1, bit=[0, 0, 0, 0], size=3):  [first of 2 calls]
+        i = idx + 1  # i=2
+        while i <= size:  # 1 iteration; i=2; size=3
+          bit[i] += delta  # bit[2]=1
+          i += i & -i  # i=4
+  m = [0] * M  # m=[0, 0, 0]
+  sum_pos = [0] * M  # sum_pos=[0, 0, 0]
+  for idx, val in enumerate(A, start=1):  # 2 iterations; idx=1,2; val=1,0
+    m[val] += 1  # m[1,0]=1,1
+    sum_pos[val] += idx  # sum_pos[1,0]=1,2
+  delta = [0] * M  # delta=[0, 0, 0]
+  for v in range(M):  # 3 iterations; v=0,1,2
+    if m[v] == 0:  # F,F,T (m=[1, 1, 0])
+    else:
+      delta[v] = 2 * sum_pos[v] - m[v] * N - m[v]  # delta[1]=-2  (not in iters 3)
+  ans = [0] * M  # ans=[0, 0, 0]
+  ans[0] = inv0  # ans[0]=1
+  for k in range(0, M - 1):  # 2 iterations; k=0,1
+    v = M - 1 - k  # v=2,1
+    ans[k + 1] = ans[k] + delta[v]  # ans[1..2]=1,-1
+printed '1\n1\n-1'   (expected '3\n1\n1')
+Find the first point where the behaviour differs from what the problem requires and fix that logic.

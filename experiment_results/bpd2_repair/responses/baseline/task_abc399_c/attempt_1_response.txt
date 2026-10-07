@@ -1,0 +1,69 @@
+### Step-by-step reasoning
+- A forest on N nodes with C connected components has exactly N - C edges (each component is a tree with size s_i having s_i - 1 edges; sum of (s_i - 1) = N - C).
+- The given graph has M edges and some number C of connected components.
+- The minimum number of edges to delete to obtain a forest is the number of edges beyond the forest maximum: M - (N - C) = M - N + C.
+- If M - N + C is negative (i.e., the graph is already a forest with fewer than N - C edges), the minimum deletions should be 0. So the answer is max(0, M - N + C).
+- We compute C by building a DSU (union-find) over 1..N and uniting endpoints of every edge, then counting distinct roots.
+
+### Requirements
+None
+
+### Code
+```
+import sys
+
+class DSU:
+    def __init__(self, n):
+        self.parent = list(range(n + 1))
+        self.size = [1] * (n + 1)
+
+    def find(self, x):
+        if self.parent[x] != x:
+            self.parent[x] = self.find(self.parent[x])
+        return self.parent[x]
+
+    def union(self, a, b):
+        ra = self.find(a)
+        rb = self.find(b)
+        if ra == rb:
+            return
+        if self.size[ra] < self.size[rb]:
+            ra, rb = rb, ra
+        self.parent[rb] = ra
+        self.size[ra] += self.size[rb]
+
+def main():
+    data = sys.stdin.read().strip().split()
+    if not data:
+        print(0)
+        return
+    it = iter(data)
+    try:
+        n = int(next(it))
+        m = int(next(it))
+    except StopIteration:
+        print(0)
+        return
+
+    dsu = DSU(n)
+    for _ in range(m):
+        try:
+            u = int(next(it))
+            v = int(next(it))
+        except StopIteration:
+            break
+        dsu.union(u, v)
+
+    # Count connected components
+    roots = {dsu.find(i) for i in range(1, n + 1)}
+    components = len(roots)
+
+    # Minimum deletions to get a forest
+    ans = m - n + components
+    if ans < 0:
+        ans = 0
+    print(ans)
+
+if __name__ == '__main__':
+    main()
+```

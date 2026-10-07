@@ -1,0 +1,36 @@
+### Step-by-step reasoning
+- The bug is in constructing all substrings of s. The inner loop uses range(i + 1, n + 1 - 1), which omits the substring that ends at index n. This causes valid substrings of s (like "a" from "a") to be skipped, leading to incorrect results (e.g., for s="a", t="a" it misses "a" from s, so the maximum palindrome length remains 1 instead of 2).
+- To fix, generate all substrings of s by iterating j from i+1 up to and including n, i.e., range(i+1, n+1).
+- The rest of the approach (enumerating substrings from t, concatenating A + B, and checking palindrome) is correct for this problem size.
+
+### Requirements
+None
+
+### Code
+```python
+from typing import *
+
+class Solution:
+    def longestPalindrome(self, s: str, t: str) -> int:
+        n, m = len(s), len(t)
+        # Generate all substrings of s, including the empty substring
+        A_subs = ['']
+        for i in range(n):
+            for j in range(i + 1, n + 1):  # include n
+                A_subs.append(s[i:j])
+
+        # Generate all substrings of t, including the empty substring
+        B_subs = ['']
+        for i in range(m):
+            for j in range(i + 1, m + 1):
+                B_subs.append(t[i:j])
+
+        max_len = 0
+        for A in A_subs:
+            for B in B_subs:
+                P = A + B
+                if P == P[::-1]:
+                    if len(P) > max_len:
+                        max_len = len(P)
+        return max_len
+```

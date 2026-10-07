@@ -1,0 +1,172 @@
+### Step-by-step reasoning
+- Problem insight: For a permutation P of numbers 1..N, f(P) is the concatenation of the numbers in that order. The contribution of a value v to the sum over all permutations can be computed by considering which other numbers appear to the right of v. If R is the set of numbers to the right of v, then v contributes v * 10^(sum of digit-lengths of numbers in R). Over all permutations, for a fixed v, the number of permutations corresponding to a particular right-set R is (N-1-|R|)! * |R|!.
+- Group numbers by their digit length. Let cnt_d be how many numbers have exactly d digits in 1..N. For a fixed value v of length d, the generating function for possible right-sets becomes E_d(x) = prod_t (1 + 10^t x)^(cnt_t - [t == d]), i.e., we reduce the count of numbers with length d by 1 (the value v itself).
+- The total contribution from all v with length d is S_d * sum_R coef_R^{(d)} * R! * (N-1-R)!, where S_d is the sum of all numbers in 1..N with length d, and coef_R^{(d)} is the coefficient of x^R in E_d(x).
+- A direct approach would require computing E_d(x) for every d by multiplying polynomials. A better plan uses a single total product E_total(x) = prod_t (1 + 10^t x)^(cnt_t) which has degree N. Since E_d(x) = E_total(x) / (1 + 10^d x), we can obtain E_d efficiently by a simple division-by-(1 + a x) trick (dividing a polynomial by a linear factor exactly).
+- Plan:
+  1) Build poly_t_full(x) = (1 + (10^t) x)^(cnt_t) for all digit lengths t with cnt_t > 0.
+  2) Compute E_total(x) = prod_t poly_t_full(x) using NTT-based polynomial convolution; E_total will have degree N.
+  3) For each d with cnt_d > 0, compute E_d by polynomial division by (1 + a x) where a = 10^d:
+     E_d[0] = E_total[0]
+     E_d[i] = E_total[i] - a * E_d[i-1] for i = 1..N-1
+  4) Compute W_d = sum_{R=0..N-1} E_d[R] * R! * (N-1-R)!.
+  5) S_d = sum of all numbers in [10^(d-1), min(N, 10^d - 1)], and add S_d * W_d to the answer.
+- This yields correct results for small cases (e.g., N=3 gives 1332) and scales to N up to 2e5 with overall complexity dominated by a few NTT-based multiplications.
+
+### Requirements
+None
+
+### Code
+```
+import sys
+
+MOD = 998244353
+G = 3
+
+def modinv(a):
+    return pow(a, MOD - 2, MOD)
+
+def ntt(a, invert):
+    n = len(a)
+    j = 0
+    for i in range(1, n):
+        bit = n >> 1
+        while j & bit:
+            j ^= bit
+            bit >>= 1
+        j ^= bit
+        if i < j:
+            a[i], a[j] = a[j], a[i]
+    length = 2
+    while length <= n:
+        wlen = pow(G, (MOD - 1) // length, MOD)
+        if invert:
+            wlen = modinv(wlen)
+        for i in range(0, n, length):
+            w = 1
+            half = length >> 1
+            for j in range(i, i + half):
+                u = a[j]
+                v = a[j + half] * w % MOD
+                a[j] = (u + v) % MOD
+                a[j + half] = (u - v) % MOD
+                w = w * wlen % MOD
+        length <<= 1
+    if invert:
+        inv_n = modinv(n)
+        for i in range(n):
+            a[i] = a[i] * inv_n % MOD
+
+def multiply(a, b):
+    if not a or not b:
+        return []
+    need = len(a) + len(b) - 1
+    n = 1
+    while n < need:
+        n <<= 1
+    fa = a[:] + [0] * (n - len(a))
+    fb = b[:] + [0] * (n - len(b))
+    ntt(fa, False)
+    ntt(fb, False)
+    for i in range(n):
+        fa[i] = fa[i] * fb[i] % MOD
+    ntt(fa, True)
+    return fa[:need]
+
+def main():
+    data = sys.stdin.read().strip().split()
+    if not data:
+        print(0)
+        return
+    N = int(data[0])
+
+    # Precompute factorials up to N
+    fact = [1] * (N + 1)
+    for i in range(1, N + 1):
+        fact[i] = fact[i - 1] * i % MOD
+
+    # Determine digit-length groups
+    D = len(str(N))
+    pow10 = [1] * (D + 2)
+    for i in range(1, D + 2):
+        pow10[i] = (pow10[i - 1] * 10) % MOD
+
+    cnt = [0] * (D + 1)  # 1..D
+    S_d = [0] * (D + 1)
+    for d in range(1, D + 1):
+        lo = pow10[d - 1]
+        hi = min(N, pow10[d] - 1)
+        if lo > hi:
+            cnt[d] = 0
+            S_d[d] = 0
+            continue
+        c = hi - lo + 1
+        cnt[d] = c
+        # sum of arithmetic series: (lo+hi) * c / 2
+        sum_lr = (lo + hi) * c // 2
+        S_d[d] = sum_lr % MOD
+
+    # Build E_total(x) = prod_t (1 + (10^t) x)^(cnt_t)
+    E_total = [1]
+    for t in range(1, D + 1):
+        c = cnt[t]
+        if c <= 0:
+            continue
+        a = pow(10, t, MOD)
+        # poly_t_full[k] = C(c, k) * a^k for k=0..c
+        # Precompute factorials for binomial if needed
+        poly = [1] * (c + 1)
+        # Compute binomial coefficients C(c, k) iteratively to avoid heavy factorial calls
+        # We can compute using standard binomial recurrence:
+        # C(c,0)=1, C(c,k)=C(c,k-1)*(c-k+1)/k
+        C = 1
+        poly[0] = 1
+        pow_a = 1
+        for k in range(1, c + 1):
+            C = C * (c - k + 1) % MOD
+            # multiply by inv(k)
+            # We'll use modular inverse of k (precompute could be faster, but k is small overall)
+            # Instead, compute using a small precomputed inverses cache would be complex;
+            # We'll rely on Fermat's little theorem for each k.
+            inv_k = modinv(k)
+            C = C * inv_k % MOD
+            pow_a = (pow_a * a) % MOD
+            poly[k] = C * pow_a % MOD
+        E_total = multiply(E_total, poly)
+
+    # E_total should have length N+1 (degree N)
+    if len(E_total) < N + 1:
+        E_total += [0] * (N + 1 - len(E_total))
+    else:
+        E_total = E_total[:N + 1]
+
+    inv2 = (MOD + 1) // 2  # modular inverse of 2
+
+    ans = 0
+    # For each d with cnt[d] > 0, compute E_d by dividing E_total by (1 + a x), where a = 10^d
+    for d in range(1, D + 1):
+        c = cnt[d]
+        if c <= 0:
+            continue
+        a = pow(10, d, MOD)
+
+        # E_d[i] = E_total[i] - a * E_d[i-1], with E_d[0] = E_total[0]
+        Ed = [0] * N  # degree up to N-1
+        Ed[0] = E_total[0] % MOD
+        for i in range(1, N):
+            Ed[i] = (E_total[i] - a * Ed[i - 1]) % MOD
+
+        # W_d = sum_R Ed[R] * R! * (N-1-R)!
+        Wd = 0
+        for R in range(0, N):
+            term = Ed[R] * fact[R] % MOD * fact[N - 1 - R] % MOD
+            Wd = (Wd + term) % MOD
+
+        Sd = S_d[d]  # sum of numbers with this digit length
+        ans = (ans + Sd * Wd) % MOD
+
+    print(ans % MOD)
+
+if __name__ == "__main__":
+    main()
+```

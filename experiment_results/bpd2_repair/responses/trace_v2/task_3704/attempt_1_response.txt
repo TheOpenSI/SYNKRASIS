@@ -1,0 +1,19 @@
+### Step-by-step reasoning
+- Let L be the sum of the left subarray for a given partition, and R be the sum of the right subarray. The total sum is total = L + R.
+- The difference is D = L - R. Since R = total - L, we have D = L - (total - L) = 2L - total.
+- Parity analysis: 2L is always even, so D mod 2 ≡ (even - total) mod 2 ≡ (-total) mod 2 ≡ total mod 2 (in modulo 2, -x ≡ x). Therefore, D is even if and only if total is even.
+- Conclusion: If the total sum of the array is even, every partition (n-1 partitions for an array of length n) yields an even difference. If the total sum is odd, no partition yields an even difference.
+- Implement this directly: compute total; if total is even, return len(nums) - 1, else return 0.
+
+### Requirements
+None
+
+### Code
+```
+from typing import List
+
+class Solution:
+    def countPartitions(self, nums: List[int]) -> int:
+        total = sum(nums)
+        return len(nums) - 1 if total % 2 == 0 else 0
+```

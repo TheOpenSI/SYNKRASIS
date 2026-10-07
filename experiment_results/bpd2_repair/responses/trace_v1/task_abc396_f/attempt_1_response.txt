@@ -1,0 +1,76 @@
+### Step-by-step reasoning
+- The previous error was caused by an incorrect slice when reading A. The input format is: N M followed by A_1 ... A_N, all on standard input. A should be read from data[2] to data[2+N), but the previous code used data[3:2+N], which dropped the first element and led to wrong inversion counts.
+- The intended approach is correct: compute the inversion number for k = 0 (inv0) using A as is. For each k from 0 to M-2, when we move to k+1, elements with A_i = M-1-k wrap from M-1 to 0. The change in the inversion count depends only on the positions of these wrapped elements.
+- Let S be the set of indices i with A_i = v, where v = M-1-k. If r = |S| and sum_p is the sum of positions of indices in S (1-based), the change in inversion number when transitioning k -> k+1 is:
+  delta = 2*sum_p - r*N - r
+  This accounts for how many inversions disappear and how many appear due to those wrapped elements crossing others.
+- Precompute for each value v:
+  - m[v] = count of A_i equal to v
+  - sum_pos[v] = sum of (1-based) positions i with A_i = v
+  Then delta[v] = 0 if m[v] == 0, else delta[v] = 2*sum_pos[v] - m[v]*N - m[v].
+- The answer for k = 0 is inv0 (inversion count of A). For k+1, inv(k+1) = inv(k) + delta[M-1-k].
+- This yields O((N + M) log M) time for the initial inversion via Fenwick tree, and O(M) for the rest.
+
+### Requirements
+None
+
+### Code
+```python
+import sys
+
+def main():
+    data = list(map(int, sys.stdin.buffer.read().split()))
+    N = data[0]
+    M = data[1]
+    A = data[2:2 + N]
+
+    size = M
+    bit = [0] * (size + 1)
+
+    def bit_add(idx, delta):
+        i = idx + 1
+        while i <= size:
+            bit[i] += delta
+            i += i & -i
+
+    def bit_sum(idx):
+        i = idx + 1
+        s = 0
+        while i > 0:
+            s += bit[i]
+            i -= i & -i
+        return s
+
+    # inv0: inversion count for k = 0, i.e., the sequence A
+    inv0 = 0
+    for i, val in enumerate(A):
+        s = bit_sum(val)
+        inv0 += i - s
+        bit_add(val, 1)
+
+    # Prepare per-value statistics
+    m = [0] * M
+    sum_pos = [0] * M
+    for idx, val in enumerate(A, start=1):  # 1-based positions
+        m[val] += 1
+        sum_pos[val] += idx
+
+    delta = [0] * M
+    for v in range(M):
+        if m[v] == 0:
+            delta[v] = 0
+        else:
+            delta[v] = 2 * sum_pos[v] - m[v] * N - m[v]
+
+    # Build answers for k = 0, 1, ..., M-1
+    ans = [0] * M
+    ans[0] = inv0
+    for k in range(0, M - 1):
+        v = M - 1 - k
+        ans[k + 1] = ans[k] + delta[v]
+
+    print('\n'.join(map(str, ans)))
+
+if __name__ == "__main__":
+    main()
+```

@@ -1,0 +1,65 @@
+numOfUnplacedFruits(fruits=[4, 2, 5], baskets=[3, 5, 4]):
+  n = len(baskets)  # n=3
+  if n == 0:  # False (n=3)
+  INF_NEG = -10 ** 18  # INF_NEG=-1000000000000000000
+  tree = [INF_NEG] * (4 * n)  # tree=[-1000000000000000000, -1000000000000...
+  build(1, 0, n - 1)  # tree=[-1000000000000000000, 5, 5, 4, 3, 5,...
+    build(node=1, l=0, r=2, baskets=[3, 5, 4], tree=[-1000000000000000000, -1000000000000...):
+      if l == r:  # False
+        mid = (l + r) // 2  # mid=1
+        build(node * 2, l, mid)  # tree=[-1000000000000000000, -1000000000000...
+          build(node=2, l=0, r=1, baskets=[3, 5, 4], tree=[-1000000000000000000, -1000000000000...):
+            if l == r:  # False
+              mid = (l + r) // 2  # mid=0
+              build(node * 2, l, mid)  # tree=[-1000000000000000000, -1000000000000...
+                build(node=4, l=0, r=0, baskets=[3, 5, 4], tree=[-1000000000000000000, -1000000000000...):
+                  if l == r:  # True
+                    tree[node] = baskets[l]  # tree=[-1000000000000000000, -1000000000000...
+              build(node * 2 + 1, mid + 1, r)  # tree=[-1000000000000000000, -1000000000000...
+                build(node=5, l=1, r=1, baskets=[3, 5, 4], tree=[-1000000000000000000, -1000000000000...):
+                  if l == r:  # True
+                    tree[node] = baskets[l]  # tree=[-1000000000000000000, -1000000000000...
+              tree[node] = max(tree[node * 2], tree[node * 2 + 1])  # tree=[-1000000000000000000, -1000000000000...
+        build(node * 2 + 1, mid + 1, r)  # tree=[-1000000000000000000, -1000000000000...
+          build(node=3, l=2, r=2, baskets=[3, 5, 4], tree=[-1000000000000000000, -1000000000000...):
+            if l == r:  # True
+              tree[node] = baskets[l]  # tree=[-1000000000000000000, -1000000000000...
+        tree[node] = max(tree[node * 2], tree[node * 2 + 1])  # tree[1]: -1000000000000000000 -> 5
+  for f in fruits:  # 3 iterations; f=4,2,5
+    idx = find_first_ge(1, 0, n - 1, f)  # idx=1,0,-1; find_first_ge returns 1,0,-1
+      find_first_ge(node=1, l=0, r=2, x=4, tree=[-1000000000000000000, 5, 5, 4, 3, 5,...):  [first of 3 calls]
+        if tree[node] < x:  # False
+        if l == r:  # False
+        mid = (l + r) // 2  # mid=1
+        if tree[node * 2] >= x:  # True
+          return find_first_ge(node * 2, l, mid, x)  # returns 1
+            find_first_ge(node=2, l=0, r=1, x=4, tree=[-1000000000000000000, 5, 5, 4, 3, 5,...):
+              if tree[node] < x:  # False
+              if l == r:  # False
+              mid = (l + r) // 2  # mid=0
+              if tree[node * 2] >= x:  # False
+                return find_first_ge(node * 2 + 1, mid + 1, r, x)  # returns 1
+                  find_first_ge(node=5, l=1, r=1, x=4, tree=[-1000000000000000000, 5, 5, 4, 3, 5,...):
+                    if tree[node] < x:  # False
+                    if l == r:  # True
+                      return l  # returns 1
+    if idx == -1:  # F,F,T
+      unplaced += 1  # unplaced=1  (iters 3)
+      update(1, 0, n - 1, idx, INF_NEG)  # tree=[-1000000000000000000, 4, 3, 4, 3, -1...,[-1000000000000000000, 4, -1000000000...; update returns None,None  (iters 1,2)
+        update(node=1, l=0, r=2, idx=1, val=-1000000000000000000, tree=[-1000000000000000000, 5, 5, 4, 3, 5,...):  [first of 2 calls]
+          if l == r:  # False
+            mid = (l + r) // 2  # mid=1
+            if idx <= mid:  # True (mid=1)
+              update(node * 2, l, mid, idx, val)  # tree[2]: 5 -> 3; tree[5]: 5 -> -1000000000000000000
+                update(node=2, l=0, r=1, idx=1, val=-1000000000000000000, tree=[-1000000000000000000, 5, 5, 4, 3, 5,...):
+                  if l == r:  # False
+                    mid = (l + r) // 2  # mid=0
+                    if idx <= mid:  # False (mid=0)
+                      update(node * 2 + 1, mid + 1, r, idx, val)  # tree[5]: 5 -> -1000000000000000000
+                        update(node=5, l=1, r=1, idx=1, val=-1000000000000000000, tree=[-1000000000000000000, 5, 5, 4, 3, 5,...):
+                          if l == r:  # True
+                            tree[node] = val  # tree[5]: 5 -> -1000000000000000000
+                    tree[node] = max(tree[node * 2], tree[node * 2 + 1])  # tree[2]: 5 -> 3
+            tree[node] = max(tree[node * 2], tree[node * 2 + 1])  # tree[1]: 5 -> 4
+  return unplaced  # returned
+returned 1   (expected 1)

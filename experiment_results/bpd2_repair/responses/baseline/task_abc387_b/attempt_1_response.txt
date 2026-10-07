@@ -1,0 +1,32 @@
+### Step-by-step reasoning
+- The 9x9 multiplication grid contains all products i * j for i, j in {1,...,9}. The sum of all 81 cells can be computed as (sum 1..9)^2 = 45^2 = 2025.
+- If X occurs in the grid, we need to subtract X for every cell that equals X. The number of occurrences of X in the grid is the number of pairs (i, j) with i * j = X and 1 <= i, j <= 9.
+- To count occurrences, iterate i from 1 to 9. If X is divisible by i, let j = X / i. If 1 <= j <= 9, then (i, j) is a valid occurrence. Since we loop over all i, we count all occurrences (including symmetric ones like (3,8) and (8,3) for X = 24).
+- The final answer is total_sum - X * occurrences.
+- The previous solution started with count = 1, which incorrectly overcounted the number of occurrences (for X = 1, it counted 2 occurrences instead of 1). Initialize count to 0.
+
+### Requirements
+None
+
+### Code
+```
+import sys
+
+def main():
+    data = sys.stdin.read().strip()
+    if not data:
+        return
+    X = int(data)
+    total = 2025  # sum of all 81 products in 1..9 x 1..9
+    count = 0
+    for i in range(1, 10):
+        if X % i == 0:
+            j = X // i
+            if 1 <= j <= 9:
+                count += 1
+    ans = total - X * count
+    print(ans)
+
+if __name__ == "__main__":
+    main()
+```

@@ -1,0 +1,32 @@
+### Step-by-step reasoning
+- The task is to determine if there exists a permutation B of A = (A1, A2, A3) such that B1 * B2 = B3.
+- This is equivalent to checking whether any two numbers among a, b, c multiply to the remaining one. Specifically, check:
+  - a * b == c
+  - a * c == b
+  - b * c == a
+- The previous implementation used an incorrect logical combination (e.g., using a*b != c), which caused it to produce true results for inputs like (5, 3, 2) where 5*3 != 2, but the code incorrectly printed Yes due to the faulty condition.
+- The correct approach is straightforward: if any of the three pairwise products equals the third value, print "Yes"; otherwise print "No".
+- This approach is safe given the constraints (values up to 100, products up to 10000).
+
+### Requirements
+None
+
+### Code
+```
+from typing import *
+import sys
+
+def main():
+    data = sys.stdin.read().strip().split()
+    if len(data) < 3:
+        print('No')
+        return
+    a, b, c = map(int, data[:3])
+    if a * b == c or a * c == b or b * c == a:
+        print('Yes')
+    else:
+        print('No')
+
+if __name__ == '__main__':
+    main()
+```

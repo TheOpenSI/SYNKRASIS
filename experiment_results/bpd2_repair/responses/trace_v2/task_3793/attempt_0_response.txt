@@ -1,0 +1,31 @@
+### Step-by-step reasoning
+The solution is below.
+
+### Requirements
+None
+
+### Code
+```python
+from typing import *
+
+class Solution:
+
+    def longestPalindrome(self, s: str, t: str) -> int:
+        n, m = (len(s), len(t))
+        A_subs = ['']
+        for i in range(n):
+            for j in range(i + 1, n + 1 - 1):
+                A_subs.append(s[i:j])
+        B_subs = ['']
+        for i in range(m):
+            for j in range(i + 1, m + 1):
+                B_subs.append(t[i:j])
+        max_len = 0
+        for A in A_subs:
+            for B in B_subs:
+                P = A + B
+                if P == P[::-1]:
+                    if len(P) > max_len:
+                        max_len = len(P)
+        return max_len
+```

@@ -1,0 +1,13 @@
+Your generated code failed a test case.
+Please update the function logic so all test cases will pass. Error message added for your reference - 
+AssertionError: wrong answer on test case 2. Input: '37.7', expected output: '2', your output: '3\n'
+
+Execution trace of your code on public test case 2. How to read it: only the lines that ran are listed, with the values after `#`. `x=1,2,3` are the values of x on successive executions of that line, `a..b` a run of consecutive numbers, `T/F` the outcome of a condition on each execution, `F×3` three equal values, `(iters 2,4)` the loop iterations the line ran in, `...` omitted middle values. Nested lines belong to the line above.
+main()
+  s = sys.stdin.readline().strip()  # s='37.7'
+  if not s:  # False (s='37.7')
+  x = Decimal(s)  # x=Decimal('37.7')
+  if x >= Decimal('38.0'):  # False (x=Decimal('37.7'))
+  elif x >= Decimal('37.5'):  # True (x=Decimal('37.7'))
+printed '3'   (expected '2')
+Find the first point where the behaviour differs from what the problem requires and fix that logic.

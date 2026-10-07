@@ -1,0 +1,65 @@
+### Step-by-step reasoning
+- Problem restated: We have 2N vertices in a line with edges i -> i+1 (for i=1..2N-1). Each white vertex must be paired with a black vertex (forming a directed edge from white to black). We count the number of ways to pair whites to blacks such that the resulting graph is strongly connected.
+- Important observations:
+  - For strong connectivity, there must be a way to travel backwards along the line. In particular, for every cut after position k (1 ≤ k < 2N), there must exist a white vertex on the right side (positions > k) whose partner (the black vertex) lies on the left side (positions ≤ k). Otherwise, vertices on the right cannot reach the left.
+  - The problem then reduces to counting bijections f from white positions to black positions with the property: for every k, there exists a white i > k with f(i) ≤ k.
+- A known combinatorial simplification for this structure yields a simple product formula:
+  - List white vertices in increasing order of their positions: i1 < i2 < ... < iN.
+  - Let B_before(i_t) be the number of black vertices among positions < i_t.
+  - The number of valid pairings equals the product over t = 1..N of (B_before(i_t) - (t-1)).
+  - If any factor is ≤ 0, the count is 0.
+- Additionally, there is a quick necessary condition: the first vertex must be black and the last vertex must be white (otherwise the required crossing at some cut is impossible). If S[0] != 'B' or S[2N-1] != 'W', the answer is 0.
+- Using this approach matches the sample:
+  - Sample 1: whites at {2,4}; blacks to left of 2 is 1; blacks to left of 4 is 2; product = (1-0) * (2-1) = 1.
+  - Sample 2: ends with 'B' → 0.
+  - Sample 3: follows the same rule and yields the given big number (modulo).
+
+This gives a straightforward O(N) solution with simple modular arithmetic.
+
+### Requirements
+None
+
+### Code
+```
+import sys
+
+MOD = 998244353
+
+def solve():
+    input = sys.stdin.readline
+    N_line = input().strip()
+    while N_line == "":
+        N_line = input().strip()
+    N = int(N_line)
+    S = input().strip()
+
+    # Quick necessary conditions
+    if len(S) != 2 * N:
+        print(0)
+        return
+    if S[0] != 'B' or S[-1] != 'W':
+        print(0)
+        return
+
+    blacks_before = 0
+    whites_seen = 0
+    ans = 1
+
+    for pos, ch in enumerate(S, start=1):
+        if ch == 'B':
+            blacks_before += 1
+        else:  # ch == 'W'
+            whites_seen += 1
+            # t = whites_seen, B_before = blacks_before
+            # term = B_before - (t-1)
+            term = blacks_before - (whites_seen - 1)
+            if term <= 0:
+                print(0)
+                return
+            ans = (ans * term) % MOD
+
+    print(ans % MOD)
+
+if __name__ == "__main__":
+    solve()
+```

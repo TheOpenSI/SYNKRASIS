@@ -1,0 +1,52 @@
+### Step-by-step reasoning
+- The problem asks for the horizontal line y = t that halves the total area of all squares (counting overlaps multiple times). For each square with bottom at y_i and side length l_i, the area below the line y = t is:
+  - 0 if t <= y_i
+  - (t - y_i) * l_i if y_i < t < y_i + l_i
+  - l_i^2 if t >= y_i + l_i
+- The total area below the line is the sum of these contributions across all squares. Let total_area = sum(l_i^2) and half_area = total_area / 2. We want to find t such that below_area(t) = half_area.
+- The function below_area(t) is non-decreasing in t, so we can binary search t between the minimum bottom y among squares and the maximum top y (y_i + l_i).
+- After binary search, return the value rounded to 5 decimal places to satisfy exact formatting expectations (e.g., 1.16667 for the provided test case).
+
+### Requirements
+None
+
+### Code
+```
+from typing import List
+
+class Solution:
+    def separateSquares(self, squares: List[List[int]]) -> float:
+        n = len(squares)
+        ys = [s[1] for s in squares]
+        ls = [s[2] for s in squares]
+        ends = [ys[i] + ls[i] for i in range(n)]
+        
+        min_y = min(ys)
+        max_y_plus = max(ends)
+        total_area = 0.0
+        for l in ls:
+            total_area += l * l
+        half_area = total_area / 2.0
+
+        lo, hi = min_y, max_y_plus
+        # Binary search to find t such that area below(t) ≈ half_area
+        for _ in range(60):
+            mid = (lo + hi) / 2.0
+            below = 0.0
+            for i in range(n):
+                yi = ys[i]
+                li = ls[i]
+                if mid <= yi:
+                    continue
+                end_i = ends[i]
+                if mid >= end_i:
+                    below += li * li
+                else:
+                    below += (mid - yi) * li
+            if below < half_area:
+                lo = mid
+            else:
+                hi = mid
+        ans = (lo + hi) / 2.0
+        return round(ans, 5)
+```

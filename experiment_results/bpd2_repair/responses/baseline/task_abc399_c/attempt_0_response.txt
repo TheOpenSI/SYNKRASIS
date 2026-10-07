@@ -1,0 +1,63 @@
+### Step-by-step reasoning
+The solution is below.
+
+### Requirements
+None
+
+### Code
+```python
+from typing import *
+import sys
+
+class DSU:
+
+    def __init__(self, n):
+        self.parent = list(range(n + 1))
+        self.size = [1] * (n + 1)
+
+    def find(self, x):
+        if self.parent[x] != x:
+            self.parent[x] = self.find(self.parent[x])
+        return self.parent[x]
+
+    def union(self, a, b):
+        ra = self.find(a)
+        rb = self.find(b)
+        if ra == rb:
+            return
+        if self.size[ra] < self.size[rb]:
+            ra, rb = (rb, ra)
+        self.parent[rb] = ra
+        self.size[ra] += self.size[rb]
+
+def main():
+    data = sys.stdin.read().strip().split()
+    if not data:
+        print(0)
+        return
+    it = iter(data)
+    try:
+        n = int(next(it))
+        m = int(next(it))
+    except StopIteration:
+        print(0)
+        return
+    dsu = DSU(n)
+    for _ in range(m):
+        try:
+            u = int(next(it))
+            v = int(next(it))
+        except StopIteration:
+            break
+        dsu.union(u, v)
+    roots = set()
+    for i in range(1, n + 1):
+        roots.add(dsu.find(i))
+    components = len(roots)
+    answer = m - (n + components)
+    if answer < 0:
+        answer = 0
+    print(answer)
+if __name__ == '__main__':
+    main()
+```

@@ -1,0 +1,44 @@
+### Step-by-step reasoning
+- The minimum number of adjacent swaps required to group all 1s together equals the minimal total movement of the 1s to positions that form a consecutive block.
+- If the positions of 1s are p_i (1-based indexing) for i = 0..k-1, we want to map them to consecutive positions t_i = x + i, where x is the starting index of the block.
+- The total moves is sum_i |p_i - (x + i)|. This can be rewritten as sum_i |(p_i - i) - x|.
+- Let a_i = p_i - i. The problem reduces to choosing x to minimize sum_i |a_i - x|. The optimal x is a median of the a_i values.
+- The implementation must consider all k ones, i.e., i ranges from 0 to k-1. The previous solution erroneously used only k-1 elements (range(k-1)), which misses the last 1, leading to incorrect results.
+- Correct approach: compute a_i for all i, find the median, and sum the absolute deviations from the median.
+
+### Requirements
+None
+
+### Code
+```
+import sys
+
+def main():
+    data = sys.stdin.read().split()
+    if not data:
+        return
+    N = int(data[0])
+    S = data[1].strip()
+
+    # Collect 1-based positions of '1's
+    pos = []
+    for idx, ch in enumerate(S, start=1):
+        if ch == '1':
+            pos.append(idx)
+
+    k = len(pos)
+    if k <= 1:
+        print(0)
+        return
+
+    # a_i = p_i - i, with i = 0..k-1
+    a = [pos[i] - i for i in range(k)]
+    a_sorted = sorted(a)
+    median = a_sorted[k // 2]
+
+    ans = sum(abs(v - median) for v in a)
+    print(ans)
+
+if __name__ == "__main__":
+    main()
+```

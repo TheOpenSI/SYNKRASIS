@@ -1,0 +1,180 @@
+### Step-by-step reasoning
+- We want the sum over all permutations P of (1..N) of f(P), where f(P) is the concatenation of the decimal representations of A_{P1}, A_{P2}, ..., A_{PN}.
+- If A_i has digit length b_i, then f(P) can be written as sum over positions j: A_{P_j} * 10^{sum of b_{P_t} for t>j}.
+- For a fixed i, its contribution across all permutations depends on which subset of the other numbers appear after i, but not on their internal order. If exactly k numbers appear after i, the contribution factor is i * 10^{sum b of those k after-numbers}. The number of permutations where a fixed subset S of size k appears after i is k! * (N-1-k)!.
+- Therefore, for a fixed i, the total after-i contribution is F_i = sum_{k=0}^{N-1} k! (N-1-k)! * e_k(X_others), where e_k(X_others) is the k-th elementary symmetric sum of the numbers X_j = 10^{b_j} for j ≠ i.
+- Numbers 1..N have only a few digit lengths. Let cnt_t be how many numbers have t digits. For a chosen i with digit length d, the multiset X_others consists of cnt_t copies of 10^t for t ≠ d, and (cnt_d - 1) copies of 10^d.
+- Let E_d(z) = ∏_{t=1..D} (1 + (10^t) z)^{cnt'_t}, where cnt'_t = cnt_t - 1 if t == d else cnt_t. Then the coefficient of z^k in E_d is e_k(X_others) for that d.
+- We can compute E_d(z) by multiplying polynomials G_t(z) = (1 + (10^t) z)^{cnt'_t} for t=1..D. Each G_t is easy to build via binomial expansion: G_t[k] = C(cnt'_t, k) * (10^t)^k.
+- Once E_d is known as its coefficient vector e_k, F_d = sum_{k=0}^{N-1} e_k * k! * (N-1-k)!.
+- The total answer is sum over digit lengths d with cnt_d > 0 of (sum of all i with d digits) * F_d. Let S_d be the sum of all numbers i with d digits; compute S_d via arithmetic series formula.
+- We implement polynomial multiplication via NTT (Number Theoretic Transform) modulo 998244353, as existing polynomials have large degrees (up to N-1).
+- Complexity: D ≤ 6 (since N ≤ 2e5), and we perform up to D polynomial multiplications per d, with total degree summing to N-1. This is efficiently handled by NTT in Python.
+
+### Requirements
+None
+
+### Code
+```
+import sys
+
+MOD = 998244353
+G_ROOT = 3
+
+def modinv(a):
+    return pow(a, MOD - 2, MOD)
+
+def ntt(a, invert):
+    n = len(a)
+    j = 0
+    for i in range(1, n):
+        bit = n >> 1
+        while j & bit:
+            j ^= bit
+            bit >>= 1
+        j ^= bit
+        if i < j:
+            a[i], a[j] = a[j], a[i]
+    length = 2
+    while length <= n:
+        wlen = pow(G_ROOT, (MOD - 1) // length, MOD)
+        if invert:
+            wlen = modinv(wlen)
+        for i in range(0, n, length):
+            w = 1
+            half = length >> 1
+            for j in range(i, i + half):
+                u = a[j]
+                v = a[j + half] * w % MOD
+                a[j] = (u + v) % MOD
+                a[j + half] = (u - v) % MOD
+                w = w * wlen % MOD
+        length <<= 1
+    if invert:
+        inv_n = modinv(n)
+        for i in range(n):
+            a[i] = a[i] * inv_n % MOD
+
+def multiply(a, b):
+    if not a or not b:
+        return []
+    need = len(a) + len(b) - 1
+    n = 1
+    while n < need:
+        n <<= 1
+    fa = a[:] + [0] * (n - len(a))
+    fb = b[:] + [0] * (n - len(b))
+    ntt(fa, False)
+    ntt(fb, False)
+    for i in range(n):
+        fa[i] = fa[i] * fb[i] % MOD
+    ntt(fa, True)
+    return fa[:need]
+
+def main():
+    data = sys.stdin.read().strip().split()
+    if not data:
+        return
+    N = int(data[0])
+
+    # Precompute factorials and inverse factorials for binomials
+    fact = [1] * (N + 1)
+    for i in range(1, N + 1):
+        fact[i] = fact[i - 1] * i % MOD
+    invfact = [1] * (N + 1)
+    invfact[N] = pow(fact[N], MOD - 2, MOD)
+    for i in range(N, 0, -1):
+        invfact[i - 1] = invfact[i] * i % MOD
+
+    def C(n, k):
+        if k < 0 or k > n:
+            return 0
+        return fact[n] * invfact[k] % MOD * invfact[n - k] % MOD
+
+    inv2 = (MOD + 1) // 2
+
+    # Determine digit groups cnt[d]
+    tmp = N
+    D = 0
+    while tmp > 0:
+        D += 1
+        tmp //= 10
+
+    L = [0] * (D + 1)
+    R = [0] * (D + 1)
+    cnt = [0] * (D + 1)
+    for d in range(1, D + 1):
+        lo = 1 if d == 1 else 10 ** (d - 1)
+        hi = min(N, 10 ** d - 1)
+        L[d] = lo
+        R[d] = hi
+        if hi >= lo:
+            cnt[d] = hi - lo + 1
+        else:
+            cnt[d] = 0
+
+    # pow10d[d] = 10^d mod MOD
+    pow10d = [0] * (D + 1)
+    pow10d[0] = 1
+    for d in range(1, D + 1):
+        pow10d[d] = (pow10d[d - 1] * 10) % MOD
+
+    # Sum of i in [L[d], R[d]] modulo MOD
+    S_d = [0] * (D + 1)
+    for d in range(1, D + 1):
+        if cnt[d] > 0:
+            lo = L[d]
+            hi = R[d]
+            c = cnt[d]
+            s = ((lo % MOD) + (hi % MOD)) % MOD
+            s = s * c % MOD
+            s = s * inv2 % MOD
+            S_d[d] = s
+        else:
+            S_d[d] = 0
+
+    ans = 0
+
+    # For each digit length d with at least one number
+    for d in range(1, D + 1):
+        if cnt[d] <= 0:
+            continue
+
+        # Build E_d(z) = ∏_{t=1..D} (1 + (10^t) z)^{cnt'_t}, where cnt'_t = cnt[t] - (t==d)
+        poly = [1]
+        for t in range(1, D + 1):
+            cnt_t = cnt[t]
+            cnt_prime = cnt_t - (1 if t == d else 0)
+            if cnt_prime <= 0:
+                # (1 + x z)^0 = 1, skip
+                continue
+            x = pow10d[t]
+            # Build G_t coefficients: G_t[k] = C(cnt_prime, k) * (x^k)
+            G = [0] * (cnt_prime + 1)
+            xpow = 1
+            for k in range(0, cnt_prime + 1):
+                comb = C(cnt_prime, k)
+                G[k] = comb * xpow % MOD
+                xpow = xpow * x % MOD
+            poly = multiply(poly, G)
+
+        # Ensure length is at least N (we need e_k for k=0..N-1)
+        if len(poly) < N:
+            poly += [0] * (N - len(poly))
+
+        # F_d = sum_{k=0}^{N-1} e_k * k! * (N-1-k)!
+        N1 = N - 1
+        Fd = 0
+        for k in range(0, N):
+            coeff = poly[k]
+            w = fact[k] * fact[N1 - k] % MOD
+            Fd = (Fd + coeff * w) % MOD
+
+        Sd = S_d[d]
+        ans = (ans + Sd * Fd) % MOD
+
+    print(ans % MOD)
+
+if __name__ == "__main__":
+    main()
+```

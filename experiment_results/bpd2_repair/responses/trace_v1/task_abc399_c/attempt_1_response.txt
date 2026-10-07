@@ -1,0 +1,77 @@
+### Step-by-step reasoning
+- The goal is to delete the minimum number of edges to obtain a forest (acyclic graph).
+- In a forest, each connected component with ni nodes can have at most ni - 1 edges (a tree). Therefore, the maximum number of edges that can remain without creating a cycle is sum(ni - 1) over all components = N - C, where C is the number of connected components.
+- Hence, the minimum number of deletions required is M - (N - C).
+- The previous solution used M - (N + C) which over-subtracted by 2C, producing incorrect results for many cases.
+- Solution approach:
+  - Build a DSU (Disjoint Set Union) to determine connected components.
+  - Count the number of components C.
+  - Compute deletions as max(0, M - (N - C)).
+  - Print the result.
+
+### Requirements
+None
+
+### Code
+```
+import sys
+from typing import List
+
+class DSU:
+    def __init__(self, n: int):
+        self.parent: List[int] = list(range(n + 1))
+        self.size: List[int] = [1] * (n + 1)
+
+    def find(self, x: int) -> int:
+        if self.parent[x] != x:
+            self.parent[x] = self.find(self.parent[x])
+        return self.parent[x]
+
+    def union(self, a: int, b: int) -> None:
+        ra = self.find(a)
+        rb = self.find(b)
+        if ra == rb:
+            return
+        if self.size[ra] < self.size[rb]:
+            ra, rb = rb, ra
+        self.parent[rb] = ra
+        self.size[ra] += self.size[rb]
+
+def main():
+    data = sys.stdin.read().strip().split()
+    if not data:
+        print(0)
+        return
+    it = iter(data)
+    try:
+        n = int(next(it))
+        m = int(next(it))
+    except StopIteration:
+        print(0)
+        return
+
+    dsu = DSU(n)
+
+    for _ in range(m):
+        try:
+            u = int(next(it))
+            v = int(next(it))
+        except StopIteration:
+            break
+        dsu.union(u, v)
+
+    roots = set()
+    for i in range(1, n + 1):
+        roots.add(dsu.find(i))
+    components = len(roots)
+
+    # Maximum edges we can keep without cycles = N - components
+    deletions = m - (n - components)
+    if deletions < 0:
+        deletions = 0
+
+    print(deletions)
+
+if __name__ == "__main__":
+    main()
+```

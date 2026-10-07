@@ -1,0 +1,37 @@
+### Step-by-step reasoning
+- Problem understanding: We need the shortest contiguous subarray that contains at least two equal elements (i.e., a value appears at least twice within that subarray). The minimal such subarray for any value occurs between two consecutive occurrences of that value in the array, giving length = current_index - previous_index_of_same_value + 1. We take the minimum over all values; if no value repeats, answer is -1.
+- Correct approach: Iterate through the array once, keeping a map from value to its last seen index. When we encounter a value we've seen before, compute the candidate subarray length using the last index, update the global minimum, and then update the last seen index to the current index.
+- Bug analysis: The previous solution parsed input using n = data[1] and a = data[1:1+n], which incorrectly ignores the first number (N) and truncates the array. For a test input like [5, 3, 9, 5, 3, 1], it would use n=3 and a=[3,9,5], leading to wrong results. The correct parsing should take n = data[0] and a = data[1:1+n].
+- Edge considerations: Handle the case where no repeated value exists by printing -1. Complexity is O(N) with O(U) extra space where U is the number of distinct values (fits constraints).
+
+### Requirements
+None
+
+### Code
+```
+import sys
+
+def main():
+    data = list(map(int, sys.stdin.buffer.read().split()))
+    if not data:
+        print(-1)
+        return
+
+    n = data[0]
+    a = data[1:1 + n]
+
+    last_pos = {}
+    ans = None
+
+    for i, v in enumerate(a):
+        if v in last_pos:
+            length = i - last_pos[v] + 1
+            if ans is None or length < ans:
+                ans = length
+        last_pos[v] = i
+
+    print(-1 if ans is None else ans)
+
+if __name__ == "__main__":
+    main()
+```

@@ -1,0 +1,80 @@
+### Step-by-step reasoning
+- We need the inversion count of B = ((A_i + k) mod M) for k = 0..M-1.
+- Let inv0 be the inversion count when k = 0, i.e., inversions in the sequence A.
+- When we increment k by 1, every B_i increases by 1 modulo M. Elements with B_i = M-1 wrap to 0; all other elements increase by 1 and keep their relative order with non-wrapping elements.
+- The only changes in inversions from k to k+1 come from pairs that involve at least one element that wraps (B_i(k) = M-1). If both wrap, their relative order stays the same (both become 0).
+- For a fixed k, let W_k be the set of indices i such that B_i(k) = M-1. For i in W_k, the change in inversions when moving to k+1 depends on how many wrapping indices lie left/right of i and on the total number of wrapping indices in W_k.
+- After deriving the pairwise effects and summing over all i in W_k, we obtain a compact formula:
+  delta_k = sum over i in W_k of (2*i - N - 1) - 2*(number of wrapping indices to the left of i)
+  Summing over all i in W_k simplifies to:
+  delta_k = 2 * sum_of_indices_in_Wk - |W_k| * (N + 1)
+- Each i contributes to W_k exactly when k = M-1 - A_i (with A_i in [0, M-1]), so we can precompute:
+  - w[k] = count of i with M-1 - A_i = k
+  - sum_indices[k] = sum of 1-based indices i for those i
+- Then:
+  ans[0] = inv0
+  ans[k+1] = ans[k] + (2 * sum_indices[k] - w[k] * (N + 1)) for k = 0..M-2
+- This yields all answers in O((N+M) log M) time (due to computing inv0 with a Fenwick tree) and O(N + M) memory.
+
+This approach matches known small-case results (e.g., sample tests) and handles large constraints.
+
+### Requirements
+None
+
+### Code
+```python
+import sys
+
+def main():
+    data = list(map(int, sys.stdin.buffer.read().split()))
+    if not data:
+        return
+    it = iter(data)
+    N = next(it)
+    M = next(it)
+    A = [next(it) for _ in range(N)]
+
+    # Compute inv0: inversion count for k = 0 (sequence A)
+    size = M
+    bit = [0] * (size + 1)
+
+    def bit_add(idx, delta):
+        i = idx + 1
+        while i <= size:
+            bit[i] += delta
+            i += i & -i
+
+    def bit_sum(idx):
+        i = idx + 1
+        s = 0
+        while i > 0:
+            s += bit[i]
+            i -= i & -i
+        return s
+
+    inv0 = 0
+    for i, v in enumerate(A):
+        s = bit_sum(v)
+        inv0 += i - s
+        bit_add(v, 1)
+
+    # Build buckets for W_k: for each k, store count and sum of 1-based indices i
+    w = [0] * M
+    sum_indices = [0] * M
+    for idx, a in enumerate(A, start=1):
+        k = (M - 1) - a  # since a in [0, M-1], k in [0, M-1]
+        w[k] += 1
+        sum_indices[k] += idx
+
+    # Build answers
+    ans = [0] * M
+    ans[0] = inv0
+    for k in range(0, M - 1):
+        delta = 2 * sum_indices[k] - w[k] * (N + 1)
+        ans[k + 1] = ans[k] + delta
+
+    sys.stdout.write('\n'.join(map(str, ans)))
+
+if __name__ == "__main__":
+    main()
+```

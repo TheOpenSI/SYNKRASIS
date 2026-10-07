@@ -1,0 +1,22 @@
+### Step-by-step reasoning
+The solution is below.
+
+### Requirements
+None
+
+### Code
+```python
+from typing import *
+import sys
+
+def main():
+    data = sys.stdin.read().split()
+    if not data:
+        return
+    n = int(data[0])
+    strings = data[2:1 + n]
+    strings.sort(key=len)
+    print(''.join(strings))
+if __name__ == '__main__':
+    main()
+```

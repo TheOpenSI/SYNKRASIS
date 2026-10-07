@@ -1,0 +1,72 @@
+### Step-by-step reasoning
+- Problem understanding: We have N black values B_i and M white values W_j. We may choose any subset of balls such that the number of black balls chosen is at least the number of white balls chosen. We want to maximize the total value.
+
+- Key observation: If we fix the number of whites chosen to be w, then among blacks we should choose b blacks with b ≥ w that maximize the total sum. Since for a given b the best blacks are the top b values (when blacks are sorted in descending order), the black contribution for any b is the prefix sum of the top b blacks, prefix_B[b].
+
+- For a fixed w, the best possible black contribution is max(prefix_B[b] for b in [w, N]). Let best_from[w] denote this maximum. Then the total sum for choosing w whites is best_from[w] + prefix_W[w], where prefix_W[w] is the sum of the top w whites.
+
+- We need to consider w from 0 to min(N, M) (you cannot choose more whites than blacks available to meet b ≥ w). The final answer is the maximum of best_from[w] + prefix_W[w] over that range. This naturally includes the case of choosing nothing (w = 0, b = 0), yielding 0.
+
+- Bug in the previous solution: The loop over b used range(N, -2, -1) which includes -1, leading to negative indexing (prefix_B[-1] refers to the last element), causing incorrect results (e.g., 79 instead of 0 for the sample). Also the intended preprocessing of best_from was not implemented robustly.
+
+- Fix approach:
+  - Sort blacks and whites in descending order.
+  - Compute prefix_B where prefix_B[i] is the sum of the top i blacks.
+  - Compute best_from[b] as the maximum of prefix_B[b], prefix_B[b+1], ..., prefix_B[N] using a backward pass:
+    - best_from[N] = prefix_B[N]
+    - for i from N-1 down to 0: best_from[i] = max(prefix_B[i], best_from[i+1])
+  - Compute prefix_W similarly for whites.
+  - Evaluate ans = max over w in 0..min(N, M) of best_from[w] + prefix_W[w].
+  - Print ans.
+
+- Complexity: Sorting O(N log N + M log M), plus O(N + M) passes. Works for up to 2e5.
+
+### Requirements
+None
+
+### Code
+```python
+import sys
+
+def main():
+    data = sys.stdin.buffer.read().split()
+    if not data:
+        print(0)
+        return
+    it = iter(data)
+    N = int(next(it))
+    M = int(next(it))
+    B = [int(next(it)) for _ in range(N)]
+    W = [int(next(it)) for _ in range(M)]
+
+    B.sort(reverse=True)
+    W.sort(reverse=True)
+
+    # prefix sums for blacks
+    prefix_B = [0] * (N + 1)
+    for i in range(1, N + 1):
+        prefix_B[i] = prefix_B[i - 1] + B[i - 1]
+
+    # best_from[b] = max(prefix_B[b], prefix_B[b+1], ..., prefix_B[N])
+    best_from = [0] * (N + 1)
+    best_from[N] = prefix_B[N]
+    for b in range(N - 1, -1, -1):
+        best_from[b] = max(prefix_B[b], best_from[b + 1])
+
+    # prefix sums for whites
+    prefix_W = [0] * (M + 1)
+    for i in range(1, M + 1):
+        prefix_W[i] = prefix_W[i - 1] + W[i - 1]
+
+    ans = 0
+    max_w = min(N, M)
+    for w in range(0, max_w + 1):
+        val = best_from[w] + prefix_W[w]
+        if val > ans:
+            ans = val
+
+    print(ans)
+
+if __name__ == "__main__":
+    main()
+```

@@ -1,0 +1,107 @@
+### Step-by-step reasoning
+- We model positions from 1 to N. From a current position x you can move to x+i for i in [A,B], provided the landing square x+i is not bad.
+- N can be as large as 10^12, so we cannot simulate every position directly. Since A,B <= 20, we can keep track of the reachability of the last B positions with a B-bit state.
+- Let S be a B-bit mask where bit k (0-based) indicates whether position p-k is reachable, where p is the current position after processing up to p.
+- Transitions when moving from p to p+1:
+  - Next = 1 if any of the last B positions that can reach p+1 (i.e., p+1 - i with i in [A,B], which corresponds to bits A-1..B-1 in S) is reachable; otherwise Next = 0.
+  - Then S' (for position p+1) is: S' = ((S << 1) & mask) | Next, where mask = (1<<B) - 1.
+- If p+1 is a bad square, Next must be 0, which is equivalent to simply shifting S by 1 step with Next=0: S' = (S << 1) & mask.
+- The bad squares form M disjoint intervals. Between bad blocks the next positions are all safe, so the transition is always the same (Next depends only on S). Within a safe block, the sequence of S states forms a finite automaton with at most 2^B states. We can fast-forward across long safe blocks by detecting cycles in the sequence of S values and skipping whole cycles.
+- For bad blocks of length k, applying k steps with Next=0 yields S after the block equal to (S << k) & mask. If k >= B, S becomes 0.
+- We process blocks in order: safe block before the next bad interval, then the bad block, and so on, until we reach N. If after processing a block ending at N the least-significant bit of S (reachability of N) is 1, answer Yes; otherwise No.
+
+This approach uses at most 2^B states (≤ 1,048,576) and cycles are detected within each safe block to skip large lengths efficiently.
+
+### Requirements
+None
+
+### Code
+```
+import sys
+
+def solve():
+    data = sys.stdin.read().strip().split()
+    if not data:
+        return
+    it = iter(data)
+    N = int(next(it))
+    M = int(next(it))
+    A = int(next(it))
+    B = int(next(it))
+    intervals = []
+    for _ in range(M):
+        L = int(next(it))
+        R = int(next(it))
+        intervals.append((L, R))
+
+    mask = (1 << B) - 1
+    window_bits = B - A + 1
+    window_mask = (1 << window_bits) - 1  # used to compute OR of bits A-1 .. B-1
+
+    # Initial state: at position 1, reachable; bits represent [cur, cur-1, ..., cur-B+1]
+    S = 1  # bit0 = reach at position 1
+    cur = 1  # current position
+    # Process blocks in order: for k in 0..M, safe block before kth bad, then bad block k (if k<M)
+    for k in range(M + 1):
+        if k < M:
+            end_safe = intervals[k][0] - 1
+        else:
+            end_safe = N
+
+        if end_safe > cur:
+            length_safe = end_safe - cur
+            if length_safe > 0:
+                # Process a run of 'length_safe' safe steps using cycle skipping
+                t = 0  # number of safe steps performed in this block
+                seen = {S: 0}  # map state -> step index
+                while t < length_safe:
+                    # Compute Next for a safe step
+                    # Next = 1 if any of bits A-1..B-1 in S is 1
+                    window = (S >> (A - 1)) & window_mask
+                    Next = 1 if window != 0 else 0
+                    S = ((S << 1) & mask) | Next
+                    t += 1
+                    if t == length_safe:
+                        break
+                    if S in seen:
+                        # Cycle detected: S at step t equals S at step seen[S]
+                        r = seen[S]
+                        c_len = t - r
+                        rem = length_safe - t
+                        if c_len > 0 and rem > 0:
+                            cycles = rem // c_len
+                            if cycles > 0:
+                                t += cycles * c_len
+                                # After skipping cycles, the state S is unchanged.
+                                seen.clear()  # disable further cycle skipping for tail
+                                continue
+                    else:
+                        seen[S] = t
+                cur = end_safe
+                if cur == N:
+                    # We landed on N; check if it's reachable
+                    print("Yes" if (S & 1) != 0 else "No")
+                    return
+
+        if k < M:
+            L, R = intervals[k]
+            bad_len = R - L + 1
+            if bad_len > 0:
+                # Apply bad block: Next=0 for each step
+                if bad_len >= B:
+                    S = 0
+                else:
+                    S = (S << bad_len) & mask
+                cur = R
+                if cur >= N:
+                    break
+
+    # If we exit the loop without returning, check if we reached N
+    if cur >= N:
+        print("Yes" if (S & 1) != 0 else "No")
+    else:
+        print("No")
+
+if __name__ == "__main__":
+    solve()
+```

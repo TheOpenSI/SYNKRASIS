@@ -1,0 +1,96 @@
+### Step-by-step reasoning
+The solution is below.
+
+### Requirements
+None
+
+### Code
+```python
+import sys
+from bisect import bisect_left
+
+def solve():
+    data = sys.stdin.read().strip().split()
+    it = iter(data)
+    N = int(next(it))
+    A = [int(next(it)) for _ in range(N)]
+    Q = int(next(it))
+    queries = []
+    for _ in range(Q):
+        L = int(next(it)); R = int(next(it))
+        queries.append((L-1, R-1))  # convert to 0-based indices
+
+    # Precompute p_eff[i] = max(i+1, lower_bound(A, 2*A[i]))
+    p_eff = [0]*N
+    for i in range(N):
+        two_ai = 2 * A[i]
+        j0 = bisect_left(A, two_ai)  # first index with A[j0] >= 2*A[i]
+        if j0 <= i:
+            j0 = i + 1
+        p_eff[i] = j0
+
+    out_lines = []
+    for L, R in queries:
+        m = R - L + 1
+        if m < 2:
+            out_lines.append("0")
+            continue
+
+        # Disjoint-set union (DSU) to track next available right positions
+        # We only need DSU for indices in [L, R] (rights). We'll map k in [L..R] to k-L in DSU.
+        size = m + 1  # includes sentinel at R+1
+        parent = list(range(size))
+
+        def find(x):
+            # path compression
+            while parent[x] != x:
+                parent[x] = parent[parent[x]]
+                x = parent[x]
+            return x
+
+        def use(pos):
+            # mark position pos (mapped index pos-L) as used and union with next
+            x = pos - L  # DSU index
+            # union with next
+            parent[x] = find(x + 1)
+
+        # used array for both sides (we'll need to know if an index has already been used as left)
+        used = [False] * (N)
+
+        ans = 0
+        for i in range(L, R):
+            if used[i]:
+                continue
+            # earliest possible right partner for i
+            jstart = p_eff[i]
+            if jstart < L:
+                jstart = L
+            if jstart > R:
+                continue
+            # find the first unused right >= jstart
+            jdsu = find(jstart - L)
+            j = jstart if jdsu == (jstart - L) else (jstart)  # ensure we have a valid j; we'll recompute properly below
+            # The above approach needs exact mapping; simpler compute via:
+            x = jstart
+            fj = find(x - L)
+            j = x
+            # If the DSU find(y) returns y, it means y is free; but our representation uses 0..m
+            # We'll implement a direct check: find(jstart - L) gives the DSU index of next free, but we must convert back to array index
+            idx = find(jstart - L)
+            if idx > R - L:
+                # no free right in [jstart..R]
+                continue
+            j = L + idx
+            if j <= R:
+                # We have a pair (i, j)
+                used[i] = True
+                used[j] = True
+                use(j)  # mark right j as used
+                ans += 1
+        out_lines.append(str(ans))
+
+    print("\n".join(out_lines))
+
+if __name__ == "__main__":
+    solve()
+```

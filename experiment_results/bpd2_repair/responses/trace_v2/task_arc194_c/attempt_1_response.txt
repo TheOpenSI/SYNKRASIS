@@ -1,0 +1,75 @@
+### Step-by-step reasoning
+- The previous solution attempted to compute the minimum cost using a closed-form formula based on counting mismatches and ordering them, but it didn’t account for the exact cost dynamics after each flip. In particular, it treated the total cost as a simple sum with fixed weights, which is incorrect because the cost of each flip depends on the current accumulated sum S = sum(A_k * C_k) after the flip.
+- Observing the cost behavior:
+  - When flipping a bit with A_i = 1 to 0 (this happens for mismatches where A_i should become 0, i.e., B_i = 0), S decreases by C_i. The cost of that operation is the new S after the flip, i.e., S_before - C_i.
+  - When flipping a bit with A_i = 0 to 1 (A_i should become 1, i.e., B_i = 1), S increases by C_i. The cost of that operation is the new S after the flip, i.e., S_before + C_i.
+- To minimize total cost, you should:
+  - Flip all bits that are currently 1 and need to become 0 (negatives) first, because they reduce S for subsequent flips.
+  - Among these, flip larger C_i earlier to maximize the early reduction in S.
+  - Then flip all bits that are currently 0 and need to become 1 (positives), because they increase S, and you want to delay increases as much as possible. Among these, flip smaller C_i earlier to minimize the impact of increases on subsequent costs.
+- Therefore, an optimal strategy is:
+  - Let neg be all C_i for indices where A_i = 1 and B_i = 0.
+  - Let pos be all C_i for indices where A_i = 0 and B_i = 1.
+  - Sort neg in decreasing order and pos in increasing order.
+  - Simulate the sequence: for each c in neg, S := S - c and add S to total cost; then for each c in pos, S := S + c and add S to total cost.
+- This simulation ensures the actual per-operation costs are used and yields the minimum total cost.
+
+### Requirements
+None
+
+### Code
+```
+import sys
+
+def main():
+    data = sys.stdin.buffer.read().split()
+    it = iter(data)
+    n = int(next(it))
+
+    A = [int(next(it)) for _ in range(n)]
+    B = [int(next(it)) for _ in range(n)]
+    C = [int(next(it)) for _ in range(n)]
+
+    # Initial sum S = sum A_i * C_i
+    S = 0
+    for i in range(n):
+        S += A[i] * C[i]
+
+    # Collect mismatches by type
+    neg = []  # A_i = 1, B_i = 0  -> flip 1 -> 0 (decrease S)
+    pos = []  # A_i = 0, B_i = 1  -> flip 0 -> 1 (increase S)
+
+    for i in range(n):
+        if (A[i] ^ B[i]) == 1:
+            if A[i] == 1:
+                neg.append(C[i])
+            else:
+                pos.append(C[i])
+
+    # If no flips needed
+    if not neg and not pos:
+        print(0)
+        return
+
+    # Optimal ordering
+    neg.sort(reverse=True)  # largest Ci first for decreasing S
+    pos.sort()              # smallest Ci first for increasing S
+
+    cur = S
+    cost = 0
+
+    # Process neg flips first
+    for ci in neg:
+        cur -= ci          # S_after_flip
+        cost += cur         
+
+    # Then process pos flips
+    for ci in pos:
+        cur += ci          # S_after_flip
+        cost += cur
+
+    print(cost)
+
+if __name__ == "__main__":
+    main()
+```

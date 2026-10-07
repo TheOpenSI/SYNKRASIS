@@ -1,0 +1,240 @@
+### Step-by-step reasoning
+- The walkway edges allow moving between adjacent blocks at a floor X, provided both blocks have at least X floors. If we fix a floor X and consider only blocks with F[i][j] >= X, then a walk between two blocks is possible if and only if they are connected in this subgraph. The cost of such a path (when you move along only floor X) is the total vertical moves required to adjust from starting floor Y to X in the start block and from X in the end block to Z: |Y - X| + |Z - X|.
+- The overall optimal solution is the minimum over all possible X of |Y - X| + |Z - X| such that there exists a path between the two blocks using only blocks with F >= X. Since connectivity is monotone with X (as X decreases, more blocks are available), the set of feasible X is an interval [1, X0], where X0 is the maximum X for which a path exists.
+- Therefore, for each query, if X0 >= min(Y, Z), the best is to pick X within [min(Y, Z), max(Y, Z)], giving cost |Y - Z|.
+- If X0 < min(Y, Z), the best X is X0, giving cost |Y - X0| + |Z - X0|.
+
+Thus, for each query we only need X0, the maximum threshold X such that there exists a path between the two blocks using only blocks with F >= X. X0 is exactly the maximum bottleneck value between the two blocks, which can be found using a maximum spanning tree (MST) of the grid where edge weight between neighboring blocks is min(F[u], F[v]). The maximum bottleneck path value between two nodes equals the minimum edge weight along their path in the MST.
+
+Plan:
+- Build all grid edges to neighboring blocks with weight w = min(F[u], F[v]).
+- Compute a Maximum Spanning Tree (MST) of the grid using Kruskal's algorithm.
+- Preprocess the MST for Lowest Common Ancestor (LCA) with binary lifting while also storing the minimum edge weight on the path to each 2^k ancestor.
+- For any two blocks, the maximum X0 is the minimum edge weight along the path between them in the MST (found via LCA and min-edge tracking).
+- For each query, compute X0, then output:
+  - if X0 >= min(Y, Z): |Y - Z|
+  - else: |Y - X0| + |Z - X0|
+
+This approach is efficient: O(N log N) for Kruskal plus O(N log N) for LCA preprocessing, and O(log N) per query.
+
+### Requirements
+None
+
+### Code
+```python
+import sys
+from bisect import bisect_left
+from array import array
+
+def main():
+    data = list(map(int, sys.stdin.buffer.read().split()))
+    it = iter(data)
+
+    H = next(it)
+    W = next(it)
+    N = H * W
+
+    F = [0] * N
+    maxF = 0
+    for i in range(H):
+        for j in range(W):
+            v = next(it)
+            idx = i * W + j
+            F[idx] = v
+            if v > maxF:
+                maxF = v
+
+    Q = next(it)
+
+    A = [0] * Q
+    B = [0] * Q
+    Y = [0] * Q
+    C = [0] * Q
+    D = [0] * Q
+    Z = [0] * Q
+
+    for qi in range(Q):
+        a = next(it) - 1
+        b = next(it) - 1
+        y = next(it)
+        c = next(it) - 1
+        d = next(it) - 1
+        z = next(it)
+        A[qi] = a
+        B[qi] = b
+        Y[qi] = y
+        C[qi] = c
+        D[qi] = d
+        Z[qi] = z
+
+    # Build edges with weight w = min(F[u], F[v])
+    edges = []
+    # Horizontal edges
+    for r in range(H):
+        base = r * W
+        for c in range(W - 1):
+            u = base + c
+            v = u + 1
+            w = F[u] if F[u] < F[v] else F[v]
+            edges.append((w, u, v))
+    # Vertical edges
+    for r in range(H - 1):
+        base = r * W
+        base_down = base + W
+        for c in range(W):
+            u = base + c
+            v = base_down + c
+            w = F[u] if F[u] < F[v] else F[v]
+            edges.append((w, u, v))
+
+    # Kruskal: sort edges by weight desc
+    edges.sort(key=lambda x: x[0], reverse=True)
+
+    # DSU for Kruskal
+    parent = list(range(N))
+    size = [1] * N
+
+    def find(x):
+        while parent[x] != x:
+            parent[x] = parent[parent[x]]
+            x = parent[x]
+        return x
+
+    def union(a, b):
+        ra = find(a)
+        rb = find(b)
+        if ra == rb:
+            return False
+        if size[ra] < size[rb]:
+            ra, rb = rb, ra
+        parent[rb] = ra
+        size[ra] += size[rb]
+        return True
+
+    # Build MST adjacency using compact linked-list style (arrays)
+    head = [-1] * N
+    to = []
+    wts = []
+    nxt = []
+    edge_ptr = 0
+
+    for w, u, v in edges:
+        if union(u, v):
+            # add edge u <-> v with weight w
+            to.append(v)
+            wts.append(w)
+            nxt.append(head[u])
+            head[u] = edge_ptr
+            edge_ptr += 1
+
+            to.append(u)
+            wts.append(w)
+            nxt.append(head[v])
+            head[v] = edge_ptr
+            edge_ptr += 1
+
+    # MST is built. Now preprocess for LCA with min-edge on path.
+    # Root the tree at node 0
+    LOG = (N).bit_length()
+    INF = 1_000_000_000
+
+    depth = array('i', [0] * N)
+    visited = bytearray(N)
+    up = [array('i', [0] * N) for _ in range(LOG)]
+    minW = [array('i', [0] * N) for _ in range(LOG)]
+
+    root = 0
+    stack = [root]
+    visited[root] = 1
+    up[0][root] = root
+    minW[0][root] = INF
+
+    # Iterative DFS to fill up[0] and minW[0], and depth
+    while stack:
+        v = stack.pop()
+        e = head[v]
+        while e != -1:
+            u = to[e]
+            if not visited[u]:
+                visited[u] = 1
+                depth[u] = depth[v] + 1
+                up[0][u] = v
+                minW[0][u] = wts[e]
+                stack.append(u)
+            e = nxt[e]
+
+    # Binary lifting tables
+    for k in range(1, LOG):
+        up_k = up[k]
+        up_km1 = up[k - 1]
+        min_k = minW[k]
+        min_km1 = minW[k - 1]
+        for v in range(N):
+            mid = up_km1[v]
+            up_k[v] = up_km1[mid]
+            a = min_km1[v]
+            b = min_km1[mid]
+            min_k[v] = a if a < b else b
+
+    def min_on_path(u, v):
+        # Return minimum edge weight along path between u and v in MST
+        if u == v:
+            return INF
+        minEdge = INF
+        if depth[u] < depth[v]:
+            u, v = v, u
+        # Lift u up to depth v
+        diff = depth[u] - depth[v]
+        for k in range(LOG - 1, -1, -1):
+            if diff & (1 << k):
+                w = minW[k][u]
+                if w < minEdge:
+                    minEdge = w
+                u = up[k][u]
+        if u == v:
+            return minEdge
+        for k in range(LOG - 1, -1, -1):
+            if up[k][u] != up[k][v]:
+                w1 = minW[k][u]
+                w2 = minW[k][v]
+                if w1 < minEdge:
+                    minEdge = w1
+                if w2 < minEdge:
+                    minEdge = w2
+                u = up[k][u]
+                v = up[k][v]
+        # Now u and v are children of LCA
+        w1 = minW[0][u]
+        w2 = minW[0][v]
+        if w1 < minEdge:
+            minEdge = w1
+        if w2 < minEdge:
+            minEdge = w2
+        return minEdge
+
+    # Answer queries
+    out_lines = []
+    for qi in range(Q):
+        a = A[qi]
+        b = B[qi]
+        y = Y[qi]
+        c = C[qi]
+        d = D[qi]
+        z = Z[qi]
+
+        s = a * W + b
+        t = c * W + d
+
+        X0 = min_on_path(s, t)
+        mYZ = y if y < z else z
+        if X0 >= mYZ:
+            ans = abs(y - z)
+        else:
+            ans = abs(y - X0) + abs(z - X0)
+        out_lines.append(str(ans))
+
+    sys.stdout.write("\n".join(out_lines))
+
+if __name__ == "__main__":
+    main()
+```

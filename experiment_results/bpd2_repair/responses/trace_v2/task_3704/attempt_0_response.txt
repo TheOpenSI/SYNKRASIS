@@ -1,0 +1,19 @@
+### Step-by-step reasoning
+The solution is below.
+
+### Requirements
+None
+
+### Code
+```python
+from typing import *
+
+class Solution:
+
+    def countPartitions(self, nums: List[int]) -> int:
+        total = sum(nums)
+        if total % 3 == 0:
+            return len(nums) - 1
+        else:
+            return 0
+```

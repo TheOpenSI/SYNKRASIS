@@ -1,0 +1,58 @@
+### Step-by-step reasoning
+- The approach uses a DP over bitmasks to enumerate all possible partitions of the N bags into nonempty groups, where each group represents a final bag receiving the sum of stones from its member bags.
+- For each subset mask, sums[mask] should store the total number of stones in the subset of bags indicated by mask. The final XOR is the XOR of the sums of all groups in a partition.
+- The bug in the previous solution comes from the initialization of the sums array. It was initialized with ones, i.e., sums = [1] * size, and then built cumulatively using sums[mask ^ lsb] + A[idx]. This incorrectly adds an extra 1 to every subset sum, since sums[0] should be 0. This causes incorrect final XOR values (e.g., producing 13 and 15 for the sample instead of 0 and 14, etc.).
+- Fix: initialize sums as [0] * size so that the base case sums[0] = 0 is correct, and build sums[mask] = sums[mask ^ lsb] + A[bit_index[lsb]] appropriately.
+- The rest of the DP (enumerating submasks that include the least significant set bit, recursively processing the remaining mask, and XOR-ing the sums) is correct and remains intact.
+
+### Requirements
+None
+
+### Code
+```
+import sys
+
+def main():
+    data = list(map(int, sys.stdin.buffer.read().split()))
+    N = data[0]
+    A = data[1:1+N]
+
+    size = 1 << N
+    # sums[mask] will be the sum of A[i] for which the i-th bit of mask is set
+    sums = [0] * size
+    bit_index = {1 << i: i for i in range(N)}
+    for mask in range(1, size):
+        lsb = mask & -mask
+        sums[mask] = sums[mask ^ lsb] + A[bit_index[lsb]]
+
+    memo = {}
+
+    sys.setrecursionlimit(10000)
+
+    def dfs(mask):
+        if mask == 0:
+            return {0}
+        if mask in memo:
+            return memo[mask]
+        first_bit = mask & -mask
+        rest_mask = mask ^ first_bit
+        res = set()
+        t = rest_mask
+        while True:
+            s = t | first_bit
+            rest = mask ^ s
+            for x in dfs(rest):
+                res.add(x ^ sums[s])
+            if t == 0:
+                break
+            t = (t - 1) & rest_mask
+        memo[mask] = res
+        return res
+
+    full = (1 << N) - 1
+    ans = dfs(full)
+    print(len(ans))
+
+if __name__ == '__main__':
+    main()
+```

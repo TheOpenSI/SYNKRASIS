@@ -1,0 +1,57 @@
+### Step-by-step reasoning
+The solution is below.
+
+### Requirements
+None
+
+### Code
+```python
+from typing import *
+import sys
+
+def main():
+    data = list(map(int, sys.stdin.buffer.read().split()))
+    N = data[0]
+    M = data[1]
+    A = data[3:2 + N]
+    size = M
+    bit = [0] * (size + 1)
+
+    def bit_add(idx, delta):
+        i = idx + 1
+        while i <= size:
+            bit[i] += delta
+            i += i & -i
+
+    def bit_sum(idx):
+        i = idx + 1
+        s = 0
+        while i > 0:
+            s += bit[i]
+            i -= i & -i
+        return s
+    inv0 = 0
+    for i, val in enumerate(A):
+        s = bit_sum(val)
+        inv0 += i - s
+        bit_add(val, 1)
+    m = [0] * M
+    sum_pos = [0] * M
+    for idx, val in enumerate(A, start=1):
+        m[val] += 1
+        sum_pos[val] += idx
+    delta = [0] * M
+    for v in range(M):
+        if m[v] == 0:
+            delta[v] = 0
+        else:
+            delta[v] = 2 * sum_pos[v] - m[v] * N - m[v]
+    ans = [0] * M
+    ans[0] = inv0
+    for k in range(0, M - 1):
+        v = M - 1 - k
+        ans[k + 1] = ans[k] + delta[v]
+    print('\n'.join(map(str, ans)))
+if __name__ == '__main__':
+    main()
+```

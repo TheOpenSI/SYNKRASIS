@@ -1,0 +1,24 @@
+Your generated code failed a test case.
+Please update the function logic so all test cases will pass. Error message added for your reference - 
+AssertionError: wrong answer on test case 1. Input: '[4, 2, 5]\n[3, 5, 4]', expected output: '1', your output: '3\n'
+
+Execution trace of your code on public test case 1. How to read it: only the lines that ran are listed, with the values after `#`. `x=1,2,3` are the values of x on successive executions of that line, `a..b` a run of consecutive numbers, `T/F` the outcome of a condition on each execution, `F×3` three equal values, `(iters 2,4)` the loop iterations the line ran in, `...` omitted middle values. Nested lines belong to the line above.
+numOfUnplacedFruits(fruits=[4, 2, 5], baskets=[3, 5, 4]):
+  n = len(baskets)  # n=3
+  if n == 0:  # False (n=3)
+  INF_NEG = -10 ** 18  # INF_NEG=-1000000000000000000
+  tree = [INF_NEG] * (4 * n)  # tree=[-1000000000000000000, -1000000000000...
+  build(1, 0, n - 1)
+    build(node=1, l=0, r=2, baskets=[3, 5, 4]):
+      if l != r:  # True
+        tree[node] = baskets[l]  # tree[1]=3
+  for f in fruits:  # 3 iterations; f=4,2,5
+    idx = find_first_ge(1, 0, n - 1, f)  # idx=-1×3
+      find_first_ge(node=1, l=0, r=2, x=4):  [first of 3 calls]
+        if tree[node] < x:  # True
+          return -1  # returns -1
+    if idx == -1:  # T×3 (idx=-1)
+      unplaced += 1  # unplaced=1,2,3
+  return unplaced  # returned
+returned 3   (expected '1')
+Find the first point where the behaviour differs from what the problem requires and fix that logic.

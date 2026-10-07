@@ -1,0 +1,31 @@
+### Step-by-step reasoning
+- The problem requires mapping temperature to:
+  - 1 if x >= 38.0
+  - 2 if 37.5 <= x < 38.0
+  - 3 if x < 37.5
+- The previous solution mistakenly printed 3 in the elif branch (37.5 <= x < 38.0), causing 37.7 to yield 3 instead of 2.
+- The fix is to print 2 in the elif branch and keep 3 for the else branch. Using Decimal ensures precise comparisons for decimal inputs like 37.5 and 38.0.
+
+### Requirements
+None
+
+### Code
+```
+from decimal import Decimal
+import sys
+
+def main():
+    s = sys.stdin.readline().strip()
+    if not s:
+        return
+    x = Decimal(s)
+    if x >= Decimal('38.0'):
+        print(1)
+    elif x >= Decimal('37.5'):
+        print(2)
+    else:
+        print(3)
+
+if __name__ == '__main__':
+    main()
+```

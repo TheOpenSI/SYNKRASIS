@@ -1,0 +1,49 @@
+solve()
+  data = list(map(int, sys.stdin.buffer.read().split()))  # data=[5, 3, 1, 1, 1, 2, 2, 2, 3, 2, 2, 3, ...
+  N = next(it)  # N=5
+  W = next(it)  # W=3
+  X = [0] * N  # X=[0, 0, 0, 0, 0]
+  Y = [0] * N  # Y=[0, 0, 0, 0, 0]
+  for i in range(N):  # 5 iterations; i=0..4
+    X[i] = next(it)  # X[0..4]=1,1,2,3,2
+    Y[i] = next(it)  # Y[0..4]=1,2×3,3
+  Q = next(it)  # Q=6
+  T_arr = [0] * Q  # T_arr=[0, 0, 0, 0, 0, 0]
+  A_arr = [0] * Q  # A_arr=[0, 0, 0, 0, 0, 0]
+  for j in range(Q):  # 6 iterations; j=0..5
+    T_arr[j] = next(it)  # T_arr[0..5]=1,1,2,2,3,3
+    A_arr[j] = next(it) - 1  # A_arr[1..5]=1,2,4,3,4
+  cols = [[] for _ in range(W + 1)]  # cols=[[], [], [], []]
+  for i in range(N):  # 5 iterations; i=0..4
+    x = X[i]  # x=1,2,3,2
+    cols[x].append((y, i))  # cols[1,1,2,3,2]=[(1, 0)],[(1, 0), (2, 1)],[(2, 2)],[(2, 3)],[(2, 2), (3, 4)]
+  rank = [0] * N  # rank=[0, 0, 0, 0, 0]
+  for x in range(1, W + 1):  # 3 iterations; x=1,2,3
+    if len(cols[x]) == 0:  # F×3 (cols=[[], [(1, 0), (2, 1)], [(2, 2), (3, 4...)
+  if not hasZero:  # True (hasZero=False)
+    for x in range(1, W + 1):  # 3 iterations; x=1,2,3
+      minY = min((y for y, idx in col))  # minY=1,2
+      mins.append(minY)  # mins += 1,2,2
+    B = max(mins)  # B=2
+    m = min((len(col) for col in cols[1:]))  # m=1
+    for x in range(1, W + 1):  # 3 iterations; x=1,2,3
+      col.sort(key=lambda t: t[0])  # <lambda> returns 1,2,2,3,2
+      for pos, (y, idx) in enumerate(col, start=1):  # 3 runs, iterations per run: 2,2,1; pos=1,2,1,2,1
+        rank[idx] = pos  # rank[0,1,2,4,3]=1,2,1,2,1
+  if hasZero:  # False (hasZero=False)
+    for j in range(Q):  # 6 iterations; j=0..5
+      t = T_arr[j]  # t=1,2,3
+      a = A_arr[j]  # a=0,1,2,4,3,4
+      r = rank[a]  # r=1,2,1,2,1,2
+      if t < B:  # T,T,F×4 (B=2)
+        out_lines.append('Yes')  # out_lines += 'Yes','Yes'  (iters 1,2)
+      elif t <= B + m - 1:  # T,T,F,F (B=2, m=1)  (iters 3..6)
+        s = t - B + 1  # s=1  (iters 3,4)
+        out_lines.append('Yes' if r > s else 'No')  # out_lines += 'No','Yes'  (iters 3,4)
+        out_lines.append('Yes' if r > m else 'No')  # out_lines += 'No','Yes'  (iters 5,6)
+printed 'Yes\nYes\nNo\nYes\nNo\nYes'   (expected Yes
+Yes
+No
+Yes
+No
+Yes)

@@ -1,0 +1,33 @@
+### Step-by-step reasoning
+- The 9x9 multiplication grid contains numbers i * j for i, j in {1, 2, ..., 9}. The sum of all 81 entries is (sum 1..9)^2 = 45^2 = 2025.
+- We need the sum of all entries not equal to X. This equals total_sum - X * (number of occurrences of X in the grid).
+- The number of occurrences of X is the count of pairs (i, j) with i, j in 1..9 such that i * j = X. We can find this by checking divisors i in 1..9: if X % i == 0 and j = X // i is in 1..9, then it is a valid cell.
+- The bug in the previous solution was initializing count = 1, which overcounted when X appears once (or miscounted when X does not appear). The correct initialization is count = 0.
+
+### Requirements
+None
+
+### Code
+```
+import sys
+
+def main():
+    data = sys.stdin.read().strip()
+    if not data:
+        return
+    X = int(data)
+
+    total = 45 * 45  # 2025
+    count = 0
+    for i in range(1, 10):
+        if X % i == 0:
+            j = X // i
+            if 1 <= j <= 9:
+                count += 1
+
+    ans = total - X * count
+    print(ans)
+
+if __name__ == '__main__':
+    main()
+```

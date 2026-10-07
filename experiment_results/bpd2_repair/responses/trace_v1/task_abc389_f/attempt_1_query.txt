@@ -1,0 +1,137 @@
+Your generated code failed a test case.
+Please update the function logic so all test cases will pass. Error message added for your reference - 
+AssertionError: wrong answer on test case 1. Input: '5\n1 5\n1 3\n3 6\n2 4\n4 7\n3\n3\n2\n5', expected output: '6\n6\n8', your output: '3\n2\n5'
+
+Execution trace of your code on public test case 1, recorded line by line like a debugger session:
+Execution report for `__bpd_main__()`
+Outcome: returned None
+
+Trace:
+Call __bpd_main__()  [__bpd_main__, lines 122-123]
+  Line 123 `main()`:
+    called main():
+      Line 7 `data = list(map(int, sys.stdin.buffer.read().split()))`: data = [5, 1, 5, 1, 3, 3, 6, 2, 4, 4, 7, 3, ...
+      Line 9 `N = next(it)`: N = 5
+      Line 10 `L = [0] * N`: L = [0, 0, 0, 0, 0]
+      Line 11 `R = [0] * N`: R = [0, 0, 0, 0, 0]
+      Line 12 `for i in range(N):` (N = 5) ran 5 iterations
+        Iteration 1 (i = 0): line 13 `L[i] = next(it)`: L[0]: 0 -> 1; line 14 `R[i] = next(it)`: R[0]: 0 -> 5
+        Iteration 2 (i = 1): line 13 `L[i] = next(it)`: L[1]: 0 -> 1; line 14 `R[i] = next(it)`: R[1]: 0 -> 3
+        ... 2 iterations omitted ...
+        Iteration 5 (i = 4): line 13 `L[i] = next(it)`: L[4]: 0 -> 4; line 14 `R[i] = next(it)`: R[4]: 0 -> 7
+        After the loop: L = [1, 1, 3, 2, 4], R = [5, 3, 6, 4, 7]
+      Line 15 `Q = next(it)`: Q = 3
+      Line 16 `queries = [0] * Q`: queries = [0, 0, 0]
+      Line 17 `maxX = 0`: maxX = 0
+      Line 18 `for i in range(Q):` (Q = 3) ran 3 iterations
+        Iteration 1 (i = 0):
+          Line 19 `x = next(it)`: x = 3
+          Line 20 `queries[i] = x`: queries[0]: 0 -> 3
+          Line 21 `if x > maxX:` was True (x = 3, maxX = 0)
+          Line 22 `maxX = x`: maxX: 0 -> 3
+        Iteration 2 (i = 1):
+          Line 19 `x = next(it)`: x: 3 -> 2
+          Line 20 `queries[i] = x`: queries[1]: 0 -> 2
+          Line 21 `if x > maxX:` was False (x = 2, maxX = 3)
+        Iteration 3 (i = 2):
+          Line 19 `x = next(it)`: x: 2 -> 5
+          Line 20 `queries[i] = x`: queries[2]: 0 -> 5
+          Line 21 `if x > maxX:` was True (x = 5, maxX = 3)
+          Line 22 `maxX = x`: maxX: 3 -> 5
+      Line 23 `MAXY = maxX`: MAXY = 5
+      Line 24 `if MAXY < 1:` was False (MAXY = 5)
+      Line 26 `size = 4 * MAXY + 5`: size = 25
+      Line 27 `maxv = array('i', [0]) * size`: maxv = array('i', [0, 0, 0, 0, 0, 0, 0, 0, 0...
+      Line 28 `lazy = array('i', [0]) * size`: lazy = array('i', [0, 0, 0, 0, 0, 0, 0, 0, 0...
+      Line 105 `build(1, 1, MAXY)`:
+        called build(node=1, l=1, r=5, maxv=array('i', [0, 0, 0, 0, 0, 0, 0, 0, 0...):
+          Line 32 `if l == r:` was False (l = 1, r = 5)
+          Line 35 `m = (l + r) // 2`: m = 3
+          Line 36 `left = node * 2`: left = 2
+          Line 37 `right = left + 1`: right = 3
+          Line 38 `build(left, l, m)`: called build(node=2, l=1, r=3, maxv=array('i', [0, 0, 0, 0, 0, 0, 0, 0, 0...) -> None (nested details omitted: depth limit); maxv: array('i', [0, 0, 0, 0, 0, 0, 0, 0, 0... -> array('i', [0, 0, 3, 0, 2, 3, 0, 0, 1...
+          Line 39 `build(right, m + 1, r)`: called build(node=3, l=4, r=5, maxv=array('i', [0, 0, 3, 0, 2, 3, 0, 0, 1...) -> None (nested details omitted: depth limit); maxv: array('i', [0, 0, 3, 0, 2, 3, 0, 0, 1... -> array('i', [0, 0, 3, 5, 2, 3, 4, 5, 1...
+          Line 40 `maxv[node] = max(maxv[left], maxv[right])`: maxv: array('i', [0, 0, 3, 5, 2, 3, 4, 5, 1... -> array('i', [0, 5, 3, 5, 2, 3, 4, 5, 1...
+          End of function reached: build returned None
+        maxv: array('i', [0, 0, 0, 0, 0, 0, 0, 0, 0... -> array('i', [0, 5, 3, 5, 2, 3, 4, 5, 1...
+      Line 106 `for i in range(N):` (N = 5) ran 5 iterations
+        Iteration 1 (i = 0):
+          Line 107 `Li = L[i]`: Li = 1
+          Line 108 `Ri = R[i]`: Ri = 5
+          Line 109 `start = find_first_ge(1, 1, MAXY, Li)`:
+            called find_first_ge(node=1, l=1, r=5, t=1, maxv=array('i', [0, 5, 3, 5, 2, 3, 4, 5, 1...):
+              Line 69 `if maxv[node] <= t:` was False (t = 1, maxv = array('i', [0, 5, 3, 5, 2, 3, 4, 5, 1..., node = 1)
+              Line 71 `if l == r:` was False (l = 1, r = 5)
+              Line 73 `push(node)`: called push(node=1, lazy=array('i', [0, 0, 0, 0, 0, 0, 0, 0, 0..., maxv=array('i', [0, 5, 3, 5, 2, 3, 4, 5, 1...) -> None (nested details omitted: depth limit)
+              Line 74 `m = (l + r) // 2`: m = 3
+              Line 75 `left = node * 2`: left = 2
+              Line 76 `right = left + 1`: right = 3
+              Line 77 `if maxv[left] >= t:` was True (t = 1, left = 2)
+              Line 78 `return find_first_ge(left, l, m, t)`: called find_first_ge(node=2, l=1, r=3, t=1, maxv=array('i', [0, 5, 3, 5, 2, 3, 4, 5, 1...) -> -1 (nested details omitted: depth limit); find_first_ge returned -1
+            start = -1
+          Line 110 `if start == -1:` was True (start = -1)
+        Iteration 2 (i = 1):
+          Line 108 `Ri = R[i]`: Ri: 5 -> 3
+          Line 109 `start = find_first_ge(1, 1, MAXY, Li)`:
+            called find_first_ge(node=1, l=1, r=5, t=1, maxv=array('i', [0, 5, 3, 5, 2, 3, 4, 5, 1...):
+              Line 69 `if maxv[node] <= t:` was False (t = 1, node = 1)
+              Line 71 `if l == r:` was False (l = 1, r = 5)
+              Line 73 `push(node)`: called push(node=1, lazy=array('i', [0, 0, 0, 0, 0, 0, 0, 0, 0..., maxv=array('i', [0, 5, 3, 5, 2, 3, 4, 5, 1...) -> None (nested details omitted: depth limit)
+              Line 74 `m = (l + r) // 2`: m = 3
+              Line 75 `left = node * 2`: left = 2
+              Line 76 `right = left + 1`: right = 3
+              Line 77 `if maxv[left] >= t:` was True (t = 1, left = 2)
+              Line 78 `return find_first_ge(left, l, m, t)`: called find_first_ge(node=2, l=1, r=3, t=1, maxv=array('i', [0, 5, 3, 5, 2, 3, 4, 5, 1...) -> -1 (nested details omitted: depth limit); find_first_ge returned -1
+          Line 110 `if start == -1:` was True (start = -1)
+        ... 2 iterations omitted ...
+        Iteration 5 (i = 4):
+          Line 107 `Li = L[i]`: Li: 2 -> 4
+          Line 108 `Ri = R[i]`: Ri: 4 -> 7
+          Line 109 `start = find_first_ge(1, 1, MAXY, Li)`:
+            called find_first_ge(node=1, l=1, r=5, t=4, maxv=array('i', [0, 5, 3, 5, 2, 3, 4, 5, 1...):
+              Line 69 `if maxv[node] <= t:` was False (t = 4, node = 1)
+              Line 71 `if l == r:` was False (l = 1, r = 5)
+              Line 73 `push(node)`: called push(node=1, lazy=array('i', [0, 0, 0, 0, 0, 0, 0, 0, 0..., maxv=array('i', [0, 5, 3, 5, 2, 3, 4, 5, 1...) -> None (nested details omitted: depth limit)
+              Line 74 `m = (l + r) // 2`: m = 3
+              Line 75 `left = node * 2`: left = 2
+              Line 76 `right = left + 1`: right = 3
+              Line 77 `if maxv[left] >= t:` was False (t = 4, left = 2)
+              Line 80 `return find_first_ge(right, m + 1, r, t)`: called find_first_ge(node=3, l=4, r=5, t=4, maxv=array('i', [0, 5, 3, 5, 2, 3, 4, 5, 1...) -> -1 (nested details omitted: depth limit); find_first_ge returned -1
+          Line 110 `if start == -1:` was True (start = -1)
+        After the loop: Li = 4, Ri = 7, start = -1
+      Line 116 `out_lines = []`: out_lines = []
+      Line 117 `for x in queries:` (queries = [3, 2, 5]) ran 3 iterations
+        Iteration 1 (x = 3):
+          Line 118 `val = point_query(1, 1, MAXY, x) if 1 <= x <= MAXY else x`:
+            called point_query(node=1, l=1, r=5, idx=3, maxv=array('i', [0, 5, 3, 5, 2, 3, 4, 5, 1...):
+              Line 97 `if l == r:` was False (l = 1, r = 5)
+              Line 99 `push(node)`: called push(node=1, lazy=array('i', [0, 0, 0, 0, 0, 0, 0, 0, 0..., maxv=array('i', [0, 5, 3, 5, 2, 3, 4, 5, 1...) -> None (nested details omitted: depth limit)
+              Line 100 `m = (l + r) // 2`: m = 3
+              Line 101 `if idx <= m:` was True (idx = 3, m = 3)
+              Line 102 `return point_query(node * 2, l, m, idx)`: called point_query(node=2, l=1, r=3, idx=3, maxv=array('i', [0, 5, 3, 5, 2, 3, 4, 5, 1...) -> 3 (nested details omitted: depth limit); point_query returned 3
+            val = 3
+          Line 119 `out_lines.append(str(val))`: out_lines: appended '3'
+        Iteration 2 (x = 2):
+          Line 118 `val = point_query(1, 1, MAXY, x) if 1 <= x <= MAXY else x`:
+            called point_query(node=1, l=1, r=5, idx=2, maxv=array('i', [0, 5, 3, 5, 2, 3, 4, 5, 1...):
+              Line 97 `if l == r:` was False (l = 1, r = 5)
+              Line 99 `push(node)`: called push(node=1, lazy=array('i', [0, 0, 0, 0, 0, 0, 0, 0, 0..., maxv=array('i', [0, 5, 3, 5, 2, 3, 4, 5, 1...) -> None (nested details omitted: depth limit)
+              Line 100 `m = (l + r) // 2`: m = 3
+              Line 101 `if idx <= m:` was True (idx = 2, m = 3)
+              Line 102 `return point_query(node * 2, l, m, idx)`: called point_query(node=2, l=1, r=3, idx=2, maxv=array('i', [0, 5, 3, 5, 2, 3, 4, 5, 1...) -> 2 (nested details omitted: depth limit); point_query returned 2
+            val: 3 -> 2
+          Line 119 `out_lines.append(str(val))`: out_lines: appended '2'
+        Iteration 3 (x = 5):
+          Line 118 `val = point_query(1, 1, MAXY, x) if 1 <= x <= MAXY else x`:
+            called point_query(node=1, l=1, r=5, idx=5, maxv=array('i', [0, 5, 3, 5, 2, 3, 4, 5, 1...):
+              Line 97 `if l == r:` was False (l = 1, r = 5)
+              Line 99 `push(node)`: called push(node=1, lazy=array('i', [0, 0, 0, 0, 0, 0, 0, 0, 0..., maxv=array('i', [0, 5, 3, 5, 2, 3, 4, 5, 1...) -> None (nested details omitted: depth limit)
+              Line 100 `m = (l + r) // 2`: m = 3
+              Line 101 `if idx <= m:` was False (idx = 5, m = 3)
+              Line 104 `return point_query(node * 2 + 1, m + 1, r, idx)`: called point_query(node=3, l=4, r=5, idx=5, maxv=array('i', [0, 5, 3, 5, 2, 3, 4, 5, 1...) -> 5 (nested details omitted: depth limit); point_query returned 5
+            val: 2 -> 5
+          Line 119 `out_lines.append(str(val))`: out_lines: appended '5'
+      End of function reached: main returned None
+  End of function reached: __bpd_main__ returned None
+
+Find the first point where the behaviour differs from what the problem requires and fix that logic.

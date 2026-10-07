@@ -1,0 +1,6 @@
+main()
+  s = sys.stdin.readline().strip()  # s='40.0'
+  if not s:  # False (s='40.0')
+  x = Decimal(s)  # x=Decimal('40.0')
+  if x >= Decimal('38.0'):  # True (x=Decimal('40.0'))
+printed '1'   (expected 1)

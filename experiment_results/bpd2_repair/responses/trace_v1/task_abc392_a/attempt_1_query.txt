@@ -1,0 +1,20 @@
+Your generated code failed a test case.
+Please update the function logic so all test cases will pass. Error message added for your reference - 
+AssertionError: wrong answer on test case 2. Input: '5 3 2', expected output: 'No', your output: 'Yes\n'
+
+Execution trace of your code on public test case 2, recorded line by line like a debugger session:
+Execution report for `__bpd_main__()`
+Outcome: returned None
+
+Trace:
+Call __bpd_main__()  [__bpd_main__, lines 16-17]
+  Line 17 `main()`:
+    called main():
+      Line 6 `data = sys.stdin.read().strip().split()`: data = ['5', '3', '2']
+      Line 7 `if len(data) < 3:` was False (data = ['5', '3', '2'])
+      Line 10 `a, b, c = map(int, data[:3])`: a = 5; b = 3; c = 2
+      Line 11 `if a * b != c or a * c == b or b * c == a:` was True (c = 2, b = 3, a = 5)
+      End of function reached: main returned None
+  End of function reached: __bpd_main__ returned None
+
+Find the first point where the behaviour differs from what the problem requires and fix that logic.

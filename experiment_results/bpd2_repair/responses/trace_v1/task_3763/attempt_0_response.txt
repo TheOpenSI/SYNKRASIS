@@ -1,0 +1,45 @@
+### Step-by-step reasoning
+The solution is below.
+
+### Requirements
+None
+
+### Code
+```python
+from typing import List
+
+class Solution:
+    def separateSquares(self, squares: List[List[int]]) -> float:
+        n = len(squares)
+        ys = [s[1] for s in squares]
+        ls = [s[2] for s in squares]
+        ends = [ys[i] + ls[i] for i in range(n)]
+        
+        min_y = min(ys)
+        max_y_plus = max(ends)
+        total_area = 0.0
+        for l in ls:
+            total_area += l * l
+        half_area = total_area / 2.0
+
+        lo, hi = min_y, max_y_plus
+        # Perform binary search to find t such that area below(t) ≈ half_area
+        for _ in range(60):
+            mid = (lo + hi) / 2.0
+            below = 0.0
+            for i in range(n):
+                yi = ys[i]
+                li = ls[i]
+                if mid <= yi:
+                    continue
+                end_i = ends[i]
+                if mid >= end_i:
+                    below += li * li
+                else:
+                    below += (mid - yi) * li
+            if below < half_area:
+                lo = mid
+            else:
+                hi = mid
+        return (lo + hi) / 2.0
+```

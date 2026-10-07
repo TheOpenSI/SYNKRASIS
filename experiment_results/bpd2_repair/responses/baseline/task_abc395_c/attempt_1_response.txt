@@ -1,0 +1,37 @@
+### Step-by-step reasoning
+- The input format is: N on the first line, followed by N integers A1..AN. The code must read N from data[0] and the sequence from data[1:1+N].
+- In the previous solution, N was incorrectly read as data[1], which caused a slicing error and resulted in only a partial array being processed. This led to missing repeats and printing -1 for cases that actually have a valid subarray.
+- The core logic to detect the shortest subarray with a repeated value is correct: keep track of the last seen index of each value. When we encounter a value that has appeared before at index last_pos[v], the subarray from last_pos[v] to current index i has at least one repeated value, with length i - last_pos[v] + 1. Track the minimum such length.
+- Correcting the input parsing should fix the test case that previously failed. The algorithm remains O(N) time and O(U) space, where U is the number of distinct values.
+
+### Requirements
+None
+
+### Code
+```
+import sys
+
+def main():
+    data = list(map(int, sys.stdin.buffer.read().split()))
+    if not data:
+        print(-1)
+        return
+
+    n = data[0]
+    a = data[1:1 + n]
+
+    last_pos = {}
+    ans = None
+
+    for i, v in enumerate(a):
+        if v in last_pos:
+            length = i - last_pos[v] + 1
+            if ans is None or length < ans:
+                ans = length
+        last_pos[v] = i
+
+    print(-1 if ans is None else ans)
+
+if __name__ == "__main__":
+    main()
+```

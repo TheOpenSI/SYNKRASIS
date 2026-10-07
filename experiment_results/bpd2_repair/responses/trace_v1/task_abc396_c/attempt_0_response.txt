@@ -1,0 +1,45 @@
+### Step-by-step reasoning
+The solution is below.
+
+### Requirements
+None
+
+### Code
+```python
+from typing import *
+import sys
+
+def main():
+    data = sys.stdin.read().strip().split()
+    if not data:
+        print(0)
+        return
+    it = iter(data)
+    N = int(next(it))
+    M = int(next(it))
+    B = [int(next(it)) for _ in range(N)]
+    W = [int(next(it)) for _ in range(M)]
+    B.sort(reverse=True)
+    W.sort(reverse=True)
+    prefix_B = [0] * (N + 1)
+    for i in range(1, N + 1):
+        prefix_B[i] = prefix_B[i - 1] + B[i - 1]
+    prefix_W = [0] * (M + 1)
+    for i in range(1, M + 1):
+        prefix_W[i] = prefix_W[i - 1] + W[i - 1]
+    best_from = [0] * (N + 1)
+    max_so_far = -10 ** 30
+    for b in range(N, -2, -1):
+        if prefix_B[b] > max_so_far:
+            max_so_far = prefix_B[b]
+        best_from[b] = max_so_far
+    max_w = min(M, N)
+    ans = 0
+    for w in range(0, max_w + 1):
+        val = best_from[w] + prefix_W[w]
+        if val > ans:
+            ans = val
+    print(ans)
+if __name__ == '__main__':
+    main()
+```

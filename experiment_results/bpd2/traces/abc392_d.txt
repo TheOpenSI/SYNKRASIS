@@ -1,0 +1,26 @@
+main()
+  data = list(map(int, sys.stdin.buffer.read().split()))  # data=[3, 3, 1, 2, 3, 4, 1, 2, 2, 1, 6, 1, ...
+  if not data:  # False (data=[3, 3, 1, 2, 3, 4, 1, 2, 2, 1, 6, 1, ...)
+  N = next(it)  # N=3
+  for _ in range(N):  # 3 iterations; _=0,1,2
+    Ki = next(it)  # Ki=3,4,6
+    Ks.append(Ki)  # Ks += 3,4,6
+    for _ in range(Ki):  # 3 runs, iterations per run: 3,4,6; _=0,1,2,0 ... 4,5 (13 values)
+      v = next(it)  # v=1,2,3,1 ... 5,6 (11 values)
+      counts[v] = counts.get(v, 0) + 1  # counts={1: 1},{1: 1, 2: 1},{1: 1, 2: 1, 3: 1},{1: 1} ... {1: 1, 2: 1, 3: 1, 4: 1, 5: 1},{1: 1, 2: 1, 3: 1, 4: 1, 5: 1, 6: 1} (13 values)
+    dicts.append(counts)  # dicts += {1: 1, 2: 1, 3: 1},{1: 2, 2: 2},{1: 1, 2: 1, 3: 1, 4: 1, 5: 1, 6: 1}
+  for i in range(N):  # 3 iterations; i=0,1,2
+    di = dicts[i]  # di={1: 1, 2: 1, 3: 1},{1: 2, 2: 2},{1: 1, 2: 1, 3: 1, 4: 1, 5: 1, 6: 1}
+    Ki = Ks[i]  # Ki=3,4,6
+    for j in range(i + 1, N):  # 3 runs, iterations per run: 2,1,0; j=1,2,2
+      dj = dicts[j]  # dj={1: 2, 2: 2},{1: 1, 2: 1, 3: 1, 4: 1, 5: 1, 6: 1}
+      Kj = Ks[j]  # Kj=4,6
+      if len(di) < len(dj):  # F,T,T
+        for v, c in di.items():  # 2 runs, iterations per run: 3,2; v=1,2,3,1,2; c=1×3,2,2  (iters 2,3)
+          dot += c * dj.get(v, 0)  # dot=1,2,3,2,4
+        for v, c in dj.items():  # 2 iterations; v=1,2  (iters 1)
+          dot += c * di.get(v, 0)  # dot=2,4
+      prob = dot / (Ki * Kj)  # prob=0.3333333333333333,0.16666666666666666
+      if prob > max_prob:  # T,F,F
+        max_prob = prob  # max_prob=0.3333333333333333  (iters 1)
+printed '0.333333333333333'   (expected 0.333333333333333)

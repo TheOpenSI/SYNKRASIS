@@ -1,0 +1,54 @@
+Your generated code failed a test case.
+Please update the function logic so all test cases will pass. Error message added for your reference - 
+AssertionError: wrong answer on test case 1. Input: '[4, 2, 5]\n[3, 5, 4]', expected output: '1', your output: '3\n'
+
+Execution trace of your code on public test case 1, recorded line by line like a debugger session:
+Execution report for `Solution().numOfUnplacedFruits([4, 2, 5], [3, 5, 4])`
+Outcome: returned 3
+
+Trace:
+Call numOfUnplacedFruits(self=Solution(), fruits=[4, 2, 5], baskets=[3, 5, 4])  [Solution.numOfUnplacedFruits, lines 7-52]
+  Line 8 `n = len(baskets)`: n = 3
+  Line 9 `if n == 0:` was False (n = 3)
+  Line 11 `INF_NEG = -10 ** 18`: INF_NEG = -1000000000000000000
+  Line 12 `tree = [INF_NEG] * (4 * n)`: tree = [-1000000000000000000, -1000000000000000000, -10000000000...
+  Line 44 `build(1, 0, n - 1)`:
+    called build(node=1, l=0, r=2, baskets=[3, 5, 4], tree=[-1000000000000000000, -1000000000000000000, -10000000000...):
+      Line 15 `if l != r:` was True (l = 0, r = 2)
+      Line 16 `tree[node] = baskets[l]`: tree: [-1000000000000000000, -1000000000000000000, -10000000000... -> [-1000000000000000000, 3, -1000000000000000000, -10000000...
+      End of function reached: build returned None
+    tree: [-1000000000000000000, -1000000000000000000, -10000000000... -> [-1000000000000000000, 3, -1000000000000000000, -10000000...
+  Line 45 `unplaced = 0`: unplaced = 0
+  Line 46 `for f in fruits:` (fruits = [4, 2, 5]) ran 3 iterations
+    Iteration 1 (f = 4):
+      Line 47 `idx = find_first_ge(1, 0, n - 1, f)`:
+        called find_first_ge(node=1, l=0, r=2, x=4, tree=[-1000000000000000000, 3, -1000000000000000000, -10000000...):
+          Line 35 `if tree[node] < x:` was True (x = 4, tree = [-1000000000000000000, 3, -1000000000000000000, -10000000..., node = 1)
+          Line 36 `return -1`: find_first_ge returned -1
+        idx = -1
+      Line 48 `if idx == -1:` was True (idx = -1)
+      Line 49 `unplaced += 1`: unplaced: 0 -> 1
+    Iteration 2 (f = 2):
+      Line 47 `idx = find_first_ge(1, 0, n - 1, f)`:
+        called find_first_ge(node=1, l=0, r=2, x=2, tree=[-1000000000000000000, 3, -1000000000000000000, -10000000...):
+          Line 35 `if tree[node] < x:` was False (x = 2, node = 1)
+          Line 37 `if l == r:` was False (l = 0, r = 2)
+          Line 39 `mid = (l + r) // 2`: mid = 1
+          Line 40 `if tree[node * 2] >= x:` was False (x = 2, node = 1)
+          Line 43 `return find_first_ge(node * 2 + 1, mid + 1, r, x)`:
+            called find_first_ge(node=3, l=2, r=2, x=2, tree=[-1000000000000000000, 3, -1000000000000000000, -10000000...):
+              Line 35 `if tree[node] < x:` was True (x = 2, node = 3)
+              Line 36 `return -1`: find_first_ge returned -1
+            find_first_ge returned -1
+      Line 48 `if idx == -1:` was True (idx = -1)
+      Line 49 `unplaced += 1`: unplaced: 1 -> 2
+    Iteration 3 (f = 5):
+      Line 47 `idx = find_first_ge(1, 0, n - 1, f)`:
+        called find_first_ge(node=1, l=0, r=2, x=5, tree=[-1000000000000000000, 3, -1000000000000000000, -10000000...):
+          Line 35 `if tree[node] < x:` was True (x = 5, node = 1)
+          Line 36 `return -1`: find_first_ge returned -1
+      Line 48 `if idx == -1:` was True (idx = -1)
+      Line 49 `unplaced += 1`: unplaced: 2 -> 3
+  Line 52 `return unplaced`: numOfUnplacedFruits returned 3
+
+Find the first point where the behaviour differs from what the problem requires and fix that logic.
