@@ -1,0 +1,62 @@
+### Step-by-step reasoning
+- We have to partition the pizzas into groups of 4 across D = n/4 days. On odd days, we gain the maximum of the group; on even days, we gain the second largest of the group.
+- A greedy strategy yields an optimal arrangement:
+  - Sort pizzas in descending order and process groups in order.
+  - For an odd day (0-based index i even):
+    - The group maximum should be as large as possible. Take the current largest remaining value as the group max and add it to the answer.
+    - To leave large numbers for future even days, fill the remaining three slots of this group with the smallest available numbers (i.e., remove the three smallest from the pool).
+  - For an even day (i as 1 for 0-based indexing, i odd):
+    - The group max is the next largest value, but we won't add it to the sum.
+    - To maximize the second max for this day, fill the group with the three largest remaining numbers. The second max for this group will be the largest among these three, i.e., the first of these three removed numbers; add that value to the sum.
+- We can implement this efficiently with a deque:
+  - Start with the pizzas sorted in descending order.
+  - For each day i from 0 to D-1:
+    - Pop the leftmost value as the group max.
+    - If i is even: add it to the answer, then pop three values from the right (smallest three).
+    - If i is odd: pop three values from the left (the three largest remaining) and add the first of these three to the answer, then pop the next two (to complete the group).
+- This runs in O(n log n) due to sorting and O(n) for the deque operations, which fits the constraint.
+
+Edge cases:
+- n = 4: single day, answer is the maximum of the four values.
+- All values equal: result is (n/4) * value.
+- Large n up to 2e5: algorithm remains efficient.
+
+### Requirements
+None
+
+### Code
+```python
+from typing import List
+from collections import deque
+
+class Solution:
+    def maxWeight(self, pizzas: List[int]) -> int:
+        # Number of days
+        n = len(pizzas)
+        D = n // 4
+
+        # Sort in descending order for greedy processing
+        dq = deque(sorted(pizzas, reverse=True))
+
+        ans = 0
+        for i in range(D):
+            # Group max (largest remaining) - always present
+            max_val = dq.popleft()
+
+            if i % 2 == 0:
+                # Odd day (1st, 3rd, ...): gain the group max
+                ans += max_val
+                # Fill with three smallest remaining (from the right)
+                for _ in range(3):
+                    dq.pop()
+            else:
+                # Even day: don't gain the group max
+                # Fill with three largest remaining (from the left)
+                first = dq.popleft()  # largest among the 3 fillers
+                ans += first
+                # Remove the other two fillers
+                dq.popleft()
+                dq.popleft()
+
+        return ans
+```

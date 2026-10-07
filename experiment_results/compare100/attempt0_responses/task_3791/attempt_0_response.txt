@@ -1,0 +1,76 @@
+### Step-by-step reasoning
+- We need to assign each fruit (in given order) to the leftmost basket that has enough capacity and that hasn’t been used yet. If no such basket exists, the fruit remains unplaced.
+- A straightforward scan per fruit would be O(n^2), which is too slow for n up to 1e5.
+- Use a segment tree that maintains, for each interval, the maximum basket capacity among unused baskets in that interval.
+- For each fruit value f:
+  - Query the segment tree to find the leftmost index i where basket[i] >= f and basket i is unused. We can do this by recursively checking the left child first if its max is >= f, otherwise checking the right child.
+  - If such i exists, mark basket i as used by updating its value to a very small sentinel (e.g., -inf).
+  - If no such i exists (the root max < f), the fruit cannot be placed.
+- Complexity: Building the tree is O(n); each of the n fruits performs an O(log n) find-and-update, totaling O(n log n). This fits the constraints.
+- Edge cases:
+  - All baskets are too small for the current fruit; increment unplaced.
+  - Several fruits with large values after small ones; the leftmost viable basket is always chosen due to the search order (left-first).
+  - After using a basket, its value becomes sentinel so it won’t be selected again.
+  - Ensure data types handle up to 1e9; use a sentinel much smaller than that (e.g., -10**18).
+
+### Requirements
+None
+
+### Code
+```
+class Solution:
+    def numOfUnplacedFruits(self, fruits: List[int], baskets: List[int]) -> int:
+        n = len(baskets)
+        if n == 0:
+            return len(fruits)
+
+        INF_NEG = -10**18  # sentinel for used baskets
+
+        # Segment tree to store maximum in each interval
+        tree = [INF_NEG] * (4 * n)
+
+        def build(node: int, l: int, r: int):
+            if l == r:
+                tree[node] = baskets[l]
+            else:
+                mid = (l + r) // 2
+                build(node * 2, l, mid)
+                build(node * 2 + 1, mid + 1, r)
+                tree[node] = max(tree[node * 2], tree[node * 2 + 1])
+
+        def update(node: int, l: int, r: int, idx: int, val: int):
+            if l == r:
+                tree[node] = val
+            else:
+                mid = (l + r) // 2
+                if idx <= mid:
+                    update(node * 2, l, mid, idx, val)
+                else:
+                    update(node * 2 + 1, mid + 1, r, idx, val)
+                tree[node] = max(tree[node * 2], tree[node * 2 + 1])
+
+        def find_first_ge(node: int, l: int, r: int, x: int) -> int:
+            # Return leftmost index with value >= x, or -1 if none
+            if tree[node] < x:
+                return -1
+            if l == r:
+                return l
+            mid = (l + r) // 2
+            # Try left child first
+            if tree[node * 2] >= x:
+                return find_first_ge(node * 2, l, mid, x)
+            else:
+                return find_first_ge(node * 2 + 1, mid + 1, r, x)
+
+        build(1, 0, n - 1)
+
+        unplaced = 0
+        for f in fruits:
+            idx = find_first_ge(1, 0, n - 1, f)
+            if idx == -1:
+                unplaced += 1
+            else:
+                update(1, 0, n - 1, idx, INF_NEG)
+
+        return unplaced
+```

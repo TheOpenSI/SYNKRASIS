@@ -1,0 +1,30 @@
+### Step-by-step reasoning
+- Read N and the following N strings S_1, S_2, ..., S_N. Since the strings consist only of lowercase letters, they contain no spaces, so splitting on whitespace is safe.
+- Sort the strings in ascending order of their length. Python’s sort with key=len achieves this.
+- Concatenate the sorted strings in that order to form the final result.
+- Print the resulting string.
+
+Edge cases:
+- N is at least 2 and at most 50; input strings have distinct lengths, but even if not, the algorithm still works by using length as the sort key.
+- Strings are non-empty and contain only lowercase letters; joining them is straightforward.
+- Extra whitespace or trailing newlines are handled by tokenizing with whitespace.
+
+### Requirements
+None
+
+### Code
+```python
+import sys
+
+def main():
+    data = sys.stdin.read().split()
+    if not data:
+        return
+    n = int(data[0])
+    strings = data[1:1 + n]
+    strings.sort(key=len)
+    print(''.join(strings))
+
+if __name__ == "__main__":
+    main()
+```

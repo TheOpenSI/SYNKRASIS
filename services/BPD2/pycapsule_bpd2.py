@@ -8,7 +8,7 @@ sys.path.append(f"{os.path.dirname(os.path.abspath(__file__))}/../..")
 
 from typing import Optional
 
-from services.BPD2.lcb_trace2 import trace_request
+from services.BPD2.lcb_trace2 import trace_in_subprocess
 from services.PyCapsule.PyCapsule_LiveCodeBench import PyCapsule_LiveCodeBench
 
 LEGEND = ("How to read it: only the lines that ran are listed, with the values after `#`. `x=1,2,3` are the values "
@@ -36,7 +36,7 @@ class PyCapsule_LiveCodeBench_BPD2(PyCapsule_LiveCodeBench):
     def _first_failing_public_test(self, user_query: dict) -> Optional[tuple[int, str]]:
         source = self.harness.build_traceable_source(user_query, self._last_code)
         for index, test in enumerate(user_query["public_test"]):
-            result = trace_request({"code": source, "mode": user_query["test_type"],
+            result = trace_in_subprocess({"code": source, "mode": user_query["test_type"],
                                     "entry_point": user_query["entry_point"], "input": test["input"],
                                     "expected": test["output"], "max_steps": self.max_steps})
             if not result["ok"]:

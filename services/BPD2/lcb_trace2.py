@@ -57,3 +57,20 @@ def trace_request(req: dict, config: CompactConfig = None) -> dict:
     finally:
         sys.stdin = original_stdin
     return out
+
+
+def trace_in_subprocess(req: dict, timeout: int = 20) -> dict:
+    """
+    trace_request in a child process: a hang (one long native call), a crash or a memory bomb in the traced code
+    cannot take the caller down. The result has ok=False and error="timeout"/"worker_failed" in those cases.
+    """
+    import subprocess
+    worker = os.path.join(os.path.dirname(os.path.abspath(__file__)), "lcb_trace2_worker.py")
+    try:
+        process = subprocess.run([sys.executable, worker], input=json.dumps(req), capture_output=True, text=True,
+                                 timeout=timeout)
+        return json.loads(process.stdout.strip().splitlines()[-1])
+    except subprocess.TimeoutExpired:
+        return {"ok": False, "report": "", "output": "", "matches": None, "error": "timeout", "steps": 0}
+    except (IndexError, json.JSONDecodeError):
+        return {"ok": False, "report": "", "output": "", "matches": None, "error": "worker_failed", "steps": 0}

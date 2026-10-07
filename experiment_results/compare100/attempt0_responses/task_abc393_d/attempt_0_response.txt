@@ -1,0 +1,50 @@
+### Step-by-step reasoning
+- Let k be the number of 1s in S. If k <= 1, the 1s are already contiguous, so 0 swaps are needed.
+- Let p1 < p2 < ... < pk be the 1-based positions of the 1s in S.
+- If we want all 1s to be contiguous, they will occupy some block [t, t+k-1] for some t.
+- The total number of adjacent swaps needed to move the i-th 1 to position t+i-1 is |pi - (t+i-1)|.
+- Define qi = pi - (i-1) for i from 1 to k (0-based: qi = pi - i, with i starting at 0).
+- Then the total cost becomes sum |qi - t|, which is minimized when t is the median of the qi values.
+- Therefore:
+  - Compute the positions pi of all 1s (1-based indices).
+  - Compute qi = pi - i (with i starting from 0).
+  - Find median m of qi.
+  - The answer is sum over i of |qi - m|.
+- This runs in O(k log k) time due to sorting qi (k ≤ N ≤ 5e5) and uses O(k) extra space.
+
+Edge cases:
+- If there is only one 1, answer is 0.
+- The median choice for even k can be any value between the two middle qi; using qi_sorted[k//2] is fine.
+
+### Requirements
+None
+
+### Code
+```
+import sys
+
+def main():
+    data = sys.stdin.read().split()
+    if not data:
+        return
+    N = int(data[0])
+    S = data[1].strip()
+    # Collect 1-based positions of '1'
+    pos = []
+    for idx, ch in enumerate(S, start=1):
+        if ch == '1':
+            pos.append(idx)
+    k = len(pos)
+    if k <= 1:
+        print(0)
+        return
+    # qi = pi - i, where i is 0-based index in pos
+    q = [pos[i] - i for i in range(k)]
+    q_sorted = sorted(q)
+    median = q_sorted[k // 2]
+    ans = sum(abs(v - median) for v in q)
+    print(ans)
+
+if __name__ == "__main__":
+    main()
+```
