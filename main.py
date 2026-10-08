@@ -28,7 +28,7 @@ from data.LiveCodeBench.LiveCodeBench import LiveCodeBench
 # ---- settings --------------------------------------------------------------------------------------------------
 # Needs the ollama container running once:  docker run -d --name ollama -p 11434:11434 -v ollama:/root/.ollama ollama/ollama
 LLM_NAME = "qwen2.5-coder:7b"
-NUM_PROBLEMS = 10                      # spread over the dataset: stdin (AtCoder) and functional (LeetCode) problems
+NUM_PROBLEMS = None                    # None = the whole dataset (175 problems), or a number: that many, spread over the dataset
 RUNS = [("no_bpd", False),             # same problems twice: (name, BPD trace in the feedback of wrong answers)
         ("bpd", True)]
 OUTPUT_DIR = "experiment_results/bpd/lcb_qwen2.5_coder_7b"      # results (csv, json) + every query and response
@@ -63,12 +63,16 @@ def main():
                                                 # the mount dir only keeps the LAST attempt of a task, this keeps all
                                                 response_log_dir = os.path.join(OUTPUT_DIR, run_name, "responses"))
 
+            # Started before and stopped? Then continue after the last finished problem.
+            previous_results = os.path.join(OUTPUT_DIR, f"{LLM_NAME}_LiveCodeBench_results_{run_name}.json")
             dataloader = LiveCodeBench(model_name = LLM_NAME,
                                        output_dir = OUTPUT_DIR,
-                                       suffix = f"_{run_name}")
-            step = max(1, len(dataloader.data) // NUM_PROBLEMS)
-            dataloader.data = dataloader.data.iloc[::step].head(NUM_PROBLEMS).reset_index(drop = True)
-            print(f"Running {len(dataloader.data)} problems: {dataloader.data['question_id'].tolist()}")
+                                       suffix = f"_{run_name}",
+                                       is_resuming = os.path.exists(previous_results))
+            if NUM_PROBLEMS:
+                step = max(1, len(dataloader.data) // NUM_PROBLEMS)
+                dataloader.data = dataloader.data.iloc[::step].head(NUM_PROBLEMS).reset_index(drop = True)
+            print(f"Running {len(dataloader.data)} problems, {dataloader.current_index} already done")
 
             try:
                 pycapsule.run_pycapsule_experiment(dataloader)
