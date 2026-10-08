@@ -119,6 +119,7 @@ class Analyser:
                 "function": inv.name,
                 "line": step.line,
                 "changes": step.changes(),
+                "written": step.written,
                 "calls": step.calls,
                 "exception": step.exception,
                 "value": inv.return_value if returns_here else None,
@@ -199,7 +200,9 @@ class Analyser:
             if last is not None and last.line == step.line and step.line not in protected:
                 merged[-1] = Step(line=last.line, before=last.before, after=step.after,
                                   calls=last.calls + step.calls,
-                                  exception=step.exception or last.exception)
+                                  exception=step.exception or last.exception,
+                                  assigned=last.assigned | step.assigned,
+                                  written={**last.written, **step.written})
             else:
                 merged.append(step)
         return merged

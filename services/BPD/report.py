@@ -244,16 +244,23 @@ class Renderer(Analyser):
             parts.append(self._branch_part(executions, call))
 
         changes = {}
+        written: dict[str, list[str]] = {}
         if not self._is_literal_assignment(self.structure.line_source(row.line)):
             for execution in executions:
                 for name, (before, after) in execution.get("changes", {}).items():
                     if not self._is_noise(after):
                         changes.setdefault(name, []).append((before, after))
+                for target, value in execution.get("written", {}).items():
+                    written.setdefault(target, []).append(value)
+        # `G[i][j] = x` is shown by the values it wrote, not by how the whole list G changed
+        changes = {name: pairs for name, pairs in changes.items()
+                   if name not in {re.match(r"\w+", target).group() for target in written}}
         has_nested = any(not self.is_inline(c) for e in executions for c in e.get("calls", []) if not c.name.startswith("<"))
         if has_nested:      # a callee changed a list/dict: its own block shows how, do not repeat it here
             changes = {n: p for n, p in changes.items() if not all(self._is_container_change(b, a) for b, a in p)}
         change_texts = [self._variable_part(name, pairs) for name, pairs in changes.items()]
         parts.extend(text for text in change_texts if text)
+        parts.extend(f"{target}={self._sequence([self._clip(v) for v in values])}" for target, values in written.items())
 
         returned = [e["value"] for e in executions if e.get("value") is not None and (e["kind"] == "return" or e.get("returns"))]
         if returned and call in self._roots:

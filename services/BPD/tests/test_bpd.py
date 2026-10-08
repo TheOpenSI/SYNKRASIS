@@ -46,8 +46,30 @@ class FormatTests(unittest.TestCase):
     def test_list_updates_are_deltas(self):
         source = "def f(n):\n    out = []\n    sq = [0] * n\n    for i in range(n):\n        sq[i] = i * i\n        out.append(i)\n    return out\n"
         text = trace(source, "f(4)")
-        self.assertIn("sq[1..3]=1,4,9", text)                     # sq[0] stays 0: no change, same value
-        self.assertIn("out += 0..3", text)
+        self.assertIn("sq[i]=0,1,4,9", text)                      # what the line wrote, also the 0 that left sq unchanged
+        self.assertIn("out += 0..3", text)                        # append: shown as what was added
+
+    def test_a_write_that_changes_nothing_is_still_shown(self):
+        source = "def f(n):\n    G = [[0] * n for _ in range(n)]\n    for i in range(n):\n        for j in range(n):\n            G[i][j] = (i - i) * j\n    return G\n"
+        self.assertIn("G[i][j]=0×4", trace(source, "f(2)"))      # the line ran and wrote 0 each time: the list never changed
+
+    def test_nested_list_writes_show_the_value_not_the_whole_row(self):
+        source = "def f(n):\n    A = [[0] * n for _ in range(n)]\n    for i in range(n):\n        for j in range(n):\n            A[i][j] = i * 10 + j\n    return A\n"
+        text = trace(source, "f(2)")
+        self.assertIn("A[i][j]=0,1,10,11", text)
+        self.assertNotIn("[0, 1],[", text)                        # no dump of whole rows
+
+    def test_attribute_writes_show_the_value_written(self):
+        source = "class C:\n    def __init__(self):\n        self.count = 0\n    def bump(self, times):\n        for _ in range(times):\n            self.count += 2\n        return self.count\n"
+        self.assertIn("self.count=2,4,6", trace(source, "C().bump(3)"))
+
+    def test_swap_shows_both_targets(self):
+        source = "def f(a):\n    i, j = 0, 2\n    a[i], a[j] = a[j], a[i]\n    return a\n"
+        self.assertIn("a[i]=3; a[j]=1", trace(source, "f([1, 2, 3])"))
+
+    def test_a_target_with_a_call_is_never_evaluated(self):
+        source = "calls = []\ndef pick():\n    calls.append(1)\n    return 0\n\ndef f(a):\n    a[pick()] = 5\n    return len(calls)\n"
+        self.assertEqual(trace(source, "f([0, 0])").splitlines()[-1], "returned 1")   # pick() ran once, not twice
 
     def test_exception_is_shown_where_it_happened_and_once_at_the_end(self):
         text = trace("def f(items):\n    i = 0\n    while i <= len(items):\n        i += 1\n    return items[i]\n", "f([10, 20, 30])")

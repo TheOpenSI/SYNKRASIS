@@ -122,6 +122,7 @@ class Step:
     calls: list["Invocation"] = field(default_factory=list)
     exception: Optional[ExceptionInfo] = None
     assigned: frozenset = frozenset()    # plain names the statement on this line assigns
+    written: dict = field(default_factory=dict)   # `a[i][j] = ...`, `self.x += 1`: target text -> value written (also if unchanged)
 
     def changes(self) -> dict[str, tuple[Optional[str], str]]:
         """Variables that are new or different after the line ran, plus the ones assigned (even if unchanged): name -> (before, after)."""
@@ -180,6 +181,34 @@ def _assigned_names_by_line(tree: ast.AST) -> dict[int, frozenset]:
     return {line: frozenset(names) for line, names in assigned.items()}
 
 
+def _written_targets_by_line(tree: ast.AST) -> dict[int, list]:
+    """
+    line of an assignment -> [(source text, compiled expression)] of its item and attribute targets, e.g. `G[i][j]`
+    in `G[i][j] = x` or `self.count` in `self.count += 1`. Evaluating the target after the line gives the value that was
+    written, also when it equals the old one. Targets that contain a call are skipped: evaluating them could have effects.
+    """
+    found: dict[int, list] = {}
+
+    def collect(target: ast.AST, line: int) -> None:
+        if isinstance(target, (ast.Tuple, ast.List)):
+            for element in target.elts:
+                collect(element, line)
+        elif isinstance(target, (ast.Subscript, ast.Attribute)) and not any(isinstance(n, ast.Call) for n in ast.walk(target)):
+            text = ast.unparse(target)
+            try:
+                found.setdefault(line, []).append((text, compile(text, "<bpd-target>", "eval")))
+            except SyntaxError:
+                pass
+
+    for node in ast.walk(tree):
+        if isinstance(node, ast.Assign):
+            for target in node.targets:
+                collect(target, node.lineno)
+        elif isinstance(node, (ast.AugAssign, ast.AnnAssign)):
+            collect(node.target, node.lineno)
+    return found
+
+
 def _real_variable_names(tree: ast.AST) -> dict[tuple[str, int], set]:
     """(function name, first line) -> names the function assigns outside of comprehensions."""
     result: dict[tuple[str, int], set] = {}
@@ -222,6 +251,7 @@ class TraceCollector:
         self._started = time.monotonic()
         tree = ast.parse(structure.source) if structure is not None else None
         self._assigned = _assigned_names_by_line(tree) if tree is not None else {}
+        self._targets = _written_targets_by_line(tree) if tree is not None else {}
         self._real_names = _real_variable_names(tree) if tree is not None else {}
         self.roots: list[Invocation] = []
         self._open: dict[int, Invocation] = {}   # id(frame) -> invocation still running
@@ -296,7 +326,7 @@ class TraceCollector:
             return
         snapshot = self._snapshot(frame)
         if node._current_step is not None:
-            node._current_step.after = snapshot
+            self._finish_step(node._current_step, frame, snapshot)
         step = Step(line=frame.f_lineno, before=snapshot, assigned=self._assigned.get(frame.f_lineno, frozenset()))
         node.steps.append(step)
         node._current_step = step
@@ -334,7 +364,7 @@ class TraceCollector:
             return
         snapshot = self._snapshot(frame)
         if node._current_step is not None:
-            node._current_step.after = snapshot
+            self._finish_step(node._current_step, frame, snapshot)
         if node.is_generator and self._is_yield(frame):
             node.yields.append(safe_repr(arg, self.max_value_length))
             node._current_step = None
@@ -359,6 +389,15 @@ class TraceCollector:
                 return node
             caller = caller.f_back
         return None
+
+    def _finish_step(self, step: Step, frame: types.FrameType, snapshot: dict[str, str]) -> None:
+        """The line of `step` has run: store the variables after it and the values it wrote into items/attributes."""
+        step.after = snapshot
+        for text, code in self._targets.get(step.line, ()):
+            try:
+                step.written[text] = safe_repr(eval(code, frame.f_globals, frame.f_locals), self.max_value_length)
+            except Exception:
+                pass
 
     def _snapshot(self, frame: types.FrameType) -> dict[str, str]:
         code = frame.f_code
