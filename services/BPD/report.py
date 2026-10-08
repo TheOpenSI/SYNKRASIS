@@ -244,14 +244,14 @@ class Renderer(Analyser):
             parts.append(self._branch_part(executions, call))
 
         changes = {}
-        written: dict[str, list[str]] = {}
+        written: dict[str, list[tuple[str, str]]] = {}
         if not self._is_literal_assignment(self.structure.line_source(row.line)):
             for execution in executions:
                 for name, (before, after) in execution.get("changes", {}).items():
                     if not self._is_noise(after):
                         changes.setdefault(name, []).append((before, after))
-                for target, value in execution.get("written", {}).items():
-                    written.setdefault(target, []).append(value)
+                for target, slot_and_value in execution.get("written", {}).items():
+                    written.setdefault(target, []).append(slot_and_value)
         # `G[i][j] = x` is shown by the values it wrote, not by how the whole list G changed
         changes = {name: pairs for name, pairs in changes.items()
                    if name not in {re.match(r"\w+", target).group() for target in written}}
@@ -260,7 +260,7 @@ class Renderer(Analyser):
             changes = {n: p for n, p in changes.items() if not all(self._is_container_change(b, a) for b, a in p)}
         change_texts = [self._variable_part(name, pairs) for name, pairs in changes.items()]
         parts.extend(text for text in change_texts if text)
-        parts.extend(f"{target}={self._sequence([self._clip(v) for v in values])}" for target, values in written.items())
+        parts.extend(self._written_part(target, pairs) for target, pairs in written.items())
 
         returned = [e["value"] for e in executions if e.get("value") is not None and (e["kind"] == "return" or e.get("returns"))]
         if returned and call in self._roots:
@@ -385,6 +385,28 @@ class Renderer(Analyser):
     @staticmethod
     def _strip_deque(text: str) -> str:
         return text[6:-1] if text.startswith("deque(") and text.endswith(")") else text
+
+    def _written_part(self, target: str, pairs: list[tuple[str, str]]) -> str:
+        """
+        What `G[i][j] = ...` wrote, with the slots: pairs are (slot, value) per execution.
+          one dimension, consecutive slots   X[0..4]=1,1,2,3,2
+          every value the same               G[0][0]..G[1][2]=0×6      (first and last slot)
+          anything else                      A[0][0]=1,A[0][1]=2,...   (head and tail when long)
+        An attribute (self.count) has no index: self.count=2,4,6
+        """
+        slots = [slot for slot, _ in pairs]
+        values = [self._clip(value) for _, value in pairs]
+        if all(slot == target for slot in slots):
+            return f"{target}={self._sequence(values)}"
+        matches = [re.fullmatch(r"(.*)\[(-?\d+)\]", slot) for slot in slots]
+        if all(matches) and len({m.group(1) for m in matches}) == 1:
+            indices = [int(m.group(2)) for m in matches]
+            if len(indices) == 1 or all(b - a == 1 for a, b in zip(indices, indices[1:])):
+                where = f"[{indices[0]}]" if len(indices) == 1 else f"[{indices[0]}..{indices[-1]}]"
+                return f"{matches[0].group(1)}{where}={self._sequence(values)}"
+        if len(pairs) >= 3 and len(set(values)) == 1:
+            return f"{slots[0]}..{slots[-1]}={values[0]}×{len(values)}"
+        return self._sequence([f"{slot}={value}" for slot, value in zip(slots, values)])
 
     def _call_parts(self, row: Row, level: int, changes: dict, call: Invocation) -> tuple[str, list[list[str]]]:
         calls = [c for e in row.executions for c in e.get("calls", []) if not c.name.startswith("<")]

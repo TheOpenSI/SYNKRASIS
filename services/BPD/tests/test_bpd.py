@@ -46,17 +46,17 @@ class FormatTests(unittest.TestCase):
     def test_list_updates_are_deltas(self):
         source = "def f(n):\n    out = []\n    sq = [0] * n\n    for i in range(n):\n        sq[i] = i * i\n        out.append(i)\n    return out\n"
         text = trace(source, "f(4)")
-        self.assertIn("sq[i]=0,1,4,9", text)                      # what the line wrote, also the 0 that left sq unchanged
+        self.assertIn("sq[0..3]=0,1,4,9", text)                   # slots and values, also the 0 that left sq unchanged
         self.assertIn("out += 0..3", text)                        # append: shown as what was added
 
     def test_a_write_that_changes_nothing_is_still_shown(self):
         source = "def f(n):\n    G = [[0] * n for _ in range(n)]\n    for i in range(n):\n        for j in range(n):\n            G[i][j] = (i - i) * j\n    return G\n"
-        self.assertIn("G[i][j]=0×4", trace(source, "f(2)"))      # the line ran and wrote 0 each time: the list never changed
+        self.assertIn("G[0][0]..G[1][1]=0×4", trace(source, "f(2)"))      # ran 4 times and wrote 0: the list never changed
 
     def test_nested_list_writes_show_the_value_not_the_whole_row(self):
         source = "def f(n):\n    A = [[0] * n for _ in range(n)]\n    for i in range(n):\n        for j in range(n):\n            A[i][j] = i * 10 + j\n    return A\n"
         text = trace(source, "f(2)")
-        self.assertIn("A[i][j]=0,1,10,11", text)
+        self.assertIn("A[0][0]=0,A[0][1]=1,A[1][0]=10,A[1][1]=11", text)
         self.assertNotIn("[0, 1],[", text)                        # no dump of whole rows
 
     def test_attribute_writes_show_the_value_written(self):
@@ -65,7 +65,15 @@ class FormatTests(unittest.TestCase):
 
     def test_swap_shows_both_targets(self):
         source = "def f(a):\n    i, j = 0, 2\n    a[i], a[j] = a[j], a[i]\n    return a\n"
-        self.assertIn("a[i]=3; a[j]=1", trace(source, "f([1, 2, 3])"))
+        self.assertIn("a[0]=3; a[2]=1", trace(source, "f([1, 2, 3])"))
+
+    def test_the_slot_is_shown_even_when_the_index_is_computed_on_the_line(self):
+        source = "def f(n):\n    a = [0] * 5\n    for i in range(n):\n        a[(i * 3) % 5] = i + 1\n    return a\n"
+        self.assertIn("a[0]=1,a[3]=2,a[1]=3", trace(source, "f(3)"))       # slots 0, 3, 1: nothing else says which
+
+    def test_dictionary_keys_are_the_slots(self):
+        source = "def f(words):\n    d = {}\n    for w in words:\n        d[w] = len(w)\n    return d\n"
+        self.assertIn("d['aa']=2,d['b']=1", trace(source, "f(['aa', 'b'])"))
 
     def test_a_target_with_a_call_is_never_evaluated(self):
         source = "calls = []\ndef pick():\n    calls.append(1)\n    return 0\n\ndef f(a):\n    a[pick()] = 5\n    return len(calls)\n"

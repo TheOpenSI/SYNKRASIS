@@ -122,7 +122,7 @@ class Step:
     calls: list["Invocation"] = field(default_factory=list)
     exception: Optional[ExceptionInfo] = None
     assigned: frozenset = frozenset()    # plain names the statement on this line assigns
-    written: dict = field(default_factory=dict)   # `a[i][j] = ...`, `self.x += 1`: target text -> value written (also if unchanged)
+    written: dict = field(default_factory=dict)   # `a[i][j] = ...`, `self.x += 1`: target text -> (slot, value) written, e.g. "a[i][j]" -> ("a[1][2]", "7"), also if unchanged
 
     def changes(self) -> dict[str, tuple[Optional[str], str]]:
         """Variables that are new or different after the line ran, plus the ones assigned (even if unchanged): name -> (before, after)."""
@@ -183,11 +183,23 @@ def _assigned_names_by_line(tree: ast.AST) -> dict[int, frozenset]:
 
 def _written_targets_by_line(tree: ast.AST) -> dict[int, list]:
     """
-    line of an assignment -> [(source text, compiled expression)] of its item and attribute targets, e.g. `G[i][j]`
+    line of an assignment -> [(source text, compiled expression, segments)] of its item and attribute targets, e.g. `G[i][j]`
     in `G[i][j] = x` or `self.count` in `self.count += 1`. Evaluating the target after the line gives the value that was
-    written, also when it equals the old one. Targets that contain a call are skipped: evaluating them could have effects.
+    written, also when it equals the old one; evaluating the index expressions gives the slot (`G[1][2]`), segments says how
+    to assemble it. Targets that contain a call are skipped: evaluating them could have effects.
     """
     found: dict[int, list] = {}
+
+    def segments(node: ast.AST) -> list:
+        if isinstance(node, ast.Subscript):
+            if isinstance(node.slice, ast.Slice):
+                part = ("text", f"[{ast.unparse(node.slice)}]")
+            else:
+                part = ("index", compile(f"({ast.unparse(node.slice)})", "<bpd-target>", "eval"))
+            return segments(node.value) + [part]
+        if isinstance(node, ast.Attribute):
+            return segments(node.value) + [("text", f".{node.attr}")]
+        return [("text", ast.unparse(node))]
 
     def collect(target: ast.AST, line: int) -> None:
         if isinstance(target, (ast.Tuple, ast.List)):
@@ -196,7 +208,7 @@ def _written_targets_by_line(tree: ast.AST) -> dict[int, list]:
         elif isinstance(target, (ast.Subscript, ast.Attribute)) and not any(isinstance(n, ast.Call) for n in ast.walk(target)):
             text = ast.unparse(target)
             try:
-                found.setdefault(line, []).append((text, compile(text, "<bpd-target>", "eval")))
+                found.setdefault(line, []).append((text, compile(text, "<bpd-target>", "eval"), segments(target)))
             except SyntaxError:
                 pass
 
@@ -393,11 +405,22 @@ class TraceCollector:
     def _finish_step(self, step: Step, frame: types.FrameType, snapshot: dict[str, str]) -> None:
         """The line of `step` has run: store the variables after it and the values it wrote into items/attributes."""
         step.after = snapshot
-        for text, code in self._targets.get(step.line, ()):
+        for text, code, segments in self._targets.get(step.line, ()):
             try:
-                step.written[text] = safe_repr(eval(code, frame.f_globals, frame.f_locals), self.max_value_length)
+                value = safe_repr(eval(code, frame.f_globals, frame.f_locals), self.max_value_length)
             except Exception:
-                pass
+                continue
+            try:
+                slot = "".join(part if kind == "text" else f"[{self._index_text(eval(part, frame.f_globals, frame.f_locals))}]"
+                               for kind, part in segments)
+            except Exception:
+                slot = text
+            step.written[text] = (slot, value)
+
+    @staticmethod
+    def _index_text(index: Any) -> str:
+        """The value of an index expression for the slot text: 3, 'key', or 1, 2 for a tuple index."""
+        return ", ".join(safe_repr(i, 30) for i in index) if isinstance(index, tuple) else safe_repr(index, 30)
 
     def _snapshot(self, frame: types.FrameType) -> dict[str, str]:
         code = frame.f_code
