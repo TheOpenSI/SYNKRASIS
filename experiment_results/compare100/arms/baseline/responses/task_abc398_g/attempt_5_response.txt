@@ -1,0 +1,91 @@
+### Step-by-step reasoning
+- The game preserves bipartiteness: any added edge cannot create an odd cycle. Therefore, throughout the game the graph remains bipartite.
+- In the end, when no moves are possible, the graph must be a complete bipartite graph K_{a,b} on all N vertices, with a+b=N. The number of moves made in total is a*b - M (since the final graph has a*b cross edges and we started with M edges).
+- Each initial connected component i has a bipartition with sizes (x_i, y_i) (x_i + y_i = size_i). If we merge components, the final global bipartition must be such that, for every original component, its two color classes map to A or B in some orientation. Thus the final a must be the sum, over all components i, of either x_i or y_i (we can choose per component which side goes to A).
+- Parity observations:
+  - If N is odd, a*b is always even (since a*b ≡ a*(N-a) ≡ 0 mod 2). Therefore the parity of the total number of moves is simply M mod 2. Aoki (first player) wins iff M is odd.
+  - If N is even:
+    - If there exists a component with odd size, then that component contributes x_i and y_i with opposite parity, so the parity of a can be flipped by choosing its orientation. Hence both parities of a are achievable, and thus both parities of a*b are achievable as well. The first player can force an odd number of total moves, i.e., win.
+    - If all components are even-sized, then for every component x_i and y_i have the same parity, so the parity of a is fixed to S_fixed = XOR over all even-sized components of (x_i mod 2). Then a*b parity is fixed to S_fixed (since N is even). The total moves parity is S_fixed XOR (M mod 2). Aoki wins iff this value is 1.
+- Algorithm:
+  1. Compute connected components and, for each, a bipartition size pair (x_i, y_i). Track:
+     - has_odd: whether any component has odd total size.
+     - S_fixed: XOR of (x_i mod 2) over all even-sized components.
+     - N and M come from input.
+  2. If N is odd, output Aoki if M is odd, else Takahashi.
+  3. If N is even and has_odd, output Aoki.
+  4. If N is even and all components are even-sized, let total_parity = S_fixed XOR (M mod 2). Output Aoki if total_parity == 1, else Takahashi.
+
+- Time complexity: O(N + M).
+- Space complexity: O(N + M).
+
+### Requirements
+None
+
+### Code
+```
+import sys
+from collections import deque
+
+def main():
+    data = list(map(int, sys.stdin.buffer.read().split()))
+    if not data:
+        return
+    it = iter(data)
+    N = next(it)
+    M = next(it)
+
+    adj = [[] for _ in range(N + 1)]
+    for _ in range(M):
+        u = next(it)
+        v = next(it)
+        adj[u].append(v)
+        adj[v].append(u)
+
+    color = [-1] * (N + 1)
+    has_odd = False      # exists an odd-sized component
+    S_fixed = 0          # parity contribution from even-sized components
+
+    for start in range(1, N + 1):
+        if color[start] != -1:
+            continue
+        q = deque([start])
+        color[start] = 0
+        cnt0 = 1
+        cnt1 = 0
+
+        while q:
+            u = q.popleft()
+            cu = color[u]
+            for w in adj[u]:
+                if color[w] == -1:
+                    color[w] = cu ^ 1
+                    if color[w] == 0:
+                        cnt0 += 1
+                    else:
+                        cnt1 += 1
+                    q.append(w)
+                # The problem guarantees no odd cycle, so no color conflicts
+
+        size = cnt0 + cnt1
+        if size % 2 == 1:
+            has_odd = True
+        else:
+            S_fixed ^= (cnt0 & 1)
+
+    if N % 2 == 1:
+        # a*b is always even; winner depends on M parity
+        print("Aoki" if (M & 1) else "Takahashi")
+        return
+
+    if has_odd:
+        # can realize both parities of a; first player can force win
+        print("Aoki")
+        return
+
+    total_parity = S_fixed ^ (M & 1)
+    print("Aoki" if total_parity == 1 else "Takahashi")
+
+if __name__ == "__main__":
+    main()
+```

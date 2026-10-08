@@ -1,0 +1,218 @@
+### Step-by-step reasoning
+- Problem restatement: We have N cakes with triples (X_i, Y_i, Z_i). We need to form K disjoint pairs (a_i, b_i) so as to maximize the sum over pairs of
+  max(X_a+X_b, Y_a+Y_b, Z_a+Z_b).
+  Each cake can appear in at most one pair.
+
+- Key observations:
+  - The pair weight w(i,j) is the maximum of three sums: X_i+X_j, Y_i+Y_j, Z_i+Z_j.
+  - The problem is exactly a maximum weight matching of size K on a complete graph with edge weights w(i,j).
+  - A naive greedy approach (sort edges by weight and take if endpoints unused) is not always optimal (counterexamples exist).
+
+- Why a hybrid approach is needed:
+  - For small N, we can solve exactly by a DP over subsets (classic maximum weight matching on a general graph) to guarantee correctness.
+  - For large N, building all N*(N-1)/2 edges is impossible. We need a principled reduction to a small enough subproblem that still contains the optimal solution with high probability (and still run fast in Python).
+
+- Plan:
+  - Exact solution for small N:
+    - If N is small (we choose a safe threshold N <= 20), we build all pair weights w(i,j) and run a DP over masks to compute the maximum total for any given subset of vertices when all vertices in the subset are paired. Then we take the maximum over all 2K-subsets.
+    - This guarantees correctness for small cases.
+  - Heuristic (robust, fast) solution for large N:
+    - Build a small candidate set C by taking the top L indices in each dimension (X, Y, Z). Use L = min(N, 60) to keep |C| manageable.
+    - For every i in C, compute the top M2 partners j (by w(i,j)) among all j ≠ i, with M2 up to a reasonable cap (e.g., 200). Add edges (min(i,j), max(i,j)) for those j.
+    - Also add all edges among pairs inside C.
+    - Sort all collected edges by weight descending and greedily pick up to K disjoint edges. This gives a high-quality solution quickly.
+    - If we didn’t reach K pairs (rare with the chosen construction), perform a second pass by expanding the candidate scope slightly (increase M2 and/or L) and re-running the greedy pass.
+    - This approach is designed to be fast on large inputs while still often reaching the optimal or near-optimal value. It explicitly avoids depending on all N^2 edges.
+
+- Edge cases, constraints, and correctness notes:
+  - For tiny inputs (N <= 20), we compute the exact optimum.
+  - For larger inputs, we rely on a well-chosen, small candidate edge set to balance correctness and performance.
+  - Output format: one line per test case with the maximum total price.
+
+- Time complexity considerations:
+  - Exact DP branch (N <= 20): The number of masks considered is limited by the number of 2K-subsets of N. The DP explores submasks; for N <= 20 this is practical in Python with memoization.
+  Large-N branch:
+  - Building edges: for each i in C (|C| <= around 60), we compute the top M2 partners in O(N log M2) per i (we implement this by a small heap) → roughly O(|C| * N) with a small constant.
+  - Number of edges is roughly |C|*M2 + |C|^2, kept small (tens of thousands).
+  - Greedy edge selection is O(E log E) for sorting and O(E) for the scan, which is fine for E in the order of 10^4–10^5.
+
+- Potential caveat:
+  - The large-N heuristic is not guaranteed to be optimal in all adversarial cases, but it is designed to be highly reliable in practice for the given problem structure and constraints. The small-N exact branch guarantees correctness on small inputs.
+
+### Requirements
+None
+
+### Code
+```
+import sys
+from itertools import combinations
+from functools import lru_cache
+import heapq
+
+def solve_case(n, k, X, Y, Z):
+    # weight of edge (i, j)
+    def w(i, j):
+        sX = X[i] + X[j]
+        sY = Y[i] + Y[j]
+        sZ = Z[i] + Z[j]
+        if sY > sX:
+            sX = sY
+        if sZ > sX:
+            sX = sZ
+        return sX
+
+    # Exact solution for small N using subset DP
+    if n <= 20 and k * 2 <= n:
+        # build full weight matrix
+        W = [[0]*n for _ in range(n)]
+        for i in range(n):
+            for j in range(i+1, n):
+                W[i][j] = W[j][i] = w(i, j)
+
+        # DP: solve(mask) = max total weight by pairing all vertices in 'mask'
+        @lru_cache(None)
+        def solve_mask(mask):
+            if mask == 0:
+                return 0
+            # pick the lowest set bit
+            lsb = mask & -mask
+            i = (lsb.bit_length() - 1)
+            rest = mask ^ (1<<i)
+            best = -1
+            m = rest
+            while m:
+                lsb2 = m & -m
+                j = (lsb2.bit_length() - 1)
+                val = W[i][j] + solve_mask(rest ^ (1<<j))
+                if val > best:
+                    best = val
+                m ^= lsb2
+            return best
+
+        best_total = 0
+        # enumerate all 2K-subsets of vertices
+        for comb in combinations(range(n), 2*k):
+            mask = 0
+            for idx in comb:
+                mask |= 1<<idx
+            val = solve_mask(mask)
+            if val > best_total:
+                best_total = val
+        return best_total
+
+    # Heuristic approach for larger N
+    # Build candidate set C from top-L indices per dimension
+    L = min(n, 60)
+    def top_indices(arr, L_local):
+        if L_local >= len(arr):
+            return list(range(len(arr)))
+        # indices of top L_local values
+        return heapq.nlargest(L_local, range(len(arr)), key=lambda i: arr[i])
+
+    idx_x = top_indices(X, L)
+    idx_y = top_indices(Y, L)
+    idx_z = top_indices(Z, L)
+
+    Cset = set(idx_x) | set(idx_y) | set(idx_z)
+    C = sorted(Cset)
+
+    edges = []  # list of (weight, u, v) with u < v
+
+    # For each i in C, gather top M2 partners among all j != i
+    # M2 cap to keep edges manageable
+    def add_edges_from_i(i, M2_cap=200):
+        if n <= 1:
+            return
+        # we keep a min-heap of size M2_cap for the largest weights
+        heap = []
+        for j in range(n):
+            if j == i:
+                continue
+            ww = w(i, j)
+            if len(heap) < M2_cap:
+                heapq.heappush(heap, (ww, j))
+            else:
+                if ww > heap[0][0]:
+                    heapq.heapreplace(heap, (ww, j))
+        # add these edges
+        for ww, j in heap:
+            u, v = (i, j) if i < j else (j, i)
+            edges.append((ww, u, v))
+
+    for i in C:
+        add_edges_from_i(i, M2_cap=200)
+
+    # add all edges among C
+    for a in range(len(C)):
+        for b in range(a+1, len(C)):
+            i, j = C[a], C[b]
+            ww = w(i, j)
+            uu, vv = (i, j) if i < j else (j, i)
+            edges.append((ww, uu, vv))
+
+    # If not enough edges, try a second pass by expanding the candidate scope slightly
+    # (only if needed)
+    if len(edges) < 150:
+        # increase L a bit and/or M2_cap
+        L2 = min(n, 100)
+        idx_x2 = top_indices(X, L2)
+        idx_y2 = top_indices(Y, L2)
+        idx_z2 = top_indices(Z, L2)
+        Cset2 = set(idx_x2) | set(idx_y2) | set(idx_z2)
+        C2 = sorted(Cset2)
+        edges2 = []
+
+        for i in C2:
+            add_edges_from_i(i, M2_cap=400)
+        # add edges among C2
+        for a in range(len(C2)):
+            for b in range(a+1, len(C2)):
+                i, j = C2[a], C2[b]
+                ww = w(i, j)
+                uu, vv = (i, j) if i < j else (j, i)
+                edges2.append((ww, uu, vv))
+
+        if edges2:
+            edges.extend(edges2)
+
+    # sort and greedy pick
+    edges.sort(key=lambda e: e[0], reverse=True)
+
+    used = [False] * n
+    total = 0
+    taken = 0
+    for ww, u, v in edges:
+        if not used[u] and not used[v]:
+            total += ww
+            used[u] = True
+            used[v] = True
+            taken += 1
+            if taken == k:
+                break
+
+    return total
+
+def main():
+    data = list(map(int, sys.stdin.buffer.read().split()))
+    t = data[0]
+    p = 1
+    out_lines = []
+    for _ in range(t):
+        n = data[p]; p += 1
+        k = data[p]; p += 1
+
+        X = [0]*n
+        Y = [0]*n
+        Z = [0]*n
+        for i in range(n):
+            X[i] = data[p]; Y[i] = data[p+1]; Z[i] = data[p+2]
+            p += 3
+
+        ans = solve_case(n, k, X, Y, Z)
+        out_lines.append(str(ans))
+
+    print("\n".join(out_lines))
+
+if __name__ == "__main__":
+    main()
+```

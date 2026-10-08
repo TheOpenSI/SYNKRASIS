@@ -1,0 +1,76 @@
+### Step-by-step reasoning
+- We seek positive integers x > y > 0 such that x^3 - y^3 = N.
+- Use difference of cubes: x^3 - y^3 = (x - y)(x^2 + xy + y^2) = N.
+- Let a = x - y (> 0) and b = x^2 + xy + y^2. Then N = a * b.
+- Since x = y + a, substitute into b:
+  b = (y + a)^2 + y(y + a) + y^2 = 3y^2 + 3ay + a^2.
+- For fixed a and b, y must satisfy the quadratic:
+  3y^2 + 3ay + (a^2 - b) = 0.
+- The discriminant is Δ = (3a)^2 - 4*3*(a^2 - b) = -3a^2 + 12b.
+- A valid integer y exists iff:
+  - Δ >= 0 and is a perfect square (Δ = s^2),
+  - y = (-3a + s) / 6 is a positive integer, i.e., (s - 3a) is a multiple of 6 and y > 0.
+- Since b > a^2 (because y > 0 implies 3y^2 + 3ay > 0), N = a*b > a^3, so a^3 < N and thus a <= floor(cuberoot(N)).
+- Thus it suffices to try all a in [1, floor(cuberoot(N))], and for each a that divides N, set b = N / a and check the discriminant condition to recover y, then x = y + a.
+- If no such pair exists, answer is -1.
+
+Time complexity: O(cuberoot(N)) iterations, which is at most about 10^6 for N ≤ 10^18. Each step uses constant-time arithmetic and an integer square root check.
+
+### Requirements
+None
+
+### Code
+```
+import sys
+import math
+
+def icbrt(n: int) -> int:
+    # Robust integer cube root: largest integer a with a^3 <= n
+    lo, hi = 0, 10**6 + 2  # since cbrt(1e18) = 1e6
+    res = 0
+    while lo <= hi:
+        mid = (lo + hi) // 2
+        m3 = mid * mid * mid
+        if m3 <= n:
+            res = mid
+            lo = mid + 1
+        else:
+            hi = mid - 1
+    return res
+
+def main():
+    data = sys.stdin.buffer.read().strip().split()
+    if not data:
+        return
+    N = int(data[0])
+
+    max_a = icbrt(N)
+    for a in range(1, max_a + 1):
+        if N % a != 0:
+            continue
+        b = N // a
+
+        Δ = 12 * b - 3 * a * a
+        if Δ < 0:
+            continue
+
+        s = math.isqrt(Δ)
+        if s * s != Δ:
+            continue
+
+        if (s - 3 * a) % 6 != 0:
+            continue
+
+        y = (s - 3 * a) // 6
+        if y <= 0:
+            continue
+
+        x = y + a
+        print(x, y)
+        return
+
+    print(-1)
+
+if __name__ == "__main__":
+    main()
+```

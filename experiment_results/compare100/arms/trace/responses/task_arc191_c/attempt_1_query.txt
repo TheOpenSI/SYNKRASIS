@@ -1,0 +1,50 @@
+Your generated code failed a test case.
+Please update the function logic so all test cases will pass. Error message added for your reference - 
+AssertionError: wrong answer on test case 1. Input: '4\n3\n16\n1\n55', expected output: '2 7\n11 68\n20250126 1\n33 662', your output: '2 7\n2 257\n2 1\n2 881\n'
+
+Execution trace of your code on public test case 1. How to read it: only the lines that ran are listed, with the values after `#`. `x=1,2,3` are the values of x on successive executions of that line, `a..b` a run of consecutive numbers, `T/F` the outcome of a condition on each execution, `F×3` three equal values, `(iters 2,4)` the loop iterations the line ran in, `...` omitted middle values. Nested lines belong to the line above.
+main()
+  data = sys.stdin.read().strip().split()  # data=['4', '3', '16', '1', '55']
+  if not data:  # False (data=['4', '3', '16', '1', '55'])
+  t = int(data[0])  # t=4
+  for _ in range(t):  # 4 iterations; _=0..3
+    N = int(data[idx])  # N=3,16,1,55
+    idx += 1  # idx=2..5
+    if N == 1:  # F,F,T,F
+      out_lines.append('2 1')  # out_lines += '2 1'  (iters 3)
+    factors = factorize(N)  # factors=[(3, 1)],[(2, 4)],[(5, 1), (11, 1)]  (not in iters 3)
+      factorize(n=3):  [first of 3 calls]
+        tmp = n  # tmp=3
+        while d * d <= tmp:  # 0 iterations
+        if tmp > 1:  # True (tmp=3)
+          factors.append((tmp, 1))  # factors += (3, 1)
+        return factors  # returns [(3, 1)]
+    if N == 6:  # F×3  (not in iters 3)
+    else:
+    max_p_limit = 10 ** 18  # max_p_limit=1000000000000000000×3  (not in iters 3)
+    for A_base in bases:  # 3 runs, iterations per run: 1×3; ended by break  (not in iters 3)
+      for k in range(1, LIMIT_K + 1):  # 3 runs, iterations per run: 2,16,16; k=1,2,1,2 ... 15,16 (34 values); ended by break
+        p = k * N + 1  # p=4,7,17,33 ... 826,881 (34 values)
+        if p > max_p_limit:  # F×34 (max_p_limit=1000000000000000000)
+        if not is_prime(p):  # T,F,F,T×3 ... T,T,F (34 times: T 24, F 10); is_prime returns False,True,True,False ... False,True (34 values)
+          is_prime(n=4):  [first of 34 calls]
+            if n < 2:  # False
+            for p in small_primes:  # 1 iteration; p=2; ended by return
+              if n % p == 0:  # True (p=2)
+                return n == p  # returns False
+            returned False
+        if pow(A_base, N, p) != 1:  # F,F,T×4,F,T,T,F (A_base=2)  (10 of 34 iters)
+        for q, e in factors:  # 4 runs, iterations per run: 1×3,2; q=3,2,2,5,11; e=1,4,4,1,1; ended by break  (iters 2,3,18,34)
+          tval = N  # tval=3,16,16,55,55
+          for _ in range(e):  # 5 runs, iterations per run: 1,1,4,1,1; _=0×3,1 ... 0,0 (8 values); ended by break
+            tval //= q  # tval=1,8,8,4 ... 11,5 (8 values)
+            if pow(A_base, tval, p) == 1:  # F,T,F×6 (A_base=2)
+          if not ok:  # F,T,F×3
+        if ok:  # T,F,T,T  (iters 2,3,18,34)
+          A_out = A_base % p  # A_out=2×3  (iters 2,18,34)
+          if A_out == 0:  # F×3 (A_out=2)  (iters 2,18,34)
+          out_lines.append(f'{A_out} {p}')  # out_lines += '2 7','2 257','2 881'  (iters 2,18,34)
+      if found:  # T×3 (found=True)
+    if not found:  # F×3 (found=True)  (not in iters 3)
+printed '2 7\n2 257\n2 1\n2 881'   (expected '2 7\n11 68\n20250126 1\n33 662')
+Find the first point where the behaviour differs from what the problem requires and fix that logic.

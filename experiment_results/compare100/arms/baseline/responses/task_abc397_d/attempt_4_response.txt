@@ -1,0 +1,83 @@
+### Step-by-step reasoning
+- We want positive integers x > y > 0 such that x^3 - y^3 = N.
+- Factor: x^3 - y^3 = (x - y)(x^2 + xy + y^2). Let a = x - y (> 0) and b = x^2 + xy + y^2. Then N = a * b.
+- Also x = y + a, so
+  b = (y + a)^2 + y(y + a) + y^2 = 3y^2 + 3ay + a^2.
+- This yields a quadratic in y: 3y^2 + 3ay + (a^2 - b) = 0.
+- Discriminant: Δ = (3a)^2 - 4*3*(a^2 - b) = -3a^2 + 12b.
+- For integer y to exist, Δ must be a non-negative perfect square Δ = s^2, and
+  y = (-3a + s) / 6. Since y > 0, we require s > 3a and (s - 3a) divisible by 6.
+- Observations:
+  - a must divide N (since N = a * b).
+  - b > a^2 (because y ≥ 1), so N = a*b > a^3, hence a^3 < N, i.e., a < cbrt(N).
+  - Therefore it suffices to try a from 1 up to floor(cuberoot(N)).
+- Algorithm:
+  1) Compute max_a = floor cube root of N.
+  2) For a = 1..max_a:
+     - If N % a != 0, continue.
+     - b = N / a.
+     - Δ = -3*a*a + 12*b. If Δ < 0, continue.
+     - s = isqrt(Δ). If s*s != Δ, continue.
+     - If (s - 3*a) % 6 != 0, continue.
+     - y = (s - 3*a) // 6. If y <= 0, continue.
+     - x = y + a. Output x and y.
+  3) If no pair found, print -1.
+- Time complexity: O(cuberoot(N)). For N ≤ 10^18, max_a ≤ 10^6, which is efficient in Python.
+
+### Requirements
+None
+
+### Code
+```
+import sys
+import math
+
+def icbrt(n: int) -> int:
+    # Robust integer cube root: largest integer a with a^3 <= n
+    lo, hi = 0, 10**6 + 2  # since cbrt(1e18) = 1e6
+    res = 0
+    while lo <= hi:
+        mid = (lo + hi) // 2
+        if mid * mid * mid <= n:
+            res = mid
+            lo = mid + 1
+        else:
+            hi = mid - 1
+    return res
+
+def main():
+    data = sys.stdin.read().strip().split()
+    if not data:
+        return
+    N = int(data[0])
+
+    max_a = icbrt(N)
+    for a in range(1, max_a + 1):
+        if N % a != 0:
+            continue
+        b = N // a
+
+        Δ = -3 * a * a + 12 * b
+        if Δ < 0:
+            continue
+
+        s = math.isqrt(Δ)
+        if s * s != Δ:
+            continue
+
+        if (s - 3 * a) % 6 != 0:
+            continue
+
+        y = (s - 3 * a) // 6
+        if y <= 0:
+            continue
+
+        x = y + a
+        print(x, y)
+        return
+
+    print(-1)
+
+if __name__ == "__main__":
+    main()
+```

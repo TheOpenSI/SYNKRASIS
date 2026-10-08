@@ -1,0 +1,147 @@
+### Step-by-step reasoning
+- The algorithm uses a suffix DP to compute the minimum cost to convert the caption into a good caption, with states f[i][L][r] representing the minimal cost for the suffix starting at i given that caption[i] is letter L and the current run length ending at i is r (r ∈ {1,2,3}).
+- Transitions:
+  - Extend the current run by keeping the same letter: next_r = min(3, r+1), cost accumulates with abs(cap[i] - L).
+  - If the current run length r ≥ 3, switch to a different letter M ≠ L: next state is (M, 1) for i+1, cost accumulates with abs(cap[i+1] - M).
+- The base case is at the last position: the final run must have length at least 3, so f[n-1][L][3] = abs(cap[n-1] - L) and f[n-1][L][1], f[n-1][L][2] are effectively invalid (INF).
+- The bug: After finishing the DP loop, the code attempted to read the starting state costs from f_curr. However, f_curr was reset at the end of the last loop iteration, so f_curr no longer contains the i=0 results. The i=0 results are actually stored in f_next (which was the DP state for i=0 after the last iteration). This caused the function to think no valid path existed and return "" for cases like "cdcd".
+- Fix: After the DP loop, use f_next to determine the starting letter with the minimal f_next[L][1], and then reconstruct the answer using the stored transitions. Do not read from the/reset f_curr after the loop.
+
+### Requirements
+None
+
+### Code
+```
+class Solution:
+    def minCostGoodCaption(self, caption: str) -> str:
+        n = len(caption)
+        if n < 3:
+            return ""
+
+        cap = [ord(ch) - ord('a') for ch in caption]
+        INF = 10**9
+
+        # transitions[i][L][r] stored in a flat bytearray
+        # 0 means "extend with same letter", otherwise (switch_letter + 1) is the next letter to switch to
+        transitions = bytearray(n * 26 * 3)
+
+        def idx(i: int, L: int, r: int) -> int:
+            return (i * 26 + L) * 3 + (r - 1)
+
+        # DP arrays: f_next corresponds to i+1, f_curr corresponds to i
+        f_next = [[INF] * 4 for _ in range(26)]
+        f_curr = [[INF] * 4 for _ in range(26)]
+
+        last = n - 1
+        for L in range(26):
+            f_curr[L][3] = abs(cap[last] - L)
+            f_curr[L][1] = INF
+            f_curr[L][2] = INF
+        f_next = [row[:] for row in f_curr]
+
+        # Fill DP from i = n-2 down to 0
+        for i in range(n - 2, -1, -1):
+            # For transitions that involve switching, precompute the two best (value, letter) for f_next[.][1]
+            pairs = [(f_next[M][1], M) for M in range(26)]
+            pairs.sort()
+            best1_val, best1_letter = pairs[0]
+            best2_val, best2_letter = (INF, -1)
+            for v, l in pairs[1:]:
+                if l != best1_letter:
+                    best2_val, best2_letter = (v, l)
+                    break
+
+            # Compute f_curr for all (L, r)
+            for L in range(26):
+                for r in (1, 2, 3):
+                    cost_here = abs(cap[i] - L)
+
+                    # option_same: extend with same letter
+                    next_r = r + 1
+                    if next_r > 3:
+                        next_r = 3
+                    option_same = f_next[L][next_r]
+
+                    # option_switch: switch to a different letter if current run has length >= 3
+                    option_switch = INF
+                    switch_letter = -1
+                    if r >= 3:
+                        if best1_letter != L:
+                            option_switch = best1_val
+                            switch_letter = best1_letter
+                        else:
+                            if best2_letter != -1:
+                                option_switch = best2_val
+                                switch_letter = best2_letter
+
+                    min_cost = option_same if option_same < option_switch else option_switch
+                    if min_cost >= INF:
+                        f_curr[L][r] = INF
+                    else:
+                        f_curr[L][r] = cost_here + min_cost
+
+                    # store transition for reconstruction
+                    t_idx = idx(i, L, r)
+                    if min_cost >= INF:
+                        transitions[t_idx] = 0
+                    else:
+                        cost_same = option_same
+                        cost_switch = option_switch
+                        chosen = 0  # default: extend
+                        if cost_same < cost_switch:
+                            chosen = 0
+                        elif cost_switch < cost_same:
+                            chosen = (switch_letter + 1) if switch_letter != -1 else 0
+                        else:
+                            # tie-breaking: choose lexicographically smaller continuation
+                            if switch_letter == -1:
+                                chosen = 0
+                            else:
+                                if L <= switch_letter:
+                                    chosen = 0
+                                else:
+                                    chosen = (switch_letter + 1)
+                        transitions[t_idx] = chosen
+
+            # Move to next i
+            f_next = [row[:] for row in f_curr]
+            # Reset f_curr for next iteration
+            for L in range(26):
+                f_curr[L][1] = INF
+                f_curr[L][2] = INF
+                f_curr[L][3] = INF
+
+        # After the loop, f_next contains the i=0 results
+        min_cost = INF
+        start_L = -1
+        for L in range(26):
+            val = f_next[L][1]
+            if val < min_cost:
+                min_cost = val
+                start_L = L
+
+        if min_cost >= INF or start_L == -1:
+            return ""
+
+        # Reconstruct the final string
+        res = [''] * n
+        res[0] = chr(start_L + ord('a'))
+        cur_L = start_L
+        cur_r = 1
+
+        for i in range(n - 1):
+            t_idx = idx(i, cur_L, cur_r)
+            tval = transitions[t_idx]
+            if tval == 0:
+                next_L = cur_L
+                next_r = cur_r + 1
+                if next_r > 3:
+                    next_r = 3
+            else:
+                next_L = tval - 1
+                next_r = 1
+            res[i + 1] = chr(next_L + ord('a'))
+            cur_L, cur_r = next_L, next_r
+
+        return "".join(res)
+```

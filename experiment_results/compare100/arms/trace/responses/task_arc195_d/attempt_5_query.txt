@@ -1,0 +1,70 @@
+Your generated code failed a test case.
+Please update the function logic so all test cases will pass. Error message added for your reference - 
+AssertionError: wrong answer on test case 1. Input: '3\n5\n1 1 2 1 2\n4\n4 2 1 3\n11\n1 2 1 2 1 2 1 2 1 2 1', expected output: '3\n4\n8', your output: '3\n4\n7\n'
+
+Execution trace of your code on public test case 1. How to read it: only the lines that ran are listed, with the values after `#`. `x=1,2,3` are the values of x on successive executions of that line, `a..b` a run of consecutive numbers, `T/F` the outcome of a condition on each execution, `F×3` three equal values, `(iters 2,4)` the loop iterations the line ran in, `...` omitted middle values. Nested lines belong to the line above.
+main()
+  data = sys.stdin.read().strip().split()  # data=['3', '5', '1', '1', '2', '1', '2', '...
+  t = int(data[0])  # t=3
+  for _ in range(t):  # 3 iterations; _=0,1,2
+    n = int(data[idx])  # n=5,4,11
+    idx += 1  # idx=2,8,13
+    A = list(map(int, data[idx:idx + n]))  # A=[1, 1, 2, 1, 2],[4, 2, 1, 3],[1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1]
+    idx += n  # idx=7,12,24
+    ans = min_operations_for_case(A)  # ans=3,4,7
+      min_operations_for_case(A=[1, 1, 2, 1, 2]):  [first of 3 calls]
+        colors, lengths = to_runs(A)  # colors=[1, 2, 1, 2]; lengths=[2, 1, 1, 1]
+          to_runs(A=[1, 1, 2, 1, 2]):
+            if not A:  # False
+            cur = A[0]  # cur=1
+            for x in A[1:]:  # 4 iterations; x=1,2,1,2
+              if x == cur:  # T,F×3
+                cnt += 1  # cnt=2  (iters 1)
+              else:
+                colors.append(cur)  # colors += 1,2,1  (not in iters 1)
+                lengths.append(cnt)  # lengths += 2,1,1  (not in iters 1)
+                cur = x  # cur=2,1,2  (not in iters 1)
+            colors.append(cur)  # colors += 2
+            lengths.append(cnt)  # lengths += 1
+            return (colors, lengths)  # returns ([1, 2, 1, 2], [2, 1, 1, 1])
+        if not colors:  # False (colors=[1, 2, 1, 2])
+        M = len(colors)  # M=4
+        for i in range(0, M - 2):  # 2 iterations; i=0,1
+          cand = compute_candidate(i, colors, lengths)  # cand=([2, 1, 2], [1, 3, 1], 1),([1, 2], [3, 2], 2)
+            compute_candidate(i=0, cols=[1, 2, 1, 2], lens=[2, 1, 1, 1]):  [first of 2 calls]
+              if not is_candidate(i, cols, lens):  # False
+              res = apply_swap(cols, lens, i)  # res=([2, 1, 2], [1, 3, 1])
+              if res is None:  # False (res=([2, 1, 2], [1, 3, 1]))
+              new_cols, new_lens = res  # new_cols=[2, 1, 2]; new_lens=[1, 3, 1]
+              delta = len(cols) - len(new_cols)  # delta=1
+              return (new_cols, new_lens, delta)  # returns ([2, 1, 2], [1, 3, 1], 1)
+          if cand is not None:  # T,T
+            _, _, delta = cand  # _=[1, 3, 1],[3, 2]; delta=1,2
+            heapq.heappush(heap, (-delta, i, current_version))  # heap=[(-1, 0, 0)],[(-2, 1, 0), (-1, 0, 0)]
+        while heap:  # 2 iterations; heap=[(-2, 1, 0), (-1, 0, 0)],[(-1, 0, 0)]
+          neg_delta, i, ver = heapq.heappop(heap)  # heap: popleft (-2, 1, 0),pop (-1, 0, 0); neg_delta=-2,-1; ver=0,0; i=1,0
+          if ver != current_version:  # F,T (ver=0)
+          cand = compute_candidate(i, colors, lengths)  (iters 1)
+            compute_candidate(i=1, cols=[1, 2, 1, 2], lens=[2, 1, 1, 1]):
+              if not is_candidate(i, cols, lens):  # False
+              res = apply_swap(cols, lens, i)  # res=([1, 2], [3, 2])
+              if res is None:  # False (res=([1, 2], [3, 2]))
+              new_cols, new_lens = res  # new_cols=[1, 2]; new_lens=[3, 2]
+              delta = len(cols) - len(new_cols)  # delta=2
+              return (new_cols, new_lens, delta)  # returns ([1, 2], [3, 2], 2)
+          if cand is None:  # False (cand=([1, 2], [3, 2], 2))  (iters 1)
+          new_cols, new_lens, delta_now = cand  # new_cols=[1, 2]; new_lens=[3, 2]; delta_now=2  (iters 1)
+          if -neg_delta != delta_now:  # False (delta_now=2, neg_delta=-2)  (iters 1)
+          colors = new_cols  # colors: pop 1, 2  (iters 1)
+          lengths = new_lens  # lengths=[3, 2]  (iters 1)
+          ops_swaps += 1  # ops_swaps=1  (iters 1)
+          current_version += 1  # current_version=1  (iters 1)
+          M = len(colors)  # M=2  (iters 1)
+          start = max(0, i - 2)  # start=0  (iters 1)
+          end = min(M - 3, i + 3)  # end=-1  (iters 1)
+          for j in range(start, end + 1):  # 0 iterations  (iters 1)
+        final_runs = len(colors)  # final_runs=2
+        return ops_swaps + final_runs  # returns 3
+    out_lines.append(str(ans))  # out_lines += '3','4','7'
+printed '3\n4\n7'   (expected '3\n4\n8')
+Find the first point where the behaviour differs from what the problem requires and fix that logic.

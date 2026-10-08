@@ -1,0 +1,30 @@
+Your generated code failed a test case.
+Please update the function logic so all test cases will pass. Error message added for your reference - 
+AssertionError: wrong answer on test case 1. Input: '3\n3 3\nAAB\nAAB\nBBB\n3 3\nBBA\nABA\nAAB\n3 4\nBAAB\nBABA\nBBAA', expected output: '2\n0\n2', your output: '64\n0\n128\n'
+
+Execution trace of your code on public test case 1. How to read it: only the lines that ran are listed, with the values after `#`. `x=1,2,3` are the values of x on successive executions of that line, `a..b` a run of consecutive numbers, `T/F` the outcome of a condition on each execution, `F×3` three equal values, `(iters 2,4)` the loop iterations the line ran in, `...` omitted middle values. Nested lines belong to the line above.
+main()
+  data = sys.stdin.buffer.read().split()  # data=[b'3', b'3', b'3', b'AAB', b'AAB', b'...
+  t = int(data[0])  # t=3
+  for _ in range(t):  # 3 iterations; _=0,1,2
+    H = int(data[idx])  # H=3×3
+    W = int(data[idx + 1])  # W=3,3,4
+    idx += 2  # idx=3,8,13
+    col_parity = [0] * W  # col_parity=[0, 0, 0],[0, 0, 0],[0, 0, 0, 0]
+    for i in range(H):  # 3 runs, iterations per run: 3×3; i=0,1,2,0 ... 1,2 (9 values)
+      s = data[idx].decode()  # s='AAB','AAB','BBB','BBA' ... 'BABA','BBAA' (9 values)
+      idx += 1  # idx=4,5,6,9 ... 15,16 (9 values)
+      if ok:  # T×4,F,F,T×3
+        cntA = s.count('A')  # cntA=2,2,0,1 ... 2,2 (7 values)  (not in iters 5,6)
+        if cntA & 1 != 0:  # F×3,T,F×3  (not in iters 5,6)
+        for j, ch in enumerate(s):  # 7 runs, iterations per run: 3×4 ... 4,4 (7 values); j=0,1,2,0 ... 2,3 (24 values); ch='A','A','B','A' ... 'A','A' (24 values)  (not in iters 5,6)
+          if ch == 'A':  # T,T,F,T,T,F ... F,T,T (24 times: T 11, F 13)
+            col_parity[j] ^= 1  # col_parity[0,1,0,1 ... 2,3 (11 values)]=1,1,0,0 ... 0,0 (11 values)  (11 of 24 iters)
+      else:
+    if not ok:  # F,T,F
+      out_lines.append('0')  # out_lines += '0'  (iters 2)
+    if any((col_parity[j] != 0 for j in range(W))):  # F,F  (not in iters 2)
+    ans = pow(2, H + W, MOD)  # ans=64,128  (not in iters 2)
+    out_lines.append(str(ans))  # out_lines += '64','128'  (not in iters 2)
+printed '64\n0\n128'   (expected '2\n0\n2')
+Find the first point where the behaviour differs from what the problem requires and fix that logic.

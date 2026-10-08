@@ -1,0 +1,92 @@
+### Step-by-step reasoning
+- Treat each bit of the A_i variables independently is a standard approach, but we can do better by solving for the entire numbers at once.
+- Let Z_e be the constraint on edge e = (u, v): A_u XOR A_v = Z_e.
+- For any connected component, pick a root r and define P_i as the XOR-sum of Z values along a path from r to i (with P_r = 0). If the system is consistent (i.e., every cycle yields XOR 0), then for every vertex i in that component, A_i must be equal to P_i XOR t, where t is a fixed integer chosen for that component (the root value A_r).
+- Consistency check: While traversing the component (e.g., BFS), whenever we see an edge (u, v, Z_e), we must have P_u XOR P_v = Z_e. If any edge contradicts this, no solution exists.
+- Minimizing the total sum: For each component c and for every bit k, choosing the k-th bit of t either 0 or 1 affects the k-th bits of all A_i in that component in a uniform way: A_i_k = P_i_k XOR t_k. Hence, for bit k, we should pick t_k = 0 if the number of P_i with bit k = 1 in this component (call it cnt1) is not greater than the number of P_i with bit k = 0 (i.e., size - cnt1); otherwise pick t_k = 1. This minimizes the total count of 1s in bit k across the component, thus minimizing the sum contribution from that bit.
+- Implementation plan:
+  - Build the graph with edges carrying Z_e.
+  - BFS/DFS to compute P_i for all vertices and assign component IDs; check consistency on every edge.
+  - If inconsistent anywhere, print -1.
+  - Let C be the number of components and size[c] be the size of component c. Let P[i] be the value for vertex i with root value 0 for its component.
+  - For each bit k up to max bit in Z (maxZ.bit_length()), count cnt1[c] = number of vertices i in component c with bit k of P[i] equal to 1.
+  - Build T[c] as the bitmask of chosen bits t_k for component c: set bit k in T[c] if cnt1[c] > size[c] - cnt1[c].
+  - Finally, A[i] = P[i] XOR T[comp_id[i]] for all i, and output A.
+- This approach processes each edge once for consistency and then iterates over bits for counting, giving O(N + M + B*N) time, where B <= 30 for Z <= 1e9, and O(N + M) memory.
+
+### Requirements
+None
+
+### Code
+```
+import sys
+from collections import deque
+
+def solve():
+    data = list(map(int, sys.stdin.buffer.read().split()))
+    if not data:
+        return
+    it = iter(data)
+    N = next(it)
+    M = next(it)
+
+    adj = [[] for _ in range(N)]
+    maxZ = 0
+    for _ in range(M):
+        a = next(it) - 1
+        b = next(it) - 1
+        w = next(it)
+        adj[a].append((b, w))
+        adj[b].append((a, w))
+        if w > maxZ:
+            maxZ = w
+
+    # Compute P[i] (XOR from component root to i) and component IDs, with consistency check
+    comp_id = [-1] * N
+    P = [0] * N
+    comp_sizes = []
+    C = 0
+    for i in range(N):
+        if comp_id[i] != -1:
+            continue
+        dq = deque([i])
+        comp_id[i] = C
+        P[i] = 0
+        size = 0
+        while dq:
+            u = dq.popleft()
+            size += 1
+            for v, w in adj[u]:
+                if comp_id[v] == -1:
+                    comp_id[v] = C
+                    P[v] = P[u] ^ w
+                    dq.append(v)
+                else:
+                    if (P[u] ^ P[v]) != w:
+                        print(-1)
+                        return
+        comp_sizes.append(size)
+        C += 1
+
+    # Build per-component bitmask T[c] to minimize the sum
+    B = maxZ.bit_length()  # number of bits to consider
+    T = [0] * C
+    for k in range(B):
+        cnt1 = [0] * C
+        for i in range(N):
+            if (P[i] >> k) & 1:
+                cnt1[comp_id[i]] += 1
+        for c in range(C):
+            if cnt1[c] > comp_sizes[c] - cnt1[c]:
+                T[c] |= (1 << k)
+
+    # Compute final A[i] = P[i] XOR T[comp_id[i]]
+    A = [0] * N
+    for i in range(N):
+        A[i] = P[i] ^ T[comp_id[i]]
+
+    print(' '.join(map(str, A)))
+
+if __name__ == "__main__":
+    solve()
+```

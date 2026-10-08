@@ -1,0 +1,68 @@
+### Step-by-step reasoning
+- Each tile Type A must have endpoints on two adjacent edges; Type B must have endpoints on two opposite edges.
+- Let p(i,j) = 1 if S[i][j] = 'A', else 0 (for 'B').
+- For every cell, the edge endpoints satisfy:
+  - Up XOR Down = p(i,j)
+  - Left XOR Right = p(i,j)
+  Where Up/Down are the endpoints on the top/bottom edges of (i,j) and Left/Right on the left/right edges.
+- The boundary endpoints are shared between neighboring tiles, so we must have consistency along torus:
+  - Down(i-1,j) XOR Down(i,j) = p(i,j) for all i,j
+  - Right(i,j-1) XOR Right(i,j) = p(i,j) for all i,j
+- For each column j, the vertical equations form a cycle of length H; a solution exists iff XOR over i p(i,j) = 0.
+- For each row i, the horizontal equations form a cycle of length W; a solution exists iff XOR over j p(i,j) = 0.
+- If any column has an odd number of A's (col parity 1) or any row has an odd number of A's (row parity 1), there is no valid placement: answer = 0.
+- If all row and all column parities are 0, there are exactly two global configurations that satisfy all constraints on the torus: answer = 2.
+
+This matches the sample:
+- First case: all row parities and all column parities are even -> 2
+- Second case: some row/column parity is odd -> 0
+- Third case: all row parities and all column parities are even -> 2
+
+Time complexity: We process each character once; total across all tests is O(sum(H*W)) ≤ 10^6.
+
+### Requirements
+None
+
+### Code
+```
+import sys
+
+def main():
+    data = sys.stdin.buffer.read().split()
+    t = int(data[0])
+    idx = 1
+    MOD = 998244353
+    out_lines = []
+    for _ in range(t):
+        H = int(data[idx]); W = int(data[idx+1]); idx += 2
+
+        col_parity = [0] * W
+        row_ok = True  # indicates all previous rows have even A count so far
+
+        for i in range(H):
+            s = data[idx].decode(); idx += 1
+            if row_ok:
+                row_par = 0
+                # update row parity and column parities
+                # row_par toggles for every 'A' in the row
+                for j, ch in enumerate(s):
+                    if ch == 'A':
+                        row_par ^= 1
+                        col_parity[j] ^= 1
+                if row_par == 1:
+                    row_ok = False
+            # if row_ok is already False, we only consume input; no further work needed
+
+        if not row_ok:
+            out_lines.append("0")
+            continue
+        if any(col_parity[j] != 0 for j in range(W)):
+            out_lines.append("0")
+            continue
+        out_lines.append("2")
+
+    print("\n".join(out_lines))
+
+if __name__ == "__main__":
+    main()
+```

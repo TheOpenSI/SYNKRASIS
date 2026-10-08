@@ -1,0 +1,64 @@
+### Step-by-step reasoning
+- The operation lets us swap adjacent elements P_i and P_{i+1} at cost i. To minimize total cost to sort the permutation, we should always perform swaps that have the smallest possible boundary index i when we need to perform a swap.
+- A natural greedy approach is: repeatedly perform the leftmost (smallest i) inversion swap, i.e., whenever P[i] > P[i+1], swap those two, and continue until the array is sorted. Intuitively, swapping at smaller indices as soon as an inversion exists cannot worsen future costs and tends to keep costs low because higher-index swaps are more expensive.
+- To implement efficiently, we can maintain a priority queue (min-heap) of all current inversions, where an inversion is a boundary i such that P[i] > P[i+1]. We always pop the smallest i, perform the swap, add its cost (i+1 if 0-based index), and then update only the neighboring boundaries (i-1 and i) because only those boundaries can change their inversion status due to the swap.
+- This yields a correct minimal-cost sequence under the described greedy rule. While in the worst case the number of swaps can be large (up to O(N^2) for some permutations), this approach directly encodes the left-to-right minimal boundary strategy and works efficiently for practical inputs and constraints typically used in such problems.
+
+Notes:
+- The approach is implemented as a stand-alone script. It reads N and the permutation P from standard input and prints the minimum total cost.
+- If you require a specific library or environment, you can add them under a “### Requirements” section (none are needed here).
+
+### Requirements
+None
+
+### Code
+```
+import sys
+import heapq
+
+def main():
+    input = sys.stdin.readline
+    N = int(input().strip())
+    P = list(map(int, input().split()))
+    
+    # Use a min-heap to store indices i (0-based) where P[i] > P[i+1]
+    heap = []
+    ineq = [False] * (N - 1)  # whether boundary i currently has an inversion
+    
+    for i in range(N - 1):
+        if P[i] > P[i + 1]:
+            heapq.heappush(heap, i)
+            ineq[i] = True
+
+    total_cost = 0
+
+    while heap:
+        i = heapq.heappop(heap)
+        if i < 0 or i >= N - 1:
+            continue
+        if not ineq[i]:
+            continue
+        # Validate again in case it changed before we processed this entry
+        if P[i] <= P[i + 1]:
+            ineq[i] = False
+            continue
+
+        # Swap P[i] and P[i+1], cost is i+1 (1-based index)
+        P[i], P[i + 1] = P[i + 1], P[i]
+        total_cost += (i + 1)
+
+        # After swap, boundaries i-1 and i may have new inversions
+        for k in (i - 1, i):
+            if 0 <= k < N - 1:
+                if P[k] > P[k + 1]:
+                    if not ineq[k]:
+                        heapq.heappush(heap, k)
+                        ineq[k] = True
+                else:
+                    ineq[k] = False  # not an inversion anymore
+
+    print(total_cost)
+
+if __name__ == "__main__":
+    main()
+```

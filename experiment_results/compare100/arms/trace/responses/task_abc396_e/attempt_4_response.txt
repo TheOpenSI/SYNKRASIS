@@ -1,0 +1,94 @@
+### Step-by-step reasoning
+- Model the problem as a graph with N nodes. Each constraint A_{X_i} XOR A_{Y_i} = Z_i corresponds to an undirected edge between X_i and Y_i labeled with Z_i.
+- In a connected component, once you fix the value of one node (the root), all other A_v are determined by XORing along a path from the root: A_v = dist[v] XOR R, where dist[v] is the XOR-sum of edge labels along any path from the root to v, and R = A_root is a free non-negative integer that can be chosen per component.
+- Consistency check: For every edge (u, v, z), dist[u] XOR dist[v] must equal z. If any edge violates this, there is no valid A, answer is -1.
+- Minimizing the sum across the component: For each bit k, A_v has bit k equal to dist[v]_k XOR R_k. If there are ones_k vertices with dist[v]_k = 1, then:
+  - If R_k = 0, there are ones_k ones among A_v at bit k.
+  - If R_k = 1, there are comp_size - ones_k ones among A_v at bit k.
+  To minimize the total sum, choose R_k = 0 if ones_k <= comp_size - ones_k, else R_k = 1. Bits are independent, so this yields the minimal sum for that component.
+- Do this independently for every connected component. Isolated nodes (no edges) are their own components and will pick A_i = 0.
+- Complexity: O(N + M) to traverse and validate, plus O(number_of_bits * N) to decide bitwise roots (number_of_bits is at most 30 since Z_i <= 10^9). This fits the constraints.
+- Practical details:
+  - Use an iterative DFS (not recursion) to avoid recursion depth issues.
+  - Only consider bits up to max bit present in any Z_i; higher bits would only increase the sum, so they are set to 0 in the optimal solution.
+  - Self-loops with nonzero Z imply inconsistency and yield -1.
+
+### Requirements
+None
+
+### Code
+```
+import sys
+
+def main():
+    data = list(map(int, sys.stdin.buffer.read().split()))
+    if not data:
+        print()
+        return
+
+    it = iter(data)
+    N = next(it)
+    M = next(it)
+
+    adj = [[] for _ in range(N)]
+    maxZ = 0
+    for _ in range(M):
+        x = next(it) - 1
+        y = next(it) - 1
+        z = next(it)
+        adj[x].append((y, z))
+        adj[y].append((x, z))
+        if z > maxZ:
+            maxZ = z
+
+    dist = [0] * N
+    vis = [False] * N
+    A = [0] * N
+
+    maxbit = maxZ.bit_length()
+
+    for i in range(N):
+        if vis[i]:
+            continue
+
+        # Iterative DFS to collect a component and compute dist[]
+        stack = [i]
+        vis[i] = True
+        dist[i] = 0
+        comp_nodes = []
+        while stack:
+            u = stack.pop()
+            comp_nodes.append(u)
+            for v, z in adj[u]:
+                if not vis[v]:
+                    dist[v] = dist[u] ^ z
+                    vis[v] = True
+                    stack.append(v)
+                else:
+                    if (dist[u] ^ dist[v]) != z:
+                        print(-1)
+                        return
+
+        comp_size = len(comp_nodes)
+        root = 0
+
+        # Determine per-bit root to minimize the sum for this component
+        if maxbit > 0:
+            counts = [0] * maxbit  # counts[k] = number of vertices with dist[v]_k = 1
+            for v in comp_nodes:
+                dv = dist[v]
+                for k in range(maxbit):
+                    counts[k] += (dv >> k) & 1
+            for k in range(maxbit):
+                if counts[k] > comp_size - counts[k]:
+                    root |= (1 << k)
+
+        # Assign final A for nodes in this component
+        for v in comp_nodes:
+            A[v] = dist[v] ^ root
+
+    print(' '.join(map(str, A)))
+
+if __name__ == "__main__":
+    main()
+```

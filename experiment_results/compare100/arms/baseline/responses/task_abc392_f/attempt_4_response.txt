@@ -1,0 +1,64 @@
+### Step-by-step reasoning
+- Problem understanding: We start with an empty array A. For i from 1 to N, we insert the number i so that it becomes the Pi-th element from the beginning of the current array. After all insertions, output A.
+- Naive approach would be O(N^2) with list inserts, which is too slow for N up to 5e5.
+- Efficient standard approach: process i from N down to 1 and place i into the Pi-th empty slot of a fixed-size array of length N. This simulates the forward-insertion behavior.
+- Data structure: use a Fenwick Tree (Binary Indexed Tree) to maintain which slots are still empty. Initially all slots are empty, so the tree stores ones. At each step (processing i from N to 1), we find the k-th empty slot (k = Pi) and place i there, then mark that slot as filled by updating the tree.
+- Correctness intuition: In reverse, choosing the Pi-th empty slot mirrors inserting i at position Pi in the evolving array. Each placement reduces the number of empty slots by one, preserving correctness for subsequent steps.
+- Complexity: Each step does a O(log N) kth-element search plus an O(log N) update, giving O(N log N) total time and O(N) space.
+- Edge cases: N = 1, P1 = 1, or other valid Pi in [1..i], are all handled by the same logic.
+- Output format: print A[1], A[2], ..., A[N] separated by spaces, followed by a newline.
+
+### Requirements
+None
+
+### Code
+```
+import sys
+
+def main():
+    data = list(map(int, sys.stdin.buffer.read().split()))
+    if not data:
+        return
+    it = iter(data)
+    N = next(it)
+    P = [next(it) for _ in range(N)]
+
+    # Fenwick Tree (Binary Indexed Tree) for 1..N
+    bit = [0] * (N + 1)
+
+    # Initialize: all positions are empty -> value 1 at each index
+    for i in range(1, N + 1):
+        bit[i] = i & -i
+
+    def add(idx, delta):
+        while idx <= N:
+            bit[idx] += delta
+            idx += idx & -idx
+
+    def kth(k):
+        # Find the smallest index pos such that prefix_sum(pos) >= k
+        idx = 0
+        bit_mask = 1 << (N.bit_length() - 1)  # largest power of two <= N
+        while bit_mask:
+            t = idx + bit_mask
+            if t <= N and bit[t] < k:
+                k -= bit[t]
+                idx = t
+            bit_mask >>= 1
+        return idx + 1
+
+    A = [0] * (N + 1)  # 1-based
+
+    for i in range(N, 0, -1):
+        k = P[i - 1]
+        pos = kth(k)
+        A[pos] = i
+        add(pos, -1)  # mark slot as filled
+
+    out = ' '.join(str(A[i]) for i in range(1, N + 1))
+    sys.stdout.write(out)
+    sys.stdout.write('\n')
+
+if __name__ == "__main__":
+    main()
+```

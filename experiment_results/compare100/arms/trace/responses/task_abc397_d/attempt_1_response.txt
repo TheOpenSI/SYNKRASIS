@@ -1,0 +1,83 @@
+### Step-by-step reasoning
+- We want positive integers x > y > 0 such that x^3 - y^3 = N.
+- Factorization: N = (x - y)(x^2 + xy + y^2). Let a = x - y (> 0) and b = x^2 + xy + y^2. Then N = a * b.
+- For a fixed a, b must be N / a and an integer. Since x = y + a, we can express b in terms of a and y:
+  b = (y + a)^2 + y(y + a) + y^2 = 3y^2 + 3ay + a^2.
+  Thus we need to solve 3y^2 + 3ay + (a^2 - b) = 0 for integers y > 0.
+- This is a quadratic in y with discriminant Δ = (3a)^2 - 12(a^2 - b) = -3a^2 + 12b.
+  If Δ < 0, no real solution. If Δ ≥ 0, Δ must be a perfect square: Δ = s^2.
+  Then y = (-3a + s) / 6. We require s ≡ 3a (mod 6) so that y is integral, and y > 0.
+- Observations:
+  - Since b = x^2 + xy + y^2 > a^2 for y ≥ 1, we have N = a*b > a^3, so a < cbrt(N). Therefore it suffices to search a from 1 to floor(cbrt(N)).
+- Algorithm:
+  1) For a in [1, floor(cuberoot(N))]:
+     - If N % a != 0, continue.
+     - Let b = N / a.
+     - Compute Δ = -3*a^2 + 12*b. If Δ < 0, continue.
+     - Let s = sqrt(Δ) (integer sqrt). If s^2 != Δ, continue.
+     - If (s - 3a) is not divisible by 6, continue.
+     - y = (s - 3a) / 6. If y <= 0, continue.
+     - x = y + a. Print x and y and finish.
+  2) If no pair found, print -1.
+- Complexity: The loop runs up to floor(cuberoot(N)) times. For N ≤ 10^18, this is at most about 10^6 iterations. Each iteration uses integer arithmetic and a perfect-square check, which is fast enough in Python.
+
+Potential pitfalls addressed:
+- Avoid floating-point cube root to prevent precision issues; use a robust integer cube root via binary search.
+- Ensure all arithmetic uses Python integers (unbounded) and verify divisibility and integrality of y.
+- Correct handling of y > 0 and output formatting.
+
+### Requirements
+None
+
+### Code
+```
+import sys
+import math
+
+def integer_cuberoot(n: int) -> int:
+    # Robust integer cube root using binary search
+    lo, hi = 0, 10**6 + 10  # (10^6+10)^3 > 1e18, safe upper bound
+    while lo < hi:
+        mid = (lo + hi + 1) // 2
+        if mid * mid * mid <= n:
+            lo = mid
+        else:
+            hi = mid - 1
+    return lo
+
+def main():
+    data = sys.stdin.read().strip().split()
+    if not data:
+        return
+    N = int(data[0])
+
+    max_a = integer_cuberoot(N)
+    for a in range(1, max_a + 1):
+        if N % a != 0:
+            continue
+        b = N // a
+
+        Δ = -3 * a * a + 12 * b
+        if Δ < 0:
+            continue
+
+        s = math.isqrt(Δ)
+        if s * s != Δ:
+            continue
+
+        if (s - 3 * a) % 6 != 0:
+            continue
+
+        y = (s - 3 * a) // 6
+        if y <= 0:
+            continue
+
+        x = y + a
+        print(x, y)
+        return
+
+    print(-1)
+
+if __name__ == "__main__":
+    main()
+```

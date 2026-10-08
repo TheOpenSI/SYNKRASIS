@@ -1,0 +1,90 @@
+### Step-by-step reasoning
+- The operation can only affect two adjacent A_i's at a time, turning both to 1, and it relies on the surrounding letters S around the pair to form either ARC or CRA patterns. A key observation: two neighboring edges (i,i+1) and (i+1,i+2) cannot both be used in the same S, because the required surrounding letters for edge i force S_{i+2} to be a specific value that conflicts with edge i+1’s requirement. Therefore, the set of edges chosen to perform operations must form a matching on the N-cycle (no two adjacent edges chosen).
+- Let edge i denote the operation that turns A_i and A_{i+1} to 1. We define x_i in {0,1} indicating whether edge i is chosen. Constraints:
+  - No two adjacent edges: x_i + x_{i-1} ≤ 1 for all i (indices modulo N).
+  - For every position i with A_i = 0, at least one of its incident edges must be chosen: x_{i-1} + x_i ≥ 1.
+- This is a cyclic binary constraint satisfaction problem. Solve by fixing x_1 to 0 or 1, then propagate a linear pass along the cycle to determine which values of x_i are feasible, and finally check wrap-around constraint between x_N and x_1 and the vertex-1 constraint.
+- Implement a linear-time dynamic pass for each starting value of x_1:
+  - Maintain which values of x_i are feasible as we sweep i = 2..N, given x_{i-1}.
+  - If x_{i-1} = 0: x_i can be 0 or 1; but if A_i = 0, then x_i must be 1.
+  - If x_{i-1} = 1: x_i must be 0 (no adjacent 1s).
+  - After processing up to i = N, we must ensure there exists a feasible x_N that also satisfies the wrap-around adjacency with x_1 and the constraint for A_1.
+- If either starting choice for x_1 yields a valid wrap-around, the answer is Yes, otherwise No.
+- Time complexity is O(N) with O(1) extra memory.
+
+### Requirements
+None
+
+### Code
+```python
+import sys
+
+def solve():
+    data = sys.stdin.buffer.read().split()
+    if not data:
+        print("No")
+        return
+    it = iter(data)
+    N = int(next(it))
+    A = [int(next(it)) for _ in range(N)]
+
+    # must[i] is True iff A_i = 0 (1-based indexing for vertices)
+    must = [False] * (N + 1)
+    for i in range(1, N + 1):
+        must[i] = (A[i - 1] == 0)
+    must1 = must[1]
+
+    def feasible_with_start(start):
+        # p0 => there exists a feasible assignment with x_i = 0 for current i
+        # p1 => there exists a feasible assignment with x_i = 1 for current i
+        p0 = (start == 0)
+        p1 = (start == 1)
+
+        for i in range(2, N + 1):
+            n0 = False
+            n1 = False
+            # coming from x_{i-1} = 0
+            if p0:
+                if must[i]:
+                    # need x_i = 1 to cover vertex i
+                    n1 = True
+                else:
+                    # vertex i not required; x_i can be 0 or 1
+                    n0 = True
+                    n1 = True
+            # coming from x_{i-1} = 1
+            if p1:
+                # adjacency forbids x_i = 1
+                n0 = True
+
+            p0, p1 = n0, n1
+            if not (p0 or p1):
+                return False
+
+        # After processing up to x_N, check wrap-around with x_1 = start
+        # We can choose x_N = 0 if p0 is True, or x_N = 1 if p1 is True
+        for xN, ok in ((0, p0), (1, p1)):
+            if not ok:
+                continue
+            # wrap-around adjacency: x_N + x_1 <= 1
+            if xN + start > 1:
+                continue
+            # constraint for vertex 1
+            if must1:
+                if start == 0:
+                    # need x_N = 1
+                    if xN != 1:
+                        continue
+                else:
+                    # start == 1, vertex 1 already covered; wrap requires x_N = 0
+                    if xN != 0:
+                        continue
+            return True
+        return False
+
+    ans = feasible_with_start(0) or feasible_with_start(1)
+    print("Yes" if ans else "No")
+
+if __name__ == "__main__":
+    solve()
+```

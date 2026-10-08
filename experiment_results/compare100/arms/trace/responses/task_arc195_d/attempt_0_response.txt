@@ -1,0 +1,83 @@
+### Step-by-step reasoning
+- Observe that operations only reduce the sequence by removing a prefix that is constant (a single color run) or by swapping adjacent elements.
+- If we never swap, the only deletions we can perform are deleting one entire current first run at a time. So the number of deletions needed would be equal to the number of runs in the original sequence.
+- A swap can help reduce the number of required deletions if it merges two runs of the same color that are separated by a run of another color that has length exactly 1. Specifically, if we have a pattern A^x B^1 A^y (three consecutive color-runs, with B-length exactly 1 and the two outer colors equal), one swap can merge the A-runs into a single A-run of length x + y, and the B-run disappears. This reduces the total number of runs by 2 at the cost of 1 swap.
+- If the B-run length is more than 1, a single swap cannot merge the two A-runs into one; such a triple does not permit an immediate run-merge.
+- After performing k such non-overlapping merges (each uses its own distinct 3-run block), the total number of runs becomes R' = R - 2k, and the number of swaps used is k. The total number of deletions needed afterward is R'. Therefore, total operations = k (swaps) + R' (deletions) = R - k.
+- To minimize total operations, we want to maximize k, i.e., the maximum number of non-overlapping triples (i, i+1, i+2) in the run-length encoding such that:
+  - colors[i] == colors[i+2]
+  - length of the middle run length[i+1] == 1
+  - triples do not overlap (i, i+1, i+2) and (i+3, i+4, i+5) can be chosen together, etc.
+- Since all triples have the same length (3 blocks) in terms of runs, the maximum number of non-overlapping triples can be found with a simple left-to-right scan (greedy): whenever a valid triple at i is found, take it and skip ahead by 3 runs; otherwise move by 1.
+- Finally, answer for a test case is: number_of_runs - max_number_of_non_overlapping_valid_triples.
+
+Edge cases:
+- If there are fewer than 3 runs, no merge is possible; answer equals the number of runs.
+- Runs are determined from the input by grouping consecutive equal values; each run is represented by its color and its length.
+
+Complexity:
+- Building runs is O(N).
+- The scan over runs is O(M), where M ≤ N.
+- Total time over all test cases is O(sum N) with sum N ≤ 2e5.
+- Memory usage is O(M) per test case.
+
+### Requirements
+None
+
+### Code
+```
+import sys
+
+def min_operations_for_case(N, A):
+    # Build run-length encoding: colors and their run lengths
+    colors = []
+    lengths = []
+    if N == 0:
+        return 0
+    cur = A[0]
+    cnt = 1
+    for x in A[1:]:
+        if x == cur:
+            cnt += 1
+        else:
+            colors.append(cur)
+            lengths.append(cnt)
+            cur = x
+            cnt = 1
+    colors.append(cur)
+    lengths.append(cnt)
+
+    M = len(colors)
+    # If fewer than 3 runs, we cannot perform any merge; answer is number of runs
+    if M < 3:
+        return M
+
+    # Greedily select non-overlapping triples (i, i+1, i+2) with:
+    # colors[i] == colors[i+2] and lengths[i+1] == 1
+    i = 0
+    merges = 0
+    while i <= M - 3:
+        if colors[i] == colors[i+2] and lengths[i+1] == 1:
+            merges += 1
+            i += 3  # skip this triple to avoid overlap
+        else:
+            i += 1
+
+    # Total operations = initial number of runs - number of merges
+    return M - merges
+
+def main():
+    data = sys.stdin.read().strip().split()
+    t = int(data[0])
+    idx = 1
+    out_lines = []
+    for _ in range(t):
+        n = int(data[idx]); idx += 1
+        A = list(map(int, data[idx:idx+n])); idx += n
+        ans = min_operations_for_case(n, A)
+        out_lines.append(str(ans))
+    print("\n".join(out_lines))
+
+if __name__ == "__main__":
+    main()
+```

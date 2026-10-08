@@ -1,0 +1,164 @@
+### Step-by-step reasoning
+- The previous approach tried to simulate "merging" runs with simple -2/-1 swap effects on run-length encoding. That simplification was flawed: after swapping across a boundary between two runs, the resulting run-length changes are more nuanced than simply removing the middle runs or merging two non-adjacent runs. In particular, when you swap around a singleton run, the first and third runs of the same color can merge, but the second and possibly the following blocks may remain, or merge with adjacent blocks depending on their colors and lengths. The earlier implementation incorrectly removed or ignored some blocks, which led to an undercount of the required operations for some inputs (e.g., test case 3).
+- A correct approach requires accurately simulating the effect of a single swap across a boundary where the middle run has length 1, and the colors on the left and right of that boundary are equal. Specifically, for a pattern ... (c, La) (d, 1) (c, Lc) (e, Ld) ..., swapping the boundary between (d,1) and the first element of (c,Lc) yields a new local arrangement that can be described as:
+  - The first block becomes (c, La+1)
+  - Then a block (d, 1)
+  - Then, if Lc > 1, a block (c, Lc-1)
+  - Then (e, Ld) if it exists
+  - Then the tail after the swapped region
+  - Finally, merge adjacent blocks of the same color as needed
+- With this precise local update, each successful swap more faithfully reflects what can be achieved by a single adjacent-swap operation, and the final number of operations (swaps plus remaining deletions) can be computed correctly.
+
+- The improved algorithm:
+  1) Start from the run-length encoding (colors[], lengths[]).
+  2) While there exists an i such that colors[i] == colors[i+2] and lengths[i+1] == 1, apply one swap across the boundary between runs i+1 and i+2 using the correct local transformation described above.
+  3) After each swap, rebuild the run-length encoding locally (without reconstructing the entire sequence) and collapse adjacent blocks of the same color.
+  4) Repeat until no such i exists.
+  5) The remaining number of runs is the number of deletions needed; total operations = number_of_swaps + remaining_runs.
+
+- This approach stays within reasonable time for the given constraints (sum of N over tests up to 2e5) because each swap strictly reduces the number of runs by at least 1 and we perform only local updates.
+
+- If external libraries were needed, we would list them under a “### Requirements” section. In this solution, no external libraries are required.
+
+### Requirements
+None
+
+### Code
+```
+import sys
+
+def min_operations_for_case(A):
+    # Build initial run-length encoding: colors and their run lengths
+    colors = []
+    lengths = []
+    if not A:
+        return 0
+    cur = A[0]
+    cnt = 1
+    for x in A[1:]:
+        if x == cur:
+            cnt += 1
+        else:
+            colors.append(cur)
+            lengths.append(cnt)
+            cur = x
+            cnt = 1
+    colors.append(cur)
+    lengths.append(cnt)
+
+    # Collapse adjacent runs of the same color (no-cost)
+    def collapse(colors, lengths):
+        if not colors:
+            return colors, lengths
+        new_colors = [colors[0]]
+        new_lengths = [lengths[0]]
+        for c, l in zip(colors[1:], lengths[1:]):
+            if c == new_colors[-1]:
+                new_lengths[-1] += l
+            else:
+                new_colors.append(c)
+                new_lengths.append(l)
+        return new_colors, new_lengths
+
+    # Greedy process on run-length encoding
+    ops_swaps = 0
+    colors = colors[:]
+    lengths = lengths[:]
+
+    while True:
+        M = len(colors)
+        if M < 3:
+            break
+        changed = False
+        i = 0
+        while i <= M - 3:
+            # Pattern: colors[i] == colors[i+2] and lengths[i+1] == 1
+            if colors[i] == colors[i+2] and lengths[i+1] == 1:
+                # Apply the swap across boundary between runs i+1 and i+2
+                La = lengths[i]
+                Lc = lengths[i+2]
+                c = colors[i]
+                d = colors[i+1]
+
+                # Next block after i+2, if exists
+                if i + 3 < M:
+                    e = colors[i+3]
+                    Ld = lengths[i+3]
+                else:
+                    e = None
+                    Ld = 0
+
+                # Construct new local blocks after performing the swap
+                # Case: first block becomes (c, La+1)
+                new_blocks = []
+                new_blocks.append((c, La + 1))
+                # middle after swap is color d with length 1
+                new_blocks.append((d, 1))
+                # if the C block had more than 1 element, one c remains after the swap
+                if Lc > 1:
+                    new_blocks.append((c, Lc - 1))
+                # If there is a following block e, keep it
+                if e is not None:
+                    new_blocks.append((e, Ld))
+
+                # Tail blocks after index i+3 (i+4, i+5, ...)
+                tail_colors = colors[i+4:]
+                tail_lengths = lengths[i+4:]
+
+                # Merge new_blocks into the main lists
+                # First, take prefix up to i-1
+                pre_colors = colors[:i]
+                pre_lengths = lengths[:i]
+
+                # Flatten and collapse potential adjacent equal colors
+                merged_colors = pre_colors[:]
+                merged_lengths = pre_lengths[:]
+
+                for col, ln in new_blocks:
+                    if ln <= 0:
+                        continue
+                    if merged_colors and merged_colors[-1] == col:
+                        merged_lengths[-1] += ln
+                    else:
+                        merged_colors.append(col)
+                        merged_lengths.append(ln)
+
+                # Append tail
+                for col, ln in zip(tail_colors, tail_lengths):
+                    if merged_colors and merged_colors[-1] == col:
+                        merged_lengths[-1] += ln
+                    else:
+                        merged_colors.append(col)
+                        merged_lengths.append(ln)
+
+                colors = merged_colors
+                lengths = merged_lengths
+
+                ops_swaps += 1
+                changed = True
+                break
+            i += 1
+
+        if not changed:
+            break
+
+    # After exhausting swap opportunities, remaining runs must be deleted one by one
+    final_runs = len(colors)
+    return ops_swaps + final_runs
+
+
+def main():
+    data = sys.stdin.read().strip().split()
+    t = int(data[0])
+    idx = 1
+    out_lines = []
+    for _ in range(t):
+        n = int(data[idx]); idx += 1
+        A = list(map(int, data[idx:idx+n])); idx += n
+        ans = min_operations_for_case(A)
+        out_lines.append(str(ans))
+    print("\n".join(out_lines))
+
+if __name__ == "__main__":
+    main()
+```

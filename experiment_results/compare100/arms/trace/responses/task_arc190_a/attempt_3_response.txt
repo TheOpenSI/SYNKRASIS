@@ -1,0 +1,219 @@
+### Step-by-step reasoning
+- The final array x is the OR of all operation effects. We want the minimum number of operations that guarantees every position 1..N becomes 1.
+- There are simple necessary observations:
+  - K = 1 is possible if there exists an interval exactly [1, N].
+  - K = 2 is possible in several patterns:
+    - AB pattern: A on interval I contains B's interval J, i.e., [L_J, R_J] ⊆ [L_I, R_I]. Then do A on I (type 1) and B on J (type 2). This covers all positions.
+    - AA pattern: Two operations painting inside whose union covers [1, N]. This happens if there exists an interval starting at 1 and another ending at N and they touch/overlap: L of the second ≤ R of the first + 1.
+    - BB pattern: Two operations painting outside intervals whose interior intervals do not intersect, i.e., [L_i, R_i] ∩ [L_j, R_j] = ∅.
+- If none of K = 1 or K = 2 patterns exist, we may still need K = 3. A robust 3-operation pattern is B, B, A: an A-interval I that contains at least two other intervals J1, J2. Then B on J1 and J2 covers outside I, and A on I covers inside I, giving full coverage.
+- To guarantee correctness and efficiency for up to M = 2e5, we implement:
+  - Check K = 1.
+  - Check K = 2 in the order: AB, AA, BB (first feasible yields minimal cost 2).
+  - If none, check K = 3 using the following efficient approach:
+    - For each interval I, count how many intervals J satisfy L_J ≥ L_I and R_J ≤ R_I (including I itself). If there exists I with count ≥ 3, we can pick two distinct J inside I and output K = 3 with A on I and B on those two J’s.
+    - We compute these counts for all I in O(M log M) using a Fenwick tree (BIT) with coordinate compression on R, processing L in descending order and handling groups of equal L carefully.
+
+If none of the above yields a solution, print -1.
+
+This approach ensures minimal K (1, then 2 if possible, otherwise 3) and constructs a valid operation sequence; it also handles large inputs within time limits.
+
+### Requirements
+None
+
+### Code
+```
+import sys
+from bisect import bisect_right
+
+def solve():
+    data = list(map(int, sys.stdin.buffer.read().split()))
+    it = iter(data)
+    N = next(it)
+    M = next(it)
+
+    intervals = []
+    for i in range(1, M + 1):
+        L = next(it)
+        R = next(it)
+        intervals.append((L, R, i))
+
+    # Helper to print final answer
+    def print_result(K, ops):
+        print(K)
+        print(' '.join(map(str, ops)))
+
+    # 1) K = 1: any interval exactly [1, N]
+    for L, R, idx in intervals:
+        if L == 1 and R == N:
+            ops = [0] * M
+            ops[idx - 1] = 1
+            print_result(1, ops)
+            return
+
+    # 2) K = 2: try AB, AA, then BB
+
+    # 2a) AB: exists i (outer) and j (inner) with [L_j, R_j] ⊆ [L_i, R_i]
+    # Scan by increasing L, keep best (max R) so far
+    intervals_by_L = sorted(intervals, key=lambda x: (x[0], x[1]))
+    maxR = -1
+    maxR_idx = -1
+    for L, R, idx in intervals_by_L:
+        if maxR >= R:
+            # AB found: outer is maxR_idx, inner is current idx
+            ops = [0] * M
+            ops[maxR_idx - 1] = 1
+            ops[idx - 1] = 2
+            print_result(2, ops)
+            return
+        if R > maxR:
+            maxR = R
+            maxR_idx = idx
+
+    # 2b) AA: two A-intervals whose union covers [1, N]
+    # Need one with L=1 and one with R=N and touch/overlap
+    idx_A1 = -1  # interval with L=1 having max R
+    best_R1 = -1
+    for L, R, idx in intervals:
+        if L == 1:
+            if R > best_R1:
+                best_R1 = R
+                idx_A1 = idx
+    idx_A2 = -1  # interval with R=N having min L
+    min_LN = 10**9
+    for L, R, idx in intervals:
+        if R == N:
+            if L < min_LN:
+                min_LN = L
+                idx_A2 = idx
+    if idx_A1 != -1 and idx_A2 != -1:
+        # Get actual R1 and L2
+        R1 = None
+        L2 = None
+        for L, R, idx in intervals:
+            if idx == idx_A1:
+                R1 = R
+                break
+        for L, R, idx in intervals:
+            if idx == idx_A2:
+                L2 = L
+                break
+        if L2 is not None and R1 is not None and L2 <= R1 + 1:
+            ops = [0] * M
+            ops[idx_A1 - 1] = 1
+            ops[idx_A2 - 1] = 1
+            print_result(2, ops)
+            return
+
+    # 2c) BB: two B-intervals with non-overlapping inner intervals
+    # If there exists two intervals with L increasing such that next L > current maxR
+    maxR = -1
+    maxR_idx = -1
+    for L, R, idx in intervals_by_L:
+        if maxR != -1 and L > maxR:
+            ops = [0] * M
+            ops[maxR_idx - 1] = 2
+            ops[idx - 1] = 2
+            print_result(2, ops)
+            return
+        if R > maxR:
+            maxR = R
+            maxR_idx = idx
+
+    # 3) K = 3: B, B, A pattern
+    # We need an interval I that contains at least two other intervals J1, J2.
+    # We'll compute for every interval I the count of intervals J with L_J >= L_I and R_J <= R_I (including I).
+    # If there exists I with count >= 3, reconstruct two J's inside I.
+
+    # Coordinate compression for R
+    all_R = sorted({r for (_, r, _) in intervals})
+    KR = len(all_R)
+    r_to_pos = {v: i+1 for i, v in enumerate(all_R)}  # 1-based
+
+    class Fenwick:
+        def __init__(self, n):
+            self.n = n
+            self.bit = [0] * (n + 1)
+        def add(self, i, delta):
+            n = self.n
+            while i <= n:
+                self.bit[i] += delta
+                i += i & -i
+        def sum(self, i):
+            res = 0
+            while i > 0:
+                res += self.bit[i]
+                i -= i & -i
+            return res
+        def range_sum(self, l, r):
+            if l > r:
+                return 0
+            return self.sum(r) - self.sum(l - 1)
+
+    # Group intervals by L
+    groups = {}
+    for L, R, idx in intervals:
+        groups.setdefault(L, []).append((R, idx))
+
+    # Prepare group L values in descending order
+    L_values_desc = sorted(groups.keys(), reverse=True)
+
+    # Totals per interval: number of intervals J such that L_J >= L_I and R_J <= R_I (including I)
+    totals = [0] * (M + 1)  # 1-based by idx
+
+    bit = Fenwick(KR)
+
+    for L0 in L_values_desc:
+        group = groups[L0]
+        # before adding current group, counts from previous groups (L > L0)
+        before_counts = {}
+        for R, idx in group:
+            posR = r_to_pos[R]
+            before_counts[idx] = bit.sum(posR)
+
+        # counts within the same group (same L)
+        Rs_in_group = sorted([R for (R, _) in group])
+        # For each I in group, number of items in same group with R <= R_I
+        # this includes I itself
+        for R, idx in group:
+            posR = r_to_pos[R]
+            count_same_group = bisect_right(Rs_in_group, R)
+            totals[idx] = before_counts[idx] + count_same_group
+
+        # add current group intervals to Fenwick for next groups
+        for R, idx in group:
+            bit.add(r_to_pos[R], 1)
+
+    # Find an interval I with totals[idx] >= 3
+    candidate_I = None
+    for L, R, idx in intervals:
+        if totals[idx] >= 3:
+            candidate_I = (L, R, idx)
+            break
+
+    if candidate_I is not None:
+        L_I, R_I, I = candidate_I
+        # collect two distinct J inside I: L_J >= L_I and R_J <= R_I, J != I
+        Js = []
+        for L, R, idx in intervals:
+            if idx == I:
+                continue
+            if L >= L_I and R <= R_I:
+                Js.append(idx)
+                if len(Js) >= 2:
+                    break
+        if len(Js) >= 2:
+            J1, J2 = Js[0], Js[1]
+            ops = [0] * M
+            ops[I - 1] = 1  # A on I
+            ops[J1 - 1] = 2  # B on J1
+            ops[J2 - 1] = 2  # B on J2
+            print_result(3, ops)
+            return
+
+    # If none of the above, impossible
+    print(-1)
+
+if __name__ == "__main__":
+    solve()
+```

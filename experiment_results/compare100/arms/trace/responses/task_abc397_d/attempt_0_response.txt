@@ -1,0 +1,78 @@
+### Step-by-step reasoning
+- We want x^3 - y^3 = N with x > y > 0.
+- Factor: N = (x - y)(x^2 + xy + y^2). Let a = x - y > 0 and b = x^2 + xy + y^2, so N = a*b.
+- Express b in terms of y and a: with x = y + a, b = (y + a)^2 + y(y + a) + y^2 = 3y^2 + 3ay + a^2.
+- For a given a, b = N/a must be integer. Then we need to solve 3y^2 + 3ay + (a^2 - b) = 0 for y > 0.
+  - Discriminant Δ = (3a)^2 - 12(a^2 - b) = -3a^2 + 12b.
+  - If Δ is a non-negative perfect square s^2, then y = (-3a + s)/6. We require s - 3a to be divisible by 6 and y > 0.
+- Observations:
+  - Since b = x^2 + xy + y^2 > a^2 for y >= 1, we have N = a*b > a^3, so a < cbrt(N). This lets us only iterate a from 1 to floor(cuberoot(N)).
+- Algorithm:
+  1) Iterate a from 1 to floor(cuberoot(N)). If N % a != 0, continue.
+  2) Let b = N / a. Compute Δ = -3a^2 + 12b. If Δ < 0, continue.
+  3) Let s = floor(sqrt(Δ)) using integer sqrt. If s^2 != Δ, continue.
+  4) If (s - 3a) is not divisible by 6, continue. Let y = (s - 3a) / 6. If y <= 0, continue.
+  5) x = y + a. Output x and y.
+  6) If no pair found, output -1.
+- This runs in about O(cuberoot(N)) iterations, which is feasible for N up to 1e18.
+
+Edge cases:
+- N = 1: there is no positive y giving y > 0, so output -1.
+- Large N: use Python integers; discriminant and square root computations stay within Python’s integer arithmetic.
+- Ensure proper integer sqrt check via math.isqrt.
+
+### Requirements
+None
+
+### Code
+```
+import sys
+import math
+
+def int_cuberoot(n: int) -> int:
+    # Robust integer cube root for n >= 0
+    x = int(round(n ** (1/3)))
+    if x**3 > n:
+        while x > 0 and x**3 > n:
+            x -= 1
+    else:
+        while (x + 1) ** 3 <= n:
+            x += 1
+    return x
+
+def main():
+    data = sys.stdin.read().strip().split()
+    if not data:
+        return
+    N = int(data[0])
+
+    max_a = int_cuberoot(N)
+    for a in range(1, max_a + 1):
+        if N % a != 0:
+            continue
+        b = N // a
+
+        Δ = -3 * a * a + 12 * b
+        if Δ < 0:
+            continue
+
+        s = math.isqrt(Δ)
+        if s * s != Δ:
+            continue
+
+        if (s - 3 * a) % 6 != 0:
+            continue
+
+        y = (s - 3 * a) // 6
+        if y <= 0:
+            continue
+
+        x = y + a
+        print(x, y)
+        return
+
+    print(-1)
+
+if __name__ == "__main__":
+    main()
+```

@@ -16,6 +16,7 @@ import sys
 sys.path.append(f"{os.path.dirname(os.path.abspath(__file__))}/../..")
 
 import json
+import re
 from subprocess import CompletedProcess
 
 from services.PyCapsule.PyCapsuleBase import PyCapsuleBase
@@ -24,7 +25,7 @@ from services.LLM.LLMBase import LLMBase
 from data.DatasetBase import DatasetBase
 from utils.output_message_format.output_colour import print_error, print_info, print_success, print_pycapsule
 from services.PyCapsule.livecodebench_harness.LCBHarness import LCBHarness
-from services.BPD.lcb_trace import LCBTracer
+from services.BPD.bpd import BPD, LEGEND
 
 class PyCapsule_LiveCodeBench(PyCapsuleBase):
     REQUIRED_KEYS = ["task_id", "prompt", "entry_point", "public_test", "private_test", "starter_code", "test_type"]
@@ -56,14 +57,14 @@ class PyCapsule_LiveCodeBench(PyCapsuleBase):
             timeout (int, optional): Timeout in seconds for each test case. Defaults to 10.
             response_log_dir (str, optional): If set, every LLM query/raw response is saved under
                 response_log_dir/task_<id>/attempt_<n>_{query,response}.txt. Defaults to None.
-            trace_feedback (bool, optional): Append a BPD execution trace of the code on the first failing
+            trace_feedback (bool, optional): Append a BPD execution trace of the code on the failing
                 public test to the public failure feedback. Never used for private tests, the trace would 
                 reveal their input. Defaults to False.
         """
         super().__init__(pycapsule_container, llm, maximum_attempts, timeout = timeout)
         self.harness = LCBHarness()
         self.response_log_dir = response_log_dir
-        self.tracer = LCBTracer(self.harness) if trace_feedback else None
+        self.bpd = BPD() if trace_feedback else None
         self.trace_log: list[dict] = []   # one entry per trace attached: task_id, test_index, chars
         self._last_code = ""
         self._generation_count = 0
@@ -218,22 +219,27 @@ class PyCapsule_LiveCodeBench(PyCapsuleBase):
 
         query = self.error_handling(response.stderr)
         self._current_error_type = list(self.error_handling.current_error_type)
-        return query + self._trace_section(meta_data)
+        return query + self._trace_section(response, meta_data)
 
 
-    def _trace_section(self, user_query: dict) -> str:
+    def _trace_section(self, response: CompletedProcess, user_query: dict) -> str:
         """
-        BPD trace of the current code on the first failing public test, empty if not enabled or the code 
-        cannot be traced.
+        BPD trace of the current code on the public test that failed (the harness error says which: "test case N"),
+        empty when tracing is off, the failure has no test number (time limit) or the code cannot be traced.
         """
-        if self.tracer is None:
+        match = re.search(r"test case (\d+)", response.stderr)
+        if self.bpd is None or match is None:
             return ""
-        traced = self.tracer.trace_first_failing_public_test(user_query, self._last_code)
-        if traced is None:
+        index = int(match.group(1)) - 1
+        test = user_query["public_test"][index]
+        functional = user_query["test_type"] == "functional"
+        source = self.harness.build_traceable_source(user_query, self._last_code)
+        trace = self.bpd.trace(source, test["input"], user_query["entry_point"] if functional else None, test["output"])
+        if trace is None:
             return ""
-        self.trace_log.append({"task_id": user_query["task_id"], "test_index": traced["test_index"],
-                               "chars": len(traced["report"])})
-        return self.tracer.feedback_text(traced)
+        self.trace_log.append({"task_id": user_query["task_id"], "test_index": index, "chars": len(trace)})
+        return (f"\n\nExecution trace of your code on public test case {index + 1}. {LEGEND}\n{trace}\n"
+                "Find the first point where the behaviour differs from what the problem requires and fix that logic.")
 
 
     def _update_code(self,

@@ -1,0 +1,76 @@
+### Step-by-step reasoning
+- The problem requires selecting K disjoint pairs of cakes to maximize the sum of each pair's price, where the price of a pair (i, j) is max(X_i + X_j, Y_i + Y_j, Z_i + Z_j).
+- The previous approach only considered edges that connect every node to the single top candidate in each dimension (X, Y, Z). This misses potential optimal pairings among non-top elements, which can be necessary to achieve the best total when K > 1 (as shown by the failing test case).
+- To fix this, we should consider edges not only to the top neighbor in each dimension but also among a small set of high-potential candidates. Specifically:
+  - For each dimension, take the top L indices (highest values). Let L be a small constant (e.g., 3) to keep the solution efficient.
+  - Let C be the union of these indices. Any good solution is likely to involve at least one of these indices, since they are among the largest values in one dimension.
+  - Build all pair edges (u, v) with u, v in C and compute their weights w(u, v) = max(X_u + X_v, Y_u + Y_v, Z_u + Z_v).
+  - Sort edges by weight descending and greedily select up to K disjoint edges (a simple greedy maximum matching on a small edge set).
+- This approach guarantees capturing the necessary edges (including those among non-dominant cakes) in the failing example where the best solution uses one edge to the dominant cake and another edge among the remaining non-dominant cakes.
+
+### Requirements
+None
+
+### Code
+```
+import sys, heapq
+
+def main():
+    data = list(map(int, sys.stdin.buffer.read().split()))
+    t = data[0]
+    p = 1
+    out_lines = []
+    for _ in range(t):
+        n = data[p]; p += 1
+        k = data[p]; p += 1
+
+        X = [0]*n
+        Y = [0]*n
+        Z = [0]*n
+        for i in range(n):
+            X[i] = data[p]
+            Y[i] = data[p+1]
+            Z[i] = data[p+2]
+            p += 3
+
+        L = 3  # number of top indices to consider per dimension
+        def top_indices(arr):
+            return heapq.nlargest(L, range(n), key=lambda i: arr[i])
+
+        idx_x = top_indices(X)
+        idx_y = top_indices(Y)
+        idx_z = top_indices(Z)
+
+        Cset = set(idx_x) | set(idx_y) | set(idx_z)
+        C = sorted(Cset)
+        m = len(C)
+
+        edges = []
+        for i in range(m):
+            ui = C[i]
+            for j in range(i+1, m):
+                vj = C[j]
+                w = max(X[ui] + X[vj], Y[ui] + Y[vj], Z[ui] + Z[vj])
+                edges.append((w, ui, vj))
+
+        edges.sort(key=lambda e: e[0], reverse=True)
+
+        used = [False] * n
+        total = 0
+        taken = 0
+        for w, u, v in edges:
+            if not used[u] and not used[v]:
+                total += w
+                used[u] = True
+                used[v] = True
+                taken += 1
+                if taken == k:
+                    break
+
+        out_lines.append(str(total))
+
+    print("\n".join(out_lines))
+
+if __name__ == "__main__":
+    main()
+```

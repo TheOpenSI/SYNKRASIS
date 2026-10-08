@@ -133,6 +133,17 @@ class TestPyCapsuleLiveCodeBench(unittest.TestCase):
         self.assertNotIn("Execution trace", llm.prompts[1])
         self.assertEqual(capsule.trace_log, [])
 
+    def test_trace_for_a_stdin_program_names_the_failing_test_and_reports_the_output(self):
+        _, _, _, capsule, llm = self.run_task("abc387_b", [reply(TABLE_WRONG), reply(TABLE_OK)], trace=True)
+        self.assertIn("Execution trace of your code on public test case 1", llm.prompts[1])
+        self.assertIn("printed '0'   (expected '2024')", llm.prompts[1])
+        self.assertEqual(capsule.trace_log[0]["test_index"], 0)
+
+    def test_a_runtime_error_also_gets_a_trace(self):
+        _, _, _, capsule, llm = self.run_task("abc387_b", [reply(TABLE_NAME_ERROR), reply(TABLE_OK)], trace=True)
+        self.assertIn("Execution trace", llm.prompts[1])
+        self.assertIn("raised NameError", llm.prompts[1])
+
 
 if __name__ == "__main__":
     unittest.main()

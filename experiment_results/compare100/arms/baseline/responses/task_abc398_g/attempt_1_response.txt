@@ -1,0 +1,104 @@
+### Step-by-step reasoning
+- The initial graph is bipartite (no odd cycle). A move adds an edge (i, j) with i < j that does not create an odd cycle.
+  - If i and j are in different connected components, adding the edge simply connects two components; the graph remains bipartite because we can orient the colorings of the components to fit a global bipartition.
+  - If i and j are in the same component, adding the edge creates a cycle. In a bipartite component, a path between i and j has length d. The new cycle length is d+1. This edge is allowed iff the cycle is even, i.e., d is odd, which means i and j are in opposite colors in the component’s 2-coloring.
+
+- After many moves, the graph becomes a complete bipartite graph on some global 2-coloring of all N vertices: the vertex set is partitioned into A and B, and all A-B edges exist. The total number of moves performed is:
+  moves = |A| * |B| - M
+  where M is the initial number of edges.
+
+- Each connected component k has two color-class sizes (a_k, b_k) with a_k + b_k = s_k (size of the component). The global A-size is obtained by choosing, for each component, whether its color-class 0 or color-class 1 maps to A. So:
+  A = sum over components of either a_k or b_k.
+
+- Important parity observations:
+  - If s_k is odd, then a_k and b_k have opposite parity, so you can toggle whether that component contributes an odd or even amount to A (this gives flexibility in the parity of A).
+  - If s_k is even, then a_k and b_k have the same parity, so the contribution to A from that component has fixed parity, equal to a_k mod 2 = b_k mod 2.
+
+- Let t be the number of odd-sized components. 
+  - If t > 0, the global A parity can be chosen to be either 0 or 1 by appropriate choices, which strongly constrains the outcome. In particular, when N is even, the first player (Aoki) has a winning strategy.
+  - If t = 0, the parity of A is fixed (call it S_fixed, equal to the sum of (a_k mod 2) over all even-sized components). Then the parity of moves is (A*B - M) mod 2 = (A mod 2) XOR (M mod 2) because N is even implies A*B ≡ A (mod 2). Since A mod 2 is fixed to S_fixed, the winner depends on S_fixed XOR (M mod 2).
+
+- Final decision rules:
+  1) If N is odd: Aoki wins iff M is odd (since A*B is always even when N is odd, so moves parity equals M parity).
+  2) If N is even:
+     - If t > 0: Aoki (first player) wins.
+     - If t = 0: compute total_parity = S_fixed XOR (M mod 2). Aoki wins iff total_parity == 1; otherwise Takahashi wins.
+
+- Implementation plan:
+  - Build adjacency list for the graph.
+  - Do a BFS/DFS over each component to compute its color-class sizes (cnt0, cnt1) and the component size s_k = cnt0 + cnt1.
+  - For each component:
+    - If s_k is odd, increment t.
+    - If s_k is even, accumulate S_fixed by XOR-ing (cnt0 mod 2).
+  - Apply the decision rules above.
+
+- Complexity: O(N + M) time and O(N + M) memory, suitable for N, M up to 2e5.
+
+### Requirements
+None
+
+### Code
+```
+import sys
+from collections import deque
+
+def main():
+    data = list(map(int, sys.stdin.buffer.read().split()))
+    if not data:
+        return
+    it = iter(data)
+    N = next(it)
+    M = next(it)
+
+    adj = [[] for _ in range(N + 1)]
+    for _ in range(M):
+        u = next(it)
+        v = next(it)
+        adj[u].append(v)
+        adj[v].append(u)
+
+    color = [-1] * (N + 1)
+    t_odd = 0      # number of odd-sized components
+    S_fixed = 0    # parity contribution from even-sized components
+
+    for start in range(1, N + 1):
+        if color[start] != -1:
+            continue
+        q = deque([start])
+        color[start] = 0
+        cnt0 = 1
+        cnt1 = 0
+
+        while q:
+            u = q.popleft()
+            cu = color[u]
+            for w in adj[u]:
+                if color[w] == -1:
+                    color[w] = cu ^ 1
+                    if color[w] == 0:
+                        cnt0 += 1
+                    else:
+                        cnt1 += 1
+                    q.append(w)
+                # Problem guarantees bipartite, so no need to handle conflicts
+
+        size = cnt0 + cnt1
+        if size % 2 == 1:
+            t_odd += 1
+        else:
+            S_fixed ^= (cnt0 & 1)
+
+    if N % 2 == 1:
+        print("Aoki" if (M & 1) else "Takahashi")
+        return
+
+    if t_odd > 0:
+        print("Aoki")
+        return
+
+    total_parity = S_fixed ^ (M & 1)
+    print("Aoki" if total_parity == 1 else "Takahashi")
+
+if __name__ == "__main__":
+    main()
+```

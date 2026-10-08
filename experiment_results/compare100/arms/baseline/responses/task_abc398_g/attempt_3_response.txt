@@ -1,0 +1,93 @@
+### Step-by-step reasoning
+- At any move, you may connect two vertices i < j if:
+  - They are in different connected components: this simply merges components and cannot create a cycle.
+  - They are in the same component: this only works if the two vertices are on opposite sides of the bipartition of that component (in a bipartite graph, adding an edge between same-color vertices would create an odd cycle).
+
+- Therefore, throughout the game the graph remains bipartite. If the game ends (no moves left), the graph must be a complete bipartite graph across some partition (A, B) of all N vertices, because:
+  - Every missing edge between A and B can be added (it would create an even cycle, not an odd one).
+  - No missing edge inside A or inside B can ever be added (that would create an odd cycle).
+
+- The final number of edges equals |A| * |B|, so the total number of moves made in the game equals |A| * |B| − M. The outcome depends on who makes the last move (normal play): first player wins iff the total number of moves is odd.
+
+- The crucial observation is how large |A| can be in the end:
+  - Each initial connected component has a bipartition (cnt0, cnt1). When components are merged, you effectively decide for each component which side of its local bipartition maps to A (flip or not).
+  - If a component has odd size, flipping it changes the parity of its contribution to |A|, so having at least one odd-sized component allows both parities for |A| to be realized in principle.
+  - If all components have even size, for each component cnt0 and cnt1 have the same parity, so the parity of its contribution to |A| is fixed regardless of orientation. The overall parity of |A| is then fixed to S_fixed = XOR over all even-sized components of (cnt0 mod 2).
+
+- Now analyze by N:
+  - If N is odd:
+    - |A| and |B| have opposite parities, so |A|*|B| is always even. The final number of moves parity is even XOR M parity = M parity. Thus Aoki (first player) wins iff M is odd; Takahashi otherwise.
+  - If N is even:
+    - If there exists at least one odd-sized component: you can realize both parities for |A|, hence you can force the final number of moves to be odd, giving Aoki a winning strategy.
+    - If all components are even: |A| parity is fixed to S_fixed, so parity(|A|*|B|) equals S_fixed (since N is even, |B| has the same parity as |A|). The final moves parity is S_fixed XOR (M mod 2). Aoki wins iff this is 1.
+
+- Complexity: O(N + M) time and O(N + M) memory, suitable for N, M ≤ 2e5. No external libraries needed.
+
+### Requirements
+None
+
+### Code
+```
+import sys
+from collections import deque
+
+def main():
+    data = list(map(int, sys.stdin.buffer.read().split()))
+    if not data:
+        return
+    it = iter(data)
+    N = next(it)
+    M = next(it)
+
+    adj = [[] for _ in range(N + 1)]
+    for _ in range(M):
+        u = next(it)
+        v = next(it)
+        adj[u].append(v)
+        adj[v].append(u)
+
+    color = [-1] * (N + 1)
+    t_odd = 0      # number of odd-sized components
+    S_fixed = 0    # parity contribution from even-sized components
+
+    for start in range(1, N + 1):
+        if color[start] != -1:
+            continue
+        q = deque([start])
+        color[start] = 0
+        cnt0 = 1
+        cnt1 = 0
+
+        while q:
+            u = q.popleft()
+            cu = color[u]
+            for w in adj[u]:
+                if color[w] == -1:
+                    color[w] = cu ^ 1
+                    if color[w] == 0:
+                        cnt0 += 1
+                    else:
+                        cnt1 += 1
+                    q.append(w)
+                # The problem guarantees no odd cycle, so no color conflicts
+
+        size = cnt0 + cnt1
+        if size % 2 == 1:
+            t_odd += 1
+        else:
+            S_fixed ^= (cnt0 & 1)
+
+    if N % 2 == 1:
+        print("Aoki" if (M & 1) else "Takahashi")
+        return
+
+    if t_odd > 0:
+        print("Aoki")
+        return
+
+    total_parity = S_fixed ^ (M & 1)
+    print("Aoki" if total_parity == 1 else "Takahashi")
+
+if __name__ == "__main__":
+    main()
+```

@@ -1,0 +1,159 @@
+### Step-by-step reasoning
+- Model the problem as a system of XOR constraints.
+- For every tile, introduce binary variables describing which edges of the tile are used by the single segment:
+  - If the cell is Type A (elbow), its orientation is determined by two independent bits:
+    - h: whether the used horizontal edge is Left (h=1) or Right (h=0)
+    - v: whether the used vertical edge is Top (v=1) or Bottom (v=0)
+    - This gives two variables per A-tile: h and v.
+  - If the cell is Type B (straight), its orientation is determined by one bit:
+    - s: 1 means vertical (Top and Bottom used), 0 means horizontal (Left and Right used)
+    - This gives one variable per B-tile: s.
+- Translate the no-dead-ends condition into edge constraints between neighboring tiles. For every adjacent pair of tiles, the edge shared by them must be used by both tiles or by neither. This yields linear equations over GF(2) of the form x_u XOR x_v = c, where:
+  - Horizontal edge between (i,j) and (i, j+1):
+    - The two variables involved are always id1 of both cells (i.e., the h variable for A-tile, or the s variable for B-tile), and
+    - c = 1 if the tile types on both sides are the same (AA or BB), else c = 0 (AB or BA).
+  - Vertical edge between (i,j) and (i+1, j):
+    - The two variables involved are:
+      - id2 of top cell if top is A, otherwise id1 of top cell;
+      id2 of bottom cell if bottom is A, otherwise id1 of bottom cell.
+    - c = 1 if the tile types on both sides are the same (AA or BB), else c = 0.
+- This yields a graph whose nodes are all variables:
+  - Each horizontal edge enforces x_u XOR x_v = c.
+  - Each vertical edge enforces x_u XOR x_v = c.
+- The whole system is a set of equations of the form x_u XOR x_v = c. Such systems can be solved by a DSU (Disjoint Set Union) data structure with parity:
+  - Each union(u, v, c) enforces x_u XOR x_v = c.
+  - If a contradiction is found (a cycle with inconsistent parity), there are no valid configurations (answer 0).
+  - If consistent, the number of solutions equals 2^(number_of_connected_components), because each connected component can choose one root value arbitrarily and all others are determined by the edge constraints.
+- We can implement DSU with parity efficiently in O((HW) α(N)) time, where N is the number of variables (at most 2*HW for A tiles plus HW for B tiles).
+
+Edge cases and performance:
+- Total HW over all tests is ≤ 10^6, and we process exactly 2*HW adjacency edges (horizontal) plus 2*HW (vertical) in the worst case, which is acceptable with a well-implemented DSU.
+- We store IDs efficiently in two 1D arrays:
+  - id1[p] is the first variable for cell p (A: h, B: s)
+  - id2[p] is the second variable for cell p (A: v, B: -1)
+- The number of components cc can be tracked during unions by decrementing a counter whenever we merge two disjoint components.
+
+Thus the problem reduces to a linear GF(2) system over a graph of variables. The answer is 0 if inconsistent, otherwise 2^cc mod 998244353, where cc is the number of DSU components after processing all edge constraints.
+
+### Requirements
+None
+
+### Code
+```
+import sys
+
+def main():
+    data = sys.stdin.buffer.read().split()
+    t = int(data[0])
+    pos = 1
+    MOD = 998244353
+    out_lines = []
+
+    sys.setrecursionlimit(1 << 25)
+
+    for _ in range(t):
+        H = int(data[pos]); W = int(data[pos+1]); pos += 2
+        lines = []
+        for _ in range(H):
+            lines.append(data[pos].decode())
+            pos += 1
+        grid_str = ''.join(lines)  # length H*W
+        Ncells = H * W
+
+        # Build IDs:
+        # id1[p] : first variable of cell p
+        # id2[p] : second variable of cell p (only valid if cell is 'A', else -1)
+        id1 = [0] * Ncells
+        id2 = [-1] * Ncells
+        idx = 0
+        for p in range(Ncells):
+            if grid_str[p] == 'A':
+                id1[p] = idx
+                id2[p] = idx + 1
+                idx += 2
+            else:  # 'B'
+                id1[p] = idx
+                idx += 1
+        N = idx  # total number of variables
+
+        # DSU with parity
+        parent = [-1] * N       # negative size for roots
+        par = [0] * N           # parity to parent
+        cc = N                    # number of connected components
+
+        def find(x):
+            if parent[x] < 0:
+                return x, 0
+            r, px = find(parent[x])
+            par[x] ^= px
+            parent[x] = r
+            return r, par[x]
+
+        def union(x, y, c):
+            nonlocal cc
+            rx, dx = find(x)
+            ry, dy = find(y)
+            if rx == ry:
+                if (dx ^ dy) != c:
+                    return False
+                return True
+            # Union by size: attach smaller root to larger root
+            if -parent[rx] < -parent[ry]:
+                rx, ry = ry, rx
+                dx, dy = dy, dx
+            parent[rx] += parent[ry]
+            parent[ry] = rx
+            par[ry] = dx ^ dy ^ c
+            cc -= 1
+            return True
+
+        inconsistent = False
+
+        # Horizontal edges: connect id1[p] with id1[q] for (p) and (q)=(i, (j+1)%W)
+        for i in range(H):
+            base = i * W
+            for j in range(W):
+                p = base + j
+                q = base + ((j + 1) % W)
+                t1 = grid_str[p]
+                t2 = grid_str[q]
+                u = id1[p]
+                v = id1[q]
+                c = 1 if t1 == t2 else 0
+                if not union(u, v, c):
+                    inconsistent = True
+                    break
+            if inconsistent:
+                break
+
+        # Vertical edges: connect appropriate variables for (p) and (p2)=(i+1, j)
+        if not inconsistent:
+            for i in range(H):
+                base = i * W
+                base2 = ((i + 1) % H) * W
+                for j in range(W):
+                    p = base + j
+                    p2 = base2 + j
+                    t1 = grid_str[p]
+                    t2 = grid_str[p2]
+                    # choose correct variable for top cell
+                    u = id2[p] if t1 == 'A' else id1[p]
+                    # choose correct variable for bottom cell
+                    v = id2[p2] if t2 == 'A' else id1[p2]
+                    c = 1 if t1 == t2 else 0
+                    if not union(u, v, c):
+                        inconsistent = True
+                        break
+                if inconsistent:
+                    break
+
+        if inconsistent:
+            out_lines.append("0")
+        else:
+            out_lines.append(str(pow(2, cc, MOD)))
+
+    print("\n".join(out_lines))
+
+if __name__ == "__main__":
+    main()
+```

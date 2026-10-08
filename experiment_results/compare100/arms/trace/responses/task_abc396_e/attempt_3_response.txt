@@ -1,0 +1,92 @@
+### Step-by-step reasoning
+- Model the problem as a graph with N vertices (positions of A) and M edges. Each edge (X_i, Y_i, Z_i) imposes the constraint A_{X_i} XOR A_{Y_i} = Z_i.
+- If we fix a root in a connected component and define dist[v] as the XOR-sum of edge values Z along any path from the root to v, then any valid assignment A in that component can be written as A_v = dist[v] XOR R, where R = A_root is an unknown non-negative integer (the component-wide degrees of freedom).
+- Consistency check: for every edge (u, v, z), dist[u] XOR dist[v] must equal z. If any edge violates this, no good sequence exists, answer -1.
+- If consistent, each component is described by a single parameter R. The total sum of A over the component equals sum_v (dist[v] XOR R). For each bit position k, the k-th bit of A_v is dist[v]_k XOR R_k. Let ones_k be the number of vertices in the component with dist[v]_k = 1. If R_k = 0, there are ones_k ones; if R_k = 1, there are component_size - ones_k ones. To minimize the total sum, choose R_k = 0 if ones_k <= component_size - ones_k, else R_k = 1.
+- Do this independently for each bit up to the highest bit present in any Z_i (bits above that cannot appear in dist and should be 0 to minimize sum).
+- After fixing R for a component, set A_v = dist[v] XOR R for all v in that component.
+- Time complexity is O(N + M) for BFS/DFS plus O(number_of_bits * N) for bit-wise minimization (with number_of_bits ≈ 30 since Z_i ≤ 1e9). This fits the constraints.
+- Edge cases:
+  - M = 0: all A_i can be 0 (the algorithm yields that).
+  - Self-loops with Z ≠ 0 imply inconsistency and yield -1.
+  - Duplicated edges are handled as additional constraints and checked for consistency.
+
+### Requirements
+None
+
+### Code
+```
+import sys
+from collections import deque
+
+def main():
+    data = list(map(int, sys.stdin.buffer.read().split()))
+    if not data:
+        print()
+        return
+
+    it = iter(data)
+    N = next(it)
+    M = next(it)
+
+    adj = [[] for _ in range(N)]
+    maxZ = 0
+    for _ in range(M):
+        x = next(it) - 1
+        y = next(it) - 1
+        z = next(it)
+        adj[x].append((y, z))
+        adj[y].append((x, z))
+        if z > maxZ:
+            maxZ = z
+
+    maxbit = maxZ.bit_length()  # number of bits to consider
+    dist = [0] * N
+    vis = [False] * N
+    A = [0] * N
+
+    for i in range(N):
+        if vis[i]:
+            continue
+
+        # BFS to explore this component and compute dist
+        comp_nodes = []
+        q = deque([i])
+        vis[i] = True
+        dist[i] = 0
+
+        while q:
+            u = q.popleft()
+            comp_nodes.append(u)
+            for v, z in adj[u]:
+                if not vis[v]:
+                    dist[v] = dist[u] ^ z
+                    vis[v] = True
+                    q.append(v)
+                else:
+                    if (dist[u] ^ dist[v]) != z:
+                        print(-1)
+                        return
+
+        comp_size = len(comp_nodes)
+
+        # Determine root value R per component to minimize the sum
+        root = 0
+        if maxbit:
+            for k in range(maxbit):
+                ones = 0
+                for v in comp_nodes:
+                    if (dist[v] >> k) & 1:
+                        ones += 1
+                if ones > comp_size - ones:
+                    root |= (1 << k)
+
+        # Set final A values for this component
+        for v in comp_nodes:
+            A[v] = dist[v] ^ root
+
+    print(' '.join(map(str, A)))
+
+if __name__ == "__main__":
+    main()
+```

@@ -1,0 +1,84 @@
+### Step-by-step reasoning
+- Model edges: Let edge i (0-based) be the pair (i, i+1) around the cycle. Activating edge i turns A_i and A_{i+1} to 1.
+- Constraint on activations: Two activated edges cannot share a vertex, because:
+  - Edge i requires S_{i+1} = 'R'.
+  - Edge i+1 would require S_{i+2} = 'R'.
+  - A single S position cannot be two different letters at once, so adjacent edges cannot both be activated.
+  - Therefore the set of activated edges forms a matching on the N-cycle.
+- Necessary and sufficient condition: For every i with A_i = 0, at least one of the two incident edges must be activated:
+  - A_i is covered if edge i-1 or edge i is chosen (indices modulo N).
+- Sufficiency: If we pick a matching that covers all zeros, we can assign letters to S to satisfy the end constraints for each activated edge (ends must be distinct and the middle must be 'R'). Since the activated edges in a matching do not create conflicting constraints (they form disjoint local constraints that can be two-colored along each connected component), such an assignment exists. Then performing the operations on exactly those edges turns all zeros to ones.
+- Reduction to a cycle DP: We need to decide a binary variable x_i ∈ {0,1} for each edge i indicating whether it is activated.
+  - Constraints:
+    - No two adjacent edges can both be activated: x_{i-1} + x_i ≤ 1 (indices modulo N).
+    - Coverage: For every i with A_i = 0, x_{i-1} = 1 or x_i = 1.
+- Solve on a cycle by breaking it into two linear cases for x_0:
+  - Case 1: x_0 = 0
+  - Case 2: x_0 = 1
+- For a fixed start x_0, process i = 1..N-1 and propagate possible values for x_i based on x_{i-1} and A_i:
+  - If x_{i-1} = 0:
+    - If A_i = 0, then x_i must be 1 (to cover i).
+    - If A_i = 1, x_i can be 0 or 1.
+  - If x_{i-1} = 1:
+    - Then x_i must be 0 (to avoid adjacent 1s).
+- After processing up to i = N-1, enforce wrap-around with i = 0:
+  - If A_0 = 0:
+    - Case x_0 = 0: require x_{N-1} = 1
+    - Case x_0 = 1: require x_{N-1} = 0
+  - If A_0 = 1: no extra wrap constraint beyond the adjacency already enforced.
+- If either case yields a valid configuration, answer Yes; otherwise No.
+- Complexity: O(N) time and O(1) extra space (besides input), suitable for N up to 200,000.
+
+### Requirements
+None
+
+### Code
+```
+import sys
+
+def possible_with_start(start, A):
+    n = len(A)
+    # possible values for x_{i-1} after processing up to i-1.
+    possible = {start}
+    for i in range(1, n):
+        new_set = set()
+        for prev in possible:
+            if prev == 0:
+                if A[i] == 0:
+                    # to cover i, we must set x_i = 1
+                    new_set.add(1)
+                else:
+                    # i is already covered (A[i] == 1)
+                    new_set.add(0)
+                    new_set.add(1)
+            else:  # prev == 1
+                # adjacent edge can't be 1
+                new_set.add(0)
+        possible = new_set
+        if not possible:
+            break
+
+    # Wrap-around constraint for vertex 0
+    if A[0] == 0:
+        if start == 0:
+            return 1 in possible
+        else:  # start == 1
+            return 0 in possible
+    else:
+        # A[0] == 1, no extra wrap constraint needed
+        return len(possible) > 0
+
+def can_make_all_ones(A):
+    return possible_with_start(0, A) or possible_with_start(1, A)
+
+def solve():
+    data = sys.stdin.read().strip().split()
+    if not data:
+        return
+    n = int(data[0])
+    A = list(map(int, data[1:1+n]))
+    print("Yes" if can_make_all_ones(A) else "No")
+
+if __name__ == "__main__":
+    solve()
+```

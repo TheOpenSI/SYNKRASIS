@@ -1,0 +1,93 @@
+Your generated code failed a test case.
+Please update the function logic so all test cases will pass. Error message added for your reference - 
+AssertionError: wrong answer on test case 1. Input: '3\n3 3\nAAB\nAAB\nBBB\n3 3\nBBA\nABA\nAAB\n3 4\nBAAB\nBABA\nBBAA', expected output: '2\n0\n2', your output: '0\n0\n0\n'
+
+Execution trace of your code on public test case 1. How to read it: only the lines that ran are listed, with the values after `#`. `x=1,2,3` are the values of x on successive executions of that line, `a..b` a run of consecutive numbers, `T/F` the outcome of a condition on each execution, `F×3` three equal values, `(iters 2,4)` the loop iterations the line ran in, `...` omitted middle values. Nested lines belong to the line above.
+main()
+  data = sys.stdin.buffer.read().split()  # data=[b'3', b'3', b'3', b'AAB', b'AAB', b'...
+  t = int(data[0])  # t=3
+  for _ in range(t):  # 3 iterations; _=0,1,2
+    H = int(data[pos])  # H=3×3
+    W = int(data[pos + 1])  # W=3,3,4
+    pos += 2  # pos=3,8,13
+    for _ in range(H):  # 3 runs, iterations per run: 3×3; _=0,1,2,0 ... 1,2 (9 values)
+      lines.append(data[pos].decode())  # lines += 'AAB','AAB','BBB','BBA' ... 'BABA','BBAA' (9 values)
+      pos += 1  # pos=4,5,6,9 ... 15,16 (9 values)
+    grid_str = ''.join(lines)  # grid_str='AABAABBBB','BBAABAAAB','BAABBABABBAA'
+    Ncells = H * W  # Ncells=9,9,12
+    id1 = [0] * Ncells  # id1=[0, 0, 0, 0, 0, 0, 0, 0, 0],[0, 0, 0, 0, 0, 0, 0, 0, 0],[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+    id2 = [-1] * Ncells  # id2=[-1, -1, -1, -1, -1, -1, -1, -1, -1],[-1, -1, -1, -1, -1, -1, -1, -1, -1],[-1, -1, -1, -1, -1, -1, -1, -1, -1, ...
+    for p in range(Ncells):  # 3 runs, iterations per run: 9,9,12; p=0,1,2,3 ... 10,11 (30 values)
+      if grid_str[p] == 'A':  # T,T,F,T,T,F ... F,T,T (30 times: T 15, F 15)
+        id1[p] = idx  # id1[1,3,4,2 ... 10,11 (14 values)]=2,5,7,2 ... 14,16 (14 values)  (15 of 30 iters)
+        id2[p] = idx + 1  # id2[0,1,3,4 ... 10,11 (15 values)]=1,3,6,8 ... 15,17 (15 values)  (15 of 30 iters)
+        idx += 2  # idx=2,4,7,9 ... 16,18 (15 values)  (15 of 30 iters)
+      else:
+        id1[p] = idx  # id1[2,5,6,7 ... 8,9 (13 values)]=4,9,10,11 ... 12,13 (13 values)  (15 of 30 iters)
+        idx += 1  # idx=5,10,11,12 ... 13,14 (15 values)  (15 of 30 iters)
+    N = idx  # N=13,14,18
+    parent = [-1] * N  # parent=[-1, -1, -1, -1, -1, -1, -1, -1, -1, ...×3
+    par = [0] * N  # par=[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, ...,[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, ...
+    cc = N  # cc=13,14,18
+    for i in range(H):  # 3 runs, iterations per run: 1,1,3; i=0×3,1,2; ended by break
+      base = i * W  # base=0×3,4,8
+      for j in range(W):  # 5 runs, iterations per run: 3,3,4×3; j=0,1,2,0 ... 2,3 (18 values); ended by break
+        p = base + j  # p=0,1,2,0 ... 10,11 (18 values)
+        q = base + (j + 1) % W  # q=1,2,0,1 ... 11,8 (18 values)
+        t1 = grid_str[p]  # t1='A','A','B','B' ... 'A','A' (18 values)
+        t2 = grid_str[q]  # t2='A','B','A','B' ... 'A','B' (18 values)
+        u = id1[p]  # u=0,2,4,0 ... 14,16 (18 values)
+        v = id1[q]  # v=2,4,0,1 ... 16,12 (18 values)
+        c = 1 if t1 == t2 else 0  # c=1,0,0,1 ... 1,0 (18 values)
+        if not union(u, v, c):  # F,F,T,F,F,T,F×12; union returns True,True,False,True ... True,True (18 values)
+          union(x=0, y=2, c=1, cc=13, par=[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]):  [first of 18 calls]
+            rx, dx = find(x)  # rx=0; dx=0
+              find(x=0, par=[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]):
+                if parent[x] < 0:  # True
+                  return (x, 0)  # returns (0, 0)
+            ry, dy = find(y)  # ry=2; dy=0
+              find(x=2, par=[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]):
+                if parent[x] < 0:  # True
+                  return (x, 0)  # returns (2, 0)
+            if rx == ry:  # False (rx=0, ry=2)
+            if -parent[rx] < -parent[ry]:  # False (rx=0, ry=2)
+            parent[rx] += parent[ry]  # parent[0]=-2
+            parent[ry] = rx  # parent[2]=0
+            par[ry] = dx ^ dy ^ c  # par[2]=1
+            cc -= 1  # cc=12
+            return True  # returns True
+      if inconsistent:  # T,T,F×3
+    if not inconsistent:  # F,F,T
+      for i in range(H):  # 3 iterations; i=0,1,2; ended by break  (iters 3)
+        base = i * W  # base=0,4,8
+        base2 = (i + 1) % H * W  # base2=4,8,0
+        for j in range(W):  # 3 runs, iterations per run: 4,4,1; j=0,1,2,3 ... 3,0 (9 values); ended by break
+          p = base + j  # p=0..8
+          p2 = base2 + j  # p2=4,5,6,7 ... 11,0 (9 values)
+          t1 = grid_str[p]  # t1='B','A','A','B' ... 'A','B' (9 values)
+          t2 = grid_str[p2]  # t2='B','A','B','A' ... 'A','B' (9 values)
+          u = id2[p] if t1 == 'A' else id1[p]  # u=0,2,4,5 ... 11,12 (9 values)
+          v = id2[p2] if t2 == 'A' else id1[p2]  # v=6,8,9,11 ... 17,0 (9 values)
+          c = 1 if t1 == t2 else 0  # c=1,1,0,0 ... 1,1 (9 values)
+          if not union(u, v, c):  # F×8,T; union returns True×4 ... True,False (9 values)
+            union(x=0, y=6, c=1, cc=9):  [first of 9 calls]
+              rx, dx = find(x)  # rx=0; dx=0
+                find(x=0):
+                  if parent[x] < 0:  # True
+                    return (x, 0)  # returns (0, 0)
+              ry, dy = find(y)  # ry=6; dy=0
+                find(x=6):
+                  if parent[x] < 0:  # True
+                    return (x, 0)  # returns (6, 0)
+              if rx == ry:  # False (rx=0, ry=6)
+              if -parent[rx] < -parent[ry]:  # False (rx=0, ry=6)
+              parent[rx] += parent[ry]  # parent[0]=-8
+              parent[ry] = rx  # parent[6]=0
+              par[ry] = dx ^ dy ^ c  # par[6]=1
+              cc -= 1  # cc=8
+              return True  # returns True
+        if inconsistent:  # F,F,T
+    if inconsistent:  # T×3 (inconsistent=True)
+      out_lines.append('0')  # out_lines += '0'×3
+printed '0\n0\n0'   (expected '2\n0\n2')
+Find the first point where the behaviour differs from what the problem requires and fix that logic.

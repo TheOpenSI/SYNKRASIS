@@ -1,159 +1,149 @@
+"""
+BPD - breakpoint debugger for LLM written solutions.
+
+    trace = BPD().trace(code, test_input, entry_point="f", expected="3")      # -> str, or None if it cannot be traced
+
+Runs the solution on ONE test input, records every line that executes, and returns the code that ran with the
+runtime values written next to it (see services/BPD/report.py for the format):
+
+    for n in nums:            # 4 iterations; n=1..4
+        if is_even(n):        # F,T,F,T
+            count += 1        # count=1,2  (iters 2,4)
+
+- code:        the solution as the LLM wrote it. With entry_point it is a LeetCode style `class Solution` and the
+               test input has one json value per line (the arguments of Solution().entry_point(...)); without
+               entry_point it is a program that reads stdin and prints.
+- test_input:  the input of the failing test, taken from the dataset's test case.
+- expected:    the expected output of that test (public tests only), added to the last line.
+- trace():     runs in a child process with a time and memory limit, because it executes LLM code (a long native
+               call or a memory bomb cannot hang or crash the caller). None means no trace; last_error says why.
+- trace_in_process() does the same in this process: for debugging with a debugger and for tests.
+"""
 from __future__ import annotations
 
-import inspect
 import os
 import sys
-from dataclasses import dataclass, field
-from typing import Any, Callable, Optional
+sys.path.append(f"{os.path.dirname(os.path.abspath(__file__))}/../..")
 
-sys.path.append(os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", ".."))
+import ast
+import contextlib
+import io
+import json
+import subprocess
+from dataclasses import dataclass
+from typing import Any, Optional
 
-from services.BPD.parser.structure import CodeStructure
-from services.BPD.report import ReportBuilder, ReportConfig
-from services.BPD.tracer import Invocation, TraceCollector, safe_repr
+from services.BPD.report import TraceConfig, render_within_budget
+from services.BPD.structure import CodeStructure
+from services.BPD.tracer import TARGET_FILENAME, TraceCollector, TraceLimit
 
-TARGET_FILENAME = "<bpd>"
+WORKER_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "worker.py")
 
-
-@dataclass
-class DebugReport:
-    text: str                       # the narrative for the LLM
-    call_description: str
-    result: Any = None              # what the call returned, if it returned
-    exception: Optional[Exception] = None
-    invocations: list[Invocation] = field(default_factory=list)   # structured trace, if you need it
-
-    def __str__(self) -> str:
-        return self.text
-
-
-class BreakpointDebugger:
-
-    def __init__(self, config: Optional[ReportConfig] = None) -> None:
-        self.config = config or ReportConfig()
+# Legend for the model that reads a trace, put it before the trace in the feedback.
+LEGEND = ("How to read it: only the lines that ran are listed, with the values after `#`. `x=1,2,3` are the values "
+          "of x on successive executions of that line, `a..b` a run of consecutive numbers, `T/F` the outcome of a "
+          "condition on each execution, `F×3` three equal values, `(iters 2,4)` the loop iterations the line ran in, "
+          "`...` omitted middle values. Nested lines belong to the line above.")
 
 
-    def run(self, 
-            source: str, 
-            entry_point: str, 
-            *args: Any, 
-            **kwargs: Any) -> DebugReport:
+class BPD:
+
+    def __init__(self, max_chars: int = 6000, max_steps: int = 20000, max_seconds: float = 5.0, timeout: int = 20) -> None:
         """
-        Executes `entry_point(*args, **kwargs)` where entry_point is the name of a function defined in `source`.
-        """
-        namespace = self._load(source)
-        target = self._lookup(namespace, entry_point)
-        rendered = [safe_repr(a, self.config.max_value_length) for a in args]
-        rendered += [f"{k}={safe_repr(v, self.config.max_value_length)}" for k, v in kwargs.items()]
-        description = f"{entry_point}({', '.join(rendered)})"
-        return self._execute(CodeStructure(source), TARGET_FILENAME, description,
-                             lambda: target(*args, **kwargs))
-
-
-    def run_expression(self, source: str, expression: str) -> DebugReport:
-        """
-        Evaluates a Python expression in the namespace of `source`, e.g.
-        "Counter(5).increment(3)" or "sum_list([1, 2, 3])". Useful for
-        methods, and for test cases written as expressions.
-        """
-        namespace = self._load(source)
-        code = compile(expression, "<bpd-driver>", "eval")
-        return self._execute(CodeStructure(source), TARGET_FILENAME, expression,
-                             lambda: eval(code, namespace))
-
-
-    def run_callable(self, func: Callable[..., Any], *args: Any, **kwargs: Any) -> DebugReport:
-        """
-        Traces an already-imported function. Every function defined in the
-        same file is traced too, so helpers it calls show up in the report.
-        """
-        code = inspect.unwrap(func).__code__ if not inspect.ismethod(func) else func.__func__.__code__
-        filename = code.co_filename
-        with open(filename, encoding="utf-8") as handle:
-            source = handle.read()
-        rendered = [safe_repr(a, self.config.max_value_length) for a in args]
-        rendered += [f"{k}={safe_repr(v, self.config.max_value_length)}" for k, v in kwargs.items()]
-        description = f"{getattr(func, '__qualname__', code.co_name)}({', '.join(rendered)})"
-        return self._execute(CodeStructure(source, from_file=True), filename, description,
-                             lambda: func(*args, **kwargs))
-
-
-    @staticmethod
-    def _load(source: str) -> dict[str, Any]:
-        """
-        Loads the source code into a namespace and returns it. Raises SyntaxError if the source is invalid.
-        
         Args:
-            source: The source code to load.
-            
-        Returns:
-            A dictionary representing the namespace containing the loaded source code.
+            max_chars (int): the trace is shortened (less detail) until it fits.
+            max_steps (int): lines executed before the trace is abandoned.
+            max_seconds (float): seconds of tracing before it is abandoned.
+            timeout (int): seconds before trace() kills its child process (covers one long native call).
         """
-        
-        namespace: dict[str, Any] = {"__name__": "__bpd_target__"}
-        exec(compile(source, TARGET_FILENAME, "exec"), namespace) # to get natural error message, like error in <bpd>:3
-        return namespace
+        self.max_chars = max_chars
+        self.max_steps = max_steps
+        self.max_seconds = max_seconds
+        self.timeout = timeout
+        self.last_error: Optional[str] = None      # why the last call returned None
 
+    # -- public ---------------------------------------------------------------------------------
 
-    @staticmethod
-    def _lookup(namespace: dict[str, Any], dotted: str) -> Any:
+    def trace(self, code: str, test_input: str, entry_point: Optional[str] = None,
+              expected: Optional[str] = None) -> Optional[str]:
+        """The trace of code on test_input, run in a child process. None when it cannot be traced (see last_error)."""
+        self.last_error = None
+        request = {"code": code, "test_input": test_input, "entry_point": entry_point, "expected": expected,
+                   "limits": [self.max_chars, self.max_steps, self.max_seconds]}
+        try:
+            process = subprocess.run([sys.executable, WORKER_PATH], input=json.dumps(request), capture_output=True,
+                                     text=True, timeout=self.timeout)
+            answer = json.loads(process.stdout.strip().splitlines()[-1])
+        except subprocess.TimeoutExpired:
+            self.last_error = "timeout"
+            return None
+        except (IndexError, json.JSONDecodeError):
+            self.last_error = "worker_failed"
+            return None
+        self.last_error = answer["error"]
+        return answer["trace"]
+
+    def trace_in_process(self, code: str, test_input: str, entry_point: Optional[str] = None,
+                         expected: Optional[str] = None) -> Optional[str]:
+        """Same as trace() in this process. Use trace() for LLM code you do not trust."""
+        self.last_error = None
+        original_stdin = sys.stdin
+        try:
+            if entry_point:
+                arguments = [json.loads(line) for line in test_input.splitlines()]
+                source, expression = code, f"Solution().{entry_point}({', '.join(repr(a) for a in arguments)})"
+            else:
+                source, expression = hoist_script(code), "__bpd_main__()"
+            sys.stdin = io.TextIOWrapper(io.BytesIO(test_input.encode()))
+            return self.trace_expression(source, expression, expected, show_output=entry_point is None)
+        except TraceLimit:
+            self.last_error = "trace_limit"
+        except BaseException as exc:                    # syntax error, sys.exit(), bad input ...
+            self.last_error = f"{type(exc).__name__}: {exc}"
+        finally:
+            sys.stdin = original_stdin
+        return None
+
+    def trace_expression(self, source: str, expression: str, expected: Optional[str] = None,
+                         show_output: bool = False) -> str:
         """
-        Looks up a dotted name in the given namespace, e.g. Class defined in the source, or a function defined in a class.
-        Raises NameError if not found. Also supports dotted names like "Class.method" or "module.submodule.Class.method"
-        
-        Args:
-            namespace: The namespace to look up the name in.
-            dotted: The dotted name to look up.
-            
-        Returns:
-            The object corresponding to the dotted name.
+        Lowest level: evaluate `expression` in the namespace of `source` under the tracer, e.g. "f([1, 2, 3])".
+        show_output: the last line reports what the code printed instead of what the expression returned.
+        Raises TraceLimit when the trace is too long.
         """
-        first, *rest = dotted.split(".")
-        if first not in namespace:
-            raise NameError(f"Entrypoint '{first}' is not defined in the given source")
-        target = namespace[first]
-        for part in rest:
-            target = getattr(target, part)
-        return target
+        printed = io.StringIO()
+        with contextlib.redirect_stdout(printed):
+            namespace: dict[str, Any] = {"__name__": "__bpd_target__"}
+            exec(compile(source, TARGET_FILENAME, "exec"), namespace)
+            structure = CodeStructure(source)
+            collector = TraceCollector(TARGET_FILENAME, structure, max_steps=self.max_steps, max_seconds=self.max_seconds)
+            code = compile(expression, "<bpd-driver>", "eval")
+            result, error, roots = collector.run(lambda: eval(code, namespace))
+        return render_within_budget(structure, roots, result, error, expected,
+                                    printed.getvalue() if show_output else None, TraceConfig(max_chars=self.max_chars))
 
 
-    def _render_within_budget(self, structure: CodeStructure, description: str,
-                              roots: list[Invocation], result: Any, error: Optional[Exception]) -> str:
-        """Renders the report, tightening the detail (fewer iterations/calls, shorter values) until it
-        fits config.max_chars. As a last resort the middle of the trace is cut."""
-        text = ReportBuilder(structure, self.config).build(description, roots, result, error)
-        limit = self.config.max_chars
-        if limit is None or len(text) <= limit:
-            return text
-        for level in (1, 2, 3):
-            text = ReportBuilder(structure, self.config.tightened(level)).build(description, roots, result, error)
-            if len(text) <= limit:
-                return text
-        lines = text.split("\n")
-        head, tail = int(len(lines) * 0.6), int(len(lines) * 0.25)
-        while len("\n".join(lines[:head] + lines[-tail:])) > limit and head > 10:
-            head, tail = int(head * 0.8), int(tail * 0.8)
-        omitted = len(lines) - head - tail
-        return "\n".join(lines[:head] + [f"... {omitted} trace lines omitted (size limit) ..."] + lines[-tail:])
-
-
-    def _execute(self, structure: CodeStructure, filename: str, description: str,
-                 thunk: Callable[[], Any]) -> DebugReport:
-        collector = TraceCollector(filename, structure, self.config.max_value_length)
-        result, error, roots = collector.run(thunk)
-        text = self._render_within_budget(structure, description, roots, result, error)
-        return DebugReport(text=text, call_description=description, result=result,
-                           exception=error, invocations=roots)
-        
-        
-if __name__ == "__main__":
-    source_code = """
-def sum_list(nums: list[int]) -> int:
-    total = 0
-    for n in nums:
-        total += n
-    return total
-"""
-    debugger = BreakpointDebugger()
-    report = debugger.run(source_code, "sum_list", [1, 2, 3])
-    print(report.text)
+def hoist_script(code: str) -> str:
+    """
+    A stdin program has statements at the top level, which the tracer cannot see (it traces function calls).
+    Moves them into a function __bpd_main__() so they can be traced; imports, functions and classes stay where they are,
+    the body of `if __name__ == "__main__":` is moved too.
+    """
+    keep, body = [], []
+    for node in ast.parse(code).body:
+        if isinstance(node, (ast.Import, ast.ImportFrom, ast.FunctionDef, ast.AsyncFunctionDef, ast.ClassDef)):
+            keep.append(node)
+        elif (isinstance(node, ast.If) and isinstance(node.test, ast.Compare)
+              and isinstance(node.test.left, ast.Name) and node.test.left.id == "__name__"):
+            body.extend(node.body)
+        else:
+            body.append(node)
+    stores = {n.id for stmt in body for n in ast.walk(stmt) if isinstance(n, ast.Name) and isinstance(n.ctx, ast.Store)}
+    used_by_functions = {n.id for node in keep if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef, ast.ClassDef))
+                         for n in ast.walk(node) if isinstance(n, ast.Name)}
+    shared = sorted(stores & used_by_functions)         # only these must stay global; the rest become normal locals
+    if shared:
+        body.insert(0, ast.Global(names=shared))
+    function = ast.FunctionDef(name="__bpd_main__", args=ast.arguments(posonlyargs=[], args=[], kwonlyargs=[],
+                               kw_defaults=[], defaults=[]), body=body or [ast.Pass()], decorator_list=[], type_params=[])
+    return ast.unparse(ast.fix_missing_locations(ast.Module(body=keep + [function], type_ignores=[])))

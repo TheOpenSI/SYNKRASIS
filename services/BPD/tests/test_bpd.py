@@ -4,339 +4,136 @@ import unittest
 
 sys.path.append(os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..", ".."))
 
-from services.BPD.bpd import BreakpointDebugger
-from services.BPD.report import ReportConfig
-from services.BPD.tests import test_functions
-
-SOURCE = '''
-counter = 0
-
-def double(x):
-    return x * 2
-
-def sum_list(nums):
-    total = 0
-    for n in nums:
-        total += double(n)
-    return total
-
-def factorial(n):
-    if n <= 1:
-        return 1
-    return n * factorial(n - 1)
-
-def divide(a, b):
-    return a / b
-
-def sum_of_divisions(nums):
-    total = 0
-    for n in nums:
-        total += divide(10, n)
-    return total
-
-def find_first_even(nums):
-    for n in nums:
-        if n % 2 == 0:
-            return n
-    return None
-
-def count_up(limit):
-    i = 0
-    while True:
-        i += 1
-        if i >= limit:
-            break
-    return i
-
-def grid_sum(rows):
-    total = 0
-    for row in rows:
-        for cell in row:
-            total += cell
-    return total
-
-def bump_counter(times):
-    global counter
-    for _ in range(times):
-        counter += 1
-    return counter
-
-def safe_divide(a, b):
-    try:
-        return a / b
-    except ZeroDivisionError:
-        return None
-
-def evens(n):
-    for i in range(n):
-        if i % 2 == 0:
-            yield i
-
-def sum_evens(n):
-    return sum(evens(n))
-
-def doubled_all(nums):
-    return [double(x) for x in nums]
-
-def sign(x):
-    if x > 0: return 1
-    return -1
-
-def classify(x):
-    if x < 0:
-        kind = "negative"
-    elif x == 0:
-        kind = "zero"
-    else:
-        kind = "positive"
-    return kind
-
-class Stack:
-    def __init__(self):
-        self.items = []
-
-    def push(self, item):
-        self.items.append(item)
-        return len(self.items)
-
-    def push_many(self, items):
-        for item in items:
-            self.push(item)
-        return self.items
-'''
+from services.BPD.bpd import BPD
 
 
-class BreakpointDebuggerTests(unittest.TestCase):
-
-    def setUp(self):
-        self.debugger = BreakpointDebugger()
-
-    def report(self, entry, *args, **kwargs):
-        return self.debugger.run(SOURCE, entry, *args, **kwargs)
-
-    # -- basics ----------------------------------------------------------------
-
-    def test_loop_iterations_and_accumulator(self):
-        report = self.report("sum_list", [1, 2, 3, 4])
-        self.assertEqual(report.result, 20)
-        self.assertIsNone(report.exception)
-        text = report.text
-        self.assertIn("Outcome: returned 20", text)
-        self.assertIn("`for n in nums:` (nums = [1, 2, 3, 4]) ran 4 iterations", text)
-        self.assertIn("Iteration 1 (n = 1): line 10 `total += double(n)`: called double(x=1) -> 2; total: 0 -> 2", text)
-        self.assertIn("Iteration 4 (n = 4): line 10 `total += double(n)`: called double(x=4) -> 8; total: 12 -> 20", text)
-        self.assertIn("After the loop: total = 20", text)
-        self.assertIn("Line 11 `return total`: sum_list returned 20", text)
-
-    def test_source_listing_included_by_default(self):
-        text = self.report("double", 3).text
-        self.assertIn("Source (line numbers below refer to this listing):", text)
-        self.assertIn(" 4 | def double(x):", text)
-        without = BreakpointDebugger(ReportConfig(include_source=False)).run(SOURCE, "double", 3).text
-        self.assertNotIn("Source (", without)
-
-    def test_recursion_is_nested_with_branch_outcomes(self):
-        text = self.report("factorial", 3).text
-        self.assertIn("Call factorial(n=3)", text)
-        self.assertIn("Line 14 `if n <= 1:` was False (n = 3)", text)
-        self.assertIn("called factorial(n=2):", text)
-        self.assertIn("called factorial(n=1):", text)
-        self.assertIn("Line 14 `if n <= 1:` was True (n = 1)", text)
-        self.assertIn("Line 15 `return 1`: factorial returned 1", text)
-        self.assertIn("factorial returned 6", text)
-        # deeper calls are indented further than their callers
-        outer = next(l for l in text.splitlines() if "called factorial(n=2):" in l)
-        inner = next(l for l in text.splitlines() if "called factorial(n=1):" in l)
-        self.assertLess(len(outer) - len(outer.lstrip()), len(inner) - len(inner.lstrip()))
-
-    def test_structured_invocations_are_available(self):
-        report = self.report("factorial", 3)
-        root = report.invocations[0]
-        self.assertEqual(root.name, "factorial")
-        self.assertEqual(root.args, {"n": "3"})
-        self.assertEqual(root.return_value, "6")
-        self.assertEqual(root.children[0].children[0].args, {"n": "1"})
-
-    # -- exceptions ------------------------------------------------------------
-
-    def test_exception_propagation_shows_state_at_failure(self):
-        report = self.report("sum_of_divisions", [5, 0, 1])
-        self.assertIsInstance(report.exception, ZeroDivisionError)
-        text = report.text
-        self.assertIn("Outcome: raised ZeroDivisionError: division by zero", text)
-        self.assertIn("ran 2 iterations, then an exception left the loop", text)
-        self.assertIn("Line 19 `return a / b`: raised ZeroDivisionError: division by zero", text)
-        self.assertIn("propagated out of divide (state: a = 10, b = 0)", text)
-        self.assertIn("propagated out of sum_of_divisions (state: nums = [5, 0, 1], total = 2.0, n = 0)", text)
-
-    def test_handled_exception_does_not_propagate(self):
-        report = self.report("safe_divide", 1, 0)
-        self.assertIsNone(report.exception)
-        text = report.text
-        self.assertIn("raised ZeroDivisionError: division by zero", text)
-        self.assertNotIn("propagated out of", text)
-        self.assertIn("safe_divide returned None", text)
-
-    # -- loops -----------------------------------------------------------------
-
-    def test_return_from_inside_loop(self):
-        text = self.report("find_first_even", [1, 3, 4, 5]).text
-        self.assertIn("ran 3 iterations, then returned from inside the loop", text)
-        self.assertIn("`if n % 2 == 0:` was True (n = 4); line 30 `return n`: find_first_even returned 4", text)
-        self.assertIn("find_first_even returned 4", text)
-        self.assertNotIn("After the loop", text)
-
-    def test_while_true_with_break(self):
-        text = self.report("count_up", 3).text
-        self.assertIn("`while True:` ran 3 iterations, then exited via break", text)
-        self.assertIn("`if i >= limit:` was True (i = 3, limit = 3)", text)
-        self.assertIn("After the loop: i = 3", text)
-
-    def test_nested_loops(self):
-        text = self.report("grid_sum", [[1, 2], [3]]).text
-        self.assertIn("`for row in rows:` (rows = [[1, 2], [3]]) ran 2 iterations", text)
-        self.assertIn("Iteration 1 (row = [1, 2]):", text)
-        self.assertIn("`for cell in row:` (row = [1, 2]) ran 2 iterations", text)
-        self.assertIn("Iteration 1 (cell = 1): line 45 `total += cell`: total: 0 -> 1", text)
-        self.assertIn("`for cell in row:` (row = [3]) ran 1 iteration", text)
-        self.assertIn("After the loop: total = 6\n", text)
-        self.assertNotIn("cell = 3\n", text)
-        self.assertIn("grid_sum returned 6", text)
-
-    def test_empty_loop(self):
-        text = self.report("sum_list", []).text
-        self.assertIn("ran 0 iterations (body never executed)", text)
-        self.assertIn("sum_list returned 0", text)
-
-    def test_long_loops_are_elided(self):
-        debugger = BreakpointDebugger(ReportConfig(max_iterations_shown=5, iterations_tail=2))
-        text = debugger.run(SOURCE, "sum_list", list(range(1, 21))).text
-        self.assertIn("ran 20 iterations", text)
-        self.assertIn("Iteration 3 (n = 3)", text)
-        self.assertNotIn("Iteration 4 (n = 4)", text)
-        self.assertIn("... 15 iterations omitted ...", text)
-        self.assertIn("Iteration 19 (n = 19)", text)
-        self.assertIn("Iteration 20 (n = 20)", text)
-
-    # -- branches --------------------------------------------------------------
-
-    def test_elif_chain(self):
-        text = self.report("classify", 0).text
-        self.assertIn("Line 76 `if x < 0:` was False (x = 0)", text)
-        self.assertIn("Line 78 `elif x == 0:` was True (x = 0)", text)
-        self.assertIn("Line 79 `kind = \"zero\"`: kind = 'zero'", text)
-        self.assertNotIn("Line 81", text)
-
-    def test_single_line_if_body(self):
-        self.assertIn("Line 72 `if x > 0: return 1` was True (x = 5): sign returned 1", self.report("sign", 5).text)
-        negative = self.report("sign", -5).text
-        self.assertIn("Line 72 `if x > 0: return 1` was False (x = -5)", negative)
-        self.assertIn("Line 73 `return -1`: sign returned -1", negative)
-        self.assertNotIn("End of function reached", negative)
-
-    # -- globals, classes, generators, comprehensions ---------------------------
-
-    def test_global_variable_changes_are_tracked(self):
-        text = self.report("bump_counter", 2).text
-        self.assertIn("Iteration 1 (_ = 0): line 51 `counter += 1`: counter (global): 0 -> 1", text)
-        self.assertIn("After the loop: counter (global) = 2", text)
-
-    def test_method_calls_show_object_state(self):
-        report = self.debugger.run_expression(SOURCE, "Stack().push_many(['a', 'b'])")
-        self.assertEqual(report.result, ["a", "b"])
-        text = report.text
-        self.assertIn("Call __init__(self=Stack())  [Stack.__init__", text)
-        self.assertIn("Call push_many(self=Stack(items=[]), items=['a', 'b'])  [Stack.push_many", text)
-        self.assertIn("called push(self=Stack(items=[]), item='a') -> 1; self: Stack(items=[]) -> Stack(items=['a'])", text)
-        self.assertIn("After the loop: self = Stack(items=['a', 'b'])", text)
-
-    def test_generator_yields(self):
-        text = self.report("sum_evens", 5).text
-        self.assertIn("called evens(n=5):", text)
-        self.assertIn("`if i % 2 == 0:` was True (i = 0)", text)
-        self.assertIn("evens yielded 0, 2, 4", text)
-        self.assertIn("sum_evens returned 6", text)
-
-    def test_calls_from_comprehension_are_attributed_to_the_function(self):
-        text = self.report("doubled_all", [1, 2]).text
-        self.assertIn("called double(x=1) -> 2; called double(x=2) -> 4", text)
-        self.assertNotIn("<listcomp>", text)
-
-    def test_many_calls_on_one_line_are_capped(self):
-        debugger = BreakpointDebugger(ReportConfig(max_calls_per_step=2))
-        text = debugger.run(SOURCE, "doubled_all", [1, 2, 3, 4, 5]).text
-        self.assertIn("called double(x=2) -> 4; ... and 3 more calls to double", text)
-
-    def test_call_depth_limit(self):
-        debugger = BreakpointDebugger(ReportConfig(max_call_depth=1))
-        text = debugger.run(SOURCE, "factorial", 4).text
-        self.assertIn("called factorial(n=3):", text)
-        self.assertIn("called factorial(n=2) -> 2 (nested details omitted: depth limit)", text)
-
-    # -- entry points ----------------------------------------------------------
-
-    def test_run_callable_traces_the_functions_file(self):
-        report = self.debugger.run_callable(test_functions.sum_list, [1, 2])
-        self.assertEqual(report.result, 6)
-        text = report.text
-        self.assertIn("Execution report for `sum_list([1, 2])`", text)
-        self.assertIn("def sum_list(nums: list[int]) -> int:", text)
-        self.assertIn("called double(x=1) -> 2", text)
-
-    def test_run_callable_with_exception(self):
-        report = self.debugger.run_callable(test_functions.sum_list_with_exception, [1, 0])
-        self.assertIsInstance(report.exception, ZeroDivisionError)
-        self.assertIn("propagated out of divide", report.text)
-
-    def test_unknown_entry_point(self):
-        with self.assertRaises(NameError):
-            self.report("missing")
-
-    def test_expression_without_traced_calls(self):
-        report = self.debugger.run_expression(SOURCE, "1 + 1")
-        self.assertEqual(report.result, 2)
-        self.assertIn("No traced function was called.", report.text)
-
-    def test_report_str_is_text(self):
-        report = self.report("double", 2)
-        self.assertEqual(str(report), report.text)
+def trace(source: str, call: str, expected=None, **limits) -> str:
+    """Trace the expression `call` (e.g. "f([1, 2])") in the namespace of source."""
+    return BPD(**limits).trace_expression(source, call, expected)
 
 
-class ConciseReportTests(unittest.TestCase):
-    SRC = """
-def fill(n):
-    items = []
-    seen = {}
-    for i in range(n):
-        items.append(i * i)
-        seen[i] = i
-    items[0] = 99
-    return items
-"""
+class FormatTests(unittest.TestCase):
 
-    def test_collection_updates_are_shown_as_deltas(self) -> None:
-        text = BreakpointDebugger(ReportConfig.concise()).run(self.SRC, "fill", 3).text
-        self.assertIn("items: appended 4", text)
-        self.assertIn("seen[2] = 2", text)
-        self.assertIn("items[0]: 0 -> 99", text)
-        self.assertNotIn("items: [0, 1] -> [0, 1, 4]", text)
+    def test_loop_values_are_sequences_on_the_loop_and_body_lines(self):
+        text = trace("def f(nums):\n    total = 0\n    for n in nums:\n        total += n\n    return total\n", "f([1, 2, 3, 4])")
+        self.assertIn("for n in nums:  # 4 iterations; n=1..4", text)
+        self.assertIn("total += n  # total=1,3,6,10", text)
+        self.assertNotIn("total = 0", text)                       # a literal assignment tells nothing
 
-    def test_full_report_is_unchanged_by_default(self) -> None:
-        text = BreakpointDebugger().run(self.SRC, "fill", 3).text
-        self.assertIn("items: [0, 1] -> [0, 1, 4]", text)
-        self.assertIn("Source (line numbers below refer to this listing)", text)
+    def test_unchanged_assigned_values_are_recorded_every_time(self):
+        text = trace("def f(xs):\n    for x in xs:\n        y = x // 2\n    return y\n", "f([2, 3, 2, 3])")
+        self.assertIn("y=1×4", text)                              # y does not change, but it was assigned 4 times
 
-    def test_concise_report_drops_source_listing_and_noise(self) -> None:
-        text = BreakpointDebugger(ReportConfig.concise()).run(self.SRC, "fill", 3).text
-        self.assertNotIn("Source (line numbers", text)
-        self.assertNotIn("After the loop", text)       # all iterations shown, nothing omitted
+    def test_branch_outcomes_and_rows_that_ran_in_some_iterations_only(self):
+        source = "def f(nums):\n    c = 0\n    for n in nums:\n        if n % 2 == 0:\n            c += 1\n    return c\n"
+        text = trace(source, "f([1, 2, 3, 4])")
+        self.assertIn("if n % 2 == 0:  # F,T,F,T", text)
+        self.assertIn("c += 1  # c=1,2  (iters 2,4)", text)
 
-    def test_size_budget_is_respected(self) -> None:
-        source = "def big(n):\n    t = 0\n    for i in range(n):\n        for j in range(n):\n            t += i * j\n    return t\n"
-        config = ReportConfig.concise(max_chars=1500)
-        text = BreakpointDebugger(config).run(source, "big", 40).text
-        self.assertLessEqual(len(text), 1500)
-        self.assertIn("Outcome: returned", text)
+    def test_a_row_that_skipped_one_iteration_is_marked(self):
+        source = "def f(xs):\n    t = 0\n    for x in xs:\n        if x < 0:\n            continue\n        t += x\n    return t\n"
+        text = trace(source, "f([1, 2, -1, 4, 5, 6])")
+        self.assertIn("(not in iters 3)", text)
+        self.assertIn("if x < 0:  # F,F,T,F×3", text)             # the position of the odd one out stays visible
+
+    def test_else_body_is_marked_with_an_else_line(self):
+        source = "def f(x):\n    if x > 0:\n        y = 1\n    else:\n        y = x * 2\n    return y\n"
+        lines = trace(source, "f(-3)").splitlines()
+        self.assertIn("if x > 0:  # False", "\n".join(lines))
+        self.assertEqual(lines[lines.index("  else:") + 1], "    y = x * 2  # y=-6")
+
+    def test_list_updates_are_deltas(self):
+        source = "def f(n):\n    out = []\n    sq = [0] * n\n    for i in range(n):\n        sq[i] = i * i\n        out.append(i)\n    return out\n"
+        text = trace(source, "f(4)")
+        self.assertIn("sq[1..3]=1,4,9", text)                     # sq[0] stays 0: no change, same value
+        self.assertIn("out += 0..3", text)
+
+    def test_exception_is_shown_where_it_happened_and_once_at_the_end(self):
+        text = trace("def f(items):\n    i = 0\n    while i <= len(items):\n        i += 1\n    return items[i]\n", "f([10, 20, 30])")
+        self.assertIn("return items[i]  # raised IndexError", text)
+        self.assertTrue(text.splitlines()[-1].startswith("raised IndexError; locals:"))
+        self.assertIn("i=4", text.splitlines()[-1])
+
+    def test_expected_value_is_added_to_the_last_line(self):
+        self.assertEqual(trace("def f(x):\n    return x + 1\n", "f(1)", expected="3").splitlines()[-1], "returned 2   (expected '3')")
+
+    def test_name_used_in_a_comprehension_is_still_visible_as_a_variable(self):
+        source = "def f(xs):\n    col = xs[0]\n    m = min(len(col) for col in xs)\n    return m\n"
+        self.assertIn("col=[1, 2]", trace(source, "f([[1, 2], [3]])"))
+
+    def test_calls_with_nothing_to_say_are_not_repeated(self):
+        source = "def is_even(x):\n    return x % 2 == 0\n\ndef f(nums):\n    c = 0\n    for n in nums:\n        if is_even(n):\n            c += 1\n    return c\n"
+        text = trace(source, "f([1, 2, 3, 4])")
+        self.assertNotIn("is_even", text.split("if is_even(n):")[1].split("\n")[0])   # the outcome F,T,F,T says it
+
+    def test_long_pass_through_arguments_are_not_repeated_in_nested_calls(self):
+        source = ("def walk(data, i):\n    if i == 0:\n        return 0\n    return walk(data, i - 1) + data[i]\n\n"
+                  "def f(data):\n    return walk(data, 2)\n")
+        self.assertEqual(trace(source, f"f({list(range(100, 160))})").count("data=["), 1)
+
+    def test_size_budget_is_respected(self):
+        source = "def f(n):\n    t = 0\n    for i in range(n):\n        for j in range(n):\n            t += (i * j) % 7\n    return t\n"
+        text = trace(source, "f(30)", max_chars=500)
+        self.assertLessEqual(len(text), 600)
+        self.assertTrue(text.splitlines()[-1].startswith("returned"))
+
+    def test_huge_list_does_not_slow_the_trace_down(self):
+        text = trace("def f(n):\n    a = [0] * n\n    for i in range(5):\n        a[i] = i\n    return len(a)\n", "f(3000000)")
+        self.assertIn("(len=3000000)", text)
+
+
+class TraceTests(unittest.TestCase):
+    """The way LiveCodeBench uses it: code + the input of one test."""
+
+    FUNCTIONAL = "class Solution:\n    def total(self, nums: list, k: int) -> int:\n        s = 0\n        for n in nums:\n            s += n * k\n        return s\n"
+    STDIN = "n = int(input())\ntotal = 0\nfor i in range(n):\n    total += i\nprint(total)\n"
+
+    def test_functional_arguments_are_one_json_value_per_line(self):
+        text = BPD().trace_in_process(self.FUNCTIONAL, "[1, 2, 3]\n2", entry_point="total", expected="12")
+        self.assertIn("total(nums=[1, 2, 3], k=2):", text)
+        self.assertIn("s += n * k  # s=2,6,12", text)
+        self.assertEqual(text.splitlines()[-1], "returned 12   (expected '12')")
+
+    def test_stdin_program_is_traced_and_its_output_reported(self):
+        text = BPD().trace_in_process(self.STDIN, "4", expected="7")
+        self.assertIn("for i in range(n):  # 4 iterations; i=0..3", text)
+        self.assertEqual(text.splitlines()[-1], "printed '6'   (expected '7')")
+
+    def test_stdin_program_with_main_function_and_guard(self):
+        code = "import sys\ndef solve():\n    n = int(sys.stdin.readline())\n    print(n * 2)\n\nif __name__ == '__main__':\n    solve()\n"
+        text = BPD().trace_in_process(code, "21\n")
+        self.assertIn("n = int(sys.stdin.readline())  # n=21", text)
+        self.assertEqual(text.splitlines()[-1], "printed '42'")
+
+    def test_a_crash_in_the_solution_is_a_trace_not_a_failure(self):
+        text = BPD().trace_in_process("n = int(input())\nprint(1 // n)\n", "0")
+        self.assertIn("raised ZeroDivisionError", text.splitlines()[-1])
+
+    def test_syntax_error_gives_none_and_a_reason(self):
+        bpd = BPD()
+        self.assertIsNone(bpd.trace_in_process("def f(:\n", "1"))
+        self.assertIn("SyntaxError", bpd.last_error)
+
+    def test_isolated_trace_matches_the_in_process_trace(self):
+        bpd = BPD()
+        self.assertEqual(bpd.trace(self.STDIN, "4", expected="7"), bpd.trace_in_process(self.STDIN, "4", expected="7"))
+
+    def test_a_hanging_solution_does_not_hang_the_caller(self):
+        bpd = BPD(timeout=4)
+        self.assertIsNone(bpd.trace("x = sum(range(10**10))\nprint(x)\n", ""))          # one long native call, no line events
+        self.assertEqual(bpd.last_error, "timeout")
+
+    def test_an_endless_loop_hits_the_trace_limit(self):
+        bpd = BPD(max_steps=500)
+        self.assertIsNone(bpd.trace("while True:\n    pass\n", ""))
+        self.assertEqual(bpd.last_error, "trace_limit")
+
+    def test_sys_exit_and_memory_bomb_are_contained(self):
+        bpd = BPD()
+        self.assertIsNone(bpd.trace("import sys\nsys.exit(3)\n", ""))
+        self.assertIn("SystemExit", bpd.last_error)
+        text = bpd.trace("a = [0] * (10**11)\nprint(len(a))\n", "")
+        self.assertTrue(text is None or "MemoryError" in text)
 
 
 if __name__ == "__main__":

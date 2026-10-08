@@ -1,0 +1,113 @@
+### Step-by-step reasoning
+- Problem recap: We need to select K disjoint pairs of cakes from N items, where the price of a pair (i, j) is max(Xi+Xj, Yi+Yj, Zi+Zj). We want to maximize the total price over the K pairs.
+- Challenge: A brute-force maximum weight matching on a complete graph with N up to 100k is infeasible. A direct exact solution is not possible within the constraints.
+- Practical plan: Rely on the observation that high pair prices tend to come from cakes with large coordinates in at least one dimension. To keep the solution efficient and deterministic, restrict attention to a carefully chosen small candidate set of cakes, compute all pairwise weights inside that set, and greedily pick disjoint pairs in descending order of pair price.
+- Candidate set construction: For each dimension X, Y, Z take the top M cakes (largest coordinate in that dimension). The union of these indices forms the candidate set S. A moderate M (e.g., 250) yields a manageable S (at most ~750 elements) and collects the most-promising cakes.
+- Edge construction and selection: Compute all pair weights for pairs within S, sort edges by weight descending, and greedily pick edges (pairs) that don’t share cakes until we have K pairs (typical case). A fallback is included to handle rare cases where the greedy set within S doesn’t yield K pairs: we perform a limited secondary search on a subset of remaining cakes.
+- Time/memory considerations: With M = 250, |S| ≤ 750, so internal edges ≤ 750*749/2 ≈ 280k. This is manageable in Python. The fallback uses a cap (e.g., 1000 remaining cakes) to keep worst-case behavior bounded.
+
+This approach is deterministic, scalable, and significantly more robust than a naive heuristic that only used a very small candidate set.
+
+### Requirements
+None
+
+### Code
+```
+import sys
+
+def solve():
+    data = list(map(int, sys.stdin.buffer.read().split()))
+    t = data[0]
+    p = 1
+    out_lines = []
+    for _ in range(t):
+        N = data[p]; K = data[p+1]; p += 2
+
+        X = [0]*N
+        Y = [0]*N
+        Z = [0]*N
+        for i in range(N):
+            X[i] = data[p]; Y[i] = data[p+1]; Z[i] = data[p+2]
+            p += 3
+
+        # Candidate set construction
+        M = min(N, 250)  # top-M per dimension
+        idx_X = sorted(range(N), key=lambda i: X[i], reverse=True)[:M]
+        idx_Y = sorted(range(N), key=lambda i: Y[i], reverse=True)[:M]
+        idx_Z = sorted(range(N), key=lambda i: Z[i], reverse=True)[:M]
+
+        cand = set(idx_X) | set(idx_Y) | set(idx_Z)
+        S = sorted(cand)
+        m = len(S)
+
+        # Build all edges inside S with their weights
+        edges = []
+        for i in range(m):
+            a = S[i]
+            Xa, Ya, Za = X[a], Y[a], Z[a]
+            for j in range(i+1, m):
+                b = S[j]
+                w = Xa + X[b]
+                t1 = Ya + Y[b]
+                if t1 > w:
+                    w = t1
+                t2 = Za + Z[b]
+                if t2 > w:
+                    w = t2
+                edges.append((w, a, b))
+
+        # Sort edges by weight descending
+        edges.sort(reverse=True, key=lambda e: e[0])
+
+        used = [False]*N
+        total = 0
+        taken = 0
+
+        # Greedily pick edges
+        for w, a, b in edges:
+            if taken == K:
+                break
+            if not used[a] and not used[b]:
+                used[a] = True
+                used[b] = True
+                total += w
+                taken += 1
+
+        # Fallback: limited search on remaining cakes if needed
+        if taken < K:
+            remaining = [i for i in range(N) if not used[i]]
+            limit = min(len(remaining), 1000)
+            rem = remaining[:limit]
+            more_edges = []
+            L = len(rem)
+            for i2 in range(L):
+                i = rem[i2]
+                Xi, Yi, Zi = X[i], Y[i], Z[i]
+                for j2 in range(i2+1, L):
+                    j = rem[j2]
+                    w = Xi + X[j]
+                    t1 = Yi + Y[j]
+                    if t1 > w:
+                        w = t1
+                    t2 = Zi + Z[j]
+                    if t2 > w:
+                        w = t2
+                    more_edges.append((w, i, j))
+            more_edges.sort(reverse=True, key=lambda e: e[0])
+            for w, a, b in more_edges:
+                if taken == K:
+                    break
+                if not used[a] and not used[b]:
+                    used[a] = True
+                    used[b] = True
+                    total += w
+                    taken += 1
+
+        out_lines.append(str(total))
+
+    print("\n".join(out_lines))
+
+
+if __name__ == "__main__":
+    solve()
+```

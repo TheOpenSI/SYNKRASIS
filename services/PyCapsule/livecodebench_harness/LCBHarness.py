@@ -189,11 +189,11 @@ def _run_test(test):
 for _index, _test in enumerate(_TESTS):
     _status, _proc = _run_test(_test)
     if _status == "timeout":
-        _fail(f"Failed on input: {_short(_test['input'])!r}\n"
+        _fail(f"Failed on test case {_index + 1}. Input: {_short(_test['input'])!r}\n"
               f"Exception: Generated code is running infinite loop (exceeded {_TIMEOUT}s).")
     if _status == "runtime_error":
         # The last line of the child's stderr is the error type and message.
-        _fail(f"Failed on input: {_short(_test['input'])!r}\n" + _proc.stderr[-2000:])
+        _fail(f"Failed on test case {_index + 1}. Input: {_short(_test['input'])!r}\n" + _proc.stderr[-2000:])
     if _status == "wrong_answer":
         _fail(f"AssertionError: wrong answer on test case {_index + 1}. "
               f"Input: {_short(_test['input'])!r}, "

@@ -1,0 +1,80 @@
+### Step-by-step reasoning
+- Problem recap: Start with empty A. For i from 1 to N, insert i so that it becomes the Pi-th element from the beginning. This is equivalent to inserting i at position Pi in the current A, pushing existing elements to the right.
+- Naive approach of inserting into a Python list is O(N^2) and too slow for N up to 5e5.
+- Key idea: Build the final array A by processing i from N down to 1. When placing i, there are exactly i empty slots left in A (since numbers N, N-1, ..., i+1 have already been placed). The Pi-th element from the left among those empty slots is exactly where i should go.
+- Data structure: Use a Fenwick Tree (Binary Indexed Tree) to keep track of empty slots. We initialize all positions as empty (1). For each i from N down to 1:
+  - Find the Pi-th empty slot from the left (the Pi-th 1 in the Fenwick structure).
+  - Place i at that position.
+  - Mark that slot as filled (update Fenwick with -1 at that index).
+- Implementation details:
+  - Use 1-based indexing for the final array A to align with Fenwick Tree indexing.
+  - Implement kth(k) on Fenwick to retrieve the smallest index pos such that the prefix sum up to pos is at least k.
+- Complexity: O(N log N) time, O(N) space. Handles N up to 5e5 comfortably in Python with optimized Fenwick operations.
+- Potential pitfalls:
+  - Correct 1-based indexing.
+  - Pi is 1-based as per problem statement.
+  - Robust kth implementation to retrieve the k-th empty slot.
+  - Efficient input/output for large N.
+
+### Requirements
+None
+
+### Code
+```
+import sys
+
+class Fenwick:
+    def __init__(self, n: int):
+        self.n = n
+        self.tree = [0] * (n + 1)
+
+    def add(self, idx: int, delta: int):
+        i = idx
+        while i <= self.n:
+            self.tree[i] += delta
+            i += i & -i
+
+    def sum(self, idx: int) -> int:
+        res = 0
+        i = idx
+        while i > 0:
+            res += self.tree[i]
+            i -= i & -i
+        return res
+
+    def kth(self, k: int) -> int:
+        # Find the smallest index such that the prefix sum >= k
+        idx = 0
+        bit_mask = 1 << (self.n.bit_length() - 1)  # highest power of two <= n
+        while bit_mask:
+            t = idx + bit_mask
+            if t <= self.n and self.tree[t] < k:
+                idx = t
+                k -= self.tree[t]
+            bit_mask >>= 1
+        return idx + 1
+
+def main():
+    data = list(map(int, sys.stdin.buffer.read().split()))
+    if not data:
+        return
+    N = data[0]
+    P = data[1:1 + N]
+
+    ft = Fenwick(N)
+    for i in range(1, N + 1):
+        ft.add(i, 1)  # all positions are initially empty
+
+    A = [0] * (N + 1)  # 1-based indexing for final array
+
+    for i in range(N, 0, -1):
+        k = P[i - 1]
+        pos = ft.kth(k)  # the k-th empty slot from the left
+        A[pos] = i
+        ft.add(pos, -1)  # mark slot as filled
+
+    sys.stdout.write(' '.join(str(A[i]) for i in range(1, N + 1)) + '\n')
+
+if __name__ == "__main__":
+    main()
+```

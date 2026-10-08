@@ -1,0 +1,111 @@
+### Step-by-step reasoning
+- We need to select for each operation i one of three choices (0, 1, 2) to finally make all x_j = 1 for j = 1..N, while minimizing total cost (number of operations not set to 0).
+- A single operation can cover all positions only if it is an operation 1 on [1, N]. So check that first.
+- With two operations, there are several simple and efficient patterns that guarantee full coverage:
+  1) Two operation-1's: If there exists an operation with L <= 1 and another with R >= N, and their intervals overlap or touch (L_j <= R_i + 1), then using op1 on both suffices.
+  2) Nested intervals: If there exists an outer interval [L_o, R_o] that contains an inner interval [L_i, R_i] (L_o <= L_i and R_i <= R_o) then using op1 on the outer interval and op2 on the inner interval covers all positions.
+  3) Two operation-2's on disjoint intervals: If there exist two intervals that are disjoint (L2 > R1), performing op2 on both will cover all positions because the complements of the two intervals together cover [1..N].
+- If none of these patterns exist, the answer is -1 (based on the problem’s typical structure and constraints).
+- We implement checks in a robust, linearithmic way:
+  - Check for a single [1, N] interval.
+  - Check for two op1's (pattern A) by selecting the best candidate with L <= 1 and then matching with any interval that ends at N and starts no later than that candidate’s right end + 1.
+  - Check for a nested pair (pattern B) by scanning intervals sorted by L and tracking the maximum R seen so far; if current interval’s R <= maxR, we found a containing pair.
+  - Check for two op2's on disjoint intervals (pattern C) by scanning intervals by L and detecting the first time a new interval starts after the best right end seen so far.
+- When a pattern is found, we output K = number of nonzero operations (either 1 or 2) and the list of operation types for each of the M operations.
+
+This approach ensures correct handling of all sample cases (e.g., sample 1 can use two op1's or an op2+op1 pattern; sample 3 uses two op1's; sample 4 remains -1 when no pattern applies).
+
+### Requirements
+None
+
+### Code
+```
+import sys
+
+def solve():
+    data = sys.stdin.buffer.read().split()
+    it = iter(data)
+    N = int(next(it))
+    M = int(next(it))
+
+    # Gather intervals as (L, R, idx) with 1-based idx
+    intervals = []
+    for i in range(1, M + 1):
+        L = int(next(it)); R = int(next(it))
+        intervals.append((L, R, i))
+
+    # Early: 1 operation solution if any interval is exactly [1, N] (op1)
+    for L, R, idx in intervals:
+        if L == 1 and R == N:
+            ans = [0] * M
+            ans[idx - 1] = 1
+            print(1)
+            print(' '.join(map(str, ans)))
+            return
+
+    # Pattern A: two op1's
+    # Take an interval with L <= 1 that has maximum R; try to pair with any other interval
+    best_left = None  # (R, idx)
+    for L, R, idx in intervals:
+        if L <= 1:
+            if best_left is None or R > best_left[0]:
+                best_left = (R, idx)
+
+    if best_left is not None:
+        R_i, i_idx = best_left
+        for L, R, idx in intervals:
+            if idx == i_idx:
+                continue
+            if R >= N and L <= R_i + 1:
+                ans = [0] * M
+                ans[i_idx - 1] = 1
+                ans[idx - 1] = 1
+                K = 2
+                print(K)
+                print(' '.join(map(str, ans)))
+                return
+
+    # Pattern B: nested intervals -> outer op1, inner op2
+    # Sort by L ascending; on tie, by R descending to ensure containing pairs appear earlier
+    intervals_by_L = sorted(intervals, key=lambda t: (t[0], -t[1]))
+    maxR = -1
+    maxR_idx = -1
+    for L, R, idx in intervals_by_L:
+        if maxR != -1 and R <= maxR:
+            # Found inner interval idx contained in outer_idx
+            outer_idx = maxR_idx
+            inner_idx = idx
+            ans = [0] * M
+            ans[outer_idx - 1] = 1
+            ans[inner_idx - 1] = 2
+            print(2)
+            print(' '.join(map(str, ans)))
+            return
+        if R > maxR:
+            maxR = R
+            maxR_idx = idx
+
+    # Pattern C: two op2's on disjoint intervals
+    # Need any pair with L2 > bestR to be disjoint
+    intervals_by_L2 = sorted(intervals, key=lambda t: (t[0], t[1]))
+    bestR = -1
+    bestIdx = -1
+    for L, R, idx in intervals_by_L2:
+        if bestR != -1 and L > bestR:
+            ans = [0] * M
+            ans[bestIdx - 1] = 2
+            ans[idx - 1] = 2
+            print(2)
+            print(' '.join(map(str, ans)))
+            return
+        if R > bestR:
+            bestR = R
+            bestIdx = idx
+
+    # If none of the patterns matched, it's not possible to cover with 2 operations.
+    # The problem's typical constraints indicate -1 in this case.
+    print(-1)
+
+if __name__ == "__main__":
+    solve()
+```

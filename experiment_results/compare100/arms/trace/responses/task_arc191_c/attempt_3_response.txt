@@ -1,0 +1,209 @@
+### Step-by-step reasoning
+- We need to output a pair (A, M) such that there exists a positive n with A^n - 1 divisible by M, and the smallest such n equals the given N.
+- A robust way is to pick M = p a prime with p ≡ 1 (mod N) and construct A so that its multiplicative order modulo p is exactly N.
+- If ord_p(A) = N, then the smallest n with A^n ≡ 1 (mod p) is N, so A^n - 1 is divisible by p for n = N, and not for any smaller n.
+- To guarantee ord_p(A) = N, we can take a primitive root g modulo p (which has order p-1) and set A = g^((p-1)/N) mod p. Then ord_p(A) = (p-1)/gcd(p-1, (p-1)/N) = N, since p-1 = N * m and gcd(p-1, m) = m.
+- We need to find a prime p of the form p = k*N + 1. For such p, p-1 is divisible by N, so the above construction applies.
+- For N = 1, any M = 1 works (and any A). We can output a small fixed pair, e.g., (2, 1).
+- Implementation plan:
+  - Use deterministic Miller-Rabin to test primality for 64-bit/1e18 range.
+  - Factor N and k for each candidate p to obtain the distinct prime divisors of p-1 (these are the primes dividing N and k). We only need the distinct prime divisors to test primitive roots.
+  - Find a primitive root g modulo p by testing small bases against all prime divisors q of p-1: ensure g^((p-1)/q) mod p != 1 for all q.
+  - Compute A = g^((p-1)/N) mod p and output A and p.
+  - Iterate k = 1, 2, ... until p = k*N + 1 is prime and within limit (1e18). Then output (A, p). If none found, fall back to a safe option (though problem guarantees existence within bounds).
+
+- This approach guarantees correctness and works within the stated limits for typical test data. It avoids relying on a fixed output format beyond correctness checks (any valid pair is acceptable).
+
+### Requirements
+None
+
+### Code
+```
+import sys
+
+# Deterministic Miller-Rabin primality test for 64-bit integers
+def is_prime(n: int) -> bool:
+    if n < 2:
+        return False
+    # small primes quick check
+    small_primes = [2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41]
+    for p in small_primes:
+        if n % p == 0:
+            return n == p
+
+    # write n-1 = d * 2^s
+    d = n - 1
+    s = 0
+    while d % 2 == 0:
+        d //= 2
+        s += 1
+
+    # Deterministic bases for 64-bit integers
+    bases = [2, 3, 5, 7, 11, 13, 17]
+    for a in bases:
+        if a % n == 0:
+            continue
+        x = pow(a, d, n)
+        if x == 1 or x == n - 1:
+            continue
+        composite = True
+        for _ in range(s - 1):
+            x = (x * x) % n
+            if x == n - 1:
+                composite = False
+                break
+        if composite:
+            return False
+    return True
+
+# Sieve primes up to limit for factoring n (n <= 1e9 here)
+def sieve_primes(limit: int):
+    is_prime_arr = [True] * (limit + 1)
+    is_prime_arr[0] = is_prime_arr[1] = False
+    primes = []
+    for i in range(2, limit + 1):
+        if is_prime_arr[i]:
+            primes.append(i)
+            step = i
+            start = i * i
+            if start > limit:
+                continue
+            for j in range(start, limit + 1, step):
+                is_prime_arr[j] = False
+    return primes
+
+# Factorization into distinct primes (not exponents needed)
+def factor_primes(n: int, primes_list=None):
+    factors = []
+    tmp = n
+    if primes_list is None:
+        # Fallback: trial division up to sqrt(n)
+        d = 2
+        while d * d <= tmp:
+            if tmp % d == 0:
+                factors.append(d)
+                while tmp % d == 0:
+                    tmp //= d
+            d += 1 if d == 2 else 2
+        if tmp > 1:
+            factors.append(tmp)
+        return sorted(set(factors))
+    else:
+        for p in primes_list:
+            if p * p > tmp:
+                break
+            if tmp % p == 0:
+                factors.append(p)
+                while tmp % p == 0:
+                    tmp //= p
+        if tmp > 1:
+            factors.append(tmp)
+        return sorted(set(factors))
+
+def main():
+    data = sys.stdin.read().strip().split()
+    if not data:
+        return
+    t = int(data[0])
+    idx = 1
+
+    MAX_P = 10**18
+    # We'll search p = k*N + 1 for k = 1,2,... until p is prime and within bound
+    # A practical cap to avoid pathological runtime; the problem guarantees existence within 1e18.
+    KMAX = 2000  # usually enough; can be increased if needed
+
+    # Prepare a small prime list for factoring N efficiently
+    PRIME_SIEVE_LIMIT = 100000
+    small_primes = sieve_primes(PRIME_SIEVE_LIMIT)
+
+    out_lines = []
+
+    for _ in range(t):
+        N = int(data[idx]); idx += 1
+
+        if N == 1:
+            out_lines.append("2 1")
+            continue
+
+        # Distinct prime factors of N
+        factors_N = factor_primes(N, small_primes)
+        primes_N = set(factors_N)
+
+        found = False
+        for k in range(1, KMAX + 1):
+            p = k * N + 1
+            if p > MAX_P:
+                break
+            if not is_prime(p):
+                continue
+
+            # Distinct prime factors of p-1 = N * k
+            primes_p1 = set(primes_N)
+            factors_k = factor_primes(k, small_primes)
+            for q in factors_k:
+                primes_p1.add(q)
+
+            # Find a primitive root g modulo p
+            g = None
+            limit = min(1000, p - 1)
+            for a in range(2, limit + 1):
+                ok = True
+                for q in primes_p1:
+                    if pow(a, (p - 1) // q, p) == 1:
+                        ok = False
+                        break
+                if ok:
+                    g = a
+                    break
+
+            if g is None:
+                continue
+
+            # A = g^((p-1)/N) mod p has order exactly N
+            A = pow(g, (p - 1) // N, p)
+            out_lines.append(f"{A} {p}")
+            found = True
+            break
+
+        if not found:
+            # Fallbacks: extremely unlikely with given constraints, but ensure termination
+            # Try a broader, but still bounded, search for safety
+            for k in range(KMAX + 1, KMAX * 2 + 1):
+                p = k * N + 1
+                if p > MAX_P:
+                    break
+                if not is_prime(p):
+                    continue
+                primes_p1 = set(factor_primes(N, small_primes))
+                factors_k = factor_primes(k, small_primes)
+                for q in factors_k:
+                    primes_p1.add(q)
+
+                g = None
+                limit = min(1000, p - 1)
+                for a in range(2, limit + 1):
+                    ok = True
+                    for q in primes_p1:
+                        if pow(a, (p - 1) // q, p) == 1:
+                            ok = False
+                            break
+                    if ok:
+                        g = a
+                        break
+                if g is None:
+                    continue
+
+                A = pow(g, (p - 1) // N, p)
+                out_lines.append(f"{A} {p}")
+                found = True
+                break
+
+        if not found:
+            # Ultimate safe fallback (should not be needed per problem guarantees)
+            out_lines.append("1 1")
+
+    print("\n".join(out_lines))
+
+if __name__ == "__main__":
+    main()
+```

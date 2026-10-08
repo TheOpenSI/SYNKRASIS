@@ -1,0 +1,82 @@
+Your generated code failed a test case.
+Please update the function logic so all test cases will pass. Error message added for your reference - 
+AssertionError: wrong answer on test case 2. Input: '2\n5 2\n1 2 3\n1 2 3\n1 2 3\n1 2 3\n100 100 200\n6 2\n21 74 25\n44 71 80\n46 28 96\n1 74 24\n81 83 16\n55 31 1', expected output: '209\n333', your output: '203\n333\n'
+
+Execution trace of your code on public test case 2. How to read it: only the lines that ran are listed, with the values after `#`. `x=1,2,3` are the values of x on successive executions of that line, `a..b` a run of consecutive numbers, `T/F` the outcome of a condition on each execution, `F×3` three equal values, `(iters 2,4)` the loop iterations the line ran in, `...` omitted middle values. Nested lines belong to the line above.
+main()
+  data = list(map(int, sys.stdin.buffer.read().split()))  # data=[2, 5, 2, 1, 2, 3, 1, 2, 3, 1, 2, 3, ...
+  t = data[0]  # t=2
+  for _ in range(t):  # 2 iterations; _=0,1
+    n = data[ptr]  # n=5,6
+    ptr += 1  # ptr=2,19
+    k = data[ptr]  # k=2,2
+    ptr += 1  # ptr=3,20
+    X = [0] * n  # X=[0, 0, 0, 0, 0],[0, 0, 0, 0, 0, 0]
+    Y = [0] * n  # Y=[0, 0, 0, 0, 0],[0, 0, 0, 0, 0, 0]
+    Z = [0] * n  # Z=[0, 0, 0, 0, 0],[0, 0, 0, 0, 0, 0]
+    for i in range(n):  # 2 runs, iterations per run: 5,6; i=0,1,2,3 ... 4,5 (11 values)
+      X[i] = data[ptr]  # X[0,1,2,3 ... 4,5 (11 values)]=1×4 ... 81,55 (11 values)
+      Y[i] = data[ptr + 1]  # Y[0,1,2,3 ... 4,5 (11 values)]=2×4 ... 83,31 (11 values)
+      Z[i] = data[ptr + 2]  # Z[0,1,2,3 ... 4,5 (11 values)]=3×4 ... 16,1 (11 values)
+      ptr += 3  # ptr=6,9,12,15 ... 35,38 (11 values)
+    X_pairs = sorted([(X[i], i) for i in range(n)], key=lambda t: t[0],...  # X_pairs=[(100, 4), (1, 0), (1, 1), (1, 2), (1...,[(81, 4), (55, 5), (46, 2), (44, 1), ...
+    Y_pairs = sorted([(Y[i], i) for i in range(n)], key=lambda t: t[0],...  # Y_pairs=[(100, 4), (2, 0), (2, 1), (2, 2), (2...,[(83, 4), (74, 0), (74, 3), (71, 1), ...
+    Z_pairs = sorted([(Z[i], i) for i in range(n)], key=lambda t: t[0],...  # Z_pairs=[(200, 4), (3, 0), (3, 1), (3, 2), (3...,[(96, 2), (80, 1), (25, 0), (24, 3), ...
+    idx1 = [X_pairs[0][1], Y_pairs[0][1], Z_pairs[0][1]]  # idx1=[4, 4, 4],[4, 4, 2]
+    val1 = [X_pairs[0][0], Y_pairs[0][0], Z_pairs[0][0]]  # val1=[100, 100, 200],[81, 83, 96]
+    idx2 = [X_pairs[1][1], Y_pairs[1][1], Z_pairs[1][1]]  # idx2=[0, 0, 0],[5, 0, 1]
+    val2 = [X_pairs[1][0], Y_pairs[1][0], Z_pairs[1][0]]  # val2=[1, 2, 3],[55, 74, 80]
+    for i in range(n):  # 2 runs, iterations per run: 5,6; i=0,1,2,3 ... 4,5 (11 values)
+      cand = idx1[0]  # cand=4×11
+      if cand != i:  # T×4,F,T×4,F,T (cand=4)
+        cand_val = val1[0]  # cand_val=100×4 ... 81,81 (9 values)  (not in iters 5,10)
+      else:
+        cand = idx2[0]  # cand=0,5  (iters 5,10)
+        cand_val = val2[0]  # cand_val=1,55  (iters 5,10)
+      w = X[i] + cand_val  # w=101×4 ... 136,136 (11 values)
+      if w > best_w:  # T×11 (best_w=-1)
+        best_w = w  # best_w=101×4 ... 136,136 (11 values)
+        best_u = i  # best_u=0,1,2,3 ... 4,5 (11 values)
+        best_v = cand  # best_v=4×4 ... 5,4 (11 values)
+      cand = idx1[1]  # cand=4×11
+      if cand != i:  # T×4,F,T×4,F,T (cand=4)
+        cand_val = val1[1]  # cand_val=100×4 ... 83,83 (9 values)  (not in iters 5,10)
+      else:
+        cand = idx2[1]  # cand=0,0  (iters 5,10)
+        cand_val = val2[1]  # cand_val=2,74  (iters 5,10)
+      w = Y[i] + cand_val  # w=102×4 ... 157,114 (11 values)
+      if w > best_w:  # T×7,F,T,T,F
+        best_w = w  # best_w=102×4 ... 157,157 (9 values)  (not in iters 8,11)
+        best_u = i  # best_u=0,1,2,3 ... 3,4 (9 values)  (not in iters 8,11)
+        best_v = cand  # best_v=4×4 ... 4,0 (9 values)  (not in iters 8,11)
+      cand = idx1[2]  # cand=4×4 ... 2,2 (11 values)
+      if cand != i:  # T×4,F,T,T,F,T×3
+        cand_val = val1[2]  # cand_val=200×4 ... 96,96 (9 values)  (not in iters 5,8)
+      else:
+        cand = idx2[2]  # cand=0,1  (iters 5,8)
+        cand_val = val2[2]  # cand_val=3,80  (iters 5,8)
+      w = Z[i] + cand_val  # w=203×4 ... 112,97 (11 values)
+      if w > best_w:  # T×5,F,T,T,F×3
+        best_w = w  # best_w=203×4 ... 176,176 (7 values)  (7 of 11 iters)
+        best_u = i  # best_u=0,1,2,3 ... 1,2 (7 values)  (7 of 11 iters)
+        best_v = cand  # best_v=4×4 ... 2,1 (7 values)  (7 of 11 iters)
+      if best_u is None:  # F×11
+      u, v = (best_u, best_v)  # u=0,1,2,3 ... 4,5 (11 values); v=4×4 ... 0,4 (11 values)
+      if u == v:  # F×11
+      if u > v:  # F×4,T,F,F,T,F,T,T
+        u, v = (v, u)  # u=0,1,0,4; v=4,2,4,5  (iters 5,8,10,11)
+      if (u, v) in edge_w:  # F×4,T,F,F,T,F,T,F
+        if best_w > edge_w[u, v]:  # F×3  (iters 5,8,10)
+      else:
+        edge_w[u, v] = best_w  # edge_w={(0, 4): 203},{(0, 4): 203, (1, 4): 203},{(0, 4): 203, (1, 4): 203, (2, 4): 203},{(0, 4): 203, (1, 4): 203, (2, 4): 20... ... {(0, 4): 157, (1, 2): 176, (3, 4): 157},{(0, 4): 157, (1, 2): 176, (3, 4): 15... (8 values)  (not in iters 5,8,10)
+    edges = [(w, u, v) for (u, v), w in edge_w.items()]  # edges=[(203, 0, 4), (203, 1, 4), (203, 2, 4...,[(157, 0, 4), (176, 1, 2), (157, 3, 4...
+    edges.sort(key=lambda e: e[0], reverse=True)  # edges[0]: (157, 0, 4) -> (176, 1, 2); edges[1]: (176, 1, 2) -> (157, 0, 4)
+    used = [False] * n  # used=[False, False, False, False, False],[False, False, False, False, False, F...
+    for w, u, v in edges:  # 2 runs, iterations per run: 4,2; w=203×4,176,157; u=0,1,2,3,1,0; v=4×4,2,4; ended by break
+      if not used[u] and (not used[v]):  # T,F×3,T,T
+        total += w  # total=203,176,333  (iters 1,5,6)
+        taken += 1  # taken=1,1,2  (iters 1,5,6)
+        if taken == k:  # F,F,T (k=2)  (iters 1,5,6)
+    out_lines.append(str(total))  # out_lines += '203','333'
+printed '203\n333'   (expected '209\n333')
+Find the first point where the behaviour differs from what the problem requires and fix that logic.

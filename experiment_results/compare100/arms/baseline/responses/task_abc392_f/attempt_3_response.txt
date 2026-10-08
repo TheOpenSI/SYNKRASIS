@@ -1,0 +1,73 @@
+### Step-by-step reasoning
+- Problem restatement: We start with an empty array A. For i from 1 to N, we insert the number i so that it becomes the Pi-th element from the start of the current A. Equivalently, after step i, A has length i, and the new element i is placed at position Pi (1-based). After processing all i, we output A.
+- Observations:
+  - Directly simulating with list insert at arbitrary positions leads to O(N^2) time, which is too slow for N up to 5e5.
+  - A standard and efficient approach is to construct the final array by processing i from N down to 1 and placing i into the Pi-th empty slot of a fixed-size array of length N. This mirrors the insert behavior in forward order.
+  - To efficiently find the Pi-th empty slot, we can maintain a Fenwick Tree (Binary Indexed Tree) over positions 1..N where 1 indicates an empty slot and 0 indicates a filled slot. Initially all positions are empty, so the tree stores all ones.
+  - When placing i (processing in reverse), we find the Pi-th empty slot (k-th one) from the left, set that position to i, and mark the slot as filled (update the Fenwick Tree by -1 at that position).
+- Algorithm outline:
+  - Read N and array P[1..N].
+  - Initialize a Fenwick Tree where bit[i] stores the sum over a range; since all slots are initially empty, bit[i] can be initialized as i & -i (the Fenwick representation for an array of all ones).
+  - For i from N down to 1:
+    - k = P[i]
+    - Find pos = the k-th empty slot using Fenwick Tree (a standard kth-order statistic on Fenwick tree).
+    - Set A[pos] = i and update the tree at pos with -1 (mark as filled).
+  - Output A[1..N].
+- Correctness: Processing in reverse with k-th-empty-slot placement exactly reproduces the outcome of repeatedly inserting i at position Pi from the left in forward order. Each step places i into the correct final position among the remaining empty slots, yielding the final A.
+- Complexity: Each of N steps performs a O(log N) update and O(log N) search, so total time is O(N log N) and O(N) extra space.
+
+### Requirements
+None
+
+### Code
+```
+import sys
+
+def main():
+    data = list(map(int, sys.stdin.buffer.read().split()))
+    if not data:
+        return
+    it = iter(data)
+    N = next(it)
+    P = [next(it) for _ in range(N)]
+
+    # Fenwick Tree (Binary Indexed Tree) for 1..N
+    bit = [0] * (N + 1)
+
+    # Initialize: all positions are empty -> value 1 at each index
+    # For an array of all ones, Fenwick tree initialization is bit[i] = i & -i
+    for i in range(1, N + 1):
+        bit[i] = i & -i
+
+    def add(idx, delta):
+        while idx <= N:
+            bit[idx] += delta
+            idx += idx & -idx
+
+    def kth(k):
+        # Find the smallest index pos such that prefix_sum(pos) >= k
+        idx = 0
+        bit_mask = 1 << (N.bit_length() - 1)  # largest power of two <= N
+        while bit_mask:
+            t = idx + bit_mask
+            if t <= N and bit[t] < k:
+                k -= bit[t]
+                idx = t
+            bit_mask >>= 1
+        return idx + 1
+
+    A = [0] * (N + 1)  # 1-based
+
+    for i in range(N, 0, -1):
+        k = P[i - 1]
+        pos = kth(k)
+        A[pos] = i
+        add(pos, -1)  # mark slot as filled
+
+    out = ' '.join(str(A[i]) for i in range(1, N + 1))
+    sys.stdout.write(out)
+    sys.stdout.write('\n')
+
+if __name__ == "__main__":
+    main()
+```

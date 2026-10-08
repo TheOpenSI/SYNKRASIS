@@ -1,0 +1,128 @@
+### Step-by-step reasoning
+- The previous approach attempted to build a small candidate edge set and then greedily pick edges. That fails on cases where the optimal solution uses an edge not present in the candidate set.
+- A robust alternative is to perform a greedy maximum-weight matching using dynamic, on-the-fly computation of the best partner for each remaining cake. Specifically:
+  - For any remaining cake i, its best partner j is the one that maximizes w(i, j) = max(Xi+Xj, Yi+Yj, Zi+Zj).
+  - For fixed i, the best partner must be among the indices that maximize one of the three dimensions among the remaining cakes. So we can maintain three max-heaps (one per dimension) to quickly obtain candidates for X, Y, and Z respectively.
+  - We keep a global max-heap of candidate pairs (weight, i, j) where j is i’s current best partner. We pop the heaviest pair, verify that both i and j are still unused, and that j is still the current best partner for i. If valid, we select this pair, mark both cakes as used, and move on to select the next pair.
+  - If a candidate becomes invalid (because i or j was already used, or because a better partner appeared after removals), we recompute i’s current best partner and push a new candidate back into the global heap. This lazy/update strategy keeps the algorithm efficient while ensuring correctness under dynamic removals.
+- This approach ensures that at each step we pick the best available pair given the current remaining cakes, and it avoids the risk of missing necessary edges due to a fixed precomputed candidate set.
+
+### Requirements
+None
+
+### Code
+```
+import sys
+import heapq
+
+def solve():
+    data = sys.stdin.buffer.read().split()
+    t = int(data[0])
+    pos = 1
+    out_lines = []
+    for _ in range(t):
+        N = int(data[pos]); pos += 1
+        K = int(data[pos]); pos += 1
+
+        X = [0]*N
+        Y = [0]*N
+        Z = [0]*N
+        for i in range(N):
+            X[i] = int(data[pos]); Y[i] = int(data[pos+1]); Z[i] = int(data[pos+2])
+            pos += 3
+
+        # Three max-heaps for dimensions X, Y, Z
+        # We store as (-value, index) to simulate a max-heap with heapq
+        hX = [(-X[i], i) for i in range(N)]
+        hY = [(-Y[i], i) for i in range(N)]
+        hZ = [(-Z[i], i) for i in range(N)]
+        heapq.heapify(hX)
+        heapq.heapify(hY)
+        heapq.heapify(hZ)
+
+        removed = [False]*N
+
+        # Helper: get the top candidate index for a given dimension not equal to i
+        # and not removed. This function peeks without permanently removing i from the heap.
+        def top_candidate_not_i(heap, i):
+            popped = []
+            best = None
+            while heap:
+                val, idx = heap[0]
+                if removed[idx]:
+                    heapq.heappop(heap)
+                    continue
+                if idx == i:
+                    # Temporarily pop i to look for the next best
+                    popped.append(heapq.heappop(heap))
+                    continue
+                best = idx
+                break
+            # Restore any temporarily popped item
+            for item in reversed(popped):
+                heapq.heappush(heap, item)
+            return best
+
+        # For a given i, compute its best partner and the resulting weight
+        def best_for_i(i):
+            best_w = -1
+            best_j = -1
+            j = top_candidate_not_i(hX, i)
+            if j is not None:
+                w = X[i] + X[j]
+                if w > best_w:
+                    best_w, best_j = w, j
+            j = top_candidate_not_i(hY, i)
+            if j is not None:
+                w = Y[i] + Y[j]
+                if w > best_w:
+                    best_w, best_j = w, j
+            j = top_candidate_not_i(hZ, i)
+            if j is not None:
+                w = Z[i] + Z[j]
+                if w > best_w:
+                    best_w, best_j = w, j
+            return best_w, best_j
+
+        # Global max-heap of (negative weight, i, best_j)
+        global_heap = []
+        for i in range(N):
+            w, j = best_for_i(i)
+            if j != -1:
+                heapq.heappush(global_heap, (-w, i, j))
+
+        total = 0
+        taken = 0
+        while taken < K:
+            if not global_heap:
+                break  # Should not happen with valid inputs
+            negw, i, j = heapq.heappop(global_heap)
+            # If either endpoint already used, recompute i's best partner and push back
+            if removed[i] or removed[j]:
+                w2, j2 = best_for_i(i)
+                if j2 != -1:
+                    heapq.heappush(global_heap, (-w2, i, j2))
+                continue
+
+            # Recompute i's current best to verify the candidate is still valid
+            w_cur, j_cur = best_for_i(i)
+            if j_cur != j or w_cur != -negw:
+                if j_cur != -1:
+                    heapq.heappush(global_heap, (-w_cur, i, j_cur))
+                continue
+
+            # Accept this pair
+            total += -negw
+            removed[i] = True
+            removed[j] = True
+            taken += 1
+
+            # No need to proactively update all candidates; lazy recomputation handles it
+
+        out_lines.append(str(total))
+
+    print("\n".join(out_lines))
+
+if __name__ == "__main__":
+    solve()
+```

@@ -1,33 +1,62 @@
 """
-Runtime trace of a block of code, collected with sys.settrace.
+Runtime trace of a piece of code, collected with sys.settrace.
 
-For every executed line of every function that lives in the traced source,
-a Step records the local variables just before and just after the line ran,
-the calls the line made into other traced functions, and any exception it
-raised. One Invocation per call groups these steps, so recursion and helper
-calls form a tree that the report can walk.
+For every executed line of every function that lives in the traced source, a Step records the local
+variables just before and just after the line ran, the calls the line made into other traced
+functions, and any exception it raised. One Invocation per call groups these steps, so recursion and
+helper calls form a tree.
 
-Values are stored as (truncated) repr strings rather than live objects, so
-mutable objects are captured as they were at that moment.
+Values are stored as (truncated) repr strings rather than live objects, so mutable objects are
+captured as they were at that moment.
+
+Safety: a trace is abandoned with TraceLimit after max_steps lines or max_seconds, and a huge list or
+dict is stored as its first items plus its length (a repr of 2 million elements on every line made
+tracing hang). Two details the first version got wrong: a variable assigned on a line is recorded
+every time the line runs (also when the value did not change), and a name is hidden as a
+"comprehension variable" only when the function never assigns it as a normal variable.
 """
 from __future__ import annotations
 
+import ast
 import dis
 import inspect
 import sys
+import time
 import types
 from dataclasses import dataclass, field
 from typing import Any, Callable, Optional
 
-from services.BPD.parser.structure import CodeStructure
+from services.BPD.structure import CodeStructure
 
 # Frames Python creates for comprehensions (before 3.12 inlined them). They
 # are not functions the user wrote, so they are not traced; calls made from
 # inside them are attributed to the enclosing function instead.
+TARGET_FILENAME = "<bpd>"      # file name the traced source is compiled with; only frames of this file are recorded
+
 _COMPREHENSION_FRAMES = {"<listcomp>", "<dictcomp>", "<setcomp>", "<genexpr>"}
 _GENERATOR_FLAGS = inspect.CO_GENERATOR | inspect.CO_ASYNC_GENERATOR | inspect.CO_COROUTINE
 _YIELD_OPCODE = dis.opmap.get("YIELD_VALUE")
 _RESUME_OPCODE = dis.opmap.get("RESUME")   # 3.11+: a resumed generator reports f_lasti at the RESUME after the yield
+
+
+_BIG_CONTAINER = 40    # containers longer than this are summarised
+_SHOWN_ITEMS = 8       # items shown from a summarised container
+
+
+class TraceLimit(BaseException):
+    """Raised inside the traced code when the step or time limit is hit (a BaseException: `except Exception` does not catch it)."""
+
+
+def _summarise(value: Any) -> str:
+    """First items and length of a big container: [1, 2, 3, ... (len=2000000)]."""
+    if isinstance(value, dict):
+        items = [f"{safe_repr(k, 20)}: {safe_repr(v, 20)}" for k, v in list(value.items())[:_SHOWN_ITEMS]]
+        opening, closing = "{", "}"
+    else:
+        iterator = iter(value)
+        items = [safe_repr(next(iterator), 20) for _ in range(_SHOWN_ITEMS)]
+        opening, closing = {list: ("[", "]"), tuple: ("(", ")")}.get(type(value), ("{", "}"))
+    return f"{opening}{', '.join(items)}, ... (len={len(value)}){closing}"
 
 
 def safe_repr(value: Any, max_length: int = 200, _depth: int = 0) -> str:
@@ -46,7 +75,9 @@ def safe_repr(value: Any, max_length: int = 200, _depth: int = 0) -> str:
         str: A string representation of the value, truncated to max_length.
     """
     try:
-        if isinstance(value, types.ModuleType):
+        if isinstance(value, (list, tuple, set, frozenset, dict)) and len(value) > _BIG_CONTAINER:
+            text = _summarise(value)
+        elif isinstance(value, types.ModuleType):
             text = f"<module {value.__name__}>"
         elif isinstance(value, type):
             text = f"<class {value.__name__}>"
@@ -90,14 +121,19 @@ class Step:
     after: dict[str, str] = field(default_factory=dict)
     calls: list["Invocation"] = field(default_factory=list)
     exception: Optional[ExceptionInfo] = None
+    assigned: frozenset = frozenset()    # plain names the statement on this line assigns
 
     def changes(self) -> dict[str, tuple[Optional[str], str]]:
-        """Variables that are new or different after the line ran: name -> (before, after)."""
-        return {
+        """Variables that are new or different after the line ran, plus the ones assigned (even if unchanged): name -> (before, after)."""
+        result = {
             name: (self.before.get(name), value)
             for name, value in self.after.items()
             if self.before.get(name) != value
         }
+        for name in self.assigned:
+            if name in self.after and name not in result:
+                result[name] = (self.before.get(name), self.after[name])
+        return result
 
 
 @dataclass
@@ -128,6 +164,44 @@ class Invocation:
         return f"{self.name}({', '.join(f'{k}={v}' for k, v in self.args.items())})"
 
 
+def _assigned_names_by_line(tree: ast.AST) -> dict[int, frozenset]:
+    """line of an assignment statement -> plain names it assigns (`a, b = ...` gives a and b, `X[i] = ...` none)."""
+    assigned: dict[int, set] = {}
+    for node in ast.walk(tree):
+        targets = []
+        if isinstance(node, ast.Assign):
+            targets = node.targets
+        elif isinstance(node, (ast.AugAssign, ast.AnnAssign)):
+            targets = [node.target]
+        for target in targets:
+            for sub in ast.walk(target):
+                if isinstance(sub, ast.Name) and isinstance(sub.ctx, ast.Store):
+                    assigned.setdefault(node.lineno, set()).add(sub.id)
+    return {line: frozenset(names) for line, names in assigned.items()}
+
+
+def _real_variable_names(tree: ast.AST) -> dict[tuple[str, int], set]:
+    """(function name, first line) -> names the function assigns outside of comprehensions."""
+    result: dict[tuple[str, int], set] = {}
+    comprehensions = (ast.ListComp, ast.SetComp, ast.DictComp, ast.GeneratorExp)
+
+    def stores(node: ast.AST, found: set) -> None:
+        for child in ast.iter_child_nodes(node):
+            if isinstance(child, comprehensions):
+                continue
+            if isinstance(child, ast.Name) and isinstance(child.ctx, ast.Store):
+                found.add(child.id)
+            stores(child, found)
+
+    for node in ast.walk(tree):
+        if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef)):
+            first_line = node.decorator_list[0].lineno if node.decorator_list else node.lineno
+            found: set = set()
+            stores(node, found)
+            result[(node.name, first_line)] = found
+    return result
+
+
 class TraceCollector:
     """
     Traces one call and returns the tree of Invocations it produced.
@@ -137,11 +211,18 @@ class TraceCollector:
     block's own functions (including recursion) are captured in full.
     """
 
-    def __init__(self, filename: str, structure: Optional[CodeStructure] = None,
-                 max_value_length: int = 100) -> None:
+    def __init__(self, filename: str, structure: Optional[CodeStructure] = None, max_value_length: int = 1000,
+                 max_steps: int = 20000, max_seconds: float = 5.0) -> None:
         self.filename = filename
         self.structure = structure
         self.max_value_length = max_value_length
+        self.max_steps = max_steps
+        self.max_seconds = max_seconds
+        self.steps = 0
+        self._started = time.monotonic()
+        tree = ast.parse(structure.source) if structure is not None else None
+        self._assigned = _assigned_names_by_line(tree) if tree is not None else {}
+        self._real_names = _real_variable_names(tree) if tree is not None else {}
         self.roots: list[Invocation] = []
         self._open: dict[int, Invocation] = {}   # id(frame) -> invocation still running
 
@@ -149,6 +230,8 @@ class TraceCollector:
         """Runs thunk() under tracing. Returns (result, exception or None, root invocations)."""
         self.roots = []
         self._open = {}
+        self.steps = 0
+        self._started = time.monotonic()
         result = None
         error: Optional[Exception] = None
         sys.settrace(self._trace)
@@ -205,13 +288,16 @@ class TraceCollector:
         self._open[id(frame)] = node
 
     def _on_line(self, frame: types.FrameType) -> None:
+        self.steps += 1
+        if self.steps > self.max_steps or time.monotonic() - self._started > self.max_seconds:
+            raise TraceLimit(f"trace limit: {self.steps} steps")
         node = self._open.get(id(frame))
         if node is None:
             return
         snapshot = self._snapshot(frame)
         if node._current_step is not None:
             node._current_step.after = snapshot
-        step = Step(line=frame.f_lineno, before=snapshot)
+        step = Step(line=frame.f_lineno, before=snapshot, assigned=self._assigned.get(frame.f_lineno, frozenset()))
         node.steps.append(step)
         node._current_step = step
 
@@ -279,7 +365,8 @@ class TraceCollector:
         info = None
         if self.structure is not None:
             info = self.structure.function_for(code.co_name, code.co_firstlineno)
-        hidden = info.comprehension_names if info is not None else set()
+        real = self._real_names.get((code.co_name, code.co_firstlineno), set())
+        hidden = info.comprehension_names - real if info is not None else set()
         snapshot: dict[str, str] = {}
         for name, value in list(frame.f_locals.items()):
             if name.startswith("__") or name in hidden or isinstance(value, types.ModuleType):

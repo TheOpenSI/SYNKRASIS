@@ -1,0 +1,107 @@
+### Step-by-step reasoning
+- Model the problem as a graph with N vertices (positions of A) and M edges. Each edge (X_i, Y_i, Z_i) imposes A_{X_i} XOR A_{Y_i} = Z_i.
+- For a connected component, pick a root r and express each A_v as A_v = R XOR dist[v], where dist[v] is the XOR of Z-values along any path from r to v, and R is an unknown non-negative integer (specifically A_r). Distances dist[v] are well-defined if and only if all cycles are consistent.
+- Consistency check: For every edge (u, v, z), we must have dist[u] XOR dist[v] = z. If any edge violates this, no good sequence exists (answer -1).
+- If consistent, the entire component is described by a single parameter R. The sum of A_i over the component is:
+  sum_v (dist[v] XOR R).
+  For each bit k, the k-th bit of A_v is dist[v]_k XOR R_k. Let count1 be the number of vertices v in the component with dist[v]_k = 1.
+  If we set R_k = 0, there are count1 ones at bit k; if R_k = 1, there are comp_size - count1 ones.
+  To minimize the total sum, for each bit k we should choose R_k to minimize the number of ones: R_k = 0 if count1 <= comp_size - count1, else R_k = 1.
+- Do this independently for each bit. After fixing R for a component, set A_v = dist[v] XOR R for all v in that component.
+- Complexity: We perform one BFS/DFS per component to compute dist and check consistency (O(N + M)). Additionally, per component we process up to about 30 bits (since Z_i ≤ 1e9). Overall O((N + M) * 30), which fits the limits.
+- Edge cases:
+  - M = 0: all A_i can be 0.
+  - Self-loops X_i = Y_i with Z_i ≠ 0 cause contradiction.
+  - If any component is inconsistent, answer is -1.
+
+### Requirements
+None
+
+### Code
+```
+import sys
+from collections import deque
+
+def main():
+    data = list(map(int, sys.stdin.buffer.read().split()))
+    if not data:
+        print()
+        return
+
+    it = iter(data)
+    N = next(it)
+    M = next(it)
+
+    # Build adjacency: for edge (u,v,z), add (v,z) to adj[u] and (u,z) to adj[v]
+    adj = [[] for _ in range(N)]
+    maxZ = 0
+    for _ in range(M):
+        x = next(it) - 1
+        y = next(it) - 1
+        z = next(it)
+        adj[x].append((y, z))
+        adj[y].append((x, z))
+        if z > maxZ:
+            maxZ = z
+
+    maxbit = maxZ.bit_length()  # number of bits to consider (0 if maxZ == 0)
+
+    dist = [0] * N
+    vis = [False] * N
+    A = [0] * N  # final answer
+
+    for i in range(N):
+        if vis[i]:
+            continue
+
+        # Explore this component
+        comp_nodes = []
+        q = deque([i])
+        vis[i] = True
+        dist[i] = 0
+
+        # counts[k] = number of nodes in component with dist[node]_k == 1
+        counts = [0] * maxbit
+
+        while q:
+            u = q.popleft()
+            comp_nodes.append(u)
+
+            if maxbit:
+                d = dist[u]
+                b = 0
+                # Count 1-bits of dist[u] up to maxbit
+                while b < maxbit and d:
+                    if d & 1:
+                        counts[b] += 1
+                    d >>= 1
+                    b += 1
+
+            for v, z in adj[u]:
+                if not vis[v]:
+                    dist[v] = dist[u] ^ z
+                    vis[v] = True
+                    q.append(v)
+                else:
+                    if (dist[u] ^ dist[v]) != z:
+                        print(-1)
+                        return
+
+        comp_size = len(comp_nodes)
+
+        # Determine root value R to minimize sum in this component
+        root = 0
+        if maxbit:
+            for k in range(maxbit):
+                if counts[k] > comp_size - counts[k]:
+                    root |= (1 << k)
+
+        # Set A[node] = dist[node] XOR root for all nodes in this component
+        for u in comp_nodes:
+            A[u] = dist[u] ^ root
+
+    print(' '.join(map(str, A)))
+
+if __name__ == "__main__":
+    main()
+```

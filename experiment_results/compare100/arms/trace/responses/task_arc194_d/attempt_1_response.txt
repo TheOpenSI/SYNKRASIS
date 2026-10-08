@@ -1,0 +1,118 @@
+### Step-by-step reasoning
+- Model S as a rooted tree (a Dyck-tree) where each matched pair of parentheses corresponds to a node. The virtual root has as children the top-level matched pairs in S.
+- For any node v, its immediate children are the VPS blocks directly contained inside the pair corresponding to v. The ordering of these children in the string matters for the final string, but due to allowed operations, we can permute these children by selecting appropriate substrings and reversing them (with flip). However, if two children are structurally identical (isomorphic subtrees), permuting them does not create a new string, because swapping two identical subtrees yields the same final string when all internal choices are accounted for.
+- To handle this correctly, we classify each subtree by a canonical type. The type is defined recursively: a node’s type is determined by the multiset (as a sorted tuple) of its children's types. Leaves (nodes with no children) all share the same type.
+- Let F(type) be the number of distinct strings obtainable from a subtree of a given type. For a node v with deg(v) = d children, and with multiplicities m_t of each child type t among its children, and where F_by_type[t] is the F-value for type t, we have:
+  - The number of distinct orders of its children (taking into account indistinguishability due to identical types) is d! / ∏_t (m_t!).
+  - For a fixed order of children, the total number of ways to choose internal strings is ∏_t (F_by_type[t])^(m_t).
+  - Therefore F(v) = (d! / ∏_t m_t!) * ∏_t (F_by_type[t])^(m_t) (mod 998244353).
+- We process the string bottom-up: every time a subtree finishes (upon encountering a closing parenthesis), we compute its type key = sorted list of its children’ types, map it to a unique type_id (creating a new type if needed), and compute F(v) using the formula above. We then attach this subtree as a child to its parent (or to the root if it has no parent).
+- After processing the entire string, the root has a list of top-level child types. The final answer is computed exactly like F for the virtual root:
+  - Let deg_root be the number of top-level blocks, with multiplicities m_t of each top-level type t.
+  - Answer = (deg_root! / ∏_t m_t!) * ∏_t (F_by_type[t])^(m_t) (mod 998244353).
+
+This approach correctly handles:
+- Tiny inputs (e.g., minimal VPS).
+- Duplicates among subtrees (prevents overcounting due to identical subtrees).
+- Maximum input size (O(N log N) due to sorting child-type lists, with N ≤ 5000).
+- Exact output format (modulo 998244353).
+
+### Requirements
+None
+
+### Code
+```
+import sys
+from collections import Counter
+
+MOD = 998244353
+
+def solve():
+    data = sys.stdin.read().strip().split()
+    if not data:
+        print(0)
+        return
+    N = int(data[0])
+    S = data[1]
+
+    # Precompute factorials and inverse factorials up to N (safe upper bound)
+    maxN = N
+    fact = [1] * (maxN + 1)
+    for i in range(2, maxN + 1):
+        fact[i] = (fact[i - 1] * i) % MOD
+
+    inv_fact = [1] * (maxN + 1)
+    inv_fact[maxN] = pow(fact[maxN], MOD - 2, MOD)
+    for i in range(maxN, 0, -1):
+        inv_fact[i - 1] = (inv_fact[i] * i) % MOD
+
+    # Type system
+    # type_map: key (tuple of child types) -> type_id
+    type_map = {(): 0}
+    F_by_type = [1]  # F for type 0 (leaf type) is 1
+
+    # Tree building on the fly
+    # For each node_id, store its list of child types
+    child_types_of_node = []
+    stack = []  # store node_ids of currently open '('
+
+    root_child_types = []  # list of type_ids for top-level blocks
+
+    for ch in S:
+        if ch == '(':
+            node_id = len(child_types_of_node)
+            child_types_of_node.append([])
+            stack.append(node_id)
+        else:  # ch == ')'
+            node_id = stack.pop()
+            ch_types = child_types_of_node[node_id]
+            # Compute type_key for this node
+            if ch_types:
+                key = tuple(sorted(ch_types))
+            else:
+                key = ()
+            deg = len(ch_types)
+
+            # Get or create type_id
+            if key in type_map:
+                tid = type_map[key]
+            else:
+                tid = len(type_map)
+                type_map[key] = tid
+                # Compute F for this new type using its children's types
+                cnt = Counter(ch_types)
+                prod = 1
+                for t, c in cnt.items():
+                    prod = (prod * pow(F_by_type[t], c, MOD)) % MOD
+
+                perm = fact[deg]
+                for c in cnt.values():
+                    perm = (perm * inv_fact[c]) % MOD
+
+                F_v = (prod * perm) % MOD
+                F_by_type.append(F_v)
+
+            # Attach this subtree to its parent or root
+            if stack:
+                parent_id = stack[-1]
+                child_types_of_node[parent_id].append(tid)
+            else:
+                root_child_types.append(tid)
+
+    # Compute final answer for the virtual root
+    root_cnt = Counter(root_child_types)
+    deg_root = len(root_child_types)
+    prod_root = 1
+    for t, c in root_cnt.items():
+        prod_root = (prod_root * pow(F_by_type[t], c, MOD)) % MOD
+
+    perm_root = fact[deg_root]
+    for c in root_cnt.values():
+        perm_root = (perm_root * inv_fact[c]) % MOD
+
+    ans = (prod_root * perm_root) % MOD
+    print(ans)
+
+if __name__ == "__main__":
+    solve()
+```

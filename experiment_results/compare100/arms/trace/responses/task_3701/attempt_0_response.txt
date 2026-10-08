@@ -1,0 +1,172 @@
+### Step-by-step reasoning
+- We need to transform the given caption into a string where every block of identical characters has length at least 3. Each operation changes a character by ±1 in the alphabet, so the cost of changing a character to a letter L is the absolute difference abs(caption[i] - L). We want the minimum total cost, and among all minimum-cost results, the lexicographically smallest final string.
+
+- A dynamic programming approach works well: process the string from right to left (suffix DP). Define a state at position i as (letter L, run length r) where:
+  - t[i] = L
+  - r is the length of the current run ending at i, capped to 3 (r ∈ {1, 2, 3}, with 3 meaning at least 3).
+
+- For position i, the next character t[i+1] can be:
+  - The same as L, which increments the run length: r' = min(3, r+1).
+  - A different letter M != L, which is only allowed if r >= 3 (the current run must be at least 3 before starting a new one). Then t[i+1] has run length r' = 1.
+
+- Recurrence (suffix DP):
+  f[i][L][r] = abs(cap[i] - L) + min(
+      f[i+1][L][min(3, r+1)],                     # extend with same letter
+      min_{M != L} f[i+1][M][1] if r >= 3 else INF  # switch to a new letter
+  )
+
+- Base case: at the last position i = n-1, the final run must have length >= 3, so only states with r = 3 are valid:
+  f[n-1][L][3] = abs(cap[n-1] - L), and f[n-1][L][1] = f[n-1][L][2] = INF.
+
+- To reconstruct the lexicographically smallest answer among all minimum-cost solutions, we:
+  - Compute the DP as above, but also store a compact decision per position i and state (L, r) indicating whether we extended with the same letter (0) or switched to a specific M (stored as M+1) at i+1 to achieve the optimal cost. We store these decisions in a flat byte array transitions of size n * 26 * 3.
+  - To determine the switch target M for a given i, we use the best two letters M for which f[i+1][M][1] is minimal. For each i we precompute the top two (value, letter) pairs for f[i+1][M][1], which allows O(1) retrieval of the best M != L (and the second best if needed). Since we’re processing i from n-2 down to 0, this is efficient: 26 items per i, but we do it once per i, not per state.
+
+- After DP, the minimal total cost is min_L f[0][L][1]. If all are INF, return "" (impossible). Otherwise, choose the smallest L achieving this minimum for the first character to ensure lexicographic minimality. Then reconstruct the string by following the stored transitions from i = 0 to n-2.
+
+Edge cases:
+- If n < 3, it is impossible to have all groups of length at least 3, so return "".
+- If no valid DP path exists, return "".
+
+Time complexity: O(n * 26) with small constants (about 5e4 * 26-ish operations). Memory: O(n * 26 * 3) for the transitions (about 3.9 MB), plus a few small DP tables.
+
+### Requirements
+None
+
+### Code
+```
+class Solution:
+    def minCostGoodCaption(self, caption: str) -> str:
+        n = len(caption)
+        if n < 3:
+            return ""
+
+        cap = [ord(ch) - ord('a') for ch in caption]
+        INF = 10**9
+
+        # transitions stores for each (i, L, r) a byte:
+        # 0 means extend with same letter, else value-1 is the next letter to switch to (0..25 -> 1..26)
+        transitions = bytearray(n * 26 * 3)
+
+        def idx(i: int, L: int, r: int) -> int:
+            return (i * 26 + L) * 3 + (r - 1)
+
+        # DP arrays for suffix: f_next corresponds to i+1, f_curr to i
+        # Each is 26 x 4 (we only use r = 1..3)
+        f_next = [[INF] * 4 for _ in range(26)]
+        f_curr = [[INF] * 4 for _ in range(26)]
+
+        # Base case for i = n-1
+        last = n - 1
+        for L in range(26):
+            f_curr[L][3] = abs(cap[last] - L)
+            f_curr[L][1] = INF
+            f_curr[L][2] = INF
+        f_next = [row[:] for row in f_curr]
+
+        # Iterate i from n-2 down to 0
+        for i in range(n - 2, -1, -1):
+            # Compute top two (value, letter) for f_next[M][1]
+            pairs = [(f_next[M][1], M) for M in range(26)]
+            pairs.sort()  # by value then letter
+            best1_val, best1_letter = pairs[0]
+            best2_val, best2_letter = INF, -1
+            for v, l in pairs[1:]:
+                if l != best1_letter:
+                    best2_val, best2_letter = v, l
+                    break
+
+            # Prepare f_curr for this i
+            for L in range(26):
+                for r in (1, 2, 3):
+                    cost_here = abs(cap[i] - L)
+
+                    # option_same: extend with same letter
+                    next_r = r + 1
+                    if next_r > 3:
+                        next_r = 3
+                    option_same = f_next[L][next_r]
+
+                    # option_switch: switch to M != L if r >= 3
+                    option_switch = INF
+                    switch_letter = -1
+                    if r >= 3:
+                        if best1_letter != L:
+                            option_switch = best1_val
+                            switch_letter = best1_letter
+                        else:
+                            if best2_letter != -1:
+                                option_switch = best2_val
+                                switch_letter = best2_letter
+
+                    min_cost = option_same if option_same < option_switch else option_switch
+                    if min_cost >= INF:
+                        f_curr[L][r] = INF
+                    else:
+                        f_curr[L][r] = cost_here + min_cost
+
+                    # Determine transition (for reconstruction)
+                    t_idx = idx(i, L, r)
+                    if min_cost >= INF:
+                        transitions[t_idx] = 0  # arbitrary
+                    else:
+                        cost_same = option_same
+                        cost_switch = option_switch
+                        chosen = 0  # 0 means extend
+                        if cost_same < cost_switch:
+                            chosen = 0
+                        elif cost_switch < cost_same:
+                            chosen = (switch_letter + 1) if switch_letter != -1 else 0
+                        else:
+                            # tie: compare next letters; extend yields L, switch yields switch_letter
+                            if switch_letter == -1:
+                                chosen = 0
+                            else:
+                                if L <= switch_letter:
+                                    chosen = 0
+                                else:
+                                    chosen = (switch_letter + 1)
+                        transitions[t_idx] = chosen
+
+            # Prepare for next iteration
+            f_next = [row[:] for row in f_curr]
+            # reset f_curr for next use
+            for L in range(26):
+                f_curr[L][1] = INF
+                f_curr[L][2] = INF
+                f_curr[L][3] = INF
+        # After loop, f_curr holds values for i = 0
+        # Find starting L with minimal f_curr[L][1]
+        min_cost = INF
+        start_L = -1
+        for L in range(26):
+            val = f_curr[L][1]
+            if val < min_cost:
+                min_cost = val
+                start_L = L
+
+        if min_cost >= INF or start_L == -1:
+            return ""
+
+        # Reconstruct the string
+        res = [''] * n
+        res[0] = chr(start_L + ord('a'))
+        cur_L = start_L
+        cur_r = 1
+
+        for i in range(n - 1):
+            t_idx = idx(i, cur_L, cur_r)
+            tval = transitions[t_idx]
+            if tval == 0:
+                next_L = cur_L
+                next_r = cur_r + 1
+                if next_r > 3:
+                    next_r = 3
+            else:
+                next_L = tval - 1
+                next_r = 1
+            res[i + 1] = chr(next_L + ord('a'))
+            cur_L, cur_r = next_L, next_r
+
+        return "".join(res)
+```

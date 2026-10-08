@@ -1,0 +1,172 @@
+### Step-by-step reasoning
+- Problem recap: For each given N (1 ≤ N ≤ 1e9), we must output a pair (A, M) with A, M ∈ [1, 1e18] such that there exists a positive n where A^n − 1 is a multiple of M, and the smallest such n equals N. Multiple valid solutions may exist; any valid pair is acceptable.
+- Robust strategy: Use a prime modulus approach. If we can find a prime p such that p − 1 is a multiple of N (i.e., p = k*N + 1 for some k ≥ 1) and choose A to have order exactly N modulo p, then the smallest n with A^n ≡ 1 (mod p) is N. Then A^n − 1 is divisible by p for n multiple of N, hence by M = p, and the smallest such n is N.
+- How to realize this:
+  - Search for k such that p = k*N + 1 is prime (p ≤ 1e18).
+  - Factor p − 1 = N*k into distinct prime factors.
+  - Find a primitive root g modulo p by checking bases against all prime factors of p − 1.
+  - Let A = g^((p − 1) / N) mod p. Then A has order N modulo p, so the smallest n with A^n ≡ 1 (mod p) is N.
+  - Output (A, p).
+- Implementation notes:
+  - Use a deterministic Miller-Rabin primality test suitable for 64-bit integers to check p efficiently.
+  - Factor N and k using trial division with a precomputed list of small primes (sufficient because N ≤ 1e9, and k will be searched up to a reasonable bound).
+  - To find a primitive root modulo p, compute the distinct prime factors of p − 1, then test small bases a ≥ 2 against pow(a, (p−1)/q, p) for every prime factor q of p−1.
+- This approach yields a valid pair (A, M) for all test cases under the problem’s guarantees and is practical for typical inputs.
+
+### Requirements
+None
+
+### Code
+```
+import sys
+
+# Deterministic Miller-Rabin primality test for 64-bit integers
+def is_prime(n: int) -> bool:
+    if n < 2:
+        return False
+    # quick small primes check
+    small_primes = [2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41]
+    for p in small_primes:
+        if n % p == 0:
+            return n == p
+
+    # write n-1 = d * 2^s with d odd
+    d = n - 1
+    s = 0
+    while d % 2 == 0:
+        d //= 2
+        s += 1
+
+    # Deterministic bases for 64-bit integers
+    bases = [2, 3, 5, 7, 11, 13, 17]
+    for a in bases:
+        if a % n == 0:
+            continue
+        x = pow(a, d, n)
+        if x == 1 or x == n - 1:
+            continue
+        composite = True
+        for _ in range(s - 1):
+            x = (x * x) % n
+            if x == n - 1:
+                composite = False
+                break
+        if composite:
+            return False
+    return True
+
+# Sieve primes up to limit for factoring n (n up to ~1e9 here)
+def sieve_primes(limit: int):
+    if limit < 2:
+        return []
+    is_prime_arr = [True] * (limit + 1)
+    is_prime_arr[0] = is_prime_arr[1] = False
+    primes = []
+    for i in range(2, limit + 1):
+        if is_prime_arr[i]:
+            primes.append(i)
+            if i * i <= limit:
+                for j in range(i * i, limit + 1, i):
+                    is_prime_arr[j] = False
+    return primes
+
+# Factorization into distinct primes (not exponents needed)
+def factor_distinct(n: int, primes_list=None):
+    factors = []
+    tmp = n
+    if primes_list is not None:
+        for p in primes_list:
+            if p * p > tmp:
+                break
+            if tmp % p == 0:
+                factors.append(p)
+                while tmp % p == 0:
+                    tmp //= p
+        if tmp > 1:
+            factors.append(tmp)
+        return sorted(set(factors))
+    else:
+        d = 2
+        while d * d <= tmp:
+            if tmp % d == 0:
+                factors.append(d)
+                while tmp % d == 0:
+                    tmp //= d
+            d += 1 if d == 2 else 2
+        if tmp > 1:
+            factors.append(tmp)
+        return sorted(set(factors))
+
+def main():
+    data = sys.stdin.read().strip().split()
+    if not data:
+        return
+    t = int(data[0])
+    idx = 1
+
+    MAX_P = 10**18
+    # Cap for k; practical bound for primality search
+    KMAX = 200000
+
+    # Prepare a small prime list for factoring N efficiently
+    PRIME_SIEVE_LIMIT = 100000
+    small_primes = sieve_primes(PRIME_SIEVE_LIMIT)
+
+    out_lines = []
+
+    for _ in range(t):
+        N = int(data[idx]); idx += 1
+
+        if N == 1:
+            # Valid alternative: (2,1) is acceptable since 2^1 - 1 is divisible by 1
+            out_lines.append("2 1")
+            continue
+
+        # Distinct prime factors of N
+        primes_N = factor_distinct(N, small_primes)
+
+        found = False
+        for k in range(1, KMAX + 1):
+            p = k * N + 1
+            if p > MAX_P:
+                break
+            if not is_prime(p):
+                continue
+
+            # Distinct prime factors of p-1 = N * k
+            primes_k = factor_distinct(k, small_primes)
+            primes_p1 = set(primes_N)
+            for q in primes_k:
+                primes_p1.add(q)
+
+            # Find a primitive root g modulo p
+            g = None
+            limit = min(1000, p - 1)
+            for a in range(2, limit + 1):
+                ok = True
+                for q in primes_p1:
+                    if pow(a, (p - 1) // q, p) == 1:
+                        ok = False
+                        break
+                if ok:
+                    g = a
+                    break
+
+            if g is None:
+                continue
+
+            # A = g^((p-1)/N) mod p has order exactly N
+            A = pow(g, (p - 1) // N, p)
+            out_lines.append(f"{A} {p}")
+            found = True
+            break
+
+        if not found:
+            # Extremely unlikely under the problem's guarantees; fallback safe-guard
+            out_lines.append("1 1")
+
+    print("\n".join(out_lines))
+
+if __name__ == "__main__":
+    main()
+```
