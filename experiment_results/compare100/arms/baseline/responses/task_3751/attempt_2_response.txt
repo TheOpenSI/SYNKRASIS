@@ -1,0 +1,64 @@
+### Step-by-step reasoning
+- The operation: pick a subarray and add a fixed integer x to every element in that subarray.
+- To maximize the final frequency of k, we want as many elements as possible to become k after the operation.
+- If we fix a target value m (the original value of elements we want to turn into k), then the required x is x = k - m. An element outside value m will not become k under this x.
+- For a chosen m, an element contributes to increasing the count of k if:
+  - it is equal to m (becomes k after the operation), or
+  - it is equal to k (will stop being k after the operation unless x = 0, which would imply m = k, but we exclude m = k here).
+- Therefore, for each m ≠ k, we want to choose a contiguous subarray that maximizes the net gain in k-count: number of m inside minus number of k inside. This is because each m inside contributes +1 to the final k-count, while each k inside contributes -1 (it would lose a k).
+- This is a classic maximum subarray sum problem if we map:
+  - +1 for elements equal to m,
+  - -1 for elements equal to k,
+  - 0 for all other elements.
+- The maximum gain for a given m is the maximum subarray sum of this mapped array. However, we can opt to do nothing (or effectively gain zero) by choosing a subarray that yields zero net gain; thus we should clamp the gain to at least 0.
+- The final answer is:
+  - total_k + max over m ≠ k of max(0, max_subarray_sum(mapped for m)).
+- This approach accounts for cases where crossing over k’s (connecting multiple m-blocks across k’s) yields a larger gain than any block that avoids k entirely. It also handles edge cases like no k’s present, or no m’s present (results revert to the most frequent value).
+
+Time complexity: O(50 * n) with n ≤ 1e5, which is efficient enough.
+
+### Requirements
+None
+
+### Code
+```
+from typing import List
+
+class Solution:
+    def maxFrequency(self, nums: List[int], k: int) -> int:
+        n = len(nums)
+        total_k = sum(1 for v in nums if v == k)
+        
+        # Base case: at least the existing frequency of k
+        ans = total_k
+        
+        # Try every possible m != k
+        for m in range(1, 51):
+            if m == k:
+                continue
+            
+            max_ending_here = None
+            max_so_far = -10**9  # track best subarray sum for this m
+            
+            for v in nums:
+                if v == m:
+                    val = 1
+                elif v == k:
+                    val = -1
+                else:
+                    val = 0
+                
+                if max_ending_here is None:
+                    max_ending_here = val
+                else:
+                    max_ending_here = max(val, max_ending_here + val)
+                
+                if max_ending_here is not None:
+                    max_so_far = max(max_so_far, max_ending_here)
+            
+            # best gain for this m (can't be negative; we can always choose a zero-gain operation)
+            best_gain = max(0, max_so_far if max_so_far != -10**9 else 0)
+            ans = max(ans, total_k + best_gain)
+        
+        return ans
+```

@@ -1,0 +1,41 @@
+### Step-by-step reasoning
+- We need to partition n pizzas (n multiple of 4) into D = n/4 groups of 4, scheduled across D days. On odd days we gain the maximum (Z) of the chosen group, and on even days we gain the second maximum (Y) of the chosen group.
+- To maximize the total sum, we should:
+  - On odd days (where we gain Z), pair the current largest pizza with as small as possible other three pizzas. This ensures the largest value is captured now while leaving the bigger pizzas available to contribute as Y on even days later.
+  - On even days (where we gain Y), group the four largest remaining pizzas together. In that group, the second largest (Y) will be as large as possible when those four are the largest remaining elements.
+- A clean way to implement this is to sort the array ascending and maintain two pointers:
+  - left points to the smallest remaining pizza, right to the largest remaining pizza.
+  - For each day:
+    - If it's an odd day (first day, third day, ...), take the largest (pizzas[right]) as Z, and remove three smallest (advance left by 3) along with the largest (decrement right by 1).
+    - If it's an even day, take the second largest among the four largest remaining, which is pizzas[right - 1], and remove the four largest (decrement right by 4).
+- This yields a correct and efficient O(n log n) solution due to sorting, with O(1) extra space aside from the input list.
+- Edge cases (duplicates, ties) are naturally handled by sorting.
+
+### Requirements
+None
+
+### Code
+```
+from typing import List
+
+class Solution:
+    def maxWeight(self, pizzas: List[int]) -> int:
+        n = len(pizzas)
+        pizzas.sort()  # ascending
+        left, right = 0, n - 1
+        days = n // 4
+        ans = 0
+
+        for day in range(days):
+            if day % 2 == 0:
+                # Odd day (1st, 3rd, ...): take the largest as Z, pair with three smallest
+                ans += pizzas[right]
+                right -= 1
+                left += 3
+            else:
+                # Even day: take the four largest remaining; Y is the second largest among them
+                ans += pizzas[right - 1]
+                right -= 4
+
+        return ans
+```

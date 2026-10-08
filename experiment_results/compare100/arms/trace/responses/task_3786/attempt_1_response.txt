@@ -1,0 +1,78 @@
+### Step-by-step reasoning
+- Problem understanding: We have a string s and up to k operations. Each operation increments or decrements a character (with wrap-around between 'a' and 'z'). We want the length of the longest palindromic subsequence (LPS) that can be obtained with at most k operations.
+- Key cost insight: To make a pair of characters s[i] and s[j] (i < j) match, the minimal total number of operations needed is the circular distance between the two letters: dist(s[i], s[j]) = min(|s[i]-s[j]|, 26 - |s[i]-s[j]|). Using more operations on this pair cannot help increase the final palindrome length, so we should always use the minimum required to pair these two characters.
+- DP formulation: Let dp[i][j][t] be the maximum LPS length obtainable from s[i..j] using at most t operations.
+  - Recurrence:
+    - Skip either end: dp[i][j][t] = max(dp[i+1][j][t], dp[i][j-1][t])
+    - Pair ends if affordable: if t >= dist(s[i], s[j]), then dp[i][j][t] can be at least 2 + dp[i+1][j-1][t - dist(s[i], s[j])]
+  - Base: dp[i][i][t] = 1 for all t, and dp[i][j][t] = 0 if i > j.
+- Implementation note: A full 3D DP with Python ints would be heavy. We implement a layered DP over t (0..k) and store each layer as a flattened 2D array of size n*n using type 'H' (unsigned short). This keeps memory modest and fast. We must carefully access the inner layer dp[i+1][j-1][t - dist], i.e., we need to keep all previous t-layers accessible. A common pitfall is using a sliding window and misaligning the t-index after popping old layers; to avoid this, we store all layers dp_by_t[t] for t in [0, k].
+- Complexity: Time O(n^2 * k) with small constant factors. Memory O((k+1) * n^2) in unsigned short, which is fine for n, k ≤ 200.
+
+- Edge cases considered:
+  - k large: using dist up to 13 ensures we never need more than 13 to pair distant letters; but the DP will handle any t up to k.
+  - s length 1: returns 1.
+  - Duplicates and ties: handled by the DP via max of skipping ends vs pairing when affordable.
+
+- Correctness sanity: For dist > 0 we use dp_by_t[t - dist], i.e., inner substring with reduced budget; for dist == 0 we reuse the current t-layer inner value dp[i+1][j-1], which is computed earlier in the same t pass. This matches the recurrence and ensures correctness.
+
+### Requirements
+None
+
+### Code
+```
+from array import array
+
+class Solution:
+    def longestPalindromicSubsequence(self, s: str, k: int) -> int:
+        n = len(s)
+        if n == 0:
+            return 0
+
+        # Convert letters to 0..25
+        s_int = [ord(ch) - 97 for ch in s]
+
+        # dp_by_t[t] will store the flattened dp matrix for that t, as an array('H')
+        dp_by_t = [None] * (k + 1)
+
+        for t in range(k + 1):
+            dp = array('H', [0] * (n * n))
+            # Fill dp for this t: process i from n-1 down to 0, j from i+1 to n-1
+            for i in range(n - 1, -1, -1):
+                base_i = i * n
+                dp[base_i + i] = 1  # single character palindrome
+                si = s_int[i]
+                for j in range(i + 1, n):
+                    idx = base_i + j
+
+                    # dp[i+1][j] and dp[i][j-1] in current t layer
+                    left = dp[(i + 1) * n + j]
+                    up = dp[base_i + (j - 1)]
+                    val = left if left > up else up
+
+                    # cost to pair s[i] and s[j]
+                    diff = si - s_int[j]
+                    if diff < 0:
+                        diff = -diff
+                    dist = diff if diff <= 13 else 26 - diff
+
+                    if dist <= t:
+                        if dist == 0:
+                            # inner value is dp[i+1][j-1][t] (same layer)
+                            inner_val = dp[(i + 1) * n + (j - 1)] if (j - i) >= 2 else 0
+                        else:
+                            # inner value from layer t - dist
+                            inner_dp = dp_by_t[t - dist]
+                            inner_val = inner_dp[(i + 1) * n + (j - 1)] if (j - i) >= 2 else 0
+
+                        cand = 2 + inner_val
+                        if cand > val:
+                            val = cand
+
+                    dp[idx] = val
+
+            dp_by_t[t] = dp
+
+        # Answer for the full string with at most k operations
+        return dp_by_t[k][0 * n + (n - 1)]
+```

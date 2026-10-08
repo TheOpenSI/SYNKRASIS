@@ -1,0 +1,80 @@
+### Step-by-step reasoning
+- Let N = n + m - 1 be the length of the resulting word. Each position 0..N-1 may be fixed by T constraints or free.
+- T constraints: For every i with str1[i] == 'T', the window word[i .. i+m-1] must be exactly str2. This fixes certain positions to specific characters. If two T constraints assign conflicting characters to the same position, no solution exists.
+- After processing all T constraints, fill all unfixed positions with the lexicographically smallest character, 'a'. This yields the lexicographically smallest base string consistent with all T constraints.
+- F constraints: For every i with str1[i] == 'F', the window word[i .. i+m-1] must not equal str2.
+  - If the current window already differs from str2, it’s satisfied.
+  - If the window currently equals str2, we must break equality by changing at least one position inside this window that is not fixed by any T constraint. To keep the string lexicographically smallest, pick the leftmost non-T position within the window and set it to the smallest character different from the corresponding character in str2. That is:
+    - If str2[k] != 'a', set that position to 'a'
+    - Else (str2[k] == 'a'), set that position to 'b'
+  - If a window has no non-T positions to change (i.e., every position in the window is fixed by some T constraint) and the window currently equals str2, no valid string exists.
+  - After each modification, re-check windows to account for the impact of the change on overlapping F-windows. A small backtrack (step back one i) ensures earlier windows are re-evaluated.
+- If we complete the scan without impossibility, the current word is the lexicographically smallest valid string, because:
+  - We only modify when strictly necessary (to break an F window equal to str2).
+  - We always choose the leftmost modifiable position and the smallest possible new letter.
+  - We never modify T-fixed positions.
+- Complexity remains manageable: T-constraint application is O(n*m) in the worst case, and the F-window pass plus backtracking re-checks are also bounded by a similar scale, suitable for given constraints (n up to 1e4, m up to 500).
+
+### Requirements
+None
+
+### Code
+```
+class Solution:
+    def generateString(self, str1: str, str2: str) -> str:
+        n = len(str1)
+        m = len(str2)
+        N = n + m - 1
+
+        word = [None] * N
+        fixed_by_T = [False] * N  # positions fixed due to T constraints
+
+        # Apply T constraints: word[i..i+m-1] must == str2
+        for i, ch in enumerate(str1):
+            if ch == 'T':
+                for j in range(m):
+                    pos = i + j
+                    c = str2[j]
+                    if word[pos] is None:
+                        word[pos] = c
+                    elif word[pos] != c:
+                        return ""
+                    fixed_by_T[pos] = True
+
+        # Fill non-fixed positions with 'a' to start (lexicographically smallest)
+        for pos in range(N):
+            if word[pos] is None:
+                word[pos] = 'a'
+
+        # Enforce F constraints by iterating and fixing leftmost non-T positions inside violated windows
+        i = 0
+        while i <= n - 1:
+            if str1[i] == 'F':
+                # Check if window equals str2
+                equal = True
+                base = i
+                for j in range(m):
+                    if word[base + j] != str2[j]:
+                        equal = False
+                        break
+                if equal:
+                    # Find leftmost position in window that is not fixed by T
+                    p = None
+                    for t in range(base, base + m):
+                        if not fixed_by_T[t]:
+                            p = t
+                            break
+                    if p is None:
+                        return ""
+                    offset = p - base
+                    # Choose smallest letter != str2[offset]
+                    c = 'a' if str2[offset] != 'a' else 'b'
+                    if word[p] != c:
+                        word[p] = c
+                    # Backtrack a little to re-check nearby windows affected by this change
+                    i = max(0, i - 1)
+                    continue
+            i += 1
+
+        return ''.join(word)
+```

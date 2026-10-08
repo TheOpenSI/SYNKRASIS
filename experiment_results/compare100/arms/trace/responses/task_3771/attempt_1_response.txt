@@ -1,0 +1,77 @@
+### Step-by-step reasoning
+- A substring s[l..r] is special iff:
+  - For every character c in s[l..r], all occurrences of c in s lie within [l, r]. Equivalently, first[c] >= l and last[c] <= r for every c present in s[l..r].
+  - The substring is not the entire string (i.e., not [0, n-1]).
+
+- Observations:
+  - If we fix a left boundary l, the smallest r that can form a valid special substring is obtained by expanding r and tracking the maximum last occurrence among the seen characters. Let max_last be the maximum last[c] among characters seen so far. When r reaches max_last, all currently seen characters have their last occurrence within [l, r], so [l, r] is a candidate. We must also ensure first[c] >= l for all seen characters; if we ever encounter a character with first[c] < l, then no substring starting at l can be special.
+
+  - Among all substrings starting at l, the earliest r that yields a valid block gives the most opportunities to form disjoint blocks later. Therefore, to maximize the number of disjoint special substrings, a greedy approach of taking the earliest valid block from the current left boundary is optimal.
+
+  - To determine if we can select k disjoint special substrings, we can greedily scan from left to right:
+    - For the current left boundary l, compute the earliest end r such that s[l..r] is special (and not the whole string). If such r exists, we count one substring and move l to r+1.
+    - If no such r exists for l, increment l by 1 and try again.
+    - Stop when we either accumulate k substrings or exhaust the string.
+
+- Complexity considerations:
+  - There are only 26 lowercase letters. Precomputing first and last occurrences for each letter lets us check validity in O(1) per character while expanding r.
+  - In the worst case, each left boundary is checked with a short scan due to the first[c] < l check, and overall time stays manageable for n up to 5e4.
+
+- Output semantics:
+  - If k == 0, return True (trivially possible).
+  - The function returns True if we can obtain at least k disjoint special substrings; otherwise False. If there are more than k such substrings, that still satisfies the condition, since you can pick any k of them.
+
+### Requirements
+None
+
+### Code
+```
+class Solution:
+    def maxSubstringLength(self, s: str, k: int) -> bool:
+        n = len(s)
+        if k == 0:
+            return True
+
+        # Precompute first and last positions for each letter
+        INF = n + 5
+        first = [INF] * 26
+        last = [-1] * 26
+        for i, ch in enumerate(s):
+            idx = ord(ch) - 97
+            if first[idx] == INF:
+                first[idx] = i
+            last[idx] = i
+
+        # Helper: earliest end index for a valid special substring starting at 'start'
+        def earliest_end(start: int) -> int:
+            max_last = -1
+            r = start
+            while r < n:
+                idx = ord(s[r]) - 97
+                # If this char started before 'start', a block starting at 'start' is impossible
+                if first[idx] < start:
+                    return -1
+                if last[idx] > max_last:
+                    max_last = last[idx]
+                if r == max_last:
+                    # Not allowed to be the whole string
+                    if not (start == 0 and r == n - 1):
+                        return r
+                    else:
+                        return -1
+                r += 1
+            return -1
+
+        pos = 0
+        cnt = 0
+
+        while pos < n and cnt < k:
+            end = earliest_end(pos)
+            if end != -1:
+                cnt += 1
+                pos = end + 1
+            else:
+                pos += 1
+
+        return cnt >= k
+```

@@ -1,0 +1,45 @@
+### Step-by-step reasoning
+- Problem insight:
+  - For a fixed subarray nums[l..r], the minimal number of increments to make it non-decreasing is obtained by a left-to-right pass:
+    - Let prev be the last adjusted value. Initialize prev = nums[l].
+    - For each i from l+1 to r:
+      - If nums[i] < prev, we must increment nums[i] up to prev, costing prev - nums[i].
+      - Otherwise, no increment is needed and set prev = nums[i].
+  - The total cost is the sum of all such required increments. If this cost is <= k, the subarray can be made non-decreasing within k operations.
+- Counting approach:
+  - For each left index l, extend r from l upward, maintaining the running cost and the current "needed" previous value (cur_max in code).
+  - The cost for a fixed l and growing r is non-decreasing, so once cost > k, we can stop extending for that l.
+  - Count every (l, r) pair where the accumulated cost is <= k.
+- Complexity notes:
+  - This straightforward approach is O(n^2) in the worst case (n is nums.length). It guarantees correctness and handles duplicates and edge cases. For very large n (up to 1e5), this may be too slow in practice, but it cleanly implements the described logic.
+
+### Requirements
+None
+
+### Code
+```
+from typing import List
+
+class Solution:
+    def countNonDecreasingSubarrays(self, nums: List[int], k: int) -> int:
+        n = len(nums)
+        if n == 0:
+            return 0
+        ans = 0
+        for l in range(n):
+            cost = 0
+            cur_max = nums[l]
+            # extend the right boundary r from l to n-1
+            for r in range(l, n):
+                if r > l:
+                    ai = nums[r]
+                    if ai < cur_max:
+                        cost += cur_max - ai
+                    else:
+                        cur_max = ai
+                if cost <= k:
+                    ans += 1
+                else:
+                    break
+        return ans
+```

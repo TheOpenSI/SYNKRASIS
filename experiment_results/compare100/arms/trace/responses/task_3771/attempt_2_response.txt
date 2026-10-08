@@ -1,0 +1,83 @@
+### Step-by-step reasoning
+- Understand the problem: A substring s[l..r] is "special" iff every character inside it does not appear outside the substring in the whole string, and the substring is not the entire string. We need to know if we can select at least k disjoint special substrings.
+
+- Key observations:
+  - For a fixed left boundary l, as we expand r, the last occurrences of characters seen so far determine the smallest r that could close a block: let max_last be the maximum last[c] among all characters seen in s[l..r]. When r equals max_last, all characters seen so far have their last occurrence within [l, r], so s[l..r] is a candidate.
+  - We must also ensure that none of the seen characters started before l (i.e., their first[c] < l). If that happens, no block starting at l can be special, so we can stop expanding for that l.
+  - To maximize the number of disjoint blocks, a standard greedy principle applies: when a valid block starting at l exists, taking the earliest possible end r (the first time r == max_last) leaves the maximum remaining space for future blocks.
+
+- Greedy approach (robust and efficient):
+  - Precompute first[c] and last[c] for all 26 lowercase letters.
+  - Iterate with a left boundary pos (starting at 0), trying to find the earliest end end_pos such that s[pos..end_pos] is a valid special substring and end_pos != n-1 when pos == 0 (to avoid the whole string).
+  - If such an end_pos is found, count one block and move pos to end_pos + 1.
+  - If not found for a given pos, increment pos and try again.
+  - Stop when we either accumulate k blocks or exhaust the string.
+
+- Correctness considerations:
+  - If there exists a valid block starting at pos, taking the earliest end is optimal for maximizing the number of future blocks.
+  - If a valid block exists starting later, the outer loop eventually shifts pos forward to try those starts.
+  - The not-entire-string constraint is enforced by disallowing the case pos == 0 and end_pos == n - 1.
+
+- Complexity:
+  - We precompute first/last in O(n).
+  - The inner scan for each pos advances r forward; due to the first[c] < pos check, many positions terminate early. Overall this approach runs in near-linear time for the given constraints (n up to 5e4) and a small alphabet (26).
+
+- Edge cases:
+  - If k == 0, answer is True.
+  - If there are fewer than k valid blocks, answer is False.
+  - Substrings that end at n-1 are allowed when pos > 0; only the block [0, n-1] is disallowed.
+
+### Requirements
+None
+
+### Code
+```
+class Solution:
+    def maxSubstringLength(self, s: str, k: int) -> bool:
+        n = len(s)
+        if k == 0:
+            return True
+
+        # Precompute first and last positions for each letter
+        INF = n + 5
+        first = [INF] * 26
+        last = [-1] * 26
+        for i, ch in enumerate(s):
+            idx = ord(ch) - 97
+            if first[idx] == INF:
+                first[idx] = i
+            last[idx] = i
+
+        # Helper: earliest end index for a valid special substring starting at 'start'
+        def earliest_end(start: int) -> int:
+            max_last = -1
+            r = start
+            while r < n:
+                idx = ord(s[r]) - 97
+                # If this char started before 'start', a block starting at 'start' is impossible
+                if first[idx] < start:
+                    return -1
+                if last[idx] > max_last:
+                    max_last = last[idx]
+                if r == max_last:
+                    # Not allowed to be the whole string
+                    if not (start == 0 and r == n - 1):
+                        return r
+                    else:
+                        return -1
+                r += 1
+            return -1
+
+        pos = 0
+        cnt = 0
+
+        while pos < n and cnt < k:
+            end = earliest_end(pos)
+            if end != -1:
+                cnt += 1
+                pos = end + 1
+            else:
+                pos += 1
+
+        return cnt >= k
+```

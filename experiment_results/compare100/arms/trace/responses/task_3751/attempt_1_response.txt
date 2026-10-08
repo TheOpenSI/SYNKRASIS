@@ -1,0 +1,48 @@
+### Step-by-step reasoning
+- When we apply the operation to a subarray with a chosen x, only elements inside the subarray change (add x). An element a[i] becomes k after the operation iff a[i] + x = k.
+- If we fix m = k - x, then every element inside the chosen subarray with original value m will become k. Elements inside with any other value will not become k (unless their value also equals m, which is already counted).
+- Elements that were already k and lie inside the modified subarray will become k + x, which is not equal to k (unless x = 0, i.e., m = k). Thus, choosing a subarray with any k inside reduces the count of k by the number of k inside that subarray.
+- Therefore, for a fixed m, the change in the number of k after applying the operation to some subarray equals:
+  delta = (number of m in subarray) - (number of k in subarray)
+- The final frequency of k is total_k + delta, where total_k is the number of k’s originally in the array. We want to maximize this over all subarrays and all m in [1, 50].
+- For a fixed m, we can model this as finding a subarray with maximum sum where each position contributes:
+  +1 if a[i] == m, -1 if a[i] == k, 0 otherwise.
+  The maximum subarray sum for that m gives the best delta for that m. The overall answer is total_k + max(0, max over m of that maximum subarray sum). The 0 baseline handles the case where any delta would not improve the result (we can choose an operation that effectively does nothing in terms of k count by using m = k).
+- Complexity: We repeat this for at most 50 possible m values, each with a linear scan (Kadane). Time: O(50 * n), which is fine for n up to 1e5. Space: O(1).
+
+### Requirements
+None
+
+### Code
+```
+from typing import List
+
+class Solution:
+    def maxFrequency(self, nums: List[int], k: int) -> int:
+        n = len(nums)
+        # Total occurrences of k in the original array
+        total_k = sum(1 for v in nums if v == k)
+        
+        # Maximum possible increase in k count across all m (1..50), excluding m == k
+        max_delta = 0
+        
+        for m in range(1, 51):
+            if m == k:
+                continue  # delta for m == k is always 0
+            # Kadane's algorithm on the diff array: +1 if a[i] == m, -1 if a[i] == k, else 0
+            current = 0
+            best = 0
+            for v in nums:
+                diff = 0
+                if v == m:
+                    diff += 1
+                if v == k:
+                    diff -= 1
+                current = max(0, current + diff)
+                if current > best:
+                    best = current
+            if best > max_delta:
+                max_delta = best
+        
+        return total_k + max_delta
+```

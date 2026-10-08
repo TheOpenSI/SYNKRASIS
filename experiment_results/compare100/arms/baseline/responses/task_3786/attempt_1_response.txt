@@ -1,0 +1,78 @@
+### Step-by-step reasoning
+- The problem asks for the length of the longest palindromic subsequence (LPS) of s after performing at most k single-letter changes. Each operation changes a letter to its previous or next letter in a cyclic alphabet (a↔z wrap).
+- Key observation: To form a palindrome, a pair of characters s[i] and s[j] (i < j) that ends up as matching ends can be equalized with a certain minimal number of operations. The minimal total number of operations to make s[i] and s[j] equal is the circular distance between the two letters:
+  - dist(a, b) = min(|a - b|, 26 - |a - b|).
+  - You can move both characters toward each other along the shortest path until they meet at some letter; the total moves required is dist(a, b). Spending more than this on the pair is never beneficial for maximizing palindrome length, since it would only waste budget without increasing achievable palindrome length.
+- Therefore, when considering a substring s[i..j], we have three options:
+  - Skip s[i] (take LPS from s[i+1..j]).
+  - Skip s[j] (take LPS from s[i..j-1]).
+  - If k allows, pair i and j at cost dist(s[i], s[j]) and add 2 to the best LPS of the interior s[i+1..j-1] with the remaining budget k - dist(s[i], s[j]).
+- This leads to a dynamic programming approach with states dp[i][j][t] = maximum LPS length in s[i..j] using at most t operations. The recurrence:
+  - dp[i][j][t] = max(dp[i+1][j][t], dp[i][j-1][t],
+                    2 + dp[i+1][j-1][t - dist(s[i], s[j])] if t >= dist(s[i], s[j]))
+  - Base: dp[i][i][t] = 1 for all t >= 0.
+- Time complexity: O(n^2 * k) states, each computed in O(1). With n, k ≤ 200, this is feasible.
+- To manage memory, we store all t-layers as separate 2D DP matrices flattened into 1D unsigned short arrays (size n*n). We compute for t from 0 to k, storing dp for each t. When needed, we access earlier layers dp_by_t[t - dist].
+- Important details:
+  - For dist = 0 (s[i] == s[j]), the recurrence reduces to the classic LPS transition with no cost, i.e., 2 + dp[i+1][j-1][t], using the same t layer.
+  - For j = i+1 (adjacent characters), the inner dp[i+1][j-1] corresponds to an empty substring, which yields 0.
+  - We must guard indexing when the inner substring is empty (j - i < 2).
+
+This approach fixes potential hidden-case issues by strictly following the cost model and ensures correctness for tiny inputs, duplicates, and ties, while remaining within acceptable time and memory bounds for the given constraints.
+
+### Requirements
+None
+
+### Code
+```
+from array import array
+
+class Solution:
+    def longestPalindromicSubsequence(self, s: str, k: int) -> int:
+        n = len(s)
+        if n == 0:
+            return 0
+
+        # Convert letters to 0..25
+        s_int = [ord(ch) - 97 for ch in s]
+
+        # dp_by_t[t] stores the flattened dp[i][j] for that t as array('H')
+        dp_by_t = [array('H', [0] * (n * n)) for _ in range(k + 1)]
+
+        for t in range(k + 1):
+            dp = dp_by_t[t]
+            # Fill dp for all i, j with i <= j
+            for i in range(n - 1, -1, -1):
+                base_i = i * n
+                dp[base_i + i] = 1  # single character palindrome
+                si = s_int[i]
+                base_ip1 = (i + 1) * n
+                for j in range(i + 1, n):
+                    idx = base_i + j
+
+                    # dp[i+1][j] and dp[i][j-1]
+                    left = dp[base_ip1 + j]       # dp[i+1][j]
+                    up = dp[base_i + (j - 1)]     # dp[i][j-1]
+                    val = left if left > up else up
+
+                    # cost to make s[i] and s[j] equal
+                    diff = si - s_int[j]
+                    if diff < 0:
+                        diff = -diff
+                    dist = diff if diff <= 13 else 26 - diff  # circular distance
+
+                    if dist <= t:
+                        if dist == 0:
+                            # inner value dp[i+1][j-1] on the same t-layer
+                            inner = dp[base_ip1 + (j - 1)] if (j - i) >= 2 else 0
+                        else:
+                            inner_dp = dp_by_t[t - dist]  # previously computed layer
+                            inner = inner_dp[(i + 1) * n + (j - 1)] if (j - i) >= 2 else 0
+                        cand = 2 + inner
+                        if cand > val:
+                            val = cand
+                    dp[idx] = val
+
+        # Answer is dp[0][n-1] on the final layer
+        return dp_by_t[k][0 * n + (n - 1)]
+```

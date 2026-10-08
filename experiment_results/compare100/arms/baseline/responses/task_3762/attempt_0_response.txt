@@ -1,0 +1,47 @@
+### Step-by-step reasoning
+- Each move lands on some index i and increases gameScore[i] by points[i]. Therefore, after m moves, the score at index i is points[i] multiplied by the number of times we visited i.
+- If we want the final minimum score across all indices to be at least S, then for every i we must visit i at least ceil(S / points[i]) times.
+- Let k_i be the number of visits to index i. Then we need k_i >= ceil(S / points[i]) for all i, and the total number of moves equals sum(k_i) = m.
+- A necessary condition for achieving S is that the sum of these lower bounds does not exceed m:
+  sum_i ceil(S / points[i]) <= m
+- This condition is also sufficient for the existence of a path achieving at least S, in the sense that we can allocate the required visits and fill the remaining moves (if any) without decreasing any index’s score below S. Therefore, we can binary search on S to find the maximum feasible value.
+- Edge cases:
+  - If m is very small relative to n, the best possible minimum is 0 (you can’t even visit every index once). The check naturally handles this, since for S > 0 the sum ceil(S / points[i]) is at least n, which would exceed m in such cases.
+  - The upper bound for S can be safely set to max(points) * m, since the maximum any single index can achieve is by visiting it m times.
+
+Algorithm:
+- Binary search S in [0, max(points) * m].
+- For a candidate S, compute total = sum ceil(S / points[i]) with early exit if total > m.
+- If total <= m, S is feasible; move to the right half. Otherwise, move to the left half.
+- Return the largest feasible S.
+
+This runs in O(n log(max(points) * m)) time, suitable for n up to 5e4 and m up to 1e9.
+
+### Requirements
+None
+
+### Code
+```
+from typing import List
+
+class Solution:
+    def maxScore(self, points: List[int], m: int) -> int:
+        # Binary search on the maximum feasible minimum score S
+        lo, hi = 0, max(points) * m
+
+        while lo < hi:
+            mid = (lo + hi + 1) // 2
+            total = 0
+            for p in points:
+                # ceil(mid / p) = (mid + p - 1) // p
+                total += (mid + p - 1) // p
+                if total > m:
+                    break  # early exit if already impossible
+
+            if total <= m:
+                lo = mid
+            else:
+                hi = mid - 1
+
+        return lo
+```

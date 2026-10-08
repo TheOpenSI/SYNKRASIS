@@ -1,0 +1,27 @@
+### Step-by-step reasoning
+- Problem restatement: We have n pizzas (n is a multiple of 4). Each day we pick exactly 4 pizzas. On odd-numbered days we gain the maximum (Z) of that day’s 4 pizzas; on even-numbered days we gain the second maximum (Y) of that day’s 4 pizzas. After all days, all pizzas are eaten. We can choose how to partition the pizzas into days (groups of 4) and the order of days (which group is day 1, day 2, etc.) to maximize the total gain.
+- Key observation: The total gain depends on which groups (of 4) are assigned to odd days (where we take the group’s max) and which groups are assigned to even days (where we take the group’s second max). The order of days matters only in deciding which groups are odd vs even, but we can arrange groups optimally after forming them.
+- A compact optimal strategy emerges when you sort the pizzas in non-increasing order and then align the groups to maximize the contributions on odd days and even days across the sequence. The optimal total can be achieved by taking the largest numbers in a specific alternating pattern: take the largest, skip the next, take the next, skip the next, and so on, but only for the first 2 × (n/4) elements. Concretely, if you sort the array in descending order and let D = n/4, then the maximum total equals the sum of pizzas at indices 0, 2, 4, ..., 2(D-1) in that sorted array.
+- Why this works (intuition): You can pair the groups across days so that the largest values contribute on odd days as Z, while the even days’ contributions (Ys) are maximized by using the next set of large values in a way that they become the second-largest in their respective groups. The optimal construction yields a sum that is exactly the sum of the elements at even indices (0-based) among the first 2D elements of the descending-sorted array. This matches the samples:
+  - Example 1: pizzas = [1,2,3,4,5,6,7,8] → sorted desc = [8,7,6,5,4,3,2,1], D=2, sum indices 0 and 2 → 8 + 6 = 14.
+  - Example 2: pizzas = [2,1,1,1,1,1,1,1] → sorted desc = [2,1,1,1,1,1,1,1], D=2, sum indices 0 and 2 → 2 + 1 = 3.
+- Complexity: Sorting dominates with O(n log n) time. The final sum is computed in O(D) = O(n) time, using O(1) extra space beyond the sort.
+
+### Requirements
+None
+
+### Code
+```
+from typing import List
+
+class Solution:
+    def maxWeight(self, pizzas: List[int]) -> int:
+        n = len(pizzas)
+        pizzas.sort(reverse=True)
+        d = n // 4
+        ans = 0
+        # Sum the elements at indices 0, 2, 4, ..., 2*(d-1) in the descending array
+        for i in range(0, 2 * d, 2):
+            ans += pizzas[i]
+        return ans
+```

@@ -1,0 +1,54 @@
+### Step-by-step reasoning
+- The problem describes a no-wait flow-shop schedule: m jobs (potions) pass through n machines (wizards) in a fixed order, and a job cannot wait between machines. Each job j on wizard i takes time p(i,j) = skill[i] * mana[j].
+- A feasible no-wait schedule imposes that for each consecutive pair of machines, the start time on the next machine for a given job equals the finish time of the previous machine for that same job. To ensure non-decreasing completion times on each machine across the job sequence, we derive a recurrence for the starting time of the first wizard for each new potion.
+- Let col_j[i] be the cumulative time after wizard i has processed potion j (i.e., sum of p(0..i, j)). For a given potion j, the start time of the first wizard must satisfy:
+  s0_j >= s0_{j-1} + max_i ( col_{j-1}[i] - (col_j[i-1] if i>0 else 0) )
+  The term max_i(...) ensures no-wait feasibility for all wizards.
+- We can compute the schedule efficiently by streaming per potion:
+  - Build col_j by traversing wizards i and accumulating p(i,j) across i.
+  - For j > 0, compute maxD = max over i of (col_{j-1}[i] - (col_j[i-1] or 0)) and add it to the running start time s0.
+  - The total time after processing the last potion on the last wizard is col_last[n-1].
+  - The final answer is s0 + col_last[n-1].
+- This approach uses O(n) memory and O(n*m) time, suitable for n,m up to 5000 when implemented efficiently.
+
+### Requirements
+None
+
+### Code
+```
+from typing import List
+
+class Solution:
+    def minTime(self, skill: List[int], mana: List[int]) -> int:
+        n = len(skill)
+        m = len(mana)
+        if n == 0 or m == 0:
+            return 0
+
+        # Streaming computation: for each potion j, compute col_j (prefix sums across wizards)
+        s0 = 0  # starting time of the first wizard for the current potion
+        prev_col = None  # col for previous potion
+
+        for j in range(m):
+            acc = 0
+            curr_col = [0] * n
+            for i in range(n):
+                acc += skill[i] * mana[j]
+                curr_col[i] = acc
+
+            if j > 0:
+                # Compute max_i (prev_col[i] - (curr_col[i-1] if i>0 else 0))
+                maxD = float('-inf')
+                for i in range(n):
+                    left = prev_col[i]
+                    right = curr_col[i - 1] if i > 0 else 0
+                    val = left - right
+                    if val > maxD:
+                        maxD = val
+                s0 += maxD
+
+            prev_col = curr_col
+
+        total_last_job = prev_col[-1]
+        return s0 + total_last_job
+```

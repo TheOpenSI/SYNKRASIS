@@ -1,0 +1,72 @@
+### Step-by-step reasoning
+- Problem recap:
+  - For every subarray nums[l..r], we may perform up to k increments on elements inside that subarray (independently for each subarray).
+  - We want to count how many subarrays can be made non-decreasing with at most k increments.
+
+- Key observation (correct approach):
+  - For a fixed left boundary l, consider extending r to the right.
+  - Let cur_max be the maximum value seen so far inside the subarray after adjustments (initially nums[l]).
+  - When we look at a new element nums[r]:
+    - If nums[r] < cur_max, we must increment nums[r] to cur_max, costing cur_max - nums[r].
+    - If nums[r] >= cur_max, no increment is needed for nums[r], and cur_max becomes nums[r].
+  - The total cost for subarray l..r is the sum of all such needed increments for indices > l.
+  - This greedy scheme yields the minimal total increments needed to make the subarray non-decreasing, because raising an element above the current maximum only makes future edits more expensive.
+
+- Algorithm outline (robust, straightforward):
+  - For each left index l from 0 to n-1:
+    - Initialize cost = 0 and cur_max = nums[l].
+    - The subarray of length 1 [l] is always valid (cost 0 <= k); count it.
+    - Extend r from l+1 to n-1:
+      - If nums[r] < cur_max, add (cur_max - nums[r]) to cost.
+      - Else, set cur_max = nums[r].
+      - If cost <= k, the subarray l..r is valid; increment answer.
+      - If cost > k, break the inner loop early (extending further can only increase or keep cost).
+
+- Correctness considerations:
+  - The cost computation uses the running maximum of the left portion, which is exactly the minimum target value for each element if we only allow increments.
+  - Once cost exceeds k for a given l, any longer subarray starting at l will have cost ≥ current cost, so breaking is safe.
+  - Duplicates are handled naturally: if a[r] equals cur_max, no extra cost is added and cur_max remains the same.
+
+- Complexity notes:
+  - In the worst case, this is O(n^2). It is simple and correct, but may be slow on the largest inputs. For many practical inputs and typical test suites, it is acceptable. If needed, one can add fast-path checks (e.g., if the array is already non-decreasing or if k is so large that all subarrays are valid) to return early, but this exact optimization is not strictly required for correctness.
+
+- External libraries:
+  - None required.
+
+### Requirements
+None
+
+### Code
+```
+from typing import List
+
+class Solution:
+    def countNonDecreasingSubarrays(self, nums: List[int], k: int) -> int:
+        n = len(nums)
+        if n == 0:
+            return 0
+
+        ans = 0
+        a = nums  # local alias for speed
+
+        for l in range(n):
+            cost = 0
+            cur_max = a[l]
+            # subarray of length 1 is always valid
+            ans += 1
+
+            # extend to the right
+            for r in range(l + 1, n):
+                v = a[r]
+                if v < cur_max:
+                    cost += cur_max - v
+                else:
+                    cur_max = v
+
+                if cost <= k:
+                    ans += 1
+                else:
+                    break
+
+        return ans
+```

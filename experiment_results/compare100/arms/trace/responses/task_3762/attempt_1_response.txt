@@ -1,0 +1,58 @@
+### Step-by-step reasoning
+- Model the walk on a line with n indices (0..n-1). A move traverses either edge i<->i+1 (for i in 0..n-2) or the initial move from -1 to 0. Let a_i be the number of forward traversals (i -> i+1) and b_i the number of backward traversals (i+1 -> i) for i in 0..n-2.
+- The total number of moves m equals 1 (the initial -1 to 0 move) plus all edge traversals: m = 1 + sum_i (a_i + b_i).
+- The number of visits to each index i (which determines gameScore[i] = points[i] * visits[i]) must be at least k_i where k_i = ceil(S / points[i]) if we want the minimum score to be at least S.
+  - visits[0] = 1 + b_0
+  - visits[i] = a_{i-1} + b_i for 1 <= i <= n-2
+  - visits[n-1] = a_{n-2}
+- For a fixed target S, the minimal integer k_i to achieve S is k_i = ceil(S / points[i]). We then ask: can we pick non-negative integers a_i, b_i that satisfy:
+  - 1 + b_0 >= k_0  -> b_0 >= k_0 - 1
+  - a_{i-1} + b_i >= k_i for i = 1..n-2
+  - a_{n-2} >= k_{n-1}
+  and minimize total edge traversals sum_i (a_i + b_i) to fit within m-1 moves beyond the initial move.
+- Observing that each constraint for i in 1..n-2 only involves the pair (a_{i-1}, b_i) and these variables do not affect other constraints, the minimal total sum of traversals to satisfy all constraints is:
+  T_min = max(0, k_0 - 1) + sum_{i=1}^{n-1} k_i
+  (we can set b_0 = max(0, k_0 - 1), and for each i in 1..n-2 set either a_{i-1} or b_i to k_i (the other to 0), and set a_{n-2} to k_{n-1} to satisfy the last constraint)
+- Therefore, S is feasible if T_min <= m - 1. This yields a monotone feasibility function in S.
+- We can binary search S in [0, max(points) * m], using the feasibility test above. The per-check cost is O(n), and with n up to 5e4 and m up to 1e9, this is efficient enough.
+
+Edge cases:
+- If m is small, S will be 0 in many cases (unvisited indices yield 0), which is correctly captured by the feasibility check.
+- All arithmetic uses integers; Python handles large integers safely.
+
+### Requirements
+None
+
+### Code
+```
+from typing import List
+
+class Solution:
+    def maxScore(self, points: List[int], m: int) -> int:
+        n = len(points)
+
+        def feasible(S: int) -> bool:
+            # k_i = ceil(S / points[i])
+            # T_min = max(0, k_0 - 1) + sum_{i=1}^{n-1} k_i
+            # Check if T_min <= m - 1
+            # Early exit if already exceeding
+            p0 = points[0]
+            k0 = (S + p0 - 1) // p0
+            T = max(0, k0 - 1)
+
+            for idx in range(1, n):
+                ki = (S + points[idx] - 1) // points[idx]
+                T += ki
+                if T > m - 1:
+                    return False
+            return T <= m - 1
+
+        lo, hi = 0, max(points) * m
+        while lo < hi:
+            mid = (lo + hi + 1) // 2
+            if feasible(mid):
+                lo = mid
+            else:
+                hi = mid - 1
+        return lo
+```

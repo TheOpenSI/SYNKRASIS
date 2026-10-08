@@ -1,0 +1,51 @@
+### Step-by-step reasoning
+- Problem understanding:
+  - For every subarray nums[l..r], we may increment elements (independently per subarray) up to a total of k increments to try to make that subarray non-decreasing.
+  - For a fixed subarray, the minimal number of increments to achieve non-decreasing order is obtained by a left-to-right pass: keep a running "current" value that represents the adjusted value of the previous element. Start with current = nums[l]. For each next element a = nums[i]:
+    - If a < current, we must increment a up to current, costing current - a.
+    - Otherwise, no cost for this element, and update current to a.
+  - The total cost for that subarray is the sum of all such increments. If the total cost <= k, that subarray is valid.
+- Observations:
+  - For a fixed left index l, as we extend r to the right, the cost never decreases (it is non-decreasing).
+  - Therefore, for fixed l, we can extend r until the cost exceeds k, counting all subarrays starting at l with end <= that maximum r.
+  - A straightforward implementation uses two nested loops: outer loop over l, inner loop over r with an accumulating cost and a current maximum (the adjusted previous value). This is correct and simple.
+- Potential issue (hidden tests):
+  - Time complexity: The straightforward O(n^2) approach can be too slow for the maximum input size (n up to 1e5). It will TLE on large inputs. The correctness is fine, but performance is a concern for constraints at the upper end.
+  - The logic itself handles duplicates, edge cases, and large numbers since Python integers are arbitrary-precision.
+- Approach for code:
+  - Implement the direct, correct two-pointer-like approach with early termination when cost > k.
+  - Keep the function signature exactly as requested.
+  - Note the potential performance caveat in the reasoning; optimize micro-details for speed where reasonable (local variable access, minimal attribute lookups).
+
+### Requirements
+None
+
+### Code
+```
+from typing import List
+
+class Solution:
+    def countNonDecreasingSubarrays(self, nums: List[int], k: int) -> int:
+        n = len(nums)
+        if n == 0:
+            return 0
+
+        ans = 0
+        a = nums  # local alias for speed
+        for l in range(n):
+            cost = 0
+            cur = a[l]  # the last adjusted value (current maximum in the subarray so far)
+            # extend the right boundary r from l to n-1
+            for r in range(l, n):
+                if r > l:
+                    ai = a[r]
+                    if ai < cur:
+                        cost += cur - ai
+                    else:
+                        cur = ai
+                if cost <= k:
+                    ans += 1
+                else:
+                    break
+        return ans
+```

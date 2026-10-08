@@ -1,0 +1,40 @@
+### Step-by-step reasoning
+- We have n pizzas (n multiple of 4) and D = n/4 days. Each day we form a group of 4 pizzas with weights W ≤ X ≤ Y ≤ Z.
+  - On odd-numbered days (1, 3, ...), we gain Z (the largest in the group).
+  - On even-numbered days (2, 4, ...), we gain Y (the second largest in the group).
+- A key observation for an optimal strategy:
+  - On odd days, to maximize Z while not wasting large pizzas in Y later, we should pair the current largest pizza (to be Z) with the three smallest remaining pizzas. This ensures the largest value is captured now and the remaining small values don’t contribute elsewhere.
+  - On even days, to maximize Y, we should group the four largest remaining pizzas together. In that group, Y will be the second largest among these four.
+- This leads to a simple, efficient two-pointer approach if we first sort ascending:
+  - For odd days: take the current largest (rightmost element) as Z, add it to the answer, then remove the three smallest (advance left by 3) and the largest (decrement right by 1).
+  - For even days: take the four largest remaining (indices right-3 to right), Y is the second largest among them, i.e., a[right-1], add it to the answer, and remove these four (decrement right by 4).
+- This strategy runs in O(n log n) time due to sorting and O(1) extra space, and ensures all pizzas are used exactly once.
+
+### Requirements
+None
+
+### Code
+```
+from typing import List
+
+class Solution:
+    def maxWeight(self, pizzas: List[int]) -> int:
+        n = len(pizzas)
+        pizzas.sort()  # ascending
+        left, right = 0, n - 1
+        days = n // 4
+        ans = 0
+
+        for i in range(days):
+            if i % 2 == 0:
+                # Odd day (1st, 3rd, ...): take the largest as Z, and the group with three smallest
+                ans += pizzas[right]
+                right -= 1
+                left += 3
+            else:
+                # Even day: take the four largest remaining; Y is the second largest among them
+                ans += pizzas[right - 1]
+                right -= 4
+
+        return ans
+```

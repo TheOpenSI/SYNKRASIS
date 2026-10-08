@@ -1,0 +1,24 @@
+Your generated code failed a test case.
+Please update the function logic so all test cases will pass. Error message added for your reference - 
+AssertionError: wrong answer on test case 3. Input: '9\nBWWBWBBBWWBWBBWWBW', expected output: '240792', your output: '0\n'
+
+Execution trace of your code on public test case 3. How to read it: only the lines that ran are listed, with the values after `#`. `x=1,2,3` are the values of x on successive executions of that line, `a..b` a run of consecutive numbers, `T/F` the outcome of a condition on each execution, `F×3` three equal values, `(iters 2,4)` the loop iterations the line ran in, `...` omitted middle values. Nested lines belong to the line above.
+solve()
+  N_line = input().strip()  # N_line='9'
+  while N_line == '':  # 0 iterations
+  N = int(N_line)  # N=9
+  S = input().strip()  # S='BWWBWBBBWWBWBBWWBW'
+  for idx, ch in enumerate(S, start=1):  # 18 iterations; idx=1..18; ch='B','W','W','B' ... 'B','W' (18 values)
+    if ch == 'W':  # F,T,T,F,T,F ... T,F,T (18 times: T 9, F 9)
+      whites.append(idx)  # whites += 2,3,5,9 ... 16,18 (9 values)  (9 of 18 iters)
+    else:
+      blacks.append(idx)  # blacks += 1,4,6,7 ... 14,17 (9 values)  (9 of 18 iters)
+  if len(whites) != N or len(blacks) != N:  # False (N=9, whites=[2, 3, 5, 9, 10, 12, 15, 16, 18], blacks=[1, 4, 6, 7, 8, 11, 13, 14, 17])
+  for i in range(N):  # 2 iterations; i=0,1; ended by return
+    ci = bisect_right(blacks, whites[i])  # ci=1,1
+    term = ci - i  # term=1,0
+    if term <= 0:  # F,T
+      return  # returns None  (iters 2)
+    ans = ans * term % MOD  # ans=1  (iters 1)
+printed '0'   (expected '240792')
+Find the first point where the behaviour differs from what the problem requires and fix that logic.

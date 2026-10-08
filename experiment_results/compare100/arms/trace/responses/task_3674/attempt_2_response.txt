@@ -1,0 +1,70 @@
+### Step-by-step reasoning
+- Understanding the problem
+  - For every subarray nums[l..r], we may perform up to k increments (each increment adds 1 to some element in that subarray). After applying at most k increments, we want the subarray to be non-decreasing.
+  - The cost to make a fixed subarray non-decreasing, using only increments, is the minimal number of increments required.
+  - Changes are independent per subarray; we only care if the minimal cost for that subarray is <= k.
+
+- Correctness of the minimal-cost computation
+  - If we process a subarray from left to right, the only way to achieve a non-decreasing sequence with minimal increments is to never increase an element before it becomes necessary.
+  - Let cur_max be the maximum value seen so far in the subarray (starting with the leftmost element).
+  - For each next element a[i]:
+    - If a[i] < cur_max, we must raise a[i] to cur_max, costing cur_max - a[i].
+    - If a[i] >= cur_max, no increment is needed, and we update cur_max = a[i].
+  - This yields the minimal total cost for that subarray:
+    cost(l, r) = sum over i in (l+1..r) of max(0, max(nums[l..i-1]) - nums[i]).
+  - Therefore, a subarray is valid iff cost(l, r) <= k.
+
+- Practical approach
+  - For each left index l, walk r from l to n-1, accumulating the cost as described above.
+  - Maintain:
+    - cost: the total increments needed for the subarray l..r to become non-decreasing under the greedy plan.
+    - cur_max: the running maximum seen so far in nums[l..r-1].
+  - When we extend to r:
+    - If nums[r] < cur_max, increase cost by cur_max - nums[r].
+    - Else, set cur_max = nums[r].
+  - If cost <= k, the subarray l..r is valid (count it). If cost > k, further extending r can only increase cost (or keep it non-decreasing? It can only increase or stay the same if a new value is larger than cur_max, but typically it worsens or keeps; in any case once cost > k for a given l and r, extending r cannot decrease cost back below k), so we break the inner loop for this l.
+  - This yields a straightforward O(n^2) algorithm with early stopping, which is correct but may be slow in the worst case. It is simple, robust, and matches the problem’s per-subarray greedy optimality.
+
+- Edge cases and complexity considerations
+  - Subarrays of length 1 always have cost 0, so they are counted automatically.
+  - Duplicates are handled because equal values do not increase cur_max and do not contribute to cost.
+  - Worst-case time complexity is O(n^2); this can be problematic for n up to 1e5 if k is large and the array allows many valid subarrays. In practice, early termination often helps, but for the absolute worst inputs it remains quadratic. If needed, a more advanced data-structure-based approach could be devised, but the greedy per-subarray cost is the correct baseline.
+
+- Output
+  - Return the number of subarrays for which the minimal cost is <= k.
+
+### Requirements
+None
+
+### Code
+```python
+from typing import List
+
+class Solution:
+    def countNonDecreasingSubarrays(self, nums: List[int], k: int) -> int:
+        n = len(nums)
+        if n == 0:
+            return 0
+
+        ans = 0
+        a = nums  # local alias for speed
+        for l in range(n):
+            cost = 0
+            cur_max = a[l]
+            # extend r from l to n-1
+            for r in range(l, n):
+                if r == l:
+                    # length-1 subarray, cost = 0
+                    ans += 1  # cost is 0, always <= k
+                    continue
+                v = a[r]
+                if v < cur_max:
+                    cost += cur_max - v
+                else:
+                    cur_max = v
+                if cost <= k:
+                    ans += 1
+                else:
+                    break
+        return ans
+```

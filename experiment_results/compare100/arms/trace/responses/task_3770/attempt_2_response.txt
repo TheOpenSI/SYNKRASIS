@@ -1,0 +1,114 @@
+### Step-by-step reasoning
+- Understand constraints:
+  - Word length N = n + m - 1.
+  - For each i in [0, n-1]:
+    - If str1[i] == 'T', then word[i..i+m-1] must be exactly str2.
+    - If str1[i] == 'F', then word[i..i+m-1] must NOT be exactly str2.
+- Observations:
+  - Positions covered by any 'T' constraint are fixed to specific letters (and cannot be changed).
+  - If two 'T' constraints conflict on any position, there is no valid word.
+  - Start by filling all unfixed positions with the lexicographically smallest letter 'a' to bias toward the smallest result.
+  - A violation occurs when a window corresponding to an 'F' constraint equals str2. We must modify at least one non-fixed position inside that window to break equality.
+  - To minimize the final string lexicographically, change the rightmost non-fixed position inside the violating window. Changing a later position has less impact on the prefix of the word, yielding a smaller overall string than changing an earlier position.
+  - After changing a position, re-check all affected F-windows (those that include the changed index) to ensure global consistency. Use a queue to process affected windows efficiently.
+- Potential pitfalls:
+  - If a violating F-window has no non-fixed positions inside it, it is impossible.
+  - Each change should pick the smallest character that differs from str2 at the corresponding offset, i.e., 'a' except when str2[offset] is 'a' in which case 'b'. This keeps the string lexicographically small.
+  - Keep track of which positions are fixed by T to avoid altering them.
+- Complexity considerations:
+  - Applying T-constraints touches up to n*m characters in the worst case.
+  - The queue-based processing changes only non-T positions and rechecks overlapping windows. While worst-case complexity can be high, this approach is standard for these constraints and tends to perform well in practice.
+
+### Requirements
+None
+
+### Code
+```
+```python
+from collections import deque
+
+class Solution:
+    def generateString(self, str1: str, str2: str) -> str:
+        n = len(str1)
+        m = len(str2)
+        N = n + m - 1
+
+        # Current word and which positions are fixed by T-constraints
+        word = [None] * N
+        fixed_by_T = [False] * N
+
+        # Apply T constraints: word[i:i+m] must equal str2
+        for i, ch in enumerate(str1):
+            if ch == 'T':
+                for j in range(m):
+                    pos = i + j
+                    c = str2[j]
+                    if word[pos] is None:
+                        word[pos] = c
+                    elif word[pos] != c:
+                        # Conflicting T constraints
+                        return ""
+                    fixed_by_T[pos] = True
+
+        # Fill remaining positions with smallest possible letter
+        for idx in range(N):
+            if word[idx] is None:
+                word[idx] = 'a'
+
+        # Helper to check if window i equals str2
+        def window_equal(i: int) -> bool:
+            for j in range(m):
+                if word[i + j] != str2[j]:
+                    return False
+            return True
+
+        # Initialize processing queue with all F-windows that currently equal str2
+        q = deque()
+        in_queue = [False] * n  # whether window i is in the queue
+
+        for i in range(n):
+            if str1[i] == 'F':
+                if window_equal(i):
+                    q.append(i)
+                    in_queue[i] = True
+
+        # Process violations: fix by changing rightmost non-fixed position inside window
+        while q:
+            i = q.popleft()
+            in_queue[i] = False
+
+            if str1[i] != 'F':
+                continue
+            if not window_equal(i):
+                continue
+
+            # Find the rightmost position inside [i, i+m-1] that is not fixed by T
+            p = None
+            for pos in range(i + m - 1, i - 1, -1):
+                if not fixed_by_T[pos]:
+                    p = pos
+                    break
+
+            if p is None:
+                # All positions in this window are fixed by T and window equals str2 -> impossible
+                return ""
+
+            offset = p - i
+            desired = str2[offset]
+            # Choose the smallest letter different from str2[offset]
+            c = 'a' if desired != 'a' else 'b'
+
+            if word[p] != c:
+                word[p] = c
+
+            # A change may affect multiple F-windows that include position p
+            lo = p - m + 1
+            hi = p
+            for ii in range(lo, hi + 1):
+                if 0 <= ii < n and str1[ii] == 'F':
+                    if not in_queue[ii]:
+                        q.append(ii)
+                        in_queue[ii] = True
+
+        return ''.join(word)
+```

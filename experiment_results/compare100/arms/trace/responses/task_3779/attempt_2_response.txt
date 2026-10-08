@@ -1,0 +1,61 @@
+### Step-by-step reasoning
+- Let n be the number of pizzas (n is a multiple of 4) and D = n / 4 be the number of days.
+- Each day we pick exactly 4 pizzas. If the group is W <= X <= Y <= Z, then:
+  - On odd days we gain Z (the largest in the group).
+  - On even days we gain Y (the second largest in the group).
+- A greedy strategy can maximize the total by carefully choosing the composition of each day’s group:
+  - On an odd day (we want to maximize Z): pick the largest remaining pizza as Z. To avoid wasting large pizzas in fillers, put the three smallest remaining pizzas into this group.
+  - On an even day (we want to maximize Y): after taking the largest remaining as Z, fill the group with the next three largest remaining pizzas. The largest among these three is the second largest of the group, i.e., Y, which should be as large as possible.
+- This leads to a simple implementation: maintain the remaining weights in a data structure that supports taking from the largest end and from the smallest end efficiently. A deque of pizzas sorted in descending order works well.
+- Implementation outline:
+  - Sort pizzas in descending order and store in a deque.
+  - For day i from 0 to D-1:
+    - Pop the leftmost element as max_val (this is Z for odd days or the largest of the remaining for the day).
+    - If i is even (day 1, 3, ... -> odd day in 1-based indexing):
+      - Add max_val to the answer.
+      - Remove three smallest remaining elements from the right end.
+    - If i is odd (day 2, 4, ... -> even day in 1-based indexing):
+      - Take the next leftmost as second (this is Y).
+      - Add second to the answer.
+      - Remove two more leftmost elements (the next two largest) as fillers.
+- Correctness: This strategy ensures the largest possible Z on odd days while preserving large numbers for future days, and it maximizes the Y on even days by using the three largest remaining elements after removing Z. The approach processes days in order and uses disjoint groups, satisfying the constraint that each pizza is eaten once.
+- Complexity: Sorting is O(n log n). Each pizza is pushed/popped a constant number of times, so the overall time is O(n log n) with O(n) extra space.
+
+### Requirements
+None
+
+### Code
+```
+from typing import List
+from collections import deque
+
+class Solution:
+    def maxWeight(self, pizzas: List[int]) -> int:
+        n = len(pizzas)
+        days = n // 4
+
+        # Sort in descending order and use a deque for efficient pops from both ends
+        dq = deque(sorted(pizzas, reverse=True))
+
+        ans = 0
+        for i in range(days):
+            # Take the largest remaining as the group's max
+            max_val = dq.popleft()
+
+            if i % 2 == 0:
+                # Odd day (1st, 3rd, ...): gain the group max
+                ans += max_val
+                # Fill the group with the three smallest remaining
+                dq.pop()
+                dq.pop()
+                dq.pop()
+            else:
+                # Even day: do not gain the group max
+                # Fill the group with the three largest remaining
+                second = dq.popleft()  # largest among the three fillers
+                ans += second
+                dq.popleft()
+                dq.popleft()
+
+        return ans
+```

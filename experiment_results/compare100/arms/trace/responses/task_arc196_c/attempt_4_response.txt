@@ -1,0 +1,70 @@
+### Step-by-step reasoning
+- The graph consists of a fixed forward path 1 -> 2 -> ... -> 2N, plus N extra edges from white vertices to their paired black vertices.
+- Label the white vertices in increasing order of their positions: a1 < a2 < ... < aN.
+- Label the black vertices in increasing order of their positions: b1 < b2 < ... < bN.
+- For the i-th white vertex (at position ai), the blacks with position ≤ ai are exactly b1, b2, ..., b_{ci}, where ci is the count of blacks with position ≤ ai.
+- If we pair white i with black of rank p(i), then 1 ≤ p(i) ≤ ci.
+- Since all pairings must be disjoint (each black used once), the sequence p(1), p(2), ..., p(N) must be a system of distinct representatives with p(i) ∈ {1, 2, ..., ci}.
+- The sets {1, ..., c1}, {1, ..., c2}, ..., {1, ..., cN} are nested because ci is nondecreasing (as ai increases). For nested sets, the number of ways to choose distinct representatives is the product ∏ (ci - (i - 1)) for i = 1..N, provided every term is positive; otherwise the count is 0.
+- Therefore, the answer is:
+  - Compute all white positions a[i] and all black positions b[j].
+  - For each i = 1..N, set ci = number of blacks with position ≤ a[i] (e.g., via a binary search in the sorted black positions).
+  - If ci - (i - 1) ≤ 0 for any i, answer is 0.
+  - Otherwise answer = ∏ (ci - (i - 1)) modulo 998244353.
+
+This matches the samples:
+- Sample 1 yields 1.
+- Sample 2 yields 0.
+- Sample 3 yields the given value.
+
+The previous DP approach attempted to model constraints incorrectly and counts configurations that do not correspond to a valid strong connectivity condition. The correct approach reduces to counting SDRs for nested sets, which has the simple product formula above.
+
+### Requirements
+None
+
+### Code
+```
+import sys
+from bisect import bisect_right
+
+MOD = 998244353
+
+def solve():
+    input = sys.stdin.readline
+
+    N_line = input().strip()
+    while N_line == "":
+        N_line = input().strip()
+    N = int(N_line)
+    S = input().strip()
+
+    # Collect white and black positions (1-based)
+    whites = []
+    blacks = []
+    for idx, ch in enumerate(S, start=1):
+        if ch == 'W':
+            whites.append(idx)
+        else:
+            blacks.append(idx)
+
+    if len(whites) != N or len(blacks) != N:
+        print(0)
+        return
+
+    whites.sort()
+    blacks.sort()
+
+    ans = 1
+    for i in range(N):
+        ci = bisect_right(blacks, whites[i])  # number of blacks with position <= a_i
+        term = ci - i  # ci - (i) since i is 0-based; corresponds to ci - (i)
+        if term <= 0:
+            print(0)
+            return
+        ans = (ans * term) % MOD
+
+    print(ans)
+
+if __name__ == "__main__":
+    solve()
+```
