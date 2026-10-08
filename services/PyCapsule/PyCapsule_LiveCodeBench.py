@@ -16,8 +16,8 @@ import sys
 sys.path.append(f"{os.path.dirname(os.path.abspath(__file__))}/../..")
 
 import json
-import re
 from subprocess import CompletedProcess
+from typing import Optional
 
 from services.PyCapsule.PyCapsuleBase import PyCapsuleBase
 from services.Container.Container import Container
@@ -26,6 +26,13 @@ from data.DatasetBase import DatasetBase
 from utils.output_message_format.output_colour import print_error, print_info, print_success, print_pycapsule
 from services.PyCapsule.livecodebench_harness.LCBHarness import LCBHarness
 from services.BPD.bpd import BPD, LEGEND
+
+# ---- switches ---------------------------------------------------------------------------------------------
+ENABLE_BPD = True            # True: the feedback for a public test with a WRONG ANSWER gets a BPD execution trace
+MAX_TRACES_PER_ATTEMPT = 3   # at most this many failing public tests get a trace in one feedback message
+TRACE_MAX_CHARS = 4000       # size limit of one trace
+# -----------------------------------------------------------------------------------------------------------
+
 
 class PyCapsule_LiveCodeBench(PyCapsuleBase):
     REQUIRED_KEYS = ["task_id", "prompt", "entry_point", "public_test", "private_test", "starter_code", "test_type"]
@@ -45,7 +52,7 @@ class PyCapsule_LiveCodeBench(PyCapsuleBase):
                  maximum_attempts: int = 5,
                  timeout: int = 10,
                  response_log_dir: str = None,
-                 trace_feedback: bool = False) -> None:
+                 trace_feedback: Optional[bool] = None) -> None:
         """
         PyCapsule_LiveCodeBench constructor.
 
@@ -57,14 +64,14 @@ class PyCapsule_LiveCodeBench(PyCapsuleBase):
             timeout (int, optional): Timeout in seconds for each test case. Defaults to 10.
             response_log_dir (str, optional): If set, every LLM query/raw response is saved under
                 response_log_dir/task_<id>/attempt_<n>_{query,response}.txt. Defaults to None.
-            trace_feedback (bool, optional): Append a BPD execution trace of the code on the failing
-                public test to the public failure feedback. Never used for private tests, the trace would 
-                reveal their input. Defaults to False.
+            trace_feedback (bool, optional): Add a BPD execution trace to the feedback of public tests with a wrong
+                answer (other errors get the usual error message). Never for private tests, a trace would reveal
+                their input. Defaults to None = the ENABLE_BPD switch at the top of this file.
         """
         super().__init__(pycapsule_container, llm, maximum_attempts, timeout = timeout)
         self.harness = LCBHarness()
         self.response_log_dir = response_log_dir
-        self.bpd = BPD() if trace_feedback else None
+        self.bpd = BPD(max_chars=TRACE_MAX_CHARS) if (ENABLE_BPD if trace_feedback is None else trace_feedback) else None
         self.trace_log: list[dict] = []   # one entry per trace attached: task_id, test_index, chars
         self._last_code = ""
         self._generation_count = 0
@@ -156,11 +163,23 @@ class PyCapsule_LiveCodeBench(PyCapsuleBase):
         response = self.llm.generate_response(user_prompt = user_query["prompt"],
                                               suppress_conversation_history = suppress_conversation_history)
         self._save_generation(user_query, response)
+        self._keep_only_latest_response(response)
 
         # https://support.leetcode.com/hc/en-us/articles/360011833974-What-are-the-environments-for-the-programming-languages
         code = self.harness.extract_code(response) # no req, default env set
 
         self._create_main_py(code, user_query)
+
+
+    def _keep_only_latest_response(self, response: str) -> None:
+        """
+        The next prompt shows the model: the original question, its latest response, and the new message.
+        Without this the history would also hold the previous error message (stored as the "question" of the last turn).
+        """
+        history = self.llm.chat_history
+        if history is not None:
+            history.clear_chat_history_queue()
+            history.add_interaction(history.original_question, response)
 
 
     def _create_main_py(self, code: str, user_query: dict) -> None:
@@ -193,53 +212,82 @@ class PyCapsule_LiveCodeBench(PyCapsuleBase):
 
     def _get_fix_mode_query(self, response: CompletedProcess, meta_data: dict) -> str:
         """
-        Private test failure -> generic query, nothing about the hidden tests is shared.
-        Public test failure -> detailed error handling, also when the public tests had cleared before 
-        (a regression), the public tests are the samples already in the prompt.
+        - private test failed: the generic message, nothing about the hidden tests is shared and there is no trace.
+        - public test failed: a report with one entry per public test (also when the public tests had cleared before).
         """
-        stage = self.harness.classify_response(response)
-
         if not self._last_code.strip():
             self._current_error_type = ["NoCodeFound"]
             return ("Your response did not contain any code. Put the complete solution in the '### Code' "
                     "section, inside a single pair of triple backticks.")
 
-        if stage == "private_fail":
+        if self.harness.classify_response(response) == "private_fail":
             self._current_error_type = ["PrivateTestFailed"]
             return self.PRIVATE_FAIL_QUERY
 
-        if "Generated code is running infinite loop" in response.stderr:
-            # On LiveCodeBench this is mostly an inefficient algorithm, not an infinite loop.
-            self._current_error_type = ["TimeLimitExceeded"]
-            failed_input = response.stderr.strip().split("\n")[0]
-            return (f"Your generated code exceeded the time limit of {self.timeout} seconds on a public test case.\n"
-                    f"{failed_input}\n"
-                    "Your algorithm is probably too slow for the given constraints (or loops forever). "
-                    "Please use a more efficient algorithm or data structures, and make sure all loops terminate.")
-
-        query = self.error_handling(response.stderr)
-        self._current_error_type = list(self.error_handling.current_error_type)
-        return query + self._trace_section(response, meta_data)
+        results = self.harness.parse_public_results(response.stderr)
+        if results is None:                                  # the driver itself failed: nothing structured to show
+            self._current_error_type = ["DriverError"]
+            return f"Your code could not be run. Error message:\n{response.stderr[-1500:]}"
+        return self._public_feedback(results, meta_data)
 
 
-    def _trace_section(self, response: CompletedProcess, user_query: dict) -> str:
+    def _public_feedback(self, results: list[dict], user_query: dict) -> str:
         """
-        BPD trace of the current code on the public test that failed (the harness error says which: "test case N"),
-        empty when tracing is off, the failure has no test number (time limit) or the code cannot be traced.
+        One entry per public test: passed tests with their input and expected output; a wrong answer with what the
+        program printed, plus the BPD trace when it is enabled; a runtime error with the usual error message;
+        a time limit with a hint. The error types of the failures go to self._current_error_type.
         """
-        match = re.search(r"test case (\d+)", response.stderr)
-        if self.bpd is None or match is None:
-            return ""
-        index = int(match.group(1)) - 1
-        test = user_query["public_test"][index]
+        lines = ["Your solution did not pass all the public tests."]
+        error_types: list[str] = []
+        traces_tried = traces_added = 0
+
+        for result in results:
+            number = result["n"]
+            shown = f"Input: {result['input']!r}, expected output: {result['expected']!r}"
+            if result["status"] == "pass":
+                lines.append(f"Test {number} passed. {shown}.")
+
+            elif result["status"] == "wrong_answer":
+                error_types.append("AssertionError")
+                lines.append(f"Test {number} did not pass. {shown}, your output: {result['got']!r}.")
+                if self.bpd is not None and traces_tried < MAX_TRACES_PER_ATTEMPT:
+                    traces_tried += 1
+                    trace = self._trace(user_query, number)
+                    if trace is not None:
+                        intro = f". {LEGEND}" if traces_added == 0 else ":"       # the legend once
+                        lines.append(f"Execution trace of your code on test {number}{intro}\n{trace}")
+                        traces_added += 1
+
+            elif result["status"] == "timeout":
+                error_types.append("TimeLimitExceeded")
+                lines.append(f"Test {number} exceeded the time limit of {self.timeout} seconds. Input: {result['input']!r}. "
+                             "Your algorithm is probably too slow for the given constraints (or loops forever). "
+                             "Use a more efficient algorithm or data structures, and make sure all loops terminate.")
+
+            else:                                                                  # runtime error: the usual analysis
+                try:
+                    message = self.error_handling(result["error"])
+                    error_types.extend(self.error_handling.current_error_type)
+                except Exception:                                                  # unexpected traceback layout
+                    message = result["error"][-1500:]
+                    error_types.append("RuntimeError")
+                lines.append(f"Test {number} stopped with an error. Input: {result['input']!r}.\n{message}")
+
+        if traces_added:
+            lines.append("Find the first point where the behaviour differs from what the problem requires and fix that logic.")
+        self._current_error_type = error_types
+        return "\n".join(lines)
+
+
+    def _trace(self, user_query: dict, number: int) -> Optional[str]:
+        """BPD trace of the current code on public test `number` (1 based), None if it cannot be traced."""
+        test = user_query["public_test"][number - 1]
         functional = user_query["test_type"] == "functional"
         source = self.harness.build_traceable_source(user_query, self._last_code)
         trace = self.bpd.trace(source, test["input"], user_query["entry_point"] if functional else None, test["output"])
-        if trace is None:
-            return ""
-        self.trace_log.append({"task_id": user_query["task_id"], "test_index": index, "chars": len(trace)})
-        return (f"\n\nExecution trace of your code on public test case {index + 1}. {LEGEND}\n{trace}\n"
-                "Find the first point where the behaviour differs from what the problem requires and fix that logic.")
+        if trace is not None:
+            self.trace_log.append({"task_id": user_query["task_id"], "test_index": number - 1, "chars": len(trace)})
+        return trace
 
 
     def _update_code(self,

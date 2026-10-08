@@ -4,7 +4,9 @@
 #     - Container(image_name: str = "synkrasis", 
 #                 container_name: str = "synkrasis_alpha",
 #                 mount_dir_name: str = "synk_mount", 
-#                 shell_script_name: str = "start.sh")
+#                 shell_script_name: str = "start.sh",
+#                 timeout: int = None,
+#                 run_options: list[str] = None)
 #
 #     - start_container()
 #     - cleanup()
@@ -16,6 +18,7 @@ sys.path.append(f"{os.path.dirname(os.path.abspath(__file__))}/../..")
 import subprocess
 import re
 import shlex
+from typing import Optional
 
 from services.Base import ServiceBase
 from utils.output_message_format.output_colour import print_error, print_info, print_success
@@ -27,7 +30,9 @@ class Container(ServiceBase):
                  image_name: str = "synkrasis",
                  container_name: str = "synkrasis_alpha",
                  mount_dir_name: str = "synk_mount",
-                 shell_script_name: str = "start.sh"):
+                 shell_script_name: str = "start.sh",
+                 timeout: Optional[int] = None,
+                 run_options: Optional[list[str]] = None):
         """Container class for managing docker containers
 
         Args:
@@ -35,9 +40,16 @@ class Container(ServiceBase):
             container_name (str, optional): Default container name. Defaults to "synkrasis_alpha".
             mount_dir_name (str, optional): Mount directory name. Defaults to synk_mount.
             shell_script_name (str, optional): Shell script name. Defaults to "start.sh".
+            timeout (int, optional): Seconds before a run is killed (the container is stopped and the response has
+                exit code 124). Defaults to None = no limit.
+            run_options (list[str], optional): Extra `docker run` options, applied when the container is created,
+                e.g. ["--network", "none", "--memory", "2g", "--cpus", "1", "--pids-limit", "256"] to restrict 
+                generated code. Delete the container to change them. Defaults to None.
         """
         super().__init__()
         current_dir = os.path.dirname(__file__)
+        self.timeout = timeout
+        self.run_options = " ".join(shlex.quote(option) for option in (run_options or []))
         self.IMAGE_NAME = image_name
         self.CONTAINER_NAME = container_name
         self.MOUNT_DIR_PATH = os.path.join(current_dir, "mount_dir", mount_dir_name)
@@ -119,22 +131,28 @@ class Container(ServiceBase):
         #                            shell = True)
         
         # Create the container
-        response = subprocess.run((f"docker run "
-                                   f"--name {self.CONTAINER_NAME} "
-                                   f"-v {self.MOUNT_DIR_PATH}:/usr/src/app "
-                                   f"{self.IMAGE_NAME}"),
-                                  shell=True, capture_output=True, text=True)
+        return self._run((f"docker run "
+                          f"--name {self.CONTAINER_NAME} "
+                          f"{self.run_options} "
+                          f"-v {self.MOUNT_DIR_PATH}:/usr/src/app "
+                          f"{self.IMAGE_NAME}"))
 
-        return response
+
+    def _run(self, command: str) -> subprocess.CompletedProcess:
+        """Runs a docker command, kills the container if it takes longer than self.timeout."""
+        try:
+            return subprocess.run(command, shell=True, capture_output=True, text=True, timeout=self.timeout)
+        except subprocess.TimeoutExpired as expired:
+            subprocess.run(f"docker kill {self.CONTAINER_NAME}", shell=True, capture_output=True)
+            output = expired.stdout.decode(errors="replace") if isinstance(expired.stdout, bytes) else (expired.stdout or "")
+            return subprocess.CompletedProcess(command, 124, stdout=output, stderr=(
+                f"Exception: Generated code is running infinite loop (exceeded {self.timeout}s)."))
 
 
     def start_container(self) -> subprocess.CompletedProcess:
         if self._check_if_container_exists():
             print_info("Starting container...")
-            response = subprocess.run(f"docker start -i {self.CONTAINER_NAME}", 
-                                      shell=True, 
-                                      capture_output=True,
-                                      text=True)
+            response = self._run(f"docker start -i {self.CONTAINER_NAME}")
         else:
             response = self._create_container()
 

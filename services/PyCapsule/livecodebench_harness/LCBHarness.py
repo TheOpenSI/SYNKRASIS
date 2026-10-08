@@ -3,11 +3,13 @@
 #
 # main.py (driver) runs solution.py once per test case as a separate process,
 # feeds the test input on stdin and compares stdout with the expected output.
-# Public tests first (detailed errors), then, only if all public tests pass, the private tests from
-# private_tests.json in the same folder (no details are ever printed for them).
-# Exit codes: 0 = all passed, 1 = public test failed (single "<ErrorType>: <message>" style error
-# on stderr so the PyCapsule error handling can build the fix mode query from it),
-# 2 = public passed but a private test failed (stderr: "PRIVATE_TEST_FAILED: <category>").
+# ALL public tests run first. If any of them fails the driver prints one line to stderr,
+# "PUBLIC_RESULTS <json list>", with the result of every public test (pass, wrong_answer, runtime_error, timeout,
+# plus input, expected output and what the program printed or its error), and exits with 1.
+# Only if all public tests pass the private tests from private_tests.json in the same folder run
+# (no details are ever printed for them).
+# Exit codes: 0 = all passed, 1 = a public test failed, 2 = public passed but a private test failed
+# (stderr: "PRIVATE_TEST_FAILED: <category>").
 # Stdout contains PUBLIC_TESTS_PASSED_MARKER once the public tests pass, use it with exit code 2,
 # python itself exits with 2 on some launch errors.
 #
@@ -22,6 +24,8 @@
 #       Standard input problems, the code is the program.
 # - build_driver_content(tests: list[dict], per_test_timeout: int) -> str
 #       Content of main.py, public tests are embedded, no imports from the repo are needed.
+# - parse_public_results(stderr: str) -> Optional[list[dict]]
+#       The per test results of a failed public run, None if stderr has no such line.
 # - classify_response(response: CompletedProcess) -> str
 #       "pass" | "private_fail" | "public_fail" from the driver exit code and stdout.
 # =============================================================================================
@@ -32,6 +36,7 @@ sys.path.append(f"{os.path.dirname(os.path.abspath(__file__))}/../../..")
 
 import json
 import re
+from typing import Optional
 
 from modules.ExampleCallDetection import ExampleCallDetection
 from utils.code_parsing.code_parser import parse_response
@@ -43,6 +48,7 @@ class LCBHarness():
     PRIVATE_TESTS_FILE_NAME = "private_tests.json"
     PUBLIC_PASSED_MARKER = "PUBLIC_TESTS_PASSED_MARKER"
     PRIVATE_FAILED_PREFIX = "PRIVATE_TEST_FAILED:"
+    PUBLIC_RESULTS_PREFIX = "PUBLIC_RESULTS "
     PRELUDE = "from typing import *\n\n"
 
     def __init__(self) -> None:
@@ -122,6 +128,17 @@ class LCBHarness():
         return "public_fail"
 
 
+    def parse_public_results(self, stderr: str) -> Optional[list[dict]]:
+        """[{"n", "status", "input", "expected", "got" (wrong_answer), "error" (runtime_error)}, ...] or None."""
+        for line in (stderr or "").splitlines():
+            if line.startswith(self.PUBLIC_RESULTS_PREFIX):
+                try:
+                    return json.loads(line[len(self.PUBLIC_RESULTS_PREFIX):])
+                except json.JSONDecodeError:
+                    return None
+        return None
+
+
     def build_driver_content(self, tests: list[dict], per_test_timeout: int = 10) -> str:
         # repr of the json text is a safe python literal.
         return (self._DRIVER_TEMPLATE
@@ -129,6 +146,7 @@ class LCBHarness():
                 .replace("__PRIVATE_FILE__", repr(self.PRIVATE_TESTS_FILE_NAME))
                 .replace("__PUBLIC_MARKER__", repr(self.PUBLIC_PASSED_MARKER))
                 .replace("__PRIVATE_PREFIX__", repr(self.PRIVATE_FAILED_PREFIX))
+                .replace("__PUBLIC_RESULTS_PREFIX__", repr(self.PUBLIC_RESULTS_PREFIX))
                 .replace("__TIMEOUT__", str(int(per_test_timeout)))
                 .replace("__TESTS__", repr(json.dumps(tests))))
 
@@ -185,20 +203,18 @@ def _run_test(test):
     return "pass", proc
 
 
-# Public tests, detailed errors.
+# All public tests, one result each.
+_RESULTS = []
 for _index, _test in enumerate(_TESTS):
     _status, _proc = _run_test(_test)
-    if _status == "timeout":
-        _fail(f"Failed on test case {_index + 1}. Input: {_short(_test['input'])!r}\n"
-              f"Exception: Generated code is running infinite loop (exceeded {_TIMEOUT}s).")
-    if _status == "runtime_error":
-        # The last line of the child's stderr is the error type and message.
-        _fail(f"Failed on test case {_index + 1}. Input: {_short(_test['input'])!r}\n" + _proc.stderr[-2000:])
+    _result = {"n": _index + 1, "status": _status, "input": _short(_test["input"]), "expected": _short(_test["output"])}
     if _status == "wrong_answer":
-        _fail(f"AssertionError: wrong answer on test case {_index + 1}. "
-              f"Input: {_short(_test['input'])!r}, "
-              f"expected output: {_short(_test['output'])!r}, "
-              f"your output: {_short(_proc.stdout)!r}")
+        _result["got"] = _short(_proc.stdout)
+    elif _status == "runtime_error":
+        _result["error"] = _proc.stderr[-2000:]       # the last line is the error type and message
+    _RESULTS.append(_result)
+if any(_r["status"] != "pass" for _r in _RESULTS):
+    _fail(__PUBLIC_RESULTS_PREFIX__ + json.dumps(_RESULTS))
 
 print(f"All {len(_TESTS)} public tests passed!")
 print(__PUBLIC_MARKER__)

@@ -26,6 +26,7 @@ except ModuleNotFoundError:
     sys.modules["scipy.optimize"].curve_fit = None
 
 from services.LLM.OpenAI_GPT.OpenAI_GPT import OpenAI_GPT
+from services.Container.Container import Container
 from services.Container.LocalContainer import LocalContainer
 from services.PyCapsule.PyCapsule_LiveCodeBench import PyCapsule_LiveCodeBench
 from data.LiveCodeBench.LiveCodeBench import LiveCodeBench
@@ -39,6 +40,8 @@ def main() -> None:
     parser.add_argument("--problem-ids", default=None,
                         help="comma separated question ids, in run order. Overrides the even spacing sample.")
     parser.add_argument("--resume", action="store_true", help="resume from the results file in --output-dir")
+    parser.add_argument("--docker", action="store_true",
+                        help="run the generated code in the docker Container (no network, 2g memory, 1 cpu) instead of locally")
     parser.add_argument("--max-attempts", type=int, default=5)
     parser.add_argument("--timeout", type=int, default=10, help="seconds per test case")
     args = parser.parse_args()
@@ -55,7 +58,11 @@ def main() -> None:
     print(f"Selected {len(dataloader.data)} problems: {dataloader.data['question_id'].tolist()}")
 
     llm = OpenAI_GPT(model_name = args.model, enable_chat_history = True, max_history = 1)
-    container = LocalContainer(mount_dir_name = "synk_lcb_local", timeout = 1800)  # public + private tests
+    if args.docker:
+        container = Container(container_name = "synk_lcb", mount_dir_name = "synk_lcb_docker", timeout = 1800,
+                              run_options = ["--network", "none", "--memory", "2g", "--cpus", "1", "--pids-limit", "256"])
+    else:
+        container = LocalContainer(mount_dir_name = "synk_lcb_local", timeout = 1800)  # public + private tests
     pycapsule = PyCapsule_LiveCodeBench(pycapsule_container = container,
                                         llm = llm,
                                         maximum_attempts = args.max_attempts,
