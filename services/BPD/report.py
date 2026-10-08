@@ -390,7 +390,6 @@ class Renderer(Analyser):
         """
         What `G[i][j] = ...` wrote, with the slots: pairs are (slot, value) per execution.
           one dimension, consecutive slots   X[0..4]=1,1,2,3,2
-          every value the same               G[0][0]..G[1][2]=0×6      (first and last slot)
           anything else                      A[0][0]=1,A[0][1]=2,...   (head and tail when long)
         An attribute (self.count) has no index: self.count=2,4,6
         """
@@ -404,8 +403,6 @@ class Renderer(Analyser):
             if len(indices) == 1 or all(b - a == 1 for a, b in zip(indices, indices[1:])):
                 where = f"[{indices[0]}]" if len(indices) == 1 else f"[{indices[0]}..{indices[-1]}]"
                 return f"{matches[0].group(1)}{where}={self._sequence(values)}"
-        if len(pairs) >= 3 and len(set(values)) == 1:
-            return f"{slots[0]}..{slots[-1]}={values[0]}×{len(values)}"
         return self._sequence([f"{slot}={value}" for slot, value in zip(slots, values)])
 
     def _call_parts(self, row: Row, level: int, changes: dict, call: Invocation) -> tuple[str, list[list[str]]]:

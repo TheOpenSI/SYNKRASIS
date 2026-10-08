@@ -51,7 +51,7 @@ class FormatTests(unittest.TestCase):
 
     def test_a_write_that_changes_nothing_is_still_shown(self):
         source = "def f(n):\n    G = [[0] * n for _ in range(n)]\n    for i in range(n):\n        for j in range(n):\n            G[i][j] = (i - i) * j\n    return G\n"
-        self.assertIn("G[0][0]..G[1][1]=0×4", trace(source, "f(2)"))      # ran 4 times and wrote 0: the list never changed
+        self.assertIn("G[0][0]=0,G[0][1]=0,G[1][0]=0,G[1][1]=0", trace(source, "f(2)"))   # ran 4 times and wrote 0: the list never changed
 
     def test_nested_list_writes_show_the_value_not_the_whole_row(self):
         source = "def f(n):\n    A = [[0] * n for _ in range(n)]\n    for i in range(n):\n        for j in range(n):\n            A[i][j] = i * 10 + j\n    return A\n"
