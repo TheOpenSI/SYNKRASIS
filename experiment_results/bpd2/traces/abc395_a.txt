@@ -1,7 +1,0 @@
-main()
-  data = sys.stdin.read().strip().split()  # data=['3', '1', '2', '5']
-  if not data:  # False (data=['3', '1', '2', '5'])
-  N = int(data[0])  # N=3
-  A = list(map(int, data[1:1 + N]))  # A=[1, 2, 5]
-  is_strictly_increasing = all((A[i] < A[i + 1] for i in range(N - 1)))  # is_strictly_increasing=True
-printed 'Yes'   (expected Yes)

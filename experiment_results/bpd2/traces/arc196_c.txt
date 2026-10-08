@@ -1,8 +1,0 @@
-solve()
-  N_line = input().strip()  # N_line='2'
-  while N_line == '':  # 0 iterations
-  N = int(N_line)  # N=2
-  S = input().strip()  # S='BWBW'
-  if len(S) != 2 * N:  # False (S='BWBW', N=2)
-  if S[0] != 'B' or S[-1] != 'W':  # False (S='BWBW')
-printed '0'   (expected 1)

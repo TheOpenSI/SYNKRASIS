@@ -1,8 +1,0 @@
-Execution report for `Solution().countPartitions([10, 10, 3, 7, 6])`
-Outcome: returned 4
-
-Trace:
-Call countPartitions(self=Solution(), nums=[10, 10, 3, 7, 6])  [Solution.countPartitions, lines 5-10]
-  Line 6 `total = sum(nums)`: total = 36
-  Line 7 `if total % 2 == 0:` was True (total = 36)
-  Line 8 `return len(nums) - 1`: countPartitions returned 4

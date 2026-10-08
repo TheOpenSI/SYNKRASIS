@@ -1,8 +1,0 @@
-main()
-  data = sys.stdin.read().strip()  # data='6'
-  if not data:  # False (data='6')
-  X = int(data)  # X=6
-  while f < X:  # 2 iterations; f=1,2
-    i += 1  # i=2,3
-    f *= i  # f=2,6
-printed '3'   (expected '3')

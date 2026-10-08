@@ -1,7 +1,0 @@
-main()
-  data = sys.stdin.read().split()  # data=['3', 'tc', 'oder', 'a']
-  if not data:  # False (data=['3', 'tc', 'oder', 'a'])
-  n = int(data[0])  # n=3
-  strings = data[1:1 + n]  # strings=['tc', 'oder', 'a']
-  strings.sort(key=len)  # strings[0]: 'tc' -> 'a'; strings[1]: 'oder' -> 'tc'; strings[2]: 'a' -> 'oder'
-printed 'atcoder'   (expected atcoder)

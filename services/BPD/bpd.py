@@ -62,7 +62,6 @@ class BPD:
         self.timeout = timeout
         self.last_error: Optional[str] = None      # why the last call returned None
 
-    # -- public ---------------------------------------------------------------------------------
 
     def trace(self, code: str, test_input: str, entry_point: Optional[str] = None,
               expected: Optional[str] = None) -> Optional[str]:

@@ -1,5 +1,0 @@
-countPartitions(nums=[10, 10, 3, 7, 6]):
-  total = sum(nums)  # total=36
-  if total % 2 == 0:  # True (total=36)
-    return len(nums) - 1  # returned
-returned 4   (expected 4)
