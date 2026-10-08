@@ -1,0 +1,143 @@
+### Step-by-step reasoning
+- The process is column-wise independent except for a global event: a removal step happens only if every column currently has a block at the bottom row (y = 1).
+- Within a single column, when a removal step occurs, the bottom-most block is removed (the one with the smallest initial Y among the remaining blocks in that column). After a removal, the remaining blocks drop down over time due to gravity, but since the removal happens simultaneously across all columns, the pattern in each column depends only on how many removals have happened so far.
+- A key observation: after r removals have occurred total (across all columns), the next removal can happen only if every column still has at least r+1 blocks, i.e., min_j k_j > r, where k_j is the initial number of blocks in column j.
+- Let Y_{j,i} denote the i-th smallest Y in column j (i.e., the i-th block from the bottom in that column). For a removal to occur as the (r+1)-th removal, we need, for all columns j, Y_{j, r+1} <= r+1. If this holds for all columns, the next removal happens; otherwise, the process waits longer (gravity moves the next blocks down until the condition holds across all columns).
+- A compact way to compute the times when removals can occur: for each r in 1..m, where m = min_j k_j, define M[r] = max_j Y_{j,r} (the r-th block from bottom in each column, take the maximum across columns). The time gaps between successive removals can be characterized by D_r = max(1, M[r] - 1). If we start at time t_0 = 0, then the times when removals finish can be described by
+  - t_0 = 0
+  - t_1 = t_0 + D_1
+  - t_2 = t_1 + D_2
+  - ...
+  - t_r = t_{r-1} + D_r for r = 1..m
+- With these t_r, the number of removals that have completed by a given time T (integer part) equals the largest r such that t_r <= T. If r blocks have been removed in a particular column, then in that column only blocks with rank > r remain.
+- Therefore, for a query (T, A) where A is the index of a block, block A exists at time T+0.5 iff its rank within its own column is greater than r = max { s : t_s <= T }.
+- Precomputation outline:
+  - Group blocks by their column X and sort each column by Y. Let Y_{j,i} be the i-th value in column j (i from 1).
+  - Let m = min_j k_j (minimum column height).
+  - For r = 1..m, compute M[r] = max_j Y_{j,r}.
+  - Compute t[0] = 0, and for r = 1..m: t[r] = t[r-1] + max(1, M[r] - 1).
+  - For every block i, compute its rank within its column (1-based) after sorting inside the column.
+  - For each query (T, A): compute r = largest s with t[s] <= T (binary search on t). The block exists iff rank[A] > r.
+- Edge cases:
+  - If any column is initially empty, bottom row can never be full, so no removals ever occur; every block exists for all times. All answers are "Yes".
+  - Complexity: Sorting within columns takes O(N log N) total. Building M and t takes O(m) with m <= min_j k_j <= N. Each query is answered in O(log N) via binary search on t.
+
+This approach corrects the earlier simplified model by accounting for gaps between removals (the time until the next bottom-row-full state) via the M[r] values, and it handles cases where removals are non-consecutive.
+
+### Requirements
+None
+
+### Code
+```
+import sys
+from bisect import bisect_right
+
+def main():
+    data = list(map(int, sys.stdin.buffer.read().split()))
+    it = iter(data)
+
+    N = next(it)
+    W = next(it)
+
+    # Collect blocks per column: for each column x, store (Y, block_index)
+    cols = [[] for _ in range(W + 1)]  # 1-based indexing for columns
+    X = [0] * N
+    Y = [0] * N
+    for i in range(N):
+        x = next(it)
+        y = next(it)
+        X[i] = x
+        Y[i] = y
+        cols[x].append((y, i))
+
+    Q = next(it)
+
+    T_arr = [0] * Q
+    A_arr = [0] * Q
+    for j in range(Q):
+        T_arr[j] = next(it)
+        A_arr[j] = next(it) - 1  # convert to 0-based index
+
+    # If any column is empty, bottom row can never be full -> no removals
+    any_empty = False
+    for x in range(1, W + 1):
+        if len(cols[x]) == 0:
+            any_empty = True
+            break
+
+    if any_empty:
+        print("\n".join(["Yes"] * Q))
+        return
+
+    # No empty columns: prepare per-column sorted Y values and ranks
+    k = [0] * (W + 1)  # heights per column
+    Ys_per_col = [[] for _ in range(W + 1)]
+    rank = [0] * N  # rank of each block within its column (1-based)
+
+    m = None  # will hold min_j k_j
+
+    for x in range(1, W + 1):
+        col = cols[x]
+        # sort by Y ascending
+        col.sort(key=lambda t: t[0])
+        Ys = [t[0] for t in col]
+        Ys_per_col[x] = Ys
+        kx = len(Ys)
+        k[x] = kx
+        if m is None or kx < m:
+            m = kx
+        # set rank for each block in this column
+        for pos, (_, idx) in enumerate(col, start=1):
+            rank[idx] = pos
+
+    # m is the minimum column height
+    if m <= 0:
+        # shouldn't happen due to earlier check, but guard anyway
+        print("\n".join(["Yes"] * Q))
+        return
+
+    # If m == 0, no removals ever; handled above
+    # Compute M[r] = max_j Y_{j,r} for r in 1..m
+    M = [0] * (m + 1)  # 1-based index for r
+    for r in range(1, m + 1):
+        max_val = 0
+        for x in range(1, W + 1):
+            # r-th element in column x
+            max_val = max(max_val, Ys_per_col[x][r - 1])
+        M[r] = max_val
+
+    # Build t[0..m], where t[0] = 0 and t[r] = time after finishing r-th removal
+    t = [0] * (m + 1)
+    t[0] = 0
+    for r in range(1, m + 1):
+        delta = M[r] - 1
+        if delta < 1:
+            delta = 1
+        t[r] = t[r - 1] + delta
+
+    # Answer queries
+    # For a query (T, A), let r = max s such that t[s] <= T.
+    # A exists iff rank[A] > r.
+    out_lines = []
+    for j in range(Q):
+        T = T_arr[j]
+        a = A_arr[j]
+
+        # find largest s with t[s] <= T
+        # t is nondecreasing and length m+1
+        # bisect_right returns index of first > T, so subtract 1
+        s = bisect_right(t, T) - 1
+        if s < 0:
+            s = 0
+        # In case T is huge, s can be m
+        # Check rank of block a (1-based)
+        if rank[a] > s:
+            out_lines.append("Yes")
+        else:
+            out_lines.append("No")
+
+    print("\n".join(out_lines))
+
+if __name__ == "__main__":
+    main()
+```

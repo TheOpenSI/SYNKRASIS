@@ -1,0 +1,107 @@
+### Step-by-step reasoning
+- The problem separates movement per column: blocks do not move horizontally, only vertically within their own column.
+- A bottom-row removal happens only if, at the start of a time step, every column has at least one block at y = 1. If any column is empty from the start, this can never happen and no removals occur ever.
+- If removals can occur, in each removal step exactly one bottom block is removed from every non-empty column (the block at y = 1 in that column). After removing the bottom row, higher blocks may cascade downward within the same step, but overall the removals themselves remove exactly one block per non-empty column for that step.
+- Let k_x be the number of blocks in column x (1 <= x <= W). The process can perform removals for at most m steps, where m = min_x k_x. After m removals, at least one column becomes empty, so no further removals can occur.
+- Before any removals, blocks in each column settle downward over time due to gravity, but removals only start when every column has a bottom block. The first time t when the bottom row becomes full is determined by when, for all columns, the bottom-most block can reach y = 1. The earliest step at which a removal happens is at time B = max_x(minY_x), where minY_x is the smallest Y in column x (i.e., the initial bottom-most block in that column). This matches the example behavior: removals begin at time B, and there are m subsequent removal steps (times B, B+1, ..., B+m-1).
+- If any column is empty initially (k_x = 0 for some x), then B is undefined (no removals ever happen). In that case, all blocks survive for all times.
+- For a block i, define r_i as its rank in its column when blocks are sorted by increasing initial Y within that column (1 = lowest block in that column, up to k_x).
+- Queries:
+  - If some column is empty initially: answer Yes for all queries (no removals ever happen).
+  - Otherwise:
+    - If T < B: no removals yet; block i exists.
+    - If B <= T <= B + m - 1: s = T - B + 1 removals have happened; block i exists iff r_i > s.
+    - If T >= B + m: all removals finished; block i exists iff r_i > m.
+
+Implementation notes:
+- Build per-column lists of (Y, block_index). If any column is empty, we can skip heavy logic and answer "Yes" to all queries.
+- Compute B as max of per-column minimum Y, and m as the minimum column size.
+- For each block i, compute its rank r_i within its column by sorting that column’s list by Y and assigning ranks.
+- Answer queries in O(1) time using the precomputed B, m, and r_i.
+
+Complexities:
+- Preprocessing: O(N log N) total due to per-column sorts (sum of columns’ sizes is N).
+- Each query: O(1).
+- Memory: O(N).
+
+### Requirements
+None
+
+### Code
+```
+import sys
+
+def solve():
+    data = list(map(int, sys.stdin.buffer.read().split()))
+    it = iter(data)
+    N = next(it)
+    W = next(it)
+
+    X = [0] * N
+    Y = [0] * N
+    for i in range(N):
+        X[i] = next(it)
+        Y[i] = next(it)
+
+    Q = next(it)
+    T_arr = [0] * Q
+    A_arr = [0] * Q
+    for j in range(Q):
+        T_arr[j] = next(it)
+        A_arr[j] = next(it) - 1  # 0-based index for blocks
+
+    # Build per-column blocks
+    cols = [[] for _ in range(W + 1)]
+    for i in range(N):
+        x = X[i]
+        y = Y[i]
+        cols[x].append((y, i))
+
+    rank = [0] * N
+    hasZero = False
+    for x in range(1, W + 1):
+        if len(cols[x]) == 0:
+            hasZero = True
+            break
+
+    if not hasZero:
+        # Compute B and m
+        minYs = []
+        m = None
+        B = 0
+        for x in range(1, W + 1):
+            col = cols[x]
+            minY = min(y for (y, idx) in col)
+            minYs.append(minY)
+        B = max(minYs)
+        m = min(len(col) for col in cols[1:])
+
+        # Assign ranks within each column
+        for x in range(1, W + 1):
+            col = cols[x]
+            col.sort(key=lambda t: t[0])  # sort by Y
+            for pos, (y, idx) in enumerate(col, start=1):
+                rank[idx] = pos
+    # If hasZero, we don't need B/m or ranks
+
+    out_lines = []
+    if hasZero:
+        out_lines = ["Yes"] * Q
+    else:
+        for j in range(Q):
+            t = T_arr[j]
+            a = A_arr[j]
+            r = rank[a]
+            if t < B:
+                out_lines.append("Yes")
+            elif t <= B + m - 1:
+                s = t - B + 1
+                out_lines.append("Yes" if r > s else "No")
+            else:
+                out_lines.append("Yes" if r > m else "No")
+
+    sys.stdout.write("\n".join(out_lines))
+
+if __name__ == "__main__":
+    solve()
+```

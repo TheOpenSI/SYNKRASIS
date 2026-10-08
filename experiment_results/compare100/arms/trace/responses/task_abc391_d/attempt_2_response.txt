@@ -1,0 +1,107 @@
+### Step-by-step reasoning
+- The blocks never move horizontally, so each column evolves independently under gravity. The only global event is removal of blocks when the entire bottom row (y = 1) across all columns is occupied at the start of a time step.
+- Within a column, blocks preserve their relative order by initial height. The bottom-most block in a column will descend to y = 1 as long as there is space below it, and it will be removed when that column’s bottom-most block sits at y = 1 at the start of a time step and every column’s bottom-most block is also at y = 1.
+- The first time the bottom row becomes full is when every column has at least one block that has descended to y = 1. For a column x, its bottom-most block has initial height Y_min(x) (the minimum Y in that column). It takes Y_min(x) − 1 steps for that block to reach y = 1. Therefore the first removal occurs at time step t = B, where B = max_x Y_min(x). If any column is initially empty, the bottom row can never be full, so no removals ever happen.
+- After s removals (s ≥ 0), in each column that originally had at least s blocks, the s lowest blocks (by initial Y) have been removed. The rest remain, preserving their initial relative order. Thus, in a column, a block with initial rank r (1-based, by increasing initial Y in that column) survives after s removals iff r > s.
+- The total number of removals is m = min_x k_x, where k_x is the number of blocks in column x. After m removals, at least one column becomes empty, so no further removals occur.
+- For a query (T, A):
+  - If some column is initially empty, no removals ever occur; block A always exists.
+  - Otherwise:
+    - If T < B: 0 removals have happened yet; block A exists.
+    - If B ≤ T ≤ B + m − 1: s = T − B + 1 removals have happened; block A exists iff r_A > s.
+    - If T ≥ B + m: all removals finished; block A exists iff r_A > m.
+
+This yields an O(N log N) preprocessing (sorting blocks within each column) and O(1) per query.
+
+Potential edge cases covered:
+- A column initially empty ⇒ no removals at all ⇒ all blocks always exist.
+- All columns non-empty but some have only one block, limiting total removals to m = 1.
+- Large T up to 1e9 handled with constant-time arithmetic.
+
+### Requirements
+None
+
+### Code
+```
+import sys
+
+def solve():
+    data = list(map(int, sys.stdin.buffer.read().split()))
+    it = iter(data)
+
+    N = next(it)
+    W = next(it)
+
+    X = [0] * N
+    Y = [0] * N
+    for i in range(N):
+        X[i] = next(it)
+        Y[i] = next(it)
+
+    Q = next(it)
+
+    T_arr = [0] * Q
+    A_arr = [0] * Q
+    for j in range(Q):
+        T_arr[j] = next(it)
+        A_arr[j] = next(it) - 1  # convert to 0-based block index
+
+    # Collect per-column blocks
+    cols = [[] for _ in range(W + 1)]
+    for i in range(N):
+        x = X[i]
+        y = Y[i]
+        cols[x].append((y, i))
+
+    rank = [0] * N
+    hasZero = False
+    for x in range(1, W + 1):
+        if len(cols[x]) == 0:
+            hasZero = True
+            break
+
+    if not hasZero:
+        B = 0
+        m = None
+
+        # Compute B = max over columns of their minimum Y
+        for x in range(1, W + 1):
+            col = cols[x]
+            minY = min(y for (y, idx) in col)
+            if minY > B:
+                B = minY
+        # Compute m = min over columns of their sizes
+        for x in range(1, W + 1):
+            col_size = len(cols[x])
+            if m is None or col_size < m:
+                m = col_size
+
+        # Assign ranks within each column (1-based)
+        for x in range(1, W + 1):
+            col = cols[x]
+            col.sort(key=lambda t: t[0])  # sort by Y
+            for pos, (_, idx) in enumerate(col, start=1):
+                rank[idx] = pos
+    # If hasZero, we don't need B, m, or ranks
+
+    out_lines = []
+    if hasZero:
+        out_lines = ["Yes"] * Q
+    else:
+        for j in range(Q):
+            t = T_arr[j]
+            a = A_arr[j]
+            r = rank[a]  # 1-based rank within its column
+            if t < B:
+                out_lines.append("Yes")
+            elif t <= B + m - 1:
+                s = t - B + 1
+                out_lines.append("Yes" if r > s else "No")
+            else:
+                out_lines.append("Yes" if r > m else "No")
+
+    sys.stdout.write("\n".join(out_lines))
+
+if __name__ == "__main__":
+    solve()
+```

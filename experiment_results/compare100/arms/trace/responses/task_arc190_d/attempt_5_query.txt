@@ -1,0 +1,23 @@
+Your generated code failed a test case.
+Please update the function logic so all test cases will pass. Error message added for your reference - 
+AssertionError: wrong answer on test case 1. Input: '2 3\n0 1\n0 2', expected output: '0 2\n1 2', your output: '0 0\n0 0\n'
+
+Execution trace of your code on public test case 1. How to read it: only the lines that ran are listed, with the values after `#`. `x=1,2,3` are the values of x on successive executions of that line, `a..b` a run of consecutive numbers, `T/F` the outcome of a condition on each execution, `F×3` three equal values, `(iters 2,4)` the loop iterations the line ran in, `...` omitted middle values. Nested lines belong to the line above.
+solve()
+  data = sys.stdin.read().strip().split()  # data=['2', '3', '0', '1', '0', '2']
+  if not data:  # False (data=['2', '3', '0', '1', '0', '2'])
+  N = int(next(it))  # N=2
+  p = int(next(it))  # p=3
+  for i in range(N):  # 2 iterations; i=0,1
+    for j in range(N):  # 2 runs, iterations per run: 2,2; j=0,1,0,1
+      val = int(next(it)) % p  # val=0,1,0,2
+      row.append(val)  # row += 0,1,0,2
+      if val == 0:  # T,F,T,F
+        zeros.append((i, j))  # zeros += (0, 0),(1, 0)  (iters 1,3)
+    A.append(row)  # A += [0, 1],[0, 2]
+  K = len(zeros)  # K=2
+  if K == 0:  # False (K=2)
+  total = [[0] * N for _ in range(N)]  # total=[[0, 0], [0, 0]]
+  for i in range(N):  # 2 iterations; i=0,1
+printed '0 0\n0 0'   (expected '0 2\n1 2')
+Find the first point where the behaviour differs from what the problem requires and fix that logic.

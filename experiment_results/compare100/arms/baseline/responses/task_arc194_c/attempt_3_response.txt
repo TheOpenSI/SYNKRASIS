@@ -1,0 +1,62 @@
+### Step-by-step reasoning
+- Each operation flips one bit A_i and then you pay the current total S = sum_k A_k * C_k after the flip.
+- To end with B, every index i with A_i != B_i must be flipped an odd number of times; indices with A_i == B_i can be left as is (or flipped an even number of times, but extra flips generally don’t help efficiently in minimizing the total cost).
+- If we commit to flipping exactly the indices in D = {i | A_i != B_i} once each, the deltas (change in S caused by that flip) are determined:
+  - If A_i was 0 and B_i is 1, flipping i gives delta = +C_i.
+  - If A_i was 1 and B_i is 0, flipping i gives delta = -C_i.
+- After each flip, the new S becomes S + delta, and the cost of that operation is that new S. If we fix the set of deltas, the total cost is minimized by ordering the deltas in nondecreasing order (negatives first, in decreasing magnitude, then positives with smallest magnitudes first). This is a standard scheduling result: to minimize sum of prefix sums with fixed deltas, apply them in nondecreasing order.
+- However, to be cautious about edge cases or potential alternative sequences (e.g., changing the flip order could yield even lower costs in some nontrivial scenarios), we can compare two natural extreme orders:
+  - ascending deltas (negatives first, largest magnitude first)
+  - descending deltas (positives first, largest magnitude first)
+- The final answer is the minimum total cost obtained from these two orderings. If there are no mismatches (D is empty), the answer is 0.
+
+This approach is efficient: computing S0, building deltas, and sorting them takes O(N log N).
+
+### Requirements
+None
+
+### Code
+```
+import sys
+
+def main():
+    data = list(map(int, sys.stdin.buffer.read().split()))
+    it = iter(data)
+
+    N = next(it)
+    A = [next(it) for _ in range(N)]
+    B = [next(it) for _ in range(N)]
+    C = [next(it) for _ in range(N)]
+
+    # Initial sum S0 = sum A_i * C_i
+    S0 = 0
+    deltas = []  # deltas for indices where A_i != B_i
+    for i in range(N):
+        S0 += A[i] * C[i]
+        if A[i] != B[i]:
+            deltas.append(C[i] if A[i] == 0 else -C[i])
+
+    if not deltas:
+        print(0)
+        return
+
+    # Helper to compute total cost given an ordering of deltas
+    def total_cost(order):
+        S = S0
+        total = 0
+        for d in order:
+            S += d
+            total += S
+        return total
+
+    deltas_asc = sorted(deltas)       # ascending: negatives first (largest magnitude first)
+    deltas_desc = sorted(deltas, reverse=True)  # descending: positives first (largest magnitude first)
+
+    total_asc = total_cost(deltas_asc)
+    total_desc = total_cost(deltas_desc)
+
+    print(min(total_asc, total_desc))
+
+if __name__ == "__main__":
+    main()
+```

@@ -1,0 +1,32 @@
+Your generated code failed a test case.
+Please update the function logic so all test cases will pass. Error message added for your reference - 
+AssertionError: wrong answer on test case 3. Input: '20\n1 1 1 1 0 0 1 1 0 0 0 1 0 1 0 1 1 0 1 0\n0 0 0 1 1 1 0 1 1 0 0 0 0 0 0 1 0 1 0 0\n52 73 97 72 54 15 79 67 13 55 65 22 36 90 84 46 1 2 27 8', expected output: '2867', your output: '3300\n'
+
+Execution trace of your code on public test case 3. How to read it: only the lines that ran are listed, with the values after `#`. `x=1,2,3` are the values of x on successive executions of that line, `a..b` a run of consecutive numbers, `T/F` the outcome of a condition on each execution, `F×3` three equal values, `(iters 2,4)` the loop iterations the line ran in, `...` omitted middle values. Nested lines belong to the line above.
+main()
+  data = sys.stdin.buffer.read().split()  # data=[b'20', b'1', b'1', b'1', b'1', b'0',...
+  if not data:  # False (data=[b'20', b'1', b'1', b'1', b'1', b'0',...)
+  N = int(next(it))  # N=20
+  A = [int(next(it)) for _ in range(N)]  # A=[1, 1, 1, 1, 0, 0, 1, 1, 0, 0, 0, 1, ...
+  B = [int(next(it)) for _ in range(N)]  # B=[0, 0, 0, 1, 1, 1, 0, 1, 1, 0, 0, 0, ...
+  C = [int(next(it)) for _ in range(N)]  # C=[52, 73, 97, 72, 54, 15, 79, 67, 13, ...
+  for i in range(N):  # 20 iterations; i=0..19
+    S0 += A[i] * C[i]  # S0=52,125,222,294 ... 626,626 (20 values)
+    D = A[i] ^ B[i]  # D=1×3,0 ... 1,0 (20 values)
+    if D:  # T×3,F,T,T ... T,T,F (20 times: T 12, F 8)
+      if A[i] == 1:  # T×3,F,F,T,F,T×3,F,T  (12 of 20 iters)
+        neg.append(C[i])  # neg += 52,73,97,79 ... 1,27 (8 values)  (8 of 20 iters)
+      else:
+        pos.append(C[i])  # pos += 54,15,13,2  (iters 5,6,9,18)
+  if not neg and (not pos):  # False (neg=[52, 73, 97, 79, 22, 90, 1, 27], pos=[54, 15, 13, 2])
+  neg.sort(reverse=True)  # neg=[97, 90, 79, 73, 52, 27, 22, 1]
+  pos.sort()  # pos=[2, 13, 15, 54]
+  S = S0  # S=626
+  for c in neg:  # 8 iterations; c=97,90,79,73 ... 22,1 (8 values)
+    S -= c  # S=529,439,360,287 ... 186,185 (8 values)
+    T += S  # T=529,968,1328,1615 ... 2244,2429 (8 values)
+  for c in pos:  # 4 iterations; c=2,13,15,54
+    S += c  # S=187,200,215,269
+    T += S  # T=2616,2816,3031,3300
+printed '3300'   (expected '2867')
+Find the first point where the behaviour differs from what the problem requires and fix that logic.

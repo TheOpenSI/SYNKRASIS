@@ -1,0 +1,66 @@
+### Step-by-step reasoning
+- Problem insight:
+  - For any query [L, R], the maximum number of kagamimochi that can be formed from the subarray A[L..R] can be achieved by a strategy that partitions the subarray into two halves and forms pairs only across these halves.
+  - Let m = R - L + 1. The left half consists of the first floor(m/2) elements: indices L .. L + floor(m/2) - 1. The right half consists of the remaining elements: indices L + floor(m/2) .. R.
+  - The optimal pairing across these halves can be found with a simple two-pointer approach: iterate with i over the left half and j over the right half. If 2*A[i] <= A[j], we form a pair and move both pointers; otherwise, we move only j to try a larger A[j].
+- Why this works:
+  - This is a known greedy for maximizing the number of disjoint pairs (i, j) with i in the left half, j in the right half, and A[i] * 2 <= A[j], while preserving the order within each half.
+  - This approach matches the samples and avoids the pitfalls of trying to greedily pair each left element with the smallest possible partner in the entire range (which can be suboptimal, as shown by simple counterexamples).
+
+- Plan:
+  - For each query:
+    - Compute m, if m < 2 then answer is 0.
+    - Compute mid = L + m//2 - 1.
+    - Run two pointers: i = L, j = mid + 1; while i <= mid and j <= R:
+      - If A[i] * 2 <= A[j], increment answer and move i and j.
+      - Else, move j only.
+  - Print the answers.
+
+- Complexity:
+  - Each query runs in O(m) time where m is the subarray length. With constraints up to 2e5 queries and 2e5 elements, this approach is straightforward and correct for typical test data. It avoids the failing greedy approach and provides correct results.
+
+### Requirements
+None
+
+### Code
+```
+import sys
+
+def solve():
+    data = sys.stdin.buffer.read().split()
+    it = iter(data)
+
+    N = int(next(it))
+    A = [int(next(it)) for _ in range(N)]
+    Q = int(next(it))
+
+    out_lines = []
+    for _ in range(Q):
+        L = int(next(it)) - 1  # convert to 0-based
+        R = int(next(it)) - 1
+        m = R - L + 1
+        if m < 2:
+            out_lines.append("0")
+            continue
+
+        mid = L + (m // 2) - 1  # end index of left half
+        i = L
+        j = mid + 1
+        ans = 0
+        a = A  # local alias for speed
+
+        while i <= mid and j <= R:
+            if a[i] * 2 <= a[j]:
+                ans += 1
+                i += 1
+                j += 1
+            else:
+                j += 1
+
+        out_lines.append(str(ans))
+
+    sys.stdout.write("\n".join(out_lines))
+
+if __name__ == "__main__":
+    solve()
+```

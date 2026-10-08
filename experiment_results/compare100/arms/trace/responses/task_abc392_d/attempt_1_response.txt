@@ -1,0 +1,76 @@
+### Step-by-step reasoning
+- For two dice i and j, let count_i(v) be how many faces of die i show value v, and Ki be the number of faces on die i. Similarly for die j with count_j(v) and Kj.
+- The probability that the two rolled outcomes are equal is:
+  P(i, j) = sum_over_values_v (count_i(v) / Ki) * (count_j(v) / Kj)
+         = (1 / (Ki * Kj)) * sum_over_values_v (count_i(v) * count_j(v)).
+  This is the dot product of the value-count vectors of the two dice, divided by Ki*Kj.
+- To compute the maximum probability over all unordered pairs (i, j) with i < j, we:
+  1) Build for each die a map from value to its frequency (count of that value on the die).
+  2) For every pair (i, j), compute the dot product efficiently by iterating over the smaller value-count map and looking up corresponding counts in the other map.
+  3) Divide the dot product by Ki * Kj to obtain P(i, j), and keep the maximum.
+- Correct handling of duplicates on a die is automatic via counts.
+- Time complexity: Let Di be the number of distinct values on die i. For each pair, we do O(min(Di, Dj)) lookups. The total number of faces is at most 1e5, N ≤ 100, so this is fast enough in Python.
+- Numerical precision: use Python floats. Print with sufficient precision (e.g., 15 decimals) to satisfy the 1e-8 tolerance.
+- Edge cases:
+  - If two dice share no common value, the probability is 0.
+  - Some dice may have many repeated faces; counts handle this.
+  - Two dice are always distinct.
+
+### Requirements
+None
+
+### Code
+```
+import sys
+
+def main():
+    data = list(map(int, sys.stdin.buffer.read().split()))
+    if not data:
+        print("0.0")
+        return
+
+    it = iter(data)
+    N = next(it)
+
+    # For each die, store a dict: value -> count, and Ki (number of faces)
+    dicts = []
+    Ks = []
+
+    for _ in range(N):
+        Ki = next(it)
+        Ks.append(Ki)
+        counts = {}
+        for _ in range(Ki):
+            v = next(it)
+            counts[v] = counts.get(v, 0) + 1
+        dicts.append(counts)
+
+    max_prob = 0.0
+
+    for i in range(N):
+        di = dicts[i]
+        Ki = Ks[i]
+        for j in range(i + 1, N):
+            dj = dicts[j]
+            Kj = Ks[j]
+
+            # Compute dot product efficiently by iterating over the smaller dict
+            if len(di) < len(dj):
+                dot = 0
+                for v, c in di.items():
+                    dot += c * dj.get(v, 0)
+            else:
+                dot = 0
+                for v, c in dj.items():
+                    dot += c * di.get(v, 0)
+
+            prob = dot / (Ki * Kj)
+            if prob > max_prob:
+                max_prob = prob
+
+    # Print with high precision
+    print("{:.15f}".format(max_prob))
+
+if __name__ == "__main__":
+    main()
+```

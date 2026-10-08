@@ -1,0 +1,60 @@
+### Step-by-step reasoning
+- The operation flips A_i and charges the current total sum S = sum_k A_k * C_k after the flip.
+- If we only flip indices where A_i != B_i and flip each exactly once (no extra flips on indices that already match), the final A will be B and the number of flips is d = count of i with A_i != B_i.
+- For each such i, the first (and only, under this plan) flip changes A_i from A_i to 1 - A_i, contributing a delta to S of:
+  - +C_i if A_i was 0 (0 -> 1)
+  - -C_i if A_i was 1 (1 -> 0)
+  Thus we obtain a multiset of deltas: s_i = (+C_i) if A_i=0, B_i=1; s_i = (-C_i) if A_i=1, B_i=0.
+- The order of these deltas matters because the total cost equals the sum of the intermediate S after each flip. Given the initial S0 = sum A_i * C_i, and applying deltas d1, d2, ..., dd in some order, the sequence of S values is S0 + d1, S0 + d1 + d2, ..., S0 + d1 + ... + dd, and the total cost is the sum of these S values.
+- To minimize the total sum for a fixed multiset of deltas, we should apply deltas in nondecreasing order (ascending). This places the most negative deltas early (with larger weight) and the positive deltas later.
+- Therefore:
+  1) Compute S0.
+  2) Build the list of deltas for all i where A_i != B_i: delta_i = C_i if A_i == 0 else -C_i.
+  3) Sort these deltas in ascending order.
+  4) Starting from S = S0, for each delta in that order, update S += delta and accumulate total += S.
+  5) The final total is the minimum cost.
+
+- This approach matches the provided samples (e.g., for sample 1, deltas are [+4, -6, -9], sorted as [-9, -6, +4], producing the correct total 16).
+
+- Edge case: if no flips are needed (d = 0), the answer is 0.
+
+### Requirements
+None
+
+### Code
+```
+import sys
+
+def main():
+    data = list(map(int, sys.stdin.buffer.read().split()))
+    it = iter(data)
+
+    N = next(it)
+    A = [next(it) for _ in range(N)]
+    B = [next(it) for _ in range(N)]
+    C = [next(it) for _ in range(N)]
+
+    # Initial sum S0 = sum A_i * C_i
+    S0 = 0
+    deltas = []  # deltas for indices where A_i != B_i
+    for i in range(N):
+        S0 += A[i] * C[i]
+        if A[i] != B[i]:
+            deltas.append(C[i] if A[i] == 0 else -C[i])
+
+    if not deltas:
+        print(0)
+        return
+
+    deltas.sort()  # ascending order to minimize total cost
+    S = S0
+    total = 0
+    for d in deltas:
+        S += d
+        total += S
+
+    print(total)
+
+if __name__ == "__main__":
+    main()
+```

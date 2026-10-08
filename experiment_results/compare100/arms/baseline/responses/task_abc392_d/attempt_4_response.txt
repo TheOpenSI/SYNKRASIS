@@ -1,0 +1,65 @@
+### Step-by-step reasoning
+- For two dice i and j, let p_i(v) be the probability that die i shows value v. If the i-th die has frequency freq_i[v] of value v and Ki faces, then p_i(v) = freq_i[v] / Ki.
+- The probability that both dice show the same value is sum over all possible values v of p_i(v) * p_j(v).
+  This equals sum_v (freq_i[v] / Ki) * (freq_j[v] / Kj) = (sum_v freq_i[v] * freq_j[v]) / (Ki * Kj).
+- Therefore, for each pair of dice (i, j) we compute dot(i, j) = sum_v freq_i[v] * freq_j[v], and the pair probability is dot(i, j) / (Ki * Kj).
+- The answer is the maximum of these probabilities over all unordered pairs (i < j).
+- Efficient implementation notes:
+  - Build for each die a frequency map from value to its count.
+  - When computing dot(i, j), iterate over the smaller frequency map to minimize work.
+  - Time complexity is acceptable: building all frequency maps costs O(total faces), and pairwise dot products cost O(sum over pairs of min(dist_i, dist_j)) where dist_i is number of distinct values on die i. With sum Ki ≤ 1e5 and N ≤ 100, this fits easily.
+  - Output with high precision to meet the 1e-8 error requirement.
+
+### Requirements
+None
+
+### Code
+```
+import sys
+
+def main():
+    data = list(map(int, sys.stdin.buffer.read().split()))
+    if not data:
+        print("{:.15f}".format(0.0))
+        return
+
+    pos = 0
+    N = data[pos]; pos += 1
+
+    dice = []
+    for _ in range(N):
+        Ki = data[pos]; pos += 1
+        faces = data[pos:pos+Ki]; pos += Ki
+
+        freq = {}
+        for v in faces:
+            freq[v] = freq.get(v, 0) + 1
+
+        dice.append((Ki, freq))
+
+    max_prob = 0.0
+
+    for i in range(N):
+        Ki, Fi = dice[i]
+        for j in range(i + 1, N):
+            Kj, Fj = dice[j]
+
+            # Compute dot product efficiently by iterating over the smaller map
+            if len(Fi) <= len(Fj):
+                dot = 0
+                for v, c in Fi.items():
+                    dot += c * Fj.get(v, 0)
+            else:
+                dot = 0
+                for v, c in Fj.items():
+                    dot += c * Fi.get(v, 0)
+
+            prob = dot / (Ki * Kj)
+            if prob > max_prob:
+                max_prob = prob
+
+    print("{:.15f}".format(max_prob))
+
+if __name__ == "__main__":
+    main()
+```

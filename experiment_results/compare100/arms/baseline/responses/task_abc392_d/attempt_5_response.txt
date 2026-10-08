@@ -1,0 +1,72 @@
+### Step-by-step reasoning
+- For two dice i and j, let freq_i[v] be how many times value v appears on die i, and Ki be the number of faces of die i. The probability that die i shows v is freq_i[v]/Ki.
+- The probability that both dice show the same value v is (freq_i[v]/Ki) * (freq_j[v]/Kj).
+- Therefore, the probability that dice i and j show the same number is sum over all v: sum_v freq_i[v] * freq_j[v] / (Ki * Kj).
+- Define dot(i, j) = sum_v freq_i[v] * freq_j[v]. Then P(i, j) = dot(i, j) / (Ki * Kj).
+- The task is to maximize P(i, j) over all unordered pairs (i, j). So we compute dot(i, j) efficiently and compare fractions without floating-point error.
+- To compute dot(i, j) efficiently, iterate over the smaller frequency map between the two dice and accumulate contributions from common values.
+- To avoid floating-point precision issues when comparing probabilities, compare fractions using cross-multiplication: compare dot1/d1 to dot2/d2 by dot1*d2 vs dot2*d1.
+- After finding the best pair, output best_dot / best_d with high precision (at least 1e-8 accuracy). Using integer arithmetic for the comparison ensures robustness.
+
+Consider edge cases:
+- Dice with repeated same values (freq can be large) are handled naturally.
+- If two dice share no common values, dot = 0, probability is 0.
+- N ≤ 100 and total faces sum Ki ≤ 1e5 ensures the described approach runs efficiently.
+
+### Requirements
+None
+
+### Code
+```
+import sys
+
+def main():
+    data = list(map(int, sys.stdin.buffer.read().split()))
+    if not data:
+        print("{:.15f}".format(0.0))
+        return
+
+    pos = 0
+    N = data[pos]; pos += 1
+
+    dice = []
+    for _ in range(N):
+        Ki = data[pos]; pos += 1
+        faces = data[pos:pos+Ki]; pos += Ki
+
+        freq = {}
+        for v in faces:
+            freq[v] = freq.get(v, 0) + 1
+
+        dice.append((Ki, freq))
+
+    best_dot = -1
+    best_d = 1  # denominator Ki * Kj for the best pair
+
+    for i in range(N):
+        Ki, Fi = dice[i]
+        for j in range(i + 1, N):
+            Kj, Fj = dice[j]
+
+            # Compute dot product efficiently by iterating over the smaller map
+            if len(Fi) <= len(Fj):
+                dot = 0
+                for v, c in Fi.items():
+                    dot += c * Fj.get(v, 0)
+            else:
+                dot = 0
+                for v, c in Fj.items():
+                    dot += c * Fi.get(v, 0)
+
+            d = Ki * Kj
+
+            # Compare dot/d with best_dot/best_d using cross multiplication
+            if best_dot == -1 or dot * best_d > best_dot * d:
+                best_dot, best_d = dot, d
+
+    ans = best_dot / best_d
+    print("{:.15f}".format(ans))
+
+if __name__ == "__main__":
+    main()
+```

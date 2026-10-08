@@ -1,0 +1,71 @@
+### Step-by-step reasoning
+- We need the maximum probability that two distinct dice, chosen from N given dice, show the same number when rolled.
+- For dice i and j, if value v appears ci times on die i (ci ≥ 0) and cj times on die j, and die i has Ki faces and die j has Kj faces, then:
+  P(i and j both show v) = (ci / Ki) * (cj / Kj).
+- Therefore, the probability that dice i and j show the same number is:
+  P(i, j) = sum over all values v of (ci(v)/Ki) * (cj(v)/Kj) = dot(counts_i, counts_j) / (Ki * Kj),
+  where dot(...) is the sum over v of ci(v) * cj(v).
+- To compute this efficiently, for every value v we collect all dice that contain v along with the count of v on that die, i.e., a list of (die_index, count_on_die). Then, for every pair of dice in that list, we accumulate into dot[i][j] += ci * cj.
+- After processing all values, we compute the probability for every pair (i < j) as dot[i][j] / (Ki * Kj) and take the maximum.
+- Notes:
+  - A die can contain repeated numbers; counts ci(v) handle multiplicities correctly.
+  - Time complexity is acceptable: total number of (die, value) entries is at most sum Ki ≤ 1e5, and the inner pairwise accumulation per value v costs O(m_v^2) where m_v is the number of dice containing v. The overall cost remains reasonable given constraints.
+  - Output should be printed with high precision (15+ decimals) to satisfy the required error tolerance.
+
+### Requirements
+None
+
+### Code
+```
+import sys
+
+def main():
+    data = sys.stdin.buffer.read().split()
+    if not data:
+        print("0.0")
+        return
+
+    it = iter(data)
+    N = int(next(it))
+
+    Ks = []
+    value_map = {}  # value -> list of (die_index, count_on_that_die)
+
+    for i in range(N):
+        Ki = int(next(it))
+        Ks.append(Ki)
+        counts = {}
+        for _ in range(Ki):
+            v = int(next(it))
+            counts[v] = counts.get(v, 0) + 1
+        for v, c in counts.items():
+            value_map.setdefault(v, []).append((i, c))
+
+    # dot[i][j] = sum_v count_i(v) * count_j(v)
+    dot = [[0] * N for _ in range(N)]
+
+    for v, lst in value_map.items():
+        m = len(lst)
+        if m < 2:
+            continue
+        for a in range(m - 1):
+            i, ci = lst[a]
+            for b in range(a + 1, m):
+                j, cj = lst[b]
+                dot[i][j] += ci * cj
+
+    max_prob = 0.0
+    for i in range(N):
+        Ki = Ks[i]
+        for j in range(i + 1, N):
+            Kj = Ks[j]
+            # dot[i][j] is defined for i<j; for i>=j it's not used
+            val = dot[i][j] / (Ki * Kj)
+            if val > max_prob:
+                max_prob = val
+
+    print("{:.15f}".format(max_prob))
+
+if __name__ == "__main__":
+    main()
+```
