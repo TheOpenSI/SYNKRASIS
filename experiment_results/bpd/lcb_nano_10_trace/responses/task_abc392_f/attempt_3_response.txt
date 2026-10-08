@@ -1,0 +1,71 @@
+### Step-by-step reasoning
+- Re-derive the problem: We start with an empty array A and for i from 1 to N insert i so that i becomes the Pi-th element from the start. This is equivalent to placing i into the Pi-th position among the current elements.
+- In forward simulation this is O(N^2). A standard trick is to process in reverse. When processing i in reverse (i = N, N-1, ..., 1), there are exactly i empty slots in the final array of length N. The Pi-th element from the beginning in the current (partial) array corresponds to placing i into the Pi-th empty slot of the final array.
+- Use a data structure to track empty slots and answer k-th empty slot queries efficiently. A Fenwick (Binary Indexed) Tree can:
+  - store whether a slot is empty (1) or filled (0),
+  - support updating a slot to filled (subtract 1),
+  - and find the k-th empty slot (the smallest index pos such that the prefix sum up to pos is at least k).
+- Implementation details:
+  - Initialize Fenwick with all slots empty. If all a[i] = 1, the internal tree bit[i] equals i & -i (the lowest set bit). We can set bit[i] = i & -i directly for O(N) initialization.
+  - For i from N down to 1:
+    - k = P[i-1]
+    - pos = kth(k) using Fenwick (k-th empty slot)
+    - A[pos] = i
+    - mark pos as filled: add(pos, -1)
+- Complexity: O(N log N) time and O(N) space. Works for N up to 5e5.
+- Output format: print A[1], A[2], ..., A[N] separated by spaces and ending with a newline.
+
+### Requirements
+None
+
+### Code
+```
+import sys
+
+def main():
+    data = list(map(int, sys.stdin.buffer.read().split()))
+    if not data:
+        return
+    n = data[0]
+    p = data[1:1 + n]
+
+    # Fenwick tree (1-indexed) to track empty slots: 1 means empty, 0 means filled
+    bit = [0] * (n + 1)
+    # Initialize for all slots empty: bit[i] should be i & -i when all a[i] = 1
+    for i in range(1, n + 1):
+        bit[i] = i & -i
+
+    def add(i, delta):
+        # update position i by delta
+        while i <= n:
+            bit[i] += delta
+            i += i & -i
+
+    def kth(k):
+        # Find the smallest index pos such that the prefix sum >= k
+        idx = 0
+        # Start with a power-of-two >= n (common trick to perform binary lifting)
+        bit_mask = 1 << (n.bit_length())
+        while bit_mask:
+            t = idx + bit_mask
+            if t <= n and bit[t] < k:
+                idx = t
+                k -= bit[t]
+            bit_mask >>= 1
+        return idx + 1
+
+    ans = [0] * (n + 1)  # 1-indexed final array
+
+    # Process in reverse: place i into the k-th empty slot
+    for i in range(n, 0, -1):
+        k = p[i - 1]
+        pos = kth(k)
+        ans[pos] = i
+        add(pos, -1)  # mark this slot as filled
+
+    sys.stdout.write(' '.join(str(ans[i]) for i in range(1, n + 1)))
+    sys.stdout.write('\n')
+
+if __name__ == "__main__":
+    main()
+```

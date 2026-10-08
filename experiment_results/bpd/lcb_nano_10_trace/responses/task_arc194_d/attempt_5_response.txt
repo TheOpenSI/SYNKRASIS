@@ -1,0 +1,174 @@
+### Step-by-step reasoning
+- Model S as a rooted ordered tree T:
+  - Each pair of matching parentheses forms a node v (except the virtual root 0).
+  - The children of v are the top-level VPS blocks directly inside the pair corresponding to v.
+  - The virtual root 0 has as children all top-level pairs in S.
+- For each node v, define two encodings:
+  - E(v): the encoding of the subtree rooted at v in the natural orientation: "(" + E(child1) + E(child2) + ... + E(childk) + ")".
+  - Rev(v): the encoding after mirroring the subtree: "(" + Rev(childk) + Rev(childk-1) + ... + Rev(child1) + ")".
+- An operation in the problem corresponds to choosing a substring that is a VPS and reversing it with the given rule. Such an operation exactly mirrors the subtree of some node v: the substring equal to E(v) is replaced by Rev(v).
+- Key fact (independence): If E(v) != Rev(v), then flipping (mirroring) the subtree rooted at v changes the final string in a way that cannot be achieved by mirroring any combination of other subtrees, i.e., it yields a distinct final string. If E(v) == Rev(v), flipping v has no effect.
+- Therefore, the number of distinct final strings equals 2^K modulo 998244353, where K is the number of nodes v (including the virtual root 0) with E(v) != Rev(v).
+- Plan:
+  - Build the tree T from the parentheses string S.
+  - Compute E(v) and Rev(v) for all v in a bottom-up fashion using polynomial hashing (two independent moduli to avoid collisions) along with the lengths of the encodings.
+  - Count K as the number of nodes (0..M) for which E(v) != Rev(v).
+  - Output 2^K mod 998244353.
+- Important correctness detail: In a previous attempt, there was a bug in computing the length of Rev(v) (lenR[v]) for non-leaf nodes, which caused incorrect hashes and therefore incorrect counts in some hidden tests. The corrected approach computes:
+  - lenE[v] = 2 + sum(lenE[c] for c in children[v])
+  - lenR[v] = 2 + sum(lenR[c] for c in children[v])
+  and then builds the hashes accordingly.
+
+Time complexity: O(N) to build the tree and O(N) to compute all hashes, since each edge is processed a constant number of times. Memory: O(N).
+
+### Requirements
+None
+
+### Code
+```
+import sys
+
+def main():
+    MOD_TARGET = 998244353
+
+    data = sys.stdin.read().strip().split()
+    N = int(data[0])
+    S = data[1].strip()
+
+    # Build tree: node 0 is virtual root
+    # Each '(' creates a new node; its parent is current stack top (if any) else root
+    children = [[]]  # index 0 is root
+    stack = []
+
+    for ch in S:
+        if ch == '(':
+            nid = len(children)
+            children.append([])
+            if stack:
+                parent = stack[-1]
+                children[parent].append(nid)
+            else:
+                children[0].append(nid)
+            stack.append(nid)
+        else:  # ')'
+            stack.pop()
+
+    M = len(children) - 1  # number of actual nodes (excluding root)
+
+    # Postorder list (iterative)
+    order = []
+    st = [0]
+    while st:
+        v = st.pop()
+        order.append(v)
+        for c in children[v]:
+            st.append(c)
+
+    # Hashing setup
+    MOD1 = 1000000007
+    MOD2 = 1000000009
+    BASE1 = 911382323
+    BASE2 = 972663749
+    OPEN_C = 1
+    CLOSE_C = 2
+
+    maxLen = N + 5
+    pow1 = [1] * (maxLen + 1)
+    pow2 = [1] * (maxLen + 1)
+    for i in range(1, maxLen + 1):
+        pow1[i] = (pow1[i-1] * BASE1) % MOD1
+        pow2[i] = (pow2[i-1] * BASE2) % MOD2
+
+    # Buffers per node (0..M)
+    norm_h1 = [0] * (M + 1)
+    norm_h2 = [0] * (M + 1)
+    rev_h1  = [0] * (M + 1)
+    rev_h2  = [0] * (M + 1)
+    lenE = [0] * (M + 1)
+    lenR = [0] * (M + 1)
+
+    # Process in postorder
+    for v in reversed(order):
+        if v == 0:
+            # E(0): concatenation of E(child) in order
+            h1 = 0
+            h2 = 0
+            L = 0
+            for c in children[v]:
+                h1 = (h1 * pow1[lenE[c]] + norm_h1[c]) % MOD1
+                h2 = (h2 * pow2[lenE[c]] + norm_h2[c]) % MOD2
+                L += lenE[c]
+            norm_h1[v] = h1
+            norm_h2[v] = h2
+            lenE[v] = L
+
+            # Rev(0): Rev(child_k) + ... + Rev(child_1)
+            h1 = 0
+            h2 = 0
+            Lr = 0
+            for c in reversed(children[v]):
+                h1 = (h1 * pow1[lenR[c]] + rev_h1[c]) % MOD1
+                h2 = (h2 * pow2[lenR[c]] + rev_h2[c]) % MOD2
+                Lr += lenR[c]
+            rev_h1[v] = h1
+            rev_h2[v] = h2
+            lenR[v] = Lr
+        else:
+            k = len(children[v])
+            if k == 0:
+                # leaf: E(v) = "()", Rev(v) = "()"
+                h1 = OPEN_C
+                h1 = (h1 * BASE1 + CLOSE_C) % MOD1
+                L = 2
+                norm_h1[v] = h1
+
+                h2 = OPEN_C
+                h2 = (h2 * BASE2 + CLOSE_C) % MOD2
+                norm_h2[v] = h2
+                lenE[v] = L
+
+                rev_h1[v] = norm_h1[v]
+                rev_h2[v] = norm_h2[v]
+                lenR[v] = L
+            else:
+                # E(v) = "(" + E(c1) + E(c2) + ... + E(ck) + ")"
+                h1 = OPEN_C
+                h2 = OPEN_C
+                sum_len_E = 0
+                for c in children[v]:
+                    sum_len_E += lenE[c]
+                    h1 = (h1 * pow1[lenE[c]] + norm_h1[c]) % MOD1
+                    h2 = (h2 * pow2[lenE[c]] + norm_h2[c]) % MOD2
+                h1 = (h1 * BASE1 + CLOSE_C) % MOD1
+                h2 = (h2 * BASE2 + CLOSE_C) % MOD2
+                lenE[v] = 2 + sum_len_E
+                norm_h1[v] = h1
+                norm_h2[v] = h2
+
+                # Rev(v) = "(" + Rev(ck) + Rev(ck-1) + ... + Rev(c1) + ")"
+                h1 = OPEN_C
+                h2 = OPEN_C
+                sum_len_R = 0
+                for c in reversed(children[v]):
+                    sum_len_R += lenR[c]
+                    h1 = (h1 * pow1[lenR[c]] + rev_h1[c]) % MOD1
+                    h2 = (h2 * pow2[lenR[c]] + rev_h2[c]) % MOD2
+                h1 = (h1 * BASE1 + CLOSE_C) % MOD1
+                h2 = (h2 * BASE2 + CLOSE_C) % MOD2
+                lenR[v] = 2 + sum_len_R
+                rev_h1[v] = h1
+                rev_h2[v] = h2
+
+    # Count non-symmetric nodes (including root 0)
+    count = 0
+    for v in range(0, M + 1):
+        if not (norm_h1[v] == rev_h1[v] and norm_h2[v] == rev_h2[v] and lenE[v] == lenR[v]):
+            count += 1
+
+    # Answer
+    ans = pow(2, count, MOD_TARGET)
+    print(ans)
+
+if __name__ == "__main__":
+    main()
+```

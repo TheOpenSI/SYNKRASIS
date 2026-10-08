@@ -1,0 +1,41 @@
+### Step-by-step reasoning
+- A full house consists of three cards of one value x and two cards of another value y (with x != y).
+- Therefore, among the seven cards, we need at least one value that appears three or more times, and at least one different value that appears two or more times.
+- Compute the frequency of each value (1 through 13).
+- For every value i with freq[i] >= 3, check if there exists a different value j (j != i) with freq[j] >= 2. If such a pair exists, a full house can be formed -> print Yes.
+- If no such pair exists after checking all possibilities, print No.
+- Edge cases:
+  - All seven cards the same: only one value with freq >= 3; no second value with freq >= 2 -> No.
+  - 3 of one value and 4 of another: Yes.
+  - 3 of one value and the rest singles or pairs insufficient: No.
+
+### Requirements
+None
+
+### Code
+```
+import sys
+
+def main():
+    data = sys.stdin.read().strip().split()
+    if not data:
+        print("No")
+        return
+    A = list(map(int, data))[:7]
+
+    counts = [0] * 14  # indices 1..13
+    for v in A:
+        if 1 <= v <= 13:
+            counts[v] += 1
+
+    for i in range(1, 14):
+        if counts[i] >= 3:
+            for j in range(1, 14):
+                if j != i and counts[j] >= 2:
+                    print("Yes")
+                    return
+    print("No")
+
+if __name__ == "__main__":
+    main()
+```

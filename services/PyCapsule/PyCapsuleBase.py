@@ -45,7 +45,6 @@ from abc import abstractmethod
 from services.Base import ServiceBase
 from services.Container.Container import Container
 from services.LLM.LLMBase import LLMBase
-from services.DDI.DDI import DDI
 from data.DatasetBase import DatasetBase
 from utils.output_message_format.output_colour import print_error, print_info, print_warning
 from utils.output_message_format.output_colour import print_success, print_pycapsule
@@ -488,6 +487,7 @@ class PyCapsuleBase(ServiceBase):
         
         # DDI
         if self.fresh_start is not None:
+            from services.DDI.DDI import DDI    # needs scipy, only used here
             ddi = DDI(
                 file_path= dataset.generate_file_path() + ".csv", 
                 model_name = self.llm.model_name,

@@ -1,0 +1,47 @@
+### Step-by-step reasoning
+- We are allowed to pick any substring from s (possibly empty) and any substring from t (possibly empty), then concatenate them as s_sub + t_sub to form the candidate string.
+- To find the maximum palindrome length, we can brute force all possible substrings of s and t (including the empty substring) and test the concatenation for palindrome.
+- Generate all substrings of s including the empty string: for every i in [0, len(s)) and j in (i+1, len(s)], take s[i:j], and also include "" as the empty substring.
+- Do the same for t.
+- For every pair (s_sub, t_sub), form the concatenation and check if it is a palindrome by comparing it to its reverse. Track the maximum length among palindromic concatenations.
+- Edge cases:
+  - Empty substrings: the result can be formed by taking empty from one or both strings; length 0 is possible, but we seek the maximum.
+  - Palindromes formed entirely from s or entirely from t are covered by pairing with an empty substring from the other string.
+  - All characters distinct or small inputs: the algorithm still works due to brute-force search.
+- Complexity: If n = len(s), m = len(t), number of substrings is O(n^2) for s and O(m^2) for t; total checks are O(n^2 * m^2). With n, m ≤ 30, this is easily feasible (roughly a few hundred thousand concatenations and palindrome checks).
+
+### Requirements
+None
+
+### Code
+```
+class Solution:
+    def longestPalindrome(self, s: str, t: str) -> int:
+        # Collect all substrings of s (including the empty substring)
+        subs_s = [""]
+        n = len(s)
+        for i in range(n):
+            for j in range(i + 1, n + 1):
+                subs_s.append(s[i:j])
+
+        # Collect all substrings of t (including the empty substring)
+        subs_t = [""]
+        m = len(t)
+        for i in range(m):
+            for j in range(i + 1, m + 1):
+                subs_t.append(t[i:j])
+
+        max_len = 0
+
+        # Check all concatenations s_sub + t_sub
+        for a in subs_s:
+            la = len(a)
+            for b in subs_t:
+                L = la + len(b)
+                if L <= max_len:
+                    continue  # cannot improve current max
+                if (a + b) == (a + b)[::-1]:
+                    max_len = L
+
+        return max_len
+```

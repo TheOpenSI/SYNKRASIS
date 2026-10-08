@@ -1,0 +1,192 @@
+### Step-by-step reasoning
+- Problem restatement: We have points lying on the boundary of a square of side length `side`. We must pick exactly `k` points so that the minimum Manhattan distance between any two chosen points is as large as possible. The Manhattan distance between (x1, y1) and (x2, y2) is |x1 - x2| + |y1 - y2|.
+
+- Key transformation: For points (x, y), define
+  - p = x + y
+  - q = x - y
+  Then for any two points i, j:
+  |Δx| + |Δy| = max(|Δp|, |Δq|).
+  Consequently, two points are at Manhattan distance < D if and only if |Δp| < D and |Δq| < D.
+  So for a fixed D, building a graph where we connect i and j if their Manhattan distance is < D yields a conflict graph. The problem then becomes: is there an independent set of size at least k in this graph? (An independent set means all pairwise distances are at least D.)
+
+- Feasibility check strategy (core idea):
+  - Compute p[i] and q[i] for all points.
+  - For a candidate D, points i and j conflict iff they lie in a 2D axis-aligned open box of width D in both (p, q) axes. We can bucket points by (p // D, q // D) so that only points in the same or neighboring buckets may conflict.
+  - Build the adjacency as a bitset per vertex: neighbor_mask[i] has bit j set if i and j conflict.
+  - If there exists an independent set of size k, then we can answer True for D. Otherwise False.
+
+- Verification approach:
+  - First, quick checks: if k > n, impossible; if D <= 0, feasible iff k <= n.
+  - Greedy pruning: try to greedily build a large independent set by processing vertices in order of increasing degree (in the conflict graph). If we reach size k, D is feasible.
+  - If greedy fails, fall back to an exact backtracking (branch-and-bound) search on the conflict graph using bitsets:
+    - Use a remaining-vertices bitset and recursively branch on a chosen vertex v:
+      - Include v: remove v and all its neighbors from the remaining set, increment count.
+      - Exclude v: remove v from the remaining set.
+    - Prune when current_count + remaining_count < k.
+    - Choose branching vertex with high degree to prune quickly.
+  - If either branch yields a feasible selection of size k, D is feasible.
+
+- Binary search bounds for D:
+  - Upper bound: max( max(p) - min(p), max(q) - min(q) ).
+  - D is in [0, upper_bound]. We binary search the largest D for which feasibility holds.
+
+- Edge cases and constraints:
+  - side can be up to 1e9; n = len(points) ≤ min(4*side, 15000); k ≤ min(25, n).
+  - Points lie on the boundary and are unique; p and q can be negative (q ranges from -side to side), so bucket keys must handle negative values (Python dict handles this naturally).
+  - The approach uses purely standard Python (no external libraries) and relies on Python integers as arbitrary-size bitsets.
+
+- Complexity notes:
+  - Bucketization for a fixed D is roughly O(n) on average, but in worst-case where many points fall into the same bucket, it can degrade to O(n^2). The greedy pruning and the bounded backtracking (k ≤ 25) help keep the practical runtime reasonable on the given constraints.
+  - The backtracking search is exponential in the worst case, but with k ≤ 25 and strong pruning it is typically manageable for the problem scale.
+
+- Output format: Return the maximum D as an integer. No extra text.
+
+### Requirements
+None
+
+### Code
+```
+from typing import List
+import sys
+from collections import defaultdict
+
+class Solution:
+    def maxDistance(self, side: int, points: List[List[int]], k: int) -> int:
+        # Increase recursion limit for deep DFS in worst cases
+        sys.setrecursionlimit(1000000)
+
+        n = len(points)
+        if k <= 1:
+            return 0
+        if k > n:
+            return 0
+
+        xs = [p[0] for p in points]
+        ys = [p[1] for p in points]
+
+        # Transform to (p, q)
+        p_arr = [xs[i] + ys[i] for i in range(n)]
+        q_arr = [xs[i] - ys[i] for i in range(n)]
+
+        # Upper bound for D: based on the max possible Manhattan distance between boundary points
+        max_p = max(p_arr)
+        min_p = min(p_arr)
+        max_q = max(q_arr)
+        min_q = min(q_arr)
+        max_dist_possible = max(max_p - min_p, max_q - min_q)
+
+        # Quick check
+        if k == 0:
+            return 0
+        if k == 1:
+            return max_dist_possible  # not used given k>=4, but safe
+
+        bit_for_index = [1 << i for i in range(n)]
+
+        def feasible(D: int) -> bool:
+            if D <= 0:
+                return k <= n
+            if D > max_dist_possible:
+                return False
+
+            # Bucket points by (p // D, q // D)
+            groups = defaultdict(list)
+            for i in range(n):
+                cp = p_arr[i] // D
+                cq = q_arr[i] // D
+                groups[(cp, cq)].append(i)
+
+            # Build adjacency as bitmasks
+            neighbor_mask = [0] * n
+
+            # Local copies for speed
+            x = xs
+            y = ys
+            p = p_arr
+            q = q_arr
+
+            for i in range(n):
+                xi = x[i]
+                yi = y[i]
+                cp = p[i] // D
+                cq = q[i] // D
+                # Check neighboring buckets
+                for dcp in (-1, 0, 1):
+                    for dcq in (-1, 0, 1):
+                        key2 = (cp + dcp, cq + dcq)
+                        lst = groups.get(key2)
+                        if not lst:
+                            continue
+                        for j in lst:
+                            if j <= i:
+                                continue
+                            # Check actual distance
+                            if abs(xi - x[j]) + abs(yi - y[j]) < D:
+                                neighbor_mask[i] |= (1 << j)
+                                neighbor_mask[j] |= (1 << i)
+
+            # Quick greedy independent set by processing vertices in increasing degree
+            degs = [(neighbor_mask[i].bit_count(), i) for i in range(n)]
+            order = [idx for _, idx in sorted(degs)]
+            chosen_mask = 0
+            chosen_cnt = 0
+            for v in order:
+                if (neighbor_mask[v] & chosen_mask) == 0:
+                    chosen_mask |= (1 << v)
+                    chosen_cnt += 1
+                    if chosen_cnt >= k:
+                        return True
+
+            # If greedy didn't reach k, perform a backtracking MIS search
+            remaining_all = (1 << n) - 1
+
+            # Small optimization: precompute a simple heuristic upper bound
+            def dfs(remaining: int, chosen: int) -> bool:
+                if chosen >= k:
+                    return True
+                if remaining == 0:
+                    return False
+                rem_cnt = remaining.bit_count()
+                if chosen + rem_cnt < k:
+                    return False
+
+                # Pick a vertex with maximum degree within 'remaining'
+                tmp = remaining
+                max_deg = -1
+                v = -1
+                while tmp:
+                    lsb = tmp & -tmp
+                    idx = (lsb.bit_length() - 1)
+                    deg = (neighbor_mask[idx] & remaining).bit_count()
+                    if deg > max_deg:
+                        max_deg = deg
+                        v = idx
+                    tmp ^= lsb
+
+                if v == -1:
+                    return False
+
+                # Branch 1: include v
+                new_remaining = remaining & ~((1 << v) | neighbor_mask[v])
+                if dfs(new_remaining, chosen + 1):
+                    return True
+
+                # Branch 2: exclude v
+                remaining_excl = remaining & ~(1 << v)
+                if dfs(remaining_excl, chosen):
+                    return True
+
+                return False
+
+            return dfs(remaining_all, 0)
+
+        # Binary search on D
+        lo, hi = 0, max_dist_possible
+        while lo < hi:
+            mid = (lo + hi + 1) // 2
+            if feasible(mid):
+                lo = mid
+            else:
+                hi = mid - 1
+        return lo
+```

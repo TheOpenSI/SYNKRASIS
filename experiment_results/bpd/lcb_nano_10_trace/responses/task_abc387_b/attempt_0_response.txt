@@ -1,0 +1,38 @@
+### Step-by-step reasoning
+- The 9x9 multiplication grid contains sums that can be separated: sum over i and j of i*j equals (sum of i from 1 to 9) times (sum of j from 1 to 9). Each sum is 45, so the total sum is 45*45 = 2025.
+- We need the sum of all cells that are not equal to X. This equals total sum minus the sum contributed by all cells equal to X.
+- To find how many cells contain X, count all pairs (i, j) with i and j in [1, 9] such that i*j = X. For each valid pair, there is one cell containing X.
+- If X cannot be represented as a product of two numbers in [1, 9], the count is 0 and the answer is 2025.
+- Implementation detail: loop i from 1 to 9, if X is divisible by i and the quotient X//i lies in [1, 9], increment the count. The final answer is 2025 minus count times X.
+- Edge cases:
+  - X not present: count = 0, answer = 2025.
+  - X present in multiple cells (e.g., X=24 has 4 representations): subtract 4*X.
+  - X=1 has a single occurrence.
+
+### Requirements
+None
+
+### Code
+```
+import sys
+
+def main():
+    data = sys.stdin.read().strip()
+    if not data:
+        return
+    X = int(data)
+
+    total = 45 * 45  # sum_{i=1..9} sum_{j=1..9} i*j
+    count = 0
+    for i in range(1, 10):
+        if X % i == 0:
+            j = X // i
+            if 1 <= j <= 9:
+                count += 1
+
+    result = total - count * X
+    print(result)
+
+if __name__ == "__main__":
+    main()
+```

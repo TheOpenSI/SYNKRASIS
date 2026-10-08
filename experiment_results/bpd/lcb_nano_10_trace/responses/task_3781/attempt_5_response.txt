@@ -1,0 +1,211 @@
+### Step-by-step reasoning
+- Re-derive the problem: With points on the boundary of a square, we want to pick exactly k points so that the minimum Manhattan distance between any two picked points is maximized.
+- Key transformation: For any two points i, j with coordinates (xi, yi) and (xj, yj),
+  Manhattan distance = |xi - xj| + |yi - yj| = max(|(xi+yi) - (xj+yj)|, |(xi-yi) - (xj-yj)|).
+  Let p = x + y and q = x - y. Then two points are in conflict for a candidate distance D iff max(|Δp|, |Δq|) < D, i.e., both |Δp| < D and |Δq| < D.
+- Feasibility check for a fixed D: Build a conflict graph where an edge connects two points if their Manhattan distance is < D. A valid selection of k points requires an independent set of size at least k in this graph.
+- Approach to solve feasibility:
+  - Build the conflict graph efficiently using bucketing in (p, q) space: bucket each point by (p // D, q // D). Only points in the same or neighboring buckets can conflict (|Δp| < D and |Δq| < D).
+  - The graph decomposes into connected components (via DSU). Edges never cross components, so the maximum achievable independent set size is the sum of the MIS sizes of each component.
+  - Because k ≤ 25 (small), we can compute the maximum independent set size per component with a parameterized/branch-and-bound approach using bitmasks. We implement a memoized DP MIS that:
+    - Uses a bitmask to represent the remaining vertices in a component.
+    - Prunes via degree-0 vertices (always include them) and memoization.
+    - Chooses a vertex with large degree to branch, either include it (removing it and its neighbors) or exclude it.
+  - For each component, compute its MIS size; accumulate across components; if the sum ≥ k, the current D is feasible.
+- Binary search on D: The possible D range is [0, max_dist_possible], where max_dist_possible = max(max(p) - min(p), max(q) - min(q)). For D = 0, feasibility is trivial if k ≤ n. Check feasibility for mid values and narrow to the maximum D that works.
+- Corner cases:
+  - If k ≤ 1, answer is 0.
+  - If k > number of points, answer is 0 (not enough points to pick).
+  - All arithmetic uses Python ints (unbounded).
+
+Time considerations:
+- Bucketing reduces conflict checks to nearby points; the DSU then yields smaller components.
+- MIS per component uses a memoized DP with bitmasks; with k ≤ 25 and practical component sizes, this is feasible and avoids exponential blowups over the entire input.
+- The algorithm handles large inputs (n up to ~15k) by processing components independently and only exploring the space allowed by small k.
+
+### Requirements
+None
+
+### Code
+```
+```python
+from typing import List
+from collections import defaultdict
+import sys
+
+class Solution:
+    def maxDistance(self, side: int, points: List[List[int]], k: int) -> int:
+        sys.setrecursionlimit(1000000)
+
+        n = len(points)
+        if k <= 1:
+            return 0
+        if k > n:
+            return 0
+
+        xs = [p[0] for p in points]
+        ys = [p[1] for p in points]
+
+        # Transform to (p, q)
+        p_arr = [xs[i] + ys[i] for i in range(n)]
+        q_arr = [xs[i] - ys[i] for i in range(n)]
+
+        # Upper bound for D: based on the max possible Manhattan distance between boundary points
+        max_p = max(p_arr)
+        min_p = min(p_arr)
+        max_q = max(q_arr)
+        min_q = min(q_arr)
+        max_dist_possible = max(max_p - min_p, max_q - min_q)
+
+        def max_independent_set_size(indices, D):
+            # Build MIS on the subgraph induced by 'indices' with distance < D as edges
+            s = len(indices)
+            if s == 0:
+                return 0
+            # Build adjacency as bitmasks
+            adj = [0] * s
+
+            # Local buckets to speed up neighbor lookups within D
+            buckets = defaultdict(list)
+            for local_i, gi in enumerate(indices):
+                key = (p_arr[gi] // D, q_arr[gi] // D)
+                buckets[key].append(local_i)
+
+            # Fill adjacency
+            for a in range(s):
+                ga = indices[a]
+                pa = p_arr[ga] // D
+                qa = q_arr[ga] // D
+                for dcp in (-1, 0, 1):
+                    for dcq in (-1, 0, 1):
+                        key2 = (pa + dcp, qa + dcq)
+                        for b_local in buckets.get(key2, []):
+                            if b_local <= a:
+                                continue
+                            gb = indices[b_local]
+                            if abs(xs[ga] - xs[gb]) + abs(ys[ga] - ys[gb]) < D:
+                                adj[a] |= (1 << b_local)
+                                adj[b_local] |= (1 << a)
+
+            avail0 = (1 << s) - 1
+
+            # Memoized DP for Maximum Independent Set on bitsets
+            memo = {}
+
+            def mis_dp(avail: int) -> int:
+                if avail == 0:
+                    return 0
+                if avail in memo:
+                    return memo[avail]
+
+                # Reduction: include all degree-0 vertices
+                m = avail
+                while m:
+                    lsb = m & -m
+                    i = lsb.bit_length() - 1
+                    if (adj[i] & avail) == 0:
+                        res = 1 + mis_dp(avail & ~(1 << i))
+                        memo[avail] = res
+                        return res
+                    m ^= lsb
+
+                # Choose a vertex with maximum degree inside 'avail'
+                v = -1
+                max_deg = -1
+                m = avail
+                while m:
+                    lsb = m & -m
+                    i = lsb.bit_length() - 1
+                    deg = (adj[i] & avail).bit_count()
+                    if deg > max_deg:
+                        max_deg = deg
+                        v = i
+                    m ^= lsb
+
+                # Branch: include v or exclude v
+                res1 = 1 + mis_dp(avail & ~((1 << v) | adj[v]))
+                res2 = mis_dp(avail & ~(1 << v))
+                res = res1 if res1 > res2 else res2
+                memo[avail] = res
+                return res
+
+            return mis_dp(avail0)
+
+        def feasible(D: int) -> bool:
+            if D <= 0:
+                return k <= n
+            if D > max_dist_possible:
+                # If D is larger than any possible distance, every pair conflicts -> MIS size is 1
+                # So feasible only if k <= 1 (which is handled above). Here k >= 2, so not feasible.
+                return k <= 1
+
+            # Bucket points by (p // D, q // D)
+            groups = defaultdict(list)
+            for i in range(n):
+                cp = p_arr[i] // D
+                cq = q_arr[i] // D
+                groups[(cp, cq)].append(i)
+
+            # DSU to get connected components of the conflict graph
+            parent = list(range(n))
+            rank = [0] * n
+
+            def find(x: int) -> int:
+                while parent[x] != x:
+                    parent[x] = parent[parent[x]]
+                    x = parent[x]
+                return x
+
+            def union(a: int, b: int):
+                ra, rb = find(a), find(b)
+                if ra == rb:
+                    return
+                if rank[ra] < rank[rb]:
+                    parent[ra] = rb
+                elif rank[rb] < rank[ra]:
+                    parent[rb] = ra
+                else:
+                    parent[rb] = ra
+                    rank[ra] += 1
+
+            # Build edges only for points in neighboring buckets
+            for i in range(n):
+                xi, yi = xs[i], ys[i]
+                cp = p_arr[i] // D
+                cq = q_arr[i] // D
+                for dcp in (-1, 0, 1):
+                    for dcq in (-1, 0, 1):
+                        key2 = (cp + dcp, cq + dcq)
+                        lst = groups.get(key2)
+                        if not lst:
+                            continue
+                        for j in lst:
+                            if i < j:
+                                if abs(xi - xs[j]) + abs(yi - ys[j]) < D:
+                                    union(i, j)
+
+            # Collect components
+            comp_map = defaultdict(list)
+            for i in range(n):
+                comp_map[find(i)].append(i)
+
+            total_mis = 0
+            # Iterate components; accumulate MIS sizes; early exit if we reach k
+            for comp_indices in comp_map.values():
+                mis = max_independent_set_size(comp_indices, D)
+                total_mis += mis
+                if total_mis >= k:
+                    return True
+
+            return total_mis >= k
+
+        # Binary search on D
+        lo, hi = 0, max_dist_possible
+        while lo < hi:
+            mid = (lo + hi + 1) // 2
+            if feasible(mid):
+                lo = mid
+            else:
+                hi = mid - 1
+        return lo
+```

@@ -1,0 +1,211 @@
+### Step-by-step reasoning
+- Re-derive the problem: We are given points on the boundary of a square of side length `side`. We must pick exactly k points so that the minimum Manhattan distance between any two picked points is maximized.
+- Key observation (distance transform): For points (x, y), define p = x + y and q = x - y. The Manhattan distance between two points i and j satisfies:
+  |xi - xj| + |yi - yj| = max(|pi - pj|, |qi - qj|).
+  Therefore, two points have Manhattan distance < D iff both |pi - pj| < D and |qi - qj| < D.
+- Feasibility check for a fixed D: Build a conflict graph where edges connect pairs of points with distance < D (i.e., |Δp| < D and |Δq| < D). A subset of k points with pairwise distance >= D exists iff there is an independent set of size at least k in this graph.
+- Efficient grouping to find potential conflicts: Bucket points by (p // D, q // D). Any potential conflict between i and j must lie within the same or a neighboring bucket (since |Δp| < D and |Δq| < D implies their bucket coordinates differ by at most 1 in each axis). We build a DSU (disjoint-set union) to extract connected components of the conflict graph by checking only nearby buckets and verifying the actual Manhattan distance condition.
+- Important property: For a fixed D, the maximum size of an independent set for the entire graph equals the sum of the maximum independent set sizes of its connected components (no edges between components). Thus, we can process components independently and accumulate their MIS sizes until we either reach k (feasible) or prove it's impossible (not feasible).
+- MIS per component: For a component with s vertices, construct the induced adjacency as bitmasks. Use an exact backtracking algorithm based on bitsets to compute MIS size for that component. Since k ≤ 25 in the problem constraints, we can prune aggressively and terminate early if the accumulated MIS size across processed components already reaches k.
+- Binary search on D: D lies between 1 and an upper bound. A safe upper bound is max(max(p) - min(p), max(q) - min(q)) because for any pair, |pi - pj| ≤ this bound and |qi - qj| ≤ this bound, so max(|Δp|, |Δq|) ≤ bound, i.e., Manhattan distance ≤ bound. We binary search the largest D for which the feasibility check returns True.
+
+Edge cases:
+- If k > number of points, return 0 (impossible).
+- If k <= 1, the answer is 0 (no distance to maximize).
+- All arithmetic uses Python integers (unbounded), so negative p or q values are fine.
+
+Time complexity considerations:
+- Bucketing reduces candidate conflict checks to local neighborhoods; DSU merges yield connected components, likely small in practice for moderate D.
+- MIS per component uses bitset recursion; with k ≤ 25 this is feasible for components of reasonable size. If a component is very large, the recursion still benefits from pruning because we only need to determine whether MIS size reaches a target (or compute the exact maximum for that component if needed to accumulate to k).
+- Overall complexity is acceptable for the given constraints and typical inputs, and the algorithm is deterministic.
+
+### Requirements
+None
+
+### Code
+```
+from typing import List
+import sys
+from collections import defaultdict
+
+class Solution:
+    def maxDistance(self, side: int, points: List[List[int]], k: int) -> int:
+        sys.setrecursionlimit(1000000)
+
+        n = len(points)
+        if k <= 1:
+            return 0
+        if k > n:
+            return 0
+
+        xs = [p[0] for p in points]
+        ys = [p[1] for p in points]
+
+        # Transform to (p, q)
+        p_arr = [xs[i] + ys[i] for i in range(n)]
+        q_arr = [xs[i] - ys[i] for i in range(n)]
+
+        # Upper bound for D: based on the max possible Manhattan distance between boundary points
+        max_p = max(p_arr)
+        min_p = min(p_arr)
+        max_q = max(q_arr)
+        min_q = min(q_arr)
+        max_dist_possible = max(max_p - min_p, max_q - min_q)
+
+        def feasible(D: int) -> bool:
+            if D <= 0:
+                return k <= n
+            if D > max_dist_possible:
+                return False
+
+            # Bucket points by (p // D, q // D)
+            groups = defaultdict(list)
+            for i in range(n):
+                cp = p_arr[i] // D
+                cq = q_arr[i] // D
+                groups[(cp, cq)].append(i)
+
+            # DSU to get connected components of the conflict graph
+            parent = list(range(n))
+            rank = [0] * n
+
+            def find(x: int) -> int:
+                while parent[x] != x:
+                    parent[x] = parent[parent[x]]
+                    x = parent[x]
+                return x
+
+            def union(a: int, b: int):
+                ra, rb = find(a), find(b)
+                if ra == rb:
+                    return
+                if rank[ra] < rank[rb]:
+                    parent[ra] = rb
+                elif rank[rb] < rank[ra]:
+                    parent[rb] = ra
+                else:
+                    parent[rb] = ra
+                    rank[ra] += 1
+
+            # Build edges only for points in neighboring buckets
+            for i in range(n):
+                xi, yi = xs[i], ys[i]
+                cp = p_arr[i] // D
+                cq = q_arr[i] // D
+                for dcp in (-1, 0, 1):
+                    for dcq in (-1, 0, 1):
+                        key2 = (cp + dcp, cq + dcq)
+                        lst = groups.get(key2)
+                        if not lst:
+                            continue
+                        for j in lst:
+                            if i < j:
+                                if abs(xi - xs[j]) + abs(yi - ys[j]) < D:
+                                    union(i, j)
+
+            # Collect components
+            comp_map = defaultdict(list)
+            for i in range(n):
+                comp_map[find(i)].append(i)
+
+            # If sum MIS across components reaches k, D is feasible
+            total_mis_possible = 0
+
+            # Helper: MIS size for a component (exact, using bitset recursion)
+            def mis_size_component(indices: List[int]) -> int:
+                s = len(indices)
+                if s == 0:
+                    return 0
+                # Build local adjacency as bitmasks
+                adj = [0] * s
+                for a in range(s):
+                    ia = indices[a]
+                    xa, ya = xs[ia], ys[ia]
+                    for b in range(a + 1, s):
+                        ib = indices[b]
+                        if abs(xa - xs[ib]) + abs(ya - ys[ib]) < D:
+                            adj[a] |= (1 << b)
+                            adj[b] |= (1 << a)
+
+                best = 0
+
+                # Greedy quick lower bound to help pruning
+                def greedy_bound() -> int:
+                    remaining = (1 << s) - 1
+                    count = 0
+                    # Simple heuristic: pick a vertex of minimum degree
+                    while remaining:
+                        # pick v with minimum deg inside remaining
+                        tmp = remaining
+                        best_v = -1
+                        best_deg = 1 << 60
+                        while tmp:
+                            lsb = tmp & -tmp
+                            v = (lsb.bit_length() - 1)
+                            deg = (adj[v] & remaining).bit_count()
+                            if deg < best_deg:
+                                best_deg = deg
+                                best_v = v
+                            tmp ^= lsb
+                        v = best_v
+                        if v == -1:
+                            break
+                        remaining &= ~((1 << v) | adj[v])
+                        count += 1
+                    return count
+
+                # A true MIS solver with backtracking and pruning
+                def dfs(available: int, count: int):
+                    nonlocal best
+                    if count > best:
+                        best = count
+                    if available == 0:
+                        return
+                    # Prune if even taking all remaining cannot beat current best
+                    if count + available.bit_count() <= best:
+                        return
+                    # Choose a vertex with maximum degree inside 'available' to branch
+                    v = -1
+                    max_deg = -1
+                    tmp = available
+                    while tmp:
+                        lsb = tmp & -tmp
+                        idx = lsb.bit_length() - 1
+                        deg = (adj[idx] & available).bit_count()
+                        if deg > max_deg:
+                            max_deg = deg
+                            v = idx
+                        tmp ^= lsb
+                    if v == -1:
+                        return
+                    # Branch 1: include v
+                    dfs(available & ~((1 << v) | adj[v]), count + 1)
+                    # Branch 2: exclude v
+                    dfs(available & ~(1 << v), count)
+
+                # Try to get an exact MIS size
+                # Use a combination of a greedy bound for a quick lower bound and a full search for exactness
+                # Start with a reasonable initial bound to prune early
+                best = greedy_bound()
+                dfs((1 << s) - 1, 0)
+                return best
+
+            # Iterate components; accumulate MIS sizes; early exit if we reach k
+            for comp_indices in comp_map.values():
+                mis = mis_size_component(comp_indices)
+                total_mis_possible += mis
+                if total_mis_possible >= k:
+                    return True
+
+            return total_mis_possible >= k
+
+        # Binary search on D
+        lo, hi = 0, max_dist_possible
+        while lo < hi:
+            mid = (lo + hi + 1) // 2
+            if feasible(mid):
+                lo = mid
+            else:
+                hi = mid - 1
+        return lo
+```

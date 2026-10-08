@@ -17,6 +17,9 @@ runtime values written next to it (see services/BPD/report.py for the format):
 - expected:    the expected output of that test (public tests only), added to the last line.
 - trace():     runs in a child process with a time and memory limit, because it executes LLM code (a long native
                call or a memory bomb cannot hang or crash the caller). None means no trace; last_error says why.
+               With sandbox_image the child process is a throwaway docker container (no network, memory/cpu/process
+               limits, this package mounted read-only), so the code never runs on the host. BPD only needs the
+               standard library, any image with python 3.9+ works, e.g. the "synkrasis" image.
 - trace_in_process() does the same in this process: for debugging with a debugger and for tests.
 """
 from __future__ import annotations
@@ -30,6 +33,7 @@ import contextlib
 import io
 import json
 import subprocess
+import uuid
 from dataclasses import dataclass
 from typing import Any, Optional
 
@@ -37,7 +41,9 @@ from services.BPD.report import TraceConfig, render_within_budget
 from services.BPD.structure import CodeStructure
 from services.BPD.tracer import TARGET_FILENAME, TraceCollector, TraceLimit
 
-WORKER_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "worker.py")
+PACKAGE_DIR = os.path.dirname(os.path.abspath(__file__))
+WORKER_PATH = os.path.join(PACKAGE_DIR, "worker.py")
+SANDBOX_OPTIONS = ["--network", "none", "--memory", "2g", "--cpus", "1", "--pids-limit", "256"]
 
 # Legend for the model that reads a trace, put it before the trace in the feedback.
 LEGEND = ("How to read it: only the lines that ran are listed, with the values after `#`. `x=1,2,3` are the values "
@@ -48,18 +54,21 @@ LEGEND = ("How to read it: only the lines that ran are listed, with the values a
 
 class BPD:
 
-    def __init__(self, max_chars: int = 6000, max_steps: int = 20000, max_seconds: float = 5.0, timeout: int = 20) -> None:
+    def __init__(self, max_chars: int = 6000, max_steps: int = 20000, max_seconds: float = 5.0, timeout: int = 20,
+                 sandbox_image: Optional[str] = None) -> None:
         """
         Args:
             max_chars (int): the trace is shortened (less detail) until it fits.
             max_steps (int): lines executed before the trace is abandoned.
             max_seconds (float): seconds of tracing before it is abandoned.
             timeout (int): seconds before trace() kills its child process (covers one long native call).
+            sandbox_image (str): docker image to run trace() in, None = a child process on this machine.
         """
         self.max_chars = max_chars
         self.max_steps = max_steps
         self.max_seconds = max_seconds
         self.timeout = timeout
+        self.sandbox_image = sandbox_image
         self.last_error: Optional[str] = None      # why the last call returned None
 
 
@@ -69,11 +78,14 @@ class BPD:
         self.last_error = None
         request = {"code": code, "test_input": test_input, "entry_point": entry_point, "expected": expected,
                    "limits": [self.max_chars, self.max_steps, self.max_seconds]}
+        command, container_name = self._worker_command()
         try:
-            process = subprocess.run([sys.executable, WORKER_PATH], input=json.dumps(request), capture_output=True,
-                                     text=True, timeout=self.timeout)
+            process = subprocess.run(command, input=json.dumps(request), capture_output=True, text=True,
+                                     timeout=self.timeout)
             answer = json.loads(process.stdout.strip().splitlines()[-1])
         except subprocess.TimeoutExpired:
+            if container_name:                      # killing the docker client does not stop the container
+                subprocess.run(["docker", "kill", container_name], capture_output=True)
             self.last_error = "timeout"
             return None
         except (IndexError, json.JSONDecodeError):
@@ -81,6 +93,16 @@ class BPD:
             return None
         self.last_error = answer["error"]
         return answer["trace"]
+
+    def _worker_command(self) -> tuple[list[str], Optional[str]]:
+        """The command that runs worker.py: here, or in a throwaway container. Returns (command, container name)."""
+        if self.sandbox_image is None:
+            return [sys.executable, WORKER_PATH], None
+        name = f"bpd_{uuid.uuid4().hex[:12]}"
+        command = ["docker", "run", "--rm", "-i", "--name", name, *SANDBOX_OPTIONS, "-e", "PYTHONDONTWRITEBYTECODE=1",
+                   "-v", f"{PACKAGE_DIR}:/usr/src/services/BPD:ro",
+                   "--entrypoint", "python", self.sandbox_image, "/usr/src/services/BPD/worker.py"]
+        return command, name
 
     def trace_in_process(self, code: str, test_input: str, entry_point: Optional[str] = None,
                          expected: Optional[str] = None) -> Optional[str]:

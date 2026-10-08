@@ -1,0 +1,77 @@
+### Step-by-step reasoning
+- Problem restatement: We perform N insertions into an initially empty array A. In the i-th step (i from 1 to N), we insert the number i so that it becomes the Pi-th element from the beginning of the current A. The final array after all insertions has length N.
+- Key observation: If we reverse the process, processing i from N down to 1, we can think of placing i into one of the still-empty slots of a final array of length N. Specifically, at step i, there are exactly i empty slots remaining. The correct final position for i is the Pi-th empty slot from the left.
+- Data structure choice: We need to repeatedly find and fill the k-th empty slot. A Fenwick Tree (Binary Indexed Tree) can maintain the count of empty slots (1 means empty, 0 means filled) and support:
+  - add(pos, delta): update whether a slot is empty (delta = -1 when filling a slot).
+  - kth(k): find the smallest pos such that the prefix sum up to pos is at least k. This yields the k-th empty slot from the left.
+- Algorithm:
+  - Initialize a Fenwick Tree with N positions, all set to 1 (all slots empty).
+  - Maintain an answer array of size N+1 (1-indexed for convenience).
+  - For i from N down to 1:
+    - Let k = Pi.
+    - pos = kth(k) from the Fenwick Tree -> the position of the k-th empty slot.
+    - Set A[pos] = i.
+    - Mark that slot as filled: add(pos, -1) on the Fenwick Tree.
+  - Print A[1], A[2], ..., A[N].
+- Complexity: Each of N iterations does a kth query and an update, both O(log N). Total time O(N log N), memory O(N).
+- Output format: Print N numbers separated by spaces in a single line.
+
+### Requirements
+None
+
+### Code
+```
+import sys
+
+class Fenwick:
+    def __init__(self, n):
+        self.n = n
+        self.bit = [0] * (n + 1)
+
+    def add(self, i, delta):
+        n = self.n
+        bit = self.bit
+        while i <= n:
+            bit[i] += delta
+            i += i & -i
+
+    def kth(self, k):
+        # Find the smallest index pos such that sum(pos) >= k
+        idx = 0
+        bit = self.bit
+        n = self.n
+        bit_mask = 1
+        while (bit_mask << 1) <= n:
+            bit_mask <<= 1
+        while bit_mask:
+            t = idx + bit_mask
+            if t <= n and bit[t] < k:
+                idx = t
+                k -= bit[t]
+            bit_mask >>= 1
+        return idx + 1
+
+def main():
+    data = list(map(int, sys.stdin.buffer.read().split()))
+    if not data:
+        return
+    n = data[0]
+    p = data[1:1 + n]
+
+    ft = Fenwick(n)
+    for i in range(1, n + 1):
+        ft.add(i, 1)  # all positions are initially empty
+
+    ans = [0] * (n + 1)  # 1-indexed final array
+
+    for i in range(n, 0, -1):
+        k = p[i - 1]
+        pos = ft.kth(k)  # the k-th empty slot from the left
+        ans[pos] = i
+        ft.add(pos, -1)  # mark this slot as filled
+
+    sys.stdout.write(' '.join(str(ans[i]) for i in range(1, n + 1)))
+
+if __name__ == "__main__":
+    main()
+```

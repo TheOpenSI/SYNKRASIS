@@ -1,0 +1,84 @@
+Your solution did not pass all the public tests.
+Test 1 did not pass. Input: '2 3\n1 2 3\n4 5 6\n3 2 2\nU 7\nR 8\nL 9', expected output: '456\n666\n822', your output: '0\n0\n0'.
+Execution trace of your code on test 1. How to read it: only the lines that ran are listed, with the values after `#`. `x=1,2,3` are the values of x on successive executions of that line, `a..b` a run of consecutive numbers, `T/F` the outcome of a condition on each execution, `F×3` three equal values, `(iters 2,4)` the loop iterations the line ran in, `...` omitted middle values. Nested lines belong to the line above.
+solve()
+  data = sys.stdin.buffer.read().split()  # data=[b'2', b'3', b'1', b'2', b'3', b'4', ...
+  H = int(next(it))  # H=2
+  W = int(next(it))  # W=3
+  A = [[0] * W for _ in range(H)]  # A=[[0, 0, 0], [0, 0, 0]]
+  for i in range(H):  # 2 iterations; i=0,1
+    for j in range(W):  # 2 runs, iterations per run: 3,3; j=0,1,2,0,1,2
+      A[i][j] = int(next(it))  # A[0×3,1×3]=[1, 0, 0],[1, 2, 0],[1, 2, 3],[4, 0, 0],[4, 5, 0],[4, 5, 6]
+  Q = int(next(it))  # Q=3
+  sh = int(next(it))  # sh=2
+  sw = int(next(it))  # sw=2
+  r = sh - 1  # r=1
+  c = sw - 1  # c=1
+  G = [[0] * W for _ in range(H)]  # G=[[0, 0, 0], [0, 0, 0]]
+  for i in range(H):  # 2 iterations; i=0,1
+    for j in range(W):  # 2 runs, iterations per run: 3,3; j=0,1,2,0,1,2
+      up = G[i - 1][j] if i > 0 else 0  # up=0×6
+      left = G[i][j - 1] if j > 0 else 0  # left=0×6
+  for _ in range(Q):  # 3 iterations; _=0,1,2
+    d = next(it).decode()  # d='U','R','L'
+    a = int(next(it))  # a=7,8,9
+    if d == 'L':  # F,F,T
+      c -= 1  # c=1  (iters 3)
+    elif d == 'R':  # F,T  (not in iters 3)
+      c += 1  # c=2  (iters 2)
+    elif d == 'U':  # True (d='U')  (iters 1)
+      r -= 1  # r=0  (iters 1)
+    A[r][c] = a  # A[0×3]=[1, 7, 3],[1, 7, 8],[1, 9, 8]
+    recompute_G()
+      recompute_G(A=[[1, 7, 3], [4, 5, 6]], G=[[0, 0, 0], [0, 0, 0]], H=2, W=3):  [first of 3 calls]
+        for i in range(H):  # 2 iterations; i=0,1
+          gi = G[i]  # gi=[0, 0, 0],[0, 0, 0]
+          Ai = A[i]  # Ai=[1, 7, 3],[4, 5, 6]
+          for j in range(W):  # 2 runs, iterations per run: 3,3; j=0,1,2,0,1,2
+            up = G[i - 1][j] if i > 0 else 0  # up=0×6
+            left = gi[j - 1] if j > 0 else 0  # left=0×6
+    out.append(str(G[H - 1][W - 1] % MOD))  # out += '0'×3
+printed '0\n0\n0'   (expected '456\n666\n822')
+Test 2 did not pass. Input: '5 4\n147015809 294958521 852121867 499798308\n790350368 404692331 645419803 290531806\n275766153 896286651 239187926 945049742\n340760022 236352314 926236110 223464913\n287023679 590772036 340282357 521075891\n6 3 1\nU 344644511\nR 45812235\nD 260083498\nR 781118585\nL 156297846\nL 411901560', expected output: '299123226\n548055393\n810247224\n876210800\n773990840\n506814544', your output: '0\n0\n0\n0\n0\n0'.
+Execution trace of your code on test 2:
+solve()
+  data = sys.stdin.buffer.read().split()  # data=[b'5', b'4', b'147015809', b'29495852...
+  H = int(next(it))  # H=5
+  W = int(next(it))  # W=4
+  A = [[0] * W for _ in range(H)]  # A=[[0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0...
+  for i in range(H):  # 5 iterations; i=0..4
+    for j in range(W):  # 5 runs, iterations per run: 4×5; j=0,1,2,3 ... 2,3 (20 values)
+      A[i][j] = int(next(it))  # A[0×4 ... 4,4 (20 values)]=[147015809, 0, 0, 0],[147015809, 294958521, 0, 0],[147015809, 294958521, 852121867, 0],[147015809, 294958521, 852121867, 499... ... [287023679, 590772036, 340282357, 0],[287023679, 590772036, 340282357, 521... (20 values)
+  Q = int(next(it))  # Q=6
+  sh = int(next(it))  # sh=3
+  sw = int(next(it))  # sw=1
+  r = sh - 1  # r=2
+  c = sw - 1  # c=0
+  G = [[0] * W for _ in range(H)]  # G=[[0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0...
+  for i in range(H):  # 5 iterations; i=0..4
+    for j in range(W):  # 5 runs, iterations per run: 4×5; j=0,1,2,3 ... 2,3 (20 values)
+      up = G[i - 1][j] if i > 0 else 0  # up=0×20
+      left = G[i][j - 1] if j > 0 else 0  # left=0×20
+  for _ in range(Q):  # 6 iterations; _=0..5
+    d = next(it).decode()  # d='U','R','D','R','L','L'
+    a = int(next(it))  # a=344644511,45812235,260083498,781118585,156297846,411901560
+    if d == 'L':  # F×4,T,T
+      c -= 1  # c=1,0  (iters 5,6)
+    elif d == 'R':  # F,T,F,T  (not in iters 5,6)
+      c += 1  # c=1,2  (iters 2,4)
+    elif d == 'U':  # T,F  (iters 1,3)
+      r -= 1  # r=1  (iters 1)
+    elif d == 'D':  # True (d='D')  (iters 3)
+      r += 1  # r=2  (iters 3)
+    A[r][c] = a  # A[1,1,2×4]=[344644511, 404692331, 645419803, 290...,[344644511, 45812235, 645419803, 2905...,[275766153, 260083498, 239187926, 945...,[275766153, 260083498, 781118585, 945...,[275766153, 156297846, 781118585, 945...,[411901560, 156297846, 781118585, 945...
+    recompute_G()
+      recompute_G(H=5, W=4):  [first of 6 calls]
+        for i in range(H):  # 5 iterations; i=0..4
+          gi = G[i]  # gi=[0, 0, 0, 0]×5
+          Ai = A[i]  # Ai=[147015809, 294958521, 852121867, 499...,[344644511, 404692331, 645419803, 290...,[275766153, 896286651, 239187926, 945...,[340760022, 236352314, 926236110, 223...,[287023679, 590772036, 340282357, 521...
+          for j in range(W):  # 5 runs, iterations per run: 4×5; j=0,1,2,3 ... 2,3 (20 values)
+            up = G[i - 1][j] if i > 0 else 0  # up=0×20
+            left = gi[j - 1] if j > 0 else 0  # left=0×20
+    out.append(str(G[H - 1][W - 1] % MOD))  # out += '0'×6
+printed '0\n0\n0\n0\n0\n0'   (expected '299123226\n548055393\n810247224\n876210800\n773990840\n506814544')
+Find the first point where the behaviour differs from what the problem requires and fix that logic.

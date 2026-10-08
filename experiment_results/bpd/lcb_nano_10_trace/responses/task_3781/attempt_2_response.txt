@@ -1,0 +1,171 @@
+### Step-by-step reasoning
+- Problem restatement: We have points on the boundary of a square with edge length side. We must choose k of these points so that the minimum Manhattan distance between any two chosen points is as large as possible. Let D be a candidate minimum distance. We need to decide if there exists a subset of k points with pairwise Manhattan distance at least D. We then maximize D via binary search.
+
+- Key observation for Manhattan distance: For two points (x1, y1) and (x2, y2),
+  |x1 - x2| + |y1 - y2| = max(|(x1 + y1) - (x2 + y2)|, |(x1 - y1) - (x2 - y2)|).
+  Let p = x + y and q = x - y. Then two points conflict (distance < D) iff
+  |Δp| < D and |Δq| < D. Equivalently, the points lie in the intersection of a pair of intervals of width D in both p and q.
+
+- Decision reduction: For a fixed D, construct a conflict graph on the given points where an edge connects two points if their Manhattan distance is < D (i.e., |Δp| < D and |Δq| < D). Then asking for k points with pairwise distance ≥ D is exactly asking for an independent set of size at least k in this graph.
+
+- Building the conflict graph efficiently:
+  - Compute p[i] = x[i] + y[i] and q[i] = x[i] - y[i] for all points.
+  - Partition the points into grid-like cells by (p // D, q // D). If two points are in the same or neighboring cells, they could be within distance < D; otherwise they are guaranteed to be at distance ≥ D.
+  - For each point i, check candidate neighbors j in the 9 neighboring cells and add an edge if |Δx| + |Δy| < D.
+  - We represent the graph using bitsets: neighbor_mask[i] is a Python int whose set bits indicate neighbors of i.
+
+- Checking if an independent set of size k exists (exact feasibility check):
+  - If D <= 0: always feasible when k <= n; otherwise not needed since constraints have k >= 4.
+  - If D > max possible distance among all given points, return False early.
+  - Quick pruning via a greedy independent set:
+    - Build a simple greedy independent set by processing vertices in a chosen order (e.g., increasing degree) and adding a vertex if it has no neighbor already chosen. If this greedy set reaches size k, we are done (feasible).
+  - Otherwise, run a depth-first search (DFS) to find an independent set of size k:
+    - Use bitsets to represent the remaining vertices and the adjacency.
+    - Always branch on a vertex with large degree in the remaining graph (to aggressively prune the search space).
+    - Branch 1: include the chosen vertex v (remove v and all its neighbors from the remaining set, increase chosen by 1).
+    - Branch 2: exclude the chosen vertex v (remove v from the remaining set).
+    - Prune if chosen + remaining_vertices_count < k.
+  - This is a classic backtracking MIS approach with heuristics and bitset efficiency. It is exponential in the worst case but, with k ≤ 25 and the distance-threshold grid pruning, runs fast in practice for the given constraints.
+
+- Binary search bounds:
+  - The maximum possible Manhattan distance between boundary points is 2 * side; we can tighten the upper bound to the actual maximum achievable distance among the given points (via p/q differences). We binary search D in [0, max_dist_possible].
+  - For each mid, run the feasibility check above.
+
+- Edge cases and constraints:
+  - side can be up to 1e9, but n = len(points) ≤ min(4*side, 15000), and k ≤ min(25, n). The algorithm uses O(n) memory for coordinates and O(n) bits per neighbor_mask row; it is designed to handle n up to 15000.
+  - Points are guaranteed unique and lie on the boundary, so the p/q transformation remains valid.
+  - If k is close to n, the DFS will prune quickly due to the large requirement on distance; if k is small, the greedy check helps to short-circuit.
+
+- Output format: return the largest D such that there exists a subset of size k with pairwise Manhattan distance at least D. No extra formatting; just return the int.
+
+### Requirements
+None
+
+### Code
+```
+from typing import List
+import sys
+from collections import defaultdict
+
+class Solution:
+    def maxDistance(self, side: int, points: List[List[int]], k: int) -> int:
+        sys.setrecursionlimit(1000000)
+        n = len(points)
+        xs = [p[0] for p in points]
+        ys = [p[1] for p in points]
+
+        # Transform to (p, q)
+        p_arr = [xs[i] + ys[i] for i in range(n)]
+        q_arr = [xs[i] - ys[i] for i in range(n)]
+
+        if k <= 1:
+            return 0  # safety; constraints ensure k >= 4
+
+        # Compute the maximum possible distance among given points to bound the binary search
+        max_p = max(p_arr)
+        min_p = min(p_arr)
+        max_q = max(q_arr)
+        min_q = min(q_arr)
+        max_dist_possible = max(max_p - min_p, max_q - min_q)
+
+        # Precompute bit for each index
+        bit_for_index = [1 << i for i in range(n)]
+
+        def feasible(D: int) -> bool:
+            if D <= 0:
+                return k <= n
+            if D > max_dist_possible:
+                return False
+
+            # Build groups by (p // D, q // D)
+            groups = defaultdict(list)
+            for i in range(n):
+                cp = p_arr[i] // D
+                cq = q_arr[i] // D
+                groups[(cp, cq)].append(i)
+
+            # Build adjacency as bitmasks
+            neighbor_mask = [0] * n
+            for i in range(n):
+                xi, yi = xs[i], ys[i]
+                cp = p_arr[i] // D
+                cq = q_arr[i] // D
+                for dcp in (-1, 0, 1):
+                    for dcq in (-1, 0, 1):
+                        key2 = (cp + dcp, cq + dcq)
+                        lst = groups.get(key2)
+                        if not lst:
+                            continue
+                        for j in lst:
+                            if j <= i:
+                                continue
+                            if abs(xi - xs[j]) + abs(yi - ys[j]) < D:
+                                neighbor_mask[i] |= (1 << j)
+                                neighbor_mask[j] |= (1 << i)
+
+            # Quick greedy independent set to potentially finish early
+            # Order vertices by increasing degree (in the full graph)
+            degs = [(neighbor_mask[i].bit_count(), i) for i in range(n)]
+            order = [idx for _, idx in sorted(degs)]
+            chosen_mask = 0
+            chosen_cnt = 0
+            for v in order:
+                if (neighbor_mask[v] & chosen_mask) == 0:
+                    chosen_mask |= (1 << v)
+                    chosen_cnt += 1
+                    if chosen_cnt >= k:
+                        return True
+
+            # If greedy didn't reach k, do a targeted DFS (backtracking MIS)
+            remaining_all = (1 << n) - 1
+
+            # Bit helpers
+            def dfs(remaining: int, chosen: int) -> bool:
+                if chosen >= k:
+                    return True
+                if remaining == 0:
+                    return False
+                rem_cnt = remaining.bit_count()
+                if chosen + rem_cnt < k:
+                    return False
+
+                # Pick a vertex with maximum degree within 'remaining'
+                tmp = remaining
+                max_deg = -1
+                v = -1
+                while tmp:
+                    lsb = tmp & -tmp
+                    idx = (lsb.bit_length() - 1)
+                    deg = (neighbor_mask[idx] & remaining).bit_count()
+                    if deg > max_deg:
+                        max_deg = deg
+                        v = idx
+                    tmp ^= lsb
+
+                if v == -1:
+                    return False
+
+                # Branch 1: include v
+                new_remaining = remaining & ~((1 << v) | neighbor_mask[v])
+                if dfs(new_remaining, chosen + 1):
+                    return True
+
+                # Branch 2: exclude v
+                remaining_excl = remaining & ~(1 << v)
+                if dfs(remaining_excl, chosen):
+                    return True
+
+                return False
+
+            return dfs(remaining_all, 0)
+
+        # Binary search on D
+        lo, hi = 0, max_dist_possible
+        while lo < hi:
+            mid = (lo + hi + 1) // 2
+            if feasible(mid):
+                lo = mid
+            else:
+                hi = mid - 1
+        return lo
+```

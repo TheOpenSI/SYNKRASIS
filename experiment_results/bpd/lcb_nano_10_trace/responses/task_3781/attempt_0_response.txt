@@ -1,0 +1,127 @@
+### Step-by-step reasoning
+- We are given a square with side length `side`, and a set of points lying on its boundary. We need to pick `k` points so that the minimum Manhattan distance between any two chosen points is as large as possible.
+- Let the Manhattan distance between two points (x1, y1) and (x2, y2) be dist = |x1 - x2| + |y1 - y2|.
+- A convenient transformation for Manhattan distance is to map each point to (p, q) where p = x + y and q = x - y. Then for any two points, dist = max(|Δp|, |Δq|). This is a standard and very useful relation.
+- The problem of maximizing the minimum distance can be attacked by binary searching on the distance D. For a given D, we ask: Is there a subset of size k where all pairwise distances are at least D?
+- This feasibility problem is equivalent to asking for an independent set of size at least k in the graph where vertices are points and there is an edge between two points if their Manhattan distance is strictly less than D.
+- A direct MIS on up to 15k points would be too heavy. We use a practical exact approach with bitset-based branch-and-bound:
+  - Build the conflict graph efficiently using a spatial hashing on (p, q) with cell size D. If two points lie in cells that are far apart, they can’t have distance < D. We check only candidate pairs in nearby cells and connect edges when dist < D.
+  - Represent the remaining graph as a bitset, and use a recursive search that tries to include or exclude a vertex. We prune using simple bounds:
+    - If chosen + number_of_remaining < k, prune.
+    - If we reach chosen >= k, success.
+  - We also handle D = 0 as a special case: distance >= 0 always holds, so feasible iff k ≤ number_of_points.
+- Since k ≤ 25 and the graph is sparse for many D values, this approach is typically fast enough in practice for the given constraints.
+
+Edge cases:
+- D = 0: always feasible if k ≤ n.
+- side can be large (up to 1e9) but number of points n ≤ 15000, so our data structures (including bitsets) stay manageable.
+- Points lie on the boundary by problem statement; we do not assume anything else beyond using the given coordinates.
+
+### Requirements
+None
+
+### Code
+```
+from typing import List
+import sys
+
+class Solution:
+    def maxDistance(self, side: int, points: List[List[int]], k: int) -> int:
+        sys.setrecursionlimit(1000000)
+        n = len(points)
+        xs = [p[0] for p in points]
+        ys = [p[1] for p in points]
+
+        # Helper: feasibility check for a given D
+        def feasible(D: int) -> bool:
+            if D <= 0:
+                return k <= n
+            # Build mapping of (cp, cq) -> indices
+            # p = x+y, q = x-y
+            groups = {}
+            p_arr = [xs[i] + ys[i] for i in range(n)]
+            q_arr = [xs[i] - ys[i] for i in range(n)]
+            for i in range(n):
+                p = p_arr[i]
+                q = q_arr[i]
+                cp = p // D
+                cq = q // D
+                key = (cp, cq)
+                lst = groups.get(key)
+                if lst is None:
+                    groups[key] = [i]
+                else:
+                    lst.append(i)
+
+            # Build adjacency as bitmasks
+            neighbor_mask = [0] * n
+            # Precompute list of existing cells for quick lookup
+            # For each point i, check neighboring cells within [-1,0,1] in both cp, cq
+            for i in range(n):
+                p = p_arr[i]
+                q = q_arr[i]
+                cp = p // D
+                cq = q // D
+                xi, yi = xs[i], ys[i]
+                for dcp in (-1, 0, 1):
+                    for dcq in (-1, 0, 1):
+                        key2 = (cp + dcp, cq + dcq)
+                        if key2 not in groups:
+                            continue
+                        for j in groups[key2]:
+                            if j <= i:
+                                continue
+                            # Check actual distance
+                            if abs(xi - xs[j]) + abs(yi - ys[j]) < D:
+                                neighbor_mask[i] |= (1 << j)
+                                neighbor_mask[j] |= (1 << i)
+
+            # Bitset MIS: try to find independent set of size at least k
+            # We search over remaining vertices, choose a vertex v, branch include/exclude
+            # Use bitsets for efficiency
+            if k <= 0:
+                return True
+            # Remaining bitset: all ones for n bits
+            remaining_all = (1 << n) - 1
+            bit = [1 << i for i in range(n)]
+
+            sys.setrecursionlimit(1000000)
+
+            # Simple recursion with pruning
+            def dfs(remaining: int, chosen: int) -> bool:
+                if chosen >= k:
+                    return True
+                if remaining == 0:
+                    return False
+                rem_cnt = remaining.bit_count()
+                if chosen + rem_cnt < k:
+                    return False
+
+                # Pick a vertex v from remaining: take least significant set bit
+                lsb = remaining & -remaining
+                v = (lsb.bit_length() - 1)
+
+                # Branch 1: include v
+                new_remaining = remaining & ~((bit[v]) | neighbor_mask[v])
+                if dfs(new_remaining, chosen + 1):
+                    return True
+
+                # Branch 2: exclude v
+                remaining_excl = remaining & ~bit[v]
+                if dfs(remaining_excl, chosen):
+                    return True
+
+                return False
+
+            return dfs(remaining_all, 0)
+
+        # Binary search on D
+        lo, hi = 0, 2 * side
+        while lo < hi:
+            mid = (lo + hi + 1) // 2
+            if feasible(mid):
+                lo = mid
+            else:
+                hi = mid - 1
+        return lo
+```

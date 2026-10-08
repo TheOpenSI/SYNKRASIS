@@ -1,0 +1,11 @@
+task_id,fix_mode_attempt_count,status,error_trace,public_cleared,public_cleared_attempt,private_cleared,private_cleared_attempt,private_failure_types
+abc387_b,0,pass,[],True,0,True,0.0,[]
+abc390_e,0,pass,[],True,0,True,0.0,[]
+abc392_f,5,fail,"[['PrivateTestFailed'], ['PrivateTestFailed'], ['PrivateTestFailed'], ['PrivateTestFailed'], ['PrivateTestFailed']]",True,0,False,,"['runtime_error', 'runtime_error', 'runtime_error', 'runtime_error', 'runtime_error', 'runtime_error']"
+abc395_a,0,pass,[],True,0,True,0.0,[]
+abc398_b,0,pass,[],True,0,True,0.0,[]
+arc190_c,5,fail,"[['AssertionError', 'AssertionError'], ['PrivateTestFailed'], ['PrivateTestFailed'], ['PrivateTestFailed'], ['PrivateTestFailed']]",True,1,False,,"['timeout', 'timeout', 'timeout', 'timeout']"
+arc194_d,5,fail,"[['PrivateTestFailed'], ['PrivateTestFailed'], ['PrivateTestFailed'], ['PrivateTestFailed'], ['PrivateTestFailed']]",True,0,False,,"['wrong_answer', 'wrong_answer', 'wrong_answer', 'wrong_answer', 'wrong_answer', 'wrong_answer']"
+3725,1,pass,[['PrivateTestFailed']],True,0,True,1.0,['wrong_answer']
+3781,5,fail,"[['PrivateTestFailed'], ['PrivateTestFailed'], ['PrivateTestFailed'], ['PrivateTestFailed'], ['PrivateTestFailed']]",True,0,False,,"['timeout', 'timeout', 'timeout', 'timeout', 'timeout', 'timeout']"
+3793,0,pass,[],True,0,True,0.0,[]

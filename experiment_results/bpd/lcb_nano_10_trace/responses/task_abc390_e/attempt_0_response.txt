@@ -1,0 +1,82 @@
+### Step-by-step reasoning
+- Split the foods by vitamin type into three groups: type 1, type 2, and type 3.
+- For each vitamin type t (1, 2, 3) and for every possible budget b from 0 to X, compute f_t(b): the maximum total amount of vitamin t you can obtain using foods of that type with total calories not exceeding b. This is a standard 0/1 knapsack where:
+  - value = A_i (vitamin amount)
+  - weight = C_i (calorie)
+- After obtaining f1(b), f2(b), f3(b) for all b in [0, X], we need to allocate the calorie budget X among the three vitamins to maximize the minimum vitamin intake among the three.
+- Observing that for fixed budgets B1 and B2, the best you can do for vitamin 3 is to give it as many calories as possible, i.e., B3 = X - B1 - B2 (nonnegative). Since f3 is non-decreasing with budget, giving vitamin 3 more budget never decreases its value, and reallocating budget away from vitamin 3 would be captured by a different (B1, B2) pair.
+- Therefore, the answer is:
+  - max over B1 in [0..X], B2 in [0..X - B1] of min(f1(B1), f2(B2), f3(X - B1 - B2)).
+- Time complexity:
+  - Building f1, f2, f3 via knapsack: O(N * X) total (since each item is used in exactly one vitamin group).
+  - Enumerating B1, B2 pairs: O(X^2/2) ≈ 12.5 million iterations for X = 5000.
+  - This is feasible in Python with careful implementation.
+- Space complexity: O(X) per f_t array, i.e., O(X) total for the three arrays.
+
+Edge cases:
+- If a vitamin group has no items, its f(b) remains 0 for all b.
+- If X is small, the loops adapt accordingly.
+
+### Requirements
+None
+
+### Code
+```python
+import sys
+
+def solve():
+    data = list(map(int, sys.stdin.buffer.read().split()))
+    it = iter(data)
+    N = next(it)
+    X = next(it)
+
+    # Collect items by vitamin type: 1, 2, 3
+    items = {1: [], 2: [], 3: []}
+    for _ in range(N):
+        v = next(it)
+        a = next(it)
+        c = next(it)
+        items[v].append((a, c))
+
+    # 0/1 knapsack for each vitamin type to compute f_t(b) for b in [0..X]
+    def knapsack_type(lst, cap):
+        dp = [0] * (cap + 1)
+        for A, C in lst:
+            if C > cap:
+                continue
+            # iterate backwards for 0/1 knapsack
+            for b in range(cap, C - 1, -1):
+                val = dp[b - C] + A
+                if val > dp[b]:
+                    dp[b] = val
+        return dp
+
+    f1 = knapsack_type(items[1], X)
+    f2 = knapsack_type(items[2], X)
+    f3 = knapsack_type(items[3], X)
+
+    # Enumerate B1, B2, with B3 = X - B1 - B2
+    ans = 0
+    Xval = X
+    d1 = f1
+    d2 = f2
+    d3 = f3
+
+    for b1 in range(Xval + 1):
+        v1 = d1[b1]
+        max_b2 = Xval - b1
+        for b2 in range(max_b2 + 1):
+            b3 = Xval - b1 - b2
+            # min among the three
+            m = v1 if v1 < d2[b2] else d2[b2]
+            v3 = d3[b3]
+            if v3 < m:
+                m = v3
+            if m > ans:
+                ans = m
+
+    print(ans)
+
+if __name__ == "__main__":
+    solve()
+```

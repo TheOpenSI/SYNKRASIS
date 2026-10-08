@@ -1,0 +1,79 @@
+### Step-by-step reasoning
+- We need to simulate inserting i at position P_i (1-based) in the current array A of length i-1, for i = 1..N.
+- Direct insertion into a Python list would be O(N) per step, leading to O(N^2) time, which is too slow for N up to 5e5.
+- A standard trick: process the insertions in reverse. Start with N empty slots. For i from N down to 1, place i into the P_i-th empty slot from the left. After all placements, the final arrangement will be exactly the result of the forward insertions.
+- To efficiently find and fill the P_i-th empty slot, use a Fenwick Tree (Binary Indexed Tree) that maintains which slots are empty (value 1) or filled (value 0). We can:
+  - Initialize all N slots as empty (bit with all ones).
+  - For i from N down to 1:
+    - Find the index pos of the P_i-th empty slot using a k-th order statistic operation on the Fenwick Tree (kth with k = P_i).
+    - Place i at position pos in the final array.
+    - Mark that slot as filled (update Fenwick Tree by -1 at pos).
+- This yields O(N log N) time and O(N) space.
+- Edge cases:
+  - N = 1.
+  - P_i always in [1, i].
+  - Large N performance with efficient k-th order statistic.
+
+### Requirements
+None
+
+### Code
+```
+import sys
+
+class Fenwick:
+    def __init__(self, n):
+        self.n = n
+        self.bit = [0] * (n + 1)
+
+    def add(self, i, delta):
+        n = self.n
+        while i <= n:
+            self.bit[i] += delta
+            i += i & -i
+
+    def sum(self, i):
+        s = 0
+        while i > 0:
+            s += self.bit[i]
+            i -= i & -i
+        return s
+
+    def kth(self, k):
+        # Find the smallest index pos such that sum(pos) >= k
+        idx = 0
+        bit_mask = 1
+        while bit_mask << 1 <= self.n:
+            bit_mask <<= 1
+        while bit_mask:
+            t = idx + bit_mask
+            if t <= self.n and self.bit[t] < k:
+                idx = t
+                k -= self.bit[t]
+            bit_mask >>= 1
+        return idx + 1
+
+def main():
+    data = list(map(int, sys.stdin.buffer.read().split()))
+    if not data:
+        return
+    n = data[0]
+    p = data[1:1 + n]
+
+    ft = Fenwick(n)
+    for i in range(1, n + 1):
+        ft.add(i, 1)  # all positions are initially empty
+
+    ans = [0] * (n + 1)  # 1-indexed final array
+
+    for i in range(n, 0, -1):
+        k = p[i - 1]
+        pos = ft.kth(k)  # the k-th empty slot from the left
+        ans[pos] = i
+        ft.add(pos, -1)  # mark this slot as filled
+
+    sys.stdout.write(' '.join(str(ans[i]) for i in range(1, n + 1)))
+
+if __name__ == "__main__":
+    main()
+```

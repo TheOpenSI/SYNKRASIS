@@ -1,0 +1,33 @@
+### Step-by-step reasoning
+- Read all integers from standard input. The first value is N, followed by N integers A_1 ... A_N.
+- Check whether the sequence is strictly increasing by verifying A_i < A_{i+1} for all i from 1 to N-1.
+- If any pair does not satisfy A_i < A_{i+1} (i.e., A_i >= A_{i+1}), the answer is No. Otherwise, Yes.
+- Edge cases:
+  - N = 2 with equal or decreasing values should yield No.
+  - N = 2 with strictly increasing values should yield Yes.
+  - Input may contain extra whitespace; using split() handles it gracefully.
+  - Constraints guarantee reasonable input sizes, no special handling required beyond the loop.
+
+### Requirements
+None
+
+### Code
+```
+import sys
+
+def main():
+    data = list(map(int, sys.stdin.read().split()))
+    if not data:
+        return
+    N = data[0]
+    A = data[1:1+N]
+    is_strictly_increasing = True
+    for i in range(len(A) - 1):
+        if A[i] >= A[i + 1]:
+            is_strictly_increasing = False
+            break
+    print("Yes" if is_strictly_increasing else "No")
+
+if __name__ == "__main__":
+    main()
+```

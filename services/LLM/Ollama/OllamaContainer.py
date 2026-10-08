@@ -21,7 +21,7 @@ import requests, subprocess
 from typing import Optional, Dict, List
 
 from services.LLM.LLMBase import LLMBase
-from utils.output_message_format.output_colour import print_error, print_info
+from utils.output_message_format.output_colour import print_error, print_info, print_warning
 from utils.output_message_format.output_colour import print_success, print_model_output
 from utils.code_parsing.code_parser import parse_response
 
@@ -33,7 +33,8 @@ class OllamaContainer(LLMBase):
                  max_history: int = 3,
                  verbose_switch: bool = False,
                  container_name = "ollama",
-                 local_port: int = 11434):
+                 local_port: int = 11434,
+                 num_ctx: Optional[int] = None):
         """
         Ollama container class for running ollama from the official Ollama container.
 
@@ -45,11 +46,17 @@ class OllamaContainer(LLMBase):
             container_name (str, optional): Name of the ollama container. 
                 Defaults to "ollama".
             local_port (int, optional): Port on which the ollama server is running.
+            num_ctx (int, optional): Context window in tokens. 
+                Ollama's default is only a few thousand tokens and it silently drops 
+                the START of a longer prompt (the question). Set it for long prompts, 
+                e.g. 16384.
+                Defaults to None = the Ollama default (unchanged behaviour).
         """
         super().__init__(model_name, enable_chat_history, max_history, verbose_switch)
         self.container_name = container_name
         self._check_model_availability()
         self.local_port = local_port
+        self.num_ctx = num_ctx
         self.api_url = f"http://localhost:{local_port}/api/generate"
     
     
@@ -106,8 +113,15 @@ class OllamaContainer(LLMBase):
             "prompt": query,
             "stream": False
         }
-        response = requests.post(self.api_url, json=payload)
-        return response.json()["response"]
+        if self.num_ctx:
+            payload["options"] = {"num_ctx": self.num_ctx}
+        answer = requests.post(self.api_url, json=payload).json()
+        
+        if self.num_ctx and answer.get("prompt_eval_count", 0) >= self.num_ctx - 16:
+            print_warning(f"The prompt used the whole context window ({self.num_ctx} tokens) and was probably cut. "
+                        "Increase num_ctx.")
+        
+        return answer["response"]
             
         
     def generate_response(self,

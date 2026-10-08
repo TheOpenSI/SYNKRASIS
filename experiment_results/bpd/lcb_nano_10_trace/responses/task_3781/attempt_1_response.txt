@@ -1,0 +1,134 @@
+### Step-by-step reasoning
+- We need to pick k points from those on the square boundary so that the minimum Manhattan distance between any two chosen points is maximized.
+- A well-known transformation helps with Manhattan distance: for a point (x, y), define p = x + y and q = x - y. Then the Manhattan distance between two points (x1,y1) and (x2,y2) equals max(|p1 - p2|, |q1 - q2|).
+- We can solve the problem by binary searching the answer D (the candidate minimum distance). For a fixed D, we need to decide if there exists a subset of size k such that every pair of points in the subset has Manhattan distance at least D.
+- The decision problem is equivalent to finding an independent set of size at least k in the conflict graph where vertices are points and an edge connects two points if their Manhattan distance is strictly less than D.
+- To build the conflict graph efficiently, we partition the (p, q) plane into grid cells of side D. If two points have |Δp| < D and |Δq| < D, they lie in the same or neighboring cells. We only need to check pairs within neighboring cells to determine edges.
+- We implement a depth-first search with pruning to determine if an independent set of size k exists:
+  - Represent edges as adjacency (we use a bitset-like approach with Python ints for speed and memory limits).
+  - If we can collect k points such that no two are adjacent (i.e., distance < D), feasible returns True; otherwise False.
+  - To guard against worst-case complexity when D is large, we add an early exit: if D is larger than the maximum possible pairwise Manhattan distance among all points, it’s impossible to pick k points with distance ≥ D (for k ≥ 2). We compute max possible distance in O(n) from the transformed coordinates.
+- We also limit the binary search upper bound to the actual maximum possible distance among the given points, avoiding unnecessary iterations.
+
+Edge cases and correctness considerations:
+- D = 0 is always feasible if k ≤ n (trivially true since every pair distance is non-negative), but practically k ≥ 4 here.
+- Points are guaranteed unique and lie on the boundary, so the transformation remains valid and robust across inputs.
+- The approach handles tiny inputs and duplicates/ties via the exact feasibility check (independent set in the conflict graph).
+
+Time complexity notes:
+- Building the grid and edges for a fixed D is roughly O(n + E), where E is the number of close pairs (distance < D). The DFS explores a branch-and-bound search on the conflict graph. In practice, with k ≤ 25 and the sparsity produced by the grid partitioning, this approach is tractable for n up to the allowed limit (around 15k). The added early exit for large D helps avoid heavy work in the worst-case upper range of D.
+
+### Requirements
+None
+
+### Code
+```
+from typing import List
+import sys
+from collections import defaultdict
+
+class Solution:
+    def maxDistance(self, side: int, points: List[List[int]], k: int) -> int:
+        sys.setrecursionlimit(1000000)
+        n = len(points)
+        xs = [p[0] for p in points]
+        ys = [p[1] for p in points]
+
+        # Transform to (p, q)
+        p_arr = [xs[i] + ys[i] for i in range(n)]
+        q_arr = [xs[i] - ys[i] for i in range(n)]
+
+        if k <= 1:
+            # With 0 or 1 point, the minimum distance is not defined in usual sense;
+            # but since constraints have k >= 4, this is a safety default.
+            return 0
+
+        # Precompute global max possible distance among all given points
+        max_p = max(p_arr)
+        min_p = min(p_arr)
+        max_q = max(q_arr)
+        min_q = min(q_arr)
+        max_dist_possible = max(max_p - min_p, max_q - min_q)
+
+        # Feasibility check for a given D: is there an independent set of size at least k?
+        def feasible(D: int) -> bool:
+            if D <= 0:
+                # Any k points work
+                return k <= n
+            if D > max_dist_possible:
+                # No two points can be at distance >= D, so we can't pick k points
+                return False
+
+            # Build hash groups by (cp, cq) where cp = p // D, cq = q // D
+            groups = defaultdict(list)
+            for i in range(n):
+                cp = p_arr[i] // D
+                cq = q_arr[i] // D
+                groups[(cp, cq)].append(i)
+
+            # Build adjacency: neighbor_mask[i] is a bitset of vertices connected to i
+            neighbor_mask = [0] * n
+
+            for i in range(n):
+                xi, yi = xs[i], ys[i]
+                cp = p_arr[i] // D
+                cq = q_arr[i] // D
+                for dcp in (-1, 0, 1):
+                    for dcq in (-1, 0, 1):
+                        key2 = (cp + dcp, cq + dcq)
+                        lst = groups.get(key2)
+                        if not lst:
+                            continue
+                        for j in lst:
+                            if j <= i:
+                                continue
+                            if abs(xi - xs[j]) + abs(yi - ys[j]) < D:
+                                neighbor_mask[i] |= (1 << j)
+                                neighbor_mask[j] |= (1 << i)
+
+            # If the graph is empty, we can trivially pick k points
+            # (distance between any two points is >= D)
+            if k <= 0:
+                return True
+            remaining_all = (1 << n) - 1
+
+            # Bit helpers
+            bit = [1 << i for i in range(n)]
+
+            def dfs(remaining: int, chosen: int) -> bool:
+                if chosen >= k:
+                    return True
+                if remaining == 0:
+                    return False
+                rem_cnt = remaining.bit_count()
+                if chosen + rem_cnt < k:
+                    return False
+
+                # Choose a vertex v from remaining: pick the least significant set bit
+                lsb = remaining & -remaining
+                v = (lsb.bit_length() - 1)
+
+                # Branch 1: include v
+                new_remaining = remaining & ~((bit[v]) | neighbor_mask[v])
+                if dfs(new_remaining, chosen + 1):
+                    return True
+
+                # Branch 2: exclude v
+                remaining_excl = remaining & ~bit[v]
+                if dfs(remaining_excl, chosen):
+                    return True
+
+                return False
+
+            return dfs(remaining_all, 0)
+
+        # Binary search on D
+        lo, hi = 0, max_dist_possible
+        while lo < hi:
+            mid = (lo + hi + 1) // 2
+            if feasible(mid):
+                lo = mid
+            else:
+                hi = mid - 1
+        return lo
+```

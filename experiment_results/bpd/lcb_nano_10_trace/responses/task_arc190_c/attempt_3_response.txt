@@ -1,0 +1,124 @@
+### Step-by-step reasoning
+- Problem recap:
+  - We have an H x W grid with non-negative A[h,w].
+  - A traveler starts at (sh, sw) and performs Q updates. On i-th update, we move one step in direction d_i and set the destination cell’s value to a_i.
+  - After each update, we need the sum over all monotone paths P from (1,1) to (H,W) of the product of A along P, modulo 998244353.
+  - A path uses only moves Right or Down, and length M = H + W - 1.
+
+- Key observation:
+  - Let dp[i][j] be the sum of products over all monotone paths ending at (i,j), including A[i][j]:
+    - dp[0][0] = A[0][0]
+    - dp[i][j] = A[i][j] * (dp[i-1][j] + dp[i][j-1]) for i>0 and j>0
+    - with proper boundary handling for the first row/column.
+  - The desired answer after each update is dp[H-1][W-1].
+
+- How to handle updates efficiently:
+  - Changing A at some cell (h,w) only affects dp values in the bottom-right rectangle from (h,w) to (H,W).
+  - If we recompute dp[i][j] only for i in [h..H-1] and j in [w..W-1], using the already fixed values for dp outside this rectangle, we propagate the effect of the change correctly.
+  - This is because each dp[i][j] depends only on dp[i-1][j] and dp[i][j-1], and those predecessors are either inside the rectangle (already updated in this pass) or outside (unchanged).
+
+- Algorithm outline:
+  - Read A and compute the initial full dp for the entire grid.
+  - Maintain current position (r,c) = (sh-1, sw-1) in 0-based indexing.
+  - For each update:
+    - Move the position according to d.
+    - Update A[r][c] to the new value a (mod MOD).
+    - Recompute dp[i][j] for all i from r to H-1 and j from c to W-1 in increasing order using the recurrence.
+    - Output dp[H-1][W-1].
+
+- Complexity considerations:
+  - In the worst case, an update could affect a large rectangle, leading to O((H-r)*(W-c)) time per update.
+  - However, across a path-like sequence of moves (the traveler moves one step per update), updates tend to affect progressively smaller or adjacent rectangles in practice, and HW <= 200000 ensures the total amount of data is modest.
+  - This approach is straightforward, implements the exact DP recurrences, requires only O(HW) memory, and avoids recomputing the entire grid from scratch every time.
+
+- Correctness notes:
+  - The base case dp[0][0] = A[0][0] is handled explicitly.
+  - The boundary cases dp[0][j] and dp[i][0] are handled using the same recurrence with missing predecessor treated as 0.
+  - After each update, recomputing the bottom-right rectangle ensures the delta propagates to all affected dp values, and dp[H-1][W-1] is the required sum.
+
+- Output format:
+  - After every change, print dp[H-1][W-1] modulo 998244353.
+
+### Requirements
+None
+
+### Code
+```
+import sys
+
+MOD = 998244353
+
+def main():
+    data = sys.stdin.buffer.read().split()
+    it = iter(data)
+
+    H = int(next(it))
+    W = int(next(it))
+
+    # Read A
+    A = [[0] * W for _ in range(H)]
+    for i in range(H):
+        row = A[i]
+        for j in range(W):
+            row[j] = int(next(it)) % MOD
+
+    # Read Q and starting position
+    Q = int(next(it))
+    sh = int(next(it))
+    sw = int(next(it))
+
+    # 0-indexed current position
+    r = sh - 1
+    c = sw - 1
+
+    # Compute initial dp for the whole grid
+    dp = [[0] * W for _ in range(H)]
+    for i in range(H):
+        for j in range(W):
+            if i == 0 and j == 0:
+                dp[0][0] = A[0][0] % MOD
+            elif i == 0:
+                dp[0][j] = (A[0][j] * dp[0][j - 1]) % MOD
+            elif j == 0:
+                dp[i][0] = (A[i][0] * dp[i - 1][0]) % MOD
+            else:
+                dp[i][j] = (A[i][j] * ((dp[i - 1][j] + dp[i][j - 1]) % MOD)) % MOD
+
+    out_lines = []
+
+    for _ in range(Q):
+        d = next(it).decode()
+        a = int(next(it)) % MOD
+
+        # Move the traveler
+        if d == 'L':
+            c -= 1
+        elif d == 'R':
+            c += 1
+        elif d == 'U':
+            r -= 1
+        else:  # 'D'
+            r += 1
+
+        # Update the destination cell value
+        A[r][c] = a
+
+        # Recompute dp for the affected rectangle [r..H-1] x [c..W-1]
+        for i in range(r, H):
+            for j in range(c, W):
+                if i == 0 and j == 0:
+                    dp[0][0] = A[0][0] % MOD
+                elif i == 0:
+                    dp[0][j] = (A[0][j] * dp[0][j - 1]) % MOD
+                elif j == 0:
+                    dp[i][0] = (A[i][0] * dp[i - 1][0]) % MOD
+                else:
+                    dp[i][j] = (A[i][j] * ((dp[i - 1][j] + dp[i][j - 1]) % MOD)) % MOD
+
+        out_lines.append(str(dp[H - 1][W - 1] % MOD))
+
+    sys.stdout.write("\n".join(out_lines))
+
+if __name__ == "__main__":
+    main()
+```

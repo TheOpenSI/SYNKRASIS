@@ -1,4 +1,5 @@
 import os
+import subprocess
 import sys
 import unittest
 
@@ -134,6 +135,34 @@ class TraceTests(unittest.TestCase):
         self.assertIn("SystemExit", bpd.last_error)
         text = bpd.trace("a = [0] * (10**11)\nprint(len(a))\n", "")
         self.assertTrue(text is None or "MemoryError" in text)
+
+
+def docker_image_available(image: str = "synkrasis") -> bool:
+    try:
+        return subprocess.run(["docker", "image", "inspect", image], capture_output=True).returncode == 0
+    except FileNotFoundError:
+        return False
+
+
+@unittest.skipUnless(docker_image_available(), "docker image 'synkrasis' is not available")
+class SandboxTests(unittest.TestCase):
+    """trace() in a throwaway container: same result as on the host, but the code cannot reach the network or hang us."""
+    STDIN = "n = int(input())\ntotal = 0\nfor i in range(1, n + 1):\n    if i % 3 == 0:\n        total += i\nprint(total)\n"
+
+    def test_same_trace_as_on_the_host(self):
+        self.assertEqual(BPD(sandbox_image="synkrasis").trace(self.STDIN, "10", expected="20"),
+                         BPD().trace(self.STDIN, "10", expected="20"))
+
+    def test_traced_code_has_no_network(self):
+        code = "import socket\ntry:\n    socket.create_connection(('1.1.1.1', 80), timeout=3)\n    print('open')\nexcept OSError:\n    print('blocked')\n"
+        self.assertIn("printed 'blocked'", BPD(sandbox_image="synkrasis").trace(code, ""))
+
+    def test_a_hang_is_killed_and_its_container_removed(self):
+        bpd = BPD(sandbox_image="synkrasis", timeout=4)
+        self.assertIsNone(bpd.trace("x = sum(range(10**10))\nprint(x)\n", ""))
+        self.assertEqual(bpd.last_error, "timeout")
+        left = subprocess.run("docker ps -a --format '{{.Names}}' | grep -c '^bpd_'", shell=True, capture_output=True, text=True)
+        self.assertEqual(left.stdout.strip(), "0")
 
 
 if __name__ == "__main__":

@@ -1,0 +1,68 @@
+### Step-by-step reasoning
+- Problem restatement: We start with an empty array A and for i = 1..N we insert i so that it becomes the Pi-th element from the start. This is equivalent to performing sequential insertions at position Pi in a growing array.
+- Observation: If we process the insertions in reverse (i = N down to 1), the final array A of length N can be constructed by placing i into the Pi-th empty slot of the final array. At step i in reverse, there are exactly i empty slots left, and Pi tells us which empty slot (in order from left to right) should receive i.
+- Data structure: We need to efficiently (i) know which slots are empty, (ii) find the k-th empty slot, and (iii) mark a slot as filled. A Fenwick Tree (Binary Indexed Tree) over N positions fits perfectly:
+  - Initialize with all positions empty (value 1 at each index).
+  - For i from N down to 1:
+    - k = Pi
+    - pos = index of the k-th empty slot (k-th 1 in the Fenwick prefix sums)
+    - final[pos] = i
+    - mark pos as filled by adding -1 at pos in the Fenwick tree
+- Correctness: The k-th empty slot at each reverse step corresponds to placing i into the Pi-th position of the current array in forward order. The process fills all N slots exactly once, yielding the final A.
+- Complexity: Each step performs O(log N) operations on the Fenwick tree. Total time O(N log N), memory O(N). This scales to N up to 5e5.
+
+### Requirements
+None
+
+### Code
+```
+import sys
+
+class Fenwick:
+    def __init__(self, n: int):
+        self.n = n
+        # bit[i] stores the Fenwick tree values; initialize for all ones (all slots empty)
+        self.bit = [0] * (n + 1)
+        for i in range(1, n + 1):
+            self.bit[i] = i & -i  # sum of the range [i - (i&-i) + 1, i]
+
+    def add(self, i: int, delta: int):
+        while i <= self.n:
+            self.bit[i] += delta
+            i += i & -i
+
+    def kth(self, k: int) -> int:
+        # Find the smallest index pos such that prefix sum >= k
+        idx = 0
+        # start with a power of two >= n
+        bit_mask = 1 << (self.n.bit_length())
+        while bit_mask:
+            t = idx + bit_mask
+            if t <= self.n and self.bit[t] < k:
+                idx = t
+                k -= self.bit[t]
+            bit_mask >>= 1
+        return idx + 1
+
+def main():
+    data = list(map(int, sys.stdin.buffer.read().split()))
+    if not data:
+        return
+    n = data[0]
+    p = data[1:1 + n]
+
+    ft = Fenwick(n)
+    ans = [0] * (n + 1)  # 1-indexed final array
+
+    for i in range(n, 0, -1):
+        k = p[i - 1]
+        pos = ft.kth(k)
+        ans[pos] = i
+        ft.add(pos, -1)  # mark as filled
+
+    sys.stdout.write(' '.join(str(ans[i]) for i in range(1, n + 1)))
+    sys.stdout.write('\n')
+
+if __name__ == "__main__":
+    main()
+```

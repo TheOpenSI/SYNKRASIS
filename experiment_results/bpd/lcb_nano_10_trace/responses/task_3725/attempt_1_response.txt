@@ -1,0 +1,142 @@
+### Step-by-step reasoning
+- Goal: Compute the sum over all subarrays whose length is at most k of (min(subarray) + max(subarray)).
+- Observation: This sum is the sum of two independent parts:
+  - S_min = sum of the minimums of all subarrays with length <= k
+  - S_max = sum of the maximums of all subarrays with length <= k
+  - Answer = S_min + S_max
+- Use the standard per-element contribution technique for subarray minimums and maximums, but with a length restriction.
+- For minima:
+  - Define for each index i:
+    - Lmin = previous strictly less index + 1
+    - Rmin = next less-or-equal index - 1
+  - All subarrays where i is the designated minimum lie with L in [Lmin, i] and R in [i, Rmin].
+  - Enforce length <= k: R - L + 1 <= k -> R <= L + k - 1.
+  - For fixed L, valid R are in [i, min(Rmin, L + k - 1)]. This yields a piecewise count over L:
+    - Let A = Lmin, B = i, P = Rmin - k + 1.
+    - L must also satisfy L >= i - k + 1 to have at least one valid R.
+    - Segment 1 (where R uses L + k - 1): L in [max(A, i - k + 1), min(i, P)]
+      count for each L is (L - i + k)
+    - Segment 2 (where R is capped at Rmin): L in [max(A, i - k + 1, P + 1), i]
+      count for each L is (Rmin - i + 1)
+  - Sum these two segments in O(1) per i using arithmetic series for the first segment and a simple product for the second.
+- For maxima:
+  - Define for each index i:
+    - Lmax = previous strictly greater index + 1
+    - Rmax = next greater-or-equal index - 1
+  - Same length restriction logic as for minima, yielding analogous segments and formulas.
+- Important fix for correctness:
+  - In both minima and maxima calculations, ensure L starts at max(A, i - k + 1) for the first segment. Previously, omitting i - k + 1 could count invalid (negative or zero) contributions when L was too small.
+- Complexity: O(n) time and O(n) extra space, suitable for n up to 80,000.
+
+### Requirements
+None
+
+### Code
+```
+from typing import List
+
+class Solution:
+    def minMaxSubarraySum(self, nums: List[int], k: int) -> int:
+        n = len(nums)
+
+        # Previous strictly less for minima
+        prev_less = [-1] * n
+        stack = []
+        for i in range(n):
+            while stack and nums[stack[-1]] >= nums[i]:
+                stack.pop()
+            prev_less[i] = stack[-1] if stack else -1
+            stack.append(i)
+
+        # Next less than or equal for minima
+        next_less_equal = [n] * n
+        stack = []
+        for i in range(n):
+            while stack and nums[stack[-1]] >= nums[i]:
+                idx = stack.pop()
+                next_less_equal[idx] = i
+            stack.append(i)
+
+        # Previous strictly greater for maxima
+        prev_greater = [-1] * n
+        stack = []
+        for i in range(n):
+            while stack and nums[stack[-1]] <= nums[i]:
+                stack.pop()
+            prev_greater[i] = stack[-1] if stack else -1
+            stack.append(i)
+
+        # Next greater than or equal for maxima
+        next_greater_equal = [n] * n
+        stack = []
+        for i in range(n):
+            while stack and nums[stack[-1]] <= nums[i]:
+                idx = stack.pop()
+                next_greater_equal[idx] = i
+            stack.append(i)
+
+        total_min = 0
+        total_max = 0
+
+        # Contributions for minima
+        for i in range(n):
+            Lmin = prev_less[i] + 1
+            Rmax = next_less_equal[i] - 1
+            if i > Rmax:
+                continue
+
+            A = Lmin
+            B = i
+            P = Rmax - k + 1
+
+            count_i_min = 0
+
+            # Segment 1: L in [max(A, i - k + 1), min(i, P)]
+            Lstart1 = max(A, i - k + 1)
+            Lend1 = min(B, P)
+            if Lstart1 <= Lend1:
+                Count1 = Lend1 - Lstart1 + 1
+                SumL = (Lstart1 + Lend1) * Count1 // 2
+                count_i_min += SumL + Count1 * (k - i)
+
+            # Segment 2: L in [max(A, i - k + 1, P + 1), i]
+            Lstart2 = max(A, i - k + 1, P + 1)
+            Lend2 = i
+            if Lstart2 <= Lend2:
+                Count2 = Lend2 - Lstart2 + 1
+                count_i_min += Count2 * (Rmax - i + 1)
+
+            total_min += nums[i] * count_i_min
+
+        # Contributions for maxima
+        for i in range(n):
+            Lmin = prev_greater[i] + 1
+            Rmax = next_greater_equal[i] - 1
+            if i > Rmax:
+                continue
+
+            A = Lmin
+            B = i
+            P = Rmax - k + 1
+
+            count_i_max = 0
+
+            # Segment 1: L in [max(A, i - k + 1), min(i, P)]
+            Lstart1 = max(A, i - k + 1)
+            Lend1 = min(B, P)
+            if Lstart1 <= Lend1:
+                Count1 = Lend1 - Lstart1 + 1
+                SumL = (Lstart1 + Lend1) * Count1 // 2
+                count_i_max += SumL + Count1 * (k - i)
+
+            # Segment 2: L in [max(A, i - k + 1, P + 1), i]
+            Lstart2 = max(A, i - k + 1, P + 1)
+            Lend2 = i
+            if Lstart2 <= Lend2:
+                Count2 = Lend2 - Lstart2 + 1
+                count_i_max += Count2 * (Rmax - i + 1)
+
+            total_max += nums[i] * count_i_max
+
+        return total_min + total_max
+```

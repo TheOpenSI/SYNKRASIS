@@ -1,0 +1,123 @@
+### Step-by-step reasoning
+- Re-derive problem: We have an HxW grid with vertex weights A[h,w]. For every monotone path from (1,1) to (H,W), the path weight is the product of A along the path, and we sum these products over all such paths (mod 998244353). Let f[i][j] be the sum of products of all monotone paths from (1,1) to (i,j). The recurrence is:
+  - f[0][0] = A[0][0]
+  - f[0][j] = A[0][j] * f[0][j-1] for j > 0
+  - f[i][0] = A[i][0] * f[i-1][0] for i > 0
+  - f[i][j] = A[i][j] * (f[i-1][j] + f[i][j-1]) for i>0, j>0
+- After each move, exactly one A[r,c] is updated (the destination cell). The final answer after the update is f[H-1][W-1] for the new grid.
+- Observing linearity: If A[r,c] changes by delta, the immediate change to f[r,c] is:
+  - If (r,c) != (0,0): delta_f[r,c] = delta * (f[r-1][c] + f[r][c-1])
+  - If (r,c) == (0,0): delta_f[0,0] = delta
+- This local perturbation propagates forward through the same recurrence, because the dependence of f on other cells is linear. Therefore the delta propagation to all cells (i ≥ r, j ≥ c) follows:
+  - delta_f[i][j] = A[i][j] * (delta_f[i-1][j] + delta_f[i][j-1]) for (i,j) ≠ (r,c)
+  - delta_f[r][c] = delta_f[r,c] as computed above
+- We can perform an in-place propagation of delta_f across the sub-rectangle [r..H-1] x [c..W-1], scanning rows top-to-bottom and within a row left-to-right. This uses the current A values and the already-updated neighboring delta values.
+- After applying the delta propagation, the new final answer is f[H-1][W-1] (which has been updated in place by the delta propagation). We also need to update A[r][c] to the new value for subsequent updates.
+- Corner case: If (r,c) == (0,0), f[0][0] changes by delta directly; the delta propagation starts from (0,0) as described above.
+
+- Complexity note: Each update touches a rectangle of size (H - r) * (W - c). With HW ≤ 2e5 this is feasible in many cases, especially given the total number of cells is bounded. We also handle edge cases correctly and ensure the base case (0,0) is treated specially.
+
+- Output format: After each update, print f[H-1][W-1] modulo 998244353.
+
+### Requirements
+None
+
+### Code
+```
+import sys
+
+MOD = 998244353
+
+def main():
+    data = sys.stdin.buffer.read().split()
+    it = iter(data)
+
+    H = int(next(it))
+    W = int(next(it))
+
+    # Read A
+    A = [[0] * W for _ in range(H)]
+    for i in range(H):
+        row = A[i]
+        for j in range(W):
+            row[j] = int(next(it)) % MOD
+
+    # Read Q and starting position
+    Q = int(next(it))
+    sh = int(next(it))
+    sw = int(next(it))
+
+    # 0-indexed current position
+    r = sh - 1
+    c = sw - 1
+
+    # Compute initial f for the whole grid
+    f = [[0] * W for _ in range(H)]
+    for i in range(H):
+        for j in range(W):
+            if i == 0 and j == 0:
+                f[0][0] = A[0][0] % MOD
+            elif i == 0:
+                f[0][j] = (A[0][j] * f[0][j - 1]) % MOD
+            elif j == 0:
+                f[i][0] = (A[i][0] * f[i - 1][0]) % MOD
+            else:
+                f[i][j] = (A[i][j] * ((f[i - 1][j] + f[i][j - 1]) % MOD)) % MOD
+
+    out_lines = []
+
+    for _ in range(Q):
+        d = next(it).decode()
+        a = int(next(it)) % MOD
+
+        # Move the traveler
+        if d == 'L':
+            c -= 1
+        elif d == 'R':
+            c += 1
+        elif d == 'U':
+            r -= 1
+        else:  # 'D'
+            r += 1
+
+        # Update the destination cell value
+        oldA = A[r][c]
+        newA = a
+        A[r][c] = newA
+
+        delta = (newA - oldA) % MOD
+
+        # Compute initial delta at (r,c)
+        if r == 0 and c == 0:
+            delta_source = delta
+        else:
+            s = 0
+            if r > 0:
+                s += f[r - 1][c]
+            if c > 0:
+                s += f[r][c - 1]
+            delta_source = (delta * (s % MOD)) % MOD
+
+        if delta_source != 0:
+            # Propagate delta through region [r..H-1] x [c..W-1]
+            for i in range(r, H):
+                fi = f[i]
+                if i == 0:
+                    up_row = None
+                else:
+                    up_row = f[i - 1]
+                for j in range(c, W):
+                    if i == r and j == c:
+                        fi[j] = (fi[j] + delta_source) % MOD
+                    else:
+                        up = up_row[j] if up_row is not None else 0
+                        left = fi[j - 1]  # already updated in this loop for j > c
+                        fi[j] = (A[i][j] * ((up + left) % MOD)) % MOD
+
+        out_lines.append(str(f[H - 1][W - 1] % MOD))
+
+    sys.stdout.write("\n".join(out_lines))
+
+if __name__ == "__main__":
+    main()
+```

@@ -71,7 +71,10 @@ class PyCapsule_LiveCodeBench(PyCapsuleBase):
         super().__init__(pycapsule_container, llm, maximum_attempts, timeout = timeout)
         self.harness = LCBHarness()
         self.response_log_dir = response_log_dir
-        self.bpd = BPD(max_chars=TRACE_MAX_CHARS) if (ENABLE_BPD if trace_feedback is None else trace_feedback) else None
+        # With a docker Container the trace also runs in a docker container (same image), never on the host.
+        sandbox_image = getattr(pycapsule_container, "IMAGE_NAME", None)
+        self.bpd = (BPD(max_chars=TRACE_MAX_CHARS, sandbox_image=sandbox_image)
+                    if (ENABLE_BPD if trace_feedback is None else trace_feedback) else None)
         self.trace_log: list[dict] = []   # one entry per trace attached: task_id, test_index, chars
         self._last_code = ""
         self._generation_count = 0
