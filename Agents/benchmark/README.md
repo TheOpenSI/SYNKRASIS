@@ -39,8 +39,3 @@ Deterministic supplementary metrics: falls-risk level match with the reference (
 | `case_results.csv` | one row per model x case, judges aggregated + metrics |
 | `errors.csv` | every judge-reported error, for the error taxonomy |
 | `summary.csv` | one row per model, ranked by aligned rate then overall score |
-
-## Server notes
-
-- `services/LLM/Ollama/Ollama.py` imports `torch` and pulls each model on first use.
-- Only one model is loaded at a time: all cases are generated with each candidate in turn, then every generation is judged by judge 1, then by judge 2. Each Ollama model is unloaded (`keep_alive=0`) before the next is loaded, and every output is saved as soon as it is produced.

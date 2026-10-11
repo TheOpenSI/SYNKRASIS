@@ -13,7 +13,7 @@ import os, sys
 
 sys.path.append(f"{os.path.dirname(os.path.abspath(__file__))}/../../..")
 
-import ollama, torch
+import ollama
 from typing import Optional, Dict, List
 
 from services.LLM.LLMBase import LLMBase
