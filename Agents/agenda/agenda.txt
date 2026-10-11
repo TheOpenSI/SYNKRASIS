@@ -1,0 +1,168 @@
+﻿STAGE 2 PROTOCOL
+Development and Benchmarking of an AI-Assisted Translation Approach for Optometry-to-Occupational Therapy Communication
+Protocol Version Number and Date: v0.10, 8 September 2026
+1. PROJECT DESIGN
+Stage 2 is a development and benchmarking study within the broader AI-assisted optometry-to-occupational therapy translation project. It will develop and refine an AI translation approach using a development set of synthetic optometry cases and expert-reviewed/corrected occupational therapy-facing summaries, then evaluate the frozen approach on a separate held-out benchmark set.
+The broader project is being conducted in three stages. Stage 1 develops the expert-reviewed/corrected reference standard. Stage 2 develops and technically benchmarks the AI translation approach. Stage 3 is a separate independent occupational therapist end-user evaluation of the final AI-generated summaries, focusing on clarity, clinical usefulness, functional appropriateness, acceptability, editing burden and safety.
+Stage 2 will use iterative refinement of AI-generated summaries against the expert reference summaries, with attention to functional inferences, terminology, risk interpretation, omissions and additions. A protected held-out benchmark is included so that final performance can be assessed on cases that were not used for technical refinement.
+2. STUDY OBJECTIVES
+Aim:
+To develop, refine and benchmark an AI-assisted approach for translating structured optometry reports into occupational therapy-facing functional vision summaries using the Stage 1 expert-reviewed/corrected summaries as the reference standard.
+Specific objectives:
+    • To develop a translation module/pipeline using a predefined development set.
+    • To evaluate suitable locally deployable/open-weight language models and select an appropriate model for the translation task.
+    • To refine the prompt, translation workflow and associated technical configuration using development cases only.
+    • To freeze the final translation configuration before held-out evaluation.
+    • To benchmark the frozen approach on a protected held-out case set against the Stage 1 reference standard and, where applicable, a prespecified comparator configuration.
+    • To assess clinically and functionally important content agreement, errors and omissions, supplemented by automated text-similarity metrics.
+    • To document the final technical methodology sufficiently for reproducibility and future manuscript reporting.
+3. DATASET AND REFERENCE STANDARD
+Stage 2 will use the final locked post-revision versions of the 100 synthetic optometry cases. The original case distribution spreadsheet and generation metadata will be retained as historical provenance only and will not be used as the final Stage 2 sampling metadata. The cases were designed to include variation in visual presentation, severity and case complexity.
+The corresponding Stage 1 occupational therapy-facing summaries will be described as an expert-reviewed/corrected reference standard rather than a purely human-written gold standard because the starting summaries were AI-generated and subsequently reviewed and corrected by occupational therapists.
+Ten calibration cases (032, 033, 035, 046, 057, 064, 066, 067, 072 and 083) have undergone the Stage 1 review and consensus process. These ten cases are therefore predetermined Stage 2 development cases and will not be eligible for the held-out benchmark.
+For the calibration set, the same original AI-generated OT-facing summary was independently reviewed by two occupational therapists. The reviewer edits were then compared through a structured consensus process with input from a senior occupational therapist. The resulting principles are being used to guide review of the remaining cases. The ten completed calibration case/reference pairs can therefore be used for initial Stage 2A development.
+The Stage 1 consensus framework is still being finalised. The Stage 2 content-evaluation rubric will be based on the final Stage 1 framework once it is locked.
+4. RESEARCH PLAN / METHODOLOGY
+4.1 Development and held-out case allocation
+The planned Stage 2 allocation is 70 development cases and 30 held-out benchmark cases.
+    • Development set: the 10 Stage 1 calibration cases plus 60 additional cases.
+    • Held-out benchmark: 30 cases selected only from the remaining 90 cases.
+    • The 30 held-out cases will be selected and locked before the remaining 90 case/reference pairs are released for technical development.
+    • The allocation will not be changed after model performance has been examined.
+In this protocol, held-out means excluded from Stage 2 model, prompt and workflow development. It does not imply that the cases have not previously been seen by investigators during Stage 1.
+Initial Stage 2A development may commence using the ten completed calibration case/reference pairs because these cases are predetermined development cases. They may be used for translation-module development, technical workflow testing, and initial model and prompt refinement without compromising the later held-out benchmark.
+Figure 1. Stage 2 study flow
+First 10 Stage 1 calibration case/reference pairs complete
+↓
+Begin initial Stage 2A development using the 10 predetermined development cases
+↓
+Finalise the Stage 2 sampling frame and lock 30 held-out cases from the remaining 90
+↓
+Complete Stage 2A on the 70-case development set and freeze the final configuration
+↓
+Run Stage 2B on the 30 held-out cases and undertake reference-based benchmarking
+4.2 Stage 2 sampling frame
+A new Stage 2 sampling frame will be constructed from the final revised optometry cases rather than copied from the original generation metadata. Benchmark selection will use the following variables:
+    • final primary visual phenotype;
+    • visual severity category;
+    • overall case complexity (simple, moderate or complex); and
+    • broad primary diagnosis/presentation as a secondary balance check.
+In this protocol, primary visual phenotype refers to the predominant pattern of visual dysfunction represented in a case and is used as a sampling label rather than as the ocular diagnosis. The operational categories and other sampling-variable definitions are provided in Appendix 2.
+Primary phenotype will be the main stratification variable, with severity and complexity used to help balance the benchmark. The operational definition of visual severity will be fixed before the held-out cases are selected and then applied consistently.
+The 30 benchmark cases will be selected reproducibly from the 90 eligible cases. The final allocation, sampling variables, selection method, dataset version and, where random selection is used, the random seed will be retained.
+4.3 Stage 2A - technical development and model selection
+The technical work will use a purpose-built translation module within the CoSMIC environment that can use the full supplied case context and run locally deployable/open-weight language models. The final technical implementation and terminology will be documented as part of the Stage 2 methodology.
+Where several suitable open-weight models are available, candidate models may be compared using the development cases to select the model considered most suitable for this translation task. Model selection will use development data only.
+A larger language model may be used as an LLM-as-a-judge to assist candidate-model comparison. If used, it will not be the sole basis for model selection, as LLM judges may show systematic evaluation biases (1). The judge model/version, prompt and decision process will be documented.
+The prompt, instructions, output structure, context handling and other implementation details may be iteratively refined using the development cases and their reference summaries. Refinement will be confined to the development set, and the final approach will be documented before Stage 2B begins.
+Final model and workflow selection will consider both translation performance and technical suitability. Clinical and functional agreement with the reference standard will take priority over lexical similarity alone.
+4.4 Freeze and protection of the held-out benchmark
+Before Stage 2B, the final configuration will be frozen. The frozen configuration will include the selected model/version, final prompt(s) and instructions, final CoSMIC module/workflow, relevant generation settings and any automatic validation, retry or post-processing procedure.
+The 30 held-out reference summaries must not be used during Stage 2A for:
+    • candidate-model screening or selection;
+    • prompt or workflow refinement;
+    • few-shot examples or reference-derived resources;
+    • error-driven optimisation; or
+    • any other development decision.
+Once the final configuration is frozen, Stage 2B benchmark results will not be used to modify it. Any later modification would be treated as a new configuration rather than replacing the original benchmark result.
+4.5 Stage 2B - held-out benchmark
+The frozen Stage 2 configuration will be applied to the 30 held-out optometry cases without case-specific manual correction. Raw generated outputs will be retained before comparison with the corresponding Stage 1 reference summaries.
+A same-model direct-prompt comparator is planned where technically valid. The selected underlying model will be prompted without the fully developed Stage 2 translation module/workflow, allowing the contribution of the developed approach to be examined separately from the capability of the underlying model.
+4.6 Stage 2 evaluation
+Stage 2 will assess how well the generated summaries preserve clinically and functionally important information relative to the optometry source case and the Stage 1 reference summary. It will not duplicate the independent occupational therapist end-user evaluation planned for Stage 3.
+The primary content-level evaluation will consider:
+    • coverage of important functional content in the expert reference summary;
+    • factual consistency with the optometry source case;
+    • unsupported or incorrect additions; and
+    • clinically important omissions, contradictions or inappropriate functional interpretation or recommendations.
+A short scoring/coding specification will be finalised after the Stage 1 consensus framework is locked and before Stage 2B analysis. If LLM-assisted scoring is used, the model, evaluation prompt and manual verification procedure will be specified before benchmark analysis.
+Automated text metrics will be supplementary. BERTScore F1 and ROUGE-L will be used to provide complementary measures of semantic and lexical/sequence similarity (2, 3). These metrics will not be treated as measures of clinical correctness.
+4.7 Analysis and relationship to Stage 3
+Stage 2 is a benchmarking study and is not designed as a formal non-inferiority study. Results will be summarised descriptively, with paired case-level comparisons where the same held-out cases are generated by more than one configuration. Paired differences and confidence intervals may be reported where useful.
+Performance by phenotype, severity or complexity may be explored descriptively to identify possible failure patterns, but the 30-case benchmark will not be treated as a powered subgroup study.
+Stage 3 will provide the independent human evaluation. Stage 3 evaluation cases are planned to be selected from the Stage 2 held-out set using predefined clinical diversity and risk criteria rather than Stage 2 performance, so that they have not been used to refine the system.
+5. TECHNICAL DOCUMENTATION AND HANDOVER
+The Stage 2 technical record will contain sufficient information to reproduce the final generation process and report the methodology accurately in a future manuscript. For the final frozen configuration and benchmark, the record will include:
+    • candidate open-weight models considered/tested and how the final model was selected;
+    • selected model name and exact version/checkpoint, source and deployment method;
+    • relevant hardware specifications for the final runs, including GPU/VRAM where applicable;
+    • the exact system prompt, user prompt/template and any other instructions used to generate the final outputs;
+    • the LLM-judge model/version, exact judge prompt and decision process if an LLM judge is used;
+    • a clear description of the final CoSMIC translation module/workflow and any material context, retrieval or reference resources used;
+    • generation settings such as temperature, top-p, maximum tokens and seed where available, together with the number of generations per case;
+    • any automatic retry, validation, formatting or post-processing procedures;
+    • relevant software/framework/package versions and code/scripts or repository/version information where appropriate;
+    • date(s) of the final benchmark runs;
+    • raw outputs for all final benchmark configurations; and
+    • a concise technical methods summary describing what was actually done and the main steps by which the final configuration was reached.
+Exploratory iterations do not need to be documented exhaustively; however, the main model, prompt and workflow decisions and the complete final generation pathway must be recoverable.
+6. REFERENCES
+1.	Zheng LM, Chiang WL, Sheng Y, Zhuang SY, Wu ZH, Zhuang YH, et al. Judging LLM-as-a-Judge with MT-Bench and Chatbot Arena. Adv Neur In. 2023.
+2.	Lin C-Y, editor ROUGE: A Package for Automatic Evaluation of Summaries. Text Summarization Branches Out; 2004 2004/07; Barcelona, Spain: Association for Computational Linguistics.
+3.	Zhang T, Kishore V, Wu F, Weinberger KQ, Artzi Y, editors. BERTScore: Evaluating Text Generation with BERT. International Conference on Learning Representations; 2020.
+
+APPENDIX 1. STAGE 1 CALIBRATION CASES AND REFERENCE-STANDARD PROCESS
+The ten calibration cases were purposively selected in Stage 1 to cover the main visual-presentation categories and a range of clinical/functional complexity. For each case, the same original AI-generated OT-facing summary was independently reviewed by two occupational therapists, followed by structured comparison and consensus with input from a senior occupational therapist. These ten case/reference pairs are predetermined Stage 2A development cases and are excluded from the held-out benchmark.
+Case ID
+Stage 1 calibration phenotype
+Stage 2 allocation
+033
+Blur / reduced acuity
+Development
+067
+Blur / reduced acuity
+Development
+046
+Central vision
+Development
+072
+Central vision
+Development
+035
+Peripheral visual field
+Development
+083
+Peripheral visual field
+Development
+064
+Neuro-visual
+Development
+032
+Binocular / depth perception
+Development
+066
+Fluctuating vision
+Development
+057
+Mixed presentation
+Development
+Note: These labels describe the Stage 1 calibration coverage. Final Stage 2 sampling labels for the full 100-case dataset will be reconstructed from the final locked optometry cases and may be refined if the final case content requires it.
+APPENDIX 2. OPERATIONAL DEFINITIONS FOR STAGE 2 SAMPLING VARIABLES
+These definitions are used to construct and document the Stage 2 sampling frame. They are operational sampling categories for this project rather than diagnostic classifications.
+Variable / category
+Operational definition
+Primary visual phenotype
+The predominant pattern of visual dysfunction represented in the case. This is a sampling label and is distinct from the underlying ocular or neurological diagnosis.
+Blur / reduced acuity
+A presentation in which reduced clarity or visual acuity is the dominant visual issue.
+Central vision
+A presentation dominated by central visual impairment affecting central detail or fixation-dependent tasks.
+Peripheral visual field
+A presentation dominated by peripheral visual field restriction or loss.
+Neuro-visual
+A presentation in which the dominant visual problem is associated with a neurological condition or injury, such as neurological visual field loss.
+Binocular / depth perception
+A presentation dominated by binocular vision, stereopsis or depth-perception difficulty.
+Fluctuating vision
+A presentation in which vision or visual symptoms vary over time or with conditions, rather than remaining stable.
+Mixed presentation
+A case in which more than one major visual phenotype is clinically important and no single phenotype adequately characterises the presentation.
+Visual severity
+A broad sampling category describing the degree of visual impairment. The operational definition and cut-points will be fixed before the held-out cases are selected and then applied consistently.
+Case complexity
+A project-level classification of how many clinically relevant visual, functional and contextual factors must be integrated when translating the case. Classification rules will be fixed before held-out case selection.
+Primary diagnosis / presentation
+A broad underlying ocular or neurological condition grouping used as a secondary balance check rather than as the main stratification variable.
+
+
+
