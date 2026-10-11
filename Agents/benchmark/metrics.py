@@ -13,7 +13,7 @@ def extract_falls_risk(summary: str) -> str:
     """
     Falls risk level (Low | Moderate | High) from section 5, or "Missing".
     """
-    section = re.split(r"falls risk level", summary, flags=re.IGNORECASE)
+    section = re.split(r"falls risk level", summary, maxsplit=1, flags=re.IGNORECASE)
     text = section[1] if len(section) > 1 else summary
     match = re.search(r"\b(low|moderate|high)\b", text, flags=re.IGNORECASE)
     return match.group(1).capitalize() if match else "Missing"

@@ -1,35 +1,27 @@
 import os
 import sys
-import pandas as pd
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
-os.environ["TOKENIZERS_PARALLELISM"] = "false"
+sys.path.append(os.path.abspath(os.path.dirname(__file__)))
 
-# Services
-from services.LLM.Ollama.Ollama import Ollama
-from services.LLM.Ollama.OllamaContainer import OllamaContainer
-from services.Container.Container import Container
-
-# Utils
-from utils.output_message_format.output_colour import print_model_output, print_info, print_error 
-from utils.output_message_format.output_colour import print_success, print_warning
-from utils.resource.resource_mg_util import call_cleanup
+from Agents.benchmark.BenchmarkRunner import BenchmarkRunner
 from utils.ascii.synkrasis import print_synkrasis_logo
+
+# Candidate models as "backend:model", backend is openai or ollama, e.g. "ollama:llama3.1:8b"
+MODELS = ["openai:gpt-5-nano-2025-08-07"]
+
+# At most 2 judges, keep them constant across runs
+JUDGES = ["openai:gpt-5-mini-2025-08-07", "openai:gpt-5.4-mini-2026-03-17"]
 
 
 def main():
     print_synkrasis_logo()
-    try:
-        llm = Ollama()
-        while True:
-            query = input("Enter your query (or 'exit' to quit): ")
-            if query.lower() == 'exit':
-                break
-            llm.generate_response(query)
+    runner = BenchmarkRunner(models=MODELS,
+                             judges=JUDGES,
+                             prompt_version="0_3",
+                             case_ids=None, # None = all 10 development cases
+                             run_name="baseline_v03")
+    summary = runner.run()
+    print(summary.to_string())
 
-        
-    finally:
-        # Warning resource_tracker: There appear to be .* leaked semaphore objects"
-        call_cleanup([llm])
 
 if __name__ == '__main__':
     main()

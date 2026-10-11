@@ -1,0 +1,44 @@
+{
+  "judge": "openai:gpt-5.4-mini-2026-03-17",
+  "valid": true,
+  "coverage": 4,
+  "factual_consistency": 3,
+  "unsupported_additions": 2,
+  "clinical_safety": 3,
+  "overall": 3,
+  "aligned": false,
+  "errors": [
+    {
+      "category": "hallucination",
+      "severity": "major",
+      "description": "The candidate introduces unsupported recommendations and context such as low-vision service referral, specific mobility cane training details, and changed reading aids that are not stated in the source report."
+    },
+    {
+      "category": "hallucination",
+      "severity": "minor",
+      "description": "The candidate states that the patient is in rehab after a stroke-related admission and suggests broader environmental and community participation issues beyond what is documented, including references to school/clinic activities."
+    },
+    {
+      "category": "terminology_drift",
+      "severity": "minor",
+      "description": "The candidate includes non-source ocular-health wording such as 'no necrosis or retinal findings noted' and frames macular changes as functionally limiting, which is imprecise and not supported by the report."
+    },
+    {
+      "category": "risk_interpretation",
+      "severity": "major",
+      "description": "The candidate downgrades the falls risk to moderate, whereas the reference emphasizes a high vision-related falls risk because hemianopia has already contributed to a fall during doorway navigation."
+    },
+    {
+      "category": "omission",
+      "severity": "major",
+      "description": "The candidate omits several key OT priorities from the reference, including left-sided environmental hazards near doorways and corridors, road crossing/oncoming vehicle awareness, use of left-margin markers for reading, human guide training, and education of carers/supports."
+    },
+    {
+      "category": "omission",
+      "severity": "minor",
+      "description": "The candidate does not clearly state that driving remains inappropriate pending formal medical and visual-field clearance as a transport/support planning issue."
+    }
+  ],
+  "rationale": "The candidate captures the main diagnosis and many functional themes, especially scanning, doorway navigation, and reading difficulty. However, it adds several unsupported elements and misses some key OT-facing priorities from the reference, most importantly the high falls-risk framing and specific environmental/support recommendations. As written, it would be usable with edits, but not as a near-equivalent substitute for the reference.",
+  "raw_response": "{\n  \"coverage\": 4,\n  \"factual_consistency\": 3,\n  \"unsupported_additions\": 2,\n  \"clinical_safety\": 3,\n  \"overall\": 3,\n  \"aligned\": false,\n  \"errors\": [\n    {\n      \"category\": \"hallucination\",\n      \"severity\": \"major\",\n      \"description\": \"The candidate introduces unsupported recommendations and context such as low-vision service referral, specific mobility cane training details, and changed reading aids that are not stated in the source report.\"\n    },\n    {\n      \"category\": \"hallucination\",\n      \"severity\": \"minor\",\n      \"description\": \"The candidate states that the patient is in rehab after a stroke-related admission and suggests broader environmental and community participation issues beyond what is documented, including references to school/clinic activities.\"\n    },\n    {\n      \"category\": \"terminology_drift\",\n      \"severity\": \"minor\",\n      \"description\": \"The candidate includes non-source ocular-health wording such as 'no necrosis or retinal findings noted' and frames macular changes as functionally limiting, which is imprecise and not supported by the report.\"\n    },\n    {\n      \"category\": \"risk_interpretation\",\n      \"severity\": \"major\",\n      \"description\": \"The candidate downgrades the falls risk to moderate, whereas the reference emphasizes a high vision-related falls risk because hemianopia has already contributed to a fall during doorway navigation.\"\n    },\n    {\n      \"category\": \"omission\",\n      \"severity\": \"major\",\n      \"description\": \"The candidate omits several key OT priorities from the reference, including left-sided environmental hazards near doorways and corridors, road crossing/oncoming vehicle awareness, use of left-margin markers for reading, human guide training, and education of carers/supports.\"\n    },\n    {\n      \"category\": \"omission\",\n      \"severity\": \"minor\",\n      \"description\": \"The candidate does not clearly state that driving remains inappropriate pending formal medical and visual-field clearance as a transport/support planning issue.\"\n    }\n  ],\n  \"rationale\": \"The candidate captures the main diagnosis and many functional themes, especially scanning, doorway navigation, and reading difficulty. However, it adds several unsupported elements and misses some key OT-facing priorities from the reference, most importantly the high falls-risk framing and specific environmental/support recommendations. As written, it would be usable with edits, but not as a near-equivalent substitute for the reference.\"\n}"
+}

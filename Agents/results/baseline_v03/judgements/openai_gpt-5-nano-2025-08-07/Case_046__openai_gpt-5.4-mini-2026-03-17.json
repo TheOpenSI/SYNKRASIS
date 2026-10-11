@@ -1,0 +1,34 @@
+{
+  "judge": "openai:gpt-5.4-mini-2026-03-17",
+  "valid": true,
+  "coverage": 4,
+  "factual_consistency": 4,
+  "unsupported_additions": 4,
+  "clinical_safety": 4,
+  "overall": 4,
+  "aligned": true,
+  "errors": [
+    {
+      "category": "omission",
+      "severity": "minor",
+      "description": "The candidate does not explicitly mention several reference OT priorities such as checking phone accessibility/call-for-help ability, visual fatigue/cognitive fatigue, meal-preparation risks like pouring and burns, and the possibility of social isolation."
+    },
+    {
+      "category": "omission",
+      "severity": "minor",
+      "description": "The candidate gives a general O&M suggestion but omits the reference emphasis on assessing safe kerb negotiation and non-visual strategies for drop-offs/level changes in real-world mobility."
+    },
+    {
+      "category": "hallucination",
+      "severity": "minor",
+      "description": "The candidate introduces support with carers/family and formal services as if these are established needs, but the source report does not describe existing carers, family support, or formal support arrangements."
+    },
+    {
+      "category": "terminology_drift",
+      "severity": "minor",
+      "description": "The candidate uses some ophthalmic wording such as 'central scotoma' and 'Ishihara screening likely impacted by macular disease' where the report only states central fixation less clear and that colour testing should be interpreted with caution."
+    }
+  ],
+  "rationale": "The candidate captures the core diagnosis, central visual impairment, reading difficulty, reduced contrast, kerb stumble, and driving reduction, so it would be usable by an OT with minor edits. The main gaps are missing several functional priorities from the reference and a few unsupported assumptions about support systems, but there are no major safety contradictions or role-boundary problems.",
+  "raw_response": "{\n  \"coverage\": 4,\n  \"factual_consistency\": 4,\n  \"unsupported_additions\": 4,\n  \"clinical_safety\": 4,\n  \"overall\": 4,\n  \"aligned\": true,\n  \"errors\": [\n    {\n      \"category\": \"omission\",\n      \"severity\": \"minor\",\n      \"description\": \"The candidate does not explicitly mention several reference OT priorities such as checking phone accessibility/call-for-help ability, visual fatigue/cognitive fatigue, meal-preparation risks like pouring and burns, and the possibility of social isolation.\"\n    },\n    {\n      \"category\": \"omission\",\n      \"severity\": \"minor\",\n      \"description\": \"The candidate gives a general O&M suggestion but omits the reference emphasis on assessing safe kerb negotiation and non-visual strategies for drop-offs/level changes in real-world mobility.\"\n    },\n    {\n      \"category\": \"hallucination\",\n      \"severity\": \"minor\",\n      \"description\": \"The candidate introduces support with carers/family and formal services as if these are established needs, but the source report does not describe existing carers, family support, or formal support arrangements.\"\n    },\n    {\n      \"category\": \"terminology_drift\",\n      \"severity\": \"minor\",\n      \"description\": \"The candidate uses some ophthalmic wording such as 'central scotoma' and 'Ishihara screening likely impacted by macular disease' where the report only states central fixation less clear and that colour testing should be interpreted with caution.\"\n    }\n  ],\n  \"rationale\": \"The candidate captures the core diagnosis, central visual impairment, reading difficulty, reduced contrast, kerb stumble, and driving reduction, so it would be usable by an OT with minor edits. The main gaps are missing several functional priorities from the reference and a few unsupported assumptions about support systems, but there are no major safety contradictions or role-boundary problems.\"\n}"
+}

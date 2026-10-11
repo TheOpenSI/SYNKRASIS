@@ -1,0 +1,39 @@
+{
+  "judge": "openai:gpt-5-mini-2025-08-07",
+  "valid": true,
+  "coverage": 4,
+  "factual_consistency": 5,
+  "unsupported_additions": 5,
+  "clinical_safety": 5,
+  "overall": 4,
+  "aligned": true,
+  "errors": [
+    {
+      "category": "omission",
+      "severity": "minor",
+      "description": "Does not explicitly mention the social/recognition impacts (difficulty recognising faces, body language, increased social isolation risk) described in the REFERENCE."
+    },
+    {
+      "category": "omission",
+      "severity": "minor",
+      "description": "Does not explicitly recommend obtaining additional information about stroke location to inform possible cognitive, language or physical impairments as suggested in the REFERENCE."
+    },
+    {
+      "category": "omission",
+      "severity": "minor",
+      "description": "Does not explicitly recommend clarifying severity of the patient's hearing impairment to guide compensatory strategy training, as highlighted in the REFERENCE."
+    },
+    {
+      "category": "omission",
+      "severity": "minor",
+      "description": "Does not mention consideration of a personal/falls alarm or pendant alert for solo-time safety, which the REFERENCE lists as a possible intervention."
+    },
+    {
+      "category": "omission",
+      "severity": "minor",
+      "description": "Does not explicitly discuss low-light/night-time path illumination (e.g., bedroom-to-bathnight lighting options) that the REFERENCE recommends considering for night-time mobility."
+    }
+  ],
+  "rationale": "The CANDIDATE summary is factually consistent with the SOURCE and captures the major functional and safety issues (hemianopia, cataract-related acuity/contrast loss, glare, falls history) and appropriate OT/O&M actions. Minor content gaps remain versus the REFERENCE (explicit social/face-recognition impacts, stroke-location and hearing clarification, falls alarm, night-time lighting), but none introduce safety concerns and the summary would be usable by an OT with only minor edits.",
+  "raw_response": "{\n  \"coverage\": 4,\n  \"factual_consistency\": 5,\n  \"unsupported_additions\": 5,\n  \"clinical_safety\": 5,\n  \"overall\": 4,\n  \"aligned\": true,\n  \"errors\": [\n    {\n      \"category\": \"omission\",\n      \"severity\": \"minor\",\n      \"description\": \"Does not explicitly mention the social/recognition impacts (difficulty recognising faces, body language, increased social isolation risk) described in the REFERENCE.\"\n    },\n    {\n      \"category\": \"omission\",\n      \"severity\": \"minor\",\n      \"description\": \"Does not explicitly recommend obtaining additional information about stroke location to inform possible cognitive, language or physical impairments as suggested in the REFERENCE.\"\n    },\n    {\n      \"category\": \"omission\",\n      \"severity\": \"minor\",\n      \"description\": \"Does not explicitly recommend clarifying severity of the patient's hearing impairment to guide compensatory strategy training, as highlighted in the REFERENCE.\"\n    },\n    {\n      \"category\": \"omission\",\n      \"severity\": \"minor\",\n      \"description\": \"Does not mention consideration of a personal/falls alarm or pendant alert for solo-time safety, which the REFERENCE lists as a possible intervention.\"\n    },\n    {\n      \"category\": \"omission\",\n      \"severity\": \"minor\",\n      \"description\": \"Does not explicitly discuss low-light/night-time path illumination (e.g., bedroom-to-bathnight lighting options) that the REFERENCE recommends considering for night-time mobility.\"\n    }\n  ],\n  \"rationale\": \"The CANDIDATE summary is factually consistent with the SOURCE and captures the major functional and safety issues (hemianopia, cataract-related acuity/contrast loss, glare, falls history) and appropriate OT/O&M actions. Minor content gaps remain versus the REFERENCE (explicit social/face-recognition impacts, stroke-location and hearing clarification, falls alarm, night-time lighting), but none introduce safety concerns and the summary would be usable by an OT with only minor edits.\"\n}"
+}

@@ -1,0 +1,34 @@
+{
+  "judge": "openai:gpt-5-mini-2025-08-07",
+  "valid": true,
+  "coverage": 5,
+  "factual_consistency": 5,
+  "unsupported_additions": 5,
+  "clinical_safety": 5,
+  "overall": 5,
+  "aligned": true,
+  "errors": [
+    {
+      "category": "omission",
+      "severity": "minor",
+      "description": "Did not mention consideration of a falls alarm/personal alarm as noted in the reference."
+    },
+    {
+      "category": "omission",
+      "severity": "minor",
+      "description": "Did not explicitly recommend orthoptic/low-vision assessment for interim magnification devices (reference suggests this for reading/medication safety)."
+    },
+    {
+      "category": "omission",
+      "severity": "minor",
+      "description": "Did not explicitly mention potential mobility aid options (e.g., white cane) as part of O&M outcomes discussed in the reference."
+    },
+    {
+      "category": "omission",
+      "severity": "minor",
+      "description": "Did not record whether the patient provides care or support for his partner, which the reference flags as relevant to OT priorities."
+    }
+  ],
+  "rationale": "The candidate summary accurately and comprehensively translates the optometry findings into OT-relevant functional impacts, environmental actions, and referrals, and is consistent with the source report. Only minor items from the reference (falls alarm, explicit orthoptic/magnification mention, specific mobility-aid examples, and clarification about caregiving role) were not explicitly stated, but these omissions do not introduce safety concerns and are easily added.",
+  "raw_response": "{\n  \"coverage\": 5,\n  \"factual_consistency\": 5,\n  \"unsupported_additions\": 5,\n  \"clinical_safety\": 5,\n  \"overall\": 5,\n  \"aligned\": true,\n  \"errors\": [\n    {\n      \"category\": \"omission\",\n      \"severity\": \"minor\",\n      \"description\": \"Did not mention consideration of a falls alarm/personal alarm as noted in the reference.\"\n    },\n    {\n      \"category\": \"omission\",\n      \"severity\": \"minor\",\n      \"description\": \"Did not explicitly recommend orthoptic/low-vision assessment for interim magnification devices (reference suggests this for reading/medication safety).\"\n    },\n    {\n      \"category\": \"omission\",\n      \"severity\": \"minor\",\n      \"description\": \"Did not explicitly mention potential mobility aid options (e.g., white cane) as part of O&M outcomes discussed in the reference.\"\n    },\n    {\n      \"category\": \"omission\",\n      \"severity\": \"minor\",\n      \"description\": \"Did not record whether the patient provides care or support for his partner, which the reference flags as relevant to OT priorities.\"\n    }\n  ],\n  \"rationale\": \"The candidate summary accurately and comprehensively translates the optometry findings into OT-relevant functional impacts, environmental actions, and referrals, and is consistent with the source report. Only minor items from the reference (falls alarm, explicit orthoptic/magnification mention, specific mobility-aid examples, and clarification about caregiving role) were not explicitly stated, but these omissions do not introduce safety concerns and are easily added.\"\n}"
+}

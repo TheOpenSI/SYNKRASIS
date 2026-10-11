@@ -1,0 +1,39 @@
+{
+  "judge": "openai:gpt-5-mini-2025-08-07",
+  "valid": true,
+  "coverage": 4,
+  "factual_consistency": 4,
+  "unsupported_additions": 4,
+  "clinical_safety": 3,
+  "overall": 4,
+  "aligned": false,
+  "errors": [
+    {
+      "category": "risk_interpretation",
+      "severity": "major",
+      "description": "Candidate downgraded the vision-related falls risk to 'Moderate' despite the SOURCE and REFERENCE identifying a high vision-related falls risk after a documented fall and ongoing left-sided collisions, which could de-prioritise immediate safety actions."
+    },
+    {
+      "category": "omission",
+      "severity": "minor",
+      "description": "Candidate does not explicitly recommend consideration of a personal/falls alarm or similar personal alert system noted in the REFERENCE as a possible support."
+    },
+    {
+      "category": "omission",
+      "severity": "minor",
+      "description": "Candidate omits an explicit recommendation for human-guide training for carers/supports, which the REFERENCE lists as a potential intervention for unfamiliar/complex environments."
+    },
+    {
+      "category": "omission",
+      "severity": "minor",
+      "description": "Candidate does not explicitly advise clarifying driving cessation history and licence status as recommended in the REFERENCE for transport and support planning."
+    },
+    {
+      "category": "hallucination",
+      "severity": "minor",
+      "description": "Candidate states 'no necrosis or retinal findings' for the macula, which is not specified in the SOURCE and is an unsupported detail."
+    }
+  ],
+  "rationale": "The candidate summary is comprehensive and functionally focused, covering most key vision issues, environmental and mobility recommendations consistent with the SOURCE and REFERENCE. However, it downgrades the falls risk level (major safety-relevant interpretation) and omits a few specific REFERENCE recommendations (falls alarm, human-guide training, clarification of driving cessation), and includes one small unsupported retinal statement, so it would need minor edits before direct handover.",
+  "raw_response": "{\n  \"coverage\": 4,\n  \"factual_consistency\": 4,\n  \"unsupported_additions\": 4,\n  \"clinical_safety\": 3,\n  \"overall\": 4,\n  \"aligned\": false,\n  \"errors\": [\n    {\n      \"category\": \"risk_interpretation\",\n      \"severity\": \"major\",\n      \"description\": \"Candidate downgraded the vision-related falls risk to 'Moderate' despite the SOURCE and REFERENCE identifying a high vision-related falls risk after a documented fall and ongoing left-sided collisions, which could de-prioritise immediate safety actions.\"\n    },\n    {\n      \"category\": \"omission\",\n      \"severity\": \"minor\",\n      \"description\": \"Candidate does not explicitly recommend consideration of a personal/falls alarm or similar personal alert system noted in the REFERENCE as a possible support.\"\n    },\n    {\n      \"category\": \"omission\",\n      \"severity\": \"minor\",\n      \"description\": \"Candidate omits an explicit recommendation for human-guide training for carers/supports, which the REFERENCE lists as a potential intervention for unfamiliar/complex environments.\"\n    },\n    {\n      \"category\": \"omission\",\n      \"severity\": \"minor\",\n      \"description\": \"Candidate does not explicitly advise clarifying driving cessation history and licence status as recommended in the REFERENCE for transport and support planning.\"\n    },\n    {\n      \"category\": \"hallucination\",\n      \"severity\": \"minor\",\n      \"description\": \"Candidate states 'no necrosis or retinal findings' for the macula, which is not specified in the SOURCE and is an unsupported detail.\"\n    }\n  ],\n  \"rationale\": \"The candidate summary is comprehensive and functionally focused, covering most key vision issues, environmental and mobility recommendations consistent with the SOURCE and REFERENCE. However, it downgrades the falls risk level (major safety-relevant interpretation) and omits a few specific REFERENCE recommendations (falls alarm, human-guide training, clarification of driving cessation), and includes one small unsupported retinal statement, so it would need minor edits before direct handover.\"\n}"
+}

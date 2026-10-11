@@ -4,30 +4,18 @@ Same input + same prompt for every candidate model. Each output is compared with
 
 ## Run
 
-From the repo root:
+Edit the lists at the top of `main.py` in the repo root, then run it:
 
-```bash
-# quick test with the OpenAI defaults (generator gpt-5-nano, judges gpt-5-mini + gpt-5.4-mini)
-python Agents/benchmark/run_benchmark.py --n_cases 2 --run_name smoke_test
-
-# server, Ollama models (pass any number of candidate models, at most 2 judges)
-python Agents/benchmark/run_benchmark.py --run_name ollama_v04 \
-    --models ollama:llama3.1:8b ollama:qwen2.5:14b ollama:gemma2:27b \
-    --judges ollama:gpt-oss:120b ollama:llama3.3:70b \
-    --prompt 0_4 --num_ctx 16384
+```python
+MODELS = ["ollama:llama3.1:8b", "ollama:qwen2.5:14b"]       # any number, "backend:model"
+JUDGES = ["ollama:gpt-oss:120b", "ollama:llama3.3:70b"]     # at most 2, keep constant
 ```
 
-| Argument | Default | |
-|---|---|---|
-| `--models` | `openai:gpt-5-nano-2025-08-07` | `backend:model`, backend is `openai` or `ollama` |
-| `--judges` | `openai:gpt-5-mini-2025-08-07 openai:gpt-5.4-mini-2026-03-17` | max 2, keep constant across runs |
-| `--prompt` | `0_4` | `prompts/prompt_<version>.txt` (see `prompts/prompt_changelog.md`) |
-| `--judge_prompt` | `judge_0_1` | `prompts/judge_0_1.txt` |
-| `--cases` / `--n_cases` | all 10 | subset of case ids / first n |
-| `--num_ctx` | 16384 | Ollama context window; the prompt alone is ~7k tokens, the Ollama default would truncate it |
-| `--run_name` | timestamp | re-using a name resumes, existing generations/judgements are not regenerated |
+```bash
+python main.py
+```
 
-To add a model to an existing run, re-run with the same `--run_name` and the extra model; only the new model is generated and judged.
+`BenchmarkRunner` arguments: `models`, `judges`, `prompt_version` (default `0_3`), `judge_prompt_version` (`judge_0_1`), `case_ids` (default all 10), `run_name` (results folder; re-using one resumes the run, and adding a model to an existing run only generates and judges the new model), `num_ctx` (Ollama context window, default 16384; the prompt alone is ~7k tokens and the Ollama default would truncate it).
 
 ## Evaluation
 
@@ -44,8 +32,8 @@ Deterministic supplementary metrics: falls-risk level match with the reference (
 
 | File | Content |
 |---|---|
-| `run_config.json` | models, judges, prompt versions + sha256, settings, git commit, date, host |
-| `generations/<model>/Case_<id>.txt / .json` | raw output (+ latency, timestamp) |
+| `run_config.json` | models, judges, prompt versions, cases, settings, date |
+| `generations/<model>/Case_<id>.txt / .json` | raw output (+ latency) |
 | `judgements/<model>/Case_<id>__<judge>.json` | parsed verdict + raw judge response |
 | `judge_scores.csv` | one row per model x case x judge |
 | `case_results.csv` | one row per model x case, judges aggregated + metrics |

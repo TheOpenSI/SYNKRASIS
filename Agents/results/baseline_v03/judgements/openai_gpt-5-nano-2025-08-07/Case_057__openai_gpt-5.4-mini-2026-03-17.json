@@ -1,0 +1,34 @@
+{
+  "judge": "openai:gpt-5.4-mini-2026-03-17",
+  "valid": true,
+  "coverage": 4,
+  "factual_consistency": 5,
+  "unsupported_additions": 3,
+  "clinical_safety": 4,
+  "overall": 4,
+  "aligned": true,
+  "errors": [
+    {
+      "category": "omission",
+      "severity": "minor",
+      "description": "The candidate does not mention the reference’s concern about possible social participation effects from reduced face/expression recognition or the potential need to consider additional stroke-related cognitive/physical/language issues."
+    },
+    {
+      "category": "omission",
+      "severity": "minor",
+      "description": "The candidate omits the reference emphasis on high-risk contexts such as road crossings, nighttime mobility, and the possible impact of hearing loss on using auditory compensation."
+    },
+    {
+      "category": "hallucination",
+      "severity": "minor",
+      "description": "The candidate adds specific recommendations such as placing frequently used items in the left or central field and routine transportation planning that are not explicitly supported by the source report."
+    },
+    {
+      "category": "tone_register",
+      "severity": "minor",
+      "description": "Several sections are more prescriptive and protocol-like than the reference OT summary, although this does not materially change the clinical content."
+    }
+  ],
+  "rationale": "The candidate captures the core OT-relevant issues: right homonymous hemianopia, cataract-related blur/glare, recurrent falls, doorway and lighting-transition risk, and the need for environmental modification and O&M/low-vision collaboration. It is clinically consistent with the source and largely usable, but it omits some reference-level participation and safety nuances and includes a few extrapolated recommendations beyond the report.",
+  "raw_response": "{\n  \"coverage\": 4,\n  \"factual_consistency\": 5,\n  \"unsupported_additions\": 3,\n  \"clinical_safety\": 4,\n  \"overall\": 4,\n  \"aligned\": true,\n  \"errors\": [\n    {\n      \"category\": \"omission\",\n      \"severity\": \"minor\",\n      \"description\": \"The candidate does not mention the reference’s concern about possible social participation effects from reduced face/expression recognition or the potential need to consider additional stroke-related cognitive/physical/language issues.\"\n    },\n    {\n      \"category\": \"omission\",\n      \"severity\": \"minor\",\n      \"description\": \"The candidate omits the reference emphasis on high-risk contexts such as road crossings, nighttime mobility, and the possible impact of hearing loss on using auditory compensation.\"\n    },\n    {\n      \"category\": \"hallucination\",\n      \"severity\": \"minor\",\n      \"description\": \"The candidate adds specific recommendations such as placing frequently used items in the left or central field and routine transportation planning that are not explicitly supported by the source report.\"\n    },\n    {\n      \"category\": \"tone_register\",\n      \"severity\": \"minor\",\n      \"description\": \"Several sections are more prescriptive and protocol-like than the reference OT summary, although this does not materially change the clinical content.\"\n    }\n  ],\n  \"rationale\": \"The candidate captures the core OT-relevant issues: right homonymous hemianopia, cataract-related blur/glare, recurrent falls, doorway and lighting-transition risk, and the need for environmental modification and O&M/low-vision collaboration. It is clinically consistent with the source and largely usable, but it omits some reference-level participation and safety nuances and includes a few extrapolated recommendations beyond the report.\"\n}"
+}
