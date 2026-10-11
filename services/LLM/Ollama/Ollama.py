@@ -107,6 +107,7 @@ class Ollama(LLMBase):
         
     def cleanup(self):
         """
-        Nothing to clean up for Ollama
+        Unload the model from memory (VRAM) straight away instead of after Ollama's default keep_alive.
         """
-        print_success("Ollama resources cleaned up.")
+        ollama.generate(model = self.model_name, keep_alive = 0)
+        print_success(f"{self.model_name} unloaded, Ollama resources cleaned up.")

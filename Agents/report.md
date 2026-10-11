@@ -1,24 +1,9 @@
 # Stage 2A.1 — Work Report
 
-Branch `opt`, 12 October 2026. This report covers what was changed, how prompt v0.3 performed in the baseline benchmark, the faults found in v0.3, and what v0.4 changes to address them.
-
-| # | Plan step (Stage_2A_Plan_Proposal §2A.1) | Status |
-|---|---|---|
-| 1 | Retrieve original generation prompt | Done: v0.2 (original) and v0.3 (OT-revised) |
-| 2 | Diff drafts vs corrected references → error taxonomy | Done (§3.1) |
-| 3 | Minimal generic prompt revisions | Done → `prompts/prompt_0_4.txt` (§4) |
-| 4 | Benchmark candidate models | Pipeline ready; v0.3 baseline run on all 10 cases with GPT (§2) |
-| 5 | Multi-LLM-as-judge + majority agreement | Done: 2 judges, majority vote, human-review flag |
-| 6 | Select candidate model + baseline prompt | **Pending**: server run with the Ollama candidates |
-
----
-
 ## 1. What was changed
 
 ### 1.1 Data
-- All 35 `.docx` files under `Agents/` were converted to UTF-8 `.txt` (LibreOffice) and the docx files were deleted. The PDF was not touched.
-- No file contained tracked changes or comments, so no correction information was lost.
-- The originals remain in git, in commit `90d6c1a all data added`.
+- All `.docx` files under `Agents/` were converted to UTF-8 `.txt`
 
 ### 1.2 Code
 | File | Change |
@@ -32,7 +17,7 @@ Branch `opt`, 12 October 2026. This report covers what was changed, how prompt v
 | `Agents/prompts/judge_0_1.txt` | Judge rubric (protocol §4.6 criteria + 2A.1 error taxonomy) |
 | `services/LLM/Ollama/Ollama.py` | Optional `options` passed to `ollama.generate` (+4/−2 lines). Without it, Ollama's 2–4k default context silently truncates the ~7k-token prompt. Existing callers are unchanged. |
 
-`OpenAI_GPT` was used unchanged. It works with gpt-5-nano, gpt-5-mini and gpt-5.4-mini.
+`OpenAI_GPT` was tested with gpt-5-nano, gpt-5-mini and gpt-5.4-mini.
 
 ### 1.3 How judging works
 - Each judge sees the **source report, the reference and the candidate**. It scores 1–5 on `coverage`, `factual_consistency`, `unsupported_additions`, `clinical_safety` and `overall`.

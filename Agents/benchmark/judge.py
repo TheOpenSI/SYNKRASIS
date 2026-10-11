@@ -72,6 +72,13 @@ class Judge:
         return {"judge": self.model_spec, "valid": False, "raw_response": response}
 
 
+    def cleanup(self):
+        """
+        Release the judge model (unloads it from VRAM for Ollama).
+        """
+        self.llm.cleanup()
+
+
 def aggregate_verdicts(verdicts: List[Dict]) -> Dict:
     """
     Combine judges: mean scores, majority vote on "aligned" (ties count as not aligned),

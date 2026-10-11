@@ -1,8 +1,11 @@
 # ====================================================================================
 # Stage 2A.1 baseline benchmark runner.
-# Generates an OT summary per case for each candidate model, judges each summary against
-# the OT reference summary with up to 2 judges, and saves everything to
-# Agents/results/<run_name>/. Re-running with the same run_name reuses existing files.
+# Runs in 3 phases so only one model is loaded at a time (small GPU):
+#    1. generate all cases with model a, unload, then model b, ...
+#    2. judge all generations with judge x, unload, then judge y
+#    3. aggregate the saved judgements into tables
+# Everything is saved to Agents/results/<run_name>/ as it is produced; re-running with the
+# same run_name reuses existing files.
 # Usage:
 #    - BenchmarkRunner(models, judges, prompt_version="0_3").run() -> pd.DataFrame
 # ====================================================================================
@@ -109,22 +112,33 @@ class BenchmarkRunner:
             with open(path.replace(".json", ".txt"), "w", encoding="utf-8") as file:
                 file.write(summary)
             generations[case["case_id"]] = record
+
+        if llm:
+            llm.cleanup() # unload before the next model
         return generations
 
 
-    def _judge(self, judges: List[Judge], model: str, case: Dict, summary: str) -> List[Dict]:
+    def _judgement_path(self, model: str, case_id: str, judge: str) -> str:
+        return os.path.join(self.run_dir, "judgements", safe_name(model),
+                            f"Case_{case_id}__{safe_name(judge)}.json")
+
+
+    def _judge(self, judge_spec: str, generations: Dict[str, Dict[str, Dict]]) -> None:
         """
-        Judge (or reload) one candidate summary with every judge.
+        Judge (or skip if already saved) every generation of every model with one judge, then unload it.
         """
-        out_dir = os.path.join(self.run_dir, "judgements", safe_name(model))
-        verdicts = []
-        for judge in judges:
-            path = os.path.join(out_dir, f"Case_{case['case_id']}__{safe_name(judge.model_spec)}.json")
-            if not os.path.exists(path):
-                print_info(f"Judging case {case['case_id']} of {model} with {judge.model_spec}")
-                write_json(path, judge.evaluate(case, summary))
-            verdicts.append(read_json(path))
-        return verdicts
+        judge = None
+        for model in self.models:
+            for case in self.cases:
+                path = self._judgement_path(model, case["case_id"], judge_spec)
+                if os.path.exists(path):
+                    continue
+                judge = judge or Judge(judge_spec, self.judge_prompt)
+                print_info(f"Judging case {case['case_id']} of {model} with {judge_spec}")
+                write_json(path, judge.evaluate(case, generations[model][case["case_id"]]["summary"]))
+
+        if judge:
+            judge.cleanup() # unload before the next judge
 
 
     def _save_tables(self, judge_rows: List[Dict], case_rows: List[Dict], error_rows: List[Dict]) -> pd.DataFrame:
@@ -154,17 +168,24 @@ class BenchmarkRunner:
 
     def run(self) -> pd.DataFrame:
         """
-        Generate with every model first (so local candidates and judges don't share VRAM), then judge.
+        Generate with each model, then judge with each judge, one model loaded at a time. Then aggregate.
         """
         self._save_config()
-        generations = {model: self._generate(model) for model in self.models}
-        judges = [Judge(judge, self.judge_prompt) for judge in self.judges]
 
+        # Phase 1: generation, one candidate model at a time
+        generations = {model: self._generate(model) for model in self.models}
+
+        # Phase 2: judgement, one judge model at a time
+        for judge_spec in self.judges:
+            self._judge(judge_spec, generations)
+
+        # Phase 3: aggregate the saved judgements
         judge_rows, case_rows, error_rows = [], [], []
         for model in self.models:
             for case in self.cases:
                 record = generations[model][case["case_id"]]
-                verdicts = self._judge(judges, model, case, record["summary"])
+                verdicts = [read_json(self._judgement_path(model, case["case_id"], judge_spec))
+                            for judge_spec in self.judges]
 
                 for verdict in verdicts:
                     judge_rows.append({"model": model, "case_id": case["case_id"],
