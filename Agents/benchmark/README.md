@@ -43,4 +43,4 @@ Deterministic supplementary metrics: falls-risk level match with the reference (
 ## Server notes
 
 - `services/LLM/Ollama/Ollama.py` imports `torch` and pulls each model on first use.
-- Candidate models are generated first and judges run afterwards, so a large local judge does not compete with the candidates for VRAM.
+- Only one model is loaded at a time: all cases are generated with each candidate in turn, then every generation is judged by judge 1, then by judge 2. Each Ollama model is unloaded (`keep_alive=0`) before the next is loaded, and every output is saved as soon as it is produced.
