@@ -28,8 +28,10 @@ class Ollama(LLMBase):
                  model_name: str = "mistral", # uses mistral as default model
                  enable_chat_history:bool = False, 
                  max_history: int = 3,
-                 verbose_switch: bool = False):
+                 verbose_switch: bool = False,
+                 options: Dict = None): # ollama options e.g. {"num_ctx": 16384, "temperature": 0}
         super().__init__(model_name, enable_chat_history, max_history, verbose_switch)
+        self.options = options
         self._tag_model() # tag the model to support model availability check
         self.pull_manager = OllamaPullManager(model_name=self.model_name,
                                               mode="stochastic",
@@ -83,7 +85,7 @@ class Ollama(LLMBase):
         full_query = self._prepare_prompt(messages) 
         
         # Generate response from the model
-        response = ollama.generate(model = self.model_name, prompt = full_query)
+        response = ollama.generate(model = self.model_name, prompt = full_query, options = self.options)
 
         # Add the interaction to chat history
         if self.enable_chat_history and response:
