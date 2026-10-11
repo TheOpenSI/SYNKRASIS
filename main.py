@@ -6,10 +6,14 @@ from Agents.benchmark.BenchmarkRunner import BenchmarkRunner
 from utils.ascii.synkrasis import print_synkrasis_logo
 
 # Candidate models as "backend:model", backend is openai or ollama, e.g. "ollama:llama3.1:8b"
-MODELS = ["openai:gpt-5-nano-2025-08-07"]
+MODELS = ["ollama:gpt-oss:20b",
+          "ollama:qwen3:32b",
+          "ollama:qwen2.5:32b",
+          "ollama:phi4:14b",
+          "ollama:medgemma:27b"]
 
 # At most 2 judges, keep them constant across runs
-JUDGES = ["openai:gpt-5-mini-2025-08-07", "openai:gpt-5.4-mini-2026-03-17"]
+JUDGES = ["ollama:qwen2.5:72b", "ollama:llama3.3:70b"]
 
 
 def main():
@@ -18,7 +22,7 @@ def main():
                              judges=JUDGES,
                              prompt_version="0_3",
                              case_ids=None, # None = all 10 development cases
-                             run_name="baseline_v03")
+                             run_name="baseline_v03_os")
     summary = runner.run()
     print(summary.to_string())
 
