@@ -252,6 +252,8 @@ class Renderer(Analyser):
                         changes.setdefault(name, []).append((before, after))
                 for target, slot_and_value in execution.get("written", {}).items():
                     written.setdefault(target, []).append(slot_and_value)
+        else:
+            parts.append("literal assignment")      # the source text of the line is printed by _render_row
         # `G[i][j] = x` is shown by the values it wrote, not by how the whole list G changed
         changes = {name: pairs for name, pairs in changes.items()
                    if name not in {re.match(r"\w+", target).group() for target in written}}
@@ -516,7 +518,15 @@ class Renderer(Analyser):
 
     @staticmethod
     def _is_literal_assignment(source: str) -> bool:
-        """`total = 0`, `seen = []`: the value is in the code, a trace row would say nothing."""
+        """
+        total = 0, seen = []: the value is in the code, a trace row would say nothing.
+        
+        Args:
+            source: A string representing a line of source code.
+        
+        Returns:
+            True if the source line is an assignment of a literal value, False otherwise.
+        """
         try:
             node = ast.parse(source.strip()).body[0]
         except Exception:
@@ -528,6 +538,7 @@ class Renderer(Analyser):
             return True
         except Exception:
             return False
+    
 
     def _indent_of(self, line: int) -> int:
         text = self.structure.lines[line - 1] if 1 <= line <= len(self.structure.lines) else ""
@@ -558,7 +569,6 @@ class Renderer(Analyser):
             return text[:max(8, limit - (len(text) - marker) - 4)] + "... " + text[marker:]
         return text[:limit - 3] + "..."
 
-    # -- sequences ---------------------------------------------------------------------------------------
 
     def _sequence(self, values: list[str]) -> str:
         """1,2,3 stays; 1,2,3,4,5 becomes 1..5; 7,7,7 becomes 7×3; long lists keep head and tail."""
@@ -579,21 +589,37 @@ class Renderer(Analyser):
         tail = values[-self.compact.sequence_tail:]
         return f"{self._run_length(head)} ... {self._run_length(tail)} ({count} values)"
 
+
     @staticmethod
-    def _run_length(values: list[str]) -> str:
-        """T,T,T,F -> T×3,F (runs of 3 or more only)."""
+    def _run_length(values: list[str], identical_count: int = 10) -> str:
+        """
+        T,T,T,F -> Tx3,F.
+        
+        Args:
+            values: A list of strings representing the values to be compressed.
+            identical_count: The minimum number of identical consecutive values 
+                required to trigger run-length encoding.
+        
+        Returns:
+            A string representing the run-length encoded version of the input values.
+        """
         pieces, index = [], 0
         while index < len(values):
             run = 1
             while index + run < len(values) and values[index + run] == values[index]:
                 run += 1
-            pieces.extend([f"{values[index]}×{run}"] if run >= 3 else [values[index]] * run)
+            
+            pieces.extend([f"{values[index]}x{run}"] 
+                          if run >= identical_count 
+                          else [values[index]] * run)
             index += run
         return ",".join(pieces)
 
 
-def render_within_budget(structure: CodeStructure, roots: list[Invocation], result: Any, error: Optional[Exception],
-                         expected: Optional[str], output: Optional[str], config: TraceConfig) -> str:
+def render_within_budget(structure: CodeStructure, roots: list[Invocation], 
+                         result: Any, error: Optional[Exception],
+                         expected: Optional[str], output: Optional[str], 
+                         config: TraceConfig) -> str:
     """The trace, re-rendered with less detail (TraceConfig.tightened) until it fits config.max_chars."""
     text = Renderer(structure, config).render(roots, result, error, expected, output)
     if config.max_chars is None or len(text) <= config.max_chars:

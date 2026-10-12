@@ -94,6 +94,7 @@ class BPD:
         self.last_error = answer["error"]
         return answer["trace"]
 
+
     def _worker_command(self) -> tuple[list[str], Optional[str]]:
         """The command that runs worker.py: here, or in a throwaway container. Returns (command, container name)."""
         if self.sandbox_image is None:
@@ -104,7 +105,11 @@ class BPD:
                    "--entrypoint", "python", self.sandbox_image, "/usr/src/services/BPD/worker.py"]
         return command, name
 
-    def trace_in_process(self, code: str, test_input: str, entry_point: Optional[str] = None,
+
+    def trace_in_process(self, 
+                         code: str, 
+                         test_input: str, 
+                         entry_point: Optional[str] = None,
                          expected: Optional[str] = None) -> Optional[str]:
         """Same as trace() in this process. Use trace() for LLM code you do not trust."""
         self.last_error = None
