@@ -1,0 +1,24 @@
+{
+  "judge": "ollama:qwen2.5:72b",
+  "valid": true,
+  "coverage": 4,
+  "factual_consistency": 5,
+  "unsupported_additions": 5,
+  "clinical_safety": 5,
+  "overall": 4,
+  "aligned": true,
+  "errors": [
+    {
+      "category": "omission",
+      "severity": "minor",
+      "description": "The CANDIDATE does not mention the specific recommendation for a symptom-and-activity diary to help identify when mobility or reading tasks are safest."
+    },
+    {
+      "category": "omission",
+      "severity": "minor",
+      "description": "The CANDIDATE does not explicitly mention the need to assess indoor mobility and access to home, particularly stairs, to improve safety when vision is poor."
+    }
+  ],
+  "rationale": "The CANDIDATE covers most of the important functional content from the REFERENCE, including key vision issues, task-level impacts, and environmental considerations. It is factually consistent with the SOURCE report and avoids unsupported additions. The CANDIDATE is clinically safe and only misses minor details that would not significantly impact OT assessment or intervention.",
+  "raw_response": "```json\n{\n  \"coverage\": 4,\n  \"factual_consistency\": 5,\n  \"unsupported_additions\": 5,\n  \"clinical_safety\": 5,\n  \"overall\": 4,\n  \"aligned\": true,\n  \"errors\": [\n    {\n      \"category\": \"omission\",\n      \"severity\": \"minor\",\n      \"description\": \"The CANDIDATE does not mention the specific recommendation for a symptom-and-activity diary to help identify when mobility or reading tasks are safest.\"\n    },\n    {\n      \"category\": \"omission\",\n      \"severity\": \"minor\",\n      \"description\": \"The CANDIDATE does not explicitly mention the need to assess indoor mobility and access to home, particularly stairs, to improve safety when vision is poor.\"\n    }\n  ],\n  \"rationale\": \"The CANDIDATE covers most of the important functional content from the REFERENCE, including key vision issues, task-level impacts, and environmental considerations. It is factually consistent with the SOURCE report and avoids unsupported additions. The CANDIDATE is clinically safe and only misses minor details that would not significantly impact OT assessment or intervention.\"\n}\n```"
+}

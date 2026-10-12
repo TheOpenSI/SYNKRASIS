@@ -1,0 +1,19 @@
+{
+  "judge": "ollama:qwen2.5:72b",
+  "valid": true,
+  "coverage": 4,
+  "factual_consistency": 5,
+  "unsupported_additions": 5,
+  "clinical_safety": 5,
+  "overall": 4,
+  "aligned": true,
+  "errors": [
+    {
+      "category": "omission",
+      "severity": "minor",
+      "description": "The candidate summary does not explicitly mention the patient's part-time work and potential impact on community access, which is noted in the reference summary."
+    }
+  ],
+  "rationale": "The candidate summary covers most of the important functional content from the reference, including key vision issues, task-level functional impacts, and environmental considerations. It is fully consistent with the source report and avoids unsupported additions. The only minor omission is the explicit mention of the patient's part-time work and its potential impact on community access, which is included in the reference summary. Overall, the candidate summary is clinically safe and functionally relevant for an OT to use.",
+  "raw_response": "{\n  \"coverage\": 4,\n  \"factual_consistency\": 5,\n  \"unsupported_additions\": 5,\n  \"clinical_safety\": 5,\n  \"overall\": 4,\n  \"aligned\": true,\n  \"errors\": [\n    {\"category\": \"omission\", \"severity\": \"minor\", \"description\": \"The candidate summary does not explicitly mention the patient's part-time work and potential impact on community access, which is noted in the reference summary.\"}\n  ],\n  \"rationale\": \"The candidate summary covers most of the important functional content from the reference, including key vision issues, task-level functional impacts, and environmental considerations. It is fully consistent with the source report and avoids unsupported additions. The only minor omission is the explicit mention of the patient's part-time work and its potential impact on community access, which is included in the reference summary. Overall, the candidate summary is clinically safe and functionally relevant for an OT to use.\"\n}"
+}

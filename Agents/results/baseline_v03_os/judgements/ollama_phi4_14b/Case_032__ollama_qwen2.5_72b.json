@@ -1,0 +1,34 @@
+{
+  "judge": "ollama:qwen2.5:72b",
+  "valid": true,
+  "coverage": 4,
+  "factual_consistency": 5,
+  "unsupported_additions": 5,
+  "clinical_safety": 4,
+  "overall": 4,
+  "aligned": true,
+  "errors": [
+    {
+      "category": "omission",
+      "severity": "minor",
+      "description": "The candidate summary does not explicitly mention the impact of bifocal use outdoors on depth perception and safety, as noted in the reference summary."
+    },
+    {
+      "category": "omission",
+      "severity": "minor",
+      "description": "The candidate summary does not detail the potential impact on ADLs such as measuring and pouring liquids, food prep, and medication management."
+    },
+    {
+      "category": "omission",
+      "severity": "minor",
+      "description": "The candidate summary does not specifically address the need for an O&M specialist referral for functional mobility assessment and training."
+    },
+    {
+      "category": "omission",
+      "severity": "minor",
+      "description": "The candidate summary does not provide specific recommendations for environmental modifications, such as marking level changes or increasing color contrast."
+    }
+  ],
+  "rationale": "The candidate summary covers most of the important functional content and provides a comprehensive overview of the patient's vision issues and functional impacts. However, it lacks some specific details and recommendations that are present in the reference summary, particularly regarding the impact of bifocal use, detailed ADL impacts, and specific O&M and environmental modification recommendations.",
+  "raw_response": "{\n  \"coverage\": 4,\n  \"factual_consistency\": 5,\n  \"unsupported_additions\": 5,\n  \"clinical_safety\": 4,\n  \"overall\": 4,\n  \"aligned\": true,\n  \"errors\": [\n    {\"category\": \"omission\", \"severity\": \"minor\", \"description\": \"The candidate summary does not explicitly mention the impact of bifocal use outdoors on depth perception and safety, as noted in the reference summary.\"},\n    {\"category\": \"omission\", \"severity\": \"minor\", \"description\": \"The candidate summary does not detail the potential impact on ADLs such as measuring and pouring liquids, food prep, and medication management.\"},\n    {\"category\": \"omission\", \"severity\": \"minor\", \"description\": \"The candidate summary does not specifically address the need for an O&M specialist referral for functional mobility assessment and training.\"},\n    {\"category\": \"omission\", \"severity\": \"minor\", \"description\": \"The candidate summary does not provide specific recommendations for environmental modifications, such as marking level changes or increasing color contrast.\"}\n  ],\n  \"rationale\": \"The candidate summary covers most of the important functional content and provides a comprehensive overview of the patient's vision issues and functional impacts. However, it lacks some specific details and recommendations that are present in the reference summary, particularly regarding the impact of bifocal use, detailed ADL impacts, and specific O&M and environmental modification recommendations.\"\n}"
+}

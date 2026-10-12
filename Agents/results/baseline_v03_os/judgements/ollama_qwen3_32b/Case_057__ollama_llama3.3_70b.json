@@ -1,0 +1,13 @@
+{
+  "judge": "ollama:llama3.3:70b",
+  "valid": true,
+  "coverage": 5,
+  "factual_consistency": 5,
+  "unsupported_additions": 5,
+  "clinical_safety": 5,
+  "overall": 5,
+  "aligned": true,
+  "errors": [],
+  "rationale": "The candidate summary covers all important functional content from the reference summary, is factually consistent with the source report, avoids unsupported additions, and does not introduce any clinically significant omissions or contradictions. The language and recommendations are appropriate for an OT audience, and the summary effectively communicates key vision issues, functional impacts, and vision-informed OT considerations.",
+  "raw_response": "```json\n{\n  \"coverage\": 5,\n  \"factual_consistency\": 5,\n  \"unsupported_additions\": 5,\n  \"clinical_safety\": 5,\n  \"overall\": 5,\n  \"aligned\": true,\n  \"errors\": [],\n  \"rationale\": \"The candidate summary covers all important functional content from the reference summary, is factually consistent with the source report, avoids unsupported additions, and does not introduce any clinically significant omissions or contradictions. The language and recommendations are appropriate for an OT audience, and the summary effectively communicates key vision issues, functional impacts, and vision-informed OT considerations.\"\n}\n```"
+}

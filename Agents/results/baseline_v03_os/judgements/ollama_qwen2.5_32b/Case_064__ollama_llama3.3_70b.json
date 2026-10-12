@@ -1,0 +1,29 @@
+{
+  "judge": "ollama:llama3.3:70b",
+  "valid": true,
+  "coverage": 4,
+  "factual_consistency": 5,
+  "unsupported_additions": 4,
+  "clinical_safety": 4,
+  "overall": 4,
+  "aligned": true,
+  "errors": [
+    {
+      "category": "omission",
+      "severity": "minor",
+      "description": "The candidate summary does not explicitly mention the importance of distinguishing visual field loss from neglect or broader perceptual issues during OT assessment."
+    },
+    {
+      "category": "risk_interpretation",
+      "severity": "minor",
+      "description": "The candidate summary categorizes the falls risk level as 'moderate', whereas the reference summary indicates a 'high vision-related falls risk'."
+    },
+    {
+      "category": "terminology_drift",
+      "severity": "minor",
+      "description": "The candidate summary uses the term 'low-vision specialist' instead of 'orientation and mobility specialist' for coordination with magnification aids."
+    }
+  ],
+  "rationale": "The candidate summary provides comprehensive coverage of key vision issues, functional impacts, and vision-informed OT considerations, with minor omissions and inconsistencies. The summary demonstrates a good understanding of the patient's needs and appropriate OT interventions, but may benefit from minor edits to enhance clarity and consistency with the reference summary.",
+  "raw_response": "```\n{\n  \"coverage\": 4,\n  \"factual_consistency\": 5,\n  \"unsupported_additions\": 4,\n  \"clinical_safety\": 4,\n  \"overall\": 4,\n  \"aligned\": true,\n  \"errors\": [\n    {\"category\": \"omission\", \"severity\": \"minor\", \"description\": \"The candidate summary does not explicitly mention the importance of distinguishing visual field loss from neglect or broader perceptual issues during OT assessment.\"},\n    {\"category\": \"risk_interpretation\", \"severity\": \"minor\", \"description\": \"The candidate summary categorizes the falls risk level as 'moderate', whereas the reference summary indicates a 'high vision-related falls risk'.\"},\n    {\"category\": \"terminology_drift\", \"severity\": \"minor\", \"description\": \"The candidate summary uses the term 'low-vision specialist' instead of 'orientation and mobility specialist' for coordination with magnification aids.\"}\n  ],\n  \"rationale\": \"The candidate summary provides comprehensive coverage of key vision issues, functional impacts, and vision-informed OT considerations, with minor omissions and inconsistencies. The summary demonstrates a good understanding of the patient's needs and appropriate OT interventions, but may benefit from minor edits to enhance clarity and consistency with the reference summary.\"\n}\n```"
+}

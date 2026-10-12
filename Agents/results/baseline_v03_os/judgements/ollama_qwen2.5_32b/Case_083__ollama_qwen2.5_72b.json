@@ -1,0 +1,19 @@
+{
+  "judge": "ollama:qwen2.5:72b",
+  "valid": true,
+  "coverage": 4,
+  "factual_consistency": 5,
+  "unsupported_additions": 5,
+  "clinical_safety": 5,
+  "overall": 4,
+  "aligned": true,
+  "errors": [
+    {
+      "category": "omission",
+      "severity": "minor",
+      "description": "The candidate summary does not explicitly mention the need to review the client's satisfaction and performance of domestic ADLs, such as cooking, laundry, and cleaning."
+    }
+  ],
+  "rationale": "The candidate summary covers most of the important functional content from the reference, with only a minor omission regarding the review of domestic ADLs. It is factually consistent, avoids unsupported additions, and does not pose any clinical safety issues. The summary is well-suited for an OT and can be used with minor edits.",
+  "raw_response": "{\n  \"coverage\": 4,\n  \"factual_consistency\": 5,\n  \"unsupported_additions\": 5,\n  \"clinical_safety\": 5,\n  \"overall\": 4,\n  \"aligned\": true,\n  \"errors\": [\n    {\"category\": \"omission\", \"severity\": \"minor\", \"description\": \"The candidate summary does not explicitly mention the need to review the client's satisfaction and performance of domestic ADLs, such as cooking, laundry, and cleaning.\"}\n  ],\n  \"rationale\": \"The candidate summary covers most of the important functional content from the reference, with only a minor omission regarding the review of domestic ADLs. It is factually consistent, avoids unsupported additions, and does not pose any clinical safety issues. The summary is well-suited for an OT and can be used with minor edits.\"\n}"
+}

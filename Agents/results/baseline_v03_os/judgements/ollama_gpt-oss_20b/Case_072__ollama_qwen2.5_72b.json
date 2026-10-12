@@ -1,0 +1,29 @@
+{
+  "judge": "ollama:qwen2.5:72b",
+  "valid": true,
+  "coverage": 4,
+  "factual_consistency": 5,
+  "unsupported_additions": 5,
+  "clinical_safety": 4,
+  "overall": 4,
+  "aligned": true,
+  "errors": [
+    {
+      "category": "omission",
+      "severity": "minor",
+      "description": "Does not mention the need to explore community travel and visual detection of landmarks for orientation."
+    },
+    {
+      "category": "omission",
+      "severity": "minor",
+      "description": "Does not explicitly mention the need to review glare management with the Optometrist or Orthoptist."
+    },
+    {
+      "category": "risk_interpretation",
+      "severity": "minor",
+      "description": "Classifies falls risk as 'high' instead of 'moderate' as in the REFERENCE."
+    }
+  ],
+  "rationale": "The CANDIDATE summary covers most of the important functional content from the REFERENCE, including key vision issues, task-level functional impacts, and environmental considerations. It is factually consistent with the SOURCE report and avoids unsupported additions. However, it omits some details about community travel and glare management, and classifies the falls risk as 'high' instead of 'moderate'. These are minor issues that do not significantly impact the overall utility of the summary for an OT.",
+  "raw_response": "```json\n{\n  \"coverage\": 4,\n  \"factual_consistency\": 5,\n  \"unsupported_additions\": 5,\n  \"clinical_safety\": 4,\n  \"overall\": 4,\n  \"aligned\": true,\n  \"errors\": [\n    {\n      \"category\": \"omission\",\n      \"severity\": \"minor\",\n      \"description\": \"Does not mention the need to explore community travel and visual detection of landmarks for orientation.\"\n    },\n    {\n      \"category\": \"omission\",\n      \"severity\": \"minor\",\n      \"description\": \"Does not explicitly mention the need to review glare management with the Optometrist or Orthoptist.\"\n    },\n    {\n      \"category\": \"risk_interpretation\",\n      \"severity\": \"minor\",\n      \"description\": \"Classifies falls risk as 'high' instead of 'moderate' as in the REFERENCE.\"\n    }\n  ],\n  \"rationale\": \"The CANDIDATE summary covers most of the important functional content from the REFERENCE, including key vision issues, task-level functional impacts, and environmental considerations. It is factually consistent with the SOURCE report and avoids unsupported additions. However, it omits some details about community travel and glare management, and classifies the falls risk as 'high' instead of 'moderate'. These are minor issues that do not significantly impact the overall utility of the summary for an OT.\"\n}\n```"
+}

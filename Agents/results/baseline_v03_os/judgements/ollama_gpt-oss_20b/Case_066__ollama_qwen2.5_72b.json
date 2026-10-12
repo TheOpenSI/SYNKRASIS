@@ -1,0 +1,19 @@
+{
+  "judge": "ollama:qwen2.5:72b",
+  "valid": true,
+  "coverage": 4,
+  "factual_consistency": 5,
+  "unsupported_additions": 5,
+  "clinical_safety": 5,
+  "overall": 4,
+  "aligned": true,
+  "errors": [
+    {
+      "category": "omission",
+      "severity": "minor",
+      "description": "Does not explicitly mention the potential need for a symptom-and-activity diary to help the OT identify when mobility or reading tasks are safest."
+    }
+  ],
+  "rationale": "The candidate summary covers most of the important functional content from the reference, including key vision issues, task-level functional impacts, and environmental considerations. It is factually consistent with the source report and avoids unsupported additions. The only minor omission is the suggestion for a symptom-and-activity diary, which is a useful tool for OTs but not a critical omission. The candidate is clinically safe and provides valuable recommendations for OT considerations.",
+  "raw_response": "```json\n{\n  \"coverage\": 4,\n  \"factual_consistency\": 5,\n  \"unsupported_additions\": 5,\n  \"clinical_safety\": 5,\n  \"overall\": 4,\n  \"aligned\": true,\n  \"errors\": [\n    {\"category\": \"omission\", \"severity\": \"minor\", \"description\": \"Does not explicitly mention the potential need for a symptom-and-activity diary to help the OT identify when mobility or reading tasks are safest.\"}\n  ],\n  \"rationale\": \"The candidate summary covers most of the important functional content from the reference, including key vision issues, task-level functional impacts, and environmental considerations. It is factually consistent with the source report and avoids unsupported additions. The only minor omission is the suggestion for a symptom-and-activity diary, which is a useful tool for OTs but not a critical omission. The candidate is clinically safe and provides valuable recommendations for OT considerations.\"\n}\n```"
+}

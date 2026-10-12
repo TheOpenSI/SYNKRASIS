@@ -1,0 +1,29 @@
+{
+  "judge": "ollama:qwen2.5:72b",
+  "valid": true,
+  "coverage": 4,
+  "factual_consistency": 5,
+  "unsupported_additions": 5,
+  "clinical_safety": 5,
+  "overall": 4,
+  "aligned": true,
+  "errors": [
+    {
+      "category": "omission",
+      "severity": "minor",
+      "description": "The CANDIDATE does not mention the impact of vision on operating a phone or calling for assistance in emergencies."
+    },
+    {
+      "category": "omission",
+      "severity": "minor",
+      "description": "The CANDIDATE does not mention the potential impact of visual fatigue and cognitive fatigue on ADLs and IADLs."
+    },
+    {
+      "category": "omission",
+      "severity": "minor",
+      "description": "The CANDIDATE does not mention the impact of vision on locating small pills if dropped."
+    }
+  ],
+  "rationale": "The CANDIDATE covers most of the important functional content from the REFERENCE, including key vision issues, functional impacts, environmental considerations, and falls risk. However, it omits a few minor details that are relevant to OT practice, such as the impact on phone use and visual fatigue. Despite these omissions, the CANDIDATE is factually consistent, avoids unsupported additions, and does not have any clinically significant safety issues.",
+  "raw_response": "```json\n{\n  \"coverage\": 4,\n  \"factual_consistency\": 5,\n  \"unsupported_additions\": 5,\n  \"clinical_safety\": 5,\n  \"overall\": 4,\n  \"aligned\": true,\n  \"errors\": [\n    {\n      \"category\": \"omission\",\n      \"severity\": \"minor\",\n      \"description\": \"The CANDIDATE does not mention the impact of vision on operating a phone or calling for assistance in emergencies.\"\n    },\n    {\n      \"category\": \"omission\",\n      \"severity\": \"minor\",\n      \"description\": \"The CANDIDATE does not mention the potential impact of visual fatigue and cognitive fatigue on ADLs and IADLs.\"\n    },\n    {\n      \"category\": \"omission\",\n      \"severity\": \"minor\",\n      \"description\": \"The CANDIDATE does not mention the impact of vision on locating small pills if dropped.\"\n    }\n  ],\n  \"rationale\": \"The CANDIDATE covers most of the important functional content from the REFERENCE, including key vision issues, functional impacts, environmental considerations, and falls risk. However, it omits a few minor details that are relevant to OT practice, such as the impact on phone use and visual fatigue. Despite these omissions, the CANDIDATE is factually consistent, avoids unsupported additions, and does not have any clinically significant safety issues.\"\n}\n```"
+}

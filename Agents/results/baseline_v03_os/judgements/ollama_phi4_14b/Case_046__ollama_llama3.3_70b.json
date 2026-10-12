@@ -1,0 +1,13 @@
+{
+  "judge": "ollama:llama3.3:70b",
+  "valid": true,
+  "coverage": 5,
+  "factual_consistency": 5,
+  "unsupported_additions": 5,
+  "clinical_safety": 5,
+  "overall": 5,
+  "aligned": true,
+  "errors": [],
+  "rationale": "The CANDIDATE OT summary effectively covers all key points from the REFERENCE summary, maintaining factual consistency with the SOURCE optometry report. It appropriately addresses vision issues, functional impacts, and provides relevant OT considerations without introducing unsupported additions or compromising clinical safety. The summary is comprehensive, well-structured, and suitable for an OT audience, making it equivalent to or better than the REFERENCE summary in terms of usability and clinical applicability.",
+  "raw_response": "```\n{\n  \"coverage\": 5,\n  \"factual_consistency\": 5,\n  \"unsupported_additions\": 5,\n  \"clinical_safety\": 5,\n  \"overall\": 5,\n  \"aligned\": true,\n  \"errors\": [],\n  \"rationale\": \"The CANDIDATE OT summary effectively covers all key points from the REFERENCE summary, maintaining factual consistency with the SOURCE optometry report. It appropriately addresses vision issues, functional impacts, and provides relevant OT considerations without introducing unsupported additions or compromising clinical safety. The summary is comprehensive, well-structured, and suitable for an OT audience, making it equivalent to or better than the REFERENCE summary in terms of usability and clinical applicability.\"\n}\n```"
+}

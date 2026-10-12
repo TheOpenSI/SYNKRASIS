@@ -1,0 +1,24 @@
+{
+  "judge": "ollama:qwen2.5:72b",
+  "valid": true,
+  "coverage": 4,
+  "factual_consistency": 5,
+  "unsupported_additions": 5,
+  "clinical_safety": 5,
+  "overall": 4,
+  "aligned": true,
+  "errors": [
+    {
+      "category": "omission",
+      "severity": "minor",
+      "description": "Does not mention the need to distinguish visual field loss from neglect or broader perceptual issues during OT assessment."
+    },
+    {
+      "category": "omission",
+      "severity": "minor",
+      "description": "Does not explicitly mention the need to clarify when/why driving ceased and current licence status where relevant to transport and support planning."
+    }
+  ],
+  "rationale": "The candidate covers most of the important functional content and is factually consistent with the source report. It avoids unsupported additions and does not introduce clinical safety issues. There are minor omissions in the assessment of neglect and driving status, but these do not significantly impact the overall clinical utility for an OT.",
+  "raw_response": "```json\n{\n  \"coverage\": 4,\n  \"factual_consistency\": 5,\n  \"unsupported_additions\": 5,\n  \"clinical_safety\": 5,\n  \"overall\": 4,\n  \"aligned\": true,\n  \"errors\": [\n    {\n      \"category\": \"omission\",\n      \"severity\": \"minor\",\n      \"description\": \"Does not mention the need to distinguish visual field loss from neglect or broader perceptual issues during OT assessment.\"\n    },\n    {\n      \"category\": \"omission\",\n      \"severity\": \"minor\",\n      \"description\": \"Does not explicitly mention the need to clarify when/why driving ceased and current licence status where relevant to transport and support planning.\"\n    }\n  ],\n  \"rationale\": \"The candidate covers most of the important functional content and is factually consistent with the source report. It avoids unsupported additions and does not introduce clinical safety issues. There are minor omissions in the assessment of neglect and driving status, but these do not significantly impact the overall clinical utility for an OT.\"\n}\n```"
+}

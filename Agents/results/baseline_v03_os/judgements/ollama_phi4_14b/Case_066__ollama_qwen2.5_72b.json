@@ -1,0 +1,19 @@
+{
+  "judge": "ollama:qwen2.5:72b",
+  "valid": true,
+  "coverage": 4,
+  "factual_consistency": 5,
+  "unsupported_additions": 5,
+  "clinical_safety": 5,
+  "overall": 4,
+  "aligned": true,
+  "errors": [
+    {
+      "category": "omission",
+      "severity": "minor",
+      "description": "The candidate summary does not explicitly mention the patient's use of single-vision distance spectacles and readers, which are noted in the reference summary under functional impact."
+    }
+  ],
+  "rationale": "The candidate summary covers most of the important functional content from the reference, including key vision issues, task-level functional impacts, and environmental considerations. It is fully consistent with the source report and avoids unsupported additions. The only minor omission is the specific mention of the patient's use of single-vision distance spectacles and readers, which is not critical to the overall OT assessment. The candidate is safe and clinically appropriate for use by an OT with at most minor edits.",
+  "raw_response": "{\n  \"coverage\": 4,\n  \"factual_consistency\": 5,\n  \"unsupported_additions\": 5,\n  \"clinical_safety\": 5,\n  \"overall\": 4,\n  \"aligned\": true,\n  \"errors\": [\n    {\"category\": \"omission\", \"severity\": \"minor\", \"description\": \"The candidate summary does not explicitly mention the patient's use of single-vision distance spectacles and readers, which are noted in the reference summary under functional impact.\"}\n  ],\n  \"rationale\": \"The candidate summary covers most of the important functional content from the reference, including key vision issues, task-level functional impacts, and environmental considerations. It is fully consistent with the source report and avoids unsupported additions. The only minor omission is the specific mention of the patient's use of single-vision distance spectacles and readers, which is not critical to the overall OT assessment. The candidate is safe and clinically appropriate for use by an OT with at most minor edits.\"\n}"
+}

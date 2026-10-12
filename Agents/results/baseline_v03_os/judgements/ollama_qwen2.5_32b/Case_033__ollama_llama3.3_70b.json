@@ -1,0 +1,13 @@
+{
+  "judge": "ollama:llama3.3:70b",
+  "valid": true,
+  "coverage": 5,
+  "factual_consistency": 5,
+  "unsupported_additions": 5,
+  "clinical_safety": 5,
+  "overall": 5,
+  "aligned": true,
+  "errors": [],
+  "rationale": "The CANDIDATE OT summary accurately captures all key points from the REFERENCE summary, including patient context, key vision issues, functional impact, and vision-informed OT considerations. The CANDIDATE also correctly identifies the moderate falls risk level and provides appropriate recommendations for mobility strategies, environmental modifications, and education and support. The language and terminology used are precise and consistent with OT practice, with no clinically significant omissions, hallucinations, or terminology drift.",
+  "raw_response": "```\n{\n  \"coverage\": 5,\n  \"factual_consistency\": 5,\n  \"unsupported_additions\": 5,\n  \"clinical_safety\": 5,\n  \"overall\": 5,\n  \"aligned\": true,\n  \"errors\": [],\n  \"rationale\": \"The CANDIDATE OT summary accurately captures all key points from the REFERENCE summary, including patient context, key vision issues, functional impact, and vision-informed OT considerations. The CANDIDATE also correctly identifies the moderate falls risk level and provides appropriate recommendations for mobility strategies, environmental modifications, and education and support. The language and terminology used are precise and consistent with OT practice, with no clinically significant omissions, hallucinations, or terminology drift.\"\n}\n```"
+}

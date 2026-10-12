@@ -1,0 +1,13 @@
+{
+  "judge": "ollama:llama3.3:70b",
+  "valid": true,
+  "coverage": 5,
+  "factual_consistency": 5,
+  "unsupported_additions": 5,
+  "clinical_safety": 5,
+  "overall": 5,
+  "aligned": true,
+  "errors": [],
+  "rationale": "The CANDIDATE OT summary covers all important functional content from the REFERENCE, including key vision issues, task-level functional impacts, environmental considerations, and O&M/referral/support considerations. It is fully consistent with the SOURCE report and avoids invented or incorrect content. The CANDIDATE also prioritizes step safety, dusk routines, and transport dependence, and integrates visual and non-visual compensatory strategies across mobility and daily activities, demonstrating no clinically important omissions or contradictions.",
+  "raw_response": "```\n{\n  \"coverage\": 5,\n  \"factual_consistency\": 5,\n  \"unsupported_additions\": 5,\n  \"clinical_safety\": 5,\n  \"overall\": 5,\n  \"aligned\": true,\n  \"errors\": [],\n  \"rationale\": \"The CANDIDATE OT summary covers all important functional content from the REFERENCE, including key vision issues, task-level functional impacts, environmental considerations, and O&M/referral/support considerations. It is fully consistent with the SOURCE report and avoids invented or incorrect content. The CANDIDATE also prioritizes step safety, dusk routines, and transport dependence, and integrates visual and non-visual compensatory strategies across mobility and daily activities, demonstrating no clinically important omissions or contradictions.\"\n}\n```"
+}

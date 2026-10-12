@@ -1,0 +1,13 @@
+{
+  "judge": "ollama:llama3.3:70b",
+  "valid": true,
+  "coverage": 5,
+  "factual_consistency": 5,
+  "unsupported_additions": 5,
+  "clinical_safety": 5,
+  "overall": 5,
+  "aligned": true,
+  "errors": [],
+  "rationale": "The candidate OT summary covers all important functional content from the reference summary, including key vision issues, task-level functional impacts, environmental considerations, and O&M/referral/support considerations. The candidate summary is also factually consistent with the source optometry report and avoids unsupported additions. The candidate summary prioritizes the patient's safety and provides appropriate recommendations for OT interventions, demonstrating strong clinical safety. Overall, the candidate summary is equivalent to or better than the reference summary, with no notable gaps or errors.",
+  "raw_response": "```json\n{\n  \"coverage\": 5,\n  \"factual_consistency\": 5,\n  \"unsupported_additions\": 5,\n  \"clinical_safety\": 5,\n  \"overall\": 5,\n  \"aligned\": true,\n  \"errors\": [],\n  \"rationale\": \"The candidate OT summary covers all important functional content from the reference summary, including key vision issues, task-level functional impacts, environmental considerations, and O&M/referral/support considerations. The candidate summary is also factually consistent with the source optometry report and avoids unsupported additions. The candidate summary prioritizes the patient's safety and provides appropriate recommendations for OT interventions, demonstrating strong clinical safety. Overall, the candidate summary is equivalent to or better than the reference summary, with no notable gaps or errors.\"\n}\n```"
+}
