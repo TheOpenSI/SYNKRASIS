@@ -1,0 +1,9 @@
+{
+  "judge": "openai:gpt-5-mini-2025-08-07",
+  "valid": true,
+  "coverage": 5,
+  "factual_consistency": 3,
+  "hallucination": 4,
+  "aligned": "yes",
+  "raw_response": "The candidate summary is comprehensive and captures the essential clinical facts and OT-relevant recommendations from the source and reference (diagnosis, visual findings including reduced contrast, reading and mobility impacts, OT/O&M referral, environment/lighting/contrast suggestions, cane/ID badge, education and task adaptations). Main gaps: it does not explicitly recommend assessing for visual neglect/perceptual disorder (the reference emphasises distinguishing hemianopia from neglect) and it omits mention of a personal/falls alarm as a possible mitigation. Main inconsistency/hallucination: the candidate downgrades the falls risk to \"Moderate\" (the reference flags a high vision-related falls risk given a documented fall), which is a material difference; a few minor phrasings (e.g., “no necrosis” of retina) are inferred rather than stated in the source but are not clinically significant.\n\n{\"coverage\": 5, \"factual_consistency\": 3, \"hallucination\": 4, \"aligned\": \"yes\"}"
+}

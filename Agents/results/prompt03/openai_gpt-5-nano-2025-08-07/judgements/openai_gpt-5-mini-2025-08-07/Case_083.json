@@ -1,0 +1,9 @@
+{
+  "judge": "openai:gpt-5-mini-2025-08-07",
+  "valid": true,
+  "coverage": 5,
+  "factual_consistency": 4,
+  "hallucination": 4,
+  "aligned": "yes",
+  "raw_response": "The candidate summary is comprehensive and maps closely to both the SOURCE and the OT-facing REFERENCE: it captures the diagnosis (progressive normal-tension glaucoma OU), age and setting, the inferior/peripheral visual field defects and progression on OCT/HVF, reduced contrast sensitivity, functional impacts (side collisions, cautious navigation, driving limitation), priority environmental areas (hallways, doorways, laundry), OT actions (home assessment, lighting/contrast, decluttering, O&M and low-vision referrals, transport/driving planning) and the falls-risk level (moderate).\n\nMain gaps / issues:\n- It omits the optometry plan point about semi‑urgent ophthalmology review within 1–2 months and specific mention of possible surgical options (MIGS/dual therapy) from the SOURCE; that is a factual omission of a management item.\n- It includes one inappropriate neuroanatomical inference — the phrase \"right-hemisphere/ inferior-field loss\" — the SOURCE does not indicate a cerebral lesion and this wording is not supported by the optometry findings (this is a minor hallucination).\n- A few added suggestions (e.g., driver rehabilitation) go slightly beyond the SOURCE but are reasonable OT-level inferences.\n\nOverall the candidate is accurate, functionally complete, and usable by an OT with only minor edits (remove the unsupported \"right-hemisphere\" wording and optionally note the semi‑urgent ophthalmology plan).\n\n{\"coverage\": 5, \"factual_consistency\": 4, \"hallucination\": 4, \"aligned\": \"yes\"}"
+}

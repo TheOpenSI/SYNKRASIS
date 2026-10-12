@@ -12,19 +12,21 @@ MODELS = ["ollama:gpt-oss:20b",
           "ollama:phi4:14b",
           "ollama:medgemma:27b"]
 
-# At most 2 judges, keep them constant across runs
+# Judge models, any number, keep them constant across runs. An even number can tie (human review)
 JUDGES = ["ollama:qwen2.5:72b", "ollama:llama3.3:70b"]
+
+# Generation prompt, results go to Agents/results/prompt03 for "0_3"
+PROMPT_VERSION = "0_3"
 
 
 def main():
     print_synkrasis_logo()
     runner = BenchmarkRunner(models=MODELS,
                              judges=JUDGES,
-                             prompt_version="0_3",
-                             case_ids=None, # None = all 10 development cases
-                             run_name="baseline_v03_os")
+                             prompt_version=PROMPT_VERSION,
+                             case_ids=None) # None = all 10 development cases
     summary = runner.run()
-    print(summary.to_string())
+    print(summary.to_string(index=False))
 
 
 if __name__ == '__main__':
