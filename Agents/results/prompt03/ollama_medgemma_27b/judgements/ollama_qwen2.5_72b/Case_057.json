@@ -1,0 +1,9 @@
+{
+  "judge": "ollama:qwen2.5:72b",
+  "valid": true,
+  "coverage": 4,
+  "factual_consistency": 5,
+  "hallucination": 5,
+  "aligned": "yes",
+  "raw_response": "The CANDIDATE summary is comprehensive and covers most of the important clinical and functional content from the REFERENCE. It accurately captures the patient's visual impairments, their functional impacts, and the necessary environmental and task-level considerations. However, there are a few minor gaps and some content that is not as detailed as the REFERENCE:\n\n1. **Gaps in Content:**\n   - The CANDIDATE does not explicitly mention the social implications of reduced visual clarity, such as difficulty recognizing faces and body language, which can increase social isolation risk.\n   - The CANDIDATE does not provide as much detail on the need to assess the location of strokes and potential cognitive, physical, or language difficulties.\n   - The CANDIDATE does not mention the specific techniques for navigating doorways and stair transitions as detailed in the REFERENCE.\n\n2. **Invented Content:**\n   - The CANDIDATE does not introduce any major or misleading invented content. All statements are supported by the SOURCE and are consistent with the REFERENCE.\n\n3. **Factual Consistency:**\n   - The CANDIDATE is fully consistent with the SOURCE report, accurately reflecting the patient's age, diagnosis, history, findings, and management plan.\n\n4. **Alignment:**\n   - The CANDIDATE could be used by an OT as a replacement for the REFERENCE with minor edits to include the missing details mentioned above.\n\n{\"coverage\": 4, \"factual_consistency\": 5, \"hallucination\": 5, \"aligned\": \"yes\"}"
+}

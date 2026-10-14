@@ -1,0 +1,9 @@
+{
+  "judge": "ollama:qwen2.5:72b",
+  "valid": true,
+  "coverage": 4,
+  "factual_consistency": 4,
+  "hallucination": 5,
+  "aligned": "yes",
+  "raw_response": "The CANDIDATE summary is comprehensive and covers most of the important content from the REFERENCE and SOURCE. However, there are a few gaps and some minor inconsistencies:\n\n- **Coverage**: The CANDIDATE covers most of the key vision issues, functional impacts, environmental considerations, and OT considerations. However, it does not explicitly mention the need for an orientation and mobility specialist assessment, which is present in the REFERENCE. Additionally, it does not discuss the impact of glare on leaving the home or the potential need for a low-vision badge or white cane.\n- **Factual Consistency**: The CANDIDATE is generally consistent with the SOURCE, but it incorrectly states that the patient skipped a recent retinal review. The SOURCE mentions that she has not attended a retinal review in over a year, which is a more accurate representation.\n- **Hallucination**: The CANDIDATE does not invent any major content. It provides a cautious and reasonable functional inference for the patient's situation.\n\nDespite these minor gaps, the CANDIDATE is still a useful and accurate summary that could be used by an OT with at most minor edits.\n\n```json\n{\"coverage\": 4, \"factual_consistency\": 4, \"hallucination\": 5, \"aligned\": \"yes\"}\n```"
+}

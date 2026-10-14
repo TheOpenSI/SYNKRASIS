@@ -1,0 +1,9 @@
+{
+  "judge": "ollama:qwen2.5:72b",
+  "valid": true,
+  "coverage": 4,
+  "factual_consistency": 5,
+  "hallucination": 5,
+  "aligned": "yes",
+  "raw_response": "The CANDIDATE summary is comprehensive and aligns well with the REFERENCE and SOURCE. It covers most of the important content, including key vision issues, functional impacts, environmental considerations, and falls risk. However, there are a few minor gaps and some additional detail that could be included:\n\n- The CANDIDATE does not explicitly mention the need for an Orientation and Mobility (O&M) specialist assessment, which is mentioned in the REFERENCE.\n- The CANDIDATE does not discuss the potential need for a food prep/meal delivery service, which is mentioned in the REFERENCE.\n- The CANDIDATE does not mention the need for a review of glare management with the Optometrist or Orthoptist, as noted in the REFERENCE.\n- The CANDIDATE does not explicitly mention the need for education around self-advocacy and using a low vision badge or white cane, as mentioned in the REFERENCE.\n\nThe CANDIDATE is factually consistent with the SOURCE, accurately reflecting the patient's age, diagnosis, history, findings, and management plan. There are no significant factual inconsistencies.\n\nThere is no hallucination in the CANDIDATE; all content is supported by the SOURCE and is a reasonable, cautious functional inference.\n\nOverall, the CANDIDATE could be used by an OT as a replacement for the REFERENCE with minor edits to include the missing points mentioned above.\n\n```json\n{\"coverage\": 4, \"factual_consistency\": 5, \"hallucination\": 5, \"aligned\": \"yes\"}\n```"
+}

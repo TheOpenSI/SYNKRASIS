@@ -1,0 +1,9 @@
+{
+  "judge": "ollama:llama3.3:70b",
+  "valid": true,
+  "coverage": 4,
+  "factual_consistency": 5,
+  "hallucination": 3,
+  "aligned": "no",
+  "raw_response": "The CANDIDATE summary covers most of the important content present in the REFERENCE, including key vision issues, functional impacts, and OT considerations. However, some details such as the specific mention of stroke history and its potential cognitive, physical, and language implications are not fully explored in the CANDIDATE. The CANDIDATE also invents some minor content, such as specifying the use of high-contrast tape for step edges without direct reference in the SOURCE. \n\nThe CANDIDATE is generally consistent with the SOURCE report and does not contradict the REFERENCE in any major way, maintaining factual consistency. \n\nGiven the minor gaps in coverage and the invention of some minor details, the CANDIDATE could still serve as a useful summary for an OT, but it may require minor edits or clarifications to perfectly align with the REFERENCE and SOURCE.\n\n{\"coverage\": 4, \"factual_consistency\": 5, \"hallucination\": 3, \"aligned\": \"no\"}"
+}

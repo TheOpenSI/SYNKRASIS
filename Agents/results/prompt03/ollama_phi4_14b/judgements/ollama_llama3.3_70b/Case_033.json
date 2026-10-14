@@ -1,0 +1,9 @@
+{
+  "judge": "ollama:llama3.3:70b",
+  "valid": true,
+  "coverage": 4,
+  "factual_consistency": 5,
+  "hallucination": 4,
+  "aligned": "yes",
+  "raw_response": "The CANDIDATE summary covers most of the important content from the REFERENCE, including key vision issues, task-level functional impacts, environmental considerations, and O&M/referral/support considerations. However, it introduces some minor invented content, such as the specific mention of assessing medication management, which, although reasonable, is not directly supported by the SOURCE. The CANDIDATE also occasionally uses slightly different wording or emphasis, but it does not contradict the REFERENCE or SOURCE. The main gaps in coverage are minor and relate to specific details of home modification and community access strategies, which are implied but not explicitly covered in the same depth as the REFERENCE.\n\n{\"coverage\": 4, \"factual_consistency\": 5, \"hallucination\": 4, \"aligned\": \"yes\"}"
+}

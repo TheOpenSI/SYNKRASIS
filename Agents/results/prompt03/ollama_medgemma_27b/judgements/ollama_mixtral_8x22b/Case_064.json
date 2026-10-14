@@ -1,0 +1,9 @@
+{
+  "judge": "ollama:mixtral:8x22b",
+  "valid": true,
+  "coverage": 4,
+  "factual_consistency": 4,
+  "hallucination": 4,
+  "aligned": "yes",
+  "raw_response": " Reasoning: The CANDIDATE provides a comprehensive and accurate assessment of the patient's condition, taking into account the SOURCE and the REFERENCE. However, it does not fully cover some aspects of the REFERENCE, such as the impact of visual field loss on daily activities like cooking, eating, and grooming, and the use of a left-margin marker on reading materials. The CANDIDATE also includes some content that is not directly supported by the SOURCE or the REFERENCE, such as the mention of exophoria at near and the need for consistent spectacle wear and proper bifocal use. However, these are reasonable functional inferences based on the patient's reported use of bifocal spectacles and the potential impact of exophoria on near tasks.\n\n{\"coverage\": 4, \"factual_consistency\": 4, \"hallucination\": 4, \"aligned\": \"yes\"}"
+}

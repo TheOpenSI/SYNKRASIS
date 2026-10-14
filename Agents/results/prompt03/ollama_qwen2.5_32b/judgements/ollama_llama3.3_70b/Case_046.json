@@ -1,0 +1,9 @@
+{
+  "judge": "ollama:llama3.3:70b",
+  "valid": true,
+  "coverage": 4,
+  "factual_consistency": 5,
+  "hallucination": 5,
+  "aligned": "yes",
+  "raw_response": "The CANDIDATE summary covers most of the important content present in the REFERENCE, including key vision issues, task-level functional impacts, environmental considerations, and O&M/referral/support considerations. However, it does not explicitly mention the patient's history of hypertension, hyperlipidaemia, and atrial fibrillation, or the fact that they are on antihypertensive therapy and anticoagulation medications. Additionally, the CANDIDATE does not discuss the potential impact of distractibility on safe performance of ADLs/IADLs as thoroughly as the REFERENCE. In terms of factual consistency, the CANDIDATE agrees with the SOURCE report and does not contradict the REFERENCE. There is no major invented content in the CANDIDATE, but some minor details such as the emphasis on certain aspects of vision rehabilitation may vary slightly from the REFERENCE.\n\n{\"coverage\": 4, \"factual_consistency\": 5, \"hallucination\": 5, \"aligned\": \"yes\"}"
+}

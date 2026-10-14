@@ -1,0 +1,9 @@
+{
+  "judge": "ollama:qwen2.5:72b",
+  "valid": true,
+  "coverage": 4,
+  "factual_consistency": 4,
+  "hallucination": 5,
+  "aligned": "no",
+  "raw_response": "The CANDIDATE summary covers most of the important content found in the REFERENCE, including the key vision issues, functional impacts, environmental considerations, and OT considerations. However, it does not mention the patient's driving status or the specific recommendation for a support guide, which are important for safety. The CANDIDATE also includes some minor factual inconsistencies, such as the near vision acuity being listed as N8 OU at 40cm instead of N6 OU with add, and the exophoria at near being mentioned without specifying that it is 4 prism dioptres. There is no major invented content, but the CANDIDATE does not fully align with the REFERENCE in terms of the driving status and the specific recommendations for support.\n\n{\"coverage\": 4, \"factual_consistency\": 4, \"hallucination\": 5, \"aligned\": \"no\"}"
+}

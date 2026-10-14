@@ -1,0 +1,9 @@
+{
+  "judge": "ollama:mixtral:8x22b",
+  "valid": true,
+  "coverage": 5,
+  "factual_consistency": 5,
+  "hallucination": 5,
+  "aligned": "yes",
+  "raw_response": " Reasoning: The CANDIDATE provides a comprehensive OT-facing summary of the case, with a high level of coverage of important content from the REFERENCE and SOURCE. It accurately reflects the patient's age, diagnosis, history, findings, and management plan from the SOURCE. It also addresses key vision issues, functional impacts, environmental considerations, O&M / referral / support considerations, and falls risk as mentioned in the REFERENCE. The CANDIDATE does not invent any facts or findings, and all recommendations are cautiously worded and linked to documented findings.\n\n{\"coverage\": 5, \"factual_consistency\": 5, \"hallucination\": 5, \"aligned\": \"yes\"}"
+}

@@ -1,0 +1,9 @@
+{
+  "judge": "ollama:llama3.3:70b",
+  "valid": true,
+  "coverage": 4,
+  "factual_consistency": 5,
+  "hallucination": 3,
+  "aligned": "yes",
+  "raw_response": "The CANDIDATE summary covers most of the important content present in the REFERENCE, including key vision issues, functional impacts, and OT considerations. However, there are some minor gaps and invented content. For instance, the CANDIDATE mentions \"distinct floor textures\" as a potential tactile cue, which is not present in the SOURCE or REFERENCE. Additionally, the CANDIDATE suggests exploring the use of \"auditory cues for spatial orientation,\" which, while reasonable, is not explicitly mentioned in the SOURCE or REFERENCE. The CANDIDATE is generally consistent with the SOURCE report and does not contain significant inconsistencies. \n\n{\"coverage\": 4, \"factual_consistency\": 5, \"hallucination\": 3, \"aligned\": \"yes\"}"
+}

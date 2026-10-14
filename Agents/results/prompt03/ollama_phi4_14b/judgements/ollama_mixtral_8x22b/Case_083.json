@@ -1,0 +1,9 @@
+{
+  "judge": "ollama:mixtral:8x22b",
+  "valid": true,
+  "coverage": 4,
+  "factual_consistency": 5,
+  "hallucination": 5,
+  "aligned": "no",
+  "raw_response": " Reasoning: The CANDIDATE summary covers most of the clinically and functionally important content present in the REFERENCE and aligns with the SOURCE report. It accurately reflects the patient's age, diagnosis, history, and visual function findings, and does not invent any unsupported information. However, the CANDIDATE does not explicitly mention the driving status or the planned management, which are present in the SOURCE and REFERENCE.\n\n{\"coverage\": 4, \"factual_consistency\": 5, \"hallucination\": 5, \"aligned\": \"no\"}"
+}

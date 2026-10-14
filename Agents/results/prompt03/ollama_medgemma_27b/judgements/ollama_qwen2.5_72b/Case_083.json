@@ -1,0 +1,9 @@
+{
+  "judge": "ollama:qwen2.5:72b",
+  "valid": true,
+  "coverage": 4,
+  "factual_consistency": 4,
+  "hallucination": 5,
+  "aligned": "yes",
+  "raw_response": "The CANDIDATE summary is comprehensive and covers most of the important clinical and functional content from the REFERENCE. It accurately reflects the key vision issues, functional impacts, and environmental considerations. However, there are a few minor gaps and a discrepancy in the falls risk level:\n\n1. **Gaps:**\n   - The CANDIDATE does not explicitly mention the need to assess the patient's overall satisfaction and performance in self-care tasks, particularly in the bathroom area.\n   - The CANDIDATE does not specifically mention the need to review the patient's satisfaction and performance in domestic ADLs (cooking, laundry, cleaning, shopping, cleaning).\n\n2. **Discrepancy:**\n   - The CANDIDATE rates the falls risk as \"High,\" while the REFERENCE rates it as \"Moderate.\" The REFERENCE notes that there are side collisions but no recent falls, which is a more nuanced and accurate description based on the SOURCE.\n\n3. **Invented Content:**\n   - The CANDIDATE does not invent any significant content. The information provided is consistent with the SOURCE and the REFERENCE.\n\nDespite these minor gaps and the discrepancy in the falls risk level, the CANDIDATE could still be used by an OT with minor edits to align more closely with the REFERENCE.\n\n```json\n{\"coverage\": 4, \"factual_consistency\": 4, \"hallucination\": 5, \"aligned\": \"yes\"}\n```"
+}

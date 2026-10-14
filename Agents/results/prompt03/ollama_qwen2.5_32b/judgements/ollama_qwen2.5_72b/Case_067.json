@@ -1,0 +1,9 @@
+{
+  "judge": "ollama:qwen2.5:72b",
+  "valid": true,
+  "coverage": 4,
+  "factual_consistency": 4,
+  "hallucination": 5,
+  "aligned": "yes",
+  "raw_response": "The CANDIDATE summary is comprehensive and covers most of the important content from the REFERENCE and SOURCE. However, there are a few gaps and minor inconsistencies:\n\n- **Coverage**: The CANDIDATE covers most of the key vision issues, functional impacts, environmental considerations, and O&M/support considerations. However, it does not explicitly mention the need for handrails/grabrails in the bathroom or the specific task of reading small print in ADL tasks, which are mentioned in the REFERENCE. Additionally, it does not explicitly mention the need to assess the type, colour temperature, and brightness of lighting modifications, which is a detailed recommendation in the REFERENCE.\n- **Factual Consistency**: The CANDIDATE is generally consistent with the SOURCE and REFERENCE. However, it does not specify that the patient uses old bifocals full-time, which is a detail mentioned in the SOURCE.\n- **Hallucination**: The CANDIDATE does not invent any content that is not supported by the SOURCE or REFERENCE. All recommendations and considerations are well-aligned with the documented findings and functional impacts.\n\nDespite these minor gaps, the CANDIDATE is a well-written and clinically sound summary that could be used by an OT with minor edits.\n\n```json\n{\"coverage\": 4, \"factual_consistency\": 4, \"hallucination\": 5, \"aligned\": \"yes\"}\n```"
+}

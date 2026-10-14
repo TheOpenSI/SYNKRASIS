@@ -1,0 +1,9 @@
+{
+  "judge": "ollama:llama3.3:70b",
+  "valid": true,
+  "coverage": 4,
+  "factual_consistency": 4,
+  "hallucination": 3,
+  "aligned": "no",
+  "raw_response": "The CANDIDATE summary covers most of the important content present in the REFERENCE, including key vision issues, task-level functional impacts, environmental considerations, and O&M/referral/support considerations. However, there are some minor gaps and invented content. For instance, the CANDIDATE mentions \"unilateral central defect\" and its impact on visual field integration, which is not explicitly mentioned in the SOURCE or REFERENCE. Additionally, the CANDIDATE suggests \"warm, even lighting\" for reading and cooking areas, which, while reasonable, is not directly supported by the SOURCE or REFERENCE. The CANDIDATE is generally consistent with the SOURCE report and does not contradict the REFERENCE, with the exception of some minor invented content.\n\n{\"coverage\": 4, \"factual_consistency\": 4, \"hallucination\": 3, \"aligned\": \"no\"}"
+}

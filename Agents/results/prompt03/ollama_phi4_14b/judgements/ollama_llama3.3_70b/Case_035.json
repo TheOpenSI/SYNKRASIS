@@ -1,0 +1,9 @@
+{
+  "judge": "ollama:llama3.3:70b",
+  "valid": true,
+  "coverage": 4,
+  "factual_consistency": 5,
+  "hallucination": 5,
+  "aligned": "yes",
+  "raw_response": "The CANDIDATE summary covers most of the important content present in the REFERENCE, including key vision issues, task-level functional impacts, environmental considerations, and O&M/referral/support considerations. However, some minor details and specific recommendations from the REFERENCE are not included in the CANDIDATE, such as the suggestion to use contrast markings or to assess the client's ability to manage a step over in the bathroom. The CANDIDATE is largely consistent with the SOURCE report and does not contain any major invented content, although some minor inferences are made about the patient's energy levels and overall stamina due to hypertension and obstructive sleep apnoea. Overall, the CANDIDATE provides a comprehensive summary of the case, but may require minor edits to fully align with the REFERENCE.\n\n{\"coverage\": 4, \"factual_consistency\": 5, \"hallucination\": 5, \"aligned\": \"yes\"}"
+}

@@ -1,0 +1,9 @@
+{
+  "judge": "ollama:llama3.3:70b",
+  "valid": true,
+  "coverage": 4,
+  "factual_consistency": 5,
+  "hallucination": 4,
+  "aligned": "yes",
+  "raw_response": "The CANDIDATE summary covers most of the important content from the REFERENCE, including key vision issues, functional impacts, and vision-informed OT considerations. However, some minor details, such as the suggestion for a simple symptom-and-activity diary, are not explicitly mentioned in the CANDIDATE. The CANDIDATE also introduces some minor invented content, such as the suggestion for \"non-visual scanning strategies\" without clear support from the SOURCE. Overall, the CANDIDATE demonstrates good factual consistency with the SOURCE report and does not contain any major or misleading invented content.\n\n{\"coverage\": 4, \"factual_consistency\": 5, \"hallucination\": 4, \"aligned\": \"yes\"}"
+}

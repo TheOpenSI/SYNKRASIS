@@ -1,0 +1,9 @@
+{
+  "judge": "ollama:llama3.3:70b",
+  "valid": true,
+  "coverage": 5,
+  "factual_consistency": 5,
+  "hallucination": 5,
+  "aligned": "yes",
+  "raw_response": "The CANDIDATE summary covers most of the important content from the REFERENCE, including key vision issues, task-level functional impacts, environmental considerations, and O&M/referral/support considerations. However, it slightly reorganizes and rephrases some information, which could lead to minor inconsistencies but overall does not detract from the clinically relevant content. The CANDIDATE also invents no significant content, sticking closely to the facts and reasonable inferences from the SOURCE report. The main gaps are minor and relate to the reorganization of some points rather than omission of critical information. The factual consistency with the SOURCE report is high, with no material inconsistencies identified. The hallucination score is also high because the CANDIDATE avoids introducing unsupported facts or findings.\n\n{\"coverage\": 5, \"factual_consistency\": 5, \"hallucination\": 5, \"aligned\": \"yes\"}"
+}

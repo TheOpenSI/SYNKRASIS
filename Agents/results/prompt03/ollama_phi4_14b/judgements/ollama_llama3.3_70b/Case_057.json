@@ -1,0 +1,9 @@
+{
+  "judge": "ollama:llama3.3:70b",
+  "valid": true,
+  "coverage": 4,
+  "factual_consistency": 3,
+  "hallucination": 4,
+  "aligned": "no",
+  "raw_response": "The CANDIDATE summary covers most of the key vision issues and their functional impacts as outlined in the REFERENCE, including the effects of right homonymous hemianopia and bilateral cataracts on mobility, daily activities, and social participation. However, there are some discrepancies and omissions. For instance, the CANDIDATE does not explicitly mention the patient's history of recurrent falls post-stroke rehabilitation or the specific concern about missing walls and objects on the right side due to the visual field loss. Additionally, the CANDIDATE suggests a \"moderate\" falls risk level, which contradicts the \"high vision-related falls risk\" stated in the REFERENCE. The CANDIDATE also introduces some concepts, such as the specific assessment of meal preparation tasks and the use of non-visual strategies for reading and identification, which, while relevant, are not explicitly mentioned in the REFERENCE and could be considered minor invented content.\n\nThe main gaps in the CANDIDATE include not fully capturing the severity of the falls risk and not explicitly discussing the importance of considering the patient's hearing impairment and its impact on compensatory strategies for vision loss. Furthermore, the CANDIDATE's suggestion for the falls risk level being \"moderate\" could be seen as a material inconsistency with the SOURCE and REFERENCE, which emphasize a high falls risk.\n\nGiven these observations, the scores would reflect the CANDIDATE's coverage of key content, its consistency with the SOURCE and REFERENCE, the presence of minor invented content, and its alignment with the REFERENCE for use by an OT.\n\n{\"coverage\": 4, \"factual_consistency\": 3, \"hallucination\": 4, \"aligned\": \"no\"}"
+}

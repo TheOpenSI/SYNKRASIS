@@ -1,0 +1,9 @@
+{
+  "judge": "ollama:mixtral:8x22b",
+  "valid": true,
+  "coverage": 4,
+  "factual_consistency": 5,
+  "hallucination": 4,
+  "aligned": "yes",
+  "raw_response": " Reasoning: The CANDIDATE summary covers most of the important content in the REFERENCE, including key vision issues, task-level functional impacts, environmental considerations, and falls risk. The CANDIDATE also agrees with the SOURCE report regarding age, diagnosis, history, findings, driving status, and management plan. However, the CANDIDATE does invent some content not directly supported by the SOURCE, such as potential difficulties with medication management and meal preparation, which are cautiously worded functional inferences linked to documented findings.\n\n{\"coverage\": 4, \"factual_consistency\": 5, \"hallucination\": 4, \"aligned\": \"yes\"}"
+}

@@ -1,0 +1,9 @@
+{
+  "judge": "ollama:mixtral:8x22b",
+  "valid": true,
+  "coverage": 4,
+  "factual_consistency": 5,
+  "hallucination": 5,
+  "aligned": "yes",
+  "raw_response": " The CANDIDATE covers most of the important content in the REFERENCE, including key vision issues, task-level functional impacts, environmental considerations, and O&M referral considerations. However, it does not explicitly mention falls risk or driving status, which are important in the context of the case. The CANDIDATE is factually consistent with the SOURCE, accurately summarizing the patient's diagnosis, history, and management plan. There is no invented content in the CANDIDATE. Overall, the CANDIDATE could be used by an OT as a replacement for the REFERENCE, but some minor edits would be needed to include the missing information about falls risk and driving status.\n\n{\"coverage\": 4, \"factual_consistency\": 5, \"hallucination\": 5, \"aligned\": \"yes\"}"
+}

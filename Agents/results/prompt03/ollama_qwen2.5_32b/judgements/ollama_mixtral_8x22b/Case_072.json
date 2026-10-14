@@ -1,0 +1,9 @@
+{
+  "judge": "ollama:mixtral:8x22b",
+  "valid": true,
+  "coverage": 4,
+  "factual_consistency": 5,
+  "hallucination": 5,
+  "aligned": "no",
+  "raw_response": " The CANDIDATE covers most of the important content in the REFERENCE, including key vision issues, task-level functional impacts, environmental considerations, and O&M / referral / support considerations. However, it does not explicitly mention falls risk in the same way as the REFERENCE.\n\nThe CANDIDATE is factually consistent with the SOURCE report and does not contradict the REFERENCE. It correctly identifies the patient's age, diagnosis, history, findings, driving status, supports, and management already planned.\n\nThe CANDIDATE does not invent any content. It cautiously suggests possible interventions and adaptations based on the documented findings, which is consistent with the SOURCE report and the REFERENCE.\n\n{\"coverage\": 4, \"factual_consistency\": 5, \"hallucination\": 5, \"aligned\": \"no\"}"
+}

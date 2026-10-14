@@ -1,0 +1,9 @@
+{
+  "judge": "ollama:llama3.3:70b",
+  "valid": true,
+  "coverage": 5,
+  "factual_consistency": 5,
+  "hallucination": 3,
+  "aligned": "yes",
+  "raw_response": "The CANDIDATE summary covers most of the important content present in the REFERENCE, including key vision issues, task-level functional impacts, environmental considerations, and O&M/referral/support considerations. However, it introduces some minor invented content, such as specific details about the patient's near-task abilities (e.g., locating a dropped object on a counter) that are not directly supported by the SOURCE report. The CANDIDATE also maintains factual consistency with the SOURCE report, accurately reflecting the patient's age, diagnosis, history, and management plan. The CANDIDATE could be used by an OT as a replacement for the REFERENCE with minor edits, as it provides a comprehensive overview of the patient's vision-related needs and suggested OT considerations.\n\n{\"coverage\": 5, \"factual_consistency\": 5, \"hallucination\": 3, \"aligned\": \"yes\"}"
+}

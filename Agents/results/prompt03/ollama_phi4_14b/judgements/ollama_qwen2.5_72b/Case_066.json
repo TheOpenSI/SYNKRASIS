@@ -1,0 +1,9 @@
+{
+  "judge": "ollama:qwen2.5:72b",
+  "valid": true,
+  "coverage": 4,
+  "factual_consistency": 4,
+  "hallucination": 5,
+  "aligned": "yes",
+  "raw_response": "The CANDIDATE summary covers most of the important content from the REFERENCE and SOURCE, including the patient's context, key vision issues, functional impacts, and OT considerations. However, there are a few gaps and minor issues:\n\n1. **Gaps in Coverage:**\n   - The CANDIDATE does not mention the specific task-level functional impacts on ADLs/IADLs, such as reading signs, labels, or instructions, which are noted in the REFERENCE.\n   - The CANDIDATE does not explicitly mention the importance of scheduling higher-risk tasks earlier in the day when vision is more stable, as detailed in the REFERENCE.\n   - The CANDIDATE lacks a specific mention of the need for an O&M specialist assessment, which is included in the REFERENCE.\n\n2. **Factual Consistency:**\n   - The CANDIDATE is generally consistent with the SOURCE, but it does not explicitly mention the patient's use of single-vision distance spectacles for walking and readers for near, which is detailed in the SOURCE.\n\n3. **Hallucination:**\n   - The CANDIDATE does not introduce any significant invented content. The recommendations and considerations are well-aligned with the SOURCE and REFERENCE.\n\n**JSON Output:**\n\n{\"coverage\": 4, \"factual_consistency\": 4, \"hallucination\": 5, \"aligned\": \"yes\"}"
+}

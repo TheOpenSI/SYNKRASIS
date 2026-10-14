@@ -1,0 +1,9 @@
+{
+  "judge": "ollama:mixtral:8x22b",
+  "valid": true,
+  "coverage": 4,
+  "factual_consistency": 5,
+  "hallucination": 5,
+  "aligned": "yes",
+  "raw_response": " Reasoning: The CANDIDATE summary covers most of the clinically and functionally important content present in the REFERENCE and aligns with the SOURCE report. It accurately reflects the patient's age, diagnosis, history, and key vision issues, as well as the potential impacts on mobility, activities of daily living, and environmental interaction. The CANDIDATE summary also discusses appropriate OT considerations, such as self-care and household management, environmental modifications, mobility strategies, task adaptations, education and support, and falls risk level. However, the CANDIDATE summary does not explicitly mention the potential impact of vision loss on phone use, fine detail grooming tasks, or handrail installation for additional physical support. Additionally, the CANDIDATE summary does not include cautious \"assess whether...\" or \"may...\" statements linked to documented findings, which are not considered hallucinations. Overall, the CANDIDATE summary could be used by an OT as a replacement for the REFERENCE with minor edits needed.\n\n{\"coverage\": 4, \"factual_consistency\": 5, \"hallucination\": 5, \"aligned\": \"yes\"}"
+}

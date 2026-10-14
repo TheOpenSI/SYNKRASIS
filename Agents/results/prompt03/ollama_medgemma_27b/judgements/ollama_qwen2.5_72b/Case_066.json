@@ -1,0 +1,9 @@
+{
+  "judge": "ollama:qwen2.5:72b",
+  "valid": true,
+  "coverage": 4,
+  "factual_consistency": 5,
+  "hallucination": 4,
+  "aligned": "yes",
+  "raw_response": "The CANDIDATE summary is comprehensive and covers most of the important clinical and functional content from the REFERENCE. It accurately reflects the key vision issues, functional impacts, and environmental considerations. However, it introduces some minor details not present in the SOURCE, such as specific suggestions for high-contrast aids and non-visual cues, which, while reasonable, are not directly supported by the SOURCE. The CANDIDATE also mentions reduced contrast sensitivity, which is documented in the SOURCE but not emphasized in the REFERENCE. Overall, the CANDIDATE is well-aligned with the REFERENCE and SOURCE, with only minor deviations.\n\n{\"coverage\": 4, \"factual_consistency\": 5, \"hallucination\": 4, \"aligned\": \"yes\"}"
+}

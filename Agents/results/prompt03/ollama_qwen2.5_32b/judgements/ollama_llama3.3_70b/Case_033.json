@@ -1,0 +1,9 @@
+{
+  "judge": "ollama:llama3.3:70b",
+  "valid": true,
+  "coverage": 5,
+  "factual_consistency": 4,
+  "hallucination": 4,
+  "aligned": "yes",
+  "raw_response": "The CANDIDATE summary covers most of the important content from the REFERENCE, including key vision issues, task-level functional impacts, environmental considerations, and O&M/referral/support considerations. However, it introduces some minor invented content, such as the suggestion of \"O&M training to develop strategies for safe outdoor travel\" which is not explicitly mentioned in the SOURCE or REFERENCE. Additionally, the CANDIDATE mentions \"consistent lighting in task-specific areas\" and \"evaluate for obstacles and surface changes\" which, while reasonable, are not directly supported by the SOURCE. The CANDIDATE is largely factually consistent with the SOURCE, but includes some minor inconsistencies in wording and emphasis. Overall, the CANDIDATE could be used by an OT as a replacement for the REFERENCE with minor edits.\n\n{\"coverage\": 5, \"factual_consistency\": 4, \"hallucination\": 4, \"aligned\": \"yes\"}"
+}

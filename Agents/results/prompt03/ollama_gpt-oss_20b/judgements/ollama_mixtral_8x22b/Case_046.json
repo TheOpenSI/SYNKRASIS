@@ -1,0 +1,9 @@
+{
+  "judge": "ollama:mixtral:8x22b",
+  "valid": true,
+  "coverage": 4,
+  "factual_consistency": 5,
+  "hallucination": 5,
+  "aligned": "yes",
+  "raw_response": " Reasoning: The CANDIDATE summary covers most of the important content in the REFERENCE, including key vision issues, task-level functional impacts, environmental considerations, and falls risk. The CANDIDATE is factually consistent with the SOURCE report and does not contain any hallucinations or invented content. However, the CANDIDATE does not mention Orthoptic review for magnification or the use of personal alarms if the client is feeling uncertain.\n\nThe CANDIDATE could be used by an OT as a replacement for the REFERENCE, but it may require minor edits to include the missing content.\n\n{\"coverage\": 4, \"factual_consistency\": 5, \"hallucination\": 5, \"aligned\": \"yes\"}"
+}

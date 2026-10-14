@@ -1,0 +1,9 @@
+{
+  "judge": "ollama:llama3.3:70b",
+  "valid": true,
+  "coverage": 4,
+  "factual_consistency": 4,
+  "hallucination": 3,
+  "aligned": "no",
+  "raw_response": "The CANDIDATE summary covers most of the important content present in the REFERENCE, including key vision issues, functional impacts, and vision-informed OT considerations. However, there are some minor gaps and invented content. For example, the CANDIDATE mentions \"medication management\" as a specific ADL/IADL impact, which is not explicitly mentioned in the REFERENCE or SOURCE. Additionally, the CANDIDATE suggests using \"auditory or tactile cues\" to assist with navigation, which is not mentioned in the REFERENCE or SOURCE. The CANDIDATE also classifies the falls risk level as \"moderate\", whereas the REFERENCE classifies it as \"high\". Despite these minor inconsistencies, the CANDIDATE generally aligns with the REFERENCE and SOURCE in terms of clinically and functionally important content.\n\n{\"coverage\": 4, \"factual_consistency\": 4, \"hallucination\": 3, \"aligned\": \"no\"}"
+}

@@ -1,0 +1,9 @@
+{
+  "judge": "ollama:qwen2.5:72b",
+  "valid": true,
+  "coverage": 4,
+  "factual_consistency": 4,
+  "hallucination": 5,
+  "aligned": "yes",
+  "raw_response": "The CANDIDATE summary covers most of the important content from the REFERENCE and SOURCE, including the key vision issues, functional impacts, and OT considerations. However, there are a few gaps and minor inaccuracies:\n\n1. **Coverage**: The CANDIDATE is comprehensive but misses a few specific points:\n   - It does not mention the patient's use of bifocal spectacles.\n   - It does not explicitly state the need for an orientation and mobility (O&M) referral.\n   - It does not mention the potential for a falls alarm or personal alarm.\n   - It does not discuss the potential for left-sided neglect or the need to distinguish between hemianopia and neglect during OT assessment.\n\n2. **Factual Consistency**: The CANDIDATE is generally consistent with the SOURCE and REFERENCE but has a minor inconsistency:\n   - It states the falls risk level as \"moderate\" instead of \"high,\" which is inconsistent with the REFERENCE.\n\n3. **Hallucination**: The CANDIDATE does not invent any content that is not supported by the SOURCE or REFERENCE.\n\nOverall, the CANDIDATE is a strong summary that could be used by an OT with minor edits to address the gaps and inconsistencies.\n\n{\"coverage\": 4, \"factual_consistency\": 4, \"hallucination\": 5, \"aligned\": \"yes\"}"
+}

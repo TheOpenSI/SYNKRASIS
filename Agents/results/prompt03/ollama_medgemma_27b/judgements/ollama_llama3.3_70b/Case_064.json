@@ -1,0 +1,9 @@
+{
+  "judge": "ollama:llama3.3:70b",
+  "valid": true,
+  "coverage": 4,
+  "factual_consistency": 4,
+  "hallucination": 3,
+  "aligned": "no",
+  "raw_response": "The CANDIDATE summary covers most of the important content from the REFERENCE, including key vision issues, functional impacts, and vision-informed OT considerations. However, there are some minor gaps, such as not explicitly mentioning the patient's difficulty with locating the start of lines when reading due to left-line initiation difficulty. Additionally, the CANDIDATE mentions \"exophoria at near\" as a key vision issue, which is not present in the REFERENCE or SOURCE, potentially inventing content. The CANDIDATE is generally consistent with the SOURCE report, but there are some minor inconsistencies, such as describing the falls risk level as \"moderate\" instead of \"high vision-related falls risk\". The CANDIDATE does not contradict the REFERENCE and provides a comprehensive overview of the patient's condition and required OT considerations.\n\n{\"coverage\": 4, \"factual_consistency\": 4, \"hallucination\": 3, \"aligned\": \"no\"}"
+}

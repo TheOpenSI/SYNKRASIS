@@ -1,0 +1,9 @@
+{
+  "judge": "ollama:llama3.3:70b",
+  "valid": true,
+  "coverage": 5,
+  "factual_consistency": 4,
+  "hallucination": 5,
+  "aligned": "yes",
+  "raw_response": "The CANDIDATE summary covers most of the important content present in the REFERENCE, including key vision issues, task-level functional impacts, environmental considerations, and O&M/referral/support considerations. However, it introduces some minor inconsistencies with the SOURCE report, such as stating the patient's falls risk level as \"High\" without direct reference to the SOURCE, which might suggest a \"Moderate vision-related falls risk.\" The CANDIDATE also invents no major content but does provide cautious, reasonable inferences about potential functional impacts and necessary interventions based on the documented vision loss and patient history.\n\n{\"coverage\": 5, \"factual_consistency\": 4, \"hallucination\": 5, \"aligned\": \"yes\"}"
+}

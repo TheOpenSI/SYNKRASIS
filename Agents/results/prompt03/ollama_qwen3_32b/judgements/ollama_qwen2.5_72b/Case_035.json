@@ -1,0 +1,9 @@
+{
+  "judge": "ollama:qwen2.5:72b",
+  "valid": true,
+  "coverage": 4,
+  "factual_consistency": 5,
+  "hallucination": 5,
+  "aligned": "yes",
+  "raw_response": "The CANDIDATE summary is comprehensive and covers most of the important content from the REFERENCE and SOURCE. Here are the key points:\n\n- **Coverage**: The CANDIDATE covers the majority of the important content, including key vision issues, task-level functional impacts, environmental considerations, O&M referral, and falls risk. However, it does not mention the patient's gym participation or the potential risks associated with it as explicitly as the REFERENCE. It also lacks a detailed discussion on the bathroom and step-over risks.\n\n- **Factual Consistency**: The CANDIDATE is consistent with the SOURCE in terms of age, diagnosis, history, findings, driving status, and management plans. There are no material inconsistencies.\n\n- **Hallucination**: The CANDIDATE does not invent any significant content that is not supported by the SOURCE. It makes cautious functional inferences that are reasonable given the documented findings.\n\n- **Alignment**: The CANDIDATE could be used by an OT as a replacement for the REFERENCE with minor edits to include the gym participation and bathroom risks.\n\nHere is the JSON object:\n\n{\"coverage\": 4, \"factual_consistency\": 5, \"hallucination\": 5, \"aligned\": \"yes\"}"
+}

@@ -1,0 +1,9 @@
+{
+  "judge": "ollama:qwen2.5:72b",
+  "valid": true,
+  "coverage": 4,
+  "factual_consistency": 5,
+  "hallucination": 5,
+  "aligned": "yes",
+  "raw_response": "The CANDIDATE summary covers most of the important content found in the REFERENCE, including key vision issues, functional impacts, and specific OT considerations. However, it lacks some details, such as the impact of hearing loss on compensatory strategies and the need to consider cognitive and physical aspects of the stroke. The CANDIDATE also does not mention the social implications of reduced clarity and the potential for increased social isolation. Additionally, the CANDIDATE does not provide as detailed recommendations for environmental modifications and task adaptations as the REFERENCE.\n\nThe CANDIDATE is factually consistent with the SOURCE report, accurately reflecting the patient's age, diagnosis, history, and management plan. There are no significant inconsistencies.\n\nThere is no hallucination in the CANDIDATE. All the information provided is supported by the SOURCE and is a reasonable inference from the documented findings.\n\nGiven these points, the CANDIDATE could be used by an OT as a replacement for the REFERENCE with minor edits to add the missing details.\n\n```json\n{\"coverage\": 4, \"factual_consistency\": 5, \"hallucination\": 5, \"aligned\": \"yes\"}\n```"
+}

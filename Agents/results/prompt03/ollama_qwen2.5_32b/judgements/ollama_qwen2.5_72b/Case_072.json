@@ -1,0 +1,9 @@
+{
+  "judge": "ollama:qwen2.5:72b",
+  "valid": true,
+  "coverage": 4,
+  "factual_consistency": 5,
+  "hallucination": 5,
+  "aligned": "yes",
+  "raw_response": "The CANDIDATE summary covers most of the important content found in the REFERENCE, including key vision issues, functional impacts, and specific OT considerations. However, it lacks some details, such as the specific mention of the need for a low vision referral and the detailed task adaptations for meal preparation. The CANDIDATE also does not mention the impact of glare on leaving the home or the need for a formal support pathway like MyAgedCare.\n\nThe CANDIDATE is factually consistent with the SOURCE, accurately reflecting the patient's age, diagnosis, history, and management plan. There are no material inconsistencies.\n\nThe CANDIDATE does not invent any content that is not supported by the SOURCE or REFERENCE. All statements are either directly supported or are reasonable inferences based on the documented findings.\n\nGiven these points, the CANDIDATE could be used by an OT with minor edits to include the missing details.\n\n{\"coverage\": 4, \"factual_consistency\": 5, \"hallucination\": 5, \"aligned\": \"yes\"}"
+}

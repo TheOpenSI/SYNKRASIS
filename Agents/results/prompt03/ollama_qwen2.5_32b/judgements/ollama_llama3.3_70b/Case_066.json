@@ -1,0 +1,9 @@
+{
+  "judge": "ollama:llama3.3:70b",
+  "valid": true,
+  "coverage": 4,
+  "factual_consistency": 4,
+  "hallucination": 3,
+  "aligned": "no",
+  "raw_response": "The CANDIDATE summary covers most of the important content present in the REFERENCE, including key vision issues, functional impacts, and OT considerations. However, it invents some content not supported by the SOURCE, such as specific details about the patient's home environment and the need for \"non-visual compensatory strategies\" like tactile or auditory cues, which, while reasonable inferences, are not explicitly mentioned in the SOURCE. The CANDIDATE also mentions \"talking devices\" as an example of assistive technology, which is not directly supported by the SOURCE. In terms of factual consistency, the CANDIDATE generally agrees with the SOURCE report but introduces minor inconsistencies, such as the emphasis on specific lighting and contrast adjustments in the home, which, while plausible, are not directly indicated in the SOURCE.\n\n{\"coverage\": 4, \"factual_consistency\": 4, \"hallucination\": 3, \"aligned\": \"no\"}"
+}

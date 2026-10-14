@@ -1,0 +1,9 @@
+{
+  "judge": "ollama:llama3.3:70b",
+  "valid": true,
+  "coverage": 4,
+  "factual_consistency": 4,
+  "hallucination": 3,
+  "aligned": "no",
+  "raw_response": "The CANDIDATE summary covers most of the important content present in the REFERENCE, including key vision issues, functional impacts, and vision-informed OT considerations. However, there are some minor gaps and invented content. For instance, the CANDIDATE mentions \"Reduced Contrast Sensitivity\" as a key vision issue, which is supported by the SOURCE report, but does not explicitly state its impact on daily activities as described in the REFERENCE. Additionally, the CANDIDATE suggests the use of a mobility cane or low vision identification badge without directly referencing the SOURCE's recommendation for considering these tools. The CANDIDATE also introduces the concept of \"social isolation or deconditioning\" due to mobility challenges, which, while plausible, is not directly mentioned in the SOURCE or REFERENCE. \n\nThe CANDIDATE is largely factually consistent with the SOURCE report, correctly stating the patient's age, diagnosis, medical history, and current rehabilitation status. However, the classification of falls risk level as \"Moderate\" in the CANDIDATE may be considered inconsistent with the REFERENCE, which states a \"High vision-related falls risk.\"\n\nGiven these observations, the CANDIDATE could be used by an OT as a replacement for the REFERENCE with minor edits needed to address the gaps and invented content.\n\n{\"coverage\": 4, \"factual_consistency\": 4, \"hallucination\": 3, \"aligned\": \"no\"}"
+}

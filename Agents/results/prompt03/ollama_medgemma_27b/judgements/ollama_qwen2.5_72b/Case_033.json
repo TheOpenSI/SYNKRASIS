@@ -1,0 +1,9 @@
+{
+  "judge": "ollama:qwen2.5:72b",
+  "valid": true,
+  "coverage": 4,
+  "factual_consistency": 5,
+  "hallucination": 5,
+  "aligned": "yes",
+  "raw_response": "The CANDIDATE summary covers most of the important content found in the REFERENCE, including the patient's age, setting, referral context, primary vision issues, functional impacts, and OT considerations. However, there are a few gaps and minor inconsistencies:\n\n1. **Coverage:**\n   - The CANDIDATE does not mention the specific impact on community access and the potential for social isolation and deconditioning.\n   - The CANDIDATE does not explicitly mention the need to consider minor home modifications such as contrast markings or the importance of reporting maintenance issues to the council.\n   - The CANDIDATE does not mention the specific task-level functional impact of reading-to-walking transitions.\n\n2. **Factual Consistency:**\n   - The CANDIDATE correctly states the patient's age, diagnosis, history, and visual function findings.\n   - The CANDIDATE accurately reflects the patient's driving status and the need for distance correction for driving.\n   - The CANDIDATE is consistent with the SOURCE in terms of the patient's ocular and general medical history.\n\n3. **Hallucination:**\n   - The CANDIDATE does not invent any facts, findings, circumstances, or recommendations that are not supported by the SOURCE or REFERENCE.\n\nOverall, the CANDIDATE is a well-structured and clinically sound summary that could be used by an OT with minor edits to address the gaps mentioned.\n\n{\"coverage\": 4, \"factual_consistency\": 5, \"hallucination\": 5, \"aligned\": \"yes\"}"
+}

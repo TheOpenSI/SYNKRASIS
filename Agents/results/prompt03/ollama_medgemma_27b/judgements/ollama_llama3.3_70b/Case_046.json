@@ -1,0 +1,9 @@
+{
+  "judge": "ollama:llama3.3:70b",
+  "valid": true,
+  "coverage": 5,
+  "factual_consistency": 5,
+  "hallucination": 5,
+  "aligned": "yes",
+  "raw_response": "The CANDIDATE summary covers most of the important content present in the REFERENCE, including key vision issues, task-level functional impacts, environmental considerations, and O&M/referral/support considerations. However, it does not explicitly mention the patient's history of hypertension, hyperlipidaemia, and atrial fibrillation as part of the medical history in the context of OT considerations. Additionally, while the CANDIDATE discusses the potential impact of vision loss on driving, it does not explicitly state the need for the patient to avoid driving if vision is not adequate for sign recognition or safe hazard detection as mentioned in the SOURCE. The CANDIDATE also invents no major content but does provide cautious, reasonable inferences about the functional implications of the patient's vision loss.\n\n{\"coverage\": 5, \"factual_consistency\": 5, \"hallucination\": 5, \"aligned\": \"yes\"}"
+}

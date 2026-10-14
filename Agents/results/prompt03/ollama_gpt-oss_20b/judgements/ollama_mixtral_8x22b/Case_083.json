@@ -1,0 +1,9 @@
+{
+  "judge": "ollama:mixtral:8x22b",
+  "valid": true,
+  "coverage": 4,
+  "factual_consistency": 5,
+  "hallucination": 5,
+  "aligned": "yes",
+  "raw_response": " Reasoning: The CANDIDATE summary covers most of the clinically and functionally important content from the REFERENCE, with a good level of detail on the key vision issues, task-level functional impacts, environmental considerations, and O&M referral considerations. It does not mention falls risk directly but implies it through the discussion of side-collision incidents. The CANDIDATE is factually consistent with the SOURCE report and does not invent any content. However, it does not explicitly mention the patient's driving status, which is a minor omission.\n\n{\"coverage\": 4, \"factual_consistency\": 5, \"hallucination\": 5, \"aligned\": \"yes\"}"
+}
