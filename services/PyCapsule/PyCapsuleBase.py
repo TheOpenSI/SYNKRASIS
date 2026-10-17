@@ -13,7 +13,7 @@
 #       Creates a file at specified path using the provided content.
 # - create_requirements_txt(requirements: list)
 #       Create requirements.txt file in the mount_dir.
-# - fix_code(response: CompletedProcess, meta_data_dict: dict)
+# - fix_code(response: CompletedProcess, user_query: dict)
 #       Gets activated only when response.returncode != 0.
 #       Will change system prompt, user query and attempt to fix the code.
 # - run_pycapsule_experiment(dataset: DatasetBase)
@@ -169,8 +169,8 @@ class PyCapsuleBase(ServiceBase):
         """
         Only gets activated in Fix mode.\n
         Use self._generate_code() to generate fix mode response and update main.py file in the container.\n
-        If self._generate_code() expects a dict, update metadata's prompt.\n
-        This function was not added to the base class initially because the parameters can be different for different datasets.
+        If self._generate_code() expects a dict, update metadata's prompt.
+
         Args:
             fix_mode_query (Union[str, dict]): Can be the query itself as str or 
                 a dict with metadata.
@@ -200,14 +200,13 @@ class PyCapsuleBase(ServiceBase):
                        response: CompletedProcess, 
                        user_query: Union[str, dict]) -> tuple[int, int]:
         """
-        Calls the fix_code method with or without "meta_data_dict".
-        Provides the ability to add (meta data: dict) for dataset specific implementation.
-        "meta_data_dict"  defaults to None for general usage.
+        Calls the fix_code method with or without "user_query" dict.
+        Provides the ability to add meta data for dataset specific implementation.
         
         Args:
             response (CompletedProcess): Response from the container with error code, 
                 stdout and stderr.
-            data_point (Union[str, dict]): Either a datapoint as dict or string query.
+            user_query (Union[str, dict]): User query either as dict or string query.
         """
         pass
 
@@ -317,7 +316,7 @@ class PyCapsuleBase(ServiceBase):
                 
     def fix_code(self, 
                  response: CompletedProcess, 
-                 meta_data_dict: dict = None) -> tuple[int, int, list[str]]:
+                 user_query: dict = None) -> tuple[int, int, list[str]]:
         """
         Gets activated only when response.returncode != 0.
         Will change system prompt, user query and attempt to fix the code.
@@ -325,6 +324,8 @@ class PyCapsuleBase(ServiceBase):
         Args:
             response (CompletedProcess): Response from the container with error code, 
                 stdout and stderr.
+            user_query (dict): User query either as dict or string query.
+
         Returns:
             Tuple (tuple[int, int, list[str]]): return code, number of attempts made, and list of error types.
         """
@@ -344,17 +345,17 @@ class PyCapsuleBase(ServiceBase):
                 fix_mode_query, suppress_flag = (
                     self._fresh_start() 
                     if attempt_count % self.fresh_start == 0
-                    else (self._get_fix_mode_query(response, meta_data_dict), False)
+                    else (self._get_fix_mode_query(response, user_query), False)
                     )
             else:
                 # Apply error handling to get the fix mode query
-                fix_mode_query = self._get_fix_mode_query(response, meta_data_dict)
+                fix_mode_query = self._get_fix_mode_query(response, user_query)
                 error_trace.append(self.error_handling.current_error_type)
             
             # Updating code in container based on fix mode response
             self._update_code(fix_mode_query = fix_mode_query, 
                               suppress_conversation_history=False,
-                              meta_data = meta_data_dict)
+                              meta_data = user_query)
 
             # Running the code
             response = self.container.start_container()
