@@ -1,0 +1,53 @@
+import json
+import os
+import subprocess
+import sys
+
+_DIR = os.path.dirname(os.path.abspath(__file__))
+_SOLUTION = os.path.join(_DIR, __SOLUTION_FILE__)
+_PRIVATE_FILE = os.path.join(_DIR, __PRIVATE_FILE__)
+_TIMEOUT = __TIMEOUT__
+_ENV = dict(os.environ, PYTHONWARNINGS="ignore")
+
+
+def _check(test, stdout):
+    message = f"Input: {test['input']!r}, expected output: {test['output']!r}, your output: {stdout!r}"
+    if test["testtype"] == "functional":
+        assert json.loads(stdout.strip().splitlines()[-1]) == json.loads(test["output"]), message
+    else:
+        assert stdout.split() == test["output"].split(), message
+
+
+def _run_test(test):
+    """Returns the pass string or the error message."""
+    try:
+        proc = subprocess.run([sys.executable, _SOLUTION],
+                              input=test["input"],
+                              capture_output=True,
+                              text=True,
+                              errors="replace",     # output that is not utf-8 must not crash the driver
+                              timeout=_TIMEOUT,
+                              env=_ENV)
+    except subprocess.TimeoutExpired:
+        return (f"TimeoutError: time limit of {_TIMEOUT} seconds exceeded on input {test['input']!r}. "
+                "The time complexity of your solution is too high for the constraints (or it loops forever). "
+                "Use a more efficient algorithm or data structure.")
+    if proc.returncode != 0:
+        # SyntaxError, NameError, ...; a silent exit (sys.exit, killed by a signal) has no stderr
+        return proc.stderr.strip() or f"RuntimeError: the program exited with code {proc.returncode} without an error message"
+    try:
+        _check(test, proc.stdout)
+    except Exception as error:
+        return f"{type(error).__name__}: {error}"
+    return __PASS__
+
+
+# Public tests first, then the private tests.
+_TESTS = json.loads(__TESTS__)
+if os.path.exists(_PRIVATE_FILE):
+    with open(_PRIVATE_FILE, "r") as _f:
+        _TESTS += json.load(_f)
+
+_RESULTS = [_run_test(_test) for _test in _TESTS]
+sys.stderr.write(__RESULTS_PREFIX__ + json.dumps(_RESULTS) + "\n")
+sys.exit(0 if all(_result == __PASS__ for _result in _RESULTS) else 1)
