@@ -27,11 +27,9 @@ from utils.output_message_format.output_colour import print_error, print_info, p
 from services.PyCapsule.livecodebench_harness.LCBHarness import LCBHarness
 from services.BPD.bpd import BPD, LEGEND
 
-# ---- switches ---------------------------------------------------------------------------------------------
 ENABLE_BPD = True            # True: the feedback for a public test with a WRONG ANSWER gets a BPD execution trace
 MAX_TRACES_PER_ATTEMPT = 3   # at most this many failing public tests get a trace in one feedback message
 TRACE_MAX_CHARS = 4000       # size limit of one trace
-# -----------------------------------------------------------------------------------------------------------
 
 
 class PyCapsule_LiveCodeBench(PyCapsuleBase):

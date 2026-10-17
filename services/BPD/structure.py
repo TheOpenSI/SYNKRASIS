@@ -55,16 +55,11 @@ class BranchInfo:
     line: int
     body_start: int
     body_end: int
-    orelse_start: Optional[int]
-    orelse_end: Optional[int]
     condition_names: list[str]
     body_kind: str = "other"   # "return", "break", "continue" or "other": what a one-statement body does
 
     def in_body(self, line: int) -> bool:
         return self.body_start <= line <= self.body_end
-
-    def in_orelse(self, line: int) -> bool:
-        return self.orelse_start is not None and self.orelse_start <= line <= self.orelse_end
 
 
 @dataclass
@@ -80,6 +75,7 @@ class FunctionInfo:
     return_lines: set[int] = field(default_factory=set)
     global_names: set[str] = field(default_factory=set)
     comprehension_names: set[str] = field(default_factory=set)   # loop variables of comprehensions
+    statement_lines: set[int] = field(default_factory=set)       # first line of every statement and `except` of the function that has a line event
 
 
 class _FunctionScanner:
@@ -98,9 +94,14 @@ class _FunctionScanner:
                 self._scan_statement(child)
             elif not isinstance(child, ast.expr):
                 # except handlers, match cases, with-items: may hold statements
+                if isinstance(child, ast.ExceptHandler):
+                    self.info.statement_lines.add(child.lineno)
                 self.scan(child)
 
     def _scan_statement(self, node: ast.stmt) -> None:
+        # no line event: `global x`, and a bare constant (docstring, `...`) which the compiler drops
+        if not isinstance(node, (ast.Global, ast.Nonlocal)) and not (isinstance(node, ast.Expr) and isinstance(node.value, ast.Constant)):
+            self.info.statement_lines.add(node.lineno)
         if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef, ast.ClassDef)):
             return
         if isinstance(node, (ast.For, ast.AsyncFor)):
@@ -126,8 +127,6 @@ class _FunctionScanner:
                 line=node.lineno,
                 body_start=node.body[0].lineno,
                 body_end=_end_line(node.body),
-                orelse_start=node.orelse[0].lineno if node.orelse else None,
-                orelse_end=_end_line(node.orelse) if node.orelse else None,
                 condition_names=_names_in(node.test),
                 body_kind=_body_kind(node.body),
             )

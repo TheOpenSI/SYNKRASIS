@@ -1,13 +1,10 @@
-# This file contains the functions to print the output messages in different colours.
-# the functions 
+# =======================================================================================
 # - print_info -- cyan
 # - print_warning --yellow
 # - print_error --red 
 # - print_model_output --blue
 # - print_success --green
-# are used to print the output messages in differrnt colours.
-# refer to the Enums in the colour.py file to see the different colours available.
-# ---------------------------------------------------------------------------------------
+# =======================================================================================
 
 import sys, os
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))

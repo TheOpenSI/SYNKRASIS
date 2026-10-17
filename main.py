@@ -25,7 +25,6 @@ from data.LiveCodeBench.LiveCodeBench import LiveCodeBench
 # from data.HumanEval.HumanEval import HumanEval
 
 
-# ---- settings --------------------------------------------------------------------------------------------------
 # Needs the ollama container running once:  docker run -d --name ollama -p 11434:11434 -v ollama:/root/.ollama ollama/ollama
 LLM_NAME = "qwen2.5-coder:7b"
 NUM_PROBLEMS = None                    # None = the whole dataset (175 problems), or a number: that many, spread over the dataset
@@ -90,7 +89,6 @@ def main():
         call_cleanup([llm, container])
 
 
-# ---- the way other datasets were run (kept for reference) ------------------------------------------------------
     # llm_model_names = ["qwen2.5-coder:7b"]
 
     # for llm_model_name in llm_model_names:

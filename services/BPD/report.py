@@ -1,30 +1,8 @@
-"""
-Compact execution trace for an LLM: the code that ran, with the runtime values written next to it.
-
-    for n in nums:            # 4 iterations; n=1..4
-        if is_even(n):        # F,T,F,T
-            count += 1        # count=1,2  (iters 2,4)
-
-Rules (the whole format):
-  1. Only lines that executed are shown, in source order, indented like the source. The model has
-     the code, so no line numbers and no explanations, just the source text of the line.
-  2. A line that ran many times (loop body, repeated call) is ONE row, its values are sequences:
-     `count=1,2`, `n=1..4`, branch outcomes `F,T,F,T`. Runs of 3+ equal values become `F×4`.
-  3. A row that ran in only some iterations says which: `(iters 2,4)`. That is how the iteration
-     that breaks the pattern shows up, e.g. `return -1  # -1  (iters 5)`.
-  4. Long sequences keep the first and last values: `0,1,2,3 ... 98,99 (100 values)`.
-  5. Lists and dicts are shown as the change, not the whole value: `X[0..4]=1,1,2,3,2`, `queries += (1, 4)`.
-  6. Nothing is printed for lines that tell nothing, like `total = 0` (the value is in the code).
-  7. A call to a traced function: only the return values when they say something; a call with
-     real logic inside gets its own indented block (first call only, the rest as return values).
-
-The analysis (what happened in which loop, branch, call) is services.BPD.analysis; this file is only the rendering.
-"""
 from __future__ import annotations
 
 import ast
 import re
-from dataclasses import dataclass, replace
+from dataclasses import dataclass, field, replace
 from typing import Any, Optional
 
 from services.BPD.analysis import Analyser
@@ -32,6 +10,7 @@ from services.BPD.structure import CodeStructure
 from services.BPD.tracer import Invocation
 
 SEPARATOR = "  # "
+HARD_LIMIT_FACTOR = 1.5       # a trace is never longer than max_chars * this (the shrinking before it can leave a long program over max_chars)
 
 
 @dataclass
@@ -40,48 +19,44 @@ class TraceConfig:
     sequence_head: int = 4         # longer ones keep this many values at the start ...
     sequence_tail: int = 2         # ... and this many at the end
     value_length: int = 40         # longer values are clipped
-    line_length: int = 70          # longer source lines are clipped
-    max_call_depth: int = 3        # deeper calls are summarised by their return value
+    max_note: Optional[int] = None  # longer notes after a line are clipped (the code itself never is)
     max_chars: Optional[int] = 6000
 
     def tightened(self, level: int) -> "TraceConfig":
         """Less detail, level 1, 2, 3, used when the trace is over max_chars."""
-        plain, head, tail, length, depth = [(5, 3, 2, 30, 2), (4, 2, 1, 24, 2), (3, 2, 1, 16, 1)][min(level, 3) - 1]
-        return replace(self, sequence_plain=plain, sequence_head=head, sequence_tail=tail,
-                       value_length=length, max_call_depth=depth)
+        plain, head, tail, length = [(5, 3, 2, 30), (4, 2, 1, 24), (3, 2, 1, 16)][min(level, 3) - 1]
+        return replace(self, sequence_plain=plain, sequence_head=head, sequence_tail=tail, value_length=length)
 
 
 @dataclass
 class Row:
     """One source line, with every time it executed."""
     line: int
-    kind: str                                    # "stmt", "branch", "return" or "loop"
+    kind: str                                    # "stmt", "branch", "return", "loop"; "def" (function header), "unreached", "uncalled"
     executions: list[dict]                       # the analysed items (see Analyser._analyse), one per time
     iteration_ids: list[Optional[int]]           # enclosing loop iteration of each execution (None: not in a loop)
     children: list["Row"]                        # loops: the rows of the loop body
     loop_runs: list[dict]                        # loops: the loop items (a nested loop runs once per outer iteration)
     iterations_total: int = 0                    # loops: iterations over all runs
+    total_iterations: Optional[int] = None       # iterations of the loop this row is in (None: not in a loop)
+    invocations: list[Invocation] = field(default_factory=list)   # "def": the calls of the function
 
 
 class Renderer(Analyser):
 
     def __init__(self, structure: CodeStructure, config: Optional[TraceConfig] = None) -> None:
         self.compact = config or TraceConfig()
-        super().__init__(structure, self.compact.max_call_depth)
+        super().__init__(structure)
 
-    # -- entry --------------------------------------------------------------------------------
 
     def render(self, roots: list[Invocation], result: Any, error: Optional[Exception],
                       expected: Optional[str] = None, output: Optional[str] = None) -> str:
         """
-        The trace, then one final line with the outcome. expected: the expected answer (public tests
-        only). output: what a stdin program printed, when given it replaces the returned value.
+        The source with the trace next to it, then one final line with the outcome. expected: the expected
+        answer (public tests only). output: what a stdin program printed, when given it replaces the returned value.
         """
         self._items_cache = {}
-        lines: list[str] = []
-        self._roots = roots
-        for root in roots:
-            lines.extend(self._render_invocation(root, level=0, is_root=True))
+        lines = self._render_source(roots)
         if not roots:
             lines.append("(no traced function was called)")
 
@@ -100,48 +75,89 @@ class Renderer(Analyser):
         lines.append(outcome)
         return "\n".join(lines)
 
-    # -- one call -------------------------------------------------------------------------------
+    def _render_source(self, roots: list[Invocation]) -> list[str]:
+        """Every line of the source in order, with the values of the line (if it has a row) after `#`."""
+        calls: dict[tuple[str, int], list[Invocation]] = {}      # function -> its calls, in the order they happened
+        pending = list(reversed(roots))
+        while pending:
+            inv = pending.pop()
+            calls.setdefault((inv.name, inv.first_line), []).append(inv)
+            pending.extend(reversed(inv.children))
+        rows: dict[int, Row] = {}
+        for info in self.structure.functions:
+            if (info.name, info.first_line) in calls:
+                rows.update(self._function_rows(info, calls[(info.name, info.first_line)]))
+            else:
+                rows[info.def_line] = Row(info.def_line, "uncalled", [], [], [], [])
 
-    def _render_invocation(self, inv: Invocation, level: int, is_root: bool = False,
-                           hide_header: bool = False) -> list[str]:
-        info = self.structure.function_for(inv.name, inv.first_line)
-        rows = self._build_rows([(None, self._items_for(inv))], info)
+        main = next((f for f in self.structure.functions if f.name == "__bpd_main__"), None)   # wrapper of a stdin program
         lines: list[str] = []
-        hidden_main = inv.name == "__bpd_main__" or hide_header   # __bpd_main__: wrapper used for stdin programs
-        if not hidden_main:
-            lines.append(self._indent(level, f"{self._signature_compact(inv, nested=not is_root)}:"))
-        body_level = level if hidden_main else level + 1
-        lines.extend(self._render_rows(rows, body_level, total_iterations=None, call=inv))
-        if inv.finished and inv.raised is None and not hidden_main and not self._returned_explicitly(inv):
-            if inv.return_value not in (None, "None"):
-                lines.append(self._indent(body_level, f"returned {self._short(inv.return_value)}"))
+        for number, text in enumerate(self.structure.lines, start=1):
+            if not text.strip() or (main is not None and (number == main.def_line or (number == main.def_line + 1 and text.strip().startswith("global ")))):
+                continue
+            indent = len(text) - len(text.lstrip())
+            if main is not None and main.def_line < number <= main.end_line:
+                indent -= 4                                           # the body of the wrapper is the program itself
+            line = " " * indent + text.strip()
+            lines.append(line + (self._note(rows[number]) if number in rows else ""))
         return lines
 
-    def _returned_explicitly(self, inv: Invocation) -> bool:
-        return any((item["kind"] == "return" and not item.get("implicit")) or item.get("returns")
-                   for item in self._items_for(inv))
+    def _function_rows(self, info, invocations: list[Invocation]) -> dict[int, Row]:
+        """One row per statement line of a function, over all its calls; a line that never ran gets an "unreached" row."""
+        rows: dict[int, Row] = {}
 
-    def _signature_compact(self, inv: Invocation, nested: bool = False) -> str:
-        """name(arg=value, ...). In nested calls long values (a big list passed down again and again) are left out."""
-        arguments = ", ".join(f"{name}={self._clip(value)}" for name, value in inv.args.items()
-                              if name != "self" and not self._is_noise(value)
-                              and not (nested and len(value) > self.compact.value_length))
-        return f"{inv.name}({arguments})"
+        def add(built: list[Row]) -> None:
+            for row in built:
+                rows[row.line] = row
+                add(row.children)
 
-    # -- rows: merge the executions of every source line ------------------------------------------
+        add(self._build_rows([(None, self._items_for(inv)) for inv in invocations]))
+        for line in info.statement_lines:
+            rows.setdefault(line, Row(line, "unreached", [], [], [], []))
+        rows[info.def_line] = Row(info.def_line, "def", [], [], [], [], invocations=invocations)
+        return rows
 
-    def _build_rows(self, groups: list[tuple[Optional[int], list[dict]]], info=None) -> list[Row]:
+    def _note(self, row: Row) -> str:
+        """What goes after the source text of the line: `  # values; values  (iterations 2,4)`."""
+        if row.kind == "loop":
+            parts = self._loop_parts(row)
+        elif row.kind == "def":
+            parts = [self._arguments_part(row.invocations)]
+        elif row.kind == "unreached":
+            parts = ["never reached"]
+        elif row.kind == "uncalled":
+            parts = ["never called"]
+        else:
+            parts = self._statement_parts(row)
+        text = SEPARATOR + "; ".join(parts) if parts else ""
+        sparse = self._sparse_note(row, row.total_iterations)
+        text += "  " + sparse if sparse else ""                  # a note about the row, apart from its values
+        limit = self.compact.max_note
+        return text if limit is None or len(text) <= limit else text[:limit - 3] + "..."
+
+    def _arguments_part(self, invocations: list[Invocation]) -> str:
+        """The arguments of all calls of a function: `x=3,2,1`."""
+        parts = []
+        for name in dict.fromkeys(name for inv in invocations for name in inv.args):
+            values = [inv.args[name] for inv in invocations if name in inv.args]
+            if name != "self" and not self._is_noise(values[0]):
+                parts.append(f"{self._display_name(name)}={self._sequence([self._clip(v) for v in values])}")
+        count = len(invocations)
+        return ", ".join(parts) or "called" + (f" {count} times" if count > 1 else "")
+
+
+    def _build_rows(self, groups: list[tuple[Optional[int], list[dict]]], total_iterations: Optional[int] = None) -> list[Row]:
         """
-        groups: (iteration id, items executed in it). Returns one Row per source line, in source order.
-        info: FunctionInfo of the function, used to put an `else:` line before code that ran in an else branch
-        (the tracer reports no line for `else:` itself, so without it that code would look like part of the `if`).
+        groups: (iteration id, items executed in it). Returns one Row per source line that ran, in source order;
+        a loop row has the rows of its body as children.
         """
         by_line: dict[int, Row] = {}
         for iteration_id, items in groups:
             for item in items:
                 if item.get("implicit"):
-                    continue                                        # "end of function reached", shown by the caller
-                row = by_line.setdefault(item["line"], Row(item["line"], item["kind"], [], [], [], []))
+                    continue                                        # "end of function reached", not a line
+                row = by_line.setdefault(item["line"], Row(item["line"], item["kind"], [], [], [], [],
+                                                           total_iterations=total_iterations))
                 if item["kind"] == "loop":
                     row.loop_runs.append(item)
                 row.executions.append(item)
@@ -151,66 +167,13 @@ class Renderer(Analyser):
                 pooled = [(number, iteration["items"])
                           for number, iteration in enumerate(self._all_iterations(row), start=1)]
                 row.iterations_total = len(pooled)
-                row.children = self._build_rows(pooled, info)
-        if info is not None:
-            for row in list(by_line.values()):
-                branch = info.branches.get(row.line) if row.kind == "branch" else None
-                else_line = self._else_line(branch) if branch is not None else None
-                if else_line is not None and else_line not in by_line and any(
-                        branch.in_orelse(line) for line in by_line):
-                    by_line[else_line] = Row(else_line, "marker", [], [], [], [])
+                row.children = self._build_rows(pooled, len(pooled))
         return [by_line[line] for line in sorted(by_line)]
-
-    def _else_line(self, branch) -> Optional[int]:
-        """Line number of the `else:` that belongs to an if, None when it has no else or an elif."""
-        if branch.orelse_start is None:
-            return None
-        for line in range(branch.orelse_start, max(branch.orelse_start - 4, 0), -1):
-            if re.match(r"^else\s*:", self.structure.line_source(line)):
-                return line
-        return None
 
     @staticmethod
     def _all_iterations(row: Row) -> list[dict]:
         return [iteration for run in row.loop_runs for iteration in run["iterations"]]
 
-    # -- rendering rows ---------------------------------------------------------------------------
-
-    def _render_rows(self, rows: list[Row], level: int, total_iterations: Optional[int], call: Invocation) -> list[str]:
-        if not rows:
-            return []
-        indents = sorted({self._indent_of(row.line) for row in rows})
-        rank = {value: index for index, value in enumerate(indents)}
-        lines: list[str] = []
-        for row in rows:
-            lines.extend(self._render_row(row, level + rank[self._indent_of(row.line)], total_iterations, call))
-        return lines
-
-    def _render_row(self, row: Row, level: int, total_iterations: Optional[int], call: Invocation) -> list[str]:
-        if row.kind == "marker":
-            return [self._indent(level, "else:")]
-        if row.kind == "loop":
-            parts = self._loop_parts(row)
-            nested_blocks: list[list[str]] = []
-        else:
-            parts, nested_blocks = self._statement_parts(row, level, call)
-
-        if not parts and not nested_blocks:
-            return []
-
-        source = self._clip_line(self.structure.line_source(row.line))
-        text = source + (SEPARATOR + "; ".join(parts) if parts else "")
-        sparse = self._sparse_note(row, total_iterations)
-        if sparse:
-            text += "  " + sparse                  # a note about the row, apart from its values
-        lines = [self._indent(level, text)]
-        for block in nested_blocks:
-            lines.extend(block)
-        if row.kind == "loop":
-            lines.extend(self._render_rows(row.children, level + 1, row.iterations_total, call))
-        return lines
-
-    # -- loops ------------------------------------------------------------------------------------
 
     def _loop_parts(self, row: Row) -> list[str]:
         iterations = self._all_iterations(row)
@@ -234,14 +197,13 @@ class Renderer(Analyser):
             parts.append("ended by " + "/".join(sorted(exits)))
         return parts
 
-    # -- everything else ----------------------------------------------------------------------------
 
-    def _statement_parts(self, row: Row, level: int, call: Invocation) -> tuple[list[str], list[list[str]]]:
+    def _statement_parts(self, row: Row) -> list[str]:
         executions = row.executions
         parts: list[str] = []
 
         if row.kind == "branch" or any(e["kind"] == "branch" for e in executions):
-            parts.append(self._branch_part(executions, call))
+            parts.append(self._branch_part(executions))
 
         changes = {}
         written: dict[str, list[tuple[str, str]]] = {}
@@ -253,42 +215,36 @@ class Renderer(Analyser):
                 for target, slot_and_value in execution.get("written", {}).items():
                     written.setdefault(target, []).append(slot_and_value)
         else:
-            parts.append("literal assignment")      # the source text of the line is printed by _render_row
+            parts.append("literal assignment")
         # `G[i][j] = x` is shown by the values it wrote, not by how the whole list G changed
         changes = {name: pairs for name, pairs in changes.items()
                    if name not in {re.match(r"\w+", target).group() for target in written}}
-        has_nested = any(not self.is_inline(c) for e in executions for c in e.get("calls", []) if not c.name.startswith("<"))
-        if has_nested:      # a callee changed a list/dict: its own block shows how, do not repeat it here
+        has_calls = any(not c.name.startswith("<") for e in executions for c in e.get("calls", []))
+        if has_calls or written:    # a callee changed a list/dict (its own lines show how), or the line wrote into one (shown by `written`)
             changes = {n: p for n, p in changes.items() if not all(self._is_container_change(b, a) for b, a in p)}
         change_texts = [self._variable_part(name, pairs) for name, pairs in changes.items()]
         parts.extend(text for text in change_texts if text)
         parts.extend(self._written_part(target, pairs) for target, pairs in written.items())
 
         returned = [e["value"] for e in executions if e.get("value") is not None and (e["kind"] == "return" or e.get("returns"))]
-        if returned and call in self._roots:
-            # the final line has the value; only say which return ran when there are several
-            info = self.structure.function_for(call.name, call.first_line)
-            if info is not None and len(info.return_lines) > 1:
-                parts.append("returned")
-        elif returned:
+        if returned:
             parts.append("returns " + self._sequence([self._clip(v) for v in returned]))
 
-        call_part, nested_blocks = self._call_parts(row, level, changes, call)
+        call_part = self._calls_text(row, changes)
         if call_part:
             parts.append(call_part)
 
-        for execution in executions:
+        for execution, iteration in zip(executions, row.iteration_ids):
             exception = execution.get("exception")
             if exception is not None and not self._raised_inside_call(execution):
-                parts.append(f"raised {exception}")
+                parts.append(f"raised {exception}" + (f" (iteration {iteration})" if iteration is not None else ""))
                 break
-        return parts, nested_blocks
+        return parts
 
-    def _branch_part(self, executions: list[dict], call: Invocation) -> str:
+    def _branch_part(self, executions: list[dict]) -> str:
         """
-        Outcomes as T/F. Values of the condition are added only when they tell something new: not the
-        arguments already in the call header, and for repeated branches only short values that never
-        change (the ones that change are the loop variables or the rows above).
+        Outcomes as T/F. Values of the condition are added for a single execution, and for repeated branches only
+        short values that never change (the ones that change are the loop variables or the rows above).
         """
         branches = [e for e in executions if e["kind"] == "branch"]
         outcomes = ["T" if e.get("outcome") else "F" if e.get("outcome") is False else "?" for e in branches]
@@ -296,7 +252,7 @@ class Renderer(Analyser):
         shown = []
         for name in names:
             values = [e["values"][name] for e in branches if name in e.get("values", {})]
-            if self._is_noise(values[0]) or call.args.get(name) == values[0] and len(set(values)) == 1:
+            if self._is_noise(values[0]):
                 continue
             if len(branches) == 1 or (len(set(values)) == 1 and len(values[0]) <= 24):
                 shown.append(f"{self._display_name(name)}={self._clip(values[0])}")
@@ -407,47 +363,19 @@ class Renderer(Analyser):
                 return f"{matches[0].group(1)}{where}={self._sequence(values)}"
         return self._sequence([f"{slot}={value}" for slot, value in zip(slots, values)])
 
-    def _call_parts(self, row: Row, level: int, changes: dict, call: Invocation) -> tuple[str, list[list[str]]]:
+    def _calls_text(self, row: Row, changes: dict) -> str:
+        """The values the traced functions called on this line returned: `f returns 4,1,3`. The body of f is listed at its def."""
         calls = [c for e in row.executions for c in e.get("calls", []) if not c.name.startswith("<")]
-        if not calls:
-            return "", []
-        top_level = call.name == "__bpd_main__"           # the wrapper of a stdin program: its calls are the program
-        inline = [] if top_level else [c for c in calls if self.is_inline(c)]
-        nested = calls if top_level else [c for c in calls if not self.is_inline(c)]
-        text = ""
-        if inline:
-            text = self._inline_calls_text(inline, row, changes)
-        blocks: list[list[str]] = []
-        if nested:
-            first = nested[0]
-            extra = f"  [first of {len(nested)} calls]" if len(nested) > 1 else ""
-            call_only = self.structure.line_source(row.line) == f"{first.name}()" and not first.args
-            block = self._render_invocation(first, level + 1, hide_header=call_only)
-            if extra and block:
-                block[0] += extra
-            blocks.append(block)
-            if len(nested) > 1:
-                returned = [self._clip(c.return_value or "?") for c in nested]
-                if not all(r == "None" for r in returned) and not any(returned == [self._clip(after) for _, after in pairs] for pairs in changes.values()):
-                    text = (text + "; " if text else "") + f"{first.name} returns {self._sequence(returned)}"
-        return text, blocks
-
-    def _inline_calls_text(self, inline: list[Invocation], row: Row, changes: dict) -> str:
         pieces = []
-        for name in dict.fromkeys(c.name for c in inline):
-            group = [c for c in inline if c.name == name]
-            returns = [self._clip(c.return_value if c.raised is None else f"raised {c.raised}") for c in group]
+        for name in dict.fromkeys(c.name for c in calls):
+            returns = [self._clip(c.return_value if c.raised is None else f"raised {c.raised}") for c in calls if c.name == name]
             if all(r == "None" for r in returns):
                 continue                                           # nothing returned: nothing to say
-            all_bool = all(r in ("True", "False") for r in returns)
-            if row.kind == "branch" and all_bool:
+            if row.kind == "branch" and all(r in ("True", "False") for r in returns):
                 continue                                           # the branch outcome already says it
             if any(returns == [self._clip(after) for _, after in pairs] for pairs in changes.values()):
                 continue                                           # `x = f(y)`: x=... says it
-            if len(group) == 1:
-                pieces.append(f"{self._signature_compact(group[0])} -> {returns[0]}")
-            else:
-                pieces.append(f"{name} returns {self._sequence(returns)}")
+            pieces.append(f"{name} returns {self._sequence(returns)}")
         return "; ".join(pieces)
 
     @staticmethod
@@ -456,32 +384,29 @@ class Renderer(Analyser):
         return exception is not None and any(c.raised is not None and c.raised.identity == exception.identity
                                              for c in execution.get("calls", []))
 
-    # -- small helpers --------------------------------------------------------------------------------
 
     def _sparse_note(self, row: Row, total_iterations: Optional[int]) -> str:
         """
-        Says in which iterations of the enclosing loop the line ran, when it was not all of them:
-        `(iters 2,4)`, or for a line that skipped a few `(not in iters 2)`, or `(30 of 120 iters)`.
+        Says in which iterations of the enclosing loop the line ran, only when it ran in fewer than half of them:
+        `(iteration 3)`, `(iterations 2,4)`, `(30 of 120 iterations)`. A line that ran in most iterations says
+        nothing: the `continue` that skips the rest of an iteration says which ones, `(ends iteration 2)`.
         """
         if total_iterations is None:
             return ""
         ran = sorted({i for i in row.iteration_ids if i is not None})
-        if not ran or len(ran) == total_iterations:
+        is_continue = self.structure.line_source(row.line) == "continue"
+        if not ran or (len(ran) * 2 >= total_iterations and not is_continue):
             return ""
-        skipped = [i for i in range(1, total_iterations + 1) if i not in set(ran)]
-        if len(skipped) <= 3 and len(skipped) < len(ran):
-            return f"(not in iters {','.join(map(str, skipped))})"
         if len(ran) <= 4:
-            return f"(iters {','.join(map(str, ran))})"
-        return f"({len(ran)} of {total_iterations} iters)"
+            what = f"{'iteration' if len(ran) == 1 else 'iterations'} {','.join(map(str, ran))}"
+        else:
+            what = f"{len(ran)} of {total_iterations} iterations"
+        return f"({'ends ' if is_continue else ''}{what})"
 
     @staticmethod
     def _is_noise(value: str) -> bool:
         """Functions, classes, modules and `<X object at 0x..>` say nothing to the reader."""
         return value.startswith(("<function", "<class", "<module", "<built-in", "<bound method")) or " object at 0x" in value
-
-    def _values(self, values: dict[str, str]) -> str:
-        return ", ".join(f"{k} = {self._clip(v)}" for k, v in values.items() if not self._is_noise(v))
 
     def _delta(self, name: str, before: Optional[str], after: str) -> Optional[str]:
         """Update of a list/dict/set as a small delta instead of both full values, None if not applicable."""
@@ -540,24 +465,12 @@ class Renderer(Analyser):
             return False
     
 
-    def _indent_of(self, line: int) -> int:
-        text = self.structure.lines[line - 1] if 1 <= line <= len(self.structure.lines) else ""
-        return len(text) - len(text.lstrip())
-
-    @staticmethod
-    def _indent(level: int, text: str) -> str:
-        return "  " * level + text
-
     @staticmethod
     def _display_name(name: str) -> str:
         return name.replace(" (global)", "")
 
     def _short(self, text: str) -> str:
         limit = self.compact.value_length * 2
-        return text if len(text) <= limit else text[:limit - 3] + "..."
-
-    def _clip_line(self, text: str) -> str:
-        limit = self.compact.line_length
         return text if len(text) <= limit else text[:limit - 3] + "..."
 
     def _clip(self, text: Optional[str]) -> Optional[str]:
@@ -620,7 +533,7 @@ def render_within_budget(structure: CodeStructure, roots: list[Invocation],
                          result: Any, error: Optional[Exception],
                          expected: Optional[str], output: Optional[str], 
                          config: TraceConfig) -> str:
-    """The trace, re-rendered with less detail (TraceConfig.tightened) until it fits config.max_chars."""
+    """The trace, re-rendered with less detail (TraceConfig.tightened, then shorter notes) until it fits config.max_chars."""
     text = Renderer(structure, config).render(roots, result, error, expected, output)
     if config.max_chars is None or len(text) <= config.max_chars:
         return text
@@ -628,8 +541,35 @@ def render_within_budget(structure: CodeStructure, roots: list[Invocation],
         text = Renderer(structure, config.tightened(level)).render(roots, result, error, expected, output)
         if len(text) <= config.max_chars:
             return text
-    lines = text.split("\n")                                   # last resort: cut the middle
-    head, tail = int(len(lines) * 0.6), int(len(lines) * 0.25)
-    while len("\n".join(lines[:head] + lines[-tail:])) > config.max_chars and head > 10:
-        head, tail = int(head * 0.8), int(tail * 0.8)
-    return "\n".join(lines[:head] + [f"... {len(lines) - head - tail} lines omitted (size limit) ..."] + lines[-tail:])
+    for note in (100, 60, 30):                                 # still too long: shorter notes. The code itself is never cut
+        text = Renderer(structure, replace(config.tightened(3), max_note=note)).render(roots, result, error, expected, output)
+        if len(text) <= config.max_chars:
+            return text
+    return cut_middle(text, int(config.max_chars * HARD_LIMIT_FACTOR))   # last resort, only for really long programs
+
+
+def cut_middle(text: str, limit: int) -> str:
+    """
+    Keeps the first and the last lines and replaces the ones in between by one marker line, so that the result is at
+    most `limit` characters. The start (the setup) and the end (where it went wrong, and the final outcome line) stay.
+    Text that is short enough is returned unchanged.
+    """
+    if len(text) <= limit:
+        return text
+    lines = text.split("\n")
+    room = limit - 60                                          # the marker line
+    head, tail, used = [], [], 0
+    for line in lines:                                         # about 60% of the room for the start
+        if used + len(line) + 1 > room * 0.6:
+            break
+        head.append(line)
+        used += len(line) + 1
+    used = 0
+    for line in reversed(lines[len(head):]):                   # the rest for the end, the last line always stays
+        if used + len(line) + 1 > room * 0.4 and tail:
+            break
+        tail.append(line)
+        used += len(line) + 1
+    tail.reverse()
+    omitted = len(lines) - len(head) - len(tail)
+    return "\n".join(head + [f"... {omitted} lines omitted (size limit) ..."] + tail)

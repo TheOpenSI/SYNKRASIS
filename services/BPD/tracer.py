@@ -1,20 +1,3 @@
-"""
-Runtime trace of a piece of code, collected with sys.settrace.
-
-For every executed line of every function that lives in the traced source, a Step records the local
-variables just before and just after the line ran, the calls the line made into other traced
-functions, and any exception it raised. One Invocation per call groups these steps, so recursion and
-helper calls form a tree.
-
-Values are stored as (truncated) repr strings rather than live objects, so mutable objects are
-captured as they were at that moment.
-
-Safety: a trace is abandoned with TraceLimit after max_steps lines or max_seconds, and a huge list or
-dict is stored as its first items plus its length (a repr of 2 million elements on every line made
-tracing hang). Two details the first version got wrong: a variable assigned on a line is recorded
-every time the line runs (also when the value did not change), and a name is hidden as a
-"comprehension variable" only when the function never assigns it as a normal variable.
-"""
 from __future__ import annotations
 
 import ast
@@ -132,8 +115,12 @@ class Step:
             if self.before.get(name) != value
         }
         for name in self.assigned:
-            if name in self.after and name not in result:
-                result[name] = (self.before.get(name), self.after[name])
+            if self.exception is not None:      # the line raised before assigning: E in the sequence of values
+                result[name] = (self.before.get(name), "E")
+            else:
+                key = name if name in self.after else f"{name} (global)"       # `global total; total += v`
+                if key in self.after and key not in result:
+                    result[key] = (self.before.get(key), self.after[key])
         return result
 
 
@@ -290,7 +277,6 @@ class TraceCollector:
                     root.raised = last
         return result, error, self.roots
 
-    # -- trace callbacks ------------------------------------------------------
 
     def _trace(self, frame: types.FrameType, event: str, arg: Any):
         code = frame.f_code
@@ -390,7 +376,6 @@ class TraceCollector:
         if parent is not None:
             parent._last_returned_child = node
 
-    # -- helpers --------------------------------------------------------------
 
     def _parent_of(self, frame: types.FrameType) -> Optional[Invocation]:
         """Nearest calling frame that belongs to the traced source (library frames are skipped)."""

@@ -8,7 +8,7 @@ runtime values written next to it (see services/BPD/report.py for the format):
 
     for n in nums:            # 4 iterations; n=1..4
         if is_even(n):        # F,T,F,T
-            count += 1        # count=1,2  (iters 2,4)
+            count += 1        # count=1,2  (iterations 2,4)
 
 - code:        the solution as the LLM wrote it. With entry_point it is a LeetCode style `class Solution` and the
                test input has one json value per line (the arguments of Solution().entry_point(...)); without
@@ -34,7 +34,6 @@ import io
 import json
 import subprocess
 import uuid
-from dataclasses import dataclass
 from typing import Any, Optional
 
 from services.BPD.report import TraceConfig, render_within_budget
@@ -46,9 +45,9 @@ WORKER_PATH = os.path.join(PACKAGE_DIR, "worker.py")
 SANDBOX_OPTIONS = ["--network", "none", "--memory", "2g", "--cpus", "1", "--pids-limit", "256"]
 
 # Legend for the model that reads a trace, put it before the trace in the feedback.
-LEGEND = ("How to read it: only the lines that ran are listed, with the values after `#`. `x=1,2,3` are the values "
+LEGEND = ("How to read it: this is the whole solution, with the values of each line after `#`; `never reached` marks a line that did not run, `never called` a function that did not. `x=1,2,3` are the values "
           "of x on successive executions of that line, `a..b` a run of consecutive numbers, `T/F` the outcome of a "
-          "condition on each execution, `F×3` three equal values, `(iters 2,4)` the loop iterations the line ran in, "
+          "condition on each execution, `F×3` three equal values, `(iterations 2,4)` the loop iterations the line ran in, `E` a variable whose assignment raised, "
           "`...` omitted middle values. Nested lines belong to the line above.")
 
 

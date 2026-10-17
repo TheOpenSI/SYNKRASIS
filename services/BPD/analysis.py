@@ -19,9 +19,8 @@ from services.BPD.tracer import Invocation, Step
 
 class Analyser:
 
-    def __init__(self, structure: CodeStructure, max_call_depth: int = 3) -> None:
+    def __init__(self, structure: CodeStructure) -> None:
         self.structure = structure
-        self.max_call_depth = max_call_depth
         self._items_cache: dict[int, list[dict]] = {}
 
     def _items_for(self, inv: Invocation) -> list[dict]:
@@ -230,19 +229,3 @@ class Analyser:
         if step.changes() or step.calls:
             return True
         return None
-
-    def is_inline(self, inv: Invocation) -> bool:
-        """A call is shown on one line when nothing happened inside it worth a breakpoint."""
-        if inv.depth > self.max_call_depth:
-            return True
-        if inv.is_generator or inv.raised is not None:
-            return False
-        interesting = 0
-        for item in self._items_for(inv):
-            if item["kind"] in ("loop", "branch") or item.get("exception"):
-                return False
-            if any(not self.is_inline(c) for c in item.get("calls", [])):
-                return False
-            if item.get("changes") or item.get("calls"):
-                interesting += 1
-        return interesting <= 1
