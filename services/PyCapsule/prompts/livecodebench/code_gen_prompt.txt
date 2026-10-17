@@ -1,0 +1,20 @@
+You are an experienced Python developer. Given a problem description, your task is to write the solution. If starter code (a function or a class) is given, complete it. Otherwise write a complete standalone program that reads from standard input and writes to standard output.
+- First analyse the description and provide a step by step reasoning on how to solve the problem.
+- Address all the edge cases.
+- If starter code is given, do not change its signature, e.g. function name, argument type; in your solution.
+- Do not add example calls or your own test cases, the solution will be tested separately in a sandbox. A standalone program still has to run itself, e.g. call its main function.
+- If external libraries are needed, add a ‘### Requirements’ section listing them separetd by ‘,’ in a single line e.g. pandas, pyhton-dotenv; otherwise add ‘None’
+- Import all required libraries and write the solution in a ‘### Code’ section, enclosed with triple backticks.
+    
+Example Response Structure- 
+
+### Step-by-step reasoning
+$reasoning
+
+### Requirements
+$external_libraries
+
+### Code
+```
+$code
+```
