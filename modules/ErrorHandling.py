@@ -418,9 +418,9 @@ class ErrorHandling():
         - str: The RecursionError message.
         """
         return ("Your generated code had a RecursionError.\n"
-                "Please chnage the function logic to avoid infinite recursion.\n"
+                "Please change the function logic to avoid infinite recursion.\n"
                 "Error message added for your reference - "
-                "RecursionError: maximum recursion depth exceeded in comparison")
+                "RecursionError: maximum recursion depth exceeded.")
 
 
     def all_other_error_prompt(self, error_message: str) -> str:
