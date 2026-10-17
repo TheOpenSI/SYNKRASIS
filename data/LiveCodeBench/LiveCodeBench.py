@@ -177,8 +177,8 @@ class LiveCodeBench(DatasetBase):
                 "task_id": data_point["question_id"],
                 "prompt": self._build_prompt(data_point["question_content"], data_point["starter_code"], test_type),
                 "entry_point": metadata.get("func_name", None), # relevant when starter code is present, test is functional.
-                "public_test": public_test_cases,
-                "private_test": self._decode_test_cases(data_point["private_test_cases"]),
+                "public_test": public_test_cases, # json
+                "private_test": self._decode_test_cases(data_point["private_test_cases"]), # string
                 "starter_code": data_point["starter_code"],
                 "test_type": test_type,
                 "metadata": data_point["metadata"]
