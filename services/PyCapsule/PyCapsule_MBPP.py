@@ -107,7 +107,7 @@ class PyCapsule_MBPP(PyCapsuleBase):
         self._generate_code(data_point, suppress_conversation_history)
         
         
-    def _set_original_question(self, user_query: dict) -> str:
+    def _get_original_question(self, user_query: dict) -> str:
         return user_query["prompt"]
     
     

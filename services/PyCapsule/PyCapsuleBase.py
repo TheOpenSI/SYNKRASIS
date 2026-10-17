@@ -27,7 +27,7 @@
 # - _generate_code
 # - _get_fix_mode_query
 # - _update_code
-# - _set_original_question
+# - _get_original_question
 # - _call_fix_code
 # =============================================================================================
 
@@ -183,7 +183,7 @@ class PyCapsuleBase(ServiceBase):
     
     
     @abstractmethod
-    def _set_original_question(self, user_query: Union[str, dict]) -> str:
+    def _get_original_question(self, user_query: Union[str, dict]) -> str:
         """
         Set the original question for the chat history.
 
@@ -419,7 +419,7 @@ class PyCapsuleBase(ServiceBase):
             Tuple (tuple[int, int, list[str]]): return code, number of attempts made, and list of error types.
         """
         # Set the original question in LLM's chat history
-        original_question = self._set_original_question(user_query)
+        original_question = self._get_original_question(user_query)
 
         # Initialize the chat history
         self.llm.init_chat_history(original_question)
