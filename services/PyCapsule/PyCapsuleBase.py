@@ -50,6 +50,7 @@ from utils.output_message_format.output_colour import print_error, print_info, p
 from utils.output_message_format.output_colour import print_success, print_pycapsule
 from modules.ErrorHandling import ErrorHandling
 from modules.ExampleCallDetection import ExampleCallDetection
+from services.DDI.DDI import DDI
 
 
 class PyCapsuleBase(ServiceBase):
@@ -487,7 +488,6 @@ class PyCapsuleBase(ServiceBase):
         
         # DDI
         if self.fresh_start is not None:
-            from services.DDI.DDI import DDI    # needs scipy, only used here
             ddi = DDI(
                 file_path= dataset.generate_file_path() + ".csv", 
                 model_name = self.llm.model_name,
