@@ -9,9 +9,8 @@
 #       Code block to suppress warnings in the generated code.
 # - timeout_code(function_name: str, args_for_function: str, timeout: int = 10)
 #       Runs the example call or the test cases in a different thread with a timeout period.
-# - create_py_file(path: str, content: str)
-#       HELPER FUNCTION FOR create_main_py.
-#       Creates a python file at specified path using the provided content.
+# - create_file(path: str, content: str)
+#       Creates a file at specified path using the provided content.
 # - create_requirements_txt(requirements: list)
 #       Create requirements.txt file in the mount_dir.
 # - fix_code(response: CompletedProcess, meta_data_dict: dict)
@@ -117,7 +116,7 @@ class PyCapsuleBase(ServiceBase):
         """
         Curate the main.py file.
         Process all its content here, e.g. add suppress warning code, timeout code, test cases etc.
-        Use create_py_file() to create the main.py file and task specific py file as required.
+        Use create_file() to create the main.py file and task specific py file as required.
 
         Args:
             code (str): Function definition IDEALLY WITH AN EXAMPLE.
@@ -246,9 +245,9 @@ class PyCapsuleBase(ServiceBase):
             for code generation and code fix.
         """
         self.CODE_GEN_PROMPT_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)),
-                                                 "prompts/code_gen_prompt.txt")
+                                                 "prompts/general/code_gen_prompt.txt")
         self.CODE_FIX_PROMPT_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)),
-                                                 "prompts/code_fix_prompt.txt")
+                                                 "prompts/general/code_fix_prompt.txt")
     
 
     def suppress_warning_code(self) -> str:
@@ -291,10 +290,9 @@ class PyCapsuleBase(ServiceBase):
                 "See previous error message')\n")
 
 
-    def create_py_file(self, path: str, content: str) -> None:
+    def create_file(self, path: str, content: str) -> None:
         """
-        HELPER FUNCTION FOR create_main_py.\n
-        Creates a python file at specified path using the provided content.
+        Creates a file (python, json, any text) at specified path using the provided content.
 
         Args:
             path (str): Path to create the file.

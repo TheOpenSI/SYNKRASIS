@@ -76,8 +76,8 @@ class PyCapsule_MBPP(PyCapsuleBase):
         main_py_path = os.path.join(self.MOUNT_DIR, "main.py")
         task_file_path = os.path.join(self.MOUNT_DIR, f"mbpp_task_{user_query['task_id']}.py")
         
-        self.create_py_file(main_py_path, py_file_content)
-        self.create_py_file(task_file_path, py_file_content)
+        self.create_file(main_py_path, py_file_content)
+        self.create_file(task_file_path, py_file_content)
         
         
     def _generate_code(self, 
