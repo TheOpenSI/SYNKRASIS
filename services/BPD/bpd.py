@@ -41,10 +41,19 @@ from services.BPD.tracer import TARGET_FILENAME, TraceCollector, TraceLimit
 WORKER_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "worker.py")
 
 # Legend for the model that reads a trace, put it before the trace in the feedback.
-LEGEND = ("How to read it: this is the whole solution, with the values of each line after `#`; `never reached` marks a line that did not run, `never called` a function that did not. `x=1,2,3` are the values "
-          "of x on successive executions of that line, `a..b` a run of consecutive numbers, `T/F` the outcome of a "
-          "condition on each execution, `F×3` three equal values, `(iterations 2,4)` the loop iterations the line ran in, `E` a variable whose assignment raised, "
-          "`...` omitted middle values. Nested lines belong to the line above.")
+LEGEND = (
+    ("How to read the trace (instructions not exhaustive): "
+    "This will include your previous solution, with the intermittent values of each line after '#'; "
+    "'never reached' marks a line that did not run. "
+    "For example, 'x=1,2,3' are the values of x on successive executions of that line, "
+    "'a..b' output of a run of consecutive numbers, "
+    "'T/F' the outcome of a condition on each execution, "
+    "'Fx3' three equal values, "
+    "'(iterations 2,4)' the loop's iteration numbers during which the line ran, "
+    "'E' raised error, "
+    "'...' omitted middle values. "
+    "Nested lines belong to the line above.")
+)
 
 
 class BPD:

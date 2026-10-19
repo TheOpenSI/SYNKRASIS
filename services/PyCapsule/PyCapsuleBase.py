@@ -316,7 +316,8 @@ class PyCapsuleBase(ServiceBase):
                 
     def fix_code(self, 
                  response: CompletedProcess, 
-                 user_query: dict = None) -> tuple[int, int, list[str]]:
+                 user_query: dict = None,
+                 suppress_flag: bool = False) -> tuple[int, int, list[str]]:
         """
         Gets activated only when response.returncode != 0.
         Will change system prompt, user query and attempt to fix the code.
@@ -325,6 +326,7 @@ class PyCapsuleBase(ServiceBase):
             response (CompletedProcess): Response from the container with error code, 
                 stdout and stderr.
             user_query (dict): User query either as dict or string query.
+            suppress_flag (bool): Flag to suppress conversation history.
 
         Returns:
             Tuple (tuple[int, int, list[str]]): return code, number of attempts made, and list of error types.
@@ -337,8 +339,6 @@ class PyCapsuleBase(ServiceBase):
 
         while response.returncode != 0 and attempt_count < self.maximum_attempts:
             self._change_system_prompt(is_fix_mode=True)  # Changing the system prompt for fix mode
-            
-            suppress_flag = False
             
             if self.fresh_start:
             # Debugging span experiment
@@ -354,7 +354,7 @@ class PyCapsuleBase(ServiceBase):
             
             # Updating code in container based on fix mode response
             self._update_code(fix_mode_query = fix_mode_query, 
-                              suppress_conversation_history=False,
+                              suppress_conversation_history=suppress_flag,
                               meta_data = user_query)
 
             # Running the code
@@ -400,7 +400,9 @@ class PyCapsuleBase(ServiceBase):
             is_fix_mode (bool, optional): If True, will change the prompt for fix mode. 
                 Defaults to False.
         """
-        prompt_file_path = self.CODE_FIX_PROMPT_PATH if is_fix_mode else self.CODE_GEN_PROMPT_PATH
+        prompt_file_path = (self.CODE_FIX_PROMPT_PATH 
+                            if is_fix_mode 
+                            else self.CODE_GEN_PROMPT_PATH)
 
         with open(prompt_file_path, "r") as file:
             code_gen_prompt = file.read().strip()

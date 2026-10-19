@@ -172,6 +172,17 @@ class LCBHarness():
         return None
 
 
+    def is_wrong_answer(self, result: str) -> bool:
+        """
+        True if the result string is the driver's own assertion on the output (the code ran, the answer differed).
+        An assert written by the LLM's code is a traceback and does not start like this.
+
+        Args:
+            result (str): One entry of the list from parse_test_results.
+        """
+        return result.startswith("AssertionError: Input:")
+
+
     def concise_results(self, results: list[str]) -> tuple[list[str], list[str]]:
         """
         Make the error message of every failed test concise with ErrorHandling, 

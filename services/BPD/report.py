@@ -495,7 +495,7 @@ class Renderer(Analyser):
                 step = steps.pop()
                 return f"{numbers[0]}..{numbers[-1]}" + ("" if abs(step) == 1 else f" step {step}")
         if count >= 3 and len(set(values)) == 1:
-            return f"{values[0]}×{count}"
+            return f"{values[0]}x{count}"
         if count <= self.compact.sequence_plain:
             return self._run_length(values)
         head = values[:self.compact.sequence_head]
