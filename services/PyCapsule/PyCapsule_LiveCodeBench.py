@@ -1,372 +1,355 @@
 # =============================================================================================
 # PyCapsule for LiveCodeBench.
-#
-# Two stage evaluation, all inside the same budget of `maximum_attempts` fix attempts:
-#   1. Public tests  - failures get a detailed error analysis (ErrorHandling).
-#   2. Private tests - only run once the public tests pass. A failure only tells the LLM that a
-#                      hidden test case failed, no test data or error details are shared.
-#                      If a later fix breaks the public tests again, that is a stage 1 failure 
-#                      with the detailed error again.
-# Failing the public tests within the budget is a fail. Pass means the final code passed both.
-# Whether/when the public and private tests were cleared is kept in self.last_task_details.
+# Using default parser: utils.code_parsing.code_parser - parse_response
+# The tests are run by the harness (services/PyCapsule/livecodebench_harness/LCBHarness.py).
 # =============================================================================================
 
 import os
 import sys
+
 sys.path.append(f"{os.path.dirname(os.path.abspath(__file__))}/../..")
 
-import json
+from collections import Counter
 from subprocess import CompletedProcess
 from typing import Optional
 
 from services.PyCapsule.PyCapsuleBase import PyCapsuleBase
+from services.PyCapsule.livecodebench_harness.LCBHarness import LCBHarness
+from services.PyCapsule.FixQueryManager import FixQueryManager, Failure, WRONG_ANSWER, ERROR
+from services.BPD.bpd import BPD, LEGEND
 from services.Container.Container import Container
 from services.LLM.LLMBase import LLMBase
-from data.DatasetBase import DatasetBase
-from utils.output_message_format.output_colour import print_error, print_info, print_success, print_pycapsule
-from services.PyCapsule.livecodebench_harness.LCBHarness import LCBHarness
-from services.BPD.bpd import BPD, LEGEND
-
-ENABLE_BPD = True            # True: the feedback for a public test with a WRONG ANSWER gets a BPD execution trace
-MAX_TRACES_PER_ATTEMPT = 3   # at most this many failing public tests get a trace in one feedback message
-TRACE_MAX_CHARS = 4000       # size limit of one trace
+from utils.code_parsing.code_parser import parse_response
+from utils.output_message_format.output_colour import print_error, print_info, print_warning
 
 
 class PyCapsule_LiveCodeBench(PyCapsuleBase):
-    REQUIRED_KEYS = ["task_id", "prompt", "entry_point", "public_test", "private_test", "starter_code", "test_type"]
-
-    PRIVATE_FAIL_QUERY = (
-        "Your solution passes the public tests but fails a hidden test, so its logic is probably wrong or "
-        "incomplete for inputs the examples do not cover.\n"
-        "Re-derive the approach from the problem statement instead of patching the examples, then check: "
-        "minimum/maximum constraint values and tiny inputs, duplicates and ties, time complexity at the "
-        "maximum input size, and the exact output format.\n"
-        "Rewrite the whole solution."
-    )
 
     def __init__(self,
                  pycapsule_container: Container,
                  llm: LLMBase,
                  maximum_attempts: int = 5,
-                 timeout: int = 10,
-                 response_log_dir: str = None,
-                 trace_feedback: Optional[bool] = None) -> None:
+                 per_test_timeout: int = 10,
+                 enable_bpd: bool = True) -> None:
         """
-        PyCapsule_LiveCodeBench constructor.
+        PyCapsule for the LiveCodeBench dataset.
 
         Args:
-            pycasule_container (Container): Container object.
+            pycapsule_container (Container): Container object.
             llm (LLMBase): LLM object.
-            maximum_attempts (int, optional): Maximum attempts to fix the code, shared by the public
-                and private test stage. Defaults to 5.
-            timeout (int, optional): Timeout in seconds for each test case. Defaults to 10.
-            response_log_dir (str, optional): If set, every LLM query/raw response is saved under
-                response_log_dir/task_<id>/attempt_<n>_{query,response}.txt. Defaults to None.
-            trace_feedback (bool, optional): Add a BPD execution trace to the feedback of public tests with a wrong
-                answer (other errors get the usual error message). Never for private tests, a trace would reveal
-                their input. Defaults to None = the ENABLE_BPD switch at the top of this file.
+            maximum_attempts (int, optional): Maximum attempts to fix the code. 
+                Defaults to 5.
+            per_test_timeout (int, optional): Timeout in seconds for each test case. 
+                Defaults to 10.
+            enable_bpd (bool, optional): Add a BPD execution trace to the fix mode 
+                query for every public test with a wrong answer. Defaults to True.
         """
-        super().__init__(pycapsule_container, llm, maximum_attempts, timeout = timeout)
+        super().__init__(pycapsule_container, llm, maximum_attempts)
+        self.per_test_timeout = per_test_timeout
         self.harness = LCBHarness()
-        self.response_log_dir = response_log_dir
-        # With a docker Container the trace also runs in a docker container (same image), never on the host.
-        sandbox_image = getattr(pycapsule_container, "IMAGE_NAME", None)
-        self.bpd = (BPD(max_chars=TRACE_MAX_CHARS, sandbox_image=sandbox_image)
-                    if (ENABLE_BPD if trace_feedback is None else trace_feedback) else None)
-        self.trace_log: list[dict] = []   # one entry per trace attached: task_id, test_index, chars
-        self._last_code = ""
-        self._generation_count = 0
-        self._reset_task_details()
+        self.bpd = BPD() if enable_bpd else None 
+        self.fix_query = FixQueryManager(legend = LEGEND)    # builds the fix mode queries
+        self._last_code = "" # code of the latest LLM response
 
 
-    def _reset_task_details(self) -> None:
-        self.last_task_details = {
-            "public_cleared": False,
-            "public_cleared_attempt": None,   # 0 = initial generation, 1.. = fix attempts
-            "private_cleared": False,
-            "private_cleared_attempt": None,
-            "private_failure_types": []       # category of the first failed private test, per attempt
-        }
-
-
-    def _set_prompt_paths(self):
-        return self.helper_set_prompt_paths()
-
-
-    def __call__(self, user_query: dict) -> tuple[int, int, list[str]]:
+    def _set_prompt_paths(self) -> None:
         """
-        Generate code, run public then private tests, fix until both pass or attempts run out.
-
-        Returns:
-            Tuple: return code (0 only if the private tests passed), number of fix attempts made,
-                and list of error types per fix attempt.
+        LiveCodeBench has its own system prompts.
         """
-        self._generation_count = 0
-        self._reset_task_details()
-
-        self.llm.init_chat_history(self._set_original_question(user_query))
-        self._generate_code(user_query)
-
-        response: CompletedProcess = self.container.start_container()
-        self._record_outcome(response, attempt = 0)
-
-        flag, fix_mode_attempts, error_trace = response.returncode, 0, []
-        if response.returncode != 0:
-            print_error("Generated code did not pass all tests. Starting pycapsule in fix mode.")
-            flag, fix_mode_attempts, error_trace = self._call_fix_code(response, user_query)
-
-        self.llm.clear_chat_history()
-
-        return flag, fix_mode_attempts, error_trace
+        prompt_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), 
+                                  "prompts/livecodebench")
+        self.CODE_GEN_PROMPT_PATH = os.path.join(prompt_dir, "code_gen_prompt.txt")
+        self.CODE_FIX_PROMPT_PATH = os.path.join(prompt_dir, "code_fix_prompt.txt")
 
 
-    def _record_outcome(self, response: CompletedProcess, attempt: int) -> None:
-        """
-        Keep track of when the public and private tests were cleared.
-        """
-        stage = self.harness.classify_response(response)
-        details = self.last_task_details
-
-        if stage in ("private_fail", "pass") and not details["public_cleared"]:
-            details["public_cleared"] = True
-            details["public_cleared_attempt"] = attempt
-            print_success(f"Public tests cleared at attempt {attempt}.")
-
-        if stage == "private_fail":
-            failure_type = response.stderr.replace(self.harness.PRIVATE_FAILED_PREFIX, "").strip()
-            details["private_failure_types"].append(failure_type)
-            print_info(f"Private test failed at attempt {attempt}: {failure_type}")
-
-        if stage == "pass":
-            details["private_cleared"] = True
-            details["private_cleared_attempt"] = attempt
-            print_success(f"Private tests cleared at attempt {attempt}.")
-
-
-    def _save_generation(self, user_query: dict, response: str) -> None:
-        """
-        Save the exact query sent to the LLM and its raw response, one pair per generation.
-        Attempt 0 is the initial generation, 1.. are fix mode attempts.
-        """
-        if self.response_log_dir is None:
-            return
-        task_dir = os.path.join(self.response_log_dir, f"task_{user_query['task_id']}")
-        self.create_py_file(os.path.join(task_dir, f"attempt_{self._generation_count}_query.txt"),
-                            user_query["prompt"])
-        self.create_py_file(os.path.join(task_dir, f"attempt_{self._generation_count}_response.txt"),
-                            response or "")
-        self._generation_count += 1
-
-
-    def _generate_code(self, user_query: dict, suppress_conversation_history: bool = True) -> None:
-        self.validate_metadata(dict, user_query, self.REQUIRED_KEYS)
-
-        response = self.llm.generate_response(user_prompt = user_query["prompt"],
-                                              suppress_conversation_history = suppress_conversation_history)
-        self._save_generation(user_query, response)
-        self._keep_only_latest_response(response)
-
-        # https://support.leetcode.com/hc/en-us/articles/360011833974-What-are-the-environments-for-the-programming-languages
-        code = self.harness.extract_code(response) # no req, default env set
-
-        self._create_main_py(code, user_query)
-
-
-    def _keep_only_latest_response(self, response: str) -> None:
-        """
-        The next prompt shows the model: the original question, its latest response, and the new message.
-        Without this the history would also hold the previous error message (stored as the "question" of the last turn).
-        """
-        history = self.llm.chat_history
-        if history is not None:
-            history.clear_chat_history_queue()
-            history.add_interaction(history.original_question, response)
+    def _get_original_question(self, user_query: dict) -> str:
+        return user_query["prompt"]
 
 
     def _create_main_py(self, code: str, user_query: dict) -> None:
         """
-        main.py is the test driver, solution.py is the LLM code wrapped by the harness and
-        private_tests.json holds the private tests (kept out of main.py, they can be large).
-        The driver runs solution.py once per test case.
+        Write the files into the mount directory. The container uses the first three:
+        - main.py: the driver, it runs solution.py once per test and prints the result 
+            of every test.
+        - solution.py: the code of the LLM, wrapped by the harness.
+        - private_tests.json: the private tests.
+        - lcb_task_<task_id>.py: a copy of latest solution.py that stays after cleanup.
+
+        Args:
+            code (str): Code extracted from the LLM response.
+            user_query (dict): Original user query dictionary.
+        """
+        solution_content = self.harness.build_solution_content(user_query, code)
+
+        # main
+        self.create_file(
+            os.path.join(self.MOUNT_DIR, "main.py"),
+            self.harness.build_driver_content(
+                user_query["public_test"],
+                self.per_test_timeout,
+            ),
+        )
+
+        # solution
+        self.create_file(
+            os.path.join(self.MOUNT_DIR, self.harness.SOLUTION_FILE_NAME), 
+            solution_content
+        )
+
+        # private tests
+        self.create_file(
+            os.path.join(self.MOUNT_DIR, self.harness.PRIVATE_TESTS_FILE_NAME),
+            user_query["private_test"]  # already a json string in the dataset
+        )
+
+        # task file
+        self.create_file(
+            os.path.join(self.MOUNT_DIR, f"lcb_task_{user_query['task_id']}.py"), 
+            solution_content
+        )
+
+
+    def _generate_code(self, 
+                       user_query: dict, 
+                       suppress_conversation_history: bool = True) -> None:
+        """
+        Ask the LLM, extract the code from its response and write the files for the container.
+
+        Args:
+            user_query (dict): Original user query dictionary.
+            suppress_conversation_history (bool, optional): Whether to suppress the conversation history.
+                Defaults to True.
+        """
+        self.validate_metadata(dict, user_query, self._get_required_keys())
+
+        llm_response = self.llm.generate_response(
+            user_prompt = user_query["prompt"], 
+            suppress_conversation_history = suppress_conversation_history
+        )
+
+        # The requirements are not installed. parse_response raises on an empty response.
+        _, code = parse_response(llm_response) if llm_response else ([], "")
+
+        if not code.strip():
+            print_error(f"No code found in the response of the LLM for task {user_query['task_id']}.")
+            raise ValueError(f"No code found in the response of the LLM for task {user_query['task_id']}. "
+                             f"Check the response format against parse_response and the system prompt.\n"
+                             f"Raw response:\n{llm_response}")
+
+        self._store_last_generated_code(code)
+        self._create_main_py(code, user_query)
+
+
+    def _store_last_generated_code(self, code: str) -> None:
+        """
+        Store the last generated code for later use in fix mode queries.
+
+        Args:
+            code (str): The code generated by the LLM.
         """
         self._last_code = code
-        solution_content = self.harness.build_solution_content(user_query, code)
-        driver_content = (self.suppress_warning_code() + "\n\n" +
-                          self.harness.build_driver_content(user_query["public_test"], self.timeout))
-        private_tests = user_query["private_test"]
-        if isinstance(private_tests, str):
-            private_tests = json.loads(private_tests)
-
-        # File path
-        task_dir = os.path.join(self.MOUNT_DIR, f"task_{user_query['task_id']}")
-
-        # main.py, solution.py and private_tests.json are what the container uses,
-        # the task folder keeps a copy of the code for analysis.
-        self.create_py_file(os.path.join(self.MOUNT_DIR, "main.py"), driver_content)
-        self.create_py_file(os.path.join(self.MOUNT_DIR, self.harness.SOLUTION_FILE_NAME), solution_content)
-        self.create_py_file(os.path.join(self.MOUNT_DIR, self.harness.PRIVATE_TESTS_FILE_NAME),
-                            json.dumps(private_tests))
-        self.create_py_file(os.path.join(task_dir, "llm_generated_code.py"), code)
-        self.create_py_file(os.path.join(task_dir, self.harness.SOLUTION_FILE_NAME), solution_content)
-        self.create_py_file(os.path.join(task_dir, "harness_code.py"), driver_content)
 
 
-    def _get_fix_mode_query(self, response: CompletedProcess, meta_data: dict) -> str:
+    def _get_required_keys(self) -> list[str]:
         """
-        - private test failed: the generic message, nothing about the hidden tests is shared and there is no trace.
-        - public test failed: a report with one entry per public test (also when the public tests had cleared before).
+        Get the required keys for the user query dictionary.
+
+        Returns:
+            list[str]: List of required keys.
         """
-        if not self._last_code.strip():
-            self._current_error_type = ["NoCodeFound"]
-            return ("Your response did not contain any code. Put the complete solution in the '### Code' "
-                    "section, inside a single pair of triple backticks.")
-
-        if self.harness.classify_response(response) == "private_fail":
-            self._current_error_type = ["PrivateTestFailed"]
-            return self.PRIVATE_FAIL_QUERY
-
-        results = self.harness.parse_public_results(response.stderr)
-        if results is None:                                  # the driver itself failed: nothing structured to show
-            self._current_error_type = ["DriverError"]
-            return f"Your code could not be run. Error message:\n{response.stderr[-1500:]}"
-        return self._public_feedback(results, meta_data)
+        return ["task_id", "prompt", "entry_point", "public_test", "private_test", "test_type"]
 
 
-    def _public_feedback(self, results: list[dict], user_query: dict) -> str:
+    def _get_fix_mode_query(self,
+                            response: CompletedProcess,
+                            meta_data: dict) -> str:
         """
-        One entry per public test: passed tests with their input and expected output; a wrong answer with what the
-        program printed, plus the BPD trace when it is enabled; a runtime error with the usual error message;
-        a time limit with a hint. The error types of the failures go to self._current_error_type.
+        Check the error type of error returned and call the function for it.
+        The chat history is never sent (see _call_fix_code), every query holds everything and has the same
+        tagged sections, so the LLM can tell the parts apart, see FixQueryManager.
+        - a wrong answer (AssertionError) on a public test: _assertion_error_query, BPD traces.
+        - another error on a public test (crash, time limit): _other_error_query, the usual error messages.
+        - the public tests pass but a hidden test fails: _hidden_test_query, a generic message.
+        The error types go to self.error_handling.current_error_type, fix_code stores them.
+
+        Args:
+            response (CompletedProcess): Response from the container.
+            meta_data (dict): The original user query (its prompt is the original question).
+
+        Returns:
+            str: The fix mode query.
         """
-        lines = ["Your solution did not pass all the public tests."]
-        error_types: list[str] = []
-        traces_tried = traces_added = 0
+        results = self.harness.parse_test_results(response.stderr)
+        if results is None:
+            print_error(f"The driver did not print the test results (exit code {response.returncode}).")
+            raise RuntimeError(
+                f"The driver did not print the test results for task {meta_data['task_id']} "
+                f"(exit code {response.returncode}).\n"
+                f"stderr:\n{response.stderr}\nstdout:\n{response.stdout}"
+            )
 
-        for result in results:
-            number = result["n"]
-            shown = f"Input: {result['input']!r}, expected output: {result['expected']!r}"
-            if result["status"] == "pass":
-                lines.append(f"Test {number} passed. {shown}.")
+        number_of_public_tests = len(meta_data["public_test"])
+        public_results = results[:number_of_public_tests]
 
-            elif result["status"] == "wrong_answer":
-                error_types.append("AssertionError")
-                lines.append(f"Test {number} did not pass. {shown}, your output: {result['got']!r}.")
-                if self.bpd is not None and traces_tried < MAX_TRACES_PER_ATTEMPT:
-                    traces_tried += 1
-                    trace = self._trace(user_query, number)
-                    if trace is not None:
-                        intro = f". {LEGEND}" if traces_added == 0 else ":"       # the legend once
-                        lines.append(f"Execution trace of your code on test {number}{intro}\n{trace}")
-                        traces_added += 1
+        # all public tests passed
+        if all(result == self.harness.PASS for result in public_results):
+            return self._hidden_test_query(meta_data, results[number_of_public_tests:])
 
-            elif result["status"] == "timeout":
-                error_types.append("TimeLimitExceeded")
-                lines.append(f"Test {number} exceeded the time limit of {self.timeout} seconds. Input: {result['input']!r}. "
-                             "Your algorithm is probably too slow for the given constraints (or loops forever). "
-                             "Use a more efficient algorithm or data structures, and make sure all loops terminate.")
+        messages, error_types = self.harness.concise_results(public_results)
+        self.error_handling.current_error_type = error_types
+        failed_count = sum(result != self.harness.PASS for result in public_results)
+        print_info(f"{failed_count} of {number_of_public_tests} public tests failed")
 
-            else:                                                                  # runtime error: the usual analysis
-                try:
-                    message = self.error_handling(result["error"])
-                    error_types.extend(self.error_handling.current_error_type)
-                except Exception:                                                  # unexpected traceback layout
-                    message = result["error"][-1500:]
-                    error_types.append("RuntimeError")
-                lines.append(f"Test {number} stopped with an error. Input: {result['input']!r}.\n{message}")
+        # wrong answer on a public test
+        if any(self.harness.is_wrong_answer(result) for result in public_results):
+            return self._assertion_error_query(meta_data, public_results, messages, error_types)
 
-        if traces_added:
-            lines.append("Find the first point where the behaviour differs from what the problem requires and fix that logic.")
-        self._current_error_type = error_types
-        return "\n".join(lines)
+        # other error on a public test
+        return self._other_error_query(meta_data, public_results, messages, error_types)
 
 
-    def _trace(self, user_query: dict, number: int) -> Optional[str]:
-        """BPD trace of the current code on public test `number` (1 based), None if it cannot be traced."""
-        test = user_query["public_test"][number - 1]
-        functional = user_query["test_type"] == "functional"
-        source = self.harness.build_traceable_source(user_query, self._last_code)
-        trace = self.bpd.trace(source, test["input"], user_query["entry_point"] if functional else None, test["output"])
-        if trace is not None:
-            self.trace_log.append({"task_id": user_query["task_id"], "test_index": number - 1, "chars": len(trace)})
-        return trace
+    def _assertion_error_query(self,
+                               user_query: dict,
+                               public_results: list[str],
+                               messages: list[str],
+                               error_types: list[str]) -> str:
+        """
+        At least one public test gave a wrong answer. A wrong answer gets a BPD trace, any other failed test
+        is listed with its concise error message. The code is part of every trace, so the manager only adds
+        it on its own when there is no trace at all (BPD disabled or the code could not be traced).
+
+        Args:
+            user_query (dict): The original user query.
+            public_results (list[str]): One result per public test.
+            messages (list[str]): The concise messages of public_results.
+            error_types (list[str]): The error types of the failed public tests.
+        """
+        failures = []
+        for index, (result, message) in enumerate(zip(public_results, messages)):
+            number = index + 1
+            if result == self.harness.PASS:
+                continue
+            if self.harness.is_wrong_answer(result): # assertion
+                failures.append(Failure(number,
+                                        WRONG_ANSWER,
+                                        result.removeprefix('AssertionError: '),
+                                        trace = self._trace(user_query, index)))
+            else:
+                failures.append(Failure(number, ERROR, message))
+
+        trace_count = sum(failure.trace is not None for failure in failures)
+        if trace_count:
+            print_info(f"Added {trace_count} execution trace(s) to the fix mode query.")
+        return self.fix_query.build(user_query["prompt"],
+                                    self._last_code,
+                                    self._summary(public_results, error_types),
+                                    failures)
 
 
-    def _update_code(self,
-                     fix_mode_query: str,
-                     suppress_conversation_history: bool,
-                     meta_data: dict) -> None:
+    def _other_error_query(self,
+                           user_query: dict,
+                           public_results: list[str],
+                           messages: list[str],
+                           error_types: list[str]) -> str:
+        """
+        No wrong answer, other errors (a crash, the time limit) on public tests.
+        Every failed test is listed with its concise error message.
+
+        Args:
+            user_query (dict): The original user query.
+            public_results (list[str]): One result per public test.
+            messages (list[str]): The concise messages of public_results.
+            error_types (list[str]): The error types of the failed public tests.
+        """
+        failures = [Failure(index + 1, ERROR, message)
+                    for index, (result, message) in enumerate(zip(public_results, messages))
+                    if result != self.harness.PASS]
+        return self.fix_query.build(user_query["prompt"],
+                                    self._last_code,
+                                    self._summary(public_results, error_types),
+                                    failures)
+
+
+    def _hidden_test_query(self, user_query: dict, hidden_results: list[str]) -> str:
+        """
+        The public tests pass, a hidden test fails. Nothing about the hidden tests is shared except how many failed.
+        One generic message, however many hidden tests fail.
+
+        Args:
+            user_query (dict): The original user query.
+            hidden_results (list[str]): One result per hidden test.
+        """
+        self.error_handling.current_error_type = ["PrivateTestFailed"]
+
+        failed_count = sum(result != self.harness.PASS for result in hidden_results)
+
+        # Only for us, nothing of this is sent to the LLM: what kind of hidden tests fail?
+        _, hidden_error_types = self.harness.concise_results(hidden_results)
+        print_info(f"Public tests passed, {failed_count} of {len(hidden_results)} "
+                   f"hidden tests failed: {dict(Counter(hidden_error_types))}")
+
+        return self.fix_query.build(
+            user_query["prompt"],
+            self._last_code,
+            f"Your solution passes the public tests but fails {failed_count} of {len(hidden_results)} hidden "
+            "tests, so its logic is probably wrong or incomplete for inputs the examples do not cover."
+        )
+
+
+    def _summary(self, public_results: list[str], error_types: list[str]) -> str:
+        """
+        Summary of the public test results,
+            e.g. "Your previous solution failed 2 of 5 public tests (AssertionError, NameError)."
+
+        Args:
+            public_results (list[str]): One result per public test.
+            error_types (list[str]): The error types of the failed public tests.
+
+        Returns:
+            str: Summary message.
+        """
+        failed_count = sum(result != self.harness.PASS for result in public_results)
+        return (f"Your previous solution failed {failed_count} of {len(public_results)} public tests "
+                f"({', '.join(dict.fromkeys(error_types))}).")
+
+
+    def _trace(self, user_query: dict, index: int) -> Optional[str]:
+        """
+        BPD trace of the latest code on public test `index` (0 based).
+        Returns None if BPD is disabled or the code could not be traced.
+
+        Args:
+            user_query (dict): The original user query.
+            index (int): Index of the public test to trace.
+        
+        Returns:
+            Optional[str]: The BPD trace, or None if BPD is disabled or the code
+        """
+        if self.bpd is None:
+            return None
+
+        test = user_query["public_test"][index]
+        entry_point = user_query["entry_point"] if user_query["test_type"] == "functional" else None
+        trace = self.bpd.trace(self.harness.build_traceable_source(user_query, self._last_code),
+                               test["input"],
+                               entry_point,
+                               test["output"])
+        if trace is None:
+            print_warning(f"No trace for public test {index + 1}: {self.bpd.last_error}")
+            return None
+        return trace.removeprefix(self.harness.PRELUDE.strip() + "\n")      # the typing import is not the LLM's code
+
+
+    def _update_code(self, fix_mode_query: str, suppress_conversation_history: bool, meta_data: dict) -> None:
         data_point = meta_data.copy()
         data_point["prompt"] = fix_mode_query
         self._generate_code(data_point, suppress_conversation_history)
 
 
-    def _set_original_question(self, user_query: dict) -> str:
-        return user_query["prompt"]
-
-
-    def _call_fix_code(self,
-                       response: CompletedProcess,
-                       user_query: dict) -> tuple[int, int, list[str]]:
-        """
-        Fix loop, replaces the base fix_code because the stage (public/private) decides the query
-        and the outcome of every attempt must be recorded.
-        """
-        self.validate_metadata(dict, user_query, self.REQUIRED_KEYS)
-        print_pycapsule("Starting PyCapsule in fix mode.")
-
-        attempt_count = 0
-        error_trace: list[str] = []
-
-        while response.returncode != 0 and attempt_count < self.maximum_attempts:
-            self._change_system_prompt(is_fix_mode = True)
-
-            fix_mode_query = self._get_fix_mode_query(response, user_query)
-            error_trace.append(self._current_error_type)
-
-            self._update_code(fix_mode_query = fix_mode_query,
-                              suppress_conversation_history = False,
-                              meta_data = user_query)
-
-            response = self.container.start_container()
-            attempt_count += 1
-            self._record_outcome(response, attempt_count)
-
-        self._change_system_prompt()  # Resetting the system prompt to normal mode
-
-        return response.returncode, attempt_count, error_trace
-
-
-    def run_pycapsule_experiment(self, dataset: DatasetBase) -> None:
-        """
-        Same as the base class but also saves whether the public and private tests were cleared.
-        The dataset must support the extra fields in append_result (LiveCodeBench does).
-        """
-        while True:
-            data_point = dataset.get_next()
-            if data_point is None:
-                break
-
-            solve_flag, fix_mode_attempt_count, error_trace = self.__call__(data_point)
-            status = "pass" if solve_flag == 0 else "fail"
-            if solve_flag == 0:
-                dataset.solved_count += 1
-            else:
-                dataset.unsolved_count += 1
-
-            dataset.append_result(
-                task_id = data_point["task_id"],
-                fix_mode_attempt_count = fix_mode_attempt_count,
-                status = status,
-                error_trace = error_trace,
-                **self.last_task_details
-            )
-            dataset.log_to_csv()
-            dataset.log_to_json()
-
-            print("#" * 50)
-            print(f"Solved {dataset.solved_count} problems, "
-                  f"Unsolved {dataset.unsolved_count} problems")
-            print("#" * 50)
+    def _call_fix_code(self, response: CompletedProcess, user_query: dict) -> tuple[int, int, list[str]]:
+        # The history is always suppressed: every fix query has the problem, the previous code and the failures
+        # in tagged sections, with the history the code and the problem would be sent twice.
+        return self.fix_code(response, user_query, suppress_flag = True)
 
 
     def cleanup(self):
