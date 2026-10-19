@@ -185,6 +185,20 @@ class LiveCodeBench(DatasetBase):
             }
 
 
+    def select_tasks(self, task_ids: list[str]) -> None:
+        """
+        Keep only these tasks, in the order of the dataset. get_next and resuming then work on this subset,
+        so a run can be restricted to some tasks, e.g. the ones another run failed.
+        Call it before the run starts, a resumed run counts its position in the subset.
+
+        Args:
+            task_ids (list[str]): Task ids (question ids) to keep.
+        """
+        wanted = {str(task_id) for task_id in task_ids}
+        self.data = self.data[self.data["question_id"].astype(str).isin(wanted)].reset_index(drop = True)
+        self.filtered_records = len(self.data)
+
+
     def _get_test_type(self, tests: list[dict] | dict) -> str:
         """
         Determine the test type from the provided tests.
