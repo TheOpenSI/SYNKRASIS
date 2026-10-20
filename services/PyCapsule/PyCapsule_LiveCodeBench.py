@@ -4,6 +4,7 @@
 # The tests are run by the harness (services/PyCapsule/livecodebench_harness/LCBHarness.py).
 # =============================================================================================
 
+import json
 import os
 import sys
 
@@ -30,7 +31,9 @@ class PyCapsule_LiveCodeBench(PyCapsuleBase):
                  llm: LLMBase,
                  maximum_attempts: int = 5,
                  per_test_timeout: int = 10,
-                 enable_bpd: bool = True) -> None:
+                 enable_bpd: bool = True,
+                 max_traces: Optional[int] = 1,
+                 calls_log_path: Optional[str] = None) -> None:
         """
         PyCapsule for the LiveCodeBench dataset.
 
@@ -42,12 +45,22 @@ class PyCapsule_LiveCodeBench(PyCapsuleBase):
             per_test_timeout (int, optional): Timeout in seconds for each test case. 
                 Defaults to 10.
             enable_bpd (bool, optional): Add a BPD execution trace to the fix mode 
-                query for every public test with a wrong answer. Defaults to True.
+                query for a public test with a wrong answer. Defaults to True.
+            max_traces (int, optional): At most this many traces in one fix mode query, the first 
+                wrong answers that can be traced. The other wrong answers are listed with their 
+                input, expected and actual output. Every trace has the whole code, so more traces 
+                mean much more text. None = no limit, every wrong answer gets a trace. Defaults to 1.
+            calls_log_path (str, optional): If given, one json line per attempt is appended to this file:
+                task_id, attempt, prompt (the fix query with its traces), response, test_results (the 
+                result of every test, "pass" or the error). Defaults to None.
         """
         super().__init__(pycapsule_container, llm, maximum_attempts)
         self.per_test_timeout = per_test_timeout
         self.harness = LCBHarness()
         self.bpd = BPD() if enable_bpd else None 
+        self.max_traces = max_traces
+        self.calls_log_path = calls_log_path
+        self._pending_call = None # the latest LLM call, written when its container run is back
         self.fix_query = FixQueryManager(legend = LEGEND)    # builds the fix mode queries
         self._last_code = "" # code of the latest LLM response
         self._number_of_public_tests = 0 # of the current task, the driver lists the public tests first
@@ -139,6 +152,7 @@ class PyCapsule_LiveCodeBench(PyCapsuleBase):
                              f"Raw response:\n{llm_response}")
 
         self._number_of_public_tests = len(user_query["public_test"])
+        self._pending_call = {"task_id": user_query["task_id"], "prompt": user_query["prompt"], "response": llm_response}
         self._store_last_generated_code(code)
         self._create_main_py(code, user_query)
 
@@ -183,6 +197,7 @@ class PyCapsule_LiveCodeBench(PyCapsuleBase):
             self._reset_task_details()
 
         results = self.harness.parse_test_results(response.stderr)
+        self._log_attempt(attempt, results)
         if results is None:     # the driver failed, _get_fix_mode_query raises about it
             return
 
@@ -208,6 +223,17 @@ class PyCapsule_LiveCodeBench(PyCapsuleBase):
             _, hidden_error_types = self.harness.concise_results(hidden_results)
             counts = ", ".join(f"{error_type}={count}" for error_type, count in Counter(hidden_error_types).items())
             details["private_failure_types"].append(counts)
+
+
+    def _log_attempt(self, attempt: int, results: Optional[list[str]]) -> None:
+        """
+        Append the latest LLM call with the result of its tests to calls_log_path (one json line).
+        """
+        if self.calls_log_path is not None and self._pending_call is not None:
+            os.makedirs(os.path.dirname(os.path.abspath(self.calls_log_path)), exist_ok = True)
+            with open(self.calls_log_path, "a") as log_file:
+                log_file.write(json.dumps({**self._pending_call, "attempt": attempt, "test_results": results}) + "\n")
+        self._pending_call = None
 
 
     def _get_result_details(self) -> dict:
@@ -281,9 +307,11 @@ class PyCapsule_LiveCodeBench(PyCapsuleBase):
                                messages: list[str],
                                error_types: list[str]) -> str:
         """
-        At least one public test gave a wrong answer. A wrong answer gets a BPD trace, any other failed test
-        is listed with its concise error message. The code is part of every trace, so the manager only adds
-        it on its own when there is no trace at all (BPD disabled or the code could not be traced).
+        At least one public test gave a wrong answer. The first wrong answers get a BPD trace, at most
+        self.max_traces of them. The other wrong answers are listed with their input, expected and actual output,
+        any other failed test is listed with its concise error message. The code is part of every trace, so the 
+        manager only adds it on its own when there is no trace at all (BPD disabled or the code could not 
+        be traced).
 
         Args:
             user_query (dict): The original user query.
@@ -292,19 +320,21 @@ class PyCapsule_LiveCodeBench(PyCapsuleBase):
             error_types (list[str]): The error types of the failed public tests.
         """
         failures = []
+        trace_count = 0
         for index, (result, message) in enumerate(zip(public_results, messages)):
             number = index + 1
             if result == self.harness.PASS:
                 continue
             if self.harness.is_wrong_answer(result): # assertion
+                trace = self._trace(user_query, index) if self.max_traces is None or trace_count < self.max_traces else None
+                trace_count += trace is not None
                 failures.append(Failure(number,
                                         WRONG_ANSWER,
                                         result.removeprefix('AssertionError: '),
-                                        trace = self._trace(user_query, index)))
+                                        trace = trace))
             else:
                 failures.append(Failure(number, ERROR, message))
 
-        trace_count = sum(failure.trace is not None for failure in failures)
         if trace_count:
             print_info(f"Added {trace_count} execution trace(s) to the fix mode query.")
         return self.fix_query.build(user_query["prompt"],

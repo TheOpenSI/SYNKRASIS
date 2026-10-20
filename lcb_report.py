@@ -1,19 +1,14 @@
 # =============================================================================================
-# Report of a LiveCodeBench experiment, built from the result files of its two runs:
-#   1. "no_bpd": all problems, the fix queries have no execution trace.
-#   2. "bpd": only the problems the first run FAILED with a wrong answer (an AssertionError in the
-#      error trace), re-run with execution traces. A trace is only given for a wrong answer, so these
-#      are the only problems where the two runs can differ.
-#
-# The report says, in this order:
-#   - the accuracy without BPD (and how many problems had a wrong answer, how many of them recovered)
-#   - what BPD did on the problems that still failed with a wrong answer
-#   - how many problems cleared the public tests without and with BPD
-#   - the accuracy over all problems if the BPD result replaces the first one on those problems
+# Report of a LiveCodeBench experiment, built from the result files of its runs:
+#   no_bpd          all problems, the fix queries have no execution trace.
+#   bpd_1_trace     the problems no_bpd FAILED with a wrong answer (an AssertionError in the error trace),
+#                   re-run with one execution trace in a fix query.
+#   bpd_all_traces  the same problems, a trace for every wrong answer in a fix query.
+# A trace is only given for a wrong answer, so those are the problems where the runs can differ.
 #
 # Usage:
 #   python lcb_report.py <output_dir> <model_name>
-# or from code: build_report(model_name, output_dir)
+# or from code: save_report(model_name, output_dir)
 # =============================================================================================
 
 import json
@@ -22,7 +17,8 @@ import sys
 from typing import Optional
 
 BASELINE_RUN = "no_bpd"
-BPD_RUN = "bpd"
+BPD_RUNS = {"bpd_1_trace": "BPD, 1 trace",
+            "bpd_all_traces": "BPD, all traces"}
 
 
 def had_assertion(result: dict) -> bool:
@@ -47,64 +43,70 @@ def load_results(path: str) -> Optional[list[dict]]:
 
 
 def build_report(model_name: str, output_dir: str) -> str:
-    """
-    Args:
-        model_name (str): Model of the experiment (part of the name of the result files).
-        output_dir (str): Directory with the result files (json).
-
-    Returns:
-        str: The report as text.
-    """
     baseline = load_results(results_path(model_name, output_dir, BASELINE_RUN))
     if baseline is None:
         return f"No results of the run without BPD for {model_name} in {output_dir}."
-
-    def line(label: str, count: int, total: Optional[int] = None) -> str:
-        text = f"  {label:<52}{count:>5}"
-        if total is not None:
-            text += f" / {total:<5}{100 * count / total if total else 0:6.1f}%"
-        return text
 
     total = len(baseline)
     passed = [r for r in baseline if r["status"] == "pass"]
     with_assertion = [r for r in baseline if had_assertion(r)]
     bpd_set = [r for r in baseline if failed_with_assertion(r)]
     bpd_ids = {r["task_id"] for r in bpd_set}
+    public_cleared = lambda results: sum(bool(r["public_cleared"]) for r in results)
+    first_generation = lambda results: sum(r["fix_mode_attempt_count"] == 0 for r in results)
 
-    rows = [f"LiveCodeBench report: {model_name}", "=" * 72,
+    def count(label: str, number: int, of: Optional[int] = None) -> str:
+        text = f"  {label:<54}{number:>5}"
+        return text + (f" / {of:<5}{100 * number / of if of else 0:6.1f}%" if of is not None else "")
+
+    rows = [f"LiveCodeBench report: {model_name}", "=" * 78,
             f"WITHOUT BPD (all {total} problems)",
-            line("passed (all public and hidden tests)", len(passed), total),
-            line("    on the first generation", sum(r["fix_mode_attempt_count"] == 0 for r in passed)),
-            line("    after fix attempts", sum(r["fix_mode_attempt_count"] > 0 for r in passed)),
-            line("cleared the public tests", sum(bool(r["public_cleared"]) for r in baseline), total),
-            line("had a wrong answer (AssertionError) at some attempt", len(with_assertion)),
-            line("    recovered and passed", sum(r["status"] == "pass" for r in with_assertion)),
-            line("    still failed  (these are re-run with BPD)", len(bpd_set))]
+            count("passed (all public and hidden tests)", len(passed), total),
+            count("    on the first generation", first_generation(passed)),
+            count("    after fix attempts", len(passed) - first_generation(passed)),
+            count("cleared the public tests", public_cleared(baseline), total),
+            count("had a wrong answer (AssertionError) at some attempt", len(with_assertion)),
+            count("    recovered and passed", sum(r["status"] == "pass" for r in with_assertion)),
+            count("    still failed  (these are re-run with BPD)", len(bpd_set)),
+            "", f"WITH BPD (re-run on the {len(bpd_set)} problems that still failed with a wrong answer)"]
 
-    bpd = load_results(results_path(model_name, output_dir, BPD_RUN))
-    rows += ["", f"WITH BPD (the {len(bpd_set)} problems that still failed with a wrong answer)"]
-    if bpd is None:
-        rows.append("  nothing to run, no problem failed with a wrong answer" if not bpd_set else "  not run yet")
-        return "\n".join(rows)
-    if len(bpd) < len(bpd_set):
-        rows.append(f"  NOT FINISHED: {len(bpd)} of {len(bpd_set)} problems done, the numbers below are partial")
+    runs = {}       # run name -> results, None if the run did not start
+    for name in BPD_RUNS:
+        runs[name] = load_results(results_path(model_name, output_dir, name))
 
-    bpd_passed = [r for r in bpd if r["status"] == "pass"]
-    baseline_on_set = [r for r in baseline if r["task_id"] in bpd_ids]
-    rows += [line("passed", len(bpd_passed), len(bpd_set)),
-             line("    on the first generation (before any trace)", sum(r["fix_mode_attempt_count"] == 0 for r in bpd_passed)),
-             line("    after fix attempts", sum(r["fix_mode_attempt_count"] > 0 for r in bpd_passed)),
-             "",
-             f"PUBLIC TESTS CLEARED ON THOSE {len(bpd_set)} PROBLEMS",
-             line("without BPD", sum(bool(r["public_cleared"]) for r in baseline_on_set), len(bpd_set)),
-             line("with BPD", sum(bool(r["public_cleared"]) for r in bpd), len(bpd_set)),
-             "",
-             f"ALL {total} PROBLEMS, the BPD result replaces the first one on those {len(bpd_set)}",
-             line("passed", len(passed) + len(bpd_passed), total)]
-    if bpd is not None and len(bpd) < len(bpd_set):
-        rows.append("  (partial: the BPD run is not finished)")
-    rows += ["", "Note: the BPD run asks the model again, a new sample at temperature > 0. A pass on the first generation",
-             "happens before any trace is used, it shows how much the result moves by sampling alone."]
+    def cell(run_name: str, value) -> str:
+        results = runs[run_name]
+        if results is None:
+            return "not run".rjust(18)
+        return str(value(results)).rjust(18)
+
+    def partial(run_name: str) -> str:
+        results = runs[run_name]
+        return "" if results is None or len(results) >= len(bpd_set) else f"{run_name}: {len(results)} of {len(bpd_set)} problems done (partial)"
+
+    n = len(bpd_set)
+    header = f"  {'':<54}" + "".join(BPD_RUNS[name].rjust(18) for name in BPD_RUNS)
+    rows += [header]
+    pct = lambda number: f"{number} ({100 * number / n:.1f}%)" if n else f"{number}"
+    rows += [f"  {'passed':<54}" + "".join(cell(name, lambda r: pct(sum(x['status'] == 'pass' for x in r))) for name in BPD_RUNS),
+             f"  {'    on the first generation (before any trace)':<54}" + "".join(cell(name, lambda r: first_generation([x for x in r if x['status'] == 'pass'])) for name in BPD_RUNS),
+             f"  {'    after fix attempts':<54}" + "".join(cell(name, lambda r: sum(x['status'] == 'pass' and x['fix_mode_attempt_count'] > 0 for x in r)) for name in BPD_RUNS),
+             f"  {'cleared the public tests':<54}" + "".join(cell(name, lambda r: pct(public_cleared(r))) for name in BPD_RUNS),
+             f"  {'  (without BPD, the same problems: public cleared)':<54}{pct(public_cleared([r for r in baseline if r['task_id'] in bpd_ids])):>18}"]
+
+    rows += ["", f"ALL {total} PROBLEMS, a BPD result replaces the first one on those {n} problems",
+             f"  {'without BPD':<54}{len(passed):>5} / {total:<5}{100 * len(passed) / total:6.1f}%"]
+    for name, label in BPD_RUNS.items():
+        results = runs[name]
+        if results is None:
+            rows.append(f"  {label:<54}{'not run':>5}")
+        else:
+            total_passed = len(passed) + sum(r["status"] == "pass" for r in results)
+            rows.append(f"  {label:<54}{total_passed:>5} / {total:<5}{100 * total_passed / total:6.1f}%")
+
+    notes = [partial(name) for name in BPD_RUNS if partial(name)]
+    rows += [""] + notes + ["Note: a BPD run asks the model again, a new sample at temperature > 0. A pass on the first generation",
+                            "happens before any trace is used, it shows how much the result moves by sampling alone."]
     return "\n".join(rows)
 
 

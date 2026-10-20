@@ -52,25 +52,43 @@ class FixQueryManager:
     ANSWER_INTRO = "Following is the test cases that failed with the expected and actual output:"
     ERROR_INTRO = "Following is the error message(s) of the failed public test(s). Fix the code accordingly."
 
-    # The instruction of every fix query, a line about the trace is added when there is a trace.
+    # The instruction for crashes, time limits and hidden tests (no wrong answer on a public test).
     REDERIVE_TASK = ("Re-derive the approach from the problem statement instead of patching the examples, then check: "
                      "minimum/maximum constraint values and tiny inputs, duplicates and ties, time complexity at the "
                      "maximum input size, and the exact output format.\n"
                      "Rewrite the whole solution.")
-    TRACE_TASK = ("Find the first point where the provided trace differs from expected, "
-                  "debug the issue and fix that logic.")
+
+    # The instruction for a wrong answer without a trace, the same idea as TRACE_TASK: fix it, do not start over.
+    WRONG_ANSWER_TASK = ("Do not start over. Your code ran but printed a different output than expected on the failing "
+                         "test(s). Compare your output with the expected output, find the part of your code that causes "
+                         "the difference, say in one sentence what it should do instead, and change only what is needed "
+                         "to fix it. Keep the rest of the code as it is. Then give the complete corrected code.")
+
+    # The instruction when there is a trace (it replaces REDERIVE_TASK): fix what the trace shows, do not start over.
+    TRACE_TASK = ("Do not start over. The trace shows what your code did on a failing test. Go through the trace line by "
+                  "line and compare each value with what the expected output requires. Find the first line whose value "
+                  "is wrong, say in one sentence what that line should have computed, and change only what is needed to "
+                  "fix it. Keep the rest of the code as it is. Then give the complete corrected code.")
 
     def __init__(self,
                  legend: str = "",
-                 task: str = REDERIVE_TASK) -> None:
+                 task: str = REDERIVE_TASK,
+                 trace_task: str = TRACE_TASK,
+                 wrong_answer_task: str = WRONG_ANSWER_TASK) -> None:
         """
         Args:
             legend (str, optional): Explains how to read a trace, added once before the traces.
                 Defaults to "" (nothing is added).
-            task (str, optional): The instruction in <task>. Defaults to REDERIVE_TASK.
+            task (str, optional): The instruction in <task> for crashes, time limits and hidden tests.
+                Defaults to REDERIVE_TASK.
+            trace_task (str, optional): The instruction in <task> when there is a trace. Defaults to TRACE_TASK.
+            wrong_answer_task (str, optional): The instruction in <task> for a wrong answer without a trace.
+                Defaults to WRONG_ANSWER_TASK.
         """
         self.legend = legend
         self.task = task
+        self.trace_task = trace_task
+        self.wrong_answer_task = wrong_answer_task
 
 
     def build(self,
@@ -107,12 +125,17 @@ class FixQueryManager:
         sections = [self.section("problem", problem)]
         if not traced:
             sections.append(self._code_section(code))      # no trace: the code has to be sent on its own
-        sections.append(self.section("test_failures", "\n".join(failure_parts)))
+        # the summary, then each group of failures after a blank line
+        failure_text = failure_parts[0] + ("\n" + "\n\n".join(failure_parts[1:]) if len(failure_parts) > 1 else "")
+        sections.append(self.section("test_failures", failure_text))
 
-        task = self.task
         if traced:
             sections.append(self.section("execution_traces", self._traces_text(traced)))
-            task += "\n" + self.TRACE_TASK
+            task = self.trace_task
+        elif any(failure.kind == WRONG_ANSWER for failure in failures):
+            task = self.wrong_answer_task
+        else:
+            task = self.task
         sections.append(self.section("task", task))
         return "\n\n".join(sections)
 
