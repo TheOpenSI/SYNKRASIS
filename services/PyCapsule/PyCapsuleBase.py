@@ -314,6 +314,26 @@ class PyCapsuleBase(ServiceBase):
                 file.write('\n'.join(requirements))
                 
                 
+    def _on_container_response(self, response: CompletedProcess, attempt: int) -> None:
+        """
+        Hook, called with the response of every container run of a task, also the one that passed.
+        Does nothing by default. Override to keep track of the progress of a task, e.g. which tests were cleared.
+
+        Args:
+            response (CompletedProcess): Response from the container.
+            attempt (int): 0 for the first run (the initial generation), 1.. for the fix mode runs.
+        """
+        pass
+
+
+    def _get_result_details(self) -> dict:
+        """
+        Hook, called when a task is done. Returns extra values for dataset.append_result as keyword arguments
+        (the dataset has to accept them). Empty by default.
+        """
+        return {}
+
+
     def fix_code(self, 
                  response: CompletedProcess, 
                  user_query: dict = None,
@@ -363,6 +383,7 @@ class PyCapsuleBase(ServiceBase):
             # Debug attemps
             attempt_count += 1
             return_code = response.returncode
+            self._on_container_response(response, attempt = attempt_count)
 
         self._change_system_prompt()  # Resetting the system prompt to normal mode
 
@@ -433,6 +454,7 @@ class PyCapsuleBase(ServiceBase):
 
         # Container response
         response: CompletedProcess = self.container.start_container()
+        self._on_container_response(response, attempt = 0)
 
         flag = response.returncode  # 0 if code runs successfully
         
@@ -475,7 +497,8 @@ class PyCapsuleBase(ServiceBase):
                 task_id=data_point["task_id"],
                 fix_mode_attempt_count = fix_mode_attempt_count,
                 status = status,
-                error_trace = error_trace
+                error_trace = error_trace,
+                **self._get_result_details()
             )
             # Save data
             dataset.log_to_csv()

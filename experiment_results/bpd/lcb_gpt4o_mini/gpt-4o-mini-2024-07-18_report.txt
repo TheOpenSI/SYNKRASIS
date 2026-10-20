@@ -1,0 +1,25 @@
+LiveCodeBench report: gpt-4o-mini-2024-07-18
+========================================================================
+WITHOUT BPD (all 175 problems)
+  passed (all public and hidden tests)                   60 / 175    34.3%
+      on the first generation                            54
+      after fix attempts                                  6
+  cleared the public tests                               97 / 175    55.4%
+  had a wrong answer (AssertionError) at some attempt   111
+      recovered and passed                                6
+      still failed  (these are re-run with BPD)         105
+
+WITH BPD (the 105 problems that still failed with a wrong answer)
+  passed                                                  9 / 105     8.6%
+      on the first generation (before any trace)          3
+      after fix attempts                                  6
+
+PUBLIC TESTS CLEARED ON THOSE 105 PROBLEMS
+  without BPD                                            28 / 105    26.7%
+  with BPD                                               29 / 105    27.6%
+
+ALL 175 PROBLEMS, the BPD result replaces the first one on those 105
+  passed                                                 69 / 175    39.4%
+
+Note: the BPD run asks the model again, a new sample at temperature > 0. A pass on the first generation
+happens before any trace is used, it shows how much the result moves by sampling alone.
