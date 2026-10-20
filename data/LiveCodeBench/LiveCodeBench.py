@@ -8,7 +8,7 @@ import json
 import ast
 import pandas as pd
 
-from typing import Optional
+from typing import Optional, Union
 from datetime import datetime, date
 
 from data.DatasetBase import DatasetBase
@@ -199,12 +199,13 @@ class LiveCodeBench(DatasetBase):
         self.filtered_records = len(self.data)
 
 
-    def _get_test_type(self, tests: list[dict] | dict) -> str:
+
+    def _get_test_type(self, tests: Union[list[dict], dict]) -> str:
         """
         Determine the test type from the provided tests.
         
         Args:
-            tests (list[dict] | dict): A list of test case dictionaries or a single test case dictionary.
+            tests Union[list[dict], dict]: A list of test case dictionaries or a single test case dictionary.
         
         Returns:
             str: The test type if all test cases have the same type, otherwise "Multi".
