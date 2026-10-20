@@ -84,42 +84,31 @@ class OllamaClient(LLMBase):
             context (str): optional context
             suppress_conversation_history (bool): Whether to send conversation history.
         """
-        # Conversation history
-        conversation_history = ("" 
-                                if suppress_conversation_history 
-                                else self._prepare_conversation_history(user_prompt))
+        # Messages first, it initialises the chat history if needed
+        messages = self._prepare_messages(user_prompt, context, suppress_conversation_history)
+        system_prompt = self._prepare_system_prompt(suppress_conversation_history)
 
-        # Context
-        context = self._prepare_context(context)
-
-        # Generate the prompt from message list
-        # Keep the sequence of messages as follows: System, Context, Conversation, User
-        messages = [{"role": "System", "content": self.system_prompt},
-                    {"role": "Conversation", "content": conversation_history},
-                    {"role": "Context", "content": context},
-                    {"role": "User", "content": user_prompt}]
-        # bos_token is empty by default, applies default jinja template
-        full_query = self._prepare_prompt(messages) 
-        
         # Generate response from the model
-        response = self.ollama_client.generate(model = self.model_name, prompt = full_query)
+        response = self.ollama_client.chat(model = self.model_name,
+                                           messages = [{"role": "system", "content": system_prompt}, *messages])
+        answer = response["message"]["content"]
 
         # Add the interaction to chat history
         if self.enable_chat_history and response:
             if not self.chat_history:
                 self.init_chat_history(user_prompt)
 
-            # For chat it's response["message"]["content"]
-            self.chat_history.add_interaction(user_prompt,
-                                                response["response"])  
+            self.chat_history.add_interaction(user_prompt, answer)
             
         if self.verbose_switch:
-            print_model_output(full_query, "USER")
-            print("\n")
+            print_model_output(self.get_messages_as_string(system_prompt, messages), "USER")
+        
+        if not answer:
+            print_error("No response received from Ollama")
+            return None
             
-        print_model_output(response["response"], self.model_name)
-        print("\n")
-        return response["response"]
+        print_model_output(answer + "\n", self.model_name)
+        return answer
         
         
     def cleanup(self):

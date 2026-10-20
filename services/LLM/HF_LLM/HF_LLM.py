@@ -19,8 +19,14 @@ import os, warnings
 import yaml
 import torch
 from dotenv import load_dotenv
-from transformers import AutoTokenizer, AutoModelForCausalLM, BitsAndBytesConfig, pipeline
+from transformers import (
+    AutoTokenizer, 
+    AutoModelForCausalLM, 
+    BitsAndBytesConfig, 
+    pipeline
+)
 from huggingface_hub import login
+from jinja2.exceptions import TemplateError
 from typing import List, Dict, Optional
 
 warnings.filterwarnings('ignore', category=UserWarning, module='torch.utils.checkpoint')
@@ -36,16 +42,20 @@ class HF_LLM(LLMBase):
                  quantization: str = "4bit",
                  use_cache: bool = True,
                  device_map: str = "auto",
-                 max_new_tokens: int = 1024,
+                 max_new_tokens: int = 4096,
                  do_sample: bool = False,
                  top_p: float = 0.95,  # will be ignored if do_sample is False
                  top_k: int = 20,  # will be ignored if do_sample is False
                  temperature: float = 0.7,  # will be ignored if do_sample is False
                  llm_config_file: str = None,  # config file to easily set parameters
-                 stop_strings: List[str] = ["\n\nUser:"],
-                 # stop strings to stop the generation, default is User: to support default chat template
+                 # stop strings to stop the generation, only used with the default chat template
+                 stop_strings: List[str] = ["\n\nHuman:"],
+                 # True: send messages, the pipeline applies the model's chat template
+                 # False: send one flat string rendered with the default chat template                 
+                 use_messages: bool = True,
                  enable_chat_history: bool = False,
-                 max_history: int = 3):
+                 max_history: int = 3,
+                 seed: int = 42):
         """
         Creates a Huggingface LLM agent
         Args:
@@ -61,8 +71,12 @@ class HF_LLM(LLMBase):
                 to keep for top-k-filtering.
             temperature (float): The temperature value to use when sampling
             llm_config_file (str): The path to a YAML file containing configuration values
-            stop_strings (List[str]): Default : ["User:"] which supports the default chat template 
-                at /config_files/default_chat_template.txt
+            stop_strings (List[str]): Default : ["\\n\\nHuman:"] which supports the default chat template 
+                at /config_files/default_chat_template.jinja, only used when that template is in use
+            use_messages (bool): True to send messages (user/assistant turns) and let the pipeline apply 
+                the model's chat template. False to send a flat string, rendered with the default chat template 
+                (config_files/default_chat_template.jinja) even if the model has its own. 
+                Models without a chat template always get the default one.
             enable_chat_history (bool): Whether to add chat history
             max_history (int): The maximum number of interactions to store in the chat
         """
@@ -79,8 +93,9 @@ class HF_LLM(LLMBase):
         self.top_k = top_k
         self.temperature = temperature
         self.hf_token = self._load_hf_token()
-        self.seed = 42,
+        self.seed = seed
         self.stop_strings = stop_strings
+        self.use_messages = use_messages
 
         # login
         self._login_hf()
@@ -94,14 +109,19 @@ class HF_LLM(LLMBase):
         self.model = None
         self.tokenizer = None
         self.pipeline = None
+        self.has_chat_template = False
+        self.default_template = None
+        self.supports_system_role = True  # False: the system prompt is merged into the first user turn
+        self.uses_default_template = True  # True: our template is used, needs stop strings
+        self.generation_kwargs = {}  # extra kwargs for every pipeline call
 
         self._initialize_model()
         self._set_seed()
 
 
     def _set_seed(self):
-        torch.manual_seed(42)
-        torch.cuda.manual_seed_all(42)
+        torch.manual_seed(self.seed)
+        torch.cuda.manual_seed_all(self.seed)
 
 
     def _get_quant_config(self) -> BitsAndBytesConfig:
@@ -139,6 +159,37 @@ class HF_LLM(LLMBase):
         return tokenizer
 
 
+    def _check_chat_template(self) -> bool:
+        """
+        Check if the tokenizer ships with a chat template.
+        Returns:
+            bool: True if a chat template is present
+        """
+        has_template = bool(getattr(self.tokenizer, "chat_template", None))
+        if has_template:
+            print_info(f"Chat template found for {self.model_name}")
+        else:
+            print_warning(f"No chat template found for {self.model_name}")
+        return has_template
+
+
+    def _set_fallback_chat_template(self):
+        """
+        Assign our own chat template to the tokenizer, for models that ship without one.
+        """
+        self.tokenizer.chat_template = self.default_template
+        self.uses_default_template = True
+        print_info("Default chat template assigned to the tokenizer")
+
+
+    def _load_default_template(self) -> str:
+        """
+        Read the default chat template, config_files/default_chat_template.jinja
+        """
+        with open(self.prompt_template_path, "r") as template_file:
+            return template_file.read()
+
+
     def _initialize_model(self):
         # quantization config
         quant_config = self._get_quant_config()
@@ -146,13 +197,16 @@ class HF_LLM(LLMBase):
         # tokenizer
         self.tokenizer = self.set_tokenizer()  # don't add eos token for inference
 
+        # set chat template, if the tokenizer doesn't ship with one, assign our own
+        self._set_chat_template()
+
         # model
         self.model = AutoModelForCausalLM.from_pretrained(
             self.model_name,
             quantization_config=quant_config,
             use_cache=self.use_cache,
             device_map=self.device_map,
-            torch_dtype=torch.bfloat16
+            dtype=torch.bfloat16
         )
 
         # pipeline
@@ -163,14 +217,68 @@ class HF_LLM(LLMBase):
             do_sample=self.do_sample,
             temperature=self.temperature,
             top_p=self.top_p,
-            top_k=None,
+            top_k=self.top_k,
             repetition_penalty=1.1,
             return_full_text=False,
-            max_new_tokens=1024
+            max_new_tokens=self.max_new_tokens
         )
 
         print_success("Model initialized")  # DEBUG
         print_info(f"Model name: {self.model.name_or_path.strip().split('/')[-1]}")  # DEBUG
+
+
+    def _set_chat_template(self):
+        """
+        Check if the tokenizer ships with a chat template, if not assign our own.
+        If the model's template is used with messages, check that it accepts our messages, 
+        otherwise fall back to our own template.
+        """
+        # Needed for flat strings and for models without a template
+        self.default_template = self._load_default_template()
+        self.has_chat_template = self._check_chat_template()
+        self.uses_default_template = not self.has_chat_template or not self.use_messages
+        if not self.has_chat_template:
+            self._set_fallback_chat_template()
+
+        # The model's template decides the roles it accepts
+        if not self.uses_default_template:
+            self.supports_system_role = self._check_system_role()
+            if self.supports_system_role is None:
+                print_warning(f"The chat template of {self.model_name} won't accept messages "
+                              "even if the system prompt is merged into the first user turn.")
+                print_warning(f"Using the default chat template instead")
+                self._set_fallback_chat_template()
+                self.supports_system_role = True
+            elif not self.supports_system_role:
+                print_warning(f"The chat template of {self.model_name} does not accept the system role, "
+                              "the system prompt will be merged into the first user turn")
+
+        if self.uses_default_template:
+            # generate() needs the tokenizer to use stop strings
+            self.generation_kwargs.update({"stop_strings": self.stop_strings, "tokenizer": self.tokenizer})
+
+
+    def _check_system_role(self) -> Optional[bool]:
+        """
+        Render a sample conversation with the model's chat template, with and without a system message.
+        Templates raise an error for roles they don't accept.
+        Returns:
+            Optional[bool]: True if the system role is accepted, False if the template only works without it,
+                None if the template rejects the messages either way
+        """
+        system = [{"role": "system", "content": "system prompt"}]
+        turns = [{"role": "user", "content": "question 1"},
+                 {"role": "assistant", "content": "answer 1"},
+                 {"role": "user", "content": "question 2"}]
+        for with_system in (True, False):
+            try:
+                self.tokenizer.apply_chat_template((system if with_system else []) + turns,
+                                                   tokenize=False,
+                                                   add_generation_prompt=True)
+                return with_system
+            except TemplateError:
+                continue
+        return None
 
 
     def _load_hf_token(self) -> str:
@@ -211,25 +319,30 @@ class HF_LLM(LLMBase):
             print_error("Model or tokenizer not initialized")
             raise ValueError("Model or tokenizer not initialized")
 
-        context = self._prepare_context(context)
-        conversation_history = ("" 
-                                if suppress_conversation_history 
-                                else self._prepare_conversation_history(user_prompt))
-        
-        messages = [{"role": "System", "content": self.system_prompt},
-                    {"role": "Conversation", "content": conversation_history},
-                    {"role": "Context", "content": context},
-                    {"role": "User", "content": user_prompt}]
+        # Messages first, it initialises the chat history if needed
+        messages = self._prepare_messages(user_prompt, context, suppress_conversation_history)
+        system_prompt = self._prepare_system_prompt(suppress_conversation_history)
+        if self.supports_system_role:
+            chat = [{"role": "system", "content": system_prompt}, *messages]
+        else:
+            # The first message is always a user turn, history is trimmed in whole pairs
+            chat = [{"role": "user", "content": f"{system_prompt}\n\n{messages[0]['content']}"}, *messages[1:]]
 
-        prompt = self._prepare_prompt(messages)
+        if self.use_messages:
+            # the pipeline applies the chat template
+            response = self.pipeline(chat, **self.generation_kwargs)
+        else:
+            # flat string, always rendered with our template, even if the model ships with its own
+            prompt = self.tokenizer.apply_chat_template(chat,
+                                                        chat_template=self.default_template,
+                                                        tokenize=False,
+                                                        add_generation_prompt=True)
+            # the template already adds the bos token
+            response = self.pipeline(prompt, add_special_tokens=False, **self.generation_kwargs)
 
-        # inference
-        response = self.pipeline(prompt,
-                                 tokenizer=self.tokenizer,
-                                 eos_token_id=self.tokenizer.eos_token_id,
-                                 stop_strings=self.stop_strings)
-
-        answer = response[0]["generated_text"].split("User:")[0].strip()
+        # Stop strings halt the generation but are still part of the output
+        answer = response[0]["generated_text"]
+        answer = self._remove_stop_strings(answer)
 
         if self.enable_chat_history:
             if not self.chat_history:
@@ -238,18 +351,39 @@ class HF_LLM(LLMBase):
             self.chat_history.add_interaction(user_prompt, answer)
 
         if self.verbose_switch:
-            print_model_output(prompt, "USER")
-            print("\n")
+            print_model_output(self.get_messages_as_string(system_prompt, messages)
+                               if self.use_messages 
+                               else prompt, "USER")
             
-        print_model_output(answer, self.model.name_or_path.strip().split("/")[-1])
-        print("\n")
+        _print_model_name = self.model.name_or_path.strip().split("/")[-1]
+        print_model_output(answer + "\n", _print_model_name)
         return answer
+
+
+    def _remove_stop_strings(self, text: str) -> str:
+        """
+        Remove stop strings from the generated text.
+        
+        Args:
+            text (str): The generated text.
+        
+        Returns:
+            str: The generated text without stop strings.
+        """
+        answer = text
+        for stop_string in self.generation_kwargs.get("stop_strings", []):
+            answer = answer.split(stop_string)[0]
+
+        return answer.strip()
 
 
     def cleanup(self):
         """
         Clean up resources and release memory
         """
+        # The pipeline and generation kwargs hold references to the model and tokenizer
+        self.pipeline = None
+        self.generation_kwargs = {}
         if self.model is not None:
             # self.model = self.model.to("cpu") # won't work for quantized models
             del self.model
@@ -258,41 +392,4 @@ class HF_LLM(LLMBase):
             del self.tokenizer
             self.tokenizer = None
         torch.cuda.empty_cache()
-        print_success("LLM resources cleaned up.**")
-
-# -------------------------------------------------------------------------------------------------------------
-
-# usage examples:
-# basic usage:
-# llm = LLMModel()
-# response = llm.generate_response("What is the capital of France?")
-# print(response)
-
-# custom parameters:
-# llm = LLMModel(repo_name="gpt2", quantization="4bit", max_new_tokens=200, temperature=0.8, system_prompt="You are a helpful assistant.")
-# response = llm.generate_response("Explain quantum computing.")
-# print(response)
-
-# config file:
-# llm = LLMModel(llm_config_file="llm_config.yaml")
-# response = llm.generate_response("Explain quantum computing.")
-# print(response)
-
-# -------------------------------------------------------------------------------------------------------------
-
-# yaml file template
-# repo_name: "mistralai/Mathstral-7B-v0.1"
-# quantization: "4bit"
-# max_new_tokens: 2048
-# do_sample: True
-# temperature: 0.8
-# top_p: 0.92
-
-# -------------------------------------------------------------------------------------------------------------
-# .env file template
-# HUGGING_FACE_TOKEN = your_hf_token
-
-# -------------------------------------------------------------------------------------------------------------
-
-# if __name__ == "__main__":
-#   llm = LLM()
+        print_success("LLM resources cleaned up.")
