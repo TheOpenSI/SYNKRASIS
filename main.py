@@ -9,8 +9,11 @@ from utils.output_message_format.output_colour import Colour
 
 # Candidate models as "backend:model", backend is openai or ollama, e.g. "ollama:llama3.1:8b"
 MODELS = [
-    "ollama:gpt-oss:20b", "ollama:qwen3:32b", "ollama:qwen2.5:32b",
-    "ollama:phi4:14b", "ollama:medgemma:27b"
+    "ollama:gpt-oss:20b", 
+    "ollama:qwen3:32b", 
+    "ollama:qwen2.5:32b",
+    "ollama:phi4:14b", 
+    "ollama:medgemma:27b"
 ]
 
 JUDGES = ["ollama:qwen2.5:72b", "ollama:llama3.3:70b", "ollama:mixtral:8x22b"]
