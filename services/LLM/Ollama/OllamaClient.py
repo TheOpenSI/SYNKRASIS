@@ -2,8 +2,8 @@
 # Replacement for Ollama Container.
 # Uses the ollama client to interact with the Ollama server.
 # Usage:
-#     - generate_response(user_prompt: str, 
-#                         context: List[str] = None, 
+#     - generate_response(user_prompt: str,
+#                         context: List[str] = None,
 #                         suppress_conversation_history: bool = True) -> Optional[str]
 #     - cleanup():
 # =======================================================================================
@@ -23,20 +23,26 @@ from utils.output_message_format.output_colour import print_success, print_model
 
 
 class OllamaClient(LLMBase):
-    def __init__(self, 
-                 model_name: str = "mistral", # uses mistral as default model
-                 enable_chat_history:bool = False, 
-                 max_history: int = 3,
-                 verbose_switch: bool = False,
-                 container_name = "ollama",
-                 local_port: int = 11434):
-        super().__init__(model_name, enable_chat_history, max_history, verbose_switch)
-        self._tag_model() # tag the model to support model availability check
+
+    def __init__(
+        self,
+        model_name: str = "mistral",  # uses mistral as default model
+        enable_chat_history: bool = False,
+        max_history: int = 3,
+        verbose_switch: bool = False,
+        container_name="ollama",
+        local_port: int = 11434,
+        options: Dict = None
+    ):  # ollama options e.g. {"num_ctx": 16384, "temperature": 0}
+        super().__init__(model_name, enable_chat_history, max_history,
+                         verbose_switch)
+        self.options = options
+        self._tag_model()  # tag the model to support model availability check
         self.ollama_client = self._set_local_client(container_name, local_port)
         self.pull_manager = OllamaPullManager(model_name=self.model_name,
                                               mode="stochastic",
                                               interventions=[85, 95],
-                                              max_retries= 3,
+                                              max_retries=3,
                                               fall_back_interval=60,
                                               ollama_client=self.ollama_client)
         self._pull_model()
@@ -73,10 +79,11 @@ class OllamaClient(LLMBase):
         self.pull_manager.pull_model()
 
 
-    def generate_response(self,
-                          user_prompt: str,
-                          context: List[str] = None,
-                          suppress_conversation_history: bool = True) -> Optional[str]:
+    def generate_response(
+            self,
+            user_prompt: str,
+            context: List[str] = None,
+            suppress_conversation_history: bool = True) -> Optional[str]:
         """
         Generate a response from the user query using the model, including chat history.
         Args:
@@ -89,8 +96,11 @@ class OllamaClient(LLMBase):
         system_prompt = self._prepare_system_prompt(suppress_conversation_history)
 
         # Generate response from the model
-        response = self.ollama_client.chat(model = self.model_name,
-                                           messages = [{"role": "system", "content": system_prompt}, *messages])
+        response = self.ollama_client.chat(
+            model = self.model_name,
+            messages = [{"role": "system", "content": system_prompt}, *messages],
+            options = self.options
+        )
         answer = response["message"]["content"]
 
         # Add the interaction to chat history
@@ -99,18 +109,20 @@ class OllamaClient(LLMBase):
                 self.init_chat_history(user_prompt)
 
             self.chat_history.add_interaction(user_prompt, answer)
-            
+
         if self.verbose_switch:
-            print_model_output(self.get_messages_as_string(system_prompt, messages), "USER")
-        
+            print_model_output(
+                self.get_messages_as_string(system_prompt, messages), "USER"
+            )
+
         if not answer:
             print_error("No response received from Ollama")
             return None
-            
+
         print_model_output(answer + "\n", self.model_name)
         return answer
-        
-        
+
+
     def cleanup(self):
         """
         Nothing to clean up for Ollama
