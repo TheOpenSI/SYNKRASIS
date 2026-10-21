@@ -1,20 +1,19 @@
 import os
 import sys
+
 sys.path.append(os.path.abspath(os.path.dirname(__file__)))
 
 from Agents.benchmark.BenchmarkRunner import BenchmarkRunner
 from utils.ascii.synkrasis import print_synkrasis_logo
+from utils.output_message_format.output_colour import Colour
 
 # Candidate models as "backend:model", backend is openai or ollama, e.g. "ollama:llama3.1:8b"
-MODELS = ["ollama:gpt-oss:20b",
-          "ollama:qwen3:32b",
-          "ollama:qwen2.5:32b",
-          "ollama:phi4:14b",
-          "ollama:medgemma:27b"]
+MODELS = [
+    "ollama:gpt-oss:20b", "ollama:qwen3:32b", "ollama:qwen2.5:32b",
+    "ollama:phi4:14b", "ollama:medgemma:27b"
+]
 
-JUDGES = ["ollama:qwen2.5:72b", 
-          "ollama:llama3.3:70b",
-          "ollama:mixtral:8x22b"]
+JUDGES = ["ollama:qwen2.5:72b", "ollama:llama3.3:70b", "ollama:mixtral:8x22b"]
 
 # Generation prompt, results go to Agents/results/prompt03 for "0_3"
 PROMPT_VERSION = "0_3"
@@ -25,7 +24,7 @@ def main():
     runner = BenchmarkRunner(models=MODELS,
                              judges=JUDGES,
                              prompt_version=PROMPT_VERSION,
-                             case_ids=None) # None = all 10 development cases
+                             case_ids=None)  # None = all 10 development cases
     summary = runner.run()
     print(summary.to_string(index=False))
 

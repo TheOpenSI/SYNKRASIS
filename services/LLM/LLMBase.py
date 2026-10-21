@@ -11,7 +11,10 @@
 #   - init_chat_history(original_question: str, max_history: int = 1)
 #   - _prepare_prompt(messages: List[Dict], bos_token: str) -> str
 #   - _prepare_context(context: List[str]) -> Optional[str]
-#   - _prepare_conversation_history(user_query: str) -> str
+#   - _prepare_conversation_history(user_query: str) -> str @deprecated
+#   - _prepare_system_prompt(suppress_conversation_history: bool = True) -> str
+#   - _prepare_messages(user_prompt: str, context: List[str] = None,
+#                       suppress_conversation_history: bool = True) -> List[Dict[str, str]]
 #   - set_system_prompt(prompt: str)
 #   - set_system_prompt_from_file(prompt_file: str = None)
 #   - clear_chat_history()
@@ -25,6 +28,7 @@ import os, sys
 
 sys.path.append(f"{os.path.dirname(os.path.abspath(__file__))}/../..")
 
+from deprecated import deprecated
 from abc import abstractmethod
 from typing import List, Optional, Dict
 from jinja2 import Template
@@ -90,14 +94,16 @@ class LLMBase(ServiceBase):
         """
         context_str = ""
         if context:
-            context_str = "\n".join([f"\t{ctx}" for ctx in context])
+            context_str = "\n".join([f"- {ctx}" for ctx in context])
 
         return context_str
 
-        
+
+    @deprecated(reason="Use _prepare_messages instead", action="always")
     def _prepare_conversation_history(self, user_query: str) -> str:
         """
-        Prepare conversation history context from chat history if enable_chat_history is activated.
+        Prepares a flat conversation history string context from chat history if 
+            enable_chat_history is activated.
 
         Args:
             user_query (str): user query, only used if chat history is not initialised
@@ -107,7 +113,6 @@ class LLMBase(ServiceBase):
         """
         conversation_history = ""
         if self.enable_chat_history:
-            
             # Initialise chat history if not already initialised
             if self.chat_history is None:
                 self.init_chat_history(user_query) 
@@ -127,9 +132,89 @@ class LLMBase(ServiceBase):
                 # conversation_history += f">> Your previous solution {i+1}:\n{code}\n\n" # Uncomment for pycapsule
                 conversation_history += f">> Your previous response {i+1}: {answer}\n\n"
             
-            return conversation_history
+        return conversation_history
     
     
+    def _prepare_system_prompt(self, suppress_conversation_history: bool = True) -> str:
+        """
+        Prepare the system prompt. Once there are previous turns, the original question is
+        appended in a tag, so it is always present regardless of how much history is trimmed.
+
+        Args:
+            suppress_conversation_history (bool, optional): Skip the original question tag.
+                Defaults to True.
+
+        Returns:
+            str: system prompt
+        """
+        system_prompt = self.system_prompt
+        if (
+            self.enable_chat_history 
+            and not suppress_conversation_history
+            and self.chat_history is not None
+            and self.chat_history.history_length > 0
+        ):
+            system_prompt += (f"\n\n<original_question>\n{self.chat_history.original_question}\n"
+                              "</original_question>")
+        return system_prompt
+
+
+    def _prepare_messages(self,
+                          user_prompt: str,
+                          context: List[str] = None,
+                          suppress_conversation_history: bool = True) -> List[Dict[str, str]]:
+        """
+        Prepare the conversation as alternating user/assistant turns, ending with the current user turn.
+        The system prompt is not included, use _prepare_system_prompt() and pass it the way the
+        backend expects.
+        Context is attached only to the current turn and is never stored in the chat history.
+
+        Args:
+            user_prompt (str): user query
+            context (List[str], optional): RAG context. Defaults to None.
+            suppress_conversation_history (bool, optional): Skip previous turns. Defaults to True.
+
+        Returns:
+            List[Dict[str, str]]: messages with roles "user" and "assistant"
+        """
+        messages = []
+        if self.enable_chat_history and not suppress_conversation_history:
+            # Initialise chat history if not already initialised
+            if self.chat_history is None:
+                self.init_chat_history(user_prompt)
+
+            for question, answer in self.chat_history.conversation_history:
+                # Roles must alternate, skip incomplete pairs
+                if question.strip() and answer.strip():
+                    messages.append({"role": "user", "content": question})
+                    messages.append({"role": "assistant", "content": answer})
+
+        context_str = self._prepare_context(context)
+        current_turn = (
+            f"<context>\n{context_str}\n</context>\n\n{user_prompt}"
+            if context_str 
+            else user_prompt
+        )
+        messages.append({"role": "user", "content": current_turn})
+        return messages
+
+
+    def get_messages_as_string(self, 
+                               system_prompt: str, 
+                               messages: List[Dict[str, str]]) -> str:
+        """
+        Get the messages as a single string for printing or logging.
+
+        Args:
+            system_prompt (str): The system prompt
+            messages (List[Dict[str, str]]): List of messages with roles "user" and "assistant"
+        
+        Returns:
+            str: The messages as a single string
+        """
+        return system_prompt + "\n\n" + "\n\n".join(f"[{m['role']}]\n{m['content']}" for m in messages) + "\n"
+
+
     def init_chat_history(self, original_question: str):
         """
         Initialize the chat history with the original question, only call if enable_chat_history is set to True.

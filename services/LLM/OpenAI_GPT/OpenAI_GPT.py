@@ -54,38 +54,24 @@ class OpenAI_GPT(LLMBase):
                           user_prompt: str,
                           context: List[str] = None,
                           suppress_conversation_history: bool = True) -> Optional[str]:
-        context_str = self._prepare_context(context)
-        conversation_history = ("" 
-                                if suppress_conversation_history 
-                                else self._prepare_conversation_history(user_prompt))
-
-        # For openai, we send the system prompt separately
-        messages = [
-            {"role": "Conversation", "content": conversation_history},
-            {"role": "Context", "content": context_str}, # changing the order
-            {"role": "User", "content": user_prompt}
-        ]
-
-        prompt = self._prepare_prompt(messages)
+        # Messages first, it initialises the chat history if needed
+        messages = self._prepare_messages(user_prompt, context, suppress_conversation_history)
+        system_prompt = self._prepare_system_prompt(suppress_conversation_history)
 
         response = self.client.chat.completions.create(
             model=self.model_name,
-            messages=[
-                {"role": "system", "content": self.system_prompt},
-                {"role": "user", "content": prompt}],
+            messages=[{"role": "system", "content": system_prompt}, *messages],
             temperature=self.temperature,
             seed=self.seed
         )
 
         answer = response.choices[0].message.content
     
-        if self.verbose_switch:        
+        if self.verbose_switch:
             # Print full user query
-            print_model_output(self.system_prompt + "\n\n" + prompt, "USER")
-            print("\n")
+            print_model_output(self.get_messages_as_string(system_prompt, messages), "USER")
         
-        print_model_output(answer, self.model_name)
-        print("\n")
+        print_model_output(answer + "\n", self.model_name)
 
         if self.enable_chat_history:
             if not self.chat_history:

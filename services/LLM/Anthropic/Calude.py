@@ -24,9 +24,9 @@ from utils.output_message_format.output_colour import print_error, print_info, p
 
 class Claude(LLMBase):
     def __init__(self,
+                 model_name: str,
                  temperature: float = 1.0,
                  max_tokens: int = 4096,
-                 model_name: str = "claude-3-5-sonnet-20241022",
                  enable_chat_history: bool = False,
                  max_history: int = 3,
                  verbose_switch: bool = False):
@@ -56,21 +56,6 @@ class Claude(LLMBase):
             return anthropic_api_key
         else:
             raise Exception("No .env file found")
-        
-
-    def _get_available_models(self) -> List[str]:
-        """
-        Get list of available Claude models
-        Note: This is a static list as Anthropic doesn't provide a models endpoint
-        """
-        return [
-            "claude-3-7-sonnet-20250219"
-            "claude-3-5-sonnet-20241022",
-            "claude-3-5-haiku-20241022", 
-            "claude-3-opus-20240229",
-            "claude-3-sonnet-20240229",
-            "claude-3-haiku-20240307"
-        ]
 
 
     def set_model(self, model_name: str):
@@ -79,10 +64,6 @@ class Claude(LLMBase):
         Args:
             model_name (str): Name of the model to set
         """
-        available_models = self._get_available_models()
-        if model_name not in available_models:
-            print_error(f"Model {model_name} not available. Available models: {available_models}")
-            return
         self.model_name = model_name
         print_info(f"Model changed to {self.model_name}")
 
@@ -121,35 +102,17 @@ class Claude(LLMBase):
             Optional[str]: Claude's response
         """
         try:
-            context_str = self._prepare_context(context)
-            conversation_history = "" \
-                if suppress_conversation_history \
-                    else self._prepare_conversation_history(user_prompt)
-
-            # Prepare messages following the same pattern as OpenAI implementation
-            messages = [
-                {"role": "Conversation", "content": conversation_history},
-                {"role": "Context", "content": context_str},
-                {"role": "User", "content": user_prompt}
-            ]
-
-            # Prepare the full prompt using the base class method
-            prompt = self._prepare_prompt(messages)
-
-            if self.verbose_switch:        
-                # Print full user query
-                print_model_output(prompt, "USER")
-                print()
+            # Messages first, it initialises the chat history if needed
+            messages = self._prepare_messages(user_prompt, context, suppress_conversation_history)
+            system_prompt = self._prepare_system_prompt(suppress_conversation_history)
 
             # Make API call to Claude
             response = self.client.messages.create(
                 model=self.model_name,
                 max_tokens=self.max_tokens,
                 temperature=self.temperature,
-                system=self.system_prompt,
-                messages=[
-                    {"role": "user", "content": prompt}
-                ]
+                system=system_prompt,
+                messages=messages
             )
 
             # Extract response content
@@ -159,8 +122,12 @@ class Claude(LLMBase):
                 print_error("No response received from Claude")
                 return None
 
+            if self.verbose_switch:        
+                # Print full user query
+                print_model_output(self.get_messages_as_string(system_prompt, messages), "USER")
+
             # Print the response
-            print_model_output(answer, self.model_name)
+            print_model_output(answer + "\n", self.model_name)
 
             # Update chat history if enabled
             if self.enable_chat_history:

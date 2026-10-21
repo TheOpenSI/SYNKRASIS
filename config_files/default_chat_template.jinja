@@ -1,12 +1,16 @@
+{#- Fallback chat template for HF models that ship without one. Human/Assistant turn format. -#}
+{{- bos_token if bos_token is defined else '' }}
 {%- for message in messages %}
-    {%- if message['role'] == 'System' %}
-        {{- bos_token + '**System:**\n' + message['content'] + '\n\n' }}
-    {%- elif message['role'] == 'User' %}
-        {{- '**User:**\n' + message['content'] + '\n\n'}}
-    {%- elif message['role'] == 'Context' %}
-        {{- '**Context:**\n' + message['content'] + '\n\n'}}
-    {%- elif message['role'] == 'Conversation' %}
-        {{- '**Conversation History:**\n' + message['content'] + '\n'}}
+    {%- if message['role'] == 'system' %}
+        {{- message['content'] }}
+    {%- elif message['role'] == 'user' %}
+        {{- '\n\nHuman: ' + message['content'] }}
+    {%- elif message['role'] == 'assistant' %}
+        {{- '\n\nAssistant: ' + message['content'] }}
+    {%- else %}
+        {{- raise_exception('Unsupported role: ' + message['role']) }}
     {%- endif %}
 {%- endfor %}
-{{- '**Assistant Response:** '}}
+{%- if add_generation_prompt %}
+    {{- '\n\nAssistant:' }}
+{%- endif %}
