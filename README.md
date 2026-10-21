@@ -78,7 +78,7 @@ Columns in `summary.csv`: `n_cases`, the mean of the four scores, `aligned_yes` 
 
 Setup used below: candidate `gpt-5-nano-2025-08-07`, judges `gpt-5-mini-2025-08-07` and `gpt-5.4-mini-2026-03-17`, all 10 development cases, 1 generation per case. With 2 judges any 1-1 split is a tie, which is why many cases need review.
 
-## Prompt v0.3 results
+## Prompt v0.3 results (gpt-5-nano-2025-08-07 only)
 
 | model | n_cases | coverage | factual_consistency | hallucination | overall | aligned_yes | aligned_no | aligned_tie | judges_agreed | human_review |
 |---|---|---|---|---|---|---|---|---|---|---|
