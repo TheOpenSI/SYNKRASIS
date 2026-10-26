@@ -74,7 +74,9 @@ class FixQueryManager:
                  legend: str = "",
                  task: str = REDERIVE_TASK,
                  trace_task: str = TRACE_TASK,
-                 wrong_answer_task: str = WRONG_ANSWER_TASK) -> None:
+                 wrong_answer_task: str = WRONG_ANSWER_TASK,
+                 answer_intro: str = ANSWER_INTRO,
+                 error_intro: str = ERROR_INTRO) -> None:
         """
         Args:
             legend (str, optional): Explains how to read a trace, added once before the traces.
@@ -84,11 +86,16 @@ class FixQueryManager:
             trace_task (str, optional): The instruction in <task> when there is a trace. Defaults to TRACE_TASK.
             wrong_answer_task (str, optional): The instruction in <task> for a wrong answer without a trace.
                 Defaults to WRONG_ANSWER_TASK.
+            answer_intro (str, optional): The lead-in of the wrong answers without a trace in <test_failures>.
+                Defaults to ANSWER_INTRO.
+            error_intro (str, optional): The lead-in of the other errors in <test_failures>. Defaults to ERROR_INTRO.
         """
         self.legend = legend
         self.task = task
         self.trace_task = trace_task
         self.wrong_answer_task = wrong_answer_task
+        self.answer_intro = answer_intro
+        self.error_intro = error_intro
 
 
     def build(self,
@@ -118,9 +125,9 @@ class FixQueryManager:
 
         failure_parts = [summary]
         if wrong_answers:
-            failure_parts.append(self.ANSWER_INTRO + "\n\n" + self._failure_elements(wrong_answers))
+            failure_parts.append(self.answer_intro + "\n\n" + self._failure_elements(wrong_answers))
         if errors:
-            failure_parts.append(self.ERROR_INTRO + "\n\n" + self._failure_elements(errors))
+            failure_parts.append(self.error_intro + "\n\n" + self._failure_elements(errors))
 
         sections = [self.section("problem", problem)]
         if not traced:

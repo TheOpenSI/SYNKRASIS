@@ -1,0 +1,116 @@
+import json
+import os
+import subprocess
+import sys
+import time
+
+_DIR = os.path.dirname(os.path.abspath(__file__))
+_RUNNER = os.path.join(_DIR, "runner.py")
+_CANDIDATE = os.path.join(_DIR, "candidate.py")
+_RESULTS = os.path.join(_DIR, "results.jsonl")
+_BPD_WORKER = os.path.join(_DIR, "bpd", "services", "BPD", "worker.py")
+_TEST_NAMES = json.loads(__TEST_NAMES__)
+_TIMEOUT = __TIMEOUT__                  # seconds per test
+_TOTAL_TIMEOUT = __TOTAL_TIMEOUT__      # seconds for all the tests together, counted from when the code is loaded
+_MAX_TRACES = __MAX_TRACES__            # None = a trace for every failed test, 0 = no traces
+_MAX_CHARS = 3000                       # a message of a test is cut to its last characters
+
+
+def _read_records():
+    records = []
+    if os.path.exists(_RESULTS):
+        with open(_RESULTS, "r") as results_file:
+            for line in results_file:
+                try:
+                    records.append(json.loads(line))
+                except ValueError:
+                    pass                # the line the runner was writing when it was killed
+    return records
+
+
+_clock_start = None                     # set when the first line of the runner is there: the code is loaded, the tests run
+_out_of_time = False
+
+
+def _run_runner(first):
+    """Runs the runner from test `first` on, returns its exit code (killed after a stretch without any result, or when
+    the total time for all the tests is used up)."""
+    global _clock_start, _out_of_time
+    process = subprocess.Popen([sys.executable, _RUNNER, _CANDIDATE, _RESULTS, str(_TIMEOUT), str(first)],
+                               stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+    size, last_progress = -1, time.time()
+    while process.poll() is None:
+        time.sleep(0.2)
+        current = os.path.getsize(_RESULTS) if os.path.exists(_RESULTS) else 0
+        if current != size:
+            size, last_progress = current, time.time()
+            if _clock_start is None:
+                _clock_start = time.time()
+        if _clock_start is not None and time.time() - _clock_start > _TOTAL_TIMEOUT:
+            _out_of_time = True
+            process.kill()
+            process.wait()
+        elif time.time() - last_progress > _TIMEOUT + 120:         # loading the code and the libraries can take a while
+            process.kill()
+            process.wait()
+    return process.returncode
+
+
+if os.path.exists(_RESULTS):
+    os.remove(_RESULTS)
+
+exit_code = _run_runner(0)
+tests, outcomes, load_error = list(_TEST_NAMES), {}, None
+while True:
+    for record in _read_records():
+        if "load_error" in record:
+            load_error = record["load_error"]
+        elif "tests" in record:
+            tests = record["tests"]
+        elif "index" in record:
+            outcomes[record["index"]] = record
+    missing = [index for index in range(len(tests)) if index not in outcomes]
+    if load_error is not None or not missing:
+        break
+    if _out_of_time:                    # the tests that did not run, the one that was running too
+        for index in missing:
+            outcomes[index] = {"index": index, "status": "error",
+                               "message": f"The {_TOTAL_TIMEOUT} seconds for all the tests of the task were used up."}
+        break
+    # the process ended before the last test: the first missing test killed it, go on with the next one
+    outcomes[missing[0]] = {"index": missing[0], "status": "error",
+                            "message": f"The process ended (exit code {exit_code}) while this test was running, "
+                                       f"it was killed or took too long."}
+    if missing[0] + 1 >= len(tests):
+        break
+    exit_code = _run_runner(missing[0] + 1)
+
+results = []
+for index, name in enumerate(tests):
+    if load_error is not None:
+        results.append(f"ERROR: {name}\n{load_error[-_MAX_CHARS:]}")
+    else:
+        record = outcomes[index]
+        message = record["message"][-_MAX_CHARS:]
+        results.append("pass" if record["status"] == "pass" else f"{record['status'].upper()}: {name}\n{message}")
+
+traces = {}
+if _MAX_TRACES != 0 and os.path.exists(_BPD_WORKER):
+    for index, result in enumerate(results):
+        if not result.startswith("FAIL: ") or (_MAX_TRACES is not None and len(traces) >= _MAX_TRACES):
+            continue
+        class_name, method_name = tests[index].split(".")
+        request = {"mode": "test", "code_path": os.path.join(_DIR, "solution.py"), "test_path": os.path.join(_DIR, "tests.py"),
+                   "test_class": class_name, "test_method": method_name, "limits": [6000, 20000, 60.0]}
+        try:
+            answer = subprocess.run([sys.executable, _BPD_WORKER], input=json.dumps(request), capture_output=True,
+                                    text=True, timeout=180)
+            trace = json.loads(answer.stdout.strip().splitlines()[-1])["trace"]
+        except Exception:
+            trace = None
+        if trace is not None:
+            traces[index] = trace
+
+sys.stderr.write("TEST_RESULTS " + json.dumps(results) + "\n")
+sys.stderr.write("TEST_TRACES " + json.dumps(traces) + "\n")
+sys.exit(0 if all(result == "pass" for result in results) else 1)

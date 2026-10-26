@@ -32,6 +32,7 @@ import contextlib
 import io
 import json
 import subprocess
+import types
 from typing import Any, Optional
 
 from services.BPD.report import TraceConfig, render_within_budget
@@ -115,6 +116,36 @@ class BPD:
             self.last_error = f"{type(exc).__name__}: {exc}"
         finally:
             sys.stdin = original_stdin
+        return None
+
+    def trace_test_in_process(self,
+                              code: str,
+                              test_code: str,
+                              class_name: str,
+                              method_name: str) -> Optional[str]:
+        """
+        The trace of the functions of `code` while one unit test runs, e.g. a BigCodeBench task: `test_code` has
+        the TestCase class `class_name`, its method `method_name` is run (setUp and tearDown too) and calls the code.
+        Only the code is traced, not the test. If the test fails, the last line says what was raised.
+        Both are loaded as the module "candidate", in this process. None if it cannot be traced (see last_error).
+        """
+        self.last_error = None
+        try:
+            module = types.ModuleType("candidate")
+            sys.modules["candidate"] = module
+            printed = io.StringIO()
+            with contextlib.redirect_stdout(printed):
+                exec(compile(code, TARGET_FILENAME, "exec"), module.__dict__)
+                exec(compile(test_code, "<bpd-test>", "exec"), module.__dict__)
+                structure = CodeStructure(code)
+                collector = TraceCollector(TARGET_FILENAME, structure, max_steps=self.max_steps, max_seconds=self.max_seconds)
+                case = getattr(module, class_name)(method_name)
+                result, error, roots = collector.run(case.debug)
+            return render_within_budget(structure, roots, result, error, None, None, TraceConfig(max_chars=self.max_chars))
+        except TraceLimit:
+            self.last_error = "trace_limit"
+        except BaseException as exc:                    # syntax error in the code, sys.exit() ...
+            self.last_error = f"{type(exc).__name__}: {exc}"
         return None
 
     def trace_expression(self, source: str, expression: str, expected: Optional[str] = None,

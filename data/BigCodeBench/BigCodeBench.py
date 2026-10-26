@@ -24,9 +24,47 @@ class BigCodeBench(DatasetBase):
     
 
     def log_to_csv(self) -> None:
-        self.log_to_csv_helper(column_names = ["task_id", "fix_mode_attempt_count", "status", "error_trace"])
-        
-        
+        self.log_to_csv_helper(column_names = ["task_id", "fix_mode_attempt_count", "status", "error_trace",
+                                               "tests_passed"])
+
+
+    def append_result(self, task_id: str,
+                      fix_mode_attempt_count: int,
+                      status: str,
+                      error_trace: list[str],
+                      tests_passed: Optional[list[str]] = None) -> None:
+        """
+        Also stores how many of the unit tests passed at every attempt, e.g. ["2/5", "5/5"]
+        (0 is the initial generation, then the fix attempts).
+        """
+        self.results.append({
+            "task_id": int(task_id),
+            "fix_mode_attempt_count": int(fix_mode_attempt_count),
+            "status": status,
+            "error_trace": error_trace,
+            "tests_passed": tests_passed or []
+        })
+
+
+    def select_tasks(self, task_ids: list[int]) -> None:
+        """
+        Keep only these tasks, in the order of the dataset. get_next and resuming then work on this subset,
+        so a run can be restricted to some tasks, e.g. the ones another run failed.
+        Call it before the run starts, a resumed run counts its position in the subset.
+
+        Args:
+            task_ids (list[int]): Task ids, the number in "BigCodeBench/<number>".
+        """
+        wanted = {int(task_id) for task_id in task_ids}
+        self.data = self.data[self.data["task_id"].map(self._process_task_id).isin(wanted)].reset_index(drop = True)
+
+
+    def exclude_tasks(self, task_ids: list[int]) -> None:
+        """Drop these tasks, e.g. the ones that cannot be solved in the sandbox. Call it before the run starts."""
+        unwanted = {int(task_id) for task_id in task_ids}
+        self.data = self.data[~self.data["task_id"].map(self._process_task_id).isin(unwanted)].reset_index(drop = True)
+
+
     def process(self, data_point: dict) -> dict :
         return {
             "task_id": self._process_task_id(data_point["task_id"]),

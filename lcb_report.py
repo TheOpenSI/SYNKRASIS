@@ -31,8 +31,8 @@ def failed_with_assertion(result: dict) -> bool:
     return result["status"] == "fail" and had_assertion(result)
 
 
-def results_path(model_name: str, output_dir: str, run_name: str) -> str:
-    return os.path.join(output_dir, f"{model_name}_LiveCodeBench_results_{run_name}.json")
+def results_path(model_name: str, output_dir: str, run_name: str, dataset: str = "LiveCodeBench") -> str:
+    return os.path.join(output_dir, f"{model_name}_{dataset}_results_{run_name}.json")
 
 
 def load_results(path: str) -> Optional[list[dict]]:
