@@ -35,6 +35,8 @@ class PyCapsule_BigCodeBench(PyCapsuleBase):
                          "code returned with what the assertion expects, find the part of your code that causes the "
                          "difference, say in one sentence what it should do instead, and change only what is needed to "
                          "fix it. Keep the rest of the code as it is. Then give the complete corrected code.")
+    NO_CODE_MESSAGE = ("Your last reply had no code. Give the complete solution in a '### Code' section, enclosed with "
+                       "triple backticks.")
     ANSWER_INTRO = "Following is the unit tests that failed, with the assertion that failed:"
     ERROR_INTRO = "Following is the error message(s) of the failed unit test(s). Fix the code accordingly."
 
@@ -76,7 +78,9 @@ class PyCapsule_BigCodeBench(PyCapsuleBase):
                                          wrong_answer_task = self.WRONG_ANSWER_TASK,
                                          answer_intro = self.ANSWER_INTRO,
                                          error_intro = self.ERROR_INTRO)
-        self._last_code = ""                # code of the latest LLM response
+        self._last_code = ""                # code of the latest LLM response that had code
+        self._no_code = False               # the latest LLM response had no code
+        self._fixing = False                # the latest LLM call is a fix attempt
         self._pending_call = None           # the latest LLM call, written when its container run is back
         self._reset_task_details()
 
@@ -130,16 +134,22 @@ class PyCapsule_BigCodeBench(PyCapsuleBase):
                                                   suppress_conversation_history = suppress_conversation_history)
 
         # The libraries are in the container. parse_response raises on an empty response.
-        _, code = parse_response(llm_response) if llm_response else ([], "")
+        try:
+            _, code = parse_response(llm_response) if llm_response else ([], "")
+        except Exception:
+            code = ""
 
-        if not code.strip():
+        if not self._fixing:
+            self._last_code = ""           # a new task
+        self._no_code = not code.strip()
+        if self._no_code:
+            # A failed attempt, not a crash: the fix query tells the LLM that its reply had no code.
             print_error(f"No code found in the response of the LLM for task {user_query['task_id']}.")
-            raise ValueError(f"No code found in the response of the LLM for task {user_query['task_id']}. "
-                             f"Check the response format against parse_response and the system prompt.\n"
-                             f"Raw response:\n{llm_response}")
+            code = self._last_code if self._fixing else ""      # run the previous code again (nothing on the first reply)
+        else:
+            self._last_code = code
 
         self._pending_call = {"task_id": user_query["task_id"], "prompt": user_query["prompt"], "response": llm_response}
-        self._last_code = code
         self._create_main_py(code, user_query)
 
 
@@ -150,6 +160,12 @@ class PyCapsule_BigCodeBench(PyCapsuleBase):
         if the container made one, an error with its concise message.
         The error types go to self.error_handling.current_error_type, fix_code stores them.
         """
+        if self._no_code:
+            self.error_handling.current_error_type = ["NoCode"]
+            return self.fix_query.build(meta_data["prompt"], self._last_code,
+                                        "Your last reply had no code.",
+                                        [Failure(1, ERROR, self.NO_CODE_MESSAGE)])
+
         results = self.harness.parse_test_results(response.stderr)
         if results is None:
             print_error(f"The driver did not print the test results (exit code {response.returncode}).")
@@ -203,7 +219,11 @@ class PyCapsule_BigCodeBench(PyCapsuleBase):
     def _update_code(self, fix_mode_query: str, suppress_conversation_history: bool, meta_data: dict) -> None:
         data_point = meta_data.copy()
         data_point["prompt"] = fix_mode_query
-        self._generate_code(data_point, suppress_conversation_history)
+        self._fixing = True
+        try:
+            self._generate_code(data_point, suppress_conversation_history)
+        finally:
+            self._fixing = False
 
 
     def _call_fix_code(self, response: CompletedProcess, user_query: dict) -> tuple[int, int, list[str]]:
