@@ -1,0 +1,23 @@
+BigCodeBench report: qwen2.5:14b
+==============================================================================
+WITHOUT BPD (all 1140 tasks)
+  passed (all unit tests)                                 813 / 1140   71.3%
+      on the first generation                             557
+      after fix attempts                                  256
+  had a failed assertion at some attempt                  421
+      recovered and passed                                163
+      still failed  (these are re-run with BPD)           258
+
+WITH BPD (re-run on the 258 tasks that still failed with a failed assertion)
+                                                              BPD, 1 trace   BPD, all traces
+  passed                                                        85 (32.9%)        68 (26.4%)
+      on the first generation (before any trace)                        28                22
+      after fix attempts                                                57                46
+
+ALL 1140 TASKS, a BPD result replaces the first one on those 258 tasks
+  without BPD                                             813 / 1140   71.3%
+  BPD, 1 trace                                            898 / 1140   78.8%
+  BPD, all traces                                         881 / 1140   77.3%
+
+Note: a BPD run asks the model again, a new sample at temperature > 0. A pass on the first generation
+happens before any trace is used, it shows how much the result moves by sampling alone.
