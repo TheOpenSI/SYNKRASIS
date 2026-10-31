@@ -1,0 +1,23 @@
+HumanEval report: qwen2.5:32b
+==============================================================================
+WITHOUT BPD (all 164 tasks)
+  passed (all unit tests)                                 158 / 164    96.3%
+      on the first generation                             139
+      after fix attempts                                   19
+  had a failed assertion at some attempt                   20
+      recovered and passed                                 14
+      still failed  (these are re-run with BPD)             6
+
+WITH BPD (re-run on the 6 tasks that still failed with a failed assertion)
+                                                              BPD, 1 trace   BPD, all traces
+  passed                                                         3 (50.0%)         2 (33.3%)
+      on the first generation (before any trace)                         0                 2
+      after fix attempts                                                 3                 0
+
+ALL 164 TASKS, a BPD result replaces the first one on those 6 tasks
+  without BPD                                             158 / 164    96.3%
+  BPD, 1 trace                                            161 / 164    98.2%
+  BPD, all traces                                         160 / 164    97.6%
+
+Note: a BPD run asks the model again, a new sample at temperature > 0. A pass on the first generation
+happens before any trace is used, it shows how much the result moves by sampling alone.
