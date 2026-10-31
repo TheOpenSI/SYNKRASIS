@@ -1,0 +1,26 @@
+LiveCodeBench report: qwen2.5:14b
+==============================================================================
+WITHOUT BPD (all 175 problems)
+  passed (all public and hidden tests)                     50 / 175    28.6%
+      on the first generation                              38
+      after fix attempts                                   12
+  cleared the public tests                                 87 / 175    49.7%
+  had a wrong answer (AssertionError) at some attempt     130
+      recovered and passed                                 10
+      still failed  (these are re-run with BPD)           120
+
+WITH BPD (re-run on the 120 problems that still failed with a wrong answer)
+                                                              BPD, 1 trace   BPD, all traces
+  passed                                                          7 (5.8%)          4 (3.3%)
+      on the first generation (before any trace)                         5                 1
+      after fix attempts                                                 2                 3
+  cleared the public tests                                      35 (29.2%)        28 (23.3%)
+    (without BPD, the same problems: public cleared)            36 (30.0%)
+
+ALL 175 PROBLEMS, a BPD result replaces the first one on those 120 problems
+  without BPD                                              50 / 175    28.6%
+  BPD, 1 trace                                             57 / 175    32.6%
+  BPD, all traces                                          54 / 175    30.9%
+
+Note: a BPD run asks the model again, a new sample at temperature > 0. A pass on the first generation
+happens before any trace is used, it shows how much the result moves by sampling alone.
