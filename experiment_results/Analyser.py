@@ -76,7 +76,7 @@ class ExperimentAnalyser:
         print()
 
 
-    def _check_error_frequency(self) -> None:
+    def _check_error_frequency(self, count: int = 3) -> None:
         """
         Frequency of each error type across all tasks and attempts,
         split by the task's final status.
@@ -104,7 +104,10 @@ class ExperimentAnalyser:
         print(f"  {'Error Type':<45} {'Total':>6}  {'Pass':>6}  {'Fail':>6}")
         print(f"  {'-'*45} {'-'*6}  {'-'*6}  {'-'*6}")
 
-        for _, row in freq.iterrows():
+        for i, (_, r) in enumerate(freq.iterrows()):
+            _, row = (_, r)
+            if i >= count:
+                break
             passed = int(row.get("pass", 0))
             failed = int(row.get("fail", 0))
             print(f"  {row['error_type']:<45} {int(row['total']):>6}  {passed:>6}  {failed:>6}")
@@ -330,10 +333,13 @@ if __name__ == "__main__":
         return glob.glob(os.path.join(current_dir, "*.json"))
     paths = get_json_files_in_current_dir()
     for p in paths:
-        if "humaneval" in p.lower() or "bigcodebench" in p.lower():
+        if "humaneval" in p.lower() or "mbpp" in p.lower():
+            continue
+        model_name = Path(p).stem
+        if not "qwen" in model_name.lower():
             continue
         print("#"*55)
-        print(Path(p).stem)
+        print(model_name)
         print("#"*55)
         analyser = ExperimentAnalyser(file_path = p)
         analyser.analyse()
