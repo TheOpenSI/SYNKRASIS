@@ -125,8 +125,8 @@ def main():
     for key in sys.argv[1:] or list(DATASETS):
         container_name, mount, options = DATASETS[key][5:]
         listing = subprocess.run(["docker", "ps", "-a", "--format", "{{.Names}}"], capture_output = True, text = True).stdout
-        if container_name not in listing.split():
-            print(f"The container {container_name} does not exist, make it as for main_bcb.py / main.py.")
+        if key != "lcb" and container_name not in listing.split():      # synk_lcb is made by Container itself, as in main.py
+            print(f"The container {container_name} does not exist, run once: python services/Container/prepare_bcb_container.py")
             continue
         container = None
         try:

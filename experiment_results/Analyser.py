@@ -15,7 +15,7 @@ class ExperimentAnalyser:
     def analyse(self) -> None:
         self._check_accuracy()
         # self._check_fix_mode_distribution()
-        self._check_error_frequency()
+        self._check_error_frequency(count = None)
         # self._check_error_persistence()
         # self._check_turnaround_rate()
         # self._check_per_test_evolution()
@@ -106,7 +106,7 @@ class ExperimentAnalyser:
 
         for i, (_, r) in enumerate(freq.iterrows()):
             _, row = (_, r)
-            if i >= count:
+            if count is not None and i >= count:
                 break
             passed = int(row.get("pass", 0))
             failed = int(row.get("fail", 0))
