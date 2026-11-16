@@ -199,9 +199,9 @@ if __name__ == "__main__":
     )
     extractor.run(
         models=[
-            OllamaClient(model_name = "qwen2.5:72b"),
-            OllamaClient(model_name = "mixtral:8x22b"),
-            OllamaClient(model_name = "llama3.3:70b"),
+            OllamaClient(model_name = "qwen2.5:72b", container_name = "localhost"),
+            OllamaClient(model_name = "mixtral:8x22b", container_name = "localhost"),
+            OllamaClient(model_name = "llama3.3:70b", container_name = "localhost"),
         ],
         overwrite=False,
     )
