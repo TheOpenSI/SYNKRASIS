@@ -1,0 +1,23 @@
+Reasoning
+- The report mentions a near-fall ("near-miss at a pedestrian kerb").
+- The patient lives alone, as stated in the history.
+- The report explicitly refers to a GP, an ophthalmologist or neurologist, and OT for assessment and management.
+- The report also mentions considering specialist orientation and mobility input.
+
+```json
+{
+  "contrast_abnormal": "no",
+  "field_defect": "no",
+  "motility_or_diplopia": "no",
+  "colour_abnormal": "no",
+  "pupil_abnormal": "no",
+  "fall_confirmed": "no",
+  "falls_recurrent": "no",
+  "near_fall": "yes",
+  "lives_alone": "yes",
+  "refer_gp": "yes",
+  "refer_specialist": "yes",
+  "refer_ot": "yes",
+  "refer_other": "yes"
+}
+```

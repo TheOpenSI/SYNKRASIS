@@ -1,0 +1,23 @@
+Reasoning
+- Contrast sensitivity is mildly reduced, so "contrast_abnormal" is "yes".
+- The report mentions several near-missteps but no confirmed falls, so "fall_confirmed" and "falls_recurrent" are "no".
+- The patient lives independently, which can be interpreted as living alone, so "lives_alone" is "yes".
+- The report directs findings to the referring OT, so "refer_ot" is "yes".
+
+```json
+{
+  "contrast_abnormal": "yes",
+  "field_defect": "no",
+  "motility_or_diplopia": "no",
+  "colour_abnormal": "no",
+  "pupil_abnormal": "no",
+  "fall_confirmed": "no",
+  "falls_recurrent": "no",
+  "near_fall": "yes",
+  "lives_alone": "yes",
+  "refer_gp": "no",
+  "refer_specialist": "no",
+  "refer_ot": "yes",
+  "refer_other": "no"
+}
+```

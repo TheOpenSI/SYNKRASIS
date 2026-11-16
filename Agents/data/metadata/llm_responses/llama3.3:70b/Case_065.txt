@@ -1,0 +1,22 @@
+Reasoning
+The report states "Mildly reduced" contrast sensitivity, which answers the contrast_abnormal question.
+The patient has had "several near-missteps" but no confirmed falls, which determines the near_fall and fall_confirmed answers.
+The patient "Lives alone" as stated in the history.
+
+```json
+{
+  "contrast_abnormal": "yes",
+  "field_defect": "no",
+  "motility_or_diplopia": "yes",
+  "colour_abnormal": "no",
+  "pupil_abnormal": "no",
+  "fall_confirmed": "no",
+  "falls_recurrent": "no",
+  "near_fall": "yes",
+  "lives_alone": "yes",
+  "refer_gp": "no",
+  "refer_specialist": "no",
+  "refer_ot": "yes",
+  "refer_other": "no"
+}
+```

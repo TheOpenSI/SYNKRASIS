@@ -1,0 +1,31 @@
+Reasoning
+- Contrast sensitivity is described as reduced, so "contrast_abnormal" is "yes".
+- Visual field is described as full to confrontation, so "field_defect" is "no".
+- There is no mention of eye movement deficit, double vision, or manifest misalignment, so "motility_or_diplopia" is "no".
+- Colour vision is described as normal, so "colour_abnormal" is "no".
+- Pupils are described as equal and reactive with no RAPD, so "pupil_abnormal" is "no".
+- The report mentions a single stumble but no confirmed fall, so "fall_confirmed" and "falls_recurrent" are "no".
+- The report mentions a recent stumble, so "near_fall" is "yes".
+- The report does not specify living arrangements, so "lives_alone" is "no".
+- The report directs the patient to ophthalmology, so "refer_specialist" is "yes".
+- The report mentions communicating findings to the referring OT, so "refer_ot" is "yes".
+- The report mentions continuing GP monitoring, so "refer_gp" is "yes".
+- The report does not refer to any other health or support services, so "refer_other" is "no".
+
+```json
+{
+  "contrast_abnormal": "yes",
+  "field_defect": "no",
+  "motility_or_diplopia": "no",
+  "colour_abnormal": "no",
+  "pupil_abnormal": "no",
+  "fall_confirmed": "no",
+  "falls_recurrent": "no",
+  "near_fall": "yes",
+  "lives_alone": "no",
+  "refer_gp": "yes",
+  "refer_specialist": "yes",
+  "refer_ot": "yes",
+  "refer_other": "no"
+}
+```

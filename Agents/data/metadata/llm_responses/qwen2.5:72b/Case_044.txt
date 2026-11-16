@@ -1,0 +1,23 @@
+Reasoning
+- Contrast sensitivity is described as reduced, meeting the criteria for "contrast_abnormal".
+- The report mentions several near-missteps, which counts for "near_fall".
+- The patient is referred to occupational therapy (OT) for drop-administration aids and mobility strategies, meeting the criteria for "refer_ot".
+- No confirmed falls are mentioned, so "fall_confirmed" and "falls_recurrent" are "no".
+
+```json
+{
+  "contrast_abnormal": "yes",
+  "field_defect": "no",
+  "motility_or_diplopia": "no",
+  "colour_abnormal": "no",
+  "pupil_abnormal": "no",
+  "fall_confirmed": "no",
+  "falls_recurrent": "no",
+  "near_fall": "yes",
+  "lives_alone": "no",
+  "refer_gp": "no",
+  "refer_specialist": "no",
+  "refer_ot": "yes",
+  "refer_other": "no"
+}
+```

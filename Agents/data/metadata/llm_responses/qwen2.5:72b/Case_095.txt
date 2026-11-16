@@ -1,0 +1,32 @@
+Reasoning
+- contrast_abnormal: Contrast sensitivity is within the expected range.
+- field_defect: Visual field is full to confrontation.
+- motility_or_diplopia: Reports elevation restriction and vertical diplopia.
+- colour_abnormal: Colour vision is normal (Ishihara screening: Pass — 14/14 OD and 14/14 OS).
+- pupil_abnormal: Pupils are equal and reactive, no RAPD.
+- fall_confirmed: No confirmed fall is mentioned.
+- falls_recurrent: No recurrent falls are mentioned.
+- near_fall: Mentions recurrent near-missteps.
+- lives_alone: Does not mention living alone.
+- refer_gp: Findings will be communicated to the GP.
+- refer_specialist: Referral to the thyroid-eye/strabismus ophthalmology service.
+- refer_ot: Referral to occupational therapy for assessment.
+- refer_other: No other specific referrals mentioned.
+
+```json
+{
+  "contrast_abnormal": "no",
+  "field_defect": "no",
+  "motility_or_diplopia": "yes",
+  "colour_abnormal": "no",
+  "pupil_abnormal": "no",
+  "fall_confirmed": "no",
+  "falls_recurrent": "no",
+  "near_fall": "yes",
+  "lives_alone": "no",
+  "refer_gp": "yes",
+  "refer_specialist": "yes",
+  "refer_ot": "yes",
+  "refer_other": "no"
+}
+```

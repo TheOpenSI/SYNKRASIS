@@ -1,0 +1,27 @@
+Reasoning
+- Contrast sensitivity is described as reduced, so "contrast_abnormal" is "yes".
+- Visual field is full to confrontation, so "field_defect" is "no".
+- Motility is full with no diplopia, so "motility_or_diplopia" is "no".
+- Colour vision is borderline in the right eye, so "colour_abnormal" is "yes".
+- Pupils are equal and reactive, so "pupil_abnormal" is "no".
+- The patient stumbled once but denies recurrent falls, so "falls_recurrent" is "no".
+- The patient lives independently but does not specify living alone, so "lives_alone" is "no".
+- The report refers the patient to a retinal ophthalmologist, so "refer_specialist" is "yes".
+
+```json
+{
+  "contrast_abnormal": "yes",
+  "field_defect": "no",
+  "motility_or_diplopia": "no",
+  "colour_abnormal": "yes",
+  "pupil_abnormal": "no",
+  "fall_confirmed": "no",
+  "falls_recurrent": "no",
+  "near_fall": "yes",
+  "lives_alone": "no",
+  "refer_gp": "no",
+  "refer_specialist": "yes",
+  "refer_ot": "no",
+  "refer_other": "no"
+}
+```

@@ -1,0 +1,24 @@
+ Reasoning:
+
+* The report states that the patient has thyroid eye disease with restrictive right hypotropia and binocular vertical diplopia, which are abnormal findings.
+* The report states that the patient has had recurrent near-missteps but no confirmed fall, which implies that the patient has had a near-fall.
+* The report states that the patient lives alone.
+* The report directs the patient to be reviewed by the treating thyroid-eye/strabismus ophthalmology service, endocrinology, and occupational therapy. The report also states that the findings will be communicated to the GP.
+
+```json
+{
+  "contrast_abnormal": "no",
+  "field_defect": "no",
+  "motility_or_diplopia": "yes",
+  "colour_abnormal": "no",
+  "pupil_abnormal": "no",
+  "fall_confirmed": "no",
+  "falls_recurrent": "no",
+  "near_fall": "yes",
+  "lives_alone": "yes",
+  "refer_gp": "yes",
+  "refer_specialist": "yes",
+  "refer_ot": "yes",
+  "refer_other": "no"
+}
+```

@@ -1,0 +1,24 @@
+Reasoning
+- Contrast sensitivity is described as reduced, so "contrast_abnormal" is "yes".
+- The report mentions several near-missteps but no confirmed fall, so "fall_confirmed" and "falls_recurrent" are "no".
+- The patient reports no diplopia, and full motility with no diplopia is noted, so "motility_or_diplopia" is "no".
+- The patient lives with a partner, as indicated by the mention of avoiding long trips together, so "lives_alone" is "no".
+- There are no referrals to a GP, specialist, OT, or other services, so all referral questions are "no".
+
+```json
+{
+  "contrast_abnormal": "yes",
+  "field_defect": "no",
+  "motility_or_diplopia": "no",
+  "colour_abnormal": "no",
+  "pupil_abnormal": "no",
+  "fall_confirmed": "no",
+  "falls_recurrent": "no",
+  "near_fall": "yes",
+  "lives_alone": "no",
+  "refer_gp": "no",
+  "refer_specialist": "no",
+  "refer_ot": "no",
+  "refer_other": "no"
+}
+```

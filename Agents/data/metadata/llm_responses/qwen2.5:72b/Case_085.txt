@@ -1,0 +1,32 @@
+Reasoning
+- **contrast_abnormal**: Contrast sensitivity is mildly reduced.
+- **field_defect**: Visual field is full to confrontation.
+- **motility_or_diplopia**: No diplopia or eye movement deficits.
+- **colour_abnormal**: Colour vision is normal.
+- **pupil_abnormal**: Pupils are equal and reactive, no RAPD.
+- **fall_confirmed**: Patient denies any confirmed fall.
+- **falls_recurrent**: No confirmed falls, only near-falls.
+- **near_fall**: Several near-falls are mentioned.
+- **lives_alone**: Patient lives independently, but it’s not specified if she lives alone.
+- **refer_gp**: GP will be communicated with.
+- **refer_specialist**: No referral to a specialist is mentioned.
+- **refer_ot**: OT assessment is recommended.
+- **refer_other**: No other referrals are mentioned.
+
+```json
+{
+  "contrast_abnormal": "yes",
+  "field_defect": "no",
+  "motility_or_diplopia": "no",
+  "colour_abnormal": "no",
+  "pupil_abnormal": "no",
+  "fall_confirmed": "no",
+  "falls_recurrent": "no",
+  "near_fall": "yes",
+  "lives_alone": "no",
+  "refer_gp": "yes",
+  "refer_specialist": "no",
+  "refer_ot": "yes",
+  "refer_other": "no"
+}
+```

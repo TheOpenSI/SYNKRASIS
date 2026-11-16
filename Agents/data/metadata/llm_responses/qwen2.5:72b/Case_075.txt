@@ -1,0 +1,28 @@
+Reasoning
+- The patient has mild reduction in contrast sensitivity, so "contrast_abnormal" is "yes".
+- The patient has a visual field that is full to confrontation, so "field_defect" is "no".
+- The report describes intermittent diplopia and a manifest vertical deviation, so "motility_or_diplopia" is "yes".
+- The patient's colour vision is borderline (13/14 in both eyes), so "colour_abnormal" is "yes".
+- The pupils are equal and reactive with no RAPD, so "pupil_abnormal" is "no".
+- The patient has multiple near-falls but no confirmed falls, so "fall_confirmed" is "no" and "falls_recurrent" is "no".
+- The patient lives independently and shops alone, so "lives_alone" is "yes".
+- The report refers to an orthoptic/strabismus ophthalmologist, so "refer_specialist" is "yes".
+- The report communicates findings to the physiotherapist, so "refer_other" is "yes".
+
+```json
+{
+  "contrast_abnormal": "yes",
+  "field_defect": "no",
+  "motility_or_diplopia": "yes",
+  "colour_abnormal": "yes",
+  "pupil_abnormal": "no",
+  "fall_confirmed": "no",
+  "falls_recurrent": "no",
+  "near_fall": "yes",
+  "lives_alone": "yes",
+  "refer_gp": "no",
+  "refer_specialist": "yes",
+  "refer_ot": "no",
+  "refer_other": "yes"
+}
+```

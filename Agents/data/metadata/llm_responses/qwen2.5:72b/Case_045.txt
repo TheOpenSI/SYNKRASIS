@@ -1,0 +1,32 @@
+Reasoning
+- **contrast_abnormal**: Report states "Mildly reduced" contrast sensitivity.
+- **field_defect**: Visual field is "full to confrontation OU".
+- **motility_or_diplopia**: Report mentions "Mild limitation of left abduction" and "occasional horizontal diplopia when tired".
+- **colour_abnormal**: Ishihara screening passed, but not fully normal in both eyes.
+- **pupil_abnormal**: Pupils are "Equal and reactive, no RAPD".
+- **fall_confirmed**: Report states "no confirmed fall".
+- **falls_recurrent**: Report mentions "recurrent near-falls".
+- **near_fall**: Report mentions "several near-falls on front steps".
+- **lives_alone**: Report states "Lives alone".
+- **refer_gp**: No mention of GP referral.
+- **refer_specialist**: Report states "Refer promptly to ophthalmology/neuro-ophthalmology".
+- **refer_ot**: Report states "Recommend OT assessment".
+- **refer_other**: No other referrals mentioned.
+
+```json
+{
+  "contrast_abnormal": "yes",
+  "field_defect": "no",
+  "motility_or_diplopia": "yes",
+  "colour_abnormal": "yes",
+  "pupil_abnormal": "no",
+  "fall_confirmed": "no",
+  "falls_recurrent": "no",
+  "near_fall": "yes",
+  "lives_alone": "yes",
+  "refer_gp": "no",
+  "refer_specialist": "yes",
+  "refer_ot": "yes",
+  "refer_other": "no"
+}
+```

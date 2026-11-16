@@ -1,0 +1,30 @@
+Reasoning
+- Contrast sensitivity is significantly reduced, so "contrast_abnormal" is "yes".
+- Visual field is full to confrontation, so "field_defect" is "no".
+- No diplopia or eye-movement deficit, so "motility_or_diplopia" is "no".
+- Colour vision was not testable, so "colour_abnormal" is "no".
+- Pupils are equal and reactive, so "pupil_abnormal" is "no".
+- The patient has had two confirmed falls, so "fall_confirmed" and "falls_recurrent" are "yes".
+- No near-fall is mentioned, so "near_fall" is "no".
+- The patient lives alone, so "lives_alone" is "yes".
+- The GP is referred to, so "refer_gp" is "yes".
+- A retinal ophthalmologist is referred to, so "refer_specialist" is "yes".
+- OT/low-vision assessment is recommended, so "refer_ot" and "refer_other" are "yes".
+
+```json
+{
+  "contrast_abnormal": "yes",
+  "field_defect": "no",
+  "motility_or_diplopia": "no",
+  "colour_abnormal": "no",
+  "pupil_abnormal": "no",
+  "fall_confirmed": "yes",
+  "falls_recurrent": "yes",
+  "near_fall": "no",
+  "lives_alone": "yes",
+  "refer_gp": "yes",
+  "refer_specialist": "yes",
+  "refer_ot": "yes",
+  "refer_other": "yes"
+}
+```

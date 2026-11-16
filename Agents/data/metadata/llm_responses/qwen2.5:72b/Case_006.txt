@@ -1,0 +1,32 @@
+### Reasoning
+- **contrast_abnormal**: Report states contrast sensitivity is "Mildly reduced" at 1.50 log units.
+- **field_defect**: Visual field is "full to confrontation OU."
+- **motility_or_diplopia**: Motility is "Full OU, no diplopia."
+- **colour_abnormal**: Colour vision is "Normal — OU 13/14."
+- **pupil_abnormal**: Pupils are "Equal and reactive, no RAPD."
+- **fall_confirmed**: Report states "no falls."
+- **falls_recurrent**: No mention of recurrent falls.
+- **near_fall**: No mention of near-falls.
+- **lives_alone**: No information about living situation.
+- **refer_gp**: No referral to GP.
+- **refer_specialist**: No referral to specialist.
+- **refer_ot**: No referral to occupational therapy.
+- **refer_other**: No referral to other services.
+
+```json
+{
+  "contrast_abnormal": "yes",
+  "field_defect": "no",
+  "motility_or_diplopia": "no",
+  "colour_abnormal": "no",
+  "pupil_abnormal": "no",
+  "fall_confirmed": "no",
+  "falls_recurrent": "no",
+  "near_fall": "no",
+  "lives_alone": "no",
+  "refer_gp": "no",
+  "refer_specialist": "no",
+  "refer_ot": "no",
+  "refer_other": "no"
+}
+```

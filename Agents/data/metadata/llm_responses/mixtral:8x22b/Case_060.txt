@@ -1,0 +1,26 @@
+ Reasoning:
+
+* Contrast sensitivity is described as significantly reduced.
+* Visual field defects are described for both eyes.
+* Pupil response is abnormal with RAPD present in the right eye.
+* Colour vision is described as deficient in the right eye and borderline/inconclusive in the left eye.
+* The report states three confirmed falls in the last year, and the modifier includes recurrent falls history.
+* Occupational therapy is referred to for an assessment.
+
+```json
+{
+  "contrast_abnormal": "yes",
+  "field_defect": "yes",
+  "motility_or_diplopia": "no",
+  "colour_abnormal": "yes",
+  "pupil_abnormal": "yes",
+  "fall_confirmed": "yes",
+  "falls_recurrent": "yes",
+  "near_fall": "no",
+  "lives_alone": "no",
+  "refer_gp": "yes",
+  "refer_specialist": "yes",
+  "refer_ot": "yes",
+  "refer_other": "no"
+}
+```

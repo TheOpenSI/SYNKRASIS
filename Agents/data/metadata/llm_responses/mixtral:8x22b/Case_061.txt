@@ -1,0 +1,32 @@
+ Reasoning:
+- The report states that contrast sensitivity is reduced.
+- The report does not mention any visual field defect or loss.
+- The report states that there is no diplopia and full motility.
+- The report states that color vision is normal.
+- The report states that there is no RAPD.
+- The report states that there is no confirmed fall, but a near-fall is mentioned.
+- The report does not mention recurrent falls.
+- The report mentions a near-fall.
+- The report does not mention whether the patient lives alone or not.
+- The report mentions referral to a GP (general practitioner).
+- The report mentions referral to a medical specialist (ophthalmologist).
+- The report does not mention referral to occupational therapy (OT).
+- The report mentions referral to cataract surgery assessment, which is considered as "other" health or support service.
+
+```json
+{
+  "contrast_abnormal": "yes",
+  "field_defect": "no",
+  "motility_or_diplopia": "no",
+  "colour_abnormal": "no",
+  "pupil_abnormal": "no",
+  "fall_confirmed": "no",
+  "falls_recurrent": "no",
+  "near_fall": "yes",
+  "lives_alone": "no",
+  "refer_gp": "yes",
+  "refer_specialist": "yes",
+  "refer_ot": "no",
+  "refer_other": "yes"
+}
+```

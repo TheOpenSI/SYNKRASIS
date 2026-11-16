@@ -1,0 +1,27 @@
+Reasoning
+fall_confirmed: The report states "three confirmed falls".
+falls_recurrent: The report states "recurrent falls history" and "three confirmed falls".
+refer_gp: The report states "Communicate findings to GP".
+refer_specialist: The report states "Contact the ophthalmology/glaucoma service".
+refer_ot: The report states "Recommend OT/low-vision assessment".
+refer_other: The report states "falls clinic" as a recipient of communicated findings.
+contrast_abnormal: The report states "functional contrast markedly reduced".
+field_defect: The report states "marked generalised constriction" and "marked peripheral constriction".
+
+```json
+{
+  "contrast_abnormal": "yes",
+  "field_defect": "yes",
+  "motility_or_diplopia": "no",
+  "colour_abnormal": "no",
+  "pupil_abnormal": "no",
+  "fall_confirmed": "yes",
+  "falls_recurrent": "yes",
+  "near_fall": "no",
+  "lives_alone": "no",
+  "refer_gp": "yes",
+  "refer_specialist": "yes",
+  "refer_ot": "yes",
+  "refer_other": "yes"
+}
+```

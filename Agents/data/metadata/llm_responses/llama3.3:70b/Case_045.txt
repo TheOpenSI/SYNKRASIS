@@ -1,0 +1,23 @@
+Reasoning
+The report states contrast sensitivity is "mildly reduced", which answers the contrast_abnormal question.
+The patient has had "several near-falls on front steps" but no confirmed fall, which answers the near_fall and fall_confirmed questions.
+The report refers the patient to ophthalmology/neuro-ophthalmology and OT, which answers the refer_specialist and refer_ot questions.
+The patient lives alone, which answers the lives_alone question.
+
+```json
+{
+  "contrast_abnormal": "yes",
+  "field_defect": "no",
+  "motility_or_diplopia": "yes",
+  "colour_abnormal": "no",
+  "pupil_abnormal": "no",
+  "fall_confirmed": "no",
+  "falls_recurrent": "no",
+  "near_fall": "yes",
+  "lives_alone": "yes",
+  "refer_gp": "no",
+  "refer_specialist": "yes",
+  "refer_ot": "yes",
+  "refer_other": "yes"
+}
+```

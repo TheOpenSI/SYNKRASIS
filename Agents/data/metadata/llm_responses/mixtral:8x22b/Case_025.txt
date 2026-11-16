@@ -1,0 +1,32 @@
+ Reasoning:
+- Contrast sensitivity is described as mildly reduced, so "contrast_abnormal" is "yes".
+- No visual field defects are mentioned, so "field_defect" is "no".
+- The report describes an eye-movement deficit and double vision, so "motility_or_diplopia" is "yes".
+- Colour vision is described as normal, so "colour_abnormal" is "no".
+- The pupil response is described as normal, so "pupil_abnormal" is "no".
+- The patient has had two confirmed falls, so "fall_confirmed" is "yes".
+- The patient has a recurrent falls history, so "falls_recurrent" is "yes".
+- No near-fall is mentioned, so "near_fall" is "no".
+- The patient lives alone, so "lives_alone" is "yes".
+- The report recommends communication with a referring physiotherapist, but not a GP, so "refer_gp" is "no".
+- The report recommends referral to an ophthalmology/orthoptic strabismus service, so "refer_specialist" is "yes".
+- No occupational therapy referral is mentioned, so "refer_ot" is "no".
+- The report recommends communication with a referring physiotherapist, so "refer_other" is "yes".
+
+```json
+{
+  "contrast_abnormal": "yes",
+  "field_defect": "no",
+  "motility_or_diplopia": "yes",
+  "colour_abnormal": "no",
+  "pupil_abnormal": "no",
+  "fall_confirmed": "yes",
+  "falls_recurrent": "yes",
+  "near_fall": "no",
+  "lives_alone": "yes",
+  "refer_gp": "no",
+  "refer_specialist": "yes",
+  "refer_ot": "no",
+  "refer_other": "yes"
+}
+```

@@ -1,0 +1,28 @@
+Reasoning
+- Contrast sensitivity is mildly reduced, so "contrast_abnormal" is "yes".
+- Visual field is full to confrontation, so "field_defect" is "no".
+- No eye movement deficit, diplopia, or manifest misalignment is mentioned, so "motility_or_diplopia" is "no".
+- Pupils are equal and reactive, so "pupil_abnormal" is "no".
+- No confirmed falls are mentioned, so "fall_confirmed" is "no".
+- No recurrent falls are mentioned, so "falls_recurrent" is "no".
+- No near-falls are mentioned, so "near_fall" is "no".
+- Living situation is not specified, so "lives_alone" is "no".
+- No referrals to a GP, specialist, occupational therapy, or other services are mentioned, so "refer_gp", "refer_specialist", "refer_ot", and "refer_other" are all "no".
+
+```json
+{
+  "contrast_abnormal": "yes",
+  "field_defect": "no",
+  "motility_or_diplopia": "no",
+  "colour_abnormal": "no",
+  "pupil_abnormal": "no",
+  "fall_confirmed": "no",
+  "falls_recurrent": "no",
+  "near_fall": "no",
+  "lives_alone": "no",
+  "refer_gp": "no",
+  "refer_specialist": "no",
+  "refer_ot": "no",
+  "refer_other": "no"
+}
+```

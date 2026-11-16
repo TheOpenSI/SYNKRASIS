@@ -1,0 +1,26 @@
+Reasoning
+- **contrast_abnormal**: Contrast sensitivity is described as mildly reduced, which counts as abnormal.
+- **field_defect**: Visual field is described as "full to confrontation OU," which is normal.
+- **motility_or_diplopia**: The report describes central binocular diplopia with small targets, which counts as a motility issue.
+- **near_fall**: The patient has made two near-errors reading tablet instructions, which counts as near-falls.
+- **refer_specialist**: The report directs the patient to retinal ophthalmology and orthoptic/strabismus services.
+- **refer_ot**: The report communicates the findings to the treating OT and continues their involvement.
+- **refer_gp**: The report communicates the findings to the GP.
+
+```json
+{
+  "contrast_abnormal": "yes",
+  "field_defect": "no",
+  "motility_or_diplopia": "yes",
+  "colour_abnormal": "no",
+  "pupil_abnormal": "no",
+  "fall_confirmed": "no",
+  "falls_recurrent": "no",
+  "near_fall": "yes",
+  "lives_alone": "no",
+  "refer_gp": "yes",
+  "refer_specialist": "yes",
+  "refer_ot": "yes",
+  "refer_other": "no"
+}
+```

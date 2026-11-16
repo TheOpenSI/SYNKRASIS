@@ -1,0 +1,33 @@
+ Reasoning:
+
+* "Contrast sensitivity (Pelli-Robson, habitual): 0.75 log units @1 m — Significantly reduced" indicates contrast_abnormal as yes.
+* Visual field is described as "full to confrontation OU" which is not a defect, so field_defect is no.
+* No eye-movement deficit, double vision, or manifest eye misalignment is described, so motility_or_diplopia is no.
+* "Colour vision (best corrected): Ishihara screening: Not testable due to reduced acuity" does not describe colour vision as abnormal, borderline, inconclusive or failed, so colour_abnormal is no.
+* "Pupils: Equal and reactive, no RAPD" indicates pupil_abnormal as no.
+* The report states "She has had two confirmed falls in the last 5 months", so fall_confirmed is yes.
+* The report states "recurrent falls history", so falls_recurrent is yes.
+* No near-fall is described, so near_fall is no.
+* The report states "She lives alone with frequent family support", so lives_alone is yes.
+* The report asks to communicate findings to the GP, so refer_gp is yes.
+* The report refers to ophthalmology for cataract surgery assessment, so refer_specialist is yes.
+* The report recommends OT home-safety and mobility assessment, so refer_ot is yes.
+* The report recommends improved lighting and caution with bifocals on stairs while awaiting OT assessment, which is not a referral to any other health or support service, so refer_other is no.
+
+```json
+{
+  "contrast_abnormal": "yes",
+  "field_defect": "no",
+  "motility_or_diplopia": "no",
+  "colour_abnormal": "no",
+  "pupil_abnormal": "no",
+  "fall_confirmed": "yes",
+  "falls_recurrent": "yes",
+  "near_fall": "no",
+  "lives_alone": "yes",
+  "refer_gp": "yes",
+  "refer_specialist": "yes",
+  "refer_ot": "yes",
+  "refer_other": "no"
+}
+```

@@ -1,0 +1,31 @@
+Reasoning
+- **contrast_abnormal**: Contrast sensitivity is described as reduced (1.35 log units).
+- **field_defect**: Visual field is full to confrontation.
+- **motility_or_diplopia**: Motility shows mild limitation of depression in adduction OD with intermittent diplopia in downgaze.
+- **colour_abnormal**: Colour vision is normal (12/14 OD and 12/14 OS).
+- **fall_confirmed**: The report states two confirmed falls on stairs in the last 8 months.
+- **falls_recurrent**: The report mentions recurrent near-falls and two confirmed falls.
+- **near_fall**: The report mentions recurrent near-falls on stairs.
+- **lives_alone**: Not mentioned.
+- **refer_gp**: Not mentioned.
+- **refer_specialist**: Referral to an orthoptic / strabismus ophthalmologist is mentioned.
+- **refer_ot**: Not mentioned.
+- **refer_other**: Not mentioned.
+
+```json
+{
+  "contrast_abnormal": "yes",
+  "field_defect": "no",
+  "motility_or_diplopia": "yes",
+  "colour_abnormal": "no",
+  "pupil_abnormal": "no",
+  "fall_confirmed": "yes",
+  "falls_recurrent": "yes",
+  "near_fall": "yes",
+  "lives_alone": "no",
+  "refer_gp": "no",
+  "refer_specialist": "yes",
+  "refer_ot": "no",
+  "refer_other": "no"
+}
+```

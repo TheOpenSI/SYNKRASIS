@@ -1,0 +1,32 @@
+Reasoning
+- Contrast sensitivity is described as "Mildly reduced".
+- The visual field defect is described in detail (inferior arcuate defect OD, superior arcuate defect OS).
+- No eye-movement deficit, double vision, or manifest eye misalignment is mentioned.
+- Colour vision is described as "Pass—13/14 OD and 13/14 OS", which is not abnormal.
+- Pupils are described as "Equal and reactive, no RAPD".
+- The report states "no recent falls".
+- No recurrent falls are mentioned.
+- No near-fall is described.
+- The report does not state that the patient lives alone.
+- The GP is not referred to, asked to act, or sent findings.
+- An ophthalmology/glaucoma service referral is mentioned.
+- Occupational therapy referral is offered if the field loss affects daily activities.
+- A referral to a driving assessment is arranged.
+
+```json
+{
+  "contrast_abnormal": "yes",
+  "field_defect": "yes",
+  "motility_or_diplopia": "no",
+  "colour_abnormal": "no",
+  "pupil_abnormal": "no",
+  "fall_confirmed": "no",
+  "falls_recurrent": "no",
+  "near_fall": "no",
+  "lives_alone": "no",
+  "refer_gp": "no",
+  "refer_specialist": "yes",
+  "refer_ot": "yes",
+  "refer_other": "yes"
+}
+```

@@ -1,0 +1,28 @@
+Reasoning
+- Contrast sensitivity is mildly reduced, so "contrast_abnormal" is "yes".
+- Visual field is full to confrontation, so "field_defect" is "no".
+- Motility is full with no diplopia, so "motility_or_diplopia" is "no".
+- Pupils are equal and reactive with no RAPD, so "pupil_abnormal" is "no".
+- No confirmed falls are reported, so "fall_confirmed" and "falls_recurrent" are "no".
+- No near-fall is explicitly mentioned, so "near_fall" is "no".
+- The patient does not live alone, so "lives_alone" is "no".
+- The plan mentions considering OT for a mobility assessment, so "refer_ot" is "yes".
+- No referral to a GP, specialist, or other services is explicitly stated, so "refer_gp", "refer_specialist", and "refer_other" are "no".
+
+```json
+{
+  "contrast_abnormal": "yes",
+  "field_defect": "no",
+  "motility_or_diplopia": "no",
+  "colour_abnormal": "no",
+  "pupil_abnormal": "no",
+  "fall_confirmed": "no",
+  "falls_recurrent": "no",
+  "near_fall": "no",
+  "lives_alone": "no",
+  "refer_gp": "no",
+  "refer_specialist": "no",
+  "refer_ot": "yes",
+  "refer_other": "no"
+}
+```

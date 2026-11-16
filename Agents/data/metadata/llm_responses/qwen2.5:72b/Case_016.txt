@@ -1,0 +1,23 @@
+Reasoning
+- The report mentions "Reduced" contrast sensitivity, so contrast_abnormal is "yes".
+- The patient reports two near-falls but no confirmed falls, so near_fall is "yes" and fall_confirmed is "no".
+- The patient lives independently, which is not the same as living alone, so lives_alone is "no".
+- The report does not mention any referrals to a GP, specialist, occupational therapy, or other services, so all referral questions are "no".
+
+```json
+{
+  "contrast_abnormal": "yes",
+  "field_defect": "no",
+  "motility_or_diplopia": "no",
+  "colour_abnormal": "no",
+  "pupil_abnormal": "no",
+  "fall_confirmed": "no",
+  "falls_recurrent": "no",
+  "near_fall": "yes",
+  "lives_alone": "no",
+  "refer_gp": "no",
+  "refer_specialist": "no",
+  "refer_ot": "no",
+  "refer_other": "no"
+}
+```

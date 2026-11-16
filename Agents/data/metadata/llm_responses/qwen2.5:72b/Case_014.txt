@@ -1,0 +1,32 @@
+Reasoning
+- **contrast_abnormal**: Contrast sensitivity is reported as normal.
+- **field_defect**: The report describes a left inferior quadrantanopic defect.
+- **motility_or_diplopia**: Motility is full with no diplopia.
+- **colour_abnormal**: Colour vision is pass, though not perfect, it is not described as abnormal.
+- **pupil_abnormal**: Pupils are equal and reactive with no RAPD.
+- **fall_confirmed**: The report mentions one confirmed fall.
+- **falls_recurrent**: The report mentions only one confirmed fall, not multiple.
+- **near_fall**: The report does not mention any near-falls.
+- **lives_alone**: The report does not specify whether the patient lives alone.
+- **refer_gp**: The report does not mention referral to a GP.
+- **refer_specialist**: The report mentions a referral for a formal driving visual-field assessment.
+- **refer_ot**: The report mentions continued OT-based training and a home visit.
+- **refer_other**: The report mentions a referral for a formal driving visual-field assessment and licensing review.
+
+```json
+{
+  "contrast_abnormal": "no",
+  "field_defect": "yes",
+  "motility_or_diplopia": "no",
+  "colour_abnormal": "no",
+  "pupil_abnormal": "no",
+  "fall_confirmed": "yes",
+  "falls_recurrent": "no",
+  "near_fall": "no",
+  "lives_alone": "no",
+  "refer_gp": "no",
+  "refer_specialist": "yes",
+  "refer_ot": "yes",
+  "refer_other": "yes"
+}
+```

@@ -1,0 +1,32 @@
+Reasoning
+- Contrast sensitivity is explicitly described as "Reduced."
+- No visual field defect is mentioned, only "full peripheral fields OU."
+- No eye-movement deficit, double vision, or manifest eye misalignment is described.
+- Colour vision is described as "Borderline / inconclusive."
+- No abnormal pupil response or RAPD is mentioned.
+- The report states "no confirmed fall."
+- No recurrent falls are mentioned.
+- A near-fall is not explicitly described.
+- The report does not state that the patient lives alone.
+- The GP is to be communicated with regarding visual findings and functional concerns.
+- A retinal ophthalmologist is referred to for diagnostic confirmation and ongoing monitoring.
+- Occupational therapy (OT) is recommended for a low-vision/OT assessment.
+- Other services, such as low-vision assessment, are recommended.
+
+```json
+{
+  "contrast_abnormal": "yes",
+  "field_defect": "no",
+  "motility_or_diplopia": "no",
+  "colour_abnormal": "yes",
+  "pupil_abnormal": "no",
+  "fall_confirmed": "no",
+  "falls_recurrent": "no",
+  "near_fall": "no",
+  "lives_alone": "no",
+  "refer_gp": "yes",
+  "refer_specialist": "yes",
+  "refer_ot": "yes",
+  "refer_other": "yes"
+}
+```

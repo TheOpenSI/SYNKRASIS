@@ -1,0 +1,32 @@
+Reasoning
+- Contrast sensitivity is described as "functionally markedly reduced," so contrast_abnormal is "yes."
+- Visual field defects are described in both eyes, so field_defect is "yes."
+- No eye-movement deficit, double vision, or manifest eye misalignment is reported, so motility_or_diplopia is "no."
+- Colour vision is not testable due to reduced acuity, so colour_abnormal is "no."
+- Pupils are described as equal and reactive, so pupil_abnormal is "no."
+- The report states three confirmed falls, so fall_confirmed is "yes."
+- The report mentions recurrent falls, so falls_recurrent is "yes."
+- No near-fall is specifically mentioned, so near_fall is "no."
+- The patient lives with her daughter, so lives_alone is "no."
+- The report states findings will be communicated to the GP, so refer_gp is "yes."
+- The patient is referred to the ophthalmology/glaucoma service, so refer_specialist is "yes."
+- The report recommends OT/low-vision assessment, so refer_ot is "yes."
+- No other specific referral is mentioned, so refer_other is "no."
+
+```json
+{
+  "contrast_abnormal": "yes",
+  "field_defect": "yes",
+  "motility_or_diplopia": "no",
+  "colour_abnormal": "no",
+  "pupil_abnormal": "no",
+  "fall_confirmed": "yes",
+  "falls_recurrent": "yes",
+  "near_fall": "no",
+  "lives_alone": "no",
+  "refer_gp": "yes",
+  "refer_specialist": "yes",
+  "refer_ot": "yes",
+  "refer_other": "no"
+}
+```

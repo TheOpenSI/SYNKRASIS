@@ -1,0 +1,32 @@
+Reasoning:
+- Contrast sensitivity is mildly reduced, so "contrast_abnormal" is "yes".
+- The report describes a right inferior quadrantanopic defect, so "field_defect" is "yes".
+- There is no mention of eye movement deficits, diplopia, or manifest misalignment, so "motility_or_diplopia" is "no".
+- Colour vision is normal, so "colour_abnormal" is "no".
+- Pupils are equal and reactive with no RAPD, so "pupil_abnormal" is "no".
+- The report states one confirmed fall, so "fall_confirmed" is "yes".
+- The report mentions repeated misses on the lower right and one fall, but not multiple or recurrent falls, so "falls_recurrent" is "no".
+- The report does not mention a near-fall, so "near_fall" is "no".
+- The report does not state whether the patient lives alone, so "lives_alone" is "no".
+- The report mentions communicating findings to the GP, so "refer_gp" is "yes".
+- The report mentions communicating findings to the rehabilitation physician, which is a specialist, so "refer_specialist" is "yes".
+- The report mentions communicating findings to the OT, so "refer_ot" is "yes".
+- The report does not mention referring to any other health or support services, so "refer_other" is "no".
+
+```json
+{
+  "contrast_abnormal": "yes",
+  "field_defect": "yes",
+  "motility_or_diplopia": "no",
+  "colour_abnormal": "no",
+  "pupil_abnormal": "no",
+  "fall_confirmed": "yes",
+  "falls_recurrent": "no",
+  "near_fall": "no",
+  "lives_alone": "no",
+  "refer_gp": "yes",
+  "refer_specialist": "yes",
+  "refer_ot": "yes",
+  "refer_other": "no"
+}
+```

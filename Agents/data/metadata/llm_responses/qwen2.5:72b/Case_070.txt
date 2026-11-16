@@ -1,0 +1,30 @@
+Reasoning
+- Contrast sensitivity is significantly reduced, so "contrast_abnormal" is "yes".
+- Visual field has marked peripheral constriction and inferior peripheral reduction, so "field_defect" is "yes".
+- No eye-movement deficit, diplopia, or manifest eye misalignment is mentioned, so "motility_or_diplopia" is "no".
+- Colour vision is not testable due to reduced acuity, so "colour_abnormal" is "no".
+- A RAPD is present in the right eye, so "pupil_abnormal" is "yes".
+- The report mentions two confirmed falls, so "fall_confirmed" and "falls_recurrent" are both "yes".
+- No near-fall is mentioned, so "near_fall" is "no".
+- The patient lives with his spouse, so "lives_alone" is "no".
+- The report states findings will be communicated to the GP and falls clinic, so "refer_gp" and "refer_other" are "yes".
+- The patient is referred to ophthalmology/glaucoma, so "refer_specialist" is "yes".
+- There is no mention of occupational therapy, so "refer_ot" is "no".
+
+```json
+{
+  "contrast_abnormal": "yes",
+  "field_defect": "yes",
+  "motility_or_diplopia": "no",
+  "colour_abnormal": "no",
+  "pupil_abnormal": "yes",
+  "fall_confirmed": "yes",
+  "falls_recurrent": "yes",
+  "near_fall": "no",
+  "lives_alone": "no",
+  "refer_gp": "yes",
+  "refer_specialist": "yes",
+  "refer_ot": "no",
+  "refer_other": "yes"
+}
+```

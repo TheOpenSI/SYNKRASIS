@@ -1,0 +1,25 @@
+Reasoning
+fall_confirmed: Two confirmed falls in the last 5 months.
+falls_recurrent: Referred after recurrent falls.
+refer_specialist: Refer to retinal ophthalmology.
+refer_gp: Communicate the findings to the GP.
+refer_ot: Recommend OT/low-vision assessment.
+contrast_abnormal: Significantly reduced contrast sensitivity.
+
+```json
+{
+  "contrast_abnormal": "yes",
+  "field_defect": "no",
+  "motility_or_diplopia": "no",
+  "colour_abnormal": "no",
+  "pupil_abnormal": "no",
+  "fall_confirmed": "yes",
+  "falls_recurrent": "yes",
+  "near_fall": "no",
+  "lives_alone": "yes",
+  "refer_gp": "yes",
+  "refer_specialist": "yes",
+  "refer_ot": "yes",
+  "refer_other": "yes"
+}
+```

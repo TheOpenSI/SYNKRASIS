@@ -1,0 +1,30 @@
+Reasoning
+- "contrast_abnormal" is "yes" because the report states contrast sensitivity is reduced.
+- "field_defect" is "yes" because the report describes superior and inferior arcuate defects in both eyes.
+- "motility_or_diplopia" is "no" because there is no mention of eye-movement deficits, double vision, or manifest misalignment.
+- "fall_confirmed" is "no" because the report explicitly states "No confirmed fall."
+- "falls_recurrent" is "no" because no confirmed falls are reported.
+- "near_fall" is "yes" because the report mentions "twice almost stepped off the edge of a path."
+- "lives_alone" is "no" because the report states she remains independent at home but does not specify living alone.
+- "refer_gp" is "yes" because the report states the GP will be informed of near-falls and peripheral neuropathy.
+- "refer_specialist" is "yes" because the report refers to the ophthalmology/glaucoma service.
+- "refer_ot" is "yes" because the report recommends OT assessment.
+- "refer_other" is "no" because no other health or support services are mentioned.
+
+```json
+{
+  "contrast_abnormal": "yes",
+  "field_defect": "yes",
+  "motility_or_diplopia": "no",
+  "colour_abnormal": "no",
+  "pupil_abnormal": "no",
+  "fall_confirmed": "no",
+  "falls_recurrent": "no",
+  "near_fall": "yes",
+  "lives_alone": "no",
+  "refer_gp": "yes",
+  "refer_specialist": "yes",
+  "refer_ot": "yes",
+  "refer_other": "no"
+}
+```

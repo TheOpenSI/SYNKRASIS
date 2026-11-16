@@ -1,0 +1,32 @@
+ Reasoning:
+- The report mentions "functional contrast markedly reduced", hence "contrast_abnormal" is "yes".
+- The report describes "OD marked generalised constriction | OS marked peripheral constriction, greater inferiorly", hence "field_defect" is "yes".
+- The report states "no diplopia", hence "motility_or_diplopia" is "no".
+- The report mentions "Ishihara screening: Not testable OU due to reduced acuity", hence "colour_abnormal" is "no".
+- The report states "no definite RAPD", hence "pupil_abnormal" is "no".
+- The report mentions "three confirmed falls", hence "fall_confirmed" is "yes".
+- The report mentions "recurrent falls", hence "falls_recurrent" is "yes".
+- The report does not mention any near-fall, hence "near_fall" is "no".
+- The report states "she lives with her daughter", hence "lives_alone" is "no".
+- The report mentions "Communicate findings to GP", hence "refer_gp" is "yes".
+- The report mentions "Contact the ophthalmology/glaucoma service", hence "refer_specialist" is "yes".
+- The report mentions "Recommend OT/low-vision assessment", hence "refer_ot" is "yes".
+- The report mentions "Recommend OT/low-vision assessment", which is a low-vision service, hence "refer_other" is "yes".
+
+```json
+{
+  "contrast_abnormal": "yes",
+  "field_defect": "yes",
+  "motility_or_diplopia": "no",
+  "colour_abnormal": "no",
+  "pupil_abnormal": "no",
+  "fall_confirmed": "yes",
+  "falls_recurrent": "yes",
+  "near_fall": "no",
+  "lives_alone": "no",
+  "refer_gp": "yes",
+  "refer_specialist": "yes",
+  "refer_ot": "yes",
+  "refer_other": "yes"
+}
+```

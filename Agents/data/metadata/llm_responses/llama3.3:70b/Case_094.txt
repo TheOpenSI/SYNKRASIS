@@ -1,0 +1,30 @@
+Reasoning
+contrast_abnormal: The report states "Mildly reduced" contrast sensitivity.
+field_defect: The report describes a "right homonymous hemianopic defect" which is a visual field defect.
+motility_or_diplopia: The report states "No diplopia" and "Full OU" motility.
+fall_confirmed: The report states "one recent trip on a curb" which is a confirmed fall.
+falls_recurrent: The report does not state multiple falls, only one trip.
+near_fall: The report does not describe a near-fall, only a confirmed trip.
+lives_alone: The report does not state the patient's living situation.
+refer_gp: The report states that the formal visual-field findings will be communicated to the GP.
+refer_specialist: The report mentions a rehabilitation physician, which is a specialist.
+refer_ot: The report states that the patient will continue OT-based scanning and arrange an O&M assessment.
+refer_other: The report mentions an O&M specialist, which is another health service.
+
+```json
+{
+  "contrast_abnormal": "yes",
+  "field_defect": "yes",
+  "motility_or_diplopia": "no",
+  "colour_abnormal": "no",
+  "pupil_abnormal": "no",
+  "fall_confirmed": "yes",
+  "falls_recurrent": "no",
+  "near_fall": "no",
+  "lives_alone": "no",
+  "refer_gp": "yes",
+  "refer_specialist": "yes",
+  "refer_ot": "yes",
+  "refer_other": "yes"
+}
+```

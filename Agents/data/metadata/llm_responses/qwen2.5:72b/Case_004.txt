@@ -1,0 +1,31 @@
+Reasoning
+- Contrast sensitivity is mildly reduced, so contrast_abnormal is "yes".
+- The report describes a right homonymous hemianopic defect, so field_defect is "yes".
+- No diplopia or eye-movement deficit is mentioned, so motility_or_diplopia is "no".
+- Colour vision is normal, so colour_abnormal is "no".
+- Pupils are equal and reactive with no RAPD, so pupil_abnormal is "no".
+- The patient has had a fall but it is not specified as recurrent, so fall_confirmed is "yes" and falls_recurrent is "no".
+- No near-fall is mentioned, so near_fall is "no".
+- The patient is not stated to live alone, so lives_alone is "no".
+- The report mentions communication with the GP, so refer_gp is "yes".
+- The report mentions communication with a rehabilitation physician, which is a specialist, so refer_specialist is "yes".
+- The report mentions communication with OT, so refer_ot is "yes".
+- The report does not mention any other health or support services, so refer_other is "no".
+
+```json
+{
+  "contrast_abnormal": "yes",
+  "field_defect": "yes",
+  "motility_or_diplopia": "no",
+  "colour_abnormal": "no",
+  "pupil_abnormal": "no",
+  "fall_confirmed": "yes",
+  "falls_recurrent": "no",
+  "near_fall": "no",
+  "lives_alone": "no",
+  "refer_gp": "yes",
+  "refer_specialist": "yes",
+  "refer_ot": "yes",
+  "refer_other": "no"
+}
+```

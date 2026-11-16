@@ -1,0 +1,30 @@
+ Reasoning:
+
+* Contrast sensitivity is described as reduced.
+* No visual field defects are reported.
+* No eye-movement deficit or double vision is reported.
+* Colour vision is reported as normal.
+* Pupil response is reported as equal and reactive, with no RAPD.
+* No actual falls are reported, but two near-falls are mentioned.
+* No recurrent falls are mentioned.
+* The patient lives alone.
+* The report plans to communicate findings to the referring OT and recommends mobility reassessment after dispensing spectacles.
+* The report plans to arrange a non-urgent ophthalmology referral for cataract assessment.
+
+```json
+{
+  "contrast_abnormal": "yes",
+  "field_defect": "no",
+  "motility_or_diplopia": "no",
+  "colour_abnormal": "no",
+  "pupil_abnormal": "no",
+  "fall_confirmed": "no",
+  "falls_recurrent": "no",
+  "near_fall": "yes",
+  "lives_alone": "yes",
+  "refer_gp": "no",
+  "refer_specialist": "yes",
+  "refer_ot": "yes",
+  "refer_other": "no"
+}
+```

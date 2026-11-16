@@ -1,0 +1,32 @@
+Reasoning
+- **contrast_abnormal**: The report states that contrast sensitivity is "Mildly reduced" (1.50 log units @1 m).
+- **field_defect**: The report describes paracentral visual field defects in both eyes.
+- **motility_or_diplopia**: The report states "Full OU, no diplopia".
+- **colour_abnormal**: The report states "Ishihara screening: Pass— 14/14 OD and 13/14 OS", which is not considered abnormal.
+- **pupil_abnormal**: The report states "Equal and reactive, no RAPD".
+- **fall_confirmed**: The report mentions "no recent fall".
+- **falls_recurrent**: The report does not mention recurrent falls.
+- **near_fall**: The report mentions "bumping into doorframes in dim hallways" but does not describe a near-fall.
+- **lives_alone**: The report does not state whether the patient lives alone.
+- **refer_gp**: The report states "communicate with the GP regarding the hypertensive retinopathy findings".
+- **refer_specialist**: The report states "Refer to the ophthalmology/glaucoma service for treatment planning".
+- **refer_ot**: The report does not mention occupational therapy.
+- **refer_other**: The report states "Arrange binocular Esterman visual-field assessment before confirming ongoing fitness to drive".
+
+```json
+{
+  "contrast_abnormal": "yes",
+  "field_defect": "yes",
+  "motility_or_diplopia": "no",
+  "colour_abnormal": "no",
+  "pupil_abnormal": "no",
+  "fall_confirmed": "no",
+  "falls_recurrent": "no",
+  "near_fall": "no",
+  "lives_alone": "no",
+  "refer_gp": "yes",
+  "refer_specialist": "yes",
+  "refer_ot": "no",
+  "refer_other": "yes"
+}
+```

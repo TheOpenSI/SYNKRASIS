@@ -1,0 +1,31 @@
+ Reasoning:
+
+* The report states that the patient has "Mildly reduced" contrast sensitivity, which answers the question "contrast_abnormal" as "yes".
+* The report states that the patient has a "peripheral field / spatial awareness loss phenotype", which answers the question "field_defect" as "yes".
+* The report states that the patient has "Full OU, no diplopia" motility, which answers the question "motility_or\_diplopia" as "no".
+* The report states that the patient has "Pass— 14/14 OD and 14/14 OS" color vision, which answers the question "colour\_abnormal" as "no".
+* The report states that the patient has "Equal and reactive, no RAPD" pupil response, which answers the question "pupil\_abnormal" as "no".
+* The report states that the patient has "no recent fall", which answers the question "fall\_confirmed" as "no".
+* The report states that the patient has no "recent fall", which answers the question "falls\_recurrent" as "no".
+* The report does not state that the patient has a near-fall, which answers the question "near\_fall" as "no".
+* The report does not state that the patient lives alone, which answers the question "lives\_alone" as "no".
+* The report states that the patient will be referred to "the ophthalmology/glaucoma service", which answers the question "refer\_specialist" as "yes".
+* The report does not state that the patient will be referred to a GP, occupational therapy, or any other health or support service, which answers the questions "refer\_gp", "refer\_ot", and "refer\_other" as "no".
+
+```json
+{
+  "contrast_abnormal": "yes",
+  "field_defect": "yes",
+  "motility_or_diplopia": "no",
+  "colour_abnormal": "no",
+  "pupil_abnormal": "no",
+  "fall_confirmed": "no",
+  "falls_recurrent": "no",
+  "near_fall": "no",
+  "lives_alone": "no",
+  "refer_gp": "no",
+  "refer_specialist": "yes",
+  "refer_ot": "no",
+  "refer_other": "no"
+}
+```

@@ -1,0 +1,32 @@
+Reasoning
+- "contrast_abnormal" is "yes" because the report states "Significantly reduced" contrast sensitivity.
+- "field_defect" is "no" because the report only mentions "peripheral fields grossly full OU" and does not describe any specific field loss.
+- "motility_or_diplopia" is "no" because the report states "Motility: Full OU, no diplopia."
+- "colour_abnormal" is "no" because the report states "Not testable due to reduced central acuity."
+- "pupil_abnormal" is "no" because the report states "Pupils: Equal and reactive, no RAPD."
+- "fall_confirmed" is "yes" because the report mentions "She has had two confirmed falls in the last 6 months."
+- "falls_recurrent" is "yes" because the report mentions "recurrent falls history" and "two confirmed falls in the last 6 months."
+- "near_fall" is "no" because the report does not mention any near-falls.
+- "lives_alone" is "no" because the report states "She lives with her son."
+- "refer_gp" is "yes" because the report states "Communicate findings to falls clinic team and GP to support home safety planning."
+- "refer_specialist" is "no" because the report does not mention any specialist referral.
+- "refer_ot" is "no" because the report does not mention any occupational therapy referral.
+- "refer_other" is "yes" because the report mentions referral to a low-vision service.
+
+```json
+{
+  "contrast_abnormal": "yes",
+  "field_defect": "no",
+  "motility_or_diplopia": "no",
+  "colour_abnormal": "no",
+  "pupil_abnormal": "no",
+  "fall_confirmed": "yes",
+  "falls_recurrent": "yes",
+  "near_fall": "no",
+  "lives_alone": "no",
+  "refer_gp": "yes",
+  "refer_specialist": "no",
+  "refer_ot": "no",
+  "refer_other": "yes"
+}
+```

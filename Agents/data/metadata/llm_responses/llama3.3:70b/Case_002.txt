@@ -1,0 +1,23 @@
+Reasoning
+fall_confirmed: The patient had a single outdoor fall.
+falls_recurrent: The patient denies recurrent falls.
+refer_specialist: The report directs the patient to an ophthalmology retinal referral.
+refer_gp: The report says findings will be communicated to the GP.
+
+```json
+{
+  "contrast_abnormal": "yes",
+  "field_defect": "yes",
+  "motility_or_diplopia": "no",
+  "colour_abnormal": "no",
+  "pupil_abnormal": "no",
+  "fall_confirmed": "yes",
+  "falls_recurrent": "no",
+  "near_fall": "yes",
+  "lives_alone": "no",
+  "refer_gp": "yes",
+  "refer_specialist": "yes",
+  "refer_ot": "no",
+  "refer_other": "no"
+}
+```

@@ -1,0 +1,32 @@
+Reasoning
+- **contrast_abnormal**: Report mentions "Mildly reduced" contrast sensitivity.
+- **field_defect**: Report states "full to confrontation OU" with no other field loss mentioned.
+- **motility_or_diplopia**: Report mentions "intermittent diplopia at near and in downgaze when fatigued" and "intermittent exotropia."
+- **colour_abnormal**: Report states "Ishihara screening: Pass— 13/14 OD and 13/14 OS," which is not abnormal.
+- **pupil_abnormal**: Report states "Equal and reactive, no RAPD."
+- **fall_confirmed**: Report states "no confirmed fall."
+- **falls_recurrent**: Report mentions "multiple near-falls reported" but no confirmed recurrent falls.
+- **near_fall**: Report mentions "multiple near-falls reported."
+- **lives_alone**: Report states "She lives independently."
+- **refer_gp**: No mention of referral to a GP.
+- **refer_specialist**: Report mentions referral to an ophthalmology/orthoptic strabismus service.
+- **refer_ot**: No mention of referral to occupational therapy.
+- **refer_other**: No mention of referral to any other health or support service.
+
+```json
+{
+  "contrast_abnormal": "yes",
+  "field_defect": "no",
+  "motility_or_diplopia": "yes",
+  "colour_abnormal": "no",
+  "pupil_abnormal": "no",
+  "fall_confirmed": "no",
+  "falls_recurrent": "no",
+  "near_fall": "yes",
+  "lives_alone": "yes",
+  "refer_gp": "no",
+  "refer_specialist": "yes",
+  "refer_ot": "no",
+  "refer_other": "no"
+}
+```

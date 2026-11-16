@@ -1,0 +1,31 @@
+ Reasoning:
+- The report describes contrast sensitivity as reduced, answering "yes" for contrast_abnormal.
+- There is no visual field defect or loss mentioned in the report, making the answer "no" for field_defect.
+- The report states full motility with no diplopia, making the answer "no" for motility_or_diplopia.
+- Colour vision is described as normal, answering "no" for colour_abnormal.
+- The report describes normal pupil response with no RAPD, making the answer "no" for pupil_abnormal.
+- The report states a single fall, answering "yes" for fall_confirmed but "no" for falls_recurrent.
+- There is no mention of a near-fall, answering "no" for near_fall.
+- The report does not mention the patient's living arrangements, answering "no" for lives_alone.
+- The report refers to the GP for ongoing management, answering "yes" for refer_gp.
+- The report refers to a specialist (ophthalmologist) for assessment and YAG capsulotomy, answering "yes" for refer_specialist.
+- There is no mention of occupational therapy, answering "no" for refer_ot.
+- The report mentions communication with the falls clinic, answering "yes" for refer_other.
+
+```json
+{
+  "contrast_abnormal": "yes",
+  "field_defect": "no",
+  "motility_or_diplopia": "no",
+  "colour_abnormal": "no",
+  "pupil_abnormal": "no",
+  "fall_confirmed": "yes",
+  "falls_recurrent": "no",
+  "near_fall": "no",
+  "lives_alone": "no",
+  "refer_gp": "yes",
+  "refer_specialist": "yes",
+  "refer_ot": "no",
+  "refer_other": "yes"
+}
+```
