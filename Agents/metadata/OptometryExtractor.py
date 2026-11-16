@@ -6,7 +6,6 @@ sys.path.append(f"{os.path.dirname(os.path.abspath(__file__))}/../..")
 import json
 import math
 import re
-import sys
 from pathlib import Path
 from typing import Any
 
@@ -29,11 +28,22 @@ class OptometryExtractor:
         self.text_id = re.compile(r"\A\s*Case\s+(\d+)\b")
 
 
-    def extract_folder(self, folder: str | Path) -> list[dict[str, Any]]:
+    # def extract_folder(self, folder: str | Path) -> list[dict[str, Any]]:
+    def extract_folder(self, folder: str | Path) -> dict[str, dict[str, Any]]:
         files = sorted(Path(folder).glob("*Optom*_Report.txt"))
         if not files:
             raise ValueError(f"No optometry report .txt files in {folder}")
-        return [self.extract(path) for path in files]
+        
+        # patch to match ot extarct
+        extract_list = [self.extract(path) for path in files]
+        records = {}
+
+        for item in extract_list:
+            case_id = item.get("case_id")
+            del item["case_id"]
+            records[case_id] = item
+
+        return records
 
 
     def extract(self, path: str | Path) -> dict[str, Any]:
@@ -214,6 +224,3 @@ if __name__ == "__main__":
     )
     print(f"{len(records)} cases written to {output}")
     print(f"{len(extractor.cases_with_warnings)} cases with warnings")
-    for field in records[0]:
-        missing = sum(record[field] is None for record in records)
-        print(f"  {field}: missing in {missing} of {len(records)}")

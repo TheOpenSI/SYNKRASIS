@@ -77,4 +77,5 @@ class DocxConverter:
         return formats[0]
 
 if __name__ == "__main__":
-    files = DocxConverter().convert_folders(["Agents/data/90_Optometry_Inputs"])
+    # files = DocxConverter().convert_folders(["Agents/data/90_Optometry_Inputs"])
+    files = DocxConverter().convert_folders(["Agents/data/90_OT_Reference_Summaries"])
