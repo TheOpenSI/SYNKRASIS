@@ -1,0 +1,283 @@
+{
+  "total_records": 90,
+  "keys": {
+    "age": {
+      "type": "numeric",
+      "present": 90,
+      "missing": 0,
+      "stats": {
+        "min": 54.0,
+        "q1": 68.25,
+        "median": 74.0,
+        "q3": 80.75,
+        "max": 90.0,
+        "mean": 74.056,
+        "std": 8.423
+      }
+    },
+    "gender": {
+      "type": "text",
+      "present": 90,
+      "missing": 0,
+      "counts": {
+        "Female": 51,
+        "Male": 39
+      }
+    },
+    "care_setting": {
+      "type": "text",
+      "present": 90,
+      "missing": 0,
+      "counts": {
+        "community optometry practice following GP referral": 19,
+        "community optometry practice": 17,
+        "community optometry practice following physiotherapy recommendation": 8,
+        "community optometry practice following occupational therapy recommendation": 7,
+        "shared-care glaucoma review in community optometry": 7,
+        "falls clinic referral to community optometry": 7,
+        "rehabilitation outpatient clinic": 6,
+        "falls clinic referral to community optometry low vision service": 2,
+        "Community optometry practice following occupational therapy recommendation": 2,
+        "residential aged care outreach optometry": 2,
+        "neuro-ophthalmic follow-up in community optometry": 2,
+        "neuro-rehabilitation outpatient clinic": 2,
+        "community optometry practice following falls clinic recommendation": 1,
+        "rehabilitation inpatient": 1,
+        "endocrinology referral to community optometry": 1,
+        "community optometry practice following cataract surgery review": 1,
+        "community optometry practice following referral from a community occupational therapist.": 1,
+        "community optometry practice following referral from a community occupational therapist": 1,
+        "community optometry practice following rehabilitation team referral": 1,
+        "community optometry practice following GP and endocrinology referral": 1,
+        "community optometry practice following GP and occupational therapy referral": 1
+      }
+    },
+    "primary_phenotype": {
+      "type": "text",
+      "present": 90,
+      "missing": 0,
+      "counts": {
+        "Blur / reduced visual clarity (optical or media-related) phenotype": 20,
+        "Central vision loss phenotype": 16,
+        "Peripheral field / spatial awareness loss phenotype": 16,
+        "Neuro-visual field loss phenotype": 13,
+        "Binocular / depth perception dysfunction phenotype": 13,
+        "Fluctuating / variable visual function phenotype": 9,
+        "Mixed falls-relevant visual impairment phenotype": 3
+      }
+    },
+    "secondary_phenotype": {
+      "type": "text",
+      "present": 7,
+      "missing": 83,
+      "counts": {
+        "Binocular / depth perception dysfunction phenotype": 7
+      }
+    },
+    "primary_diagnosis": {
+      "type": "text",
+      "present": 90,
+      "missing": 0,
+      "counts": {
+        "Primary open-angle glaucoma OU": 4,
+        "Stroke-related right homonymous hemianopia": 4,
+        "Dry eye / ocular surface disease": 4,
+        "Advanced primary open-angle glaucoma OU": 3,
+        "Bilateral age-related cataract": 2,
+        "Diabetic macular oedema OU": 2,
+        "Refractive error / undercorrection": 2,
+        "Active neovascular AMD OS": 2,
+        "Primary open-angle glaucoma OU\u2014moderate OS and early OD": 2,
+        "Traumatic left inferior homonymous quadrantanopia": 2,
+        "Bilateral cortical cataract": 2,
+        "Visually significant cataract OS": 2,
+        "Stroke-related right inferior homonymous quadrantanopia": 2,
+        "Advanced glaucoma OU": 2,
+        "Decompensated right superior oblique paresis": 1,
+        "Uncorrected distance refractive error following loss of habitual spectacles": 1,
+        "Advanced dry AMD with geographic atrophy OU": 1,
+        "Bilateral posterior subcapsular cataract": 1,
+        "Long-standing amblyopia OS with suppression": 1,
+        "Posterior capsular opacity OS": 1,
+        "Intermediate AMD OU": 1,
+        "Pseudoexfoliative glaucoma OU\u2014advanced OD and moderate OS": 1,
+        "Post-cataract anisometropia": 1,
+        "Epiretinal membrane OD greater than OS": 1,
+        "Normal-tension glaucoma OU": 1,
+        "Stroke-related left homonymous hemianopia": 1,
+        "Divergence insufficiency": 1,
+        "Exposure-related dry eye / ocular surface disease": 1,
+        "Concurrent advanced glaucoma and visually significant cataract OU": 1,
+        "Epiretinal membrane with lamellar macular hole change OS": 1,
+        "Chronic angle-closure glaucoma with persistent PAS OU": 1,
+        "Myopic macular degeneration OU": 1,
+        "Decompensating exophoria with intermittent exotropia": 1,
+        "Fuchs endothelial corneal dystrophy OU": 1,
+        "Chiasmal field loss from pituitary macroadenoma": 1,
+        "Bilateral disciform macular scarring from neovascular AMD": 1,
+        "Reduced stereopsis due to postoperative monovision": 1,
+        "Posterior subcapsular cataract OD": 1,
+        "Primary open-angle glaucoma OU\u2014moderate OD and early OS": 1,
+        "Mixed aqueous-deficient and evaporative dry eye / ocular surface disease": 1,
+        "Decompensating left esotropia with long-standing amblyopia/suppression": 1,
+        "Co-dominant diabetic macular oedema and cataract OU": 1,
+        "Poor adaptation to new progressive spectacles with cylinder non-tolerance": 1,
+        "Stroke-related left superior homonymous quadrantanopia": 1,
+        "Full-thickness macular hole OS": 1,
+        "Residual left homonymous hemianopia after occipital meningioma treatment": 1,
+        "Sagging eye syndrome with distance diplopia": 1,
+        "Asymmetric adult-onset vitelliform macular lesions OU (OD stage II; OS stage I)": 1,
+        "Pattern dystrophy OD": 1,
+        "Amblyopia OD with absent stereopsis and decompensating exophoria": 1,
+        "Central serous chorioretinopathy OD": 1,
+        "Primary open-angle glaucoma OU, worse OS": 1,
+        "Co-dominant advanced glaucoma and bilateral AMD": 1,
+        "Residual corneal scar OS with irregular astigmatism following resolved microbial keratitis": 1,
+        "Long-standing left superior oblique paresis with recent decompensation": 1,
+        "Evaporative dry eye with exposure-related ocular surface disease": 1,
+        "Posterior capsular opacity OU": 1,
+        "Macular telangiectasia type 2 OU": 1,
+        "Long-standing monofixation syndrome with mild amblyopia OS and reduced stereopsis": 1,
+        "Dense nuclear cataract OU": 1,
+        "Inactive macular scar OD from prior neovascular AMD": 1,
+        "Right hypertropia (suspected acquired right superior oblique palsy)": 1,
+        "Persistent bilateral post-adenoviral corneal subepithelial opacities, worse OD": 1,
+        "Thyroid eye disease with restrictive right hypotropia and binocular vertical diplopia": 1,
+        "Bilateral benign essential blepharospasm causing intermittent functional visual obstruction": 1,
+        "Bilateral cataract": 1,
+        "Residual bitemporal field loss after pituitary adenoma treatment": 1,
+        "Epiretinal-membrane-associated central-peripheral rivalry (retinal misregistration) diplopia OD": 1,
+        "Advanced bilateral keratoconus with corneal scarring and loss of independent specialty-contact-lens use": 1
+      }
+    },
+    "modifiers": {
+      "type": "list",
+      "present": 90,
+      "missing": 0,
+      "counts": {
+        "multifocal / progressive use outdoors": 22,
+        "hearing impairment": 12,
+        "peripheral neuropathy": 11,
+        "recurrent falls history": 10,
+        "arthritis / musculoskeletal limitation": 8,
+        "diabetes": 8,
+        "stroke history": 8,
+        "pseudophakia": 8,
+        "polypharmacy": 4,
+        "mobility aid use": 4,
+        "cardiovascular disease": 3,
+        "no correction when mobile": 3,
+        "amblyopia": 2,
+        "moderate cataract": 2,
+        "cognitive impairment": 2,
+        "early cataract": 2,
+        "single fall": 1,
+        "early AMD": 1,
+        "Parkinson disease": 1,
+        "cataract": 1,
+        "early cataract OU": 1,
+        "hand osteoarthritis": 1,
+        "recent prescription change": 1,
+        "sleep apnoea": 1
+      }
+    },
+    "best_corrected_va_ou": {
+      "type": "text",
+      "present": 90,
+      "missing": 0,
+      "counts": {
+        "6/7.5": 33,
+        "6/9": 16,
+        "6/12": 14,
+        "6/6": 8,
+        "6/15": 7,
+        "6/60": 5,
+        "6/24": 4,
+        "6/36": 2,
+        "6/18": 1
+      }
+    },
+    "best_corrected_logmar_ou": {
+      "type": "numeric",
+      "present": 90,
+      "missing": 0,
+      "stats": {
+        "min": 0.0,
+        "q1": 0.097,
+        "median": 0.176,
+        "q3": 0.301,
+        "max": 1.0,
+        "mean": 0.25,
+        "std": 0.248
+      }
+    },
+    "habitual_va_ou": {
+      "type": "text",
+      "present": 90,
+      "missing": 0,
+      "counts": {
+        "6/9": 32,
+        "6/18": 15,
+        "6/15": 11,
+        "6/12": 11,
+        "6/7.5": 6,
+        "6/60": 5,
+        "6/24": 3,
+        "6/90": 3,
+        "6/36": 3,
+        "6/6": 1
+      }
+    },
+    "habitual_logmar_ou": {
+      "type": "numeric",
+      "present": 90,
+      "missing": 0,
+      "stats": {
+        "min": 0.0,
+        "q1": 0.176,
+        "median": 0.301,
+        "q3": 0.477,
+        "max": 1.176,
+        "mean": 0.375,
+        "std": 0.273
+      }
+    },
+    "correction_gap_logmar": {
+      "type": "numeric",
+      "present": 90,
+      "missing": 0,
+      "stats": {
+        "min": 0.0,
+        "q1": 0.079,
+        "median": 0.097,
+        "q3": 0.176,
+        "max": 0.505,
+        "mean": 0.125,
+        "std": 0.089
+      }
+    },
+    "stereo_testable": {
+      "type": "bool",
+      "present": 90,
+      "missing": 0,
+      "counts": {
+        "True": 66,
+        "False": 24
+      }
+    },
+    "stereo_arcsec": {
+      "type": "numeric",
+      "present": 66,
+      "missing": 24,
+      "stats": {
+        "min": 60.0,
+        "q1": 80.0,
+        "median": 140.0,
+        "q3": 200.0,
+        "max": 400.0,
+        "mean": 140.909,
+        "std": 68.066
+      }
+    }
+  }
+}
