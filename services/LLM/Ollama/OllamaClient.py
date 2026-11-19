@@ -32,7 +32,6 @@ class OllamaClient(LLMBase):
                  verbose_switch: bool = False,
                  container_name = "localhost",
                  local_port: int = 11434,
-                 stream: bool = True,
                  think: Union[bool, str, None] = None,
                  keep_alive: Union[str, int] = "2m",
                  format: Union[str, object] = None,
@@ -51,18 +50,19 @@ class OllamaClient(LLMBase):
                 prompt, context, conversation history and user prompt.
             container_name (str): The name of the Ollama container.
             local_port (int): The port of the Ollama container.
-            stream (bool): Whether to stream the response from the model.
             think (Union[bool, str, None]): Whether to use the model's think feature,
                 Null uses the default value.
             keep_alive (Union[str, int]): Model keep-alive duration 
                 (for example 5m or 0 to unload immediately)
             format (Union[str, object]): The format of the response from the model. Use 
                 "json" or JSONSchema with Pydantic model.
+            logprobs (bool): Whether to return log probabilities for each token.
+            top_logprobs (int): The number of top log probabilities to return for each token
             use_default_options (bool): Whether to use the default options for the model.
             options (dict): The options to use for the model.
         """
         super().__init__(model_name, enable_chat_history, max_history, verbose_switch)
-        self.stream = stream
+        self.stream = False # our wrapper does not support streaming
         self.think = think
         self.keep_alive = keep_alive
         self.options = options if options else self._get_def_options() \
@@ -90,6 +90,7 @@ class OllamaClient(LLMBase):
 
         Args:
             container_name (str): Name of the Ollama container.
+            port (int): Port of the Ollama container.
         """
         client = ollama.Client(
             host = f"http://{container_name}:{port}",
@@ -99,6 +100,14 @@ class OllamaClient(LLMBase):
 
 
     def _get_def_options(self) -> dict:
+        """
+        Get the default options for the model.
+        Used to maintiain consitency during experiments.
+        Affected keys: seed, temperature, num_ctx
+
+        Returns:
+            dict: Default options for the model.
+        """
         return {
             "seed": 42, # integer
             "temperature": 0.7, # float
@@ -106,7 +115,7 @@ class OllamaClient(LLMBase):
             "top_p": None, # float, Cumulative probability threshold for nucleus sampling
             "min_p": None, # float, Minimum probability threshold for token selection
             "stop": None, # str | list[str], Stop sequences that will halt generation
-            "num_ctx": 4096, # integer, Context length size (number of tokens)
+            "num_ctx": 2048, # integer, Context length size (number of tokens)
             "num_predict": None, # integer, Maximum number of tokens to generate
         }
         
@@ -147,7 +156,7 @@ class OllamaClient(LLMBase):
             messages = [{"role": "system", "content": system_prompt}, *messages],
             format = self.format,
             stream = self.stream,
-            think = self.think,
+            # think = self.think, # does not work for all models.
             keep_alive = self.keep_alive,
             options = self.options
         )
@@ -180,7 +189,8 @@ class OllamaClient(LLMBase):
 
 if __name__ == "__main__":
     # Example usage
-    ollama_client = OllamaClient(model_name="qwen2.5:7b", 
+    ollama_client = OllamaClient(model_name="qwen2.5:7b",
+                                 local_port=11435,
                                  enable_chat_history=True, 
                                  verbose_switch=True,
                                  keep_alive="2m",
