@@ -2,6 +2,7 @@ import os, sys
 sys.path.append(f"{os.path.dirname(os.path.abspath(__file__))}/../..")
 
 from utils.cli.CommandAutoSuggest import CommandAutoSuggest
+from utils.output_message_format.output_colour import print_model_output
 
 class CLICommands:
     def __init__(self, 
@@ -26,7 +27,7 @@ class CLICommands:
         """
         exit_message = ("Goodbye! If you have any more questions or need assistance "
                         "in the future, feel free to return. Have a great day!")
-        print(exit_message)
+        print_model_output(exit_message, "SYNKRASIS")
         sys.exit(0)
             
     
