@@ -80,11 +80,28 @@ class ChatHistory:
         """
         self._conversation_history.clear()
 
-    def to_dict(self) -> Dict[str, any]:
+    def to_dict(self) -> Dict[str, List[Tuple[str, str]]]:
+        """
+        Convert the chat history to a dictionary with the original question and 
+            the conversation history as a list of tuple[str, str].
+        
+        Returns:
+            Dict[str, list[Tuple[str, str]]]: A dictionary representation of the chat history.
+        """
         return {
             "original_question": self._original_question,
             "conversation_history": list(self._conversation_history)
         }
+
+
+    def to_list(self) -> List[Tuple[str, str]]:
+        """
+        Convert the conversation history to a list of tuple[str, str].
+        
+        Returns:
+            List[Tuple[str, str]]: A list representation of the conversation history.
+        """
+        return list(self._conversation_history)
 
 
     def __str__(self) -> str:

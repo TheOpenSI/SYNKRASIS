@@ -187,13 +187,13 @@ class OllamaClient(LLMBase):
         print_success("Ollama resources cleaned up.")
 
 
-if __name__ == "__main__":
-    # Example usage
-    ollama_client = OllamaClient(model_name="qwen2.5:7b",
-                                 local_port=11435,
-                                 enable_chat_history=True, 
-                                 verbose_switch=True,
-                                 keep_alive="2m",
-                                 use_default_options=True)
-    response = ollama_client.generate_response("Hello, how are you?")
-    print(response)
+# if __name__ == "__main__":
+#     # Example usage
+#     ollama_client = OllamaClient(model_name="qwen2.5:7b",
+#                                  local_port=11435,
+#                                  enable_chat_history=True, 
+#                                  verbose_switch=True,
+#                                  keep_alive="2m",
+#                                  use_default_options=True)
+#     response = ollama_client.generate_response("Hello, how are you?")
+#     print(response)
