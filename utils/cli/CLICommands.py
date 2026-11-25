@@ -6,11 +6,35 @@ from utils.output_message_format.output_colour import print_model_output
 
 class CLICommands:
     def __init__(self, 
-                 commands: dict[str, callable] = None) -> None:
-        self.commands = commands if commands is not None else {}
+                 commands: dict[str, callable] = {}) -> None:
+        self.commands = commands
         self._add_default_commands()
         self.auto_suggest = CommandAutoSuggest(list(self.commands.keys()))
-        
+
+
+    def _add_default_commands(self) -> None:
+        """
+        Add default commands if not already present.
+        """
+        self._add_help_command()
+        self._add_exit_command()
+
+
+    def _add_help_command(self) -> None:
+        """
+        Ensure 'help' command is available.
+        """
+        if "help" not in self.commands:
+            self.commands["help"] = self.cmd_help
+            
+            
+    def _add_exit_command(self) -> None:
+        """
+        Ensure 'exit' command is available.
+        """
+        if "exit" not in self.commands:
+            self.commands["exit"] = self.cmd_exit
+
 
     def cmd_help(self) -> None:
         """
@@ -44,27 +68,3 @@ class CLICommands:
             self.commands[cmd_name]()
         else:
             print(f"Unknown command: {command}")
-            
-    
-    def _add_help_command(self) -> None:
-        """
-        Ensure 'help' command is available.
-        """
-        if "help" not in self.commands:
-            self.commands["help"] = self.cmd_help
-            
-            
-    def _add_exit_command(self) -> None:
-        """
-        Ensure 'exit' command is available.
-        """
-        if "exit" not in self.commands:
-            self.commands["exit"] = self.cmd_exit
-    
-    
-    def _add_default_commands(self) -> None:
-        """
-        Add default commands if not already present.
-        """
-        self._add_help_command()
-        self._add_exit_command()

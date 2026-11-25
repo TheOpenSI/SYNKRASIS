@@ -3,6 +3,8 @@ sys.path.append(f"{os.path.dirname(os.path.abspath(__file__))}/../..")
 
 from prompt_toolkit import PromptSession
 from prompt_toolkit.auto_suggest import AutoSuggest, Suggestion
+from prompt_toolkit.buffer import Buffer
+from prompt_toolkit.document import Document
 
 
 class CommandAutoSuggest(AutoSuggest):    
@@ -17,18 +19,10 @@ class CommandAutoSuggest(AutoSuggest):
         self.commands = commands
     
     
+    # abstractmethod
     def get_suggestion(self, 
-                       buffer, 
-                       document) -> Suggestion:
-        # NOTE: Add type hints
-        """
-        Provide command suggestions based on current input.
-        Args:
-            buffer: The input buffer.
-            document: Snapshot of the input buffer.
-        
-        Returns:
-            Suggestion or None if no suggestion is available."""
+                       buffer: Buffer, 
+                       document: Document) -> Suggestion:
         text = document.text
         
         if not text.startswith('\\') or len(text) < 2:
