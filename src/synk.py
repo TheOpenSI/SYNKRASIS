@@ -3,7 +3,6 @@ sys.path.append(f"{os.path.dirname(os.path.abspath(__file__))}/..")
 
 import threading
 import time
-import traceback
 
 from prompt_toolkit import PromptSession
 from prompt_toolkit.filters import Condition
@@ -14,6 +13,8 @@ from prompt_toolkit.styles import Style
 
 from services.LLM.LLMBase import LLMBase
 from utils.cli.CLICommands import CLICommands
+from utils.output_message_format.output_colour import print_info, print_error
+from utils.ascii.synkrasis import print_synkrasis_logo
 
 
 class SynkrasisCLI:
@@ -52,11 +53,15 @@ class SynkrasisCLI:
 
     def _update_rag_state(self) -> bool:
         self.state["rag"] = not self.state["rag"]
+        text = "RAG activated" if self.state["rag"] else "RAG deactivated"
+        print_info(text)
+        print()
+
         return self.state["rag"]
 
 
     def _update_conv_history_state(self) -> None:
-        self.state["history"] = self.model.chat_history.conversation_history()
+        self.state["history"] = self.model.chat_history.conversation_history
 
 
     def _show_conv_history(self) -> None:
@@ -102,7 +107,7 @@ class SynkrasisCLI:
         """
         if self.busy:
             indent = " " * len(self.prompt_text)
-            return f"{indent}{self._busy_text()}"
+            return f"[{self.model.model_name.upper()}] {self._busy_text()}"
         return self.prompt_text
 
 
@@ -145,8 +150,6 @@ class SynkrasisCLI:
         )
 
         # While the model is working, anything typed is wiped straight away.
-        # (We do not use a read-only buffer: prompt_toolkit then treats keys
-        # such as n, / and ? as search commands.)
         def clear_if_busy(buffer) -> None:
             if self.busy and buffer.text:
                 buffer.text = ""
@@ -160,13 +163,14 @@ class SynkrasisCLI:
         try:
             self.model.generate_response(query, suppress_conversation_history=False)
             self._update_conv_history_state()
-        except Exception:
-            traceback.print_exc()
+        except Exception as e:
+            print_error(f"Error occurred while generating response: {e}\n")
         finally:
             self.busy = False
 
 
     def run_cli(self) -> None:
+        print_synkrasis_logo()
         session = self._set_session()
 
         # patch_stdout makes every print() appear above the prompt and toolbar.
@@ -174,19 +178,16 @@ class SynkrasisCLI:
         with patch_stdout(raw=True):
             while True:
                 try:
-                    # No text passed here: the session already knows its
-                    # message (see _get_prompt_message).
                     query = session.prompt()
-                except (KeyboardInterrupt, EOFError):   # Ctrl+C or Ctrl+D
-                    print("Exiting Synkrasis CLI. Goodbye!")
+                except (KeyboardInterrupt):
+                    print_info("Keyboard interrupt (Ctrl+C) received. Exiting...")
+                    self.commands.cmd_exit()
                     break
 
                 query = query.strip()
                 if not query:
                     continue
 
-                # A backslash command: run it here and skip the model.
-                # (\exit stops the program from inside execute_command.)
                 if query.startswith("\\"):
                     self.commands.execute_command(query)
                     continue

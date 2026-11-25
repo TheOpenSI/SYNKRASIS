@@ -2,7 +2,10 @@ import os, sys
 sys.path.append(f"{os.path.dirname(os.path.abspath(__file__))}/../..")
 
 from utils.cli.CommandAutoSuggest import CommandAutoSuggest
-from utils.output_message_format.output_colour import print_model_output
+from utils.output_message_format.output_colour import (
+    print_model_output,
+    print_error
+)
 
 from collections import defaultdict
 
@@ -64,6 +67,7 @@ class CLICommands:
         print_model_output("Available commands:", "SYNKRASIS")
         for cmd, info in self.commands.items():
             print(f"  \\{cmd.ljust(15)} --- {info['desc']}")
+        print()
 
 
     def cmd_exit(self) -> None:
@@ -88,4 +92,4 @@ class CLICommands:
         if cmd_name in self.commands:
             self.commands[cmd_name]["func"]()
         else:
-            print(f"Unknown command: {command}")
+            print_error(f"Unknown command: '{command}', see '\\help' for available commands.\n")
