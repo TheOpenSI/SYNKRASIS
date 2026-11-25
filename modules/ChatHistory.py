@@ -94,16 +94,6 @@ class ChatHistory:
         }
 
 
-    def to_list(self) -> List[Tuple[str, str]]:
-        """
-        Convert the conversation history to a list of tuple[str, str].
-        
-        Returns:
-            List[Tuple[str, str]]: A list representation of the conversation history.
-        """
-        return list(self._conversation_history)
-
-
     def __str__(self) -> str:
         """_summary_
         Basically a to_string method

@@ -1,7 +1,10 @@
 import sys, os
 sys.path.append(f"{os.path.dirname(os.path.abspath(__file__))}/..")
 
-import threading, time
+import threading
+import time
+import traceback
+
 from prompt_toolkit import PromptSession
 from prompt_toolkit.filters import Condition
 from prompt_toolkit.formatted_text import HTML
@@ -10,7 +13,8 @@ from prompt_toolkit.patch_stdout import patch_stdout
 from prompt_toolkit.styles import Style
 
 from services.LLM.LLMBase import LLMBase
-from utils.output_message_format.output_colour import print_error
+from utils.cli.CLICommands import CLICommands
+
 
 class SynkrasisCLI:
     def __init__(self, model: LLMBase) -> None:
@@ -21,9 +25,21 @@ class SynkrasisCLI:
             "history": []
         }
 
-        # True while the model is working. Read by the toolbar and by the 
+        # True while the model is working. Read by the toolbar and by the
         # key bindings that lock the input box.
         self.busy = False
+
+        synk_commands = {
+            "rag": {
+                "desc": "Toggle RAG mode on/off",
+                "func": self._update_rag_state
+            },
+            "c_hist": {
+                "desc": "Modify conversation history",
+                "func": lambda: None
+            }
+        }
+        self.commands = CLICommands(commands = synk_commands)
 
         # The normal prompt text.
         self.prompt_text = ">> Query: "
@@ -40,7 +56,11 @@ class SynkrasisCLI:
 
 
     def _update_conv_history_state(self) -> None:
-        self.state["history"] = self.model.chat_history.to_list()
+        self.state["history"] = self.model.chat_history.conversation_history()
+
+
+    def _show_conv_history(self) -> None:
+        pass
 
 
     def _get_style(self) -> Style:
@@ -64,8 +84,7 @@ class SynkrasisCLI:
 
 
     def _busy_text(self) -> str:
-        """
-        Return the busy word with an underscore moving along it.
+        """Return the busy word with an underscore moving along it.
 
         The position comes from the clock, so no animation thread is needed:
         _hinking, t_inking, th_nking, ... then back to the start.
@@ -76,14 +95,14 @@ class SynkrasisCLI:
 
 
     def _get_prompt_message(self) -> str:
-        """
-        Text shown at the start of the input line.
+        """Text shown at the start of the input line.
 
-        Normally ">> Query: ". 
-        While the model is working it becomes the animated word.
+        Normally ">> Query: ". While the model is working it becomes the
+        animated word. This function is called again on every redraw.
         """
         if self.busy:
-            return f"[{self.model.model_name.upper()}] {self._busy_text()}"
+            indent = " " * len(self.prompt_text)
+            return f"{indent}{self._busy_text()}"
         return self.prompt_text
 
 
@@ -94,7 +113,7 @@ class SynkrasisCLI:
             f'  <b>ENV</b>'
             f'  │  rag = {rag}'
             f'  │  history: <b>{n}</b>'
-            # f'  |  <i>/rag  /list  /quit</i>'
+            f'  |  <i>"/help" to see the list of commands</i>'
         )
 
 
@@ -108,11 +127,20 @@ class SynkrasisCLI:
         def _(event):
             pass
 
+        # Tab accepts the grey command suggestion, if one is showing.
+        @kb.add("tab")
+        def _(event):
+            buffer = event.current_buffer
+            suggestion = buffer.suggestion
+            if suggestion:
+                buffer.insert_text(suggestion.text)
+
         session = PromptSession(
             message=self._get_prompt_message,
             bottom_toolbar=self._get_toolbar,
+            auto_suggest=self.commands.auto_suggest,
             style=self.style,
-            refresh_interval=self.busy_interval,   # redraw once per animation step
+            refresh_interval=self.busy_interval,
             key_bindings=kb,
         )
 
@@ -128,17 +156,12 @@ class SynkrasisCLI:
 
 
     def _generate(self, query: str) -> None:
-        """
-        Runs in a background thread so the prompt and toolbar stay alive.
-        
-        Args:
-            query (str): The user query to send to the model.
-        """
+        """Runs in a background thread so the prompt and toolbar stay alive."""
         try:
             self.model.generate_response(query, suppress_conversation_history=False)
             self._update_conv_history_state()
-        except Exception as e:
-            print_error(f"Error occurred while generating response: {e}")
+        except Exception:
+            traceback.print_exc()
         finally:
             self.busy = False
 
@@ -151,18 +174,25 @@ class SynkrasisCLI:
         with patch_stdout(raw=True):
             while True:
                 try:
-                    query = session.prompt() # input
-                except (KeyboardInterrupt, EOFError):
+                    # No text passed here: the session already knows its
+                    # message (see _get_prompt_message).
+                    query = session.prompt()
+                except (KeyboardInterrupt, EOFError):   # Ctrl+C or Ctrl+D
                     print("Exiting Synkrasis CLI. Goodbye!")
                     break
 
-                if not query.strip():
+                query = query.strip()
+                if not query:
+                    continue
+
+                # A backslash command: run it here and skip the model.
+                # (\exit stops the program from inside execute_command.)
+                if query.startswith("\\"):
+                    self.commands.execute_command(query)
                     continue
 
                 self.busy = True
                 # daemon=True means Ctrl+C can quit without waiting for the model.
                 threading.Thread(
-                    target=self._generate, 
-                    args=(query,), 
-                    daemon=True
+                    target=self._generate, args=(query,), daemon=True
                 ).start()
